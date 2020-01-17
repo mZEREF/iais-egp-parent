@@ -9,6 +9,9 @@
 <%@ include file="./dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
+    <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
+    <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -69,7 +72,9 @@
                                 <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="Credit">
                                 <label class="form-check-label" ><span class="check-circle"></span>Credit/Debit Card</label>&nbsp&nbsp&nbsp&nbsp
                                 <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="GIRO">
-                                <label class="form-check-label" ><span class="check-circle"></span>GIRO</label><br>
+                                <label class="form-check-label" ><span class="check-circle"></span>GIRO</label>
+                                <span name="iaisErrorMsg" id="error_pay" class="error-msg"></span>
+                                <br>
 
                                 &nbsp&nbsp&nbsp&nbsp<img src="<%=webroot1%>img/mastercard.png" width="40" height="25" alt="mastercard">&nbsp
                                 <img src="<%=webroot1%>img/paymentVISA.png" width="66" height="25" alt="VISA">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
@@ -83,11 +88,24 @@
             </div>
         </div>
     </div>
+    <%@ include file="/include/formHidden.jsp" %>
 </form>
 <script src=""></script>
 <script type="text/javascript">
 
     $('.proceed').click(function () {
+        var flag=false;
+        $("input[name='payMethod']").each(function () {
+
+        if ( $(this).prop("checked")){
+            flag=true;
+        }
+        });
+        if(!flag){
+            $('#error_pay').html("The field is mandatory.");
+            return;
+        }
+
         submit('','ack',null);
     });
 </script>

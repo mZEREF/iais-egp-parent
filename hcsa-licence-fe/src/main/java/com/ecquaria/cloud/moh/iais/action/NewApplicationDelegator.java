@@ -595,8 +595,13 @@ public class NewApplicationDelegator {
      */
     public void doPayment(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doPayment start ...."));
+
         String switch2 = "loading";
         String pmtStatus = (String) ParamUtil.getRequestAttr(bpc.request, "PmtStatus");
+        if(StringUtil.isEmpty(pmtStatus)){
+            ParamUtil.setRequestAttr(bpc.request, "crud_action_value", "payment");
+            return;
+        }
         if(!StringUtil.isEmpty(pmtStatus) && "GIRO".equals(pmtStatus)){
             switch2 = "ack";
         }
@@ -1343,7 +1348,7 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do jumpBank start ...."));
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
         if(StringUtil.isEmpty(payMethod)){
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"payment");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE,"payment");
             return;
         }
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
@@ -1758,10 +1763,10 @@ public class NewApplicationDelegator {
                                 int i2= Integer.parseInt(onsiteStartMM);
                                 startDate=  i1*60+i2*1;
                                 if(i1>=24||i2>=60){
-                                    errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR001");
+                                    errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR003");
                                 }
                             }catch (Exception e){
-                                errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR001");
+                                errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR003");
                             }
 
                         }
@@ -1775,19 +1780,61 @@ public class NewApplicationDelegator {
                                 int i2 = Integer.parseInt(onsiteEndMM);
                                 endDate=i1*60+i2*1;
                                 if(i1>=24||i2>=60){
-                                    errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR001");
+                                    errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR003");
                                 }
                             }catch (Exception e){
-                                errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR001");
+                                errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR003");
 
                             }
 
                         }
                         if(endDate<startDate){
-                            errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR001");
+                            errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR003");
+                        }
+                        String isOtherLic = appGrpPremisesDtoList.get(i).getIsOtherLic();
+                        if(StringUtil.isEmpty(isOtherLic)){
+                            errorMap.put("isOtherLic"+i,"UC_CHKLMD001_ERR002");
                         }
 
+                        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
+                        if(appPremPhOpenPeriodList!=null){
 
+
+                        for(AppPremPhOpenPeriodDto every :appPremPhOpenPeriodList){
+                            String convStartFromHH = every.getOnsiteStartFromHH();
+                            String convStartFromMM = every.getOnsiteStartFromMM();
+                            String onsiteEndToHH = every.getOnsiteEndToHH();
+                            String onsiteEndToMM = every.getOnsiteEndToMM();
+                            if(!StringUtil.isEmpty(convStartFromHH)&&!StringUtil.isEmpty(convStartFromMM)&&!StringUtil.isEmpty(onsiteEndToHH)
+                            &&!StringUtil.isEmpty(onsiteEndToMM)||StringUtil.isEmpty(convStartFromHH)&&StringUtil.isEmpty(convStartFromMM)
+                            &&StringUtil.isEmpty(onsiteEndToHH)&&StringUtil.isEmpty(onsiteEndToMM)){
+                                if(!StringUtil.isEmpty(convStartFromHH)&&!StringUtil.isEmpty(convStartFromMM)&&!StringUtil.isEmpty(onsiteEndToHH)
+                                        &&!StringUtil.isEmpty(onsiteEndToMM)){
+                                    try {
+                                        int i1 = Integer.parseInt(convStartFromHH);
+                                        int i2 = Integer.parseInt(convStartFromMM);
+                                        int i3 = Integer.parseInt(onsiteEndToHH);
+                                        int i4 = Integer.parseInt(onsiteEndToMM);
+                                        if(i1>=24||i2>=60||i3>=24||i4>=60){
+                                            errorMap.put("onsiteEndToMM"+i,"UC_CHKLMD001_ERR003");
+                                        }
+                                        else if((i1*60+i2)>(i3*60+i4)){
+                                            errorMap.put("onsiteEndToMM"+i,"UC_CHKLMD001_ERR003");
+                                        }
+
+
+                                    }catch (Exception e){
+                                        errorMap.put("onsiteEndToMM"+i,"UC_CHKLMD001_ERR003");
+                                    }
+                                }
+
+                            }else {
+                                errorMap.put("onsiteEndToMM"+i,"UC_CHKLMD001_ERR003");
+                            }
+
+
+                        }
+                        }
                         String hciName = appGrpPremisesDtoList.get(i).getHciName();
                         if(StringUtil.isEmpty(hciName)){
                             errorMap.put("hciName"+i,"UC_CHKLMD001_ERR002");
@@ -1860,10 +1907,10 @@ public class NewApplicationDelegator {
                                 int i2= Integer.parseInt(conStartMM);
                                 conStartDate=i1*60+i2*1;
                                 if(i1>=24||i2>=60){
-                                    errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR001");
+                                    errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR003");
                                 }
                             }catch (Exception e){
-                                errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR001");
+                                errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR003");
                             }
                         }
                         String conEndHH = appGrpPremisesDtoList.get(i).getConEndHH();
@@ -1878,16 +1925,54 @@ public class NewApplicationDelegator {
                                 conEndDate=i1*60+i2*1;
                                 if(i1>=24||i2>=60){
 
-                                    errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR001");
+                                    errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR003");
                                 }
 
                             }catch (Exception e){
-                                errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR001");
+                                errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR003");
                             }
                         }
                         if(conEndDate<conStartDate){
-                            errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR001");
+                            errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR003");
                         }
+                        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
+                      if(appPremPhOpenPeriodList!=null){
+
+
+                        for(AppPremPhOpenPeriodDto every:appPremPhOpenPeriodList){
+                            String convEndToHH = every.getConvEndToHH();
+                            String convEndToMM = every.getConvEndToMM();
+                            String convStartFromHH = every.getConvStartFromHH();
+                            String convStartFromMM = every.getConvStartFromMM();
+                            if(StringUtil.isEmpty(convEndToHH)&&StringUtil.isEmpty(convEndToMM)&StringUtil.isEmpty(convStartFromHH)
+                            &StringUtil.isEmpty(convStartFromMM)||!StringUtil.isEmpty(convEndToHH)&&!StringUtil.isEmpty(convEndToMM)
+                            &&!StringUtil.isEmpty(convStartFromHH)&!StringUtil.isEmpty(convStartFromMM)){
+                                if(!StringUtil.isEmpty(convEndToHH)&&!StringUtil.isEmpty(convEndToMM)
+                                        &&!StringUtil.isEmpty(convStartFromHH)&!StringUtil.isEmpty(convStartFromMM)){
+                                    try {
+                                        int i1 = Integer.parseInt(convStartFromHH);
+                                        int i2 = Integer.parseInt(convStartFromMM);
+                                        int i3 = Integer.parseInt(convEndToHH);
+                                        int i4 = Integer.parseInt(convEndToMM);
+                                        if(i1>=24||i2>=60||i3>=24||i4>=60){
+                                            errorMap.put("convEndToHH"+i,"UC_CHKLMD001_ERR003");
+                                        }
+                                        else if((i1*60+i2)>(i3*60+i4)){
+                                            errorMap.put("convEndToHH"+i,"UC_CHKLMD001_ERR003");
+                                        }
+
+
+                                    }catch (Exception e){
+                                        errorMap.put("convEndToHH"+i,"UC_CHKLMD001_ERR003");
+                                    }
+                                }
+                            }else {
+
+                                errorMap.put("convEndToHH"+i,"UC_CHKLMD001_ERR003");
+                            }
+
+                        }
+                      }
                         String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
                         if(StringUtil.isEmpty(conveyanceVehicleNo)){
                             errorMap.put("conveyanceVehicleNo"+i,"UC_CHKLMD001_ERR001");

@@ -273,6 +273,7 @@
                                 <input <c:if test="${'1'==appGrpPremisesDto.isOtherLic}">checked="checked"</c:if> class="form-check-input other-lic"  type="radio" name="otherLicence${status.index}" value = "1" aria-invalid="false">
                                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
                               </div>
+                              <span class="error-msg" name="iaisErrorMsg" id="error_isOtherLic${status.index}"></span>
                             </iais:value>
                           </iais:row>
                           <div class="form-group">
@@ -334,6 +335,7 @@
                                       <input class="PbHolDayEndHH" type="text" name="${premValue}onsitePbHolDayEndHH${phStat.index}" value="${ph.onsiteEndToHH}" maxlength="2" style="width: 60px"/>(HH)
                                       :
                                       <input class="PbHolDayEndMM" type="text" name="${premValue}onsitePbHolDayEndMM${phStat.index}" value="${ph.onsiteEndToMM}" maxlength="2" style="width: 60px"/>(MM)
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_onsiteEndToMM${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>
@@ -355,6 +357,7 @@
                                     <input class="PbHolDayStartHH" type="text" name="${premValue}onsitePbHolDayStartHH0" value="" maxlength="2" style="width: 60px"/>(HH)
                                     :
                                     <input class="PbHolDayStartMM" type="text" name="${premValue}onsitePbHolDayStartMM0" value="" maxlength="2" style="width: 60px"/>(MM)
+                                    <span  class="error-msg"  name="iaisErrorMsg" id="error_"></span>
                                   </div>
                                 </div>
                                 <div class="form-group">
@@ -365,8 +368,10 @@
                                     <input class="PbHolDayEndHH" type="text" name="${premValue}onsitePbHolDayEndHH0" value="" maxlength="2" style="width: 60px"/>(HH)
                                     :
                                     <input class="PbHolDayEndMM" type="text" name="${premValue}onsitePbHolDayEndMM0" value="" maxlength="2" style="width: 60px"/>(MM)
+
                                   </div>
                                 </div>
+
                               </div>
                             </c:otherwise>
                           </c:choose>
@@ -497,6 +502,7 @@
                                       <input class="PbHolDayEndHH" type="text" name="${premValue}convPbHolDayEndHH${phStat.index}" value="${ph.convEndToHH}" maxlength="2" style="width: 60px"/>(HH)
                                       :
                                       <input class="PbHolDayEndMM" type="text" name="${premValue}convPbHolDayEndMM${phStat.index}" value="${ph.convEndToMM}" maxlength="2" style="width: 60px"/>(MM)
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_convEndToHH${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>
@@ -528,6 +534,7 @@
                                     <input class="PbHolDayEndHH" type="text" name="${premValue}convPbHolDayEndHH0" value="" maxlength="2" style="width: 60px"/>(HH)
                                     :
                                     <input class="PbHolDayEndMM" type="text" name="${premValue}convPbHolDayEndMM0" value="" maxlength="2" style="width: 60px"/>(MM)
+
                                   </div>
                                 </div>
                               </div>
