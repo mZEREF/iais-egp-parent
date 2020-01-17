@@ -48,7 +48,7 @@ public class InspectionNcCheckListDelegator {
     AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
     @Autowired
     InspectionAssignTaskService inspectionAssignTaskService;
-    private final String SERLISTDTO="serListDto";
+    private static final String SERLISTDTO="serListDto";
     public InspectionNcCheckListDelegator(InsepctionNcCheckListService insepctionNcCheckListService){
         this.insepctionNcCheckListService = insepctionNcCheckListService;
     }
@@ -201,9 +201,9 @@ public class InspectionNcCheckListDelegator {
     }
 
     public void getServiceData(InspectionCheckQuestionDto temp,InspectionFillCheckListDto fdto,HttpServletRequest request){
-        String answer = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionName()+temp.getItemId()+"rad");
-        String remark = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionName()+temp.getItemId()+"remark");
-        String rectified = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionName()+temp.getItemId()+"rec");
+        String answer = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionName()+temp.getItemId()+"rad");
+        String remark = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionName()+temp.getItemId()+"remark");
+        String rectified = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionName()+temp.getItemId()+"rec");
         if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
             temp.setRectified(true);
         }else{
