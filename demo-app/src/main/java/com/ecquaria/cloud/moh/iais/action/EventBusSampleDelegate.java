@@ -1,11 +1,12 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.client.SysAdmDemoClient;
+import com.ecquaria.cloud.moh.iais.client.SampleClient;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.sample.OrgSampleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.sample.OrgUserAccountSampleDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -38,7 +39,7 @@ public class EventBusSampleDelegate {
     @Autowired
     private SubmissionClient submissionClient;
     @Autowired
-    private SysAdmDemoClient sysAdmDemoClient;
+    private SampleClient sampleClient;
 
     /**
      * StartStep: Start
@@ -54,12 +55,13 @@ public class EventBusSampleDelegate {
         orgDto.setStatus("Active");
         orgDto.setEventRefNo(orgDto.getUenNo());
         orgDto.setAuditTrailDto(AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET));
-        String submissionId = sysAdmDemoClient.getSeqId().getEntity();
+        String submissionId = sampleClient.getSeqId().getEntity();
         String callbackUrl = systemParamConfig.getInterServerName()
                 + "/sample-web/eservice/INTERNET/EventBusSample/1/CallbackStep";
         SubmitReq req = EventBusHelper.getSubmitReq(orgDto, submissionId, "sampleTest",
-                "createOrg", "", callbackUrl, "batchjob", false,
+                "createOrg", "", callbackUrl, "batchjob", true,
                 "INTERNET", "EventBusSample", "start");
+        req.addCallbackParam("eventRefNo", orgDto.getEventRefNo());
         SubmitResp submitResp = submissionClient.submit(AppConsts.REST_PROTOCOL_TYPE
                 + RestApiUrlConsts.EVENT_BUS, req);
     }
@@ -77,6 +79,8 @@ public class EventBusSampleDelegate {
         String token = ParamUtil.getString(request, "token");
         String serviceName = ParamUtil.getString(request, "service");
         boolean isLeagal = IaisEGPHelper.verifyCallBackToken(submissionId, serviceName, token);
+        String eventRefNum = ParamUtil.getString(request, "eventRefNo");
+        OrgSampleDto dto = sampleClient.getOrgByUen(eventRefNum).getEntity();
         if (!isLeagal) {
             throw new IaisRuntimeException("Visit without Token!!");
         }
@@ -94,7 +98,7 @@ public class EventBusSampleDelegate {
                         completed = false;
                     }
                     if (!status.getStatus().equals(GlobalConstants.STATE_COMPLETED)
-                            && !status.getStatus().equals(GlobalConstants.STATUS_SUCCESS)) {
+                            && !status.getServiceStatus().equals(GlobalConstants.STATUS_SUCCESS)) {
                         success = false;
                     }
                 }
@@ -105,6 +109,8 @@ public class EventBusSampleDelegate {
             if (!success) {
                 submissionClient.setCompensation(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS,
                         submissionId, operation, "");
+            } else {
+                createOrgUser(dto.getId(), submissionId);
             }
         }
         log.info("Complete");
@@ -118,5 +124,20 @@ public class EventBusSampleDelegate {
      */
     public void finalStep(BaseProcessClass bpc) {
 
+    }
+
+    private void createOrgUser(String ordId, String submissionId) {
+        OrgUserAccountSampleDto dto = new OrgUserAccountSampleDto();
+        dto.setOrgId(ordId);
+        dto.setNircNo(String.valueOf(System.currentTimeMillis()));
+        dto.setName("CCCC");
+        dto.setEventRefNo(dto.getNircNo());
+        String callbackUrl = systemParamConfig.getInterServerName()
+                + "/sample-web/eservice/INTERNET/EventBusSample/1/FinalStep";
+        SubmitReq req = EventBusHelper.getSubmitReq(dto, submissionId, "sampleTest",
+                "createOrgUser", "", callbackUrl, "batchjob", false,
+                "INTERNET", "EventBusSample", "start");
+        SubmitResp submitResp = submissionClient.submit(AppConsts.REST_PROTOCOL_TYPE
+                + RestApiUrlConsts.EVENT_BUS, req);
     }
 }

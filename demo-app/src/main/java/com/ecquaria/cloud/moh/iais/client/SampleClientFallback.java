@@ -9,7 +9,7 @@ import org.springframework.http.HttpHeaders;
  * @author Jinhua
  * @date 2020/1/8 14:47
  */
-public class SysAdmDemoClientFallback {
+public class SampleClientFallback {
     public FeignResponseEntity<String> getSeqId() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
