@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -163,6 +165,23 @@ public class BackendAjaxController {
 
     private Map<Integer, Integer> getActualWorkingDays(List<TaskDto> taskDtoList) {
         Map<Integer, Integer> workAndNonMap = new HashMap();
+        int allWorkDays = 0;
+        int allHolidays = 0;
+        for(TaskDto td : taskDtoList){
+            Date startDate = td.getDateAssigned();
+            Date completeDate;
+            if(td.getSlaDateCompleted() == null){
+                completeDate = new Date();
+            } else {
+                completeDate = td.getSlaDateCompleted();
+            }
+            Map<Integer, Integer> workAndNonMapS = MiscUtil.getActualWorkingDays(startDate, completeDate, td.getWkGrpId());
+            for(Map.Entry<Integer, Integer> map:workAndNonMapS.entrySet()){
+                allWorkDays = allWorkDays + map.getKey();
+                allHolidays = allHolidays + map.getValue();
+            }
+        }
+        workAndNonMap.put(allWorkDays, allHolidays);
         return workAndNonMap;
     }
 
