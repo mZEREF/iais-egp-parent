@@ -9,18 +9,25 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeCategoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeToExcelDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -167,11 +174,22 @@ public class MasterCodeDelegator {
         CrudHelper.doSorting(searchParam,bpc.request);
     }
 
-
-
-    public void doUpload(BaseProcessClass bpc){
+    @GetMapping(value = "master-code-file")
+    public @ResponseBody void fileHandler(HttpServletRequest request, HttpServletResponse response){
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        String action = ParamUtil.getString(request, "action");
+        File file = null;
+        List<MasterCodeToExcelDto> masterCodeToExcelDtoList = masterCodeService.findAllMasterCode();
+        if (masterCodeToExcelDtoList != null){
+            file = ExcelWriter.exportExcel(masterCodeToExcelDtoList, MasterCodeToExcelDto.class, "Master_Code_File");
+        }
+        try {
+            FileUtils.writeFileResponeContent(response, file);
+            FileUtils.deleteTempFile(file);
+        } catch (IOException e) {
+            log.debug(e.getMessage());
+        }
     }
-
 
 
     /**

@@ -10,9 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -24,32 +21,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
-import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
-import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
-import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Shicheng
@@ -217,52 +194,6 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         inboxMsgService.saveInterMessage(interMessageDto);
     }
 
-
-    @Override
-    public void getAppointmentDate(TaskDto taskDto) {
-        String applicationNo = taskDto.getRefNo();
-        List<TaskDto> taskDtoList = organizationClient.getTaskByAppNo(applicationNo).getEntity();
-        Integer inspectorNum = taskDtoList.size();
-        ApplicationDto applicationDto = applicationClient.getAppByNo(applicationNo).getEntity();
-        String serviceId = applicationDto.getServiceId();
-        String stageId = taskDto.getId();
-        Integer manHour = hcsaConfigClient.getManHour(serviceId, stageId).getEntity();
-        /**
-         * Working hours
-         */
-        Integer preManHour = (int) Math.ceil((double) manHour / inspectorNum);
-        Map<Date,String> avaiDate = new HashMap<Date, String>();
-
-        List<ApptNonWorkingDateDto> apptNonWorkingDateDtoList = appointmentClient.getNonWorkingDateListByWorkGroupId(applicationDto.getAppGrpId()).getEntity();
-        for (ApptNonWorkingDateDto apptNonWorkingDateDto:apptNonWorkingDateDtoList
-             ) {
-            boolean avaiAM = apptNonWorkingDateDto.isAm();
-            boolean avaiPM = apptNonWorkingDateDto.isPm();
-            String recursivceDate = apptNonWorkingDateDto.getRecursivceDate();
-            SearchResultHelper.getDateByWeekOfDay(avaiDate,recursivceDate,avaiAM,avaiPM);
-        }
-
-        List<PublicHolidayDto> publicHolidayDtoList = appointmentClient.getActiveHoliday().getEntity();
-        for (PublicHolidayDto publicHolidayDto : publicHolidayDtoList) {
-            List<Date> calculateDateList = getBetweenDays(publicHolidayDto.getFromDate(), publicHolidayDto.getToDate());
-            for (Date calculateDate : calculateDateList) {
-                avaiDate.put(calculateDate, "ALL");
-            }
-        }
-
-        List<ApptBlackoutDateDto> apptBlackoutDateDtoList = appointmentClient.getAllByShortName(taskDto.getWkGrpId()).getEntity();
-        for (ApptBlackoutDateDto apptBlackoutDateDto : apptBlackoutDateDtoList) {
-            List<Date> calculateDateList = getBetweenDays(apptBlackoutDateDto.getStartDate(), apptBlackoutDateDto.getEndDate());
-            for (Date calculateDate : calculateDateList) {
-                avaiDate.put(calculateDate, "ALL");
-            }
-        }
-        /**
-         * TODO
-         */
-
-    }
-
     @Override
     public Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> getSelfCheckListByCorrId(String refNo) {
         Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> map = new HashMap<>();
@@ -292,27 +223,6 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         }
         map.put(commonDto, chkDtoList);
         return map;
-    }
-
-    /**
-     * @param start
-     * @param end
-     * @return Calculate the date between two days
-     */
-    private static List<Date> getBetweenDays(Date start, Date end) {
-        List<Date> result = new ArrayList<>();
-        Calendar tempStart = Calendar.getInstance();
-        tempStart.setTime(start);
-        tempStart.add(Calendar.DAY_OF_YEAR, 1);
-        Calendar tempEnd = Calendar.getInstance();
-        tempEnd.setTime(end);
-        tempEnd.add(Calendar.DAY_OF_YEAR, 1);
-        result.add(start);
-        while (tempStart.before(tempEnd)) {
-            result.add(tempStart.getTime());
-            tempStart.add(Calendar.DAY_OF_YEAR, 1);
-        }
-        return result;
     }
 
     private void updateInspectionStatus(String appPremCorrId, String status) {

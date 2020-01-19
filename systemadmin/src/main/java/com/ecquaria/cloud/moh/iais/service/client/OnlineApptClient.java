@@ -2,9 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.*;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -15,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: yichen
@@ -42,6 +42,13 @@ public interface OnlineApptClient {
 	@GetMapping(value = "/iais-appointment/non-working-data/{groupId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	FeignResponseEntity<List<ApptNonWorkingDateDto>> getNonWorkingDateListByWorkGroupId(@PathVariable(name = "groupId") String groupId);
 
+	@PostMapping(value = "/iais-appointment/user-calendar/", produces = MediaType.APPLICATION_JSON_VALUE)
+	FeignResponseEntity<Map<String,List<Date>>> getUserCalendarByUserId(@RequestBody AppointmentDto appointmentDto);
+
 	@PutMapping(value = "/iais-appointment/non-working-data/", consumes = MediaType.APPLICATION_JSON_VALUE)
 	FeignResponseEntity<ApptNonWorkingDateDto> updateNonWorkingDate(@RequestBody ApptNonWorkingDateDto nonWorkingDateDto);
+
+	@GetMapping(value = "/user-id/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	FeignResponseEntity<List<String>> getIdByAgencyUserId(@PathVariable("userId") String userId);
+
 }

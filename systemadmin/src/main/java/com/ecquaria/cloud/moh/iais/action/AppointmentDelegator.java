@@ -19,7 +19,19 @@ public class AppointmentDelegator {
     IntranetUserClient intranetUserClient;
 
 
+    public void doStart(BaseProcessClass bpc){
+
+    }
     public void prepareDate(BaseProcessClass bpc){
+
+    }
+    public void doApprove(BaseProcessClass bpc){
+
+    }
+    public void doCalculates(BaseProcessClass bpc){
+
+    }
+    public void prepareSwitch(BaseProcessClass bpc){
 
     }
 

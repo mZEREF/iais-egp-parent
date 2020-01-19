@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Hc
@@ -65,6 +67,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 	@Override
 	public ApptNonWorkingDateDto updateNonWorkingDate(ApptNonWorkingDateDto nonWorkingDateDto) {
 		return onlineApptClient.updateNonWorkingDate(nonWorkingDateDto).getEntity();
+	}
+
+	@Override
+	public Map<String,List<Date>> getUnavailableTime(AppointmentDto appointmentDto) {
+		return onlineApptClient.getUserCalendarByUserId(appointmentDto).getEntity();
 	}
 
 }

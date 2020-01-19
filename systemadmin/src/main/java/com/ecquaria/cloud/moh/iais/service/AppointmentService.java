@@ -3,12 +3,14 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author anonymity
@@ -27,5 +29,13 @@ public interface AppointmentService {
 	List<ApptNonWorkingDateDto> getNonWorkingDateListByWorkGroupId(String groupId);
 
 	ApptNonWorkingDateDto updateNonWorkingDate(ApptNonWorkingDateDto nonWorkingDateDto);
+
+	/**
+	 *
+	 * @param appointmentDto
+	 * @return
+	 */
+	Map<String,List<Date>> getUnavailableTime(AppointmentDto appointmentDto);
+
 
 }

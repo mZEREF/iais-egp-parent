@@ -5,8 +5,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeCategoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeToExcelDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
+
+import java.util.List;
 
 /**
  * @Author: Hc
@@ -41,6 +44,14 @@ public class MasterCodeClientFallback implements MasterCodeClient{
 
     @Override
     public FeignResponseEntity<MasterCodeCategoryDto> saveMasterCodeCategory(MasterCodeCategoryDto dto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<MasterCodeToExcelDto>> findAllMasterCode() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

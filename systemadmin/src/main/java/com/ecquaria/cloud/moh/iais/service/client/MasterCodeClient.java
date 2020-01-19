@@ -6,11 +6,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeCategoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeToExcelDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Hc
@@ -28,8 +31,11 @@ public interface MasterCodeClient {
     @PostMapping(path = "/iais-mastercode", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<MasterCodeDto>  saveMasterCode(@RequestBody MasterCodeDto dto);
 
-     @PostMapping(path = "/iais-mastercode/category", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-     FeignResponseEntity<MasterCodeCategoryDto>  saveMasterCodeCategory(@RequestBody MasterCodeCategoryDto dto);
+    @PostMapping(path = "/iais-mastercode/category", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<MasterCodeCategoryDto>  saveMasterCodeCategory(@RequestBody MasterCodeCategoryDto dto);
+
+    @PostMapping(value = "/iais-mastercode/masterCodes",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<MasterCodeToExcelDto>>  findAllMasterCode();
 
     @DeleteMapping(path = "/iais-mastercode/{did}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> delMasterCode(@PathVariable("did")String did);

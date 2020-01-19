@@ -2,13 +2,13 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.*;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: yichen
@@ -59,7 +59,24 @@ public class OnlineApptClientFallback implements OnlineApptClient{
     }
 
     @Override
+    public FeignResponseEntity<Map<String, List<Date>>> getUserCalendarByUserId(AppointmentDto appointmentDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+
+    @Override
     public FeignResponseEntity<ApptNonWorkingDateDto> updateNonWorkingDate(ApptNonWorkingDateDto nonWorkingDateDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<String>> getIdByAgencyUserId(String userId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

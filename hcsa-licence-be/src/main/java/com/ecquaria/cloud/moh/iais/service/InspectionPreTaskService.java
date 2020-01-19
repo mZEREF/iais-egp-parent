@@ -51,7 +51,6 @@ public interface InspectionPreTaskService {
       */
     void routingBack(TaskDto taskDto, String reMarks);
 
-    void getAppointmentDate(TaskDto taskDto);
 
     /**
       * @author: shicheng
