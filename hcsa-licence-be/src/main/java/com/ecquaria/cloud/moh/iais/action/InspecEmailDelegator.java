@@ -96,7 +96,7 @@ public class InspecEmailDelegator {
         AccessUtil.initLoginUserInfo(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, null);
         ParamUtil.setSessionAttr(request,"appPremCorrId",null);
-        ParamUtil.setSessionAttr(request,"mesContext", null);
+        ParamUtil.setSessionAttr(request,MSG_CON, null);
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,null);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
 
@@ -155,7 +155,7 @@ public class InspecEmailDelegator {
         }
         map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
         String mesContext= MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(),map);
-        String content=ParamUtil.getString(request,MSG_CON);
+        String content= (String) ParamUtil.getSessionAttr(request,MSG_CON);
         if(content!=null){
             mesContext=content;
         }
@@ -174,7 +174,7 @@ public class InspecEmailDelegator {
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
         ParamUtil.setSessionAttr(request,"appPremCorrId",appPremCorrId);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
-        ParamUtil.setSessionAttr(request,"mesContext", mesContext);
+        ParamUtil.setSessionAttr(request,MSG_CON, mesContext);
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,applicationViewDto);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
     }
@@ -192,8 +192,8 @@ public class InspecEmailDelegator {
         HttpServletRequest request = bpc.request;
         String content=ParamUtil.getString(request,MSG_CON);
         String subject=ParamUtil.getString(request,SUBJECT);
-        ParamUtil.setRequestAttr(request,SUBJECT, subject);
-        ParamUtil.setRequestAttr(request,"content", content);
+        ParamUtil.setSessionAttr(request,SUBJECT, subject);
+        ParamUtil.setSessionAttr(request,MSG_CON, content);
 
 
     }
@@ -240,8 +240,9 @@ public class InspecEmailDelegator {
             hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
             hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
             hcsaSvcStageWorkingGroupDto.setOrder(2);
-            TaskDto taskDto1=taskDto;
+            TaskDto taskDto1=new TaskDto();
             taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_AO1);
+            taskDto1.setRefNo(taskDto.getRefNo());
             taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
             taskDto1.setRoleId(RoleConsts.USER_ROLE_AO1);
             taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
@@ -275,13 +276,14 @@ public class InspecEmailDelegator {
                 hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
                 hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
                 hcsaSvcStageWorkingGroupDto.setOrder(3);
-                TaskDto taskDto1=taskDto;
-                List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
+                TaskDto taskDto1=new TaskDto();
+                taskDto1.setRefNo(taskDto.getRefNo());
                 taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
                 taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
                 taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
                 taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
                 taskDto1.setUserId(organizationClient.getInspectionLead(taskDto1.getWkGrpId()).getEntity().get(0));
+                List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
                 taskService.createTasks(taskDtos);
                 createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT,taskDto1,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
             }

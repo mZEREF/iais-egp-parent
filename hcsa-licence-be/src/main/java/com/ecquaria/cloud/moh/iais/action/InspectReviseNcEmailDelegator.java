@@ -139,6 +139,7 @@ public class InspectReviseNcEmailDelegator {
         ParamUtil.setSessionAttr(request,TASK_DTO,taskDto);
         ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
+        ParamUtil.setSessionAttr(request,MSG_CON, null);
         ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
         ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,appViewDto);
@@ -158,7 +159,7 @@ public class InspectReviseNcEmailDelegator {
         HttpServletRequest request = bpc.request;
         InspectionEmailTemplateDto inspectionEmailTemplateDto = (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(bpc.request,INS_EMAIL_DTO);
         String content=ParamUtil.getString(request,MSG_CON);
-        ParamUtil.setSessionAttr(request,"content",content);
+        ParamUtil.setSessionAttr(request,MSG_CON,content);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
     }
 
@@ -171,8 +172,8 @@ public class InspectReviseNcEmailDelegator {
         }
         String content=ParamUtil.getString(request,MSG_CON);
         String subject=ParamUtil.getString(request,SUBJECT);
-        ParamUtil.setRequestAttr(request,SUBJECT, subject);
-        ParamUtil.setRequestAttr(request,"content", content);
+        ParamUtil.setSessionAttr(request,SUBJECT, subject);
+        ParamUtil.setSessionAttr(request,MSG_CON, content);
 
 
     }
@@ -222,7 +223,9 @@ public class InspectReviseNcEmailDelegator {
             hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
             hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_AO1);
             hcsaSvcStageWorkingGroupDto.setOrder(2);
-            TaskDto taskDto1=taskDto;
+            TaskDto taskDto1=new TaskDto();
+            taskDto1.setRefNo(taskDto.getRefNo());
+            taskDto1.setRoleId(RoleConsts.USER_ROLE_AO1);
             taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
             taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
@@ -257,13 +260,14 @@ public class InspectReviseNcEmailDelegator {
                 hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
                 hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
                 hcsaSvcStageWorkingGroupDto.setOrder(3);
-                TaskDto taskDto1=taskDto;
-                List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
+                TaskDto taskDto1=new TaskDto();
+                taskDto1.setRefNo(taskDto.getRefNo());
                 taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
                 taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
                 taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
                 taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
                 taskDto1.setUserId(organizationClient.getInspectionLead(taskDto1.getWkGrpId()).getEntity().get(0));
+                List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
                 taskService.createTasks(taskDtos);
                 createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT,taskDto1,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
             }
@@ -335,7 +339,10 @@ public class InspectReviseNcEmailDelegator {
         inspectionEmailTemplateDto.setRemarks(appPremisesRoutingHisDto.getInternalRemarks());
         inspectionEmailTemplateDto.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRoutingHisDto.getAppStatus()}).get(0).getValue());
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT});
-
+        String content= (String) ParamUtil.getSessionAttr(request,MSG_CON);
+        if(content!=null){
+            inspectionEmailTemplateDto.setMessageContent(content);
+        }
         ParamUtil.setRequestAttr(request,"appPremisesRoutingHistoryDtos", appPremisesRoutingHistoryDtos);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setSessionAttr(request,"draftEmailId",inspectionEmailTemplateDto.getId());

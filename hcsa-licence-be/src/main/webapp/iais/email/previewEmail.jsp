@@ -43,6 +43,6 @@
     <br><br><br><br><br><br>
     <h3>${subject}</h3>
     <hr>
-    ${content}
+    ${messageContent}
     <input type="submit" class="backspace-icon" value="Back">
 </form>
