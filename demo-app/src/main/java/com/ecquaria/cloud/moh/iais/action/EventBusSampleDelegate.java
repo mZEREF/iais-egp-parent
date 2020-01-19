@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.client.SampleClient;
-import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.sample.OrgSampleDto;
@@ -34,8 +33,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator("eventBusSampleDelegate")
 @Slf4j
 public class EventBusSampleDelegate {
-    @Autowired
-    private SystemParamConfig systemParamConfig;
+
     @Autowired
     private SubmissionClient submissionClient;
     @Autowired
@@ -56,8 +54,7 @@ public class EventBusSampleDelegate {
         orgDto.setEventRefNo(orgDto.getUenNo());
         orgDto.setAuditTrailDto(AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET));
         String submissionId = sampleClient.getSeqId().getEntity();
-        String callbackUrl = systemParamConfig.getInterServerName()
-                + "/sample-web/eservice/INTERNET/EventBusSample/1/CallbackStep";
+        String callbackUrl = "sample-web:8080/eservice/INTERNET/EventBusSample/1/CallbackStep";
         SubmitReq req = EventBusHelper.getSubmitReq(orgDto, submissionId, "sampleTest",
                 "createOrg", "", callbackUrl, "batchjob", true,
                 "INTERNET", "EventBusSample", "start");
@@ -132,8 +129,7 @@ public class EventBusSampleDelegate {
         dto.setNircNo(String.valueOf(System.currentTimeMillis()));
         dto.setName("CCCC");
         dto.setEventRefNo(dto.getNircNo());
-        String callbackUrl = systemParamConfig.getInterServerName()
-                + "/sample-web/eservice/INTERNET/EventBusSample/1/FinalStep";
+        String callbackUrl = "sample-web:8080/eservice/INTERNET/EventBusSample/1/FinalStep";
         SubmitReq req = EventBusHelper.getSubmitReq(dto, submissionId, "sampleTest",
                 "createOrgUser", "", callbackUrl, "batchjob", false,
                 "INTERNET", "EventBusSample", "start");
