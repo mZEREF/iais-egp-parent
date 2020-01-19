@@ -494,7 +494,7 @@
                                     <tr height="1" style="display: none" id="selectReviseNc">
                                         <td class="col-xs-2" >
                                             <p >
-                                                need revise
+                                                Need Revise:
                                             </p>
                                         </td>
                                         <td>
@@ -564,6 +564,9 @@
 
         if(decision.value=="Revise email/Letter Content"){
             $("#selectReviseNc").show();
+        }
+        else {
+            $("#selectReviseNc").hide();
         }
     }
 </script>

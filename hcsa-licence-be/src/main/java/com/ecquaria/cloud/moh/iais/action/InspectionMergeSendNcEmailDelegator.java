@@ -114,7 +114,7 @@ public class InspectionMergeSendNcEmailDelegator {
         InspectionEmailTemplateDto inspectionEmailTemplateDto= new InspectionEmailTemplateDto();
         inspectionEmailTemplateDto.setAppPremCorrId(applicationViewDto.getAppPremisesCorrelationId());
         inspectionEmailTemplateDto.setMessageContent(mesContext.toString());
-        inspectionEmailTemplateDto.setSubject("Inspection NC / BP Outcome");
+        inspectionEmailTemplateDto.setSubject("MOH IAIS – Review Outcome of Non-Compliance / Best Practices");
 
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT});
 

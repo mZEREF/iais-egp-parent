@@ -25,7 +25,34 @@
         </td>
         <td>
             <div class="col-sm-9">
-                <p><textarea name="messageContent" cols="108" rows="50" class="wenbenkuang" id="htmlEditroArea" title="content"  >${insEmailDto.messageContent}</textarea></p>
+                <p><textarea name="messageContent" cols="108" rows="50" id="htmlEditroArea" title="content"  >${insEmailDto.messageContent}</textarea></p>
+            </div>
+        </td>
+    </tr>
+    <div class="alert alert-info" role="alert">
+        <p><span><strong>Processing Status Update</strong></span></p>
+    </div>
+    <tr height="1">
+        <td class="col-xs-2" >
+            <p >
+                Current Status:
+            </p>
+        </td>
+        <td>
+            <div class="col-sm-9">
+                <p>${insEmailDto.appStatus}</p>
+            </div>
+        </td>
+    </tr>
+    <tr height="1">
+        <td class="col-xs-2" >
+            <p >
+                remarks:
+            </p>
+        </td>
+        <td>
+            <div class="col-sm-9">
+                <p><textarea name="remarks" cols="100" rows="6" class="wenbenkuang"  title="content"  >${insEmailDto.remarks}</textarea></p>
             </div>
         </td>
     </tr>
