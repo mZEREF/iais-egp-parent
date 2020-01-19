@@ -216,6 +216,8 @@ public class InspectionSearchDelegator {
      */
     public void inspectionSupSearchSort(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchSort start ...."));
+        SearchParam searchParam = getSearchParam(bpc);
+        CrudHelper.doSorting(searchParam, bpc.request);
     }
 
     /**
