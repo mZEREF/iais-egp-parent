@@ -98,6 +98,12 @@ public class BackendInboxDelegator {
             curRole = loginContext.getCurRoleId();
         }
 
+        ParamUtil.setSessionAttr(bpc.request, "searchParamAjax",null);
+        ParamUtil.setSessionAttr(bpc.request, "taskList",null);
+        ParamUtil.setSessionAttr(bpc.request, "hastaskList",null);
+        ParamUtil.setSessionAttr(bpc.request, "appNoUrl",null);
+        ParamUtil.setSessionAttr(bpc.request, "taskMap",null);
+        ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", null);
         ParamUtil.setSessionAttr(bpc.request, "roleIds", (Serializable) selectOptionArrayList);
         AuditTrailHelper.auditFunction("Inspection Sup Assign", "Sup Assign Task");
 
@@ -371,8 +377,8 @@ public class BackendInboxDelegator {
         String eventRefNo = EventBusHelper.getEventRefNo();
         broadcastOrganizationDto.setEventRefNo(eventRefNo);
         broadcastApplicationDto.setEventRefNo(eventRefNo);
-        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,true);
-        broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,true);
+        broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,true);
+        broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,true);
     }
 
     private TaskDto completedTask(TaskDto taskDto){
