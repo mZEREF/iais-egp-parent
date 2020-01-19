@@ -1,1 +1,0 @@
-<%@include file = "/iais/appointment/appointmentView.jsp"%>
