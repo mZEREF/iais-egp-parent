@@ -408,7 +408,7 @@ public class InspectReviseNcEmailDelegator {
         HcsaServiceDto hcsaServiceDto=inspectionService.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId());
         inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
         List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(appPremCorrId);
-        AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,"tcu");
+        AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,"RETYPE001");
         inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
         Map<String,Object> map=new HashMap<>();
         map.put("APPLICANT_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicantName()));
