@@ -129,7 +129,7 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorAssign(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAssign start ...."));
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
-        SearchResult<InspectionCommonPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchResult");
+        SearchResult<InspectionCommonPoolQueryDto> searchResult = (SearchResult<InspectionCommonPoolQueryDto>) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchResult");
         String appCorrelationId = ParamUtil.getMaskedString(bpc.request,"appCorrelationId");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(!StringUtil.isEmpty(appCorrelationId) && !(AppConsts.NO.equals(appCorrelationId))){
@@ -323,6 +323,6 @@ public class InspecAssignTaskDelegator {
         SearchResult<InspectionCommonPoolQueryDto> searchResult = inspectionAssignTaskService.getSearchResultByParam(searchParam);
         searchResult = inspectionAssignTaskService.getAddressByResult(searchResult);
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
-        ParamUtil.setRequestAttr(bpc.request, "cPoolSearchResult", searchResult);
+        ParamUtil.setSessionAttr(bpc.request, "cPoolSearchResult", searchResult);
     }
 }
