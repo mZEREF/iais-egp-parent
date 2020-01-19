@@ -591,6 +591,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String svcId = applicationDto.getServiceId();
         String stgId = taskDto.getTaskKey();
+        List<TaskDto> dtos = organizationClient.getTaskByAppNo(taskDto.getRefNo()).getEntity();
+        removeOtherTask(dtos,taskDto.getId());
         HcsaSvcStageWorkingGroupDto dto = new HcsaSvcStageWorkingGroupDto();
         dto.setStageId(stgId);
         dto.setServiceId(svcId);
@@ -622,6 +624,26 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         taskService.createTasks(createTaskDtoList);
         updateInspectionStatus(applicationDto);
     }
+
+    private void removeOtherTask(List<TaskDto> dtos, String taskId) {
+        if(IaisCommonUtils.isEmpty(dtos)){
+            for(TaskDto temp:dtos){
+                if(removeOtherTaskLogic(temp,taskId)){
+                    temp.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+                    taskService.updateTask(temp);
+                }
+            }
+        }
+    }
+
+    public boolean removeOtherTaskLogic(TaskDto temp,String taskId){
+        if(!taskId.equals(temp.getId())&&TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY.equals(temp.getProcessUrl())&&!temp.getTaskStatus().equals(TaskConsts.TASK_STATUS_COMPLETED)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList();
         for(ApplicationDto applicationDto : applicationDtos){
