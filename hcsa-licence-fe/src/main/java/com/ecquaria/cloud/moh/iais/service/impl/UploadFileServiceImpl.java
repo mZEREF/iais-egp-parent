@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
@@ -361,7 +362,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
         List<AppGrpPersonnelDto> appGrpPersonnel = applicationListDto.getAppGrpPersonnel();
         List<AppGrpPersonnelExtDto> appGrpPersonnelExt = applicationListDto.getAppGrpPersonnelExt();
-        List<AppliGrpPremisesDto> appGrpPremises = applicationListDto.getAppGrpPremises();
+        List<AppGrpPremisesEntityDto> appGrpPremises = applicationListDto.getAppGrpPremises();
         List<AppGrpPrimaryDocDto> appGrpPrimaryDoc = applicationListDto.getAppGrpPrimaryDoc();
         List<ApplicationDto> application = applicationListDto.getApplication();
         List<AppPremisesCorrelationDto> appPremisesCorrelation = applicationListDto.getAppPremisesCorrelation();
@@ -385,8 +386,8 @@ public class UploadFileServiceImpl implements UploadFileService {
             List<ApplicationDto> applicationDtos=new ArrayList<>();
             Set<ApplicationDto> applicationDtoSet=new HashSet<>();
 
-            List<AppliGrpPremisesDto> appGrpPremisesDtos=new ArrayList<>();
-            Set<AppliGrpPremisesDto> appliGrpPremisesDtoSet=new HashSet<>();
+            List<AppGrpPremisesEntityDto> appGrpPremisesDtos=new ArrayList<>();
+            Set<AppGrpPremisesEntityDto> appliGrpPremisesDtoSet=new HashSet<>();
 
             List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos=new ArrayList<>();
             Set<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoSet =new HashSet<>();
@@ -420,7 +421,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
             groupDtos.add(every);
             String groupId = every.getId();
-            for(AppliGrpPremisesDto appliGrpPremisesDto:appGrpPremises){
+            for(AppGrpPremisesEntityDto appliGrpPremisesDto:appGrpPremises){
                 String grpPremisesDtoAppGrpId = appliGrpPremisesDto.getAppGrpId();
                 if(groupId.equals(grpPremisesDtoAppGrpId)){
                     appliGrpPremisesDtoSet.add(appliGrpPremisesDto);

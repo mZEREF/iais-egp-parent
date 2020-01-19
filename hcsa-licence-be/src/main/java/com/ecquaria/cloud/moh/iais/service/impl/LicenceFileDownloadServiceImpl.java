@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -382,8 +383,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         for(AppGrpPersonnelExtDto every:appGrpPersonnelExt){
             every.setAuditTrailDto(intranet);
         }
-        List<AppliGrpPremisesDto> appGrpPremises = applicationListDto.getAppGrpPremises();
-        for(AppliGrpPremisesDto every:appGrpPremises){
+        List<AppGrpPremisesEntityDto> appGrpPremises = applicationListDto.getAppGrpPremises();
+        for(AppGrpPremisesEntityDto every:appGrpPremises){
             every.setAuditTrailDto(intranet);
         }
         List<AppGrpPrimaryDocDto> appGrpPrimaryDoc = applicationListDto.getAppGrpPrimaryDoc();

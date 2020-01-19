@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
@@ -10,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.service.AutoRenwalService;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
@@ -38,7 +40,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
     @Autowired
     private HcsaLicenceClient hcsaLicenClient;
-
+    @Autowired
+    private EmailClient emailClient;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
@@ -49,6 +52,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     private SystemBeLicClient systemBeLicClient;
     private SimpleDateFormat simpleDateFormat =new SimpleDateFormat("dd/MM/yyyy");
 
+    private static final String EMAIL_SUBJECT="MOH IAIS – REMINDER TO RENEW LICENCE";
     @Override
     public void startRenwal(HttpServletRequest request) {
         List<Integer> dayList=new ArrayList<>();
@@ -176,8 +180,14 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
             String messageContent = entity.getMessageContent();
             String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+                EmailDto emailDto=new EmailDto();
+                emailDto.setContent(templateMessageByContent);
+                emailDto.setSubject(EMAIL_SUBJECT);
+                emailDto.setSender("MOH");
 
-            request.setAttribute("email1",templateMessageByContent);
+
+                String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
+
              }
         }
 
@@ -266,9 +276,15 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             map.put("Licence_Expiry_Date",format);
             MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate("8D6746B1-6F37-EA11-BE7E-000C29F371DC").getEntity();
             String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
-            request.setAttribute("",templateMessageByContent);
 
 
+             EmailDto emailDto=new EmailDto();
+             emailDto.setContent(templateMessageByContent);
+             emailDto.setSubject(EMAIL_SUBJECT);
+             emailDto.setSender("MOH");
+
+
+             String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
             }
         }
 

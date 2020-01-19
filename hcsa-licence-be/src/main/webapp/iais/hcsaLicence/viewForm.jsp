@@ -10,18 +10,19 @@
 <webui:setLayout name="iais-blank"/>
 <%--<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>--%>
 <c:set var="appGrpPremisesDtoList" value="${appSubmissionDto.appGrpPremisesDtoList}"></c:set>
+<c:set var="oldAppGrpPremisesDtoList" value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList}"></c:set>
 <input style="display: none" value="${NOT_VIEW}" id="view">
 
 <div class="panel-main-content">
 
   <div class="amended-service-info-gp">
-    <h2>LABORATORY DISCIPLINES</h2>
+    <h2>RADIOLOGICAL MODALITIES</h2>
     <c:forEach var="appSvcLaboratoryDisciplinesDto" items="${currentPreviewSvcInfo.appSvcLaboratoryDisciplinesDtoList}" varStatus="status">
         <div class="amend-preview-info">
-          <p><span class="preview-title col-xs-6 col-md-4">Premises ${status.index+1}:</span> ${appSvcLaboratoryDisciplinesDto.premiseGetAddress}
+          <p><span class="preview-title col-xs-6 col-md-4">Premises ${status.index+1}: ${appGrpPremisesDtoList[status.index].address} </span><%--${appSvcLaboratoryDisciplinesDto.premiseGetAddress}--%>
             <wrms:value width="7">
-              <span class="newVal " attr="${appSvcLaboratoryDisciplinesDto.premiseGetAddress}" style="display: none" ><label><c:out value=""/></label></span>
-              <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].premiseGetAddress}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].premiseGetAddress}"/></label></span>
+              <span class="newVal " attr="${appGrpPremisesDtoList[status.index].address}" style="display: none" ><label><c:out value=""/></label></span>
+              <span class="oldVal compareTdStyle" attr="${oldAppGrpPremisesDtoList[status.index].address}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].premiseGetAddress}"/></label></span>
             </wrms:value>
           </p>
 
@@ -50,7 +51,7 @@
     <h2>CLINICAL GOVERNANCE OFFICER</h2>
       <div class="amend-preview-info">
         <c:forEach var="cgo" items="${currentPreviewSvcInfo.appSvcCgoDtoList}" varStatus="status">
-        <p>Clinical Governance Officer ${status.index+1}:</p>
+        <p> <strong>Clinical Governance Officer ${status.index+1}: </strong> ${cgo.name }</p>
         <div class="form-check-gp">
           <div class="row">
             <div class="col-xs-12">
@@ -170,7 +171,7 @@
 
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn No.:</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn No:</p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-4">${cgo.professionRegoNo }</span>
@@ -225,7 +226,7 @@
 
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.:</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No:</p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-4">${cgo.mobileNo}</span>
@@ -255,12 +256,12 @@
       <div class="form-check-gp">
         <div class="row">
           <div class="col-xs-12">
-                <table class="table discipline-table">
-                  <thead>
-                  <tr>
-                    <th>Premises</th>
-                    <th>Laboratory Disciplines</th>
-                    <th>Clinical Governance Officers</th>
+                <table class="table discipline-table" border="1px">
+                  <thead >
+                  <tr >
+                    <th  style="text-align: center">Premises</th>
+                    <th  style="text-align: center">Radiological Modalities</th>
+                    <th  style="text-align: center">Clinical Governance Officers</th>
                   </tr>
                   </thead>
                   <c:forEach var="appGrpPrem" items="${appGrpPremisesDtoList}" varStatus="status">
@@ -287,18 +288,16 @@
                       ${stat.end}
                       <tr>
                         <c:if test="${stat.first}">
-                          <td rowspan="${reloadDisciplineAllocationMap[reloadMapValue].size()}">
-                            <p class="visible-xs visible-sm table-row-title">${appGrpPrem.address}
-
-
+                          <td style="text-align: center" rowspan="${reloadDisciplineAllocationMap[reloadMapValue].size()}">
+                            <p class="visible-xs visible-sm table-row-title">${appGrpPrem.address} </p>
                               <wrms:value width="7">
                                 <span class="newVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"  style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/></label></span>
-                                <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/></label></span>
+                                <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}" ><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/></label></span>
                               </wrms:value>
-                            </p>
+
                           </td>
                         </c:if>
-                        <td>
+                        <td style="text-align: center">
                           <p>${disciplineAllocation.chkLstName}
                             <wrms:value width="7">
                               <span class="newVal " attr="${disciplineAllocation.chkLstName}"  style="display: none"><label><c:out value="${disciplineAllocation.chkLstName}"/></label></span>
@@ -307,7 +306,7 @@
 
                           </p>
                         </td>
-                        <td>
+                        <td style="text-align: center">
                           <p>${disciplineAllocation.cgoSelName}
                             <wrms:value width="7">
                               <span class="newVal " attr="${disciplineAllocation.cgoSelName}"  style="display: none"><label><c:out value="${disciplineAllocation.cgoSelName}"/></label></span>
@@ -342,11 +341,12 @@
   <div class="amended-service-info-gp">
     <h2>PRINCIPAL OFFICERS</h2>
       <div class="amend-preview-info">
-        <p></p>
+
         <div class="form-check-gp">
           <div class="row">
             <div class="col-xs-12">
               <c:forEach items="${currentPreviewSvcInfo.appSvcPrincipalOfficersDtoList}" var="po" varStatus="status">
+                <p><strong>Principal Officers: </strong> ${po.name}</p>
                 <table class="col-xs-8">
                   <tr>
                     <td class="col-xs-8">

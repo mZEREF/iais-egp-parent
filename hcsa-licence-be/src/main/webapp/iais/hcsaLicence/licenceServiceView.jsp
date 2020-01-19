@@ -39,14 +39,34 @@
                               <c:forEach var="appGrpPremDto" items="${appSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
                                 <div class="panel-main-content">
                                   <div class="preview-info">
-                                    <p><strong>Premises ${status.index+1}</strong></p>
-                                    <p>${appGrpPremDto.premisesType}: ${appGrpPremDto.address}
-                                      <wrms:value width="7">
-                                      <span class="newVal " attr="${appGrpPremDto.premisesType}${appGrpPremDto.address}" style="display: none"><label><c:out value=""/></label></span>
-                                      <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}: ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/></label></span>
+                                    <p><span  ><strong>Premises ${status.index+1}:</strong> ${appGrpPremDto.premisesType}</span>
+                                       <wrms:value width="7">
+                                      <span class="newVal " attr="${appGrpPremDto.premisesType}" style="display: none"><label><c:out value=""/></label></span>
+                                      <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}"  style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}"/></label></span>
                                     </wrms:value></p>
+                                    <p ><span  ><strong >HCL NAME:</strong> ${appGrpPremDto.hciName}</span>
+                                       <wrms:value width="7">
+                                        <span class="newVal " attr="${appGrpPremDto.hciName}" style="display: none"><label><c:out value=""/></label></span>
+                                        <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"/></label></span>
+                                      </wrms:value></p>
+                                    <p><span  ><strong>Address: </strong> ${appGrpPremDto.address}</span>
+
+                                       <wrms:value width="7">
+                                        <span class="newVal " attr="${appGrpPremDto.address}" style="display: none"><label><c:out value=""/></label></span>
+                                        <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/></label></span>
+                                      </wrms:value></p>
+
+                                    <p><span ><strong>Telephone:</strong>  ${appGrpPremDto.offTelNo}</span>
+                                       <wrms:value width="7">
+                                        <span class="newVal " attr="${appGrpPremDto.offTelNo}" style="display: none"><label><c:out value=""/></label></span>
+                                        <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo}"/></label></span>
+                                      </wrms:value></p>
+
                                     <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
-                                      <p>Vehicle No: ${appGrpPremDto.conveyanceVehicleNo}</p>
+                                      <p>Vehicle No: ${appGrpPremDto.conveyanceVehicleNo}  <wrms:value width="7">
+                                        <span class="newVal " attr="${appGrpPremDto.conveyanceVehicleNo}" style="display: none"><label><c:out value=""/></label></span>
+                                        <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"/></label></span>
+                                      </wrms:value></p>
                                     </c:if>
 
                                   </div>
@@ -57,7 +77,7 @@
                         </div>
                         <div class="panel panel-default">
                           <div class="panel-heading" id="headingOne" role="tab">
-                            <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Primary Documents</a></h4>
+                            <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Key Roles</a></h4>
                           </div>
                           <div class="panel-collapse collapse" id="collapseOne" role="tabpanel" aria-labelledby="headingOne">
                             <div class="panel-body">
@@ -67,19 +87,18 @@
                               <div class="elemClass-1561088919456">
                                 <div id="control--runtime--34" class="page section control  container-s-1" style="margin: 10px 0px">
                                   <div class="control-set-font control-font-header section-header">
-                                    <h2 class="summary-header">Uploaded Documents
-                                    </h2>
+                                  <%--  <p class="summary-header">Licensee (Company)</p>--%>
                                   </div>
                                   <div class="pop-up">
                                     <div class="pop-up-body">
+                                      <div class="field col-sm-4 control-label formtext"><label>Licensee (Company)</label></div>
+                                      <div class="field col-sm-4 control-label formtext"><label>Name:</label></div>
                                       <c:forEach var="appGrpPrimaryDocDto" items="${appSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
                                         <div class="content-body fileUploadContainer">
-                                          <div class="field col-sm-4 control-label formtext"><label>Docment1 for Premise1:</label></div>
                                           <div class="control col-sm-5">
                                             <div class="fileList">
                                               <span class="filename server-site col-xs-6 col-md-6" id="130">
-                                               ${appGrpPrimaryDocDto.docName} (${appGrpPrimaryDocDto.docSize} KB)
-                                              </span>
+
                                               <span class="col-xs-6 col-md-6">
                                                 <wrms:value width="7">
                                                 <span class="newVal compareTdStyle" attr="${appGrpPrimaryDocDto.docSize}${appGrpPrimaryDocDto.docName}"  style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName} (${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize} KB)"/></label></span>

@@ -63,9 +63,7 @@ public class LicenceFileDownloadDelegator {
 
         /*  licenceFileDownloadService.requestForInfList(requestForInfList);*/
 
-            for(ApplicationDto applicationDto:list) {
-                applicationDto.setAuditTrailDto(intranet);
-            }
+
             //event bus update the data for new applicaiton
           /*  TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(list,HcsaConsts.ROUTING_STAGE_ASO,RoleConsts.USER_ROLE_ASO,intranet);
             //for reqeust for information
