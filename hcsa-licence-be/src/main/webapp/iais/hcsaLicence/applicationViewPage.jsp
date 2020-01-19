@@ -513,14 +513,6 @@
                                                             </select>
                                                         </td>
                                                     </tr>
-                                                    <tr id="lienceStartDate">
-                                                        <td>
-                                                            <span>Lience Start Date</span>
-                                                        </td>
-                                                        <td>
-                                                            <iais:datePicker id = "lienceStartDate" name = "tuc" value=""></iais:datePicker>
-                                                        </td>
-                                                    </tr>
                                                     <tr id="rollBackDropdown" class="hidden">
                                                         <td>
                                                             <span>Roll Back:</span>
@@ -532,6 +524,14 @@
                                                                     <option value="${rollBack.value}">${rollBack.key}</option>
                                                                 </c:forEach>
                                                             </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr id="lienceStartDate">
+                                                        <td>
+                                                            <span>Lience Start Date</span>
+                                                        </td>
+                                                        <td>
+                                                            <iais:datePicker id = "lienceStartDate" name = "tuc" value=""></iais:datePicker>
                                                         </td>
                                                     </tr>
                                                     <tr id="recomedationDropdown" class="hidden">
@@ -592,7 +592,7 @@
                                                         </td>
                                                         <td>
                                                             <p><c:out
-                                                                    value="${appPremisesRoutingHistoryDto.appStatus}"></c:out></p>
+                                                                    value="${appPremisesRoutingHistoryDto.processDecision}"></c:out></p>
                                                         </td>
                                                         <td>
                                                             <p><c:out
@@ -629,17 +629,52 @@
             $('#processingDecision').addClass('hidden');
             $('#recomedationDropdown').addClass('hidden');
             $('#replytr').removeClass('hidden');
-            $('lienceStartDate').addClass('hidden');
+            $('#lienceStartDate').addClass('hidden');
+        //    $("[name='nextStageReply']").addClass('required');
         }
+      //  $("[name='nextStage']").addClass('required');
     });
 
     $("#submitButton").click(function () {
         var textarea = $("#internalRemarksId").val();
         if (textarea == "") {
             $('#notNull').remove();
-            $("#internalRemarksId").after("<span id='notNull' style='color: red;'>*NOT NULL!</span>")
+            $("#internalRemarksId").after("<span id='notNull' style='color: red;'>*NOT NULL!</span>");
             return false;
         }
+        if('${applicationViewDto.applicationDto.status}' == 'APST000'){
+            var nextStageReply= $("[name='nextStageReply']").val();
+            if(nextStageReply == "---select---"){
+                $('#NSRnotNull').remove();
+                $("[name='nextStageReply']").after("<span id='NSRnotNull' style='color: red;'>*PLEASE SELECT!</span>");
+                return false;
+            }
+        }
+        var selectValue = $("[name='nextStage']").val();
+
+        if(selectValue == "---select---"){
+            $('#NSnotNull').remove();
+            $("[name='nextStage']").after("<span id='NSnotNull' style='color: red;'>*PLEASE SELECT!</span>");
+            return false;
+        }
+        if(selectValue == "VERIFIED"){
+            var verified=$("[name='verified']").val();
+            if(verified == "---select---"){
+                $('#VnotNull').remove();
+                $("[name='verified']").after("<span id='VnotNull' style='color: red;'>*PLEASE SELECT!</span>");
+                return false;
+            }
+        }else if(selectValue == "ROLLBACK"){
+            var rollBack=$("[name='rollBack']").val();
+            if(rollBack == "---select---"){
+                $('#BnotNull').remove();
+                $("[name='rollBack']").after("<span id='BnotNull' style='color: red;'>*PLEASE SELECT!</span>");
+                return false;
+            }
+        }
+
+
+
         document.getElementById("mainForm").submit();
         $("#submitButton").attr("disabled",true);
     });
@@ -649,9 +684,11 @@
         if (selectValue == "VERIFIED") {
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
-            $("[name='rollBack']").removeClass('required');
+      //      $("[name='verified']").addClass('required');
+     //       $("[name='rollBack']").removeClass('required');
         }else if(selectValue == "ROLLBACK"){
-            $("[name='rollBack']").addClass('required');
+     //       $("[name='rollBack']").addClass('required');
+     //       $("[name='verified']").removeClass('required');
             $('#rollBackDropdown').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
         }else{
