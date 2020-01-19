@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
@@ -79,6 +80,10 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+
+
+    @Autowired
+    private ApplicationService applicationService;
 
     @Override
     public List<SelectOption> getAppTypeOption() {
@@ -258,7 +263,8 @@ public class InspectionServiceImpl implements InspectionService {
                         if(inspectorCheckList != null && inspectorCheckList.size() > 0){
                             for(int i = 0; i < inspectorCheckList.size(); i++){
                                 if(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())){
-                                    ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
+                                    ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
+                                    applicationService.updateFEApplicaiton(applicationDto1);
                                     createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), HcsaConsts.ROUTING_STAGE_PRE, td.getWkGrpId());
                                     organizationClient.assignSupTasks(inspectionTaskPoolListDto);
                                 } else {
