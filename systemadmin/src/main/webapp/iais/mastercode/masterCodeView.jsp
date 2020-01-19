@@ -41,4 +41,10 @@
     function jumpToPagechangePage() {
         submit('changePage');
     }
+
+    $('#docNext').click(function () {
+        $("[name='crud_action_type']").val('doUpload');
+        $("#MasterCodeFileForm").submit();
+    });
+
 </script>

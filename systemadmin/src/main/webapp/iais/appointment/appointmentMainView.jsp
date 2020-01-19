@@ -19,14 +19,23 @@
                             </span>
                         </div>
                     </div>
-                    <div class="row" style="padding-bottom: 40px;">
+                    <div class="row">
                         <div class="col-md-4">
                             <span style="font-size: 2rem;font-family: Open Sans, sans-serif;font-weight:600;">Application Date:</span>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-1">
                             <span style="font-size: 1.5rem;font-weight:600;">
-                                2222
+                                From
                             </span>
+                        </div>
+                        <div class="col-md-3">
+                            <iais:datePicker id="esd" name="esd"/>
+                        </div><div class="col-md-1">
+                            <span style="font-size: 1.5rem;font-weight:600;">
+                                To
+                            </span>
+                        </div><div class="col-md-3">
+                            <iais:datePicker id="esd" name="esd"/>
                         </div>
                     </div>
                     <div class="row" style="padding-bottom: 40px;">
@@ -81,6 +90,9 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="text-right col-md-12    ">
+            <button type="button" class="btn btn-primary" onclick="">Confirm Recommendation</button>
         </div>
     </form>
 </div>

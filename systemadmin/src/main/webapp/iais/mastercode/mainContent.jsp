@@ -47,7 +47,7 @@
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Code Category</p>
-                                                <p><a href="#">${masterCodeResult.codeCategory}</a></p>
+                                                <p>${masterCodeResult.codeCategory}</p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Code Value</p>
