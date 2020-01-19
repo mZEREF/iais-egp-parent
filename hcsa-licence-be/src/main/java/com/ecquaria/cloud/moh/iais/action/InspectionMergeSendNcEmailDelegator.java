@@ -189,6 +189,7 @@ public class InspectionMergeSendNcEmailDelegator {
             appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             appInspectionStatusClient.update(appInspectionStatusDto);
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
+            taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,taskDto,HcsaConsts.ROUTING_STAGE_POT,userId);
             completedTask(taskDto);
 
@@ -239,6 +240,7 @@ public class InspectionMergeSendNcEmailDelegator {
             appInspectionStatusDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             appInspectionStatusClient.update(appInspectionStatusDto1);
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
+            taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId);
             completedTask(taskDto);
 

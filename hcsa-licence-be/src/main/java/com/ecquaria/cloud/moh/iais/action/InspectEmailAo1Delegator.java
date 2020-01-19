@@ -223,7 +223,7 @@ public class InspectEmailAo1Delegator {
             appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_REVIEW_CHECKLIST_EMAIL);
             appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             appInspectionStatusClient.update(appInspectionStatusDto);
-            taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
+            taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_AO1);
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId);
             completedTask(taskDto);
 
@@ -260,7 +260,7 @@ public class InspectEmailAo1Delegator {
             appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             appInspectionStatusClient.update(appInspectionStatusDto);
 
-            taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
+            taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_AO1);
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId);
             completedTask(taskDto);
 
