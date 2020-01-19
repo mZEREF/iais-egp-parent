@@ -81,7 +81,6 @@ public class InspectionServiceImpl implements InspectionService {
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
-
     @Autowired
     private ApplicationService applicationService;
 
