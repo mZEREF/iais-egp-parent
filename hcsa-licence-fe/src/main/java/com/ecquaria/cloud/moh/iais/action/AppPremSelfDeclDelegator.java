@@ -71,6 +71,10 @@ public class AppPremSelfDeclDelegator {
 
         log.info("assign to self decl group id ==>>>>> " + groupId);
 
+        if (groupId == null){
+            return;
+        }
+
         List<SelfDecl> selfDeclList = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
         if (selfDeclList == null){
             List<SelfDecl> selfDeclByGroupId = appPremSelfDesc.getSelfDeclByGroupId(groupId);

@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -130,6 +131,10 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     public List<SelfDecl> getSelfDeclByGroupId(String groupId){
         // (S) Group , (M) application
         List<ApplicationDto> appList = applicationClient.listApplicationByGroupId(groupId).getEntity();
+        if (IaisCommonUtils.isEmpty(appList)) {
+            return null;
+        }
+
         List<SelfDecl> selfDeclList = new ArrayList<>();
         List<String> premiseList = new ArrayList<>();
 
