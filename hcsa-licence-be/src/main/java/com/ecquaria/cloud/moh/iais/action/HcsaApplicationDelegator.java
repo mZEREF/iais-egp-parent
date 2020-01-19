@@ -277,6 +277,11 @@ public class HcsaApplicationDelegator {
         }else{
             nextStage="PROCRB";
         }
+
+        String reply=ParamUtil.getString(bpc.request,"nextStageReply");
+        if(!("---select---").equals(reply)){
+            nextStage=reply;
+        }
         log.debug(StringUtil.changeForLog("the nextStage is -->:"+nextStage));
         ParamUtil.setRequestAttr(bpc.request, "crud_action_type", nextStage);
         log.debug(StringUtil.changeForLog("the do chooseStage end ...."));
@@ -545,11 +550,17 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void replay(BaseProcessClass bpc) {
+    public void replay(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do replay start ...."));
         //TODO:replay
-
-
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+        String appCorrId=taskDto.getRefNo();
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto=appPremisesRoutingHistoryService.getSecondRouteBackHistoryByCorrId(appCorrId);
+        String wrkGrpId=appPremisesRoutingHistoryDto.getWrkGrpId();
+        String roleId=appPremisesRoutingHistoryDto.getRoleId();
+        String stageId=appPremisesRoutingHistoryDto.getStageId();
+        String userId=appPremisesRoutingHistoryDto.getActionby();
+        rollBack(bpc,stageId,ApplicationConsts.APPLICATION_STATUS_REPLY,roleId,wrkGrpId,userId);
         log.debug(StringUtil.changeForLog("the do replay end ...."));
     }
 
@@ -777,6 +788,10 @@ public class HcsaApplicationDelegator {
                 taskDto.getRefNo(),wrkGpId, userId,new Date(),0,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,roleId,
                 IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastOrganizationDto.setCreateTask(newTaskDto);
+
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(taskDto.getRefNo(),applicationDto.getStatus(),stageId,
+                taskDto.getWkGrpId(),null,null,roleId);
+        broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
 
         //save the broadcast
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());

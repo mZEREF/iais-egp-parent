@@ -4,10 +4,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * AppPremisesRoutingHistoryServiceImpl
@@ -37,6 +38,11 @@ public class AppPremisesRoutingHistoryServiceImpl implements AppPremisesRoutingH
     @Override
     public AppPremisesRoutingHistoryDto getAppPremisesRoutingHistoryForCurrentStage(String appId, String stageId) {
         return appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppIdAndStageId(appId,stageId).getEntity();
+    }
+
+    @Override
+    public AppPremisesRoutingHistoryDto getSecondRouteBackHistoryByCorrId(String appCorrId) {
+        return appPremisesRoutingHistoryClient.getSecondRouteBackHistoryByCorrId(appCorrId).getEntity();
     }
 
     @Override

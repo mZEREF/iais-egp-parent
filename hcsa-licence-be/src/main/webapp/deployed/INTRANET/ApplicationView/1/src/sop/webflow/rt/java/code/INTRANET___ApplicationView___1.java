@@ -105,7 +105,7 @@ public class INTRANET___ApplicationView___1 extends BaseProcessClass {
 
 	public void verified_OnStepProcess_0() throws Exception {
 	// 		Verified->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "verified", this);
+		EngineHelper.delegate(DELEGATOR, "replay", this);
 	}
 
 	public void reject_OnStepProcess_0() throws Exception {
