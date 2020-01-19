@@ -54,7 +54,7 @@ public class EventBusSampleDelegate {
         orgDto.setEventRefNo(orgDto.getUenNo());
         orgDto.setAuditTrailDto(AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET));
         String submissionId = sampleClient.getSeqId().getEntity();
-        String callbackUrl = "sample-web:8080/eservice/INTERNET/EventBusSample/1/CallbackStep";
+        String callbackUrl = "sample-web:8080/sample-web/eservice/INTERNET/EventBusSample/1/CallbackStep";
         SubmitReq req = EventBusHelper.getSubmitReq(orgDto, submissionId, "sampleTest",
                 "createOrg", "", callbackUrl, "batchjob", true,
                 "INTERNET", "EventBusSample", "start");
@@ -129,7 +129,7 @@ public class EventBusSampleDelegate {
         dto.setNircNo(String.valueOf(System.currentTimeMillis()));
         dto.setName("CCCC");
         dto.setEventRefNo(dto.getNircNo());
-        String callbackUrl = "sample-web:8080/eservice/INTERNET/EventBusSample/1/FinalStep";
+        String callbackUrl = "sample-web:8080/sample-web/eservice/INTERNET/EventBusSample/1/FinalStep";
         SubmitReq req = EventBusHelper.getSubmitReq(dto, submissionId, "sampleTest",
                 "createOrgUser", "", callbackUrl, "batchjob", false,
                 "INTERNET", "EventBusSample", "start");
