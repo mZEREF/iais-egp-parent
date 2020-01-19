@@ -47,7 +47,7 @@
                                                     complete
                                                 </c:otherwise>
                                             </c:choose>" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
-                                                                                data-toggle="tab">CheckList</a></li>
+                                                                                data-toggle="tab">Confirm</a></li>
                         </ul>
                         <div class="tab-nav-mobile visible-xs visible-sm">
                             <div class="swiper-wrapper" role="tablist">
@@ -222,7 +222,7 @@
                                 <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                                     <li class="complete" role="presentation"><a href="#General" aria-controls="General" role="tab" data-toggle="tab">General</a></li>
                                     <li class="complete" role="presentation"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab"
-                                                                                data-toggle="tab">ServiceInfo</a></li>
+                                                                                data-toggle="tab"><c:out value="${serListDto.serviceName}"/></a></li>
                                     <li class="complete" role="presentation"><a href="#chkInfo" aria-controls="ServiceInfo" role="tab"
                                                                                 data-toggle="tab">chkInfo</a></li>
                                 </ul>
@@ -290,7 +290,7 @@
                                         <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.serviceDo}"/>/<c:out value="${serListDto.serviceTotal}"/><br>
                                         <span><strong>Nc:</strong></span>&nbsp;<c:out value="${serListDto.serviceNc}"/>
                                         <c:forEach var ="cdto" items ="${serListDto.fdtoList}" varStatus="status">
-                                            <h3>${cdto.svcName}</h3>
+                                            <h3>${cdto.subType}</h3>
                                             <div class="table-gp">
                                                 <c:forEach var ="section" items ="${cdto.sectionDtoList}">
                                                     <br/>
@@ -464,7 +464,7 @@
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
     function doSubmit(){
-        SOP.Crud.cfxSubmit("mainForm", "next");
+        SOP.Crud.cfxSubmit("mainForm", "submit");
     }
     function doBack(){
         SOP.Crud.cfxSubmit("mainForm", "back");
