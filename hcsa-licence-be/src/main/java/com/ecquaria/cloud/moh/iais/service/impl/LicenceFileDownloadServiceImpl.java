@@ -74,8 +74,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 @Service
 @Slf4j
 public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadService {
-    @Value("${iais.syncFileTracking.shared.path}")
-    private     String sharedPath;
+   /* @Value("${iais.syncFileTracking.shared.path}")*/
+    private     String sharedPath="D:";
     private     String download;
     private     String backups;
     private     String fileFormat=".text";
@@ -285,7 +285,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             try {
                 if(!zipEntry.getName().endsWith(File.separator)){
 
-                    String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
+                    String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf("/"));
                     File file =new File(compressPath+File.separator+fileName+File.separator+substring);
                     if(!file.exists()){
                         file.mkdirs();

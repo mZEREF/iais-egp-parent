@@ -1817,8 +1817,8 @@ public class NewApplicationDelegator {
                      /*   String isOtherLic = appGrpPremisesDtoList.get(i).getIsOtherLic();
                         if(StringUtil.isEmpty(isOtherLic)){
                             errorMap.put("isOtherLic"+i,"UC_CHKLMD001_ERR002");
-                        }*/
-
+                        }
+*/
                         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
                         if(appPremPhOpenPeriodList!=null){
 
