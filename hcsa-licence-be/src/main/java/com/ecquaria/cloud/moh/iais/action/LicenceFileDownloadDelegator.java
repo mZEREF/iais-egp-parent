@@ -59,15 +59,15 @@ public class LicenceFileDownloadDelegator {
         licenceFileDownloadService.delete();
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
 
-             licenceFileDownloadService.compress(list,requestForInfList);
+        licenceFileDownloadService.compress(list, requestForInfList);
 
-           /*  licenceFileDownloadService.requestForInfList(requestForInfList);*/
+        /*  licenceFileDownloadService.requestForInfList(requestForInfList);*/
 
             for(ApplicationDto applicationDto:list) {
                 applicationDto.setAuditTrailDto(intranet);
             }
             //event bus update the data for new applicaiton
-            TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(list,HcsaConsts.ROUTING_STAGE_ASO,RoleConsts.USER_ROLE_ASO,intranet);
+          /*  TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(list,HcsaConsts.ROUTING_STAGE_ASO,RoleConsts.USER_ROLE_ASO,intranet);
             //for reqeust for information
             TaskHistoryDto requestTaskHistoryDto  = getRoutingTaskForRequestForInformation(requestForInfList,intranet);
             //
@@ -105,7 +105,7 @@ public class LicenceFileDownloadDelegator {
                 broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null);
                 broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,null);
 
-            }
+            }*/
 
     }
 /*******************************/
@@ -113,7 +113,7 @@ public class LicenceFileDownloadDelegator {
         log.debug(StringUtil.changeForLog("****The***** " +name +" ******Start ****"));
     }
 
-    private TaskHistoryDto getRoutingTaskForRequestForInformation(List<ApplicationDto> applicationDtos,AuditTrailDto auditTrailDto) throws Exception {
+    public TaskHistoryDto getRoutingTaskForRequestForInformation(List<ApplicationDto> applicationDtos,AuditTrailDto auditTrailDto) throws Exception {
         log.debug(StringUtil.changeForLog("the do getRoutingTaskForRequestForInformation start ...."));
         TaskHistoryDto result = new TaskHistoryDto();
         List<TaskDto> taskDtoList = new ArrayList<>();

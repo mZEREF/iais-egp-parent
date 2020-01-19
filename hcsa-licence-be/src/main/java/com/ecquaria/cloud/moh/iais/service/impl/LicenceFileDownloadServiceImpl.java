@@ -4,14 +4,17 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
@@ -22,16 +25,28 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppliGrpPremisesD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
@@ -74,8 +89,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 @Service
 @Slf4j
 public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadService {
-   /* @Value("${iais.syncFileTracking.shared.path}")*/
-    private     String sharedPath="D:";
+    @Value("${iais.syncFileTracking.shared.path}")
+    private     String sharedPath;
     private     String download;
     private     String backups;
     private     String fileFormat=".text";
@@ -95,7 +110,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private InboxMsgService inboxMsgService;
     @Autowired
     private SystemParamConfig systemParamConfig;
-
+    @Autowired
+    private TaskService taskService;
+    @Autowired
+    private LicenceFileDownloadService licenceFileDownloadService;
+    @Autowired
+    private BroadcastService broadcastService;
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
@@ -103,26 +123,30 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     @Autowired
     private FileRepoClient fileRepoClient;
     @Autowired
+    private ApplicationService applicationService;
+    @Autowired
     private OrganizationClient organizationClient;
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
     @Override
-    public void compress(List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList){
+    public boolean compress(List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList) throws Exception{
         log.info("-------------compress start ---------");
         if(new File(backups).isDirectory()){
             File[] files = new File(backups).listFiles();
             for(File fil:files){
                 if(fil.getName().endsWith(".zip")){
+                    listApplicationDto.clear();
+                    requestForInfList.clear();
                     String name = fil.getName();
                     String path = fil.getPath();
                     String relPath="backups"+File.separator+name;
                     HashMap<String,String> map=new HashMap<>();
                     map.put("fileName",name);
-                    map.put("filePath",path);
+                    map.put("filePath",relPath);
 
                     ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
                     if(processFileTrackDto!=null){
-
+                        String refId = processFileTrackDto.getRefId();
                         CheckedInputStream cos=null;
                         BufferedInputStream bis=null;
                         BufferedOutputStream bos=null;
@@ -130,7 +154,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         try (ZipFile zipFile=new ZipFile(path);)  {
                             for( Enumeration<? extends ZipEntry> entries = zipFile.entries();entries.hasMoreElements();){
                                 ZipEntry zipEntry = entries.nextElement();
-                                zipFile(zipEntry,os,bos,zipFile,bis,cos,name);
+                                zipFile(zipEntry,os,bos,zipFile,bis,cos,name,refId);
                             }
 
                         } catch (IOException e) {
@@ -139,25 +163,25 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                         try {
 
-                            this.download(processFileTrackDto,listApplicationDto, requestForInfList,name);
+                            this.download(processFileTrackDto,listApplicationDto, requestForInfList,name,refId);
                             //save success
                         }catch (Exception e){
                             //save bad
-
+                            log.error(e.getMessage(),e);
                             continue;
                         }
+                        sendTask(listApplicationDto,requestForInfList);
                     }
                  /*   if(fil.exists()&&aBoolean){
                         fil.delete();
                     }*/
-
 
                 }
 
             }
 
         }
-
+        return true;
     }
     //todo  delete file
     @Override
@@ -214,12 +238,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     }
 
-    @Override
-    public Boolean  download( ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,String fileName) {
+    public Boolean  download( ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,String fileName
+    ,String groupPath) {
 
         Boolean flag=false;
 
-            File file =new File(downZip+File.separator+fileName+File.separator+"folder");
+            File file =new File(downZip+File.separator+fileName+File.separator+groupPath+File.separator+"folder"+File.separator+groupPath);
             if(!file.exists()){
                 file.mkdirs();
             }
@@ -248,7 +272,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                                     /*     Boolean aBoolean1 = changeFeApplicationStatus();*/
 
-                                    saveFileRepo( fileName);
+                                    saveFileRepo( fileName,groupPath);
                                 }
                             }
                         }catch (Exception e){
@@ -279,18 +303,19 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
 
 
-        private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos,String fileName)  {
+        private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos,String fileName
+        ,String groupPath)  {
 
 
             try {
                 if(!zipEntry.getName().endsWith(File.separator)){
 
-                    String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf("/"));
-                    File file =new File(compressPath+File.separator+fileName+File.separator+substring);
+                    String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
+                    File file =new File(compressPath+File.separator+fileName+File.separator+groupPath+File.separator+substring);
                     if(!file.exists()){
                         file.mkdirs();
                     }
-                    os=new FileOutputStream(compressPath+File.separator+fileName+File.separator+zipEntry.getName());
+                    os=new FileOutputStream(compressPath+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName());
                     bos=new BufferedOutputStream(os);
                     InputStream is=zipFile.getInputStream(zipEntry);
                     bis=new BufferedInputStream(is);
@@ -305,7 +330,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                 }else {
 
-                    new File(compressPath+File.separator+fileName+File.separator+zipEntry.getName()).mkdirs();
+                    new File(compressPath+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName()).mkdirs();
                 }
             }catch (IOException e){
 
@@ -491,9 +516,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     /*
     *
     * save file to fileRepro*/
-    private void saveFileRepo(String fileNames){
+    private void saveFileRepo(String fileNames,String groupPath){
         boolean aBoolean=false;
-        File file =new File(downZip+File.separator+fileNames+File.separator+"folder"+File.separator+"files");
+        File file =new File(downZip+File.separator+fileNames+File.separator+groupPath+File.separator+"folder"+File.separator+"files");
         if(!file.exists()){
             file.mkdirs();
         }
@@ -582,4 +607,120 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     }
 
+    private TaskHistoryDto getRoutingTaskForRequestForInformation(List<ApplicationDto> applicationDtos,AuditTrailDto auditTrailDto) throws Exception {
+        log.debug(StringUtil.changeForLog("the do getRoutingTaskForRequestForInformation start ...."));
+        TaskHistoryDto result = new TaskHistoryDto();
+        List<TaskDto> taskDtoList = new ArrayList<>();
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = new ArrayList<>();
+        List<ApplicationDto> newApplicationDtos = new ArrayList<>();
+        List<ApplicationDto> rollBackApplicationDtos = new ArrayList<>();
+
+        if(!IaisCommonUtils.isEmpty(applicationDtos)){
+            log.debug(StringUtil.changeForLog("the applicationDtos size is-->"+applicationDtos.size()));
+            List<RequestInformationSubmitDto> requestInformationSubmitDtos =  applicationService.getRequestInformationSubmitDtos(applicationDtos);
+            if(!IaisCommonUtils.isEmpty(requestInformationSubmitDtos)){
+                for(RequestInformationSubmitDto requestInformationSubmitDto : requestInformationSubmitDtos){
+                    ApplicationDto applicationDto = requestInformationSubmitDto.getNewApplicationDto();
+                    String appStatus = applicationDto.getStatus();
+                    ApplicationDto oldApplicationDto = requestInformationSubmitDto.getOldApplicationDto();
+                    AppPremisesRoutingHistoryDto reqeustAppPremisesRoutingHistoryDto = requestInformationSubmitDto.getReqeustAppPremisesRoutingHistoryDto();
+                    List<AppPremisesCorrelationDto> oldAppPremisesCorrelationDtos =   requestInformationSubmitDto.getOldAppPremisesCorrelationDtos();
+                    List<AppPremisesCorrelationDto> newAppPremisesCorrelationDtos =   requestInformationSubmitDto.getNewAppPremisesCorrelationDtos();
+                    if(!IaisCommonUtils.isEmpty(oldAppPremisesCorrelationDtos)){
+                        List<TaskDto> taskDtos =  licenceFileDownloadService.getTasksByRefNo(oldAppPremisesCorrelationDtos.get(0).getId());
+                        if(!IaisCommonUtils.isEmpty(taskDtos)){
+                            TaskDto taskDto = taskDtos.get(0);
+                            TaskDto newTaskDto = TaskUtil.getUserTaskDto(taskDto.getTaskKey(),newAppPremisesCorrelationDtos.get(0).getId(),taskDto.getWkGrpId(),
+                                    taskDto.getUserId(),0,taskDto.getProcessUrl(),taskDto.getRoleId(),auditTrailDto);
+                            taskDtoList.add(newTaskDto);
+                            //create history
+                            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
+                                    createAppPremisesRoutingHistory(newAppPremisesCorrelationDtos.get(0).getId(),appStatus,
+                                            taskDto.getTaskKey(),null,taskDto.getRoleId(),auditTrailDto);
+                            appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
+                            rollBackApplicationDtos.add(applicationDto);
+                            rollBackApplicationDtos.add(oldApplicationDto);
+                            //
+                            ApplicationDto newApplicationDto = (ApplicationDto) CopyUtil.copyMutableObject(applicationDto);
+                            newApplicationDto.setStatus(reqeustAppPremisesRoutingHistoryDto.getAppStatus());
+                            ApplicationDto oldApplicationDto1 = (ApplicationDto)CopyUtil.copyMutableObject(oldApplicationDto);
+                            oldApplicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_DELETED);
+                            newApplicationDtos.add(newApplicationDto);
+                            newApplicationDtos.add(oldApplicationDto1);
+                            //
+                            result.setTaskDtoList(taskDtoList);
+                            result.setAppPremisesRoutingHistoryDtos(appPremisesRoutingHistoryDtos);
+                            result.setApplicationDtos(applicationDtos);
+                            result.setRollBackApplicationDtos(rollBackApplicationDtos);
+                        }
+                    }
+                }
+            }
+        }else{
+            log.debug(StringUtil.changeForLog("There are not reqest information application"));
+        }
+        log.debug(StringUtil.changeForLog("the do getRoutingTaskForRequestForInformation end ...."));
+        return  result;
+    }
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
+                                                                         String stageId, String internalRemarks,String roleId,
+                                                                         AuditTrailDto auditTrailDto){
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
+        appPremisesRoutingHistoryDto.setStageId(stageId);
+        appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
+        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
+        appPremisesRoutingHistoryDto.setActionby(auditTrailDto.getMohUserGuid());
+        appPremisesRoutingHistoryDto.setRoleId(roleId);
+        appPremisesRoutingHistoryDto.setAuditTrailDto(auditTrailDto);
+        return appPremisesRoutingHistoryDto;
+    }
+
+
+
+    private void  sendTask(List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList) throws  Exception{
+        licenceFileDownloadService.delete();
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
+
+        TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(listApplicationDto, HcsaConsts.ROUTING_STAGE_ASO, RoleConsts.USER_ROLE_ASO,intranet);
+        //for reqeust for information
+        TaskHistoryDto requestTaskHistoryDto  = getRoutingTaskForRequestForInformation(requestForInfList,intranet);
+        //
+        if(taskHistoryDto!=null || requestTaskHistoryDto!=null){
+            BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
+            BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
+            broadcastOrganizationDto.setAuditTrailDto(intranet);
+            broadcastApplicationDto.setAuditTrailDto(intranet);
+            String eventRefNo = EventBusHelper.getEventRefNo();
+            broadcastOrganizationDto.setEventRefNo(eventRefNo);
+            broadcastApplicationDto.setEventRefNo(eventRefNo);
+
+            List<TaskDto> onSubmitTaskList = new ArrayList<>();
+            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = new ArrayList<>();
+            if(taskHistoryDto!=null){
+                if(!IaisCommonUtils.isEmpty(taskHistoryDto.getTaskDtoList())){
+                    onSubmitTaskList.addAll(taskHistoryDto.getTaskDtoList());
+                }
+                if(!IaisCommonUtils.isEmpty(taskHistoryDto.getAppPremisesRoutingHistoryDtos())){
+                    appPremisesRoutingHistoryDtos.addAll(taskHistoryDto.getAppPremisesRoutingHistoryDtos());
+                }
+            }
+            if(requestTaskHistoryDto!=null){
+                if(!IaisCommonUtils.isEmpty(requestTaskHistoryDto.getTaskDtoList())){
+                    onSubmitTaskList.addAll(requestTaskHistoryDto.getTaskDtoList());
+                }
+                if(!IaisCommonUtils.isEmpty(requestTaskHistoryDto.getAppPremisesRoutingHistoryDtos())){
+                    appPremisesRoutingHistoryDtos.addAll(requestTaskHistoryDto.getAppPremisesRoutingHistoryDtos());
+                }
+                broadcastApplicationDto.setApplicationDtos(requestTaskHistoryDto.getApplicationDtos());
+                broadcastApplicationDto.setRollBackApplicationDtos(requestTaskHistoryDto.getRollBackApplicationDtos());
+            }
+            broadcastOrganizationDto.setOneSubmitTaskList(onSubmitTaskList);
+            broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
+            broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null);
+            broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,null);
+
+        }
+
+    }
 }

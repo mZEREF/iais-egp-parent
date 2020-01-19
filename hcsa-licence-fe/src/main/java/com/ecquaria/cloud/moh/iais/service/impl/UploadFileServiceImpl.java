@@ -184,7 +184,10 @@ public class UploadFileServiceImpl implements UploadFileService {
             File file = MiscUtil.generateFile(download +File.separator+groupId+ File.separator + "files",
                     every.getFileRepoId() + "@" + every.getDocName());
             try (FileOutputStream outputStream=new FileOutputStream(file)) {
-              outputStream.write(entity);
+                if(entity!=null){
+                    outputStream.write(entity);
+                }
+
             } catch (Exception e) {
                 log.error(e.getMessage(),e);
             }
@@ -195,7 +198,9 @@ public class UploadFileServiceImpl implements UploadFileService {
             File file = MiscUtil.generateFile(download+File.separator+groupId+File.separator+"files",
                     every.getFileRepoId()+"@"+ every.getDocName());
             try (FileOutputStream fileOutputStream=new FileOutputStream(file);) {
-                fileOutputStream.write(entity);
+                if(entity!=null){
+                    fileOutputStream.write(entity);
+                }
             } catch (Exception e) {
                 log.error(e.getMessage(),e);
             }
