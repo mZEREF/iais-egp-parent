@@ -52,6 +52,7 @@ public class InspectionNcCheckListDelegator {
     private static final String COMMONDTO="commonDto";
     private static final String ADHOCLDTO="adchklDto";
     private static final String TASKDTO="taskDto";
+    private static final String APPLICATIONVIEWDTO = "applicationViewDto";
     public InspectionNcCheckListDelegator(InsepctionNcCheckListService insepctionNcCheckListService){
         this.insepctionNcCheckListService = insepctionNcCheckListService;
     }
@@ -62,6 +63,7 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setSessionAttr(request,ADHOCLDTO,null);
         ParamUtil.setSessionAttr(request,COMMONDTO,null);
         ParamUtil.setSessionAttr(request,TASKDTO,null);
+        ParamUtil.setSessionAttr(request,APPLICATIONVIEWDTO,null);
     }
 
     public void init(BaseProcessClass bpc){
@@ -86,6 +88,7 @@ public class InspectionNcCheckListDelegator {
         }else{
             cDtoList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"service");
             serListDto.setFdtoList(cDtoList);
+            fillupChklistService.getSvcName(serListDto);
             serListDto.setBestPractice("");
             serListDto.setTcuRemark("");
             serListDto.setTuc("");
@@ -109,7 +112,7 @@ public class InspectionNcCheckListDelegator {
         serListDto.setInspectionofficer(inspeciotnOfficers);
         serListDto.setInspectionLeader(inspectionleader);
         ParamUtil.setSessionAttr(request,TASKDTO,taskDto);
-        ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);
+        ParamUtil.setSessionAttr(request,APPLICATIONVIEWDTO,appViewDto);
         ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
         ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
@@ -175,7 +178,6 @@ public class InspectionNcCheckListDelegator {
         }
         ParamUtil.setSessionAttr(request,"adchklDto",showPageDto);
         fillupChklistService.routingTask(taskDto,null);
-
     }
 
     public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){

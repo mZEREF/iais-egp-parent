@@ -103,7 +103,6 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         TaskDto taskDto = taskService.getTaskById(taskId);
         String refNo = taskDto.getRefNo();
         ApplicationViewDto viewDto = applicationViewService.getApplicationViewDtoByCorrId(refNo);
-
         return viewDto;
     }
 
@@ -716,6 +715,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 fDto.setSvcCode(dto.getSvcCode());
                 if(dto.getSvcSubType()!=null){
                     fDto.setSubName(dto.getSvcSubType().replace(" ",""));
+                    fDto.setSubType(dto.getSvcSubType());
                 }else{
                     fDto.setSubName(dto.getSvcCode());
                 }
