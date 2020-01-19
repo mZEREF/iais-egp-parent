@@ -626,7 +626,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     }
 
     private void removeOtherTask(List<TaskDto> dtos, String taskId) {
-        if(IaisCommonUtils.isEmpty(dtos)){
+        if(!IaisCommonUtils.isEmpty(dtos)){
             for(TaskDto temp:dtos){
                 if(removeOtherTaskLogic(temp,taskId)){
                     temp.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
@@ -825,6 +825,17 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         serListDto.setAdhocTotal(totalNum);
         serListDto.setAdhocNc(ncNum);
         serListDto.setAdhocDo(doNum);
+    }
+
+    @Override
+    public void getSvcName(InspectionFDtosDto serListDto) {
+        if(!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
+            for(InspectionFillCheckListDto temp:serListDto.getFdtoList()){
+                if(!StringUtil.isEmpty(temp.getSvcName())){
+                    serListDto.setServiceName(temp.getSvcName());
+                }
+            }
+        }
     }
 
     private void getGeneralTotalAndNc(InspectionFillCheckListDto commonDto, InspectionFDtosDto serListDto) {

@@ -55,4 +55,6 @@ public interface FillupChklistService {
     String getInspectionLeader(String appPremCorrId);
 
     void getRateOfCheckList(InspectionFDtosDto serListDto, AdCheckListShowDto adchklDto, InspectionFillCheckListDto commonDto, String appPremCorrId);
+
+    void getSvcName( InspectionFDtosDto serListDto);
 }
