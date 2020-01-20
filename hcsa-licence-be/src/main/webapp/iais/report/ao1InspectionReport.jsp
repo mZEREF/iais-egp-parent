@@ -26,7 +26,7 @@
                             <li class="complete" role="presentation"><a href="#tabInspection" aria-controls="tabInspection" role="tab"
                                                                         data-toggle="tab">Inspection</a></li>
                             <li class="complete" role="presentation"><a href="#tabInspectionReport" aria-controls="tabProcessing" role="tab"
-                                                                        data-toggle="tab">InspectionReport</a></li>
+                                                                        data-toggle="tab">Inspection Report</a></li>
                         </ul>
                         <div class="tab-nav-mobile visible-xs visible-sm">
                             <div class="swiper-wrapper" role="tablist">
@@ -34,7 +34,7 @@
                                 <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a></div>
                                 <div class="swiper-slide"><a href="#tabPayment" aria-controls="tabPayment" role="tab" data-toggle="tab">Payment</a></div>
                                 <div class="swiper-slide"><a href="#tabInspection" aria-controls="tabInspection" role="tab" data-toggle="tab">Inspection</a></div>
-                                <div class="swiper-slide"><a href="#tabInspectionReport" aria-controls="tabInspectionReport" role="tab" data-toggle="tab">InspectionReport</a></div>
+                                <div class="swiper-slide"><a href="#tabInspectionReport" aria-controls="tabInspectionReport" role="tab" data-toggle="tab">Inspection Report</a></div>
                             </div>
                             <div class="swiper-button-prev"></div>
                             <div class="swiper-button-next"></div>

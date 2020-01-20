@@ -67,12 +67,13 @@ public class InsReportAoDelegator {
     @Autowired
     private AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
 
-    private final String RECOMMENDATION_DTO="appPremisesRecommendationDto";
+    private final String RECOMMENDATION_DTO= "appPremisesRecommendationDto";
     private final String RECOMMENDATION="recommendation";
     private final String CHRONO="chrono";
     private final String NUMBER="number";
     private final String OTHERS="Others";
-    private final String ACCEPT="accept";
+    private final String APPROVAL="Approval";
+    private final String REJECT="Reject";
     public void start(BaseProcessClass bpc) {
 
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
@@ -100,15 +101,22 @@ public class InsReportAoDelegator {
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(correlationId);
         InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
+        InspectionReportDto inspectorAo = insRepService.getInspectorAo(applicationViewDto);
+        insRepDto.setInspectors(inspectorAo.getInspectors());
+        insRepDto.setReportNoteBy(inspectorAo.getReportNoteBy());
+        insRepDto.setReportedBy(inspectorAo.getReportedBy());
+
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
         String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
         Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
         String option  = recomInNumber + chronoUnit;
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
-        SelectOption so1 = new SelectOption("accept","accept");
-        SelectOption so2 = new SelectOption("reject","reject");
+        SelectOption so1 = new SelectOption(APPROVAL,APPROVAL);
+        SelectOption so2 = new SelectOption(REJECT,REJECT);
         riskOption.add(so1);
         riskOption.add(so2);
+        List<SelectOption> chronoOption = getChronoOption();
+        ParamUtil.setSessionAttr(bpc.request, "chronoOption", (Serializable) chronoOption);
         ParamUtil.setSessionAttr(bpc.request, "riskOption", (Serializable)riskOption);
         ParamUtil.setSessionAttr(bpc.request, "option", option);
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, appPremisesRecommendationDto);
@@ -142,17 +150,21 @@ public class InsReportAoDelegator {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         TaskDto taskDto =  (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
-        AppPremisesRecommendationDto appPremisesRecommendationDto = prepareRecommendation(bpc, appPremisesCorrelationId);
-        ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, appPremisesRecommendationDto);
-        Map<String,String> errorMap;
-        ValidationResult validationResult = WebValidationHelper.validateProperty(appPremisesRecommendationDto, "save");
+        AppPremisesRecommendationDto preapreRecommendationDto = prepareRecommendation(bpc);
+        ParamUtil.setSessionAttr(bpc.request, "preapreRecommendationDto", preapreRecommendationDto);
+        ValidationResult validationResult = WebValidationHelper.validateProperty(preapreRecommendationDto, "edit");
         if (validationResult.isHasErrors()) {
-            errorMap = validationResult.retrieveAll();
+            Map<String, String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.FALSE);
             return;
         }
-        insRepService.updateRecommendation(appPremisesRecommendationDto);
+        AppPremisesRecommendationDto recommendationDto = prepareRecommendation(bpc, appPremisesCorrelationId);
+        insRepService.updateRecommendation(recommendationDto);
+        if(REJECT.equals(recommendationDto.getRecommendation())){
+            insRepService.routBackTaskToInspector(taskDto,applicationDto,appPremisesCorrelationId);
+            return;
+        }
         insRepService.routingTaskToAo2(taskDto,applicationDto,appPremisesCorrelationId);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
         ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
@@ -173,9 +185,13 @@ public class InsReportAoDelegator {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
             appPremisesRecommendationDto.setChronoUnit(chrono);
             appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
-        }else if(ACCEPT.equals(recommendation)){
-            appPremisesRecommendationDto.setRecommendation(ACCEPT);
-        }else {
+        }else if(APPROVAL.equals(recommendation)){
+            appPremisesRecommendationDto.setRecomDecision(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+            appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+        }else if(REJECT.equals(recommendation)){
+            appPremisesRecommendationDto.setRecomDecision(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+            appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+        } else {
             String[] split_number = recommendation.split("\\D");
             String[] split_unit = recommendation.split("\\d");
             String chronoRe = split_unit[1];
@@ -195,7 +211,18 @@ public class InsReportAoDelegator {
         ParamUtil.setSessionAttr(bpc.request, NUMBER, number);
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         appPremisesRecommendationDto.setRecommendation(recommendation);
-        return null;
+        return appPremisesRecommendationDto;
+    }
+
+    private List<SelectOption> getChronoOption() {
+        List<SelectOption> ChronoResult = new ArrayList<>();
+        SelectOption so1 = new SelectOption("Year", "Year");
+        SelectOption so2 = new SelectOption("Month", "Month");
+        SelectOption so3 = new SelectOption("Week", "Week");
+        ChronoResult.add(so1);
+        ChronoResult.add(so2);
+        ChronoResult.add(so3);
+        return ChronoResult;
     }
 
 }

@@ -96,6 +96,10 @@ public class InsReportDelegator {
         InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");
         if (insRepDto == null) {
             insRepDto = insRepService.getInsRepDto(taskDto, applicationViewDto, loginContext);
+            InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
+            insRepDto.setReportedBy(inspectorUser.getReportedBy());
+            insRepDto.setReportNoteBy(inspectorUser.getReportNoteBy());
+            insRepDto.setInspectors(inspectorUser.getInspectors());
         }
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
         List<SelectOption> chronoOption = getChronoOption();
@@ -151,14 +155,14 @@ public class InsReportDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
-        Map<String, String> stringStringMap = doValidateRe(bpc);
+//        Map<String, String> stringStringMap = doValidateRe(bpc);
         AppPremisesRecommendationDto appPremisesRecommendationDto = prepareRecommendation(bpc);
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, appPremisesRecommendationDto);
         Map<String, String> errorMap = new HashMap<>(34);
         ValidationResult validationResult = WebValidationHelper.validateProperty(appPremisesRecommendationDto, "save");
         if (validationResult.isHasErrors()) {
             errorMap = validationResult.retrieveAll();
-            errorMap.putAll(stringStringMap);
+           // errorMap.putAll(stringStringMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;

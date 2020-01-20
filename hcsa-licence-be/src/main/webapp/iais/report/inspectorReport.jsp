@@ -24,7 +24,7 @@
                     <table class="table">
                         <tr>
                             <td class="col-xs-4">
-                                <p>Licence.No:</p>
+                                <p>LicenceNo:</p>
                             </td>
                             <td class="col-xs-8">
                                 <p>${insRepDto.licenceNo}</p>
@@ -223,7 +223,12 @@
                                 <p>Marked for Audit:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.markedForAudit}</p>
+                                <c:if test="${insRepDto.markedForAudit}">
+                                    <p>YES</p>
+                                </c:if>
+                                <c:if test="${!insRepDto.markedForAudit}">
+                                    <p>No</p>
+                                </c:if>
                             </td>
                         </tr>
                         <tr>

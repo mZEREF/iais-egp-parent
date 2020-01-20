@@ -35,6 +35,7 @@
                         </div>
                         <%@ include file="doSearch.jsp" %>
                         <%@ include file="userList.jsp" %>
+                        <iais:pagination  param="IntranetUserSearchParam" result="IntranetUserSearchResult"/>
                     </div>
                 </div>
             </div>
@@ -70,60 +71,17 @@
     }
 
 
-    function doExport(Id) {
-        $("[name='crud_action_value']").val(Id);
-        // $("[name='crud_action_deactivate']").val('doUnlock');
-        submit('doExport');
+    function doExport(action) {
+        // $("[name='crud_action_value']").val(Id);
+        //$("[name='crud_action_type']").val(action);
+        submit('port');
     }
 
-    // function getPageValue(pageNo){
-    //     SOP.Crud.cfxSubmit("IntranetUserForm","changePage",pageNo);
-    // }
+    function jumpToPagechangePage(){
+        SOP.Crud.cfxSubmit("IntranetUserForm", "page");
+    }
 
-    <%--$(function () {--%>
-    <%--    doPage(${IntranetUserSearchParam.pageNo});--%>
-    <%--});--%>
-
-    <%--function doPage(pageNo){--%>
-    <%--    $(".pagination").empty() ;--%>
-    <%--    parseInt(pageNo);--%>
-    <%--    var tempStr = "";--%>
-    <%--    var pageCount = ${pageCount}--%>
-    <%--    if (pageNo > 1){--%>
-    <%--        tempStr += "<li><a href=\"#\" aria-label=\"Previous\" onclick=\"getPageValue("+(pageNo - 1)+")\"><span aria-hidden=\"true\"><em class=\"fa fa-chevron-left\"></em></span></a></li>";--%>
-    <%--    }else{--%>
-    <%--        tempStr += "<li class=\"active\"><a href=\"#\" aria-label=\"Previous\" onclick=\"getPageValue("+(pageNo - 1)+")\"><span aria-hidden=\"true\"><em class=\"fa fa-chevron-left\"></em></span></a></li>";--%>
-    <%--    }--%>
-    <%--    if(pageCount<3){--%>
-    <%--        for (var i = 1 ;i <= pageCount;i++) {--%>
-    <%--            if(pageNo == i){--%>
-    <%--                tempStr += "<li class=\"active\"><a onclick='getPageValue("+ i +")'>"+i+"</a></li>";--%>
-    <%--            }else{--%>
-    <%--                tempStr += "<li><a onclick='getPageValue("+ i +")'>"+i+"</a></li>";--%>
-    <%--            }--%>
-    <%--        }--%>
-    <%--    }else if(pageNo + 2 <= pageCount){--%>
-    <%--        for (var i = 0 ;i < 3;i++) {--%>
-    <%--            if(pageNo == pageNo + i){--%>
-    <%--                tempStr += "<li class=\"active\"><a onclick='getPageValue("+ (pageNo + i) +")'>"+(pageNo + i)+"</a></li>";--%>
-    <%--            }else{--%>
-    <%--                tempStr += "<li><a onclick='getPageValue("+ (pageNo + i) +")'>"+(pageNo + i)+"</a></li>";--%>
-    <%--            }--%>
-    <%--        }--%>
-    <%--    }else {--%>
-    <%--        for (var i = 2 ;i > -1;i--) {--%>
-    <%--            if (pageNo == pageCount - i) {--%>
-    <%--                tempStr += "<li class=\"active\"><a onclick='getPageValue(" + (pageCount - i) + ")'>" + (pageCount - i) + "</a></li>";--%>
-    <%--            }else{--%>
-    <%--                tempStr += "<li><a onclick='getPageValue(" + (pageCount - i) + ")'>" + (pageCount - i) + "</a></li>";--%>
-    <%--            }--%>
-    <%--        }--%>
-    <%--    }--%>
-    <%--    if(pageNo < pageCount){--%>
-    <%--        tempStr += "<li><a aria-label=\"Next\"><span aria-hidden=\"true\" onclick=\"getPageValue("+(pageNo + 1)+")\"><em class=\"fa fa-chevron-right\"></em></span></a></li>";--%>
-    <%--    }else{--%>
-    <%--        tempStr += "<li class=\"active\"><a aria-label=\"Next\"><span aria-hidden=\"true\" onclick=\"getPageValue("+(pageNo + 1)+")\"><em class=\"fa fa-chevron-right\"></em></span></a></li>";--%>
-    <%--    }--%>
-    <%--    $(".pagination").append(tempStr);--%>
-    <%--}--%>
+    function sortRecords(sortFieldName,sortType){
+        SOP.Crud.cfxSubmit("IntranetUserForm","sort",sortFieldName,sortType);
+    }
 </script>

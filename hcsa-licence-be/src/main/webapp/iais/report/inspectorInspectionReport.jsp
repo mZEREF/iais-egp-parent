@@ -26,7 +26,7 @@
                             <li class="complete" role="presentation"><a href="#tabInspection" aria-controls="tabInspection" role="tab"
                                                                         data-toggle="tab">Inspection</a></li>
                             <li class="complete" role="presentation"><a href="#tabInspectionReport" aria-controls="tabProcessing" role="tab"
-                                                                        data-toggle="tab">InspectionReport</a></li>
+                                                                        data-toggle="tab">Inspection Report</a></li>
                         </ul>
                         <div class="tab-nav-mobile visible-xs visible-sm">
                             <div class="swiper-wrapper" role="tablist">

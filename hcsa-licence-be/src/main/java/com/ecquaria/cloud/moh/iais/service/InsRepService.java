@@ -31,4 +31,7 @@ public interface InsRepService {
     void routingTaskToAo2(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId) throws FeignException;
     void routBackTaskToInspector(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId) throws FeignException;
 
+
+    InspectionReportDto getInspectorUser(TaskDto taskDto,LoginContext loginContext);
+    InspectionReportDto getInspectorAo(ApplicationViewDto applicationViewDto);
 }

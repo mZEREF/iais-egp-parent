@@ -1,5 +1,5 @@
 <div class="main-content">
-    <form class="form-horizontal" method="post" id="MasterCodeForm" action=<%=process.runtime.continueURL()%>>
+    <form class="form-horizontal" method="post" id="IntranetUserForm" action=<%=process.runtime.continueURL()%>>
         <%--        <%@ include file="/include/formHidden.jsp" %>--%>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
@@ -36,13 +36,9 @@
                                 <c:otherwise>
                                     <c:forEach var="user" items="${IntranetUserSearchResult.rows}" varStatus="status">
                                         <tr>
-                                                <%--                                            <td>--%>
-                                                <%--                                                <p class="visible-xs visible-sm table-row-title">No.</p>--%>
-                                                <%--                                                <p>#${(MasterCodeSearchParam.pageNo - 1) * 10 + status.index + 1}</p>--%>
-                                                <%--                                            </td>--%>
                                             <td>
-                                            <td><input type="checkbox" value="<c:out value='${user.userId}'/>"
-                                                       name="userUid" id="userUid<c:out value='${user.userId}'/>"></td>
+                                            <td><input type="checkbox" value="<c:out value='${user.id}'/>"
+                                                       name="userUid" id="userUid<c:out value='${user.id}'/>"></td>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Code Category</p>

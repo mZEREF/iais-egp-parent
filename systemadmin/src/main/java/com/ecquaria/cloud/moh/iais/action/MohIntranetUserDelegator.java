@@ -14,12 +14,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.moh.iais.validation.IntranetUserDtoValidate;
+import com.google.inject.internal.cglib.core.$LocalVariablesSorter;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -32,14 +30,9 @@ import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author weilu
@@ -145,8 +138,6 @@ public class MohIntranetUserDelegator {
         ValidationResult validationResult = WebValidationHelper.validateProperty(orgUserDto,"edit");
         if (!errorMap.isEmpty()||validationResult.isHasErrors()) {
             Map<String, String> validationResultMap = validationResult.retrieveAll();
-//            errorMap = doValidatePo(orgUserDto);
-//            errorMap.putAll(validationResultMap);
             ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.FALSE);
             ParamUtil.setSessionAttr(bpc.request,IntranetUserConstant.INTRANET_USER_DTO_ATTR,orgUserDto);
@@ -183,13 +174,24 @@ public class MohIntranetUserDelegator {
     }
 
     public void doExport(BaseProcessClass bpc){
-        String crud_action_deactivate = ParamUtil.getString(bpc.request, "crud_action_type");
+        String [] ids = ParamUtil.getStrings(bpc.request,"userUid");
 
-//        String [] userIds = ParamUtil.getString(bpc.request, "userUid");
-        String id = ParamUtil.getString(bpc.request, IntranetUserConstant.CRUD_ACTION_VALUE);
-        OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
-        createXML(intranetUserById,bpc);
+//        OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
+//        createXML(intranetUserById,bpc);
         return;
+    }
+
+
+    public void  port (BaseProcessClass bpc){
+        String [] ids = ParamUtil.getStrings(bpc.request,"userUid");
+        List<String> list = new ArrayList<String>();
+        for (int i = 0; i <ids.length ; i++) {
+            String id  = ids[i];
+            OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
+            createXML(intranetUserById,bpc);
+        }
+
+
     }
 
     public void doSearch(BaseProcessClass bpc){
@@ -209,11 +211,14 @@ public class MohIntranetUserDelegator {
 
     public void doSorting(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchResultHelper.doSort(request,filterParameter);
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        CrudHelper.doSorting(searchParam,bpc.request);
     }
 
     public void doPaging (BaseProcessClass bpc){
-        SearchResultHelper.doSort(bpc.request,filterParameter);
+        HttpServletRequest request = bpc.request;
+        SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter);
+        CrudHelper.doPaging(searchParam,bpc.request);
     }
 
 
@@ -500,11 +505,11 @@ public class MohIntranetUserDelegator {
         userId.setText(orgUserDto.getUserId());
         Element displayName = userGroup.addElement("displayName");
         displayName.setText(orgUserDto.getDisplayName());
-        Element startDate = userGroup.addElement("startDate");
-        //startDate.setText(orgUserDto.getAccountActivateDatetime());
-        Element endDate = userGroup.addElement("endDate");
-        endDate.setText(orgUserDto.getUserDomain());
-        Element salutation = userGroup.addElement("salutation");
+//        Element startDate = userGroup.addElement("startDate");
+//        //startDate.setText(orgUserDto.getAccountActivateDatetime());
+//        Element endDate = userGroup.addElement("endDate");
+//        endDate.setText(orgUserDto.getUserDomain());
+//        Element salutation = userGroup.addElement("salutation");
 //        salutation.setText(orgUserDto.getSalutation());
 //        Element firstName = userGroup.addElement("firstName");
 //        firstName.setText(orgUserDto.getFirstName());
@@ -514,10 +519,10 @@ public class MohIntranetUserDelegator {
 //        mobileNo.setText(orgUserDto.getMobileNo());
 //        Element officeNo = userGroup.addElement("officeNo");
 //        officeNo.setText(orgUserDto.getOfficeTelNo());
-        Element email = userGroup.addElement("email");
-        //email.setText(orgUserDto.getEmail());
-        Element organization = userGroup.addElement("organization");
-        //organization.setText(orgUserDto);
+//        Element email = userGroup.addElement("email");
+//        email.setText(orgUserDto.getEmail());
+//        Element organization = userGroup.addElement("organization");
+//        organization.setText(orgUserDto.get);
 //        Element branch = userGroup.addElement("branch");
 //        branch.setText(orgUserDto.getBranchUnit());
 //        Element remarks = userGroup.addElement("remarks");
@@ -525,42 +530,38 @@ public class MohIntranetUserDelegator {
         Element status = userGroup.addElement("status");
         status.setText(orgUserDto.getStatus());
 
-
+        FileOutputStream fileOutputStream = null;
+        XMLWriter writer =  null;
         try {
-            File xmlFile=new File("D:/test.xml");
-            XMLWriter writer = new XMLWriter(new FileOutputStream(xmlFile));
-            //Writer xmlFile = new FileWriter("C:/test.xml");
-            //FileOutputStream fileOutputStream = new FileOutputStream(XmlFile);
-            //writer = new XMLWriter(fileOutputStream,format);
-            //writer = new XMLWriter(xmlFile);
+            File xmlFile=new File("newTest.xml");
+            fileOutputStream = new FileOutputStream(xmlFile);
+            writer = new XMLWriter(fileOutputStream);
             writer.write(document);
-            writer.close();
-            //byte[] content = FileUtils.readFileToByteArray(xmlFile);
-            //fileOutputStream.close();
-            //byte[] content = FileUtils.readFileToByteArray(XmlFile);
-            //FileUtils.setFileResponeContent(bpc.response, xmlFile.getName(), content);
-           // ParamUtil.setSessionAttr(bpc.request,"content",content);
-
-//            FileInputStream fis = new FileInputStream(XmlFile);
-//            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//            byte[] b = new byte[1024];
-//            int n;
-//            while ((n = fis.read(b)) != -1)
-//            {
-//                bos.write(b, 0, n);
-//            }
-//
-//            buffer = bos.toByteArray();
-
-//            response.addHeader("Content-Disposition", "attachment;filename="+XmlFile.getName());
-//            response.addHeader("Content-Length", ""+bytes.length);
-//            OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-//            response.setContentType("application/x-octet-stream");
-//            ops.write(bytes);
-//            ops.close();
-//            ops.flush();
+            //writeFileResponeContent(bpc.response,xmlFile);
+            byte[] fileData = FileUtils.readFileToByteArray(xmlFile);
+            String fileName = "aaa.xml";
+            bpc.request.setAttribute("content",fileData);
+            bpc.request.setAttribute("fileName",fileName);
         }catch (Exception e) {
             log.debug(e.getMessage());
+        }finally {
+            if (writer != null){
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    log.debug(e.getMessage());
+                }
+            }
+
+            if (fileOutputStream != null){
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    log.debug(e.getMessage());
+                }
+            }
+
+
         }
     }
 
@@ -604,4 +605,20 @@ public class MohIntranetUserDelegator {
         }
     }
 
+    public static void writeFileResponeContent(final HttpServletResponse response, final File file) throws IOException {
+        Objects.requireNonNull(response);
+        Objects.requireNonNull(file);
+
+        String fileName = file.getName();
+        byte[] fileData = FileUtils.readFileToByteArray(file);
+        Objects.requireNonNull(fileData);
+
+        response.setHeader("Content-disposition", "inline;filename="+fileName);
+        response.addHeader("Content-Length", "" + fileData.length);
+        response.setContentType("applicatoin/octet-stream");
+        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+        ops.write(fileData);
+        ops.close();
+        ops.flush();
+    }
 }

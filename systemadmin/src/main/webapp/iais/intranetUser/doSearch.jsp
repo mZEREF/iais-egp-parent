@@ -21,6 +21,11 @@
             <a class="btn btn-primary" onclick="doStatus()">Change Status</a>
         </div>
     </div>
+    <div class="col-xs-3 col-md-3">
+        <div class="components">
+            <a class="btn btn-primary" onclick="doExport(port)">Export</a>
+        </div>
+    </div>
     <div id="advfilter" class="collapse">
         <div class="filter-box">
             <h3>Master Code Search</h3>
