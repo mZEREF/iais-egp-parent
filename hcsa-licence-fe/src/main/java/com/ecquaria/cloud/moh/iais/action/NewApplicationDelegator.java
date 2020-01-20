@@ -217,57 +217,58 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
         }
 
-        //todo continue
-        //reload 
+
+        //reload dateTime
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        /*List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         if(!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)){
             for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
-                String wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
-                String wrkTimeTo = appGrpPremisesDto.getWrkTimeTo();
+                String premType = appGrpPremisesDto.getPremisesType();
+                Time wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
+                Time wrkTimeTo = appGrpPremisesDto.getWrkTimeTo();
                 if(!StringUtil.isEmpty(wrkTimeFrom)){
-                    LocalTime localTimeFrom = LocalTime.parse(wrkTimeFrom);
-                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+                    LocalTime localTimeFrom = wrkTimeFrom.toLocalTime();
+                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
                         appGrpPremisesDto.setOnsiteStartHH(String.valueOf(localTimeFrom.getHour()));
                         appGrpPremisesDto.setOnsiteStartMM(String.valueOf(localTimeFrom.getMinute()));
-                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
                         appGrpPremisesDto.setConStartHH(String.valueOf(localTimeFrom.getHour()));
                         appGrpPremisesDto.setConStartMM(String.valueOf(localTimeFrom.getMinute()));
                     }
                 }
                 if(!StringUtil.isEmpty(wrkTimeTo)){
-                    LocalTime localTimeTo = LocalTime.parse(wrkTimeTo);
-                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+                    LocalTime localTimeTo = wrkTimeTo.toLocalTime();
+                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
                         appGrpPremisesDto.setOnsiteEndHH(String.valueOf(localTimeTo.getHour()));
                         appGrpPremisesDto.setOnsiteEndMM(String.valueOf(localTimeTo.getMinute()));
-                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
                         appGrpPremisesDto.setConEndHH(String.valueOf(localTimeTo.getHour()));
                         appGrpPremisesDto.setConEndMM(String.valueOf(localTimeTo.getMinute()));
                     }
                     
                 }
                 
-                List<AppPremPhOpenPeriod> appPremPhOpenPeriods = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+                List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = appGrpPremisesDto.getAppPremPhOpenPeriodList();
                 if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriods)){
-                    for(AppPremPhOpenPeriod appPremPhOpenPeriod:appPremPhOpenPeriods){
-                        String start = appPremPhOpenPeriod.getStartFrom();
-                        String end = appPremPhOpenPeriod.getStartFrom();
+                    for(AppPremPhOpenPeriodDto appPremPhOpenPeriod:appPremPhOpenPeriods){
+                        Time start = appPremPhOpenPeriod.getStartFrom();
+                        Time end = appPremPhOpenPeriod.getEndTo();
                         if(!StringUtil.isEmpty(start)){
-                            LocalTime localTimeStart = LocalTime.parse(start);
-                            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+                            LocalTime localTimeStart = start.toLocalTime();
+                            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
                                 appPremPhOpenPeriod.setOnsiteStartFromHH(String.valueOf(localTimeStart.getHour()));
                                 appPremPhOpenPeriod.setOnsiteStartFromMM(String.valueOf(localTimeStart.getMinute()));
-                            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+                            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
                                 appPremPhOpenPeriod.setConvStartFromHH(String.valueOf(localTimeStart.getHour()));
                                 appPremPhOpenPeriod.setConvStartFromMM(String.valueOf(localTimeStart.getMinute()));
                             }
                         }
                         if(!StringUtil.isEmpty(end)){
-                            LocalTime localTimeEnd = LocalTime.parse(end);
-                            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+                            LocalTime localTimeEnd = end.toLocalTime();
+                            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
                                 appPremPhOpenPeriod.setOnsiteEndToHH(String.valueOf(localTimeEnd.getHour()));
                                 appPremPhOpenPeriod.setOnsiteEndToMM(String.valueOf(localTimeEnd.getMinute()));
-                            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+                            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
                                 appPremPhOpenPeriod.setConvEndToHH(String.valueOf(localTimeEnd.getHour()));
                                 appPremPhOpenPeriod.setConvEndToMM(String.valueOf(localTimeEnd.getMinute()));
                             }
@@ -275,7 +276,8 @@ public class NewApplicationDelegator {
                     }
                 }
             }
-        }*/
+        }
+        ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do preparePremises end ...."));
     }
 
@@ -1793,6 +1795,7 @@ public class NewApplicationDelegator {
                             }
 
                         }
+
                         String onsiteEndHH = appGrpPremisesDtoList.get(i).getOnsiteEndHH();
                         String onsiteEndMM = appGrpPremisesDtoList.get(i).getOnsiteEndMM();
                         if(StringUtil.isEmpty(onsiteEndHH)||StringUtil.isEmpty(onsiteEndMM)){
@@ -1819,6 +1822,18 @@ public class NewApplicationDelegator {
                             errorMap.put("isOtherLic"+i,"UC_CHKLMD001_ERR002");
                         }
 */
+
+                        //set  time
+                        String errorStartMM = errorMap.get("onsiteStartMM"+i);
+                        String errorEndMM = errorMap.get("onsiteEndMM"+i);
+                        if(StringUtil.isEmpty(errorStartMM) && StringUtil.isEmpty(errorEndMM)){
+                            LocalTime startTime = LocalTime.of(Integer.parseInt(onsiteStartHH),Integer.parseInt(onsiteStartMM));
+                            appGrpPremisesDtoList.get(i).setWrkTimeFrom(Time.valueOf(startTime));
+
+                            LocalTime endTime = LocalTime.of(Integer.parseInt(onsiteEndHH),Integer.parseInt(onsiteEndMM));
+                            appGrpPremisesDtoList.get(i).setWrkTimeTo(Time.valueOf(endTime));
+                        }
+
                         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
                         if(appPremPhOpenPeriodList!=null){
 
@@ -1855,8 +1870,21 @@ public class NewApplicationDelegator {
                                 errorMap.put("onsiteEndToMM"+i,"UC_CHKLMD001_ERR003");
                             }
 
+                        }
+                        //set ph time
+                        String errorOnsiteEndToMM = errorMap.get("onsiteEndToMM"+i);
+                        if(StringUtil.isEmpty(errorOnsiteEndToMM)){
+                            for(AppPremPhOpenPeriodDto ph :appPremPhOpenPeriodList){
+                                LocalTime startTime = LocalTime.of(Integer.parseInt(ph.getOnsiteStartFromHH()),Integer.parseInt(ph.getOnsiteStartFromMM()));
+                                ph.setStartFrom(Time.valueOf(startTime));
+
+                                LocalTime endTime = LocalTime.of(Integer.parseInt(ph.getOnsiteEndToHH()),Integer.parseInt(ph.getOnsiteEndToMM()));
+                                ph.setEndTo(Time.valueOf(endTime));
+                            }
 
                         }
+
+
                         }
                         String hciName = appGrpPremisesDtoList.get(i).getHciName();
                         if(StringUtil.isEmpty(hciName)){
@@ -1878,7 +1906,7 @@ public class NewApplicationDelegator {
                         if(StringUtil.isEmpty(streetName)){
                             errorMap.put("streetName"+i,"UC_CHKLMD001_ERR002");
                         }
-                        //do by wenkang
+
                         String addrType = appGrpPremisesDtoList.get(i).getAddrType();
                         if(StringUtil.isEmpty(addrType)){
                             errorMap.put("addrType"+i, "UC_CHKLMD001_ERR002");
@@ -1907,15 +1935,6 @@ public class NewApplicationDelegator {
                             errorMap.put("postalCode"+i, "UC_CHKLMD001_ERR001");
                         }
 
-                        try {
-                            LocalTime wrkTimeFrom = LocalTime.of(Integer.parseInt(appGrpPremisesDtoList.get(i).getOnsiteStartHH()), Integer.parseInt(appGrpPremisesDtoList.get(i).getOnsiteStartMM()));
-                            LocalTime wrkTimeTo = LocalTime.of(Integer.parseInt(appGrpPremisesDtoList.get(i).getOnsiteEndHH()),Integer.parseInt(appGrpPremisesDtoList.get(i).getOnsiteEndMM()) );
-                            appGrpPremisesDtoList.get(i).setWrkTimeFrom(Time.valueOf(wrkTimeFrom));
-                            appGrpPremisesDtoList.get(i).setWrkTimeTo(Time.valueOf(wrkTimeTo));
-
-                        }catch (Exception e){
-                            log.error(StringUtil.changeForLog("number formatter exception..."));
-                        }
 
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
                         String conStartHH = appGrpPremisesDtoList.get(i).getConStartHH();
@@ -1958,6 +1977,18 @@ public class NewApplicationDelegator {
                         if(conEndDate<conStartDate){
                             errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR003");
                         }
+
+                        //set  time
+                        String errorStartMM = errorMap.get("conStartMM"+i);
+                        String errorEndMM = errorMap.get("conEndMM"+i);
+                        if(StringUtil.isEmpty(errorStartMM) && StringUtil.isEmpty(errorEndMM)){
+                            LocalTime startTime = LocalTime.of(Integer.parseInt(conStartHH),Integer.parseInt(conStartMM));
+                            appGrpPremisesDtoList.get(i).setWrkTimeFrom(Time.valueOf(startTime));
+
+                            LocalTime endTime = LocalTime.of(Integer.parseInt(conEndHH),Integer.parseInt(conEndMM));
+                            appGrpPremisesDtoList.get(i).setWrkTimeTo(Time.valueOf(endTime));
+                        }
+
                         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
                       if(appPremPhOpenPeriodList!=null){
 
@@ -1995,6 +2026,19 @@ public class NewApplicationDelegator {
                             }
 
                         }
+
+                          //set ph time
+                          String errorConvEndToHH = errorMap.get("convEndToHH"+i);
+                          if(StringUtil.isEmpty(errorConvEndToHH)){
+                              for(AppPremPhOpenPeriodDto ph :appPremPhOpenPeriodList){
+                                  LocalTime startTime = LocalTime.of(Integer.parseInt(ph.getConvStartFromHH()),Integer.parseInt(ph.getConvStartFromMM()));
+                                  ph.setStartFrom(Time.valueOf(startTime));
+
+                                  LocalTime endTime = LocalTime.of(Integer.parseInt(ph.getConvEndToHH()),Integer.parseInt(ph.getConvEndToMM()));
+                                  ph.setEndTo(Time.valueOf(endTime));
+                              }
+
+                          }
                       }
                         String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
                         if(StringUtil.isEmpty(conveyanceVehicleNo)){
@@ -2324,6 +2368,7 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setScdfRefNo(scdfRefNo[i]);
                 appGrpPremisesDto.setAddrType(siteAddressType[i]);
                 appGrpPremisesDto.setOffTelNo(offTelNo[i]);
+                appGrpPremisesDto.setCertIssuedDtStr(fireSafetyCertIssuedDateStr[i]);
                 Date fireSafetyCertIssuedDateDate = DateUtil.parseDate(fireSafetyCertIssuedDateStr[i], Formatter.DATE);
                 appGrpPremisesDto.setCertIssuedDt(fireSafetyCertIssuedDateDate);
                 appGrpPremisesDto.setIsOtherLic(isOtherLic[i]);

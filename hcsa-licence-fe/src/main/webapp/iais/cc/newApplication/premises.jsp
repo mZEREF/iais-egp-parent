@@ -259,7 +259,7 @@
                           <iais:row>
                             <iais:field value="Fire Safety Certificate Issued Date" width="12"/>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
-                              <iais:datePicker cssClass="fireIssuedDate" name="onSiteFireSafetyCertIssuedDate" value="${appGrpPremisesDto.certIssuedDt}" />
+                              <iais:datePicker cssClass="fireIssuedDate" name="onSiteFireSafetyCertIssuedDate" value="${appGrpPremisesDto.certIssuedDtStr}" />
                             </iais:value>
                           </iais:row>
                           <iais:row>
@@ -837,7 +837,7 @@ var retrieveAddr = function(){
       $('.other-lic').click(function () {
           var val = $(this).val();
           $otherLicEle = $(this).closest('div.other-lic-content');
-          $otherLicEle.find('input[name="isOtherLic"]').val(val);      
+          $otherLicEle.find('input[name="onSiteIsOtherLic"]').val(val);
       });
       
   }
