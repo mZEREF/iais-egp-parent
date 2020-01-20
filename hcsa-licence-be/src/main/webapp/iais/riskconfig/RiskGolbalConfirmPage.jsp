@@ -1,4 +1,6 @@
-<%--
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MiscUtil" %><%--
   Created by IntelliJ IDEA.
   User: JiaHao_Chen
   Date: 2019/11/13
@@ -59,12 +61,12 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <input type="text" maxlength="2" style="width: 60px" id="<c:out value="${go.serviceCode}"/>maxLic" name="<c:out value="${go.serviceCode}"/>last"value="<c:out value="${go.doMaxLic}"></c:out>">
+                                                <input type="text" disabled maxlength="2" style="width: 60px" id="<c:out value="${go.serviceCode}"/>maxLic" name="<c:out value="${go.serviceCode}"/>last"value="<c:out value="${go.doMaxLic}"></c:out>">
                                                 <c:set value = "error_${leg.serviceCode}maxl" var = "maxl"/>
                                                 <span class="error-msg" id="<c:out value="${maxl}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
-                                                <input type="text" maxlength="2" style="width: 60px" id="<c:out value="${go.serviceCode}"/>doLast" name="<c:out value="${go.serviceCode}"/>secLast"value="<c:out value="${go.doLastInspection}"></c:out>">
+                                                <input type="text" disabled maxlength="2" style="width: 60px" id="<c:out value="${go.serviceCode}"/>doLast" name="<c:out value="${go.serviceCode}"/>secLast"value="<c:out value="${go.doLastInspection}"></c:out>">
                                                 <c:set value = "error_${leg.serviceCode}last" var = "last"/>
                                                 <span class="error-msg" id="<c:out value="${last}"/>" name="iaisErrorMsg"></span>
                                             </td>
@@ -90,12 +92,13 @@
                                                 <span class="error-msg" id="<c:out value="${renewit}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
-                                                <iais:select name="${svc}renewPreOrPostOps" options="PreOrPostOp" firstOption="Please select" value="${go.dorenewIsPreInspect}"></iais:select>
+                                                <iais:select name="${svc}renewPreOrPostOps" options="PreOrPostOp" firstOption="Please select"  value="${go.dorenewIsPreInspect}"></iais:select>
                                                 <c:set value = "error_${leg.serviceCode}renewpp" var = "renewpp"/>
                                                 <span class="error-msg" id="<c:out value="${renewpp}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <iais:datePicker id = "${go.serviceCode}instartdate" name = "${go.serviceCode}instartdate" value="${go.doEffectiveDate}"></iais:datePicker>
+
                                                 <c:set value = "error_${leg.serviceCode}inEffDate" var = "inEffDate"/>
                                                 <span class="error-msg" id="<c:out value="${inEffDate}"/>" name="iaisErrorMsg"></span>
                                             </td>

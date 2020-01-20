@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -161,9 +162,14 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
         Double finInp = Double.parseDouble(temp.getDoFinancial());
         Double leaInp = Double.parseDouble(temp.getDoLeadship());
         Double legInp = Double.parseDouble(temp.getDoLegislative());
-        Double total = lastInp+seclastInp+finInp+leaInp+legInp;
-        if(total!=1.0D){
-            //errMap.put(temp.getServiceCode()+"totalw", "The total weight should be 1");
+        BigDecimal lastBig = new BigDecimal(lastInp.toString());
+        BigDecimal seclastInpBig = new BigDecimal(seclastInp.toString());
+        BigDecimal finInpBig = new BigDecimal(finInp.toString());
+        BigDecimal leaInpBig = new BigDecimal(leaInp.toString());
+        BigDecimal legInpBig = new BigDecimal(legInp.toString());
+        BigDecimal result = lastBig.add(seclastInpBig).add(finInpBig).add(leaInpBig).add(legInpBig).add(lastBig);
+        if(result.doubleValue()!=1.0D){
+            errMap.put(temp.getServiceCode()+"totalw", "The total weight should be 1");
         }
     }
 

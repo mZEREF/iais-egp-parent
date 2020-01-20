@@ -239,8 +239,8 @@
 
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="General" role="tabpanel">
-                                        <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.generalDo}"/>/<c:out value="${serListDto.generalTotal}"/><br>
-                                        <span><strong>Nc:</strong></span>&nbsp;<c:out value="${serListDto.generalNc}"/>
+                                        <span><strong>complete/total:</strong></span>&nbsp;<c:out value="${serListDto.generalDo}"/>/<c:out value="${serListDto.generalTotal}"/><br>
+                                        <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.generalNc}"/>
                                         <h3>General</h3>
                                         <div class="table-gp">
                                             <c:forEach var ="section" items ="${commonDto.sectionDtoList}">
@@ -287,8 +287,8 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="ServiceInfo" role="tabpanel">
-                                        <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.serviceDo}"/>/<c:out value="${serListDto.serviceTotal}"/><br>
-                                        <span><strong>Nc:</strong></span>&nbsp;<c:out value="${serListDto.serviceNc}"/>
+                                        <span><strong>Complete&nbsp;/&nbsp;Total:</strong></span>&nbsp;<c:out value="${serListDto.serviceDo}"/>/<c:out value="${serListDto.serviceTotal}"/><br>
+                                        <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.serviceNc}"/>
                                         <c:forEach var ="cdto" items ="${serListDto.fdtoList}" varStatus="status">
                                             <h3>${cdto.subType}</h3>
                                             <div class="table-gp">
@@ -335,8 +335,8 @@
                                                 </c:forEach>
                                             </div>
                                         </c:forEach>
-                                        <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.adhocDo}"/>/<c:out value="${serListDto.adhocTotal}"/><br>
-                                        <span><strong>Nc:</strong></span>&nbsp;<c:out value="${serListDto.adhocNc}"/>
+                                        <span><strong>complete/total:</strong></span>&nbsp;<c:out value="${serListDto.adhocDo}"/>/<c:out value="${serListDto.adhocTotal}"/><br>
+                                        <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.adhocNc}"/>
                                         <div class="table-gp">
                                             <h3>Adhoc</h3>
                                             <br/>
@@ -384,29 +384,29 @@
                                         <div class="col-xs-12">
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
-                                                    <h4>Inspection Date</h4> <c:out value="${serListDto.inspectionDate}"/>
+                                                    <h4><strong>Inspection Date</strong></h4> <c:out value="${serListDto.inspectionDate}"/>
                                                 </div>
                                             </div>
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
-                                                    <h4>Inspection Start Time</h4> <c:out value="${serListDto.inspectionStartDate}"/>
-                                                </div>
-                                            </div>
-
-                                            <div class="input-group">
-                                                <div class="ax_default text_area">
-                                                    <h4>Inspection End Time</h4> <c:out value="${serListDto.inspectionEndDate}"/>
-                                                </div>
-                                            </div>
-                                            <div class="input-group">
-                                                <div class="ax_default text_area">
-                                                    <h4>Inspection Leader</h4> <c:out value="${serListDto.inspectionLeader}"/>
+                                                    <h4><strong>Inspection Start Time</strong></h4> <c:out value="${serListDto.inspectionStartDate}"/>
                                                 </div>
                                             </div>
 
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
-                                                    <h4>Inspection Officers</h4>
+                                                    <h4><strong>Inspection End Time</strong></h4> <c:out value="${serListDto.inspectionEndDate}"/>
+                                                </div>
+                                            </div>
+                                            <div class="input-group">
+                                                <div class="ax_default text_area">
+                                                    <h4><strong>Inspection Leader</strong></h4> <c:out value="${serListDto.inspectionLeader}"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="input-group">
+                                                <div class="ax_default text_area">
+                                                    <h4><strong>Inspection Officers</strong></h4>
                                                     <c:forEach var = "officer" items = "${serListDto.inspectionofficer}" varStatus="status">
                                                         <c:out value="${officer}"/>
                                                     </c:forEach>
@@ -415,7 +415,7 @@
 
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
-                                                    <h4>Other Inspection Officers</h4>
+                                                    <h4><strong>Other Inspection Officers</strong></h4>
                                                     <textarea cols="70" rows="7" name="otherinspector" id="otherinspector"><c:out value="${serListDto.otherinspectionofficer}"></c:out></textarea>
                                                     <span class="error-msg" id="error_otherofficer" name="iaisErrorMsg"></span>
                                                 </div>
@@ -423,20 +423,20 @@
 
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
-                                                    <h4>Best Practice</h4>
+                                                    <h4><strong>Best Practice</strong></h4>
                                                     <textarea cols="70" rows="7" name="bestpractice" id="bestpractice"><c:out value="${serListDto.bestPractice}"></c:out></textarea>
                                                     <span class="error-msg" id="error_bestPractice" name="iaisErrorMsg"></span>
                                                 </div>
                                             </div>
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
-                                                    <h4>TCU Date</h4> &nbsp;<iais:datePicker id = "tuc" name = "tuc" value="${serListDto.tuc}"></iais:datePicker><br>
+                                                    <h4><strong>TCU Date</strong></h4> &nbsp;<iais:datePicker id = "tuc" name = "tuc" value="${serListDto.tuc}"></iais:datePicker><br>
                                                     <span class="error-msg" id="error_tcuDate" name="iaisErrorMsg"></span>
                                                 </div>
                                             </div>
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
-                                                    <h4>Remark</h4> <textarea cols="70" rows="7" name="tcuRemark" id="tcuRemark"><c:out value="${serListDto.tcuRemark}"></c:out></textarea>
+                                                    <h4><strong>Remark</strong></h4> <textarea cols="70" rows="7" name="tcuRemark" id="tcuRemark"><c:out value="${serListDto.tcuRemark}"></c:out></textarea>
                                                     <span class="error-msg" id="error_tcuRemark" name="iaisErrorMsg"></span>
                                                 </div>
                                             </div>

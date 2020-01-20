@@ -44,7 +44,7 @@
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
 
-                        <h2>Risk Configuration</h2>
+                        <h2>LicenceTenure Risk Configuration</h2>
                         <div class="gray-content-box">
                             <div class="table-gp">
                                 <table class="table">

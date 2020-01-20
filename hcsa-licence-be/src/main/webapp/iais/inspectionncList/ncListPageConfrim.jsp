@@ -240,7 +240,7 @@
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="General" role="tabpanel">
                                         <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.generalDo}"/>/<c:out value="${serListDto.generalTotal}"/><br>
-                                        <span><strong>Nc:</strong></span>&nbsp;<c:out value="${serListDto.generalNc}"/>
+                                        <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.generalNc}"/>
                                         <h3>General</h3>
                                         <div class="table-gp">
                                             <c:forEach var ="section" items ="${commonDto.sectionDtoList}">
@@ -288,7 +288,7 @@
                                     </div>
                                     <div class="tab-pane" id="ServiceInfo" role="tabpanel">
                                         <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.serviceDo}"/>/<c:out value="${serListDto.serviceTotal}"/><br>
-                                        <span><strong>Nc:</strong></span>&nbsp;<c:out value="${serListDto.serviceNc}"/>
+                                        <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.serviceNc}"/>
                                         <c:forEach var ="cdto" items ="${serListDto.fdtoList}" varStatus="status">
                                             <h3>${cdto.subType}</h3>
                                             <div class="table-gp">
@@ -336,7 +336,7 @@
                                             </div>
                                         </c:forEach>
                                         <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.adhocDo}"/>/<c:out value="${serListDto.adhocTotal}"/><br>
-                                        <span><strong>Nc:</strong></span>&nbsp;<c:out value="${serListDto.adhocNc}"/>
+                                        <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.adhocNc}"/>
                                         <div class="table-gp">
                                             <h3>Adhoc</h3>
                                             <br/>

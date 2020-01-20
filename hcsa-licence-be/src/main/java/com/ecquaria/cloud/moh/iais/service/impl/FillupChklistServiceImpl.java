@@ -611,7 +611,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         //call api to get workId
         dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(dto).getEntity();
         String workGrp = dto.getGroupId();
-        String subStage = HcsaConsts.ROUTING_STAGE_INP;
+        String subStage = HcsaConsts.ROUTING_STAGE_POT;
         createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.PROCESS_DECI_PENDING_MYSELF_FOR_CHECKLIST_VERIFY, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
         taskDto.setSlaDateCompleted(new Date());
         taskDto.setSlaRemainInDays(taskService.remainDays(taskDto));
@@ -655,8 +655,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         dto.setType(applicationDto.getApplicationType());
         dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(dto).getEntity();
         String workGrp = dto.getGroupId();
-        String subStage = HcsaConsts.ROUTING_STAGE_INP;
-        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.PROCESS_DECI_PENDING_MYSELF_FOR_CHECKLIST_VERIFY, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
+        String subStage = HcsaConsts.ROUTING_STAGE_POT;
+        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
         //create task
         TaskDto updatedtaskDto = taskService.updateTask(taskDto);
         updatedtaskDto.setId(null);
@@ -664,6 +664,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         updatedtaskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
         updatedtaskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         updatedtaskDto.setSlaDateCompleted(null);
+        updatedtaskDto.setRoleId(loginContext.getCurRoleId());
         List<ApplicationDto> applicationDtos = new ArrayList<>();
         applicationDtos.add(applicationDto);
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
@@ -672,6 +673,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             updatedtaskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
         }
         List<TaskDto> createTaskDtoList = new ArrayList<>();
+        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),updateApplicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, null, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
         createTaskDtoList.add(updatedtaskDto);
         taskService.createTasks(createTaskDtoList);
     }

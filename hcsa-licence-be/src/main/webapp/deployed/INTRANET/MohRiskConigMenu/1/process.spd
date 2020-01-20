@@ -42,7 +42,7 @@
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
-  <InvokeStep defClass="" executor="" icon="" name="IndividualRiskScoreConfiguration" processname="MohFinancialRiskSubConfig" project="" version="-1" x="1140" y="110">
+  <InvokeStep defClass="" executor="" icon="" name="IndividualRiskScoreConfiguration" processname="MohIndividualConfig" project="" version="-1" x="1140" y="110">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
