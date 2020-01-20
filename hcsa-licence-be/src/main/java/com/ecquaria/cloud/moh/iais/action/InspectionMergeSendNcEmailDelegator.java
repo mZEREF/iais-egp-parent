@@ -164,7 +164,7 @@ public class InspectionMergeSendNcEmailDelegator {
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,"messageContent"));
         String decision=ParamUtil.getString(request,"decision");
-        if(decision.equals("Please select")){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
+        if(decision.equals("Select")){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
         List<String>appPremCorrIds= (List<String>) ParamUtil.getSessionAttr(request,"appPremCorrIds");
 
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=inspEmailService.getAppPremisesCorrelationsByAppGroupId(applicationViewDto.getApplicationDto().getAppGrpId());

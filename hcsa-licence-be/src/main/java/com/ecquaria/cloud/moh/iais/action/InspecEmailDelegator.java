@@ -217,7 +217,7 @@ public class InspecEmailDelegator {
         String serviceId=applicationViewDto.getApplicationDto().getServiceId();
         TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
         String decision=ParamUtil.getString(request,"decision");
-        if(decision.equals("Please select")){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
+        if(decision.equals("Select")){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
