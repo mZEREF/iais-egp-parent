@@ -159,7 +159,7 @@ public class HcsaChklItemDelegator {
             return errorMap;
         }
 
-        double size = file.getSize() / 0x400 / 0x400;
+        double size = (file.getSize() / 0x400) / (double) 0x400;
 
         if (Math.ceil(size) > 0x10){
             errorMap.put(FILE_UPLOAD_ERROR, "GENERAL_ERR0004");

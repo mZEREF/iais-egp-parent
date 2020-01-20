@@ -63,9 +63,11 @@ public final class ExcelWriter {
         if (IaisCommonUtils.isEmpty(source) || clz == null){
             throw new IaisRuntimeException("Please check the export excel parameters.");
         }
-        XSSFWorkbook wb = new XSSFWorkbook();
+
+        XSSFWorkbook wb = null;
         String retFileName = generationFileName(fileName);
         try (FileOutputStream fileOut =  new FileOutputStream(retFileName) ){
+            wb = new XSSFWorkbook();
             Sheet sheet = wb.createSheet(getSheetName(clz));
             setFieldName(clz, sheet);
             createCellValue(sheet, source, clz);
@@ -82,7 +84,9 @@ public final class ExcelWriter {
             log.debug(e.getMessage());
         }finally {
             try {
-                wb.close();
+                if (wb != null){
+                    wb.close();
+                }
             } catch (IOException e) {
                 log.debug(e.getMessage());
             }
