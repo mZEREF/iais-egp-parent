@@ -228,8 +228,8 @@ public class InspectEmailAo1Delegator {
             appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             appInspectionStatusClient.update(appInspectionStatusDto);
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_AO1);
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
             completedTask(taskDto);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
 
             boolean flag=true;
             List<ApplicationDto> applicationDtos= applicationService.getApplicaitonsByAppGroupId(applicationViewDto.getApplicationDto().getAppGrpId());
@@ -265,10 +265,10 @@ public class InspectEmailAo1Delegator {
             appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY);
             appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             appInspectionStatusClient.update(appInspectionStatusDto);
-
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_AO1);
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
             completedTask(taskDto);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
+
 
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getId(),HcsaConsts.ROUTING_STAGE_INS);
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();

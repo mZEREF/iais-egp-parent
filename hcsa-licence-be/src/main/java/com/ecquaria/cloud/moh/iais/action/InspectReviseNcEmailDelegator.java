@@ -216,8 +216,8 @@ public class InspectReviseNcEmailDelegator {
             appInspectionStatusDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             appInspectionStatusClient.update(appInspectionStatusDto1);
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
             completedTask(taskDto);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
 
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
@@ -244,8 +244,8 @@ public class InspectReviseNcEmailDelegator {
             appInspectionStatusDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             appInspectionStatusClient.update(appInspectionStatusDto1);
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
             completedTask(taskDto);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
 
             boolean flag=true;
             List<ApplicationDto> applicationDtos= applicationService.getApplicaitonsByAppGroupId(applicationViewDto.getApplicationDto().getAppGrpId());

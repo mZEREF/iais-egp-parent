@@ -190,8 +190,8 @@ public class InspectionMergeSendNcEmailDelegator {
             appInspectionStatusClient.update(appInspectionStatusDto);
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,taskDto,HcsaConsts.ROUTING_STAGE_POT,userId);
             completedTask(taskDto);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,taskDto,HcsaConsts.ROUTING_STAGE_POT,userId);
 
             for(int i=0;i<appPremCorrIds.size();i++){
                 if(appPremCorrIds.get(i).equals(appPremisesCorrelationDtos.get(i).getId())){
@@ -243,8 +243,8 @@ public class InspectionMergeSendNcEmailDelegator {
             appInspectionStatusClient.update(appInspectionStatusDto1);
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId);
             completedTask(taskDto);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId);
 
 
             for(int i=0;i<appPremCorrIds.size();i++){
