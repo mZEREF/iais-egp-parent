@@ -642,9 +642,11 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         boolean serviceNcFlag = haveServiceNc(serListDto);
         boolean comNcFlag = haveComNc(comDto);
         boolean adhocNcFlag = haveAdhocDto(showDto);
-        String bestPractice = serListDto.getBestPractice();
-        if(serviceNcFlag||comNcFlag||adhocNcFlag||!StringUtil.isEmpty(bestPractice)){
-            return true;
+        if(serListDto!=null){
+            String bestPractice = serListDto.getBestPractice();
+            if(serviceNcFlag||comNcFlag||adhocNcFlag||!StringUtil.isEmpty(bestPractice)){
+                return true;
+            }
         }
         return false;
     }
