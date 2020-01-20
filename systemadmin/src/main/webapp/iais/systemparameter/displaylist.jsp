@@ -101,7 +101,7 @@
                                                         <td><iais:code code="${resultRow.domainType}"></iais:code></td>
                                                         <td><iais:code code="${resultRow.module}"></iais:code></td>
                                                         <td>${resultRow.description}</td>
-                                                            <td>${resultRow.paramType}</td>
+                                                            <td><iais:code code="${resultRow.paramType}"></iais:code></td>
                                                         <td>${resultRow.units}</td>
                                                         <td><iais:code code="${resultRow.status}"></iais:code></td>
                                                         <td>
