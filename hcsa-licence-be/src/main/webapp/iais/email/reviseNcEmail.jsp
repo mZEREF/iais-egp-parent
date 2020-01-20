@@ -230,7 +230,7 @@
                                         </td>
                                         <td>
                                             <div class="col-sm-9">
-                                                <p><textarea name="remarks" cols="100" rows="6" class="wenbenkuang"  title="content"  >${insEmailDto.remarks}</textarea></p>
+                                                <p><textarea name="remarks" cols="90" rows="6" class="wenbenkuang"  title="content"  >${insEmailDto.remarks}</textarea></p>
                                             </div>
                                         </td>
                                     </tr>
