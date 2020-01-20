@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
@@ -13,6 +14,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
@@ -69,10 +72,11 @@ public class InspectionNcCheckListDelegator {
     public void init(BaseProcessClass bpc){
         Log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
+        AccessUtil.initLoginUserInfo(bpc.request);
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getRequestString(request,"taskId");
         if (StringUtil.isEmpty(taskId)) {
-            taskId = "41095B98-6138-EA11-BE7E-000C29F371DC";
+            taskId = "B3A5C76D-9C3A-EA11-BE7E-000C29F371DC";
         }
         String serviceType = "Inspection";
         TaskDto taskDto = taskService.getTaskById(taskId);
@@ -169,6 +173,7 @@ public class InspectionNcCheckListDelegator {
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
         InspectionFillCheckListDto comDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
         AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
+        boolean flag = insepctionNcCheckListService.isHaveNcOrBestPractice(serListDto,comDto,showDto);
         insepctionNcCheckListService.submit(comDto,showDto,serListDto,taskDto.getRefNo());
         AdCheckListShowDto showPageDto = new AdCheckListShowDto();
         try {
@@ -177,7 +182,8 @@ public class InspectionNcCheckListDelegator {
             e.printStackTrace();
         }
         ParamUtil.setSessionAttr(request,"adchklDto",showPageDto);
-        fillupChklistService.routingTask(taskDto,null);
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        fillupChklistService.routingTask(taskDto,null,loginContext,flag);
     }
 
     public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){

@@ -246,12 +246,14 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     }
 
     private void saveNcItem(List<InspectionFillCheckListDto> fillcheckDtoList, String appPremId) {
-        boolean ncflag = false;
+        int ncflagNum = 0;
         for(InspectionFillCheckListDto temp:fillcheckDtoList){
-            ncflag = isHaveNc(temp);
+            if(isHaveNc(temp)){
+                ncflagNum++;
+            }
         }
         List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = null;
-        if(ncflag){
+        if(ncflagNum>0){
             AppPremPreInspectionNcDto appPremPreInspectionNcDto = getAppPremPreInspectionNcDto(appPremId);
             appPremPreInspectionNcDto = fillUpCheckListGetAppClient.saveAppPreNc(appPremPreInspectionNcDto).getEntity();
             appPremisesPreInspectionNcItemDtoList = getAppPremisesPreInspectionNcItemDto(fillcheckDtoList, appPremPreInspectionNcDto);
@@ -541,10 +543,12 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         List<AdhocNcCheckItemDto> adItemList = adchklDto.getAdItemList();
         if(adItemList!=null && !adItemList.isEmpty()){
             for(AdhocNcCheckItemDto temp:adItemList){
-                ncDto = new NcAnswerDto();
-                ncDto.setClause(temp.getQuestion());
-                ncDto.setRemark(temp.getRemark());
-                ncAnswerDtoList.add(ncDto);
+                if("No".equals(temp.getAdAnswer())){
+                    ncDto = new NcAnswerDto();
+                    ncDto.setClause(temp.getQuestion());
+                    ncDto.setRemark(temp.getRemark());
+                    ncAnswerDtoList.add(ncDto);
+                }
             }
         }
     }
@@ -633,4 +637,49 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         return false;
     }
 
+    @Override
+    public boolean isHaveNcOrBestPractice(InspectionFDtosDto serListDto, InspectionFillCheckListDto comDto, AdCheckListShowDto showDto) {
+        boolean serviceNcFlag = haveServiceNc(serListDto);
+        boolean comNcFlag = haveComNc(comDto);
+        boolean adhocNcFlag = haveAdhocDto(showDto);
+        String bestPractice = serListDto.getBestPractice();
+        if(serviceNcFlag||comNcFlag||adhocNcFlag||!StringUtil.isEmpty(bestPractice)){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean haveAdhocDto(AdCheckListShowDto showDto) {
+        if(showDto!=null){
+            if(!IaisCommonUtils.isEmpty(showDto.getAdItemList())){
+                for(AdhocNcCheckItemDto temp:showDto.getAdItemList()){
+                    if("No".equals(temp.getAdAnswer())){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean haveComNc(InspectionFillCheckListDto comDto) {
+        return isHaveNc(comDto);
+    }
+
+    private boolean haveServiceNc(InspectionFDtosDto serListDto) {
+        int ncflagNum = 0;
+        if(serListDto!=null){
+            if(!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
+                for(InspectionFillCheckListDto temp:serListDto.getFdtoList()){
+                    if(isHaveNc(temp)){
+                        ncflagNum++;
+                    }
+                }
+            }
+        }
+        if(ncflagNum>0){
+            return true;
+        }
+        return false;
+    }
 }

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -40,6 +41,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
@@ -585,10 +587,19 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
 
     @Override
-    public void routingTask(TaskDto taskDto, String preInspecRemarks) {
+    public void routingTask(TaskDto taskDto, String preInspecRemarks, LoginContext loginContext, boolean flag) {
+        if(flag){
+            routingToNcEmail(taskDto,preInspecRemarks,loginContext);
+        }else{
+            routingForToReport(taskDto,preInspecRemarks,loginContext);
+        }
+    }
+
+    public void routingToNcEmail(TaskDto taskDto, String preInspecRemarks,LoginContext loginContext){
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String svcId = applicationDto.getServiceId();
+        String appType = applicationDto.getApplicationType();
         String stgId = taskDto.getTaskKey();
         List<TaskDto> dtos = organizationClient.getTaskByAppNo(taskDto.getRefNo()).getEntity();
         removeOtherTask(dtos,taskDto.getId());
@@ -596,6 +607,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         dto.setStageId(stgId);
         dto.setServiceId(svcId);
         dto.setOrder(1);
+        dto.setType(appType);
         //call api to get workId
         dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(dto).getEntity();
         String workGrp = dto.getGroupId();
@@ -613,7 +625,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         updatedtaskDto.setSlaDateCompleted(null);
         List<ApplicationDto> applicationDtos = new ArrayList<>();
         applicationDtos.add(applicationDto);
-        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,HcsaConsts.ROUTING_STAGE_INS);
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
         hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
         if(hcsaSvcStageWorkingGroupDtos!= null && hcsaSvcStageWorkingGroupDtos.size() > 0) {
             updatedtaskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
@@ -621,7 +633,64 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         List<TaskDto> createTaskDtoList = new ArrayList<>();
         createTaskDtoList.add(updatedtaskDto);
         taskService.createTasks(createTaskDtoList);
-        updateInspectionStatus(applicationDto);
+        updateInspectionStatus(applicationDto,InspectionConstants.INSPECTION_STATUS_PENDING_EMAIL_VERIFY);
+    }
+
+    public void routingForToReport(TaskDto taskDto, String preInspecRemarks,LoginContext loginContext){
+        ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        List<TaskDto> dtos = organizationClient.getTaskByAppNo(taskDto.getRefNo()).getEntity();
+        removeOtherTask(dtos,taskDto.getId());
+        ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT);
+        updateInspectionStatus(applicationDto,InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
+        completedTask(taskDto);
+        //create createAppPremisesRoutingHistory
+        String svcId = applicationDto.getServiceId();
+        String stgId = taskDto.getTaskKey();
+        HcsaSvcStageWorkingGroupDto dto = new HcsaSvcStageWorkingGroupDto();
+        dto.setType(updateApplicationDto.getApplicationType());
+        dto.setStageId(stgId);
+        dto.setServiceId(svcId);
+        dto.setOrder(1);
+        dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(dto).getEntity();
+        String workGrp = dto.getGroupId();
+        String subStage = HcsaConsts.ROUTING_STAGE_INP;
+        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.PROCESS_DECI_PENDING_MYSELF_FOR_CHECKLIST_VERIFY, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
+        //create task
+        TaskDto updatedtaskDto = taskService.updateTask(taskDto);
+        updatedtaskDto.setId(null);
+        updatedtaskDto.setUserId(loginContext.getUserId());
+        updatedtaskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
+        updatedtaskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+        updatedtaskDto.setSlaDateCompleted(null);
+        List<ApplicationDto> applicationDtos = new ArrayList<>();
+        applicationDtos.add(applicationDto);
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
+        hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+        if(hcsaSvcStageWorkingGroupDtos!= null && hcsaSvcStageWorkingGroupDtos.size() > 0) {
+            updatedtaskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
+        }
+        List<TaskDto> createTaskDtoList = new ArrayList<>();
+        createTaskDtoList.add(updatedtaskDto);
+        taskService.createTasks(createTaskDtoList);
+    }
+
+    private TaskDto completedTask(TaskDto taskDto) {
+        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+        taskDto.setSlaDateCompleted(new Date());
+        taskDto.setSlaRemainInDays(taskService.remainDays(taskDto));
+        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        return taskService.updateTask(taskDto);
+    }
+
+    private ApplicationDto updateApplicaitonStatus(ApplicationDto applicationDto, String appStatus) {
+        applicationDto.setStatus(appStatus);
+        applicationService.updateFEApplicaiton(applicationDto);
+        return updateApplicaiton(applicationDto);
+    }
+
+    public ApplicationDto updateApplicaiton(ApplicationDto applicationDto) {
+        return applicationClient.updateApplication(applicationDto).getEntity();
     }
 
     private void removeOtherTask(List<TaskDto> dtos, String taskId) {
@@ -671,11 +740,11 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         return appPremisesRoutingHistoryDto;
     }
 
-    private void updateInspectionStatus(ApplicationDto applicationDto) {
+    private void updateInspectionStatus(ApplicationDto applicationDto,String inspectionStatus) {
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos =  appPremisesCorrClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity();
         AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremisesCorrelationDtos.get(0).getId()).getEntity();
-        appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_EMAIL_VERIFY);
         appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appInspectionStatusDto.setStatus(inspectionStatus);
         appInspectionStatusClient.update(appInspectionStatusDto);
     }
 

@@ -98,7 +98,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         }
         String bestPractice = icDto.getBestPractice();
         if(bestPractice!=null&&bestPractice.length()>500){
-            errMap.put("bestPractice","UC_INSP_ERR0001");
+            errMap.put("bestPractice","UC_INSTA004_ERR004");
         }
         String otherofficer = icDto.getOtherinspectionofficer();
         if (otherofficer!=null&&otherofficer.length()>300) {

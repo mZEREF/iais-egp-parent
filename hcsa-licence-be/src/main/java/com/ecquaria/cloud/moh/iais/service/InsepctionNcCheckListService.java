@@ -26,4 +26,5 @@ public interface InsepctionNcCheckListService {
     void updateTaskStatus(ApplicationDto applicationDto,String appPremCorrId);
     void getCommonDto(InspectionFillCheckListDto commonDto, AppPremisesPreInspectChklDto appPremPreCklDto);
     AdCheckListShowDto getAdhocCheckListDto(String appPremCorrId);
+    boolean isHaveNcOrBestPractice(InspectionFDtosDto serListDto, InspectionFillCheckListDto comDto, AdCheckListShowDto showDto);
 }

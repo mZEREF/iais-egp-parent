@@ -224,7 +224,7 @@
                                     <li class="complete" role="presentation"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab"
                                                                                 data-toggle="tab"><c:out value="${serListDto.serviceName}"/></a></li>
                                     <li class="complete" role="presentation"><a href="#chkInfo" aria-controls="ServiceInfo" role="tab"
-                                                                                data-toggle="tab">Other Info<</a></li>
+                                                                                data-toggle="tab">Other Info</a></li>
                                 </ul>
 
                                 <div class="tab-nav-mobile visible-xs visible-sm">

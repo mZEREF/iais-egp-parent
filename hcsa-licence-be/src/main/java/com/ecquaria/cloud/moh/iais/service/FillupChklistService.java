@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.CheckListDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public interface FillupChklistService {
     CheckListDraftDto getDraftByTaskId(String taskId,String svcType);
     List<AdhocDraftDto> getAdhocDraftByAppPremId(String appPremId);
     AdCheckListShowDto getAdhocDraftByappCorrId(String appremCorrId);
-    void routingTask(TaskDto taskDto, String preInspecRemarks);
+    void routingTask(TaskDto taskDto, String preInspecRemarks, LoginContext loginContext, boolean flag);
     List<InspectionFillCheckListDto> getInspectionFillCheckListDtoList(String taskId,String configType);
 
     List<InspectionFillCheckListDto> getInspectionFillCheckListDtoListForReview(String taskId, String service);
