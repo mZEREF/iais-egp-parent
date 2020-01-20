@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
@@ -96,4 +97,7 @@ public interface OrganizationClient {
 
     @GetMapping(value = "/iais-orguser-be/organization-user-admin-or",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity< List<OrgUserRoleDto>> getSendEmailUser(@RequestParam("organizationId") String organizationId);
+
+    @GetMapping(value = "/iais-licensee-be/licensee-by-id/{id}")
+    FeignResponseEntity<LicenseeDto> getLicenseeDtoById (@PathVariable("id") String id);
 }

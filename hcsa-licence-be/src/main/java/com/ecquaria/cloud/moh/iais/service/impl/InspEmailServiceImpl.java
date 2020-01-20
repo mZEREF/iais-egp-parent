@@ -19,7 +19,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsEmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrgLicenseeClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,7 +51,7 @@ public class InspEmailServiceImpl implements InspEmailService {
     @Autowired
     InsRepClient insRepClient;
     @Autowired
-    OrgLicenseeClient licenseeClient;
+    OrganizationClient licenseeClient;
 
     @Override
     public String insertEmailTemplate(InspectionEmailTemplateDto inspectionEmailTemplateDto) {

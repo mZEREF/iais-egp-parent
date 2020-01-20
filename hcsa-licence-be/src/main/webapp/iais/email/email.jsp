@@ -83,4 +83,42 @@
         <button type="button" class="search btn" onclick="javascript:doPreview();">Preview</button>
     </iais:action>
 </p>
+<br>
+<div class="alert alert-info" role="alert">
+    <p><span><strong>Processing History</strong></span></p>
+</div>
+<table class="table">
+    <thead>
+    <tr align="center">
+        <iais:sortableHeader needSort="false" field="USERNAME" value="Username"></iais:sortableHeader>
+        <iais:sortableHeader needSort="false"  field="WORKING GROUP" value="Working Group"></iais:sortableHeader>
+        <iais:sortableHeader needSort="false"  field="APP_STATUS" value="Status Update"></iais:sortableHeader>
+        <iais:sortableHeader needSort="false"  field="REMARKS" value="remarks"></iais:sortableHeader>
+        <iais:sortableHeader needSort="false" field="UPDATED_DT" value="Last Updated"></iais:sortableHeader>
+    </tr>
+    </thead>
+    <tbody>
+    <c:choose>
+        <c:when test="${empty appPremisesRoutingHistoryDtos}">
+            <tr>
+                <td colspan="7">
+                    <iais:message key="ACK018" escape="true"></iais:message>
+                </td>
+            </tr>
+        </c:when>
+        <c:otherwise>
+            <c:forEach var="pool" items="${appPremisesRoutingHistoryDtos}" varStatus="status">
+                <tr>
+                    <td><c:out value="${pool.actionby}"/></td>
+                    <td><c:out value="${pool.wrkGrpId}"/></td>
+                    <td><c:out value="${pool.appStatus}"/></td>
+                    <td><c:out value="${pool.internalRemarks}"/></td>
+                    <td><c:out value="${pool.updatedDt}" /></td>
+                </tr>
+            </c:forEach>
+        </c:otherwise>
+    </c:choose>
+
+    </tbody>
+</table>
 
