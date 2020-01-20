@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -207,6 +208,7 @@ public class BackendAjaxController {
                 tDto.setWkGrpId(taskDto.getWkGrpId());
                 tDto.setTaskKey(taskDto.getTaskKey());
                 inspecTaskCreAndAssDto.setTaskDto(tDto);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY);
                 inspecTaskCreAndAssDto.setProcessUrls(processUrls);
                 List<TaskDto> taskDtos = organizationMainClient.getInsKpiTask(inspecTaskCreAndAssDto).getEntity();
                 if(!IaisCommonUtils.isEmpty(taskDtos)){
@@ -237,6 +239,13 @@ public class BackendAjaxController {
                 tDto.setWkGrpId(taskDto.getWkGrpId());
                 tDto.setTaskKey(taskDto.getTaskKey());
                 inspecTaskCreAndAssDto.setTaskDto(tDto);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_NCEMAIL);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECK_FILLUP);
                 inspecTaskCreAndAssDto.setProcessUrls(processUrls);
                 List<TaskDto> taskDtos = organizationMainClient.getInsKpiTask(inspecTaskCreAndAssDto).getEntity();
                 if(!IaisCommonUtils.isEmpty(taskDtos)){
