@@ -1873,13 +1873,16 @@ public class NewApplicationDelegator {
                         }
                         //set ph time
                         String errorOnsiteEndToMM = errorMap.get("onsiteEndToMM"+i);
-                        if(StringUtil.isEmpty(errorOnsiteEndToMM)){
+                        if(StringUtil.isEmpty(errorOnsiteEndToMM) && !IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
                             for(AppPremPhOpenPeriodDto ph :appPremPhOpenPeriodList){
-                                LocalTime startTime = LocalTime.of(Integer.parseInt(ph.getOnsiteStartFromHH()),Integer.parseInt(ph.getOnsiteStartFromMM()));
-                                ph.setStartFrom(Time.valueOf(startTime));
-
-                                LocalTime endTime = LocalTime.of(Integer.parseInt(ph.getOnsiteEndToHH()),Integer.parseInt(ph.getOnsiteEndToMM()));
-                                ph.setEndTo(Time.valueOf(endTime));
+                                if(!StringUtil.isEmpty(ph.getOnsiteStartFromHH()) && !StringUtil.isEmpty(ph.getOnsiteStartFromMM())){
+                                    LocalTime startTime = LocalTime.of(Integer.parseInt(ph.getOnsiteStartFromHH()),Integer.parseInt(ph.getOnsiteStartFromMM()));
+                                    ph.setStartFrom(Time.valueOf(startTime));
+                                }
+                                if(!StringUtil.isEmpty(ph.getOnsiteEndToHH()) && !StringUtil.isEmpty(ph.getOnsiteEndToMM())){
+                                    LocalTime endTime = LocalTime.of(Integer.parseInt(ph.getOnsiteEndToHH()),Integer.parseInt(ph.getOnsiteEndToMM()));
+                                    ph.setEndTo(Time.valueOf(endTime));
+                                }
                             }
 
                         }
@@ -2029,13 +2032,18 @@ public class NewApplicationDelegator {
 
                           //set ph time
                           String errorConvEndToHH = errorMap.get("convEndToHH"+i);
-                          if(StringUtil.isEmpty(errorConvEndToHH)){
+                          if(StringUtil.isEmpty(errorConvEndToHH) && !IaisCommonUtils.isEmpty(appPremPhOpenPeriodList) ){
                               for(AppPremPhOpenPeriodDto ph :appPremPhOpenPeriodList){
-                                  LocalTime startTime = LocalTime.of(Integer.parseInt(ph.getConvStartFromHH()),Integer.parseInt(ph.getConvStartFromMM()));
-                                  ph.setStartFrom(Time.valueOf(startTime));
+                                  if(!StringUtil.isEmpty(ph.getOnsiteEndToHH()) && !StringUtil.isEmpty(ph.getOnsiteEndToMM())){
+                                      LocalTime startTime = LocalTime.of(Integer.parseInt(ph.getConvStartFromHH()),Integer.parseInt(ph.getConvStartFromMM()));
+                                      ph.setStartFrom(Time.valueOf(startTime));
+                                  }
 
-                                  LocalTime endTime = LocalTime.of(Integer.parseInt(ph.getConvEndToHH()),Integer.parseInt(ph.getConvEndToMM()));
-                                  ph.setEndTo(Time.valueOf(endTime));
+                                  if(!StringUtil.isEmpty(ph.getConvEndToHH()) && !StringUtil.isEmpty(ph.getConvEndToMM())){
+                                      LocalTime endTime = LocalTime.of(Integer.parseInt(ph.getConvEndToHH()),Integer.parseInt(ph.getConvEndToMM()));
+                                      ph.setEndTo(Time.valueOf(endTime));
+                                  }
+
                               }
 
                           }
@@ -2082,16 +2090,6 @@ public class NewApplicationDelegator {
                                 }
                             }
                         }
-                        try {
-                            LocalTime wrkTimeFrom = LocalTime.of(Integer.parseInt(appGrpPremisesDtoList.get(i).getConStartHH()), Integer.parseInt(appGrpPremisesDtoList.get(i).getConStartMM()));
-                            LocalTime wrkTimeTo = LocalTime.of(Integer.parseInt(appGrpPremisesDtoList.get(i).getConEndHH()),Integer.parseInt(appGrpPremisesDtoList.get(i).getConEndMM()) );
-                            appGrpPremisesDtoList.get(i).setWrkTimeFrom(Time.valueOf(wrkTimeFrom));
-                            appGrpPremisesDtoList.get(i).setWrkTimeTo(Time.valueOf(wrkTimeTo));
-
-                        }catch (Exception e){
-                            log.error(StringUtil.changeForLog("number formatter exception..."));
-                        }
-
                     }
                 } else {
                     //premiseSelect = organization hci code
