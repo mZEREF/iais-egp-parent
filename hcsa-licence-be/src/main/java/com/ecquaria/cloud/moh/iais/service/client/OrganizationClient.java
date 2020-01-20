@@ -88,7 +88,7 @@ public interface OrganizationClient {
     @GetMapping(value = "/iais-task/history-tasks/{appNo}",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getTaskByAppNo(@PathVariable(name = "appNo") String appNo);
 
-    @GetMapping(value = "/iais-workgroup/workGrop/{id}")
+    @GetMapping(value = "/iais-workgroup/workGrop/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<WorkingGroupDto> getWrkGrpById(@PathVariable(name = "id") String workGroupId);
 
     @GetMapping(value = "/organization/organization-id",produces = MediaType.APPLICATION_JSON_VALUE)

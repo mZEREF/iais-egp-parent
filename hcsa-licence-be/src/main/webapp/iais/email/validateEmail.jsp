@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/tinymce/tinymce.min.js"></script>
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/initTinyMce.js"></script>
@@ -253,15 +254,11 @@
                                     </tbody>
                                 </table>
                                 <p class="text-right text-center-mobile">
-                                    <iais:action>
+                                    <iais:action style="text-align:center;">
                                         <button type="button" class="search btn" onclick="javascript:doSend();">Submit</button>
-                                    </iais:action>
-                                    <iais:action>
                                         <button type="button" class="search btn" onclick="javascript:doPreview();">Preview</button>
-                                    </iais:action>
-                                    <iais:action>
                                         <button type="button" class="search btn" onclick="javascript:doReload();">Reload</button>
-                                    </iais:action>
+                                    </iais:action >
                                 </p>
                                 <div class="alert alert-info" role="alert">
                                     <p><span><strong>Processing History</strong></span></p>

@@ -199,8 +199,8 @@ public class InspectionMergeSendNcEmailDelegator {
             for(int i=0;i<appPremCorrIds.size();i++){
                 if(appPremCorrIds.get(i).equals(appPremisesCorrelationDtos.get(i).getId())){
                     ApplicationViewDto applicationViewDto1=applicationViewService.searchByCorrelationIdo(appPremCorrIds.get(i));
-                    AppPremisesRoutingHistoryDto appPremisesRoutingHisDto= new AppPremisesRoutingHistoryDto();
                     List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppId(applicationViewDto1.getApplicationDto().getId());
+                    AppPremisesRoutingHistoryDto appPremisesRoutingHisDto= appPremisesRoutingHistoryDtos.get(0);
                     String upDt=appPremisesRoutingHistoryDtos.get(0).getUpdatedDt();
                     for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1:appPremisesRoutingHistoryDtos){
                         if(appPremisesRoutingHistoryDto1.getUpdatedDt().compareTo(upDt)<0){
@@ -251,9 +251,9 @@ public class InspectionMergeSendNcEmailDelegator {
 
 
             for(int i=0;i<appPremCorrIds.size();i++){
-                AppPremisesRoutingHistoryDto appPremisesRoutingHisDto= new AppPremisesRoutingHistoryDto();
                 ApplicationViewDto applicationViewDto1=applicationViewService.searchByCorrelationIdo(appPremCorrIds.get(i));
                 List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppId(applicationViewDto1.getApplicationDto().getId());
+                AppPremisesRoutingHistoryDto appPremisesRoutingHisDto= appPremisesRoutingHistoryDtos.get(0);
                 String upDt=appPremisesRoutingHistoryDtos.get(0).getUpdatedDt();
                 for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:appPremisesRoutingHistoryDtos){
                     if(appPremisesRoutingHistoryDto.getUpdatedDt().compareTo(upDt)<0){

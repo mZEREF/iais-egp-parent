@@ -1,6 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/tinymce/tinymce.min.js"></script>
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/initTinyMce.js"></script>
@@ -36,7 +37,6 @@
                             <div class="swiper-wrapper" role="tablist">
                                 <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></div>
                                 <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a></div>
-                                <div class="swiper-slide"><a href="#tabCheckList" aria-controls="tabCheckList" role="tab" data-toggle="tab">CheckList</a></div>
                                 <div class="swiper-slide"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a></div>
                             </div>
                             <div class="swiper-button-prev"></div>
@@ -200,252 +200,6 @@
                                 </div>
 
                             </div>
-                            <div class="tab-pane" id="tabCheckList" role="tabpanel">
-                                <div class="alert alert-info" role="alert">
-                                    <strong>
-                                        <h4>Processing Status Update</h4>
-                                    </strong>
-                                </div>
-                                <form method="post" action=<%=process.runtime.continueURL()%>>
-                                    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div class="table-gp">
-                                                <table class="table">
-                                                    <tr>
-                                                        <td class="col-xs-4"><p>Current Status:</p></td>
-                                                        <td class="col-xs-8"><p>${applicationViewDto.currentStatus}</p></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><span>Internal Remarks(</span><span
-                                                                style="color: red">*</span><span>):</span></td>
-                                                        <td>
-                                                            <div class="input-group">
-                                                                <div class="ax_default text_area">
-                                                                    <textarea id="internalRemarksId"
-                                                                              name="internalRemarks" cols="70"
-                                                                              rows="7"></textarea>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <span>Processing Decision(</span><span
-                                                                style="color: red">*</span><span>):</span></span>
-                                                        </td>
-                                                        <td>
-                                                            <select name="nextStage" class="table-select">
-                                                                <option>---select---</option>
-                                                                <option value="VERIFIED">Verified</option>
-                                                                <option value="ROLLBACK">Roll back</option>
-                                                            </select>
-                                                        </td>
-                                                    </tr>
-                                                    <tr id="verifiedDropdown" class="hidden">
-                                                        <td>
-                                                            <span>Verified</span>
-                                                        </td>
-                                                        <td>
-                                                            <select name="verified" class="table-select">
-                                                                <option>---select---</option>
-                                                                <c:forEach items="${applicationViewDto.verified}" var="verified">
-                                                                    <option value="${verified.key}">${verified.value}</option>
-                                                                </c:forEach>
-                                                            </select>
-                                                        </td>
-                                                    </tr>
-                                                    <tr id="lienceStartDate" class="hidden">
-                                                        <td>
-                                                            <span>Lience Start Date</span>
-                                                        </td>
-                                                        <td>
-                                                            <iais:datePicker id = "lienceStartDate" name = "tuc" value=""></iais:datePicker>
-                                                        </td>
-                                                    </tr>
-                                                    <tr id="rollBack" class="hidden">
-                                                        <td>
-                                                            <span>Roll Back:</span>
-                                                        </td>
-                                                        <td>
-                                                            <select name="rollBack" class="table-select">
-                                                                <option>Please select</option>
-                                                                <c:forEach items="${applicationViewDto.rollBack}" var="rollBack">
-                                                                    <option value="${rollBack.value}">${rollBack.key}</option>
-                                                                </c:forEach>
-                                                            </select>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                                <div align="center">
-                                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                                </div>
-                                                <div>&nbsp;</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                                <div class="alert alert-info" role="alert">
-                                    <strong>
-                                        <h4>Processing History</h4>
-                                    </strong>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <div class="table-gp">
-                                            <table class="table">
-                                                <thead>
-                                                <tr>
-                                                    <th>Username</th>
-                                                    <th>Working Group</th>
-                                                    <th>Status Update</th>
-                                                    <th>Remarks</th>
-                                                    <th>Last Updated</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <p>Tan Ah Ming (S1234567D)</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Internet User</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Submission</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Mr Tan</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Internet User</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Pending Admin Screen</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p></p>
-                                                    </td>
-                                                    <td>
-                                                        <p></p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Verified</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Ms Lim</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Internet User</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Pending Professional Screening</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p></p>
-                                                    </td>
-                                                    <td>
-                                                        <p></p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Verified</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Mrs Sim</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Internet User</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Pending Inspection</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p></p>
-                                                    </td>
-                                                    <td>
-                                                        <p></p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Inspection Conducted</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Recommend for Approval</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Mr Ong</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Internet User</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Pending Approval Officer 1</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="tab-pane active" id="tabProcessing" role="tabpanel">
                                 <table class="table">
                                     <tbody>
@@ -510,10 +264,8 @@
                                 </table>
                                 <p class="text-right text-center-mobile">
 
-                                    <iais:action>
+                                    <iais:action style="text-align:center;">
                                         <button type="button" class="search btn" onclick="javascript:doSend();">Submit</button>
-                                    </iais:action>
-                                    <iais:action>
                                         <button type="button" class="search btn" onclick="javascript:doPreview();">Preview</button>
                                     </iais:action>
                                 </p>
