@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -154,10 +156,23 @@ public class BackendAjaxController {
         appPremisesRoutingHistoryDto.setRoleId(taskDto.getRoleId());
         appPremisesRoutingHistoryDto.setAppPremCorreId(taskDto.getRefNo());
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = inspectionTaskMainClient.getHistoryForKpi(appPremisesRoutingHistoryDto).getEntity();
+        List<TaskDto> taskDtoList = new ArrayList<>();
         if(subStage.equals(HcsaConsts.ROUTING_STAGE_INP)){
 
         } else {
-            List<TaskDto> taskDtoList = organizationMainClient.getInsKpiTask(taskDto).getEntity();
+            for(AppPremisesRoutingHistoryDto aprhDto : appPremisesRoutingHistoryDtos) {
+                TaskDto tDto = new TaskDto();
+                tDto.setRefNo(taskDto.getRefNo());
+                tDto.setRoleId(aprhDto.getRoleId());
+                tDto.setWkGrpId(taskDto.getWkGrpId());
+                tDto.setTaskKey(taskDto.getTaskKey());
+                List<TaskDto> taskDtos = organizationMainClient.getInsKpiTask(tDto).getEntity();
+                if(!IaisCommonUtils.isEmpty(taskDtos)){
+                    for(TaskDto taskDtoSingle : taskDtos){
+                        taskDtoList.add(taskDtoSingle);
+                    }
+                }
+            }
             workAndNonMap = getActualWorkingDays(taskDtoList);
         }
         return workAndNonMap;
