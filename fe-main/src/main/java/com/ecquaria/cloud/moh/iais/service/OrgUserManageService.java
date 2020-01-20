@@ -16,4 +16,5 @@ public interface OrgUserManageService {
     FeAdminDto addAdminAccount(FeAdminDto feAdminDto);
     FeUserDto getUserAccount(String userId);
     FeUserDto editUserAccount(FeUserDto feUserDto);
+    String ChangeActiveStatus(String userId, String targetStatus);
 }

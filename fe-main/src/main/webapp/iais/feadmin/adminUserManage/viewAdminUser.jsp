@@ -57,7 +57,7 @@
                             </thead>
                             <tbody>
                             <c:choose>
-                                <c:when test="">
+                                <c:when test="${empty feAdmin.rows}">
                                     <tr>
                                         <td colspan="12">
                                             No Record!!
@@ -91,14 +91,29 @@
                                             <td>
                                                 <p><c:out value="${item.roleId}"/></p>
                                             </td>
-                                            <td>
-                                                <p>Active</p>
+                                            <td id="active${item.id}">
+                                                <c:choose>
+                                                <c:when test="${item.status eq '1'}">
+                                                    <p><a onclick="doActive('${item.id}','inActive')">Active</a></p>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <p>Active</p>
+                                                </c:otherwise>
+                                                </c:choose>
+
                                             </td>
                                             <td>
                                                 <p><a onclick="edit('${item.id}')">Edit</a></p>
                                             </td>
-                                            <td>
-                                                <p>De-activate</p>
+                                            <td  id="inactive${item.id}">
+                                                <c:choose>
+                                                    <c:when test="${item.status eq '0'}">
+                                                        <p><a onclick="doActive('${item.id}','Active')">De-activate</a></p>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <p>De-active</p>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -106,19 +121,6 @@
                             </c:choose>
                             </tbody>
                         </table>
-                        <div class="table-footnote">
-                            <div class="row">
-                                <div class="col-xs-6 col-md-4">
-                                    <p class="count">10 out of 1</p>
-                                </div>
-                                <div class="col-xs-6 col-md-8 text-right">
-                                    <div class="nav">
-                                        <ul class="pagination">
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <iais:action>
                             <button type="button" class="search btn" onclick="javascript:create();">Create</button>
                         </iais:action>
@@ -137,4 +139,35 @@
         console.log(id);
         SOP.Crud.cfxSubmit("mainForm", "edit" , id);
     }
+    function doActive(id,targetStatus){
+        $.post(
+            '/main-web/feAdmin/active.do',
+            {
+                userId: id,
+                targetStatus:targetStatus
+            },
+            function (data, status) {
+                var res = data.result;
+                var status = data.active;
+                if(res == "Success"){
+                    if(status == "true"){
+                        console.log("true")
+                        // $("#active" + id).empty();
+                        $("#active" + id).html("<p><a onclick=\"doActive('"+id+"','inActive')\">Active</a></p>");
+                        // $("#inactive" + id).empty();
+                        $("#inactive" + id).html("<p>De-active</p>");
+                    }else{
+                        console.log("false")
+                        // $("#active" + id).empty();
+                        $("#active" + id).html("<p>Active</p>");
+                        // $("#inactive" + id).empty();
+                        $("#inactive" + id).html("<p><a onclick=\"doActive('"+id+"','Active')\">De-activate</a></p>");
+                    }
+
+                }
+            }
+        )
+    }
+
+
 </script>

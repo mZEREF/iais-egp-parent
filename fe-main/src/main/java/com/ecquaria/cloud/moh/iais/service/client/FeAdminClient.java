@@ -28,4 +28,7 @@ public interface FeAdminClient {
     @RequestMapping(path = "/hcsa-User-fe/add-admin-account",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FeAdminDto> addAdminAccount(@RequestBody FeAdminDto feAdminDto);
 
+    @GetMapping(value = "/hcsa-User-fe/change-active-status",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> ChangeActiveStatus(@RequestParam("userId") String id,@RequestParam("targetStatus") String targetStatus);
+
 }

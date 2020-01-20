@@ -55,6 +55,10 @@ public class FeUserManageDelegate {
         searchParam.addFilter("roleid", RoleConsts.USER_ROLE_ORG_USER,true);
         QueryHelp.setMainSql("interInboxQuery", "feUserList",searchParam);
         SearchResult<FeUserQueryDto> feUserDtoSearchResult = orgUserManageService.getFeUserList(searchParam);
+        for (FeUserQueryDto item:feUserDtoSearchResult.getRows()
+             ) {
+            item.setSalutation(MasterCodeUtil.getCodeDesc(item.getSalutation()));
+        }
         CrudHelper.doPaging(searchParam,bpc.request);
         ParamUtil.setRequestAttr(bpc.request, "feuser",feUserDtoSearchResult);
         ParamUtil.setRequestAttr(bpc.request, "feUserSearchParam",searchParam);

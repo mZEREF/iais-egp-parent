@@ -51,4 +51,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     public FeUserDto editUserAccount(FeUserDto feUserDto){
         return feUserClient.editUserAccount(feUserDto).getEntity();
     }
+
+    @Override
+    public String ChangeActiveStatus(String userId, String targetStatus){
+        return feAdminClient.ChangeActiveStatus(userId,targetStatus).getEntity();
+    }
 }

@@ -42,7 +42,7 @@ public class FeAdminManageDelegate {
     @Autowired
     private OrgUserManageServiceImpl orgUserManageService;
     public static String organizationId = "D8FF6F4E-5C30-EA11-BE78-000C29D29DB0";
-
+    private static final String ACTIVE ="CMSTAT001";
     /**
      * StartStep: doStart
      *
@@ -68,6 +68,21 @@ public class FeAdminManageDelegate {
         searchParam.addFilter("roleid", RoleConsts.USER_ROLE_ORG_ADMIN,true);
         QueryHelp.setMainSql("interInboxQuery", "feAdminList",searchParam);
         SearchResult<FeAdminQueryDto> feAdminQueryDtoSearchResult = orgUserManageService.getFeAdminList(searchParam);
+        for (FeAdminQueryDto item:feAdminQueryDtoSearchResult.getRows()
+             ) {
+            item.setSalutation(MasterCodeUtil.getCodeDesc(item.getSalutation()));
+            if(RoleConsts.USER_ROLE_ORG_ADMIN.equals(item.getRoleId())){
+                item.setRoleId(AppConsts.TRUE);
+            }else{
+                item.setRoleId(AppConsts.FALSE);
+            }
+            if(ACTIVE.equals(item.getStatus())){
+                item.setStatus("1");
+            }else{
+                item.setStatus("0");
+            }
+
+        }
         CrudHelper.doPaging(searchParam,bpc.request);
         ParamUtil.setRequestAttr(bpc.request, "feAdmin",feAdminQueryDtoSearchResult);
         ParamUtil.setRequestAttr(bpc.request, "feAdminSearchParam",searchParam);
