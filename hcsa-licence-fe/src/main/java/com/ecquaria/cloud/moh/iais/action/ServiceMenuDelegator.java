@@ -4,8 +4,10 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -23,40 +26,57 @@ import java.util.List;
 @Slf4j
 @Delegator("serviceMenuDelegator")
 public class ServiceMenuDelegator {
-    private static final String BASESERVICE = "SVTP001";
-    private static final String SPECIFIEDSERVICE = "SVTP003";
+    private static final String BASE_SERVICE = "SVTP001";
+    private static final String SPECIFIED_SERVICE = "SVTP003";
+
+
+    private static final String BASE_SERVICE_CHECK_BOX_ATTR = "basechk";
+    private static final String SPECIFIED_SERVICE_CHECK_BOX_ATTR = "baseService";
+    private static final String BASE_SERVICE_ATTR = "baseService";
+    private static final String BASE_SERVICE_DTO_ATTR = "baseServiceDto";
+    private static final String SPECIFIED_SERVICE_ATTR = "specifiedService";
+    private static final String ERROR_ATTR = "err";
+    private static final String VALIDATION_ATTR = "validationValue";
+
+
+
     @Autowired
     private ServiceConfigService serviceConfigService;
+    public void beforeJump(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the  before jump start 1...."));
+
+    }
+
     public void serviceMenuSelection(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do Start start 1...."));
 
         List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getServicesInActive();
-        List<HcsaServiceDto> baseService = new ArrayList<>();
-        List<HcsaServiceDto> specifiedService = new ArrayList<>();
-        for (HcsaServiceDto item: hcsaServiceDtoList
-             ) {
-            if(BASESERVICE.equals(item.getSvcType())){
-                baseService.add(item);
-            }
-            if(SPECIFIEDSERVICE.equals(item.getSvcType())){
-                specifiedService.add(item);
-            }
+        if (IaisCommonUtils.isEmpty(hcsaServiceDtoList)){
+            log.debug("can not find hcsa service list in service menu delegator!");
+            return;
         }
-        ParamUtil.setRequestAttr(bpc.request, "baseService", baseService);
-        ParamUtil.setSessionAttr(bpc.request, "baseServiceDto", (Serializable) baseService);
-        ParamUtil.setRequestAttr(bpc.request, "specifiedService", specifiedService);
+
+        List<HcsaServiceDto> baseService = hcsaServiceDtoList.stream()
+                .filter(hcsaServiceDto -> BASE_SERVICE.equals(hcsaServiceDto.getSvcType())).collect(Collectors.toList());
+
+        List<HcsaServiceDto> specifiedService = hcsaServiceDtoList.stream()
+                .filter(hcsaServiceDto -> SPECIFIED_SERVICE.equals(hcsaServiceDto.getSvcType())).collect(Collectors.toList());
+
+        ParamUtil.setRequestAttr(bpc.request, BASE_SERVICE_ATTR, baseService);
+        ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_DTO_ATTR, (Serializable) baseService);
+        ParamUtil.setRequestAttr(bpc.request, SPECIFIED_SERVICE_ATTR, specifiedService);
 
     }
 
     public void validation(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do validation start ...."));
-        String[] basechks = ParamUtil.getStrings(bpc.request, "basechk");
-        String[] sepcifiedchk = ParamUtil.getStrings(bpc.request, "sepcifiedchk");
-        List<HcsaServiceDto> baseService = (List<HcsaServiceDto> )ParamUtil.getSessionAttr(bpc.request,"baseServiceDto");
+        String[] basechks = ParamUtil.getStrings(bpc.request, BASE_SERVICE_CHECK_BOX_ATTR);
+        String[] sepcifiedchk = ParamUtil.getStrings(bpc.request, SPECIFIED_SERVICE_CHECK_BOX_ATTR);
+        List<HcsaServiceDto> baseService = (List<HcsaServiceDto> )ParamUtil.getSessionAttr(bpc.request,BASE_SERVICE_DTO_ATTR);
         if(basechks == null){
             String noneerr = "please select base service.";
-            ParamUtil.setRequestAttr(bpc.request, "err", noneerr);
-            ParamUtil.setRequestAttr(bpc.request, "validationValue", AppConsts.FALSE);
+            ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, noneerr);
+            ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, AppConsts.FALSE);
         }else{
             List<String> baselist = new ArrayList<>();
             List<String> sepcifiedlist = new ArrayList<>();
@@ -94,17 +114,17 @@ public class ServiceMenuDelegator {
                     }
                     err = err.substring(0,err.length() - 1);
                     err = err + " should be selected.";
-                    ParamUtil.setRequestAttr(bpc.request, "err", err);
-                    ParamUtil.setRequestAttr(bpc.request, "validationValue", AppConsts.FALSE);
+                    ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                    ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, AppConsts.FALSE);
                 }else{
-                    ParamUtil.setSessionAttr(bpc.request, "baseService", (Serializable) baselist);
-                    ParamUtil.setSessionAttr(bpc.request, "specifiedService", (Serializable) sepcifiedlist);
-                    ParamUtil.setRequestAttr(bpc.request, "validationValue", AppConsts.TRUE);
+                    ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR, (Serializable) baselist);
+                    ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, (Serializable) sepcifiedlist);
+                    ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, AppConsts.TRUE);
                 }
             }else{
-                ParamUtil.setSessionAttr(bpc.request, "baseService", (Serializable) baselist);
-                ParamUtil.setSessionAttr(bpc.request, "specifiedService", (Serializable) sepcifiedlist);
-                ParamUtil.setRequestAttr(bpc.request, "validationValue", AppConsts.TRUE);
+                ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR, (Serializable) baselist);
+                ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, (Serializable) sepcifiedlist);
+                ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, AppConsts.TRUE);
             }
         }
     }

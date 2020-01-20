@@ -938,4 +938,21 @@
     </attribute>
   </tag>
 
+  <tag>
+    <description>Haca serivce info</description>
+    <name>service</name>
+    <tag-class>com.ecquaria.cloud.moh.iais.tags.HcsaServiceTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <name>value</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>isMask</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+
 </taglib>

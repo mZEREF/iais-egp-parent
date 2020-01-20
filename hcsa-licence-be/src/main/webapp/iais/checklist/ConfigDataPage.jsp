@@ -109,7 +109,12 @@
             <tr>
               <td class="row_no">${(status.index + 1) + (checklistConfigSearch.pageNo - 1) * checklistConfigSearch.pageSize}</td>
               <td></td>
-              <td>${config.common}</td>
+              <c:if test="${config.common == false}">
+                <td>No</td>
+              </c:if>
+              <c:if test="${config.common  == true }">
+                <td>Yes</td>
+              </c:if>
               <td>${config.type}</td>
               <td>${config.module}</td>
               <td>${config.svcName}</td>
@@ -117,11 +122,33 @@
               <td>${config.hciCode}</td>
               <td><fmt:formatDate value="${config.eftStartDate}" pattern="MM/dd/yyyy"/></td>
               <td><fmt:formatDate value="${config.eftEndDate}" pattern = "MM/dd/yyyy"/></td>
+
+              <div class="modal fade" id="DeleteTemplateModal" tabindex="-1" role="dialog" aria-labelledby="DeleteTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
+                    </div>
+                    <div class="modal-body">
+                      <div class="row">
+                        <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the disable ?</span></div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary" onclick="javascript:deleteRecord('${config.id}')" >Confirm</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
               <td>
-                <iais:link icon="form_edit" title="Edit" onclick="javascript:loadEditData('${config.id}');"/>
-                <iais:link icon="form_edit" title="Clone" onclick="javascript:cloneConfig('${config.id}');"/>
-                <iais:link icon="form_delete" title="Disable" onclick="javascript:ivActiveRecord('${config.id}');"/>
-                <iais:link icon="form_view" title="View" onclick="javascript:doView('${config.id}');"/>
+                <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="javascript:loadEditData('${config.id}')" >Edit</button>
+                <button type="button" onclick="javascript:cloneConfig('${config.id}')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >Clone</button>
+                <button type="button" onclick="javascript:doView('${config.id}')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >View</button>
+                <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" data-target="#DeleteTemplateModal" >Disable</button>
               </td>
             </tr>
             </c:forEach>
@@ -130,6 +157,7 @@
           </table>
 
         </div>
+
 
         <div class="application-tab-footer">
               <td>
@@ -147,7 +175,12 @@
     </div>
   </div>
 
+
+
 </form>
+
+
+
 
 
 <%@include file="/include/validation.jsp"%>
@@ -158,7 +191,7 @@
     SOP.Crud.cfxSubmit("mainForm", "doSearch");
   }
 
-  function ivActiveRecord(id){
+  function deleteRecord(id){
       console.log("=========id==>>>>>>>", id);
     SOP.Crud.cfxSubmit("mainForm", "deleteRecord", id);
   }

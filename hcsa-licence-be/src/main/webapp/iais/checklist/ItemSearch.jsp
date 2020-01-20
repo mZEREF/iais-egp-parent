@@ -130,10 +130,35 @@
                                 <button type="button" class="btn btn-default btn-sm"
                                         onclick="javascript:prepareEditItem('${item.itemId}');">Edit
                                 </button>
-                                <button type="button" class="btn btn-default btn-sm"
-                                        onclick="javascript:disable('${item.itemId}');">Delete
-                                </button>
+                                  <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" data-target="#DeleteTemplateModal" >Disable</button>
+
+                                  <div class="modal fade" id="DeleteTemplateModal" tabindex="-1" role="dialog" aria-labelledby="DeleteTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                                    <div class="modal-dialog" role="document">
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                          <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                          <div class="row">
+                                            <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the disable ?</span></div>
+                                          </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                          <button type="button" class="btn btn-primary" onclick="javascript:disable('${item.itemId}');" >Confirm</button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+
+
+
                                 </c:if>
+
+
+
+
                                 <c:if test="${item.status == 'CMSTAT003'}">
                                   <button type="button" class="btn btn-default btn-sm"
                                           onclick="javascript:prepareEditItem('${item.itemId}');">Edit

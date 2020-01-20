@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohServiceFeMenu" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="3" minorVersion="0" name="MohServiceFeMenu" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="70" y="100">
@@ -9,7 +9,7 @@
     <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <InvokeStep defClass="" executor="" icon="" name="JumptoNewApp" processname="MohNewApplication" project="INTERNET" version="-1" x="660" y="110">
+  <InvokeStep defClass="" executor="" icon="" name="JumptoNewApp" processname="MohNewApplication" project="INTERNET" version="-1" x="1040" y="240">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
@@ -29,9 +29,22 @@
     <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="beforeJump" x="920" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="beforeJump_OnStepProcess_0" name="beforeJump_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ServiceSelection" stageIndicator="" x="290" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="appBeforeStart" stageIndicator="" x="670" y="100">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -43,32 +56,55 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
    <position>{(90,120)(210,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/InvokeStep/JumptoNewApp" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(570,120)(680,130)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(570,120)(416,399)(210,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/validation" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ServiceSelection" style="rectanular">
    <position>{(310,120)(420,120)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/validation" style="rectanular">
-   <position>{(420,120)(570,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ServiceSelection" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareData" style="rectanular">
    <position>{(210,120)(310,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/appBeforeStart" style="rectanular">
+   <position>{(690,120)(840,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(840,120)(820,0)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(820,0)(225,1)(210,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/condition1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/validation" style="rectanular">
+   <position>{(420,120)(540,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/appBeforeStart" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/condition1" style="rectanular">
+   <position>{(540,120)(690,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/condition1" style="rectanular">
+   <position>{(540,120)(323,475)(225,479)(210,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beforeJump" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(840,120)(940,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/JumptoNewApp" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beforeJump" style="oblique">
+   <position>{(940,120)(1060,260)}</position>
+  </SynchronousLink>
  </Links>
- <Conditions/>
- <Switches>
-  <Switch defClass="" defaultComponent="/Steps/InvokeStep/JumptoNewApp" executor="" icon="" leftOperand="validationValue" name="Switch1" x="550" y="100">
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/prepareData" componentIfTrue="/Pages/WebPage/appBeforeStart" defClass="" executor="" icon="" leftOperand="validationValue" name="condition1" operator="=" rightOperand="&quot;true&quot;" x="520" y="100">
    <Description/>
-   <SwitchCase component="/Steps/InvokeStep/JumptoNewApp" value="&quot;true&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/prepareData" value="&quot;false&quot;"/>
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="switch_action_type" name="Switch2" x="820" y="100">
+   <Description/>
+   <SwitchCase component="/Merges/Merge/Merge1" value="&quot;doBack&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/beforeJump" value="&quot;startApplication&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
- <Merges/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="800" y="-20">
+   <Description/>
+  </Merge>
+ </Merges>
  <StudioLabels/>
  <StageIndicator/>
  <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
