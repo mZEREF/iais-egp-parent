@@ -850,22 +850,18 @@ public class LicenceApproveBatchjob {
         if(!StringUtil.isEmpty(originLicenceId)){
             licenceDto1  = licenceService.getLicenceDto(originLicenceId);
         }
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())){
-            if(licenceDto1!=null){
-                licenceDto.setStartDate(licenceDto1.getStartDate());
-                licenceDto.setExpiryDate(licenceDto1.getExpiryDate());
-                licenceDto.setGrpLic(licenceDto1.isGrpLic());
-                licenceDto.setOrganizationId(licenceDto1.getOrganizationId());
-                licenceDto.setOriginLicenceId(originLicenceId);
-                licenceDto.setMigrated(licenceDto1.isMigrated());
-                licenceDto.setLicenceNo(licenceDto1.getLicenceNo());
-                licenceDto.setVersion(licenceDto1.getVersion()+1);
-                licenceDto.setFeeRetroNeeded(licenceDto1.isFeeRetroNeeded());
-                licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
-                licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
-            }else {
-                log.error(StringUtil.changeForLog("This applicaiton to do RFC but do not have the originLicenceId -->: "+applicationDto.getId()));
-            }
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())&&licenceDto1!=null){
+            licenceDto.setStartDate(licenceDto1.getStartDate());
+            licenceDto.setExpiryDate(licenceDto1.getExpiryDate());
+            licenceDto.setGrpLic(licenceDto1.isGrpLic());
+            licenceDto.setOrganizationId(licenceDto1.getOrganizationId());
+            licenceDto.setOriginLicenceId(originLicenceId);
+            licenceDto.setMigrated(licenceDto1.isMigrated());
+            licenceDto.setLicenceNo(licenceDto1.getLicenceNo());
+            licenceDto.setVersion(licenceDto1.getVersion()+1);
+            licenceDto.setFeeRetroNeeded(licenceDto1.isFeeRetroNeeded());
+            licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
+            licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
         }else {
             //todo:The latest choose from Giro pay Date, Approved Date,Aso set Date,
             Date startDate = applicationGroupDto.getModifiedAt();
