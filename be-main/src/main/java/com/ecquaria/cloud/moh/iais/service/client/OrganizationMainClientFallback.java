@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
@@ -90,7 +91,7 @@ public class OrganizationMainClientFallback {
         return entity;
     }
 
-    public FeignResponseEntity<List<TaskDto>> getInsKpiTask(TaskDto taskDto){
+    public FeignResponseEntity<List<TaskDto>> getInsKpiTask(InspecTaskCreAndAssDto inspecTaskCreAndAssDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

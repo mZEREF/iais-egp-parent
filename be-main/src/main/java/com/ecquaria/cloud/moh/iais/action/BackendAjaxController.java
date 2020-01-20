@@ -10,6 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppPremInsDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -100,7 +102,7 @@ public class BackendAjaxController {
                 //todo Kpi Colour
                 /*TaskDto taskDto = taskMap.get(item.getRefNo());
                 String timeLimitWarningColour = getTimeLimitWarningColourByTask(item, hcsaServiceDto, taskDto);*/
-                item.setTimeLimitWarning("black");
+                item.setTimeLimitWarning(HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK);
             }
             map.put("serviceName", serviceNameMap);
             map.put("appNoUrl", appNoUrl);
@@ -115,38 +117,72 @@ public class BackendAjaxController {
     }
 
     private String getTimeLimitWarningColourByTask(InspectionAppInGroupQueryDto inspectionAppInGroupQueryDto, HcsaServiceDto hcsaServiceDto, TaskDto taskDto) {
-        String colour = "black";
-        if(taskDto.getTaskKey().equals(HcsaConsts.ROUTING_STAGE_INS)) {
-            String subStage = getSubStageByInspectionStatus(inspectionAppInGroupQueryDto);
-            ApplicationViewDto applicationViewDto = belicationClient.getAppViewByCorrelationId(inspectionAppInGroupQueryDto.getRefNo()).getEntity();
-            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-            HcsaSvcKpiDto hcsaSvcKpiDto = hcsaConfigClient.searchKpiResult(hcsaServiceDto.getSvcCode(), applicationDto.getApplicationType()).getEntity();
-            if(hcsaSvcKpiDto != null){
+        String colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
+        ApplicationViewDto applicationViewDto = belicationClient.getAppViewByCorrelationId(inspectionAppInGroupQueryDto.getRefNo()).getEntity();
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        HcsaSvcKpiDto hcsaSvcKpiDto = hcsaConfigClient.searchKpiResult(hcsaServiceDto.getSvcCode(), applicationDto.getApplicationType()).getEntity();
+        int days = 0;
+        if(hcsaSvcKpiDto != null){
+            if(taskDto.getTaskKey().equals(HcsaConsts.ROUTING_STAGE_INS)) {
+                String subStage = getSubStageByInspectionStatus(inspectionAppInGroupQueryDto);
                 Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
                 if(kpiMap != null) {
                     int kpi = kpiMap.get(taskDto.getTaskKey());
-                    Map<Integer, Integer> workAndNonMap = getWorkingDaysBySubStage(subStage, inspectionAppInGroupQueryDto, taskDto);
-                    int days = 0;
-                    for(Map.Entry<Integer, Integer> map:workAndNonMap.entrySet()){
-                        days = map.getKey();
+                    Map<Integer, Integer> workAndNonMap = getWorkingDaysBySubStage(subStage, taskDto);
+                    if(workAndNonMap != null){
+                        for(Map.Entry<Integer, Integer> map:workAndNonMap.entrySet()){
+                            days = map.getKey();
+                        }
                     }
                     if (days < hcsaSvcKpiDto.getRemThreshold()) {
-                        colour = "black";
+                        colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
                     } else if (hcsaSvcKpiDto.getRemThreshold() <= days && days <= kpi) {
-                        colour = "amber";
+                        colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_AMBER;
                     } else if (days > kpi) {
-                        colour = "red";
+                        colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_RED;
+                    }
+                }
+            } else {
+                Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
+                if(kpiMap != null) {
+                    Map<Integer, Integer> workAndNonMap = new HashMap();
+                    int kpi = kpiMap.get(taskDto.getTaskKey());
+                    Date startDate = taskDto.getDateAssigned();
+                    Date completeDate;
+                    if(taskDto.getSlaDateCompleted() != null){
+                        completeDate = taskDto.getSlaDateCompleted();
+                    } else {
+                        completeDate = new Date();
+                    }
+                    int allWorkDays = 0;
+                    int allHolidays = 0;
+                    Map<Integer, Integer> workAndNonMapS = MiscUtil.getActualWorkingDays(startDate, completeDate, taskDto.getWkGrpId());
+                    for(Map.Entry<Integer, Integer> map:workAndNonMapS.entrySet()){
+                        allWorkDays = allWorkDays + map.getKey();
+                        allHolidays = allHolidays + map.getValue();
+                    }
+                    workAndNonMap.put(allWorkDays, allHolidays);
+                    if(workAndNonMap != null){
+                        for(Map.Entry<Integer, Integer> map:workAndNonMap.entrySet()){
+                            days = map.getKey();
+                        }
+                    }
+                    if (days < hcsaSvcKpiDto.getRemThreshold()) {
+                        colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
+                    } else if (hcsaSvcKpiDto.getRemThreshold() <= days && days <= kpi) {
+                        colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_AMBER;
+                    } else if (days > kpi) {
+                        colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_RED;
                     }
                 }
             }
-        } else {
-
         }
         return colour;
     }
 
-    private Map<Integer, Integer> getWorkingDaysBySubStage(String subStage, InspectionAppInGroupQueryDto inspectionAppInGroupQueryDto, TaskDto taskDto) {
+    private Map<Integer, Integer> getWorkingDaysBySubStage(String subStage, TaskDto taskDto) {
         Map<Integer, Integer> workAndNonMap = new HashMap();
+        List<String> processUrls = new ArrayList<>();
         if(StringUtil.isEmpty(subStage)){
             return null;
         }
@@ -157,31 +193,65 @@ public class BackendAjaxController {
         appPremisesRoutingHistoryDto.setAppPremCorreId(taskDto.getRefNo());
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = inspectionTaskMainClient.getHistoryForKpi(appPremisesRoutingHistoryDto).getEntity();
         List<TaskDto> taskDtoList = new ArrayList<>();
+        int allWorkDays = 0;
+        int allHolidays = 0;
         if(subStage.equals(HcsaConsts.ROUTING_STAGE_INP)){
-
-        } else {
+            AppPremInsDraftDto appPremInsDraftDto = inspectionTaskMainClient.getAppPremInsDraftDtoByAppPreCorrId(taskDto.getRefNo()).getEntity();
+            Date startDate = appPremInsDraftDto.getClockin();
+            Date completeDate;
             for(AppPremisesRoutingHistoryDto aprhDto : appPremisesRoutingHistoryDtos) {
                 TaskDto tDto = new TaskDto();
+                InspecTaskCreAndAssDto inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
                 tDto.setRefNo(taskDto.getRefNo());
                 tDto.setRoleId(aprhDto.getRoleId());
                 tDto.setWkGrpId(taskDto.getWkGrpId());
                 tDto.setTaskKey(taskDto.getTaskKey());
-                List<TaskDto> taskDtos = organizationMainClient.getInsKpiTask(tDto).getEntity();
+                inspecTaskCreAndAssDto.setTaskDto(tDto);
+                inspecTaskCreAndAssDto.setProcessUrls(processUrls);
+                List<TaskDto> taskDtos = organizationMainClient.getInsKpiTask(inspecTaskCreAndAssDto).getEntity();
                 if(!IaisCommonUtils.isEmpty(taskDtos)){
                     for(TaskDto taskDtoSingle : taskDtos){
                         taskDtoList.add(taskDtoSingle);
                     }
                 }
             }
-            workAndNonMap = getActualWorkingDays(taskDtoList);
+            for(TaskDto td : taskDtoList){
+                if(td.getSlaDateCompleted() == null){
+                    completeDate = new Date();
+                } else {
+                    completeDate = td.getSlaDateCompleted();
+                }
+                Map<Integer, Integer> workAndNonMapS = MiscUtil.getActualWorkingDays(startDate, completeDate, td.getWkGrpId());
+                for(Map.Entry<Integer, Integer> map:workAndNonMapS.entrySet()){
+                    allWorkDays = allWorkDays + map.getKey();
+                    allHolidays = allHolidays + map.getValue();
+                }
+            }
+            workAndNonMap.put(allWorkDays, allHolidays);
+        } else {
+            for(AppPremisesRoutingHistoryDto aprhDto : appPremisesRoutingHistoryDtos) {
+                TaskDto tDto = new TaskDto();
+                InspecTaskCreAndAssDto inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
+                tDto.setRefNo(taskDto.getRefNo());
+                tDto.setRoleId(aprhDto.getRoleId());
+                tDto.setWkGrpId(taskDto.getWkGrpId());
+                tDto.setTaskKey(taskDto.getTaskKey());
+                inspecTaskCreAndAssDto.setTaskDto(tDto);
+                inspecTaskCreAndAssDto.setProcessUrls(processUrls);
+                List<TaskDto> taskDtos = organizationMainClient.getInsKpiTask(inspecTaskCreAndAssDto).getEntity();
+                if(!IaisCommonUtils.isEmpty(taskDtos)){
+                    for(TaskDto taskDtoSingle : taskDtos){
+                        taskDtoList.add(taskDtoSingle);
+                    }
+                }
+            }
+            workAndNonMap = getActualWorkingDays(taskDtoList, allWorkDays, allHolidays);
         }
         return workAndNonMap;
     }
 
-    private Map<Integer, Integer> getActualWorkingDays(List<TaskDto> taskDtoList) {
+    private Map<Integer, Integer> getActualWorkingDays(List<TaskDto> taskDtoList, int allWorkDays, int allHolidays) {
         Map<Integer, Integer> workAndNonMap = new HashMap();
-        int allWorkDays = 0;
-        int allHolidays = 0;
         for(TaskDto td : taskDtoList){
             Date startDate = td.getDateAssigned();
             Date completeDate;
@@ -207,15 +277,15 @@ public class BackendAjaxController {
             String status = appInspectionStatusDto.getStatus();
             if (status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_PRE)) {
                 subStage = HcsaConsts.ROUTING_STAGE_PRE;
-            } else if (status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY) ||
+            } else if (status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY)) {
+                subStage = HcsaConsts.ROUTING_STAGE_INP;
+            } else if (status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT) ||
+                    status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT) ||
                     status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_EMAIL_VERIFY) ||
                     status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_AO1_EMAIL_VERIFY) ||
                     status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_REVIEW_CHECKLIST_EMAIL) ||
                     status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_NC_RECTIFICATION_EMAIL) ||
                     status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_REVIEW_RECTIFICATION_NC)) {
-                subStage = HcsaConsts.ROUTING_STAGE_INP;
-            } else if (status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT) ||
-                    status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT)) {
                 subStage = HcsaConsts.ROUTING_STAGE_POT;
             }
         }
