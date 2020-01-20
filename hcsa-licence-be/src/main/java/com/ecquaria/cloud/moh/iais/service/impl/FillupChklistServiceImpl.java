@@ -652,6 +652,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         dto.setStageId(stgId);
         dto.setServiceId(svcId);
         dto.setOrder(1);
+        dto.setType(applicationDto.getApplicationType());
         dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(dto).getEntity();
         String workGrp = dto.getGroupId();
         String subStage = HcsaConsts.ROUTING_STAGE_INP;
