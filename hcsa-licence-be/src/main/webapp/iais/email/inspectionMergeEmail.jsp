@@ -470,7 +470,7 @@
                                         </td>
                                         <td>
                                             <div class="col-sm-9">
-                                                <p><textarea name="messageContent" cols="108" rows="50" class="wenbenkuang" id="htmlEditroArea" title="content"  >${insEmailDto.messageContent}</textarea></p>
+                                                <p><textarea name="messageContent" cols="108" rows="50" id="htmlEditroArea" title="content"  >${insEmailDto.messageContent}</textarea></p>
                                             </div>
                                         </td>
                                     </tr>
@@ -482,7 +482,7 @@
                                         </td>
                                         <td>
                                             <div class="col-sm-9">
-                                                <select id="decision-email" name="decision" onchange="thisTime()">
+                                                <select id="decision-email" name="decision" onchange="thisTime()" >
                                                     <option>Select</option>
                                                     <c:forEach items="${appTypeOption}" var="decision">
                                                         <option  value="${decision.value}">${decision.text}</option>
@@ -537,7 +537,7 @@
 
     function doSend(){
         var decision=document.getElementById("decision-email");
-        if(decision.value=="Revise email/Letter Content"){
+        if(decision.value==="Revise email/Letter Content"){
             var checkOne = false;
             var checkBox = $('input[type = checkbox]');
             for (var i = 0; i < checkBox.length; i++) {
@@ -560,14 +560,15 @@
     }
 
     function thisTime() {
-        var decision=document.getElementById("decision-email");
-
-        if(decision.value=="Revise email/Letter Content"){
-            $("#selectReviseNc").show();
-        }
-        else {
-            $("#selectReviseNc").hide();
-        }
+        $("#selectReviseNc").show();
+        // var decision=document.getElementById("decision-email");
+        //
+        // if(decision.value==="Revise email/Letter Content"){
+        //     $("#selectReviseNc").show();
+        // }
+        // else {
+        //     $("#selectReviseNc").hide();
+        // }
     }
 </script>
 

@@ -503,7 +503,9 @@ public class InspectReviseNcEmailDelegator {
         taskDto.setSlaDateCompleted(null);
         taskDto.setSlaRemainInDays(null);
         taskDto.setScore(count);
-
+        taskDto.setSlaAlertInDays(2);
+        taskDto.setPriority(0);
+        taskDto.setSlaInDays(5);
         taskDto.setTaskType(schemeType);
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
