@@ -70,4 +70,7 @@ public interface OrganizationMainClient {
 
     @PostMapping(value = "/iais-task/ins-kpi-task", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getInsKpiTask(@RequestBody InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
+
+    @PostMapping(value = "/iais-task/other-kpi-task", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<TaskDto>> getOtherKpiTask(@RequestBody TaskDto taskDto);
 }

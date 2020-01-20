@@ -41,8 +41,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @Author: guyin
@@ -146,21 +148,26 @@ public class BackendAjaxController {
             } else {
                 Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
                 if(kpiMap != null) {
+                    int allWorkDays = 0;
+                    int allHolidays = 0;
                     Map<Integer, Integer> workAndNonMap = new HashMap();
                     int kpi = kpiMap.get(taskDto.getTaskKey());
                     Date startDate = taskDto.getDateAssigned();
                     Date completeDate;
-                    if(taskDto.getSlaDateCompleted() != null){
-                        completeDate = taskDto.getSlaDateCompleted();
-                    } else {
-                        completeDate = new Date();
-                    }
-                    int allWorkDays = 0;
-                    int allHolidays = 0;
-                    Map<Integer, Integer> workAndNonMapS = MiscUtil.getActualWorkingDays(startDate, completeDate, taskDto.getWkGrpId());
-                    for(Map.Entry<Integer, Integer> map:workAndNonMapS.entrySet()){
-                        allWorkDays = allWorkDays + map.getKey();
-                        allHolidays = allHolidays + map.getValue();
+                    List<TaskDto> taskDtoList = organizationMainClient.getOtherKpiTask(taskDto).getEntity();
+                    if(!(IaisCommonUtils.isEmpty(taskDtoList))){
+                        for(TaskDto tDto : taskDtoList){
+                            if(taskDto.getSlaDateCompleted() != null){
+                                completeDate = tDto.getSlaDateCompleted();
+                            } else {
+                                completeDate = new Date();
+                            }
+                            Map<Integer, Integer> workAndNonMapS = MiscUtil.getActualWorkingDays(startDate, completeDate, taskDto.getWkGrpId());
+                            for(Map.Entry<Integer, Integer> map:workAndNonMapS.entrySet()){
+                                allWorkDays = allWorkDays + map.getKey();
+                                allHolidays = allHolidays + map.getValue();
+                            }
+                        }
                     }
                     workAndNonMap.put(allWorkDays, allHolidays);
                     if(workAndNonMap != null){
@@ -193,6 +200,7 @@ public class BackendAjaxController {
         appPremisesRoutingHistoryDto.setRoleId(taskDto.getRoleId());
         appPremisesRoutingHistoryDto.setAppPremCorreId(taskDto.getRefNo());
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = inspectionTaskMainClient.getHistoryForKpi(appPremisesRoutingHistoryDto).getEntity();
+        List<String> roleIds = getRoleIdsByHistory(appPremisesRoutingHistoryDtos);
         List<TaskDto> taskDtoList = new ArrayList<>();
         int allWorkDays = 0;
         int allHolidays = 0;
@@ -200,11 +208,11 @@ public class BackendAjaxController {
             AppPremInsDraftDto appPremInsDraftDto = inspectionTaskMainClient.getAppPremInsDraftDtoByAppPreCorrId(taskDto.getRefNo()).getEntity();
             Date startDate = appPremInsDraftDto.getClockin();
             Date completeDate;
-            for(AppPremisesRoutingHistoryDto aprhDto : appPremisesRoutingHistoryDtos) {
+            for(String role : roleIds) {
                 TaskDto tDto = new TaskDto();
                 InspecTaskCreAndAssDto inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
                 tDto.setRefNo(taskDto.getRefNo());
-                tDto.setRoleId(aprhDto.getRoleId());
+                tDto.setRoleId(role);
                 tDto.setWkGrpId(taskDto.getWkGrpId());
                 tDto.setTaskKey(taskDto.getTaskKey());
                 inspecTaskCreAndAssDto.setTaskDto(tDto);
@@ -231,11 +239,11 @@ public class BackendAjaxController {
             }
             workAndNonMap.put(allWorkDays, allHolidays);
         } else {
-            for(AppPremisesRoutingHistoryDto aprhDto : appPremisesRoutingHistoryDtos) {
+            for(String role : roleIds) {
                 TaskDto tDto = new TaskDto();
                 InspecTaskCreAndAssDto inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
                 tDto.setRefNo(taskDto.getRefNo());
-                tDto.setRoleId(aprhDto.getRoleId());
+                tDto.setRoleId(role);
                 tDto.setWkGrpId(taskDto.getWkGrpId());
                 tDto.setTaskKey(taskDto.getTaskKey());
                 inspecTaskCreAndAssDto.setTaskDto(tDto);
@@ -257,6 +265,18 @@ public class BackendAjaxController {
             workAndNonMap = getActualWorkingDays(taskDtoList, allWorkDays, allHolidays);
         }
         return workAndNonMap;
+    }
+
+    private List<String> getRoleIdsByHistory(List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos) {
+        List<String> roleIds = new ArrayList<>();
+        if(!(IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtos))){
+            for(AppPremisesRoutingHistoryDto aprhDto : appPremisesRoutingHistoryDtos) {
+                roleIds.add(aprhDto.getRoleId());
+            }
+            Set<String> roleIdSet = new HashSet<>(roleIds);
+            roleIds = new ArrayList<>(roleIdSet);
+        }
+        return roleIds;
     }
 
     private Map<Integer, Integer> getActualWorkingDays(List<TaskDto> taskDtoList, int allWorkDays, int allHolidays) {

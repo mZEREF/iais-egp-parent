@@ -97,4 +97,11 @@ public class OrganizationMainClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
+
+    public FeignResponseEntity<List<TaskDto>> getOtherKpiTask(TaskDto taskDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
