@@ -36,7 +36,7 @@
               <thead>
               <tr>
                 <th>No.</th>
-                <th>Question</th>
+                <th>Upload Item</th>
                 <th>Upload Result</th>
               </tr>
               </thead>
