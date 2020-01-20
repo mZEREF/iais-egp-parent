@@ -146,7 +146,8 @@ public class LicenceApproveBatchjob {
                eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
                applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
                //step2 save licence to Fe DB
-               //licenceGroupDtos =licenceService.createFESuperLicDto(licenceGroupDtos);
+               EventBusLicenceGroupDtos eventBusLicenceGroupDtos1 =  licenceService.getEventBusLicenceGroupDtosByRefNo(eventRefNo);
+               licenceService.createFESuperLicDto(eventBusLicenceGroupDtos1);
            }
         //todo:send the email to admin for fail Data.
         //else{ rollback step1}
@@ -341,16 +342,14 @@ public class LicenceApproveBatchjob {
                     List<AppGrpPersonnelDto> appGrpPersonnelDtos = applicationListDto.getAppGrpPersonnelDtos();
                     List<AppGrpPersonnelExtDto> appGrpPersonnelExtDtos = applicationListDto.getAppGrpPersonnelExtDtos();
                     List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationListDto.getAppSvcKeyPersonnelDtos();
-                    if(appSvcKeyPersonnelDtos == null || appSvcKeyPersonnelDtos.size() == 0){
-                        errorMessage = "There is not the AppSvcPersonnel for this applicaiton -->: "+applicationListDto.getApplicationDto().getApplicationNo();
-                        break;
+                    if(!IaisCommonUtils.isEmpty(appSvcKeyPersonnelDtos)){
+                        List<PersonnelsDto> personnelsDto1s = getPersonnelsDto(appGrpPersonnelDtos,appGrpPersonnelExtDtos,appSvcKeyPersonnelDtos,organizationId);
+                        if(personnelsDtos == null){
+                            errorMessage = "There is Error for AppGrpPersonnel -->: "+applicationListDto.getApplicationDto().getApplicationNo();
+                            break;
+                        }
+                        personnelsDtos.addAll(personnelsDto1s);
                     }
-                    List<PersonnelsDto> personnelsDto1s = getPersonnelsDto(appGrpPersonnelDtos,appGrpPersonnelExtDtos,appSvcKeyPersonnelDtos,organizationId);
-                    if(personnelsDtos == null){
-                        errorMessage = "There is Error for AppGrpPersonnel -->: "+applicationListDto.getApplicationDto().getApplicationNo();
-                        break;
-                    }
-                    personnelsDtos.addAll(personnelsDto1s);
 
                     //create the lic_fee_group_item
                     //do not need create in the Dto
@@ -488,16 +487,15 @@ public class LicenceApproveBatchjob {
                 List<AppGrpPersonnelDto> appGrpPersonnelDtos = applicationListDto.getAppGrpPersonnelDtos();
                 List<AppGrpPersonnelExtDto> appGrpPersonnelExtDtos = applicationListDto.getAppGrpPersonnelExtDtos();
                 List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationListDto.getAppSvcKeyPersonnelDtos();
-                if(appSvcKeyPersonnelDtos == null || appSvcKeyPersonnelDtos.size() == 0){
-                    errorMessage = "There is not the AppSvcPersonnel for this applicaiton -->: "+applicationDto.getApplicationNo();
-                    break;
+                if(!IaisCommonUtils.isEmpty(appSvcKeyPersonnelDtos)){
+                    List<PersonnelsDto> personnelsDtos = getPersonnelsDto(appGrpPersonnelDtos,appGrpPersonnelExtDtos,appSvcKeyPersonnelDtos,organizationId);
+                    if(IaisCommonUtils.isEmpty(personnelsDtos)){
+                        errorMessage = "There is Error for AppGrpPersonnel -->: "+applicationDto.getApplicationNo();
+                        break;
+                    }
+                    superLicDto.setPersonnelsDtos(personnelsDtos);
                 }
-                List<PersonnelsDto> personnelsDtos = getPersonnelsDto(appGrpPersonnelDtos,appGrpPersonnelExtDtos,appSvcKeyPersonnelDtos,organizationId);
-                if(IaisCommonUtils.isEmpty(personnelsDtos)){
-                    errorMessage = "There is Error for AppGrpPersonnel -->: "+applicationDto.getApplicationNo();
-                    break;
-                }
-                superLicDto.setPersonnelsDtos(personnelsDtos);
+
                 //create the lic_fee_group_item
                 //do not need create in the Dto
                 //todo:lic_base_specified_correlation

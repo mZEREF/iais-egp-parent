@@ -28,6 +28,8 @@ public interface LicenceService {
     public LicenceDto getLicenceDto(String licenceId);
 
     public List<LicenceGroupDto> createSuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos);
-    public List<LicenceGroupDto> createFESuperLicDto(List<LicenceGroupDto> licenceGroupDtos);
+    public EventBusLicenceGroupDtos createFESuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos);
+
+    public EventBusLicenceGroupDtos getEventBusLicenceGroupDtosByRefNo(String refNo);
 
 }

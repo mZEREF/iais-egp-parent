@@ -151,10 +151,15 @@ public class LicenceServiceImpl implements LicenceService {
     }
 
     @Override
-    public List<LicenceGroupDto> createFESuperLicDto(List<LicenceGroupDto> licenceGroupDtos) {
+    public EventBusLicenceGroupDtos createFESuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        return beEicGatewayClient.createLicence(licenceGroupDtos, signature.date(), signature.authorization(),
+        return beEicGatewayClient.createLicence(eventBusLicenceGroupDtos, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
+    }
+
+    @Override
+    public EventBusLicenceGroupDtos getEventBusLicenceGroupDtosByRefNo(String refNo) {
+        return hcsaLicenceClient.getEventBusLicenceGroupDtosByRefNo(refNo).getEntity();
     }
 }

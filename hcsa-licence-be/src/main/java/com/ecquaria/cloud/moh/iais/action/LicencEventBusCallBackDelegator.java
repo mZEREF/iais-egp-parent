@@ -2,9 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -12,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.submission.client.model.ServiceStatus;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.kafka.GlobalConstants;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -83,16 +80,17 @@ public class LicencEventBusCallBackDelegator {
             if (!success) {
                 client.setCompensation(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS,
                         submissionId, operation, "");
-            }else{
-                log.info(StringUtil.changeForLog("The BE licence save success "));
-                if(EventBusConsts.OPERATION_LICENCE_SAVE.equals(operation)){
-                    String data = ParamUtil.getString(request,"data");
-                    ObjectMapper mapper = new ObjectMapper();
-                    EventBusLicenceGroupDtos eventBusLicenceGroupDtos = mapper.readValue(data, EventBusLicenceGroupDtos.class);
-                    //step2 save licence to Fe DB
-                     licenceService.createFESuperLicDto(eventBusLicenceGroupDtos.getLicenceGroupDtos());
-                }
             }
+//            else{
+//                log.info(StringUtil.changeForLog("The BE licence save success "));
+//                if(EventBusConsts.OPERATION_LICENCE_SAVE.equals(operation)){
+//                    String data = ParamUtil.getString(request,"data");
+//                    ObjectMapper mapper = new ObjectMapper();
+//                    EventBusLicenceGroupDtos eventBusLicenceGroupDtos = mapper.readValue(data, EventBusLicenceGroupDtos.class);
+//                    //step2 save licence to Fe DB
+//                     licenceService.createFESuperLicDto(eventBusLicenceGroupDtos.getLicenceGroupDtos());
+//                }
+//            }
         }
         log.info(StringUtil.changeForLog("The LicenceService callBack end ..."));
     }
