@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,7 @@ public class ServiceMenuDelegator {
 
 
     private static final String BASE_SERVICE_CHECK_BOX_ATTR = "basechk";
-    private static final String SPECIFIED_SERVICE_CHECK_BOX_ATTR = "baseService";
+    private static final String SPECIFIED_SERVICE_CHECK_BOX_ATTR = "sepcifiedchk";
     private static final String BASE_SERVICE_ATTR = "baseService";
     private static final String BASE_SERVICE_DTO_ATTR = "baseServiceDto";
     private static final String SPECIFIED_SERVICE_ATTR = "specifiedService";

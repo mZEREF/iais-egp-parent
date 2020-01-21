@@ -6,44 +6,44 @@
     </c:if>
   </c:forEach>
 </c:if>
-<c:forEach var="docConfig" items="${serviceDocConfigDto}">
+<c:forEach var="docConfig" items="${serviceDocConfigDto}" varStatus="status">
   <c:set var="svcDoc" value="${ReloadSvcDoc[docConfig.id]}" />
   <c:set var="svcDelFlag" value="${docConfig.id}flag"/>
-<div class="row">
-  <div class="col-xs-12">
-    <h2>${docConfig.docTitle}</h2>
-  </div>
-  <div class="col-xs-12">
-    <p>${docConfig.docDesc}</p>
-  </div>
-  <div class="col-xs-12">
-    <div class="text-center col-xs-12">
-      <div class="document-upload-list">
-        <div class="file-upload-gp">
-          <div class="fileContent col-xs-12">
-            <input class="hidden delFlag" type="hidden" name="${svcDelFlag}" value="N"/>
-            <input type="hidden" name="docConfig" value="ddfb8b26-f449-44e8-b847-657f341fa1d6;0"/>
-            <span class="fileName">${svcDoc.docName}</span>&nbsp;&nbsp;
-            <c:choose>
-              <c:when test="${svcDoc.docName == '' || svcDoc.docName == null }">
+  <div class="row">
+    <div class="col-xs-12">
+      <h2>${docConfig.docTitle}</h2>
+    </div>
+    <div class="col-xs-12">
+      <p>${docConfig.docDesc}</p>
+    </div>
+    <div class="col-xs-12">
+      <div class="text-center col-xs-12">
+        <div class="document-upload-list">
+          <div class="file-upload-gp">
+            <div class="fileContent col-xs-12">
+              <input class="hidden delFlag" type="hidden" name="${svcDelFlag}" value="N"/>
+              <input type="hidden" name="docConfig" value=""/>
+              <span class="fileName"><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}"  >${svcDoc.docName}</a></span>&nbsp;&nbsp;
+              <c:choose>
+                <c:when test="${svcDoc.docName == '' || svcDoc.docName == null }">
                                                     <span class="hidden delBtn">
                                                       &nbsp;&nbsp;<button type="button" class="">Delete</button>
                                                     </span>
-              </c:when>
-              <c:otherwise>
+                </c:when>
+                <c:otherwise>
                                                       <span class=" delBtn">
                                                         &nbsp;&nbsp;<button type="button" class="">Delete</button>
                                                     </span>
-              </c:otherwise>
-            </c:choose>
-            <%--(<span class="fileSize"></span>MB)--%>
+                </c:otherwise>
+              </c:choose>
+                <%--(<span class="fileSize"></span>MB)--%>
+            </div>
+            <input class="selectedFile" id="selectedFile" name = "${docConfig.id}selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
           </div>
-          <input class="selectedFile" id="selectedFile" name = "${docConfig.id}selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
         </div>
       </div>
     </div>
   </div>
-</div>
 </c:forEach>
 <script>
     $(document).ready(function() {

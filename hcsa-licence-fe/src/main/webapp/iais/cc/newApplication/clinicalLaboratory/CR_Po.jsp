@@ -106,7 +106,7 @@
                       </div>
                       <div class="col-sm-4">
                         <div class="">
-                          <iais:select  name="idType" value="${principalOfficer.idType}" options="IdTypeSelect"></iais:select>
+                          <iais:select  name="idType"  value="${principalOfficer.idType}" options="IdTypeSelect"></iais:select>
                           <span class="error-msg" name="iaisErrorMsg" id="error_idType"></span>
                         </div>
                       </div>
@@ -501,22 +501,24 @@ var addDpo = function(){
               'type':'GET',
               'success':function (data) {
                   console.log("suc");
-                  $poContentEle.find('input[name="name"]').val(data.name);
-                  $poContentEle.find('input[name="mobileNo"]').val(data.mobileNo);
-                  $poContentEle.find('input[name="officeTelNo"]').val(data.officeTelNo);
-                  $poContentEle.find('input[name="emailAddress"]').val(data.emailAddr);
-                  <!--salutation-->
-                  $poContentEle.find('select[name="salutation"]').val(data.salutation);
-                  var salutationVal = $poContentEle.find('option[value="'+data.salutation+'"]').html();
-                  $poContentEle.find('select[name="salutation"]').next().find('.current').html(salutationVal);
-                  <!-- idType-->
-                  $poContentEle.find('select[name="idType"]').val(data.idType);
-                  var idTypeVal = $poContentEle.find('option[value="'+data.idType+'"]').html();
-                  $poContentEle.find('select[name="idType"]').next().find('.current').html(idTypeVal);
-                  <!--Designation  -->
-                  $poContentEle.find('select[name="designation"]').val(data.designation);
-                  var designationVal = $poContentEle.find('option[value="'+data.designation+'"]').html();
-                  $poContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
+                  if(data != null) {
+                      $poContentEle.find('input[name="name"]').val(data.name);
+                      $poContentEle.find('input[name="mobileNo"]').val(data.mobileNo);
+                      $poContentEle.find('input[name="officeTelNo"]').val(data.officeTelNo);
+                      $poContentEle.find('input[name="emailAddress"]').val(data.emailAddr);
+                      <!--salutation-->
+                      $poContentEle.find('select[name="salutation"]').val(data.salutation);
+                      var salutationVal = $poContentEle.find('option[value="' + data.salutation + '"]').html();
+                      $poContentEle.find('select[name="salutation"]').next().find('.current').html(salutationVal);
+                      <!-- idType-->
+                      $poContentEle.find('select[name="idType"]').val(data.idType);
+                      var idTypeVal = $poContentEle.find('option[value="' + data.idType + '"]').html();
+                      $poContentEle.find('select[name="idType"]').next().find('.current').html(idTypeVal);
+                      <!--Designation  -->
+                      $poContentEle.find('select[name="designation"]').val(data.designation);
+                      var designationVal = $poContentEle.find('option[value="' + data.designation + '"]').html();
+                      $poContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
+                  }
               },
               'error':function (data) {
                   console.log("err");

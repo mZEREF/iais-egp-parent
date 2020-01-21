@@ -411,9 +411,8 @@ public class ClinicalLaboratoryDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         List<HcsaSvcPersonnelDto> principalOfficerConfig  =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
         List<HcsaSvcPersonnelDto> deputyPrincipalOfficerConfig   =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-        //todo
-        int mandatory = 1;
-        int deputyMandatory = 1;
+        int mandatory = 0;
+        int deputyMandatory = 0;
         if(principalOfficerConfig != null && !principalOfficerConfig.isEmpty()){
             HcsaSvcPersonnelDto hcsaSvcPersonnelDto = principalOfficerConfig.get(0);
             if(hcsaSvcPersonnelDto != null){
@@ -1305,7 +1304,7 @@ public class ClinicalLaboratoryDelegator {
     public @ResponseBody AppSvcCgoDto getPsnInfoByIdNo (HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("getPsnInfoByIdNo start ...."));
         String idNo = ParamUtil.getRequestString(request, "idNo");
-        AppSvcCgoDto appSvcCgoDto =new AppSvcCgoDto();
+        AppSvcCgoDto appSvcCgoDto = null;
         if(StringUtil.isEmpty(idNo)){
             return appSvcCgoDto;
         }
