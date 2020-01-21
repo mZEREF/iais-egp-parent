@@ -22,7 +22,7 @@
                     <table class="table">
                         <tr>
                             <td class="col-xs-4">
-                                <p>LicenceNo:</p>
+                                <p>Licence No:</p>
                             </td>
                             <td class="col-xs-8">
                                 <p>${insRepDto.licenceNo}</p>

@@ -47,7 +47,8 @@ public interface TaskOrganizationClient {
     @GetMapping(path = "/iais-task/tasks-notify-all",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String, Object>> getEmailNotifyList();
 
-
+    @GetMapping(path = "/iais-task/inspector-task/{appCorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getInspectorByAppCorrId(@PathVariable(name = "appCorrId") String appCorrId);
 
 
 }

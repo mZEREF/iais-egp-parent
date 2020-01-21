@@ -163,6 +163,7 @@ public class InsReportAoDelegator {
         insRepService.updateRecommendation(recommendationDto);
         if(REJECT.equals(recommendationDto.getRecommendation())){
             insRepService.routBackTaskToInspector(taskDto,applicationDto,appPremisesCorrelationId);
+            ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
             return;
         }
         insRepService.routingTaskToAo2(taskDto,applicationDto,appPremisesCorrelationId);

@@ -24,7 +24,7 @@
                     <table class="table">
                         <tr>
                             <td class="col-xs-4">
-                                <p>LicenceNo:</p>
+                                <p>Licence No:</p>
                             </td>
                             <td class="col-xs-8">
                                 <p>${insRepDto.licenceNo}</p>
@@ -223,10 +223,10 @@
                                 <p>Marked for Audit:</p>
                             </td>
                             <td class="col-xs-8">
-                                <c:if test="${insRepDto.markedForAudit}">
+                                <c:if test="${insRepDto.markedForAudit ==true}">
                                     <p>YES</p>
                                 </c:if>
-                                <c:if test="${!insRepDto.markedForAudit}">
+                                <c:if test="${insRepDto.markedForAudit ==false}">
                                     <p>No</p>
                                 </c:if>
                             </td>
@@ -354,7 +354,7 @@
         </div>
         <div class="alert alert-info" role="alert">
             <strong>
-                <h4>Section E (Recommendations) Not Applicable for Post Licensing Inspection</h4>
+                <h4>Section E (Recommendations) </h4>
             </strong>
         </div>
         <div class="row">
@@ -363,13 +363,65 @@
                     <table class="table">
                         <tr>
                             <td class="col-xs-4">
+                                <p>Follow up Action:</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <input name="followUpAction" type="text" value="" MAXLENGTH="4000">
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>Risk Level:</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <iais:select name="riskLevel" options="riskLevelOptions" firstOption="Please select"
+                                             value="${appPremisesRecommendationDto.recommendation}"/>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>TCU needed:</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <input type="checkbox" name="tvuNeeded">
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>TCU Date:</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <iais:datePicker id="tcuData" name="tcuData" dateVal=""/>
+                                <span id="error_tcuData" name="iaisErrorMsg" class="error-msg"></span>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+
+
+                        <tr>
+                            <td class="col-xs-4">
                                 <p>Recommendation:</p>
                             </td>
-                            <td class="col-xs-8">
-                                <iais:select name="recommendation" options="riskOption" firstOption="Please select"
-                                             onchange="javascirpt:x(this.value);"
+                            <td class="col-xs-4">
+                                <iais:select name="recommendation" options="recommendationOption"
+                                             firstOption="Please select"
                                              value="${appPremisesRecommendationDto.recommendation}"/>
-                                <span id="error_recommendation" name="iaisErrorMsg" class="error-msg"></span>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>period:</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <iais:select name="period" options="riskOption" firstOption="Please select"
+                                             onchange="javascirpt:x(this.value);"
+                                             value="${appPremisesRecommendationDto.period}"/>
+                                <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
                                 <div id="recom1" hidden>
                                     <input id=recomInNumber type="text" name="number" value="${number}">
                                     <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
@@ -404,7 +456,7 @@
     }
 
     $(document).ready(function () {
-        if ($("#recommendation").val() == "Others") {
+        if ($("#period").val() == "Others") {
             x("Others");
         }
     });

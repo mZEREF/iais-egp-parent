@@ -12,13 +12,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -76,6 +73,8 @@ public class InsRepServiceImpl implements InsRepService {
     @Autowired
     private ComSystemAdminClient comSystemAdminClient;
     @Autowired
+    private TaskOrganizationClient taskOrganizationClient;
+    @Autowired
     ApplicationService applicationService;
 
     private final String APPROVAL="Approval";
@@ -91,45 +90,39 @@ public class InsRepServiceImpl implements InsRepService {
         String appId = applicationDto.getId();
         String appGrpId = applicationDto.getAppGrpId();
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
-        String wkGrpId = taskDto.getWkGrpId();
-        //get all the inspector under the workGroupId
-//        List<OrgUserDto> orgUserDtos = taskService.getUsersByWorkGroupId(wkGrpId, AppConsts.COMMON_STATUS_ACTIVE);
-//        List<String> inspectors = new ArrayList<>();
-//        for (OrgUserDto orgUserDto : orgUserDtos) {
-//            inspectors.add(orgUserDto.getDisplayName());
-//        }
-
-        //get the inspector who login in and create this report
-//        List<String> listUserId = new ArrayList<>();
-//        String userId = loginContext.getUserId();
-//        listUserId.add(userId);
-//        List<OrgUserDto> userList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
-//        String reportBy = userList.get(0).getDisplayName();
-//        listUserId.clear();
-//        //get inspection lead
-//        List<String> leadId = organizationClient.getInspectionLead(wkGrpId).getEntity();
-//        for (String lead : leadId) {
-//            listUserId.add(lead);
-//        }
-//        List<OrgUserDto> leadList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
-//        String leadName = leadList.get(0).getDisplayName();
-
-//        List listCorrIds = new ArrayList();
-//        listCorrIds.add(appPremisesCorrelationId);
-//        List<Date> dateList = (List<Date>) insRepClient.getInspectionRecomInDateByCorreId(listCorrIds).getEntity();
-
-        //get application type (new/renew)
         String appTypeCode = insRepClient.getAppType(appId).getEntity();
         ApplicationGroupDto applicationGroupDto = insRepClient.getApplicationGroupDto(appGrpId).getEntity();
-        //String licenseeId = applicationGroupDto.getLicenseeId();
+        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(appInsRepDto.getLicenseeId()).getEntity();
+        if(licenseeDto!=null){
+            String name = licenseeDto.getName();
+            inspectionReportDto.setLicenseeName(name);
+        }
+        List<AppGrpPersonnelDto> principalOfficer = appInsRepDto.getPrincipalOfficer();
+        List<String> poNames = new ArrayList<>();
+        for(AppGrpPersonnelDto appGrpPersonnelDto : principalOfficer){
+            String name = appGrpPersonnelDto.getName();
+            poNames.add(name);
+        }
+        inspectionReportDto.setPrincipalOfficers(poNames);
+
+
+        List<String> inspectors = taskOrganizationClient.getInspectorByAppCorrId(appPremisesCorrelationId).getEntity();
+        List<OrgUserDto> inspectorsNames = organizationClient.retrieveOrgUserAccount(inspectors).getEntity();
+        List<String> nameList = new ArrayList<>();
+        for(OrgUserDto orgUserDto :inspectorsNames){
+            nameList.add(orgUserDto.getDisplayName());
+        }
+        inspectionReportDto.setInspectOffices(nameList);
+
+
         //get application type (pre/post)
         Integer isPre = applicationGroupDto.getIsPreInspection();
         String appType = MasterCodeUtil.getCodeDesc(appTypeCode);
         String reasonForVisit;
         if (isPre == 1) {
-            reasonForVisit = "Pre-licensing inspection for " + appType + " Application";
+            reasonForVisit = "Pre-licensing inspection for " + appType ;
         } else {
-            reasonForVisit = "Post-licensing inspection for " + appType + " Application";
+            reasonForVisit = "Post-licensing inspection for " + appType ;
         }
 
         //serviceId transform serviceCode
@@ -218,20 +211,10 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
         inspectionReportDto.setHciName(appInsRepDto.getHciName());
         inspectionReportDto.setHciAddress(appInsRepDto.getHciAddress());
-        inspectionReportDto.setPrincipalOfficer(appInsRepDto.getPrincipalOfficer());
         inspectionReportDto.setReasonForVisit(reasonForVisit);
-
-
-
-
         inspectionReportDto.setInspectionDate(new Date());
         inspectionReportDto.setInspectionTime(new Date());
         inspectionReportDto.setBestPractice(bestPractice);
-
-        //inspectionReportDto.setInspectOffices("inspector officer");
-//        inspectionReportDto.setReportedBy(reportBy);
-//        inspectionReportDto.setReportNoteBy(leadName);
-//        inspectionReportDto.setInspectors(inspectors);
         inspectionReportDto.setTaskRemarks(remarks);
         return inspectionReportDto;
     }
@@ -541,6 +524,7 @@ public class InsRepServiceImpl implements InsRepService {
         hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
         hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_AO2);
         hcsaSvcStageWorkingGroupDto.setOrder(1);
+        hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
         HcsaSvcStageWorkingGroupDto dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
         List<ApplicationDto> applicationDtos = new ArrayList<>();
         applicationDtos.add(applicationDto);

@@ -84,7 +84,6 @@ public class InsReportDelegator {
     public void inspectionReportPre(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>inspectionReportPre");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String userId = loginContext.getUserId();
         String taskId;
         taskId = ParamUtil.getRequestString(bpc.request, "taskId");
         if (StringUtil.isEmpty(taskId)) {
@@ -103,50 +102,15 @@ public class InsReportDelegator {
         }
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
         List<SelectOption> chronoOption = getChronoOption();
+        List<SelectOption> recommendationOption = getRecommendationOption();
+        List<SelectOption> riskLevelOptions = getriskLevel();
+        ParamUtil.setSessionAttr(bpc.request, "riskLevelOptions", (Serializable) riskLevelOptions);
+        ParamUtil.setSessionAttr(bpc.request, "recommendationOption", (Serializable) recommendationOption);
         ParamUtil.setSessionAttr(bpc.request, "chronoOption", (Serializable) chronoOption);
         ParamUtil.setSessionAttr(bpc.request, "riskOption", (Serializable) riskOption);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
-    }
-
-    private List<SelectOption> getChronoOption() {
-        List<SelectOption> ChronoResult = new ArrayList<>();
-        SelectOption so1 = new SelectOption("Year", "Year");
-        SelectOption so2 = new SelectOption("Month", "Month");
-        SelectOption so3 = new SelectOption("Week", "Week");
-        ChronoResult.add(so1);
-        ChronoResult.add(so2);
-        ChronoResult.add(so3);
-        return ChronoResult;
-    }
-
-    private Map<String, String> doValidateRe(BaseProcessClass bpc) {
-        Map<String, String> errorMap = new HashMap<>(34);
-        String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
-        String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
-        String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
-        String number = ParamUtil.getRequestString(bpc.request, NUMBER);
-        if (OTHERS.equals(recommendation)) {
-            if (StringUtil.isEmpty(chrono)) {
-                errorMap.put(RECOMMENDATION, "please select");
-            } else if (StringUtil.isEmpty(number)) {
-                errorMap.put(RECOMMENDATION, "please key a number");
-            } else {
-                try {
-                    Integer.parseInt(number);
-                } catch (NumberFormatException e) {
-                    errorMap.put(RECOMMENDATION, "please key a number");
-                }
-            }
-        }
-        if (!StringUtil.isEmpty(remarks)) {
-            int length = remarks.length();
-            if (length > 4000) {
-                errorMap.put(remarks, "remarks must be less than 4000");
-            }
-        }
-        return errorMap;
     }
 
     public void inspectorReportSave(BaseProcessClass bpc) throws FeignException {
@@ -155,14 +119,12 @@ public class InsReportDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
-//        Map<String, String> stringStringMap = doValidateRe(bpc);
         AppPremisesRecommendationDto appPremisesRecommendationDto = prepareRecommendation(bpc);
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, appPremisesRecommendationDto);
         Map<String, String> errorMap = new HashMap<>(34);
         ValidationResult validationResult = WebValidationHelper.validateProperty(appPremisesRecommendationDto, "save");
         if (validationResult.isHasErrors()) {
             errorMap = validationResult.retrieveAll();
-           // errorMap.putAll(stringStringMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;
@@ -178,6 +140,7 @@ public class InsReportDelegator {
     private AppPremisesRecommendationDto prepareRecommendation(BaseProcessClass bpc) {
         String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
+        String period = ParamUtil.getRequestString(bpc.request, "period");
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
         String number = ParamUtil.getRequestString(bpc.request, NUMBER);
         ParamUtil.setSessionAttr(bpc.request, CHRONO, chrono);
@@ -185,11 +148,13 @@ public class InsReportDelegator {
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         appPremisesRecommendationDto.setRemarks(remarks);
         appPremisesRecommendationDto.setRecommendation(recommendation);
+        appPremisesRecommendationDto.setPeriod(period);
         return appPremisesRecommendationDto;
     }
 
     private AppPremisesRecommendationDto prepareForSave(BaseProcessClass bpc, String appPremisesCorrelationId) {
         String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
+        String period = ParamUtil.getRequestString(bpc.request, "period");
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
         String number = ParamUtil.getRequestString(bpc.request, NUMBER);
@@ -201,13 +166,13 @@ public class InsReportDelegator {
         appPremisesRecommendationDto.setRecomDecision(InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT);
         appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
         appPremisesRecommendationDto.setRecommendation(recommendation);
-        if (OTHERS.equals(recommendation) && !StringUtil.isEmpty(chrono) && !StringUtil.isEmpty(number)) {
+        if (OTHERS.equals(period) && !StringUtil.isEmpty(chrono) && !StringUtil.isEmpty(number)) {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
             appPremisesRecommendationDto.setChronoUnit(chrono);
             appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
-        } else if (!StringUtil.isEmpty(recommendation) && !OTHERS.equals(recommendation)) {
-            String[] split_number = recommendation.split("\\D");
-            String[] split_unit = recommendation.split("\\d");
+        } else if (!StringUtil.isEmpty(period) && !OTHERS.equals(period)) {
+            String[] split_number = period.split("\\D");
+            String[] split_unit = period.split("\\d");
             String chronoRe = split_unit[1];
             String numberRe = split_number[0];
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
@@ -217,4 +182,39 @@ public class InsReportDelegator {
         }
         return appPremisesRecommendationDto;
     }
+
+    private List<SelectOption> getChronoOption() {
+        List<SelectOption> ChronoResult = new ArrayList<>();
+        SelectOption so1 = new SelectOption("Year", "Year");
+        SelectOption so2 = new SelectOption("Month", "Month");
+        SelectOption so3 = new SelectOption("Week", "Week");
+        ChronoResult.add(so1);
+        ChronoResult.add(so2);
+        ChronoResult.add(so3);
+        return ChronoResult;
+    }
+
+    private List<SelectOption> getRecommendationOption() {
+        List<SelectOption> recommendationResult = new ArrayList<>();
+        SelectOption so1 = new SelectOption("Approval", "Proceed with Licence Issuance");
+        SelectOption so2 = new SelectOption("Approval LTCs", "Proceed with Licence Issuance (with LTCs)");
+        SelectOption so3 = new SelectOption("Reject", "Reject Licence");
+        recommendationResult.add(so1);
+        recommendationResult.add(so2);
+        recommendationResult.add(so3);
+        return recommendationResult;
+    }
+
+    private List<SelectOption> getriskLevel() {
+        List<SelectOption> riskLevelResult = new ArrayList<>();
+        SelectOption so1 = new SelectOption("Low", "Low");
+        SelectOption so2 = new SelectOption("Moderate", "Moderate");
+        SelectOption so3 = new SelectOption("High", "High");
+        riskLevelResult.add(so1);
+        riskLevelResult.add(so2);
+        riskLevelResult.add(so3);
+        return riskLevelResult;
+    }
+
+
 }
