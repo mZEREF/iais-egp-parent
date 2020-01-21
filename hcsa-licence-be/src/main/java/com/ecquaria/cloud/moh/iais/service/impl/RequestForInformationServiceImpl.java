@@ -80,6 +80,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     @Autowired
     private SystemBeLicClient systemClient;
 
+    private static final String FOLDER="folder";
 
     private final String[] appType=new String[]{
             ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
@@ -242,7 +243,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         }catch (Exception e){
                             //save bad
 
-                            continue;
                         }
                     }
                 }
@@ -278,7 +278,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
                 new File(compressPath+File.separator+fileName+File.separator+zipEntry.getName()).mkdirs();
             }
-        }catch (IOException e){
+        }catch (IOException ignored){
 
         }finally {
             if(cos!=null){
@@ -316,7 +316,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     public boolean download( ProcessFileTrackDto processFileTrackDto,LicPremisesReqForInfoDto licPremisesReqForInfoDto,String fileName) {
 
         Boolean flag=false;
-        File file =new File(downZip+File.separator+fileName+File.separator+"folder");
+        File file =new File(downZip+File.separator+fileName+File.separator+FOLDER);
         if(!file.exists()){
             file.mkdirs();
         }
@@ -336,16 +336,9 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         }
                         Boolean aBoolean = fileToDto(by.toString(), licPremisesReqForInfoDto);
                         flag=aBoolean;
-                        /*  Boolean backups = backups(flag, filzz);*/
-                        if(aBoolean){
-                            if(processFileTrackDto!=null){
-
-                                changeStatus(processFileTrackDto);
-
-                                /*     Boolean aBoolean1 = changeFeApplicationStatus();*/
-
-                                saveFileRepo( fileName);
-                            }
+                        if(aBoolean&&processFileTrackDto!=null){
+                            changeStatus(processFileTrackDto);
+                            saveFileRepo( fileName);
                         }
                     }catch (Exception e){
                         log.error(e.getMessage(),e);
@@ -356,9 +349,9 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         return flag;
     }
     private Boolean fileToDto(String str,LicPremisesReqForInfoDto licPremisesReqForInfoDto){
-        licPremisesReqForInfoDto = JsonUtil.parseToObject(str, LicPremisesReqForInfoDto.class);
-        Boolean flag=requestForInformationClient.rfiFeUpdateToBe(licPremisesReqForInfoDto).getStatusCode() == 200;
-        return flag;
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = JsonUtil.parseToObject(str, LicPremisesReqForInfoDto.class);
+        licPremisesReqForInfoDto=licPremisesReqForInfoDto1;
+        return requestForInformationClient.rfiFeUpdateToBe(licPremisesReqForInfoDto).getStatusCode() == 200;
 
     }
 
@@ -374,7 +367,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     private void saveFileRepo(String fileNames){
         boolean aBoolean=false;
-        File file =new File(downZip+File.separator+fileNames+File.separator+"folder"+File.separator+"files");
+        File file =new File(downZip+File.separator+fileNames+File.separator+FOLDER+File.separator+"files");
         if(!file.exists()){
             file.mkdirs();
         }
@@ -410,7 +403,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         fileRepoDto.setId(split[0]);
                         fileRepoDto.setAuditTrailDto(intranet);
                         fileRepoDto.setFileName(fileName.toString());
-                        fileRepoDto.setRelativePath(downZip+File.separator+fileNames+File.separator+"folder"+File.separator+"files");
+                        fileRepoDto.setRelativePath(downZip+File.separator+fileNames+File.separator+FOLDER+File.separator+"files");
                         aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
 
                         if(aBoolean){
@@ -426,7 +419,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     @Override
     public void delete() {
-        download= sharedPath+File.separator+"compress"+File.separator+"folder";
+        download= sharedPath+File.separator+"compress"+File.separator+FOLDER;
         backups=sharedPath+File.separator+"backups"+File.separator;
         compressPath=sharedPath+File.separator+"compress";
         downZip=sharedPath+File.separator+"compress";

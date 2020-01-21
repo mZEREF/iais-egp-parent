@@ -109,7 +109,7 @@ public class InspecEmailDelegator {
         String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
         String taskId = ParamUtil.getRequestString(request,"taskId");
         if(StringUtil.isEmpty(taskId)){
-            taskId = "F9359FD4-5934-EA11-BE7D-000C29F371DC";
+            taskId = "FEED1792-4E34-EA11-BE7D-000C29F371DC";
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
         if(StringUtil.isEmpty(taskDto)){
@@ -162,8 +162,8 @@ public class InspecEmailDelegator {
         }
         inspectionEmailTemplateDto.setMessageContent(mesContext);
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT});
-        AppPremisesRoutingHistoryDto appPremisesRoutingHisDto= new AppPremisesRoutingHistoryDto();
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppId(applicationViewDto.getApplicationDto().getId());
+        AppPremisesRoutingHistoryDto appPremisesRoutingHisDto= appPremisesRoutingHistoryDtos.get(0);
         String upDt=appPremisesRoutingHistoryDtos.get(0).getUpdatedDt();
         for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1:appPremisesRoutingHistoryDtos){
             if(appPremisesRoutingHistoryDto1.getUpdatedDt().compareTo(upDt)<0){
@@ -178,7 +178,7 @@ public class InspecEmailDelegator {
             appPremisesRoutingHistoryDto1.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRoutingHistoryDto1.getAppStatus()}).get(0).getText());
 
         }
-        inspectionEmailTemplateDto.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRoutingHisDto.getAppStatus()}).get(0).getValue());
+        inspectionEmailTemplateDto.setAppStatus(appPremisesRoutingHisDto.getAppStatus());
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
         ParamUtil.setSessionAttr(request,"appPremCorrId",appPremCorrId);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);

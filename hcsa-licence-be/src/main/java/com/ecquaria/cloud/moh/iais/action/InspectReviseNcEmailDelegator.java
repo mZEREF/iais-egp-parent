@@ -345,7 +345,7 @@ public class InspectReviseNcEmailDelegator {
         if(content!=null){
             inspectionEmailTemplateDto.setMessageContent(content);
         }
-        inspectionEmailTemplateDto.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRoutingHisDto.getAppStatus()}).get(0).getText());
+        inspectionEmailTemplateDto.setAppStatus(appPremisesRoutingHisDto.getAppStatus());
         ParamUtil.setRequestAttr(request,"appPremisesRoutingHistoryDtos", appPremisesRoutingHistoryDtos);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setSessionAttr(request,"draftEmailId",inspectionEmailTemplateDto.getId());
