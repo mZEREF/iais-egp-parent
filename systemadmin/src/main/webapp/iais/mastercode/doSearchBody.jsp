@@ -29,15 +29,15 @@
                 <iais:value>
                     <label class="col-xs-12 col-md-4 control-label" for="codeCategory">Code Category.</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                        <input id="codeCategory" name="codeCategory" type="text" maxlength="25">
+                        <textarea name="codeCategory" id="codeCategory" cols="30" rows="5" maxlength="25"></textarea>
                     </div>
                 </iais:value>
             </div>
             <div class="form-group">
                 <iais:value>
-                    <label class="col-xs-12 col-md-4 control-label" for="description">Code Description.</label>
+                    <label class="col-xs-12 col-md-4 control-label">Code Description.</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                        <input id="description" name="codeDescription" type="text" maxlength="255">
+                        <textarea name="description" id="description" cols="30" rows="5" maxlength="255"></textarea>
                     </div>
                 </iais:value>
             </div>
