@@ -173,10 +173,17 @@ public class InspecEmailDelegator {
             if(!StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getWrkGrpId())) {
                 appPremisesRoutingHistoryDto1.setWrkGrpId(applicationViewService.getWrkGrpName(appPremisesRoutingHistoryDto1.getWrkGrpId()));
             }
-            appPremisesRoutingHistoryDto1.setActionby(applicationViewService.getUserNameById(new ArrayList<String>(Collections.singleton(appPremisesRoutingHistoryDto1.getActionby()))).get(0).getDisplayName());
-            appPremisesRoutingHistoryDto1.setInternalRemarks(appPremisesRoutingHistoryDto1.getInternalRemarks());
-            appPremisesRoutingHistoryDto1.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRoutingHistoryDto1.getAppStatus()}).get(0).getText());
-
+            if(StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getActionby())){
+                appPremisesRoutingHistoryDto1.setActionby("-");
+            }
+            else {
+                appPremisesRoutingHistoryDto1.setActionby(applicationViewService.getUserNameById(new ArrayList<String>(Collections.singleton(appPremisesRoutingHistoryDto1.getActionby()))).get(0).getDisplayName());
+            }
+            if(StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getAppStatus())){
+                appPremisesRoutingHistoryDto1.setAppStatus("-");
+            }else {
+                appPremisesRoutingHistoryDto1.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRoutingHistoryDto1.getAppStatus()}).get(0).getText());
+            }
         }
         inspectionEmailTemplateDto.setAppStatus(appPremisesRoutingHisDto.getAppStatus());
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
