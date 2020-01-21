@@ -63,11 +63,37 @@
                                       </wrms:value></p>
 
                                     <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
-                                      <p>Vehicle No: ${appGrpPremDto.conveyanceVehicleNo}  <wrms:value width="7">
+                                      <p><strong>Vehicle No:</strong> ${appGrpPremDto.conveyanceVehicleNo}  <wrms:value width="7">
                                         <span class="newVal " attr="${appGrpPremDto.conveyanceVehicleNo}" style="display: none"><label><c:out value=""/></label></span>
                                         <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"/></label></span>
                                       </wrms:value></p>
                                     </c:if>
+                                    <p><strong>Are you co-locating with anothe licensee? :</strong> ${appGrpPremDto.conveyanceVehicleNo}  <wrms:value width="7">
+                                      <span class="newVal " attr="${appGrpPremDto.conveyanceVehicleNo}" style="display: none"><label><c:out value=""/></label></span>
+                                      <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"/></label></span>
+                                    </wrms:value></p>
+
+                                    <p><strong>Operating Hours (Start):</strong> ${appGrpPremDto.wrkTimeFrom}  <wrms:value width="7">
+                                      <span class="newVal " attr="${appGrpPremDto.wrkTimeFrom}" style="display: none"><label><c:out value=""/></label></span>
+                                      <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}"/></label></span>
+                                    </wrms:value></p>
+                                    <p><strong>Operating Hours (End):</strong> ${appGrpPremDto.wrkTimeTo}  <wrms:value width="7">
+                                      <span class="newVal " attr="${appGrpPremDto.conveyanceVehicleNo}" style="display: none"><label><c:out value=""/></label></span>
+                                      <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}"/></label></span>
+                                    </wrms:value></p>
+
+                                    <c:forEach items="${appGrpPremDto.appPremPhOpenPeriodList}" var="appPremPhOpenPeriod" varStatus="statu">
+
+                                      <p><strong>Public Holidays Operating Hours (Start):</strong> ${appPremPhOpenPeriod.startFrom}  <wrms:value width="7">
+                                        <span class="newVal " attr="${appGrpPremDto.conveyanceVehicleNo}" style="display: none"><label><c:out value=""/></label></span>
+                                        <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index][statu.index].startFrom}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index][statu.index].startFrom}"/></label></span>
+                                      </wrms:value></p>
+                                      <p><strong>Public Holidays Operating Hours (End):</strong> ${appPremPhOpenPeriod.endTo}  <wrms:value width="7">
+                                        <span class="newVal " attr="${appPremPhOpenPeriod.endTo}" style="display: none"><label><c:out value=""/></label></span>
+                                        <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index][statu.index].endTo}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index][statu.index].endTo}"/></label></span>
+                                      </wrms:value></p>
+
+                                    </c:forEach>
 
                                   </div>
                                 </div>
@@ -104,7 +130,7 @@
                                                 <span class="newVal compareTdStyle" attr="${appGrpPrimaryDocDto.docSize}${appGrpPrimaryDocDto.docName}"  style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName} (${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize} KB)"/></label></span>
                                                 <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName} (${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize} KB)"/></label></span>
                                                 </wrms:value></span>
-
+                                              </span>
                                             </div>
                                           </div>
                                         </div>

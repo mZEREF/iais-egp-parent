@@ -117,12 +117,14 @@ public class LicenceViewServiceDelegator {
             ApplicationDto entity = applicationClient.getApplicationById(applicationId).getEntity();
             //last
             ApplicationDto applicationDto = applicationClient.getLastApplicationByAppNo(entity).getEntity();
-            AppSubmissionDto appSubmissionByAppId1 = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
-            if(appSubmissionDto!=null){
+            if(applicationDto!=null){
+                AppSubmissionDto appSubmissionByAppId1 = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
+                if(appSubmissionDto!=null){
 
-                appSubmissionDto.setOldAppSubmissionDto(appSubmissionByAppId1);
+                    appSubmissionDto.setOldAppSubmissionDto(appSubmissionByAppId1);
 
-             }
+                }
+            }
 
         }else {
             ParamUtil.setSessionAttr(bpc.request,NOT_VIEW,NOT_VIEW);

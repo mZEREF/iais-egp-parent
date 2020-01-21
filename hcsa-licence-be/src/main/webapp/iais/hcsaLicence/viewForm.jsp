@@ -55,7 +55,7 @@
         <div class="form-check-gp">
           <div class="row">
             <div class="col-xs-12">
-                <table class="col-xs-8">
+                <table class="col-xs-12">
                   <tr>
                     <td class="col-xs-8">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation:
@@ -291,29 +291,29 @@
                           <td style="text-align: center" rowspan="${reloadDisciplineAllocationMap[reloadMapValue].size()}">
                             <p class="visible-xs visible-sm table-row-title">${appGrpPrem.address} </p>
                               <wrms:value width="7">
-                                <span class="newVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"  style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/></label></span>
-                                <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}" ><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/></label></span>
+                                <span class="newVal " attr="${appGrpPrem.address} "  style="display: none"><label><c:out value=""/></label></span>
+                                <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/></label></span>
                               </wrms:value>
 
                           </td>
                         </c:if>
                         <td style="text-align: center">
-                          <p>${disciplineAllocation.chkLstName}
+                          <p>${disciplineAllocation.chkLstName} </p>
                             <wrms:value width="7">
                               <span class="newVal " attr="${disciplineAllocation.chkLstName}"  style="display: none"><label><c:out value="${disciplineAllocation.chkLstName}"/></label></span>
                               <span class="oldVal compareTdStyle" attr="${reloadOld[reloadMapValue][stat.index].chkLstName}" style="display: none"><label><c:out value="${reloadOld[reloadMapValue][stat.index].chkLstName}"/></label></span>
                             </wrms:value>
 
-                          </p>
+
                         </td>
                         <td style="text-align: center">
-                          <p>${disciplineAllocation.cgoSelName}
+                          <p>${disciplineAllocation.cgoSelName}   </p>
+
                             <wrms:value width="7">
                               <span class="newVal " attr="${disciplineAllocation.cgoSelName}"  style="display: none"><label><c:out value="${disciplineAllocation.cgoSelName}"/></label></span>
                               <span class="oldVal compareTdStyle" attr="${reloadOld[reloadMapValue][stat.index].cgoSelName}" style="display: none"><label><c:out value="${reloadOld[reloadMapValue][stat.index].cgoSelName}"/></label></span>
                             </wrms:value>
 
-                          </p>
                         </td>
                       </tr>
                     </c:forEach>
@@ -347,9 +347,9 @@
             <div class="col-xs-12">
               <c:forEach items="${currentPreviewSvcInfo.appSvcPrincipalOfficersDtoList}" var="po" varStatus="status">
                 <p><strong>Principal Officers: </strong> ${po.name}</p>
-                <table class="col-xs-8">
+                <table class="col-xs-12">
                   <tr>
-                    <td class="col-xs-8">
+                    <td class="col-xs-6">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation:</p>
                     </td>
                     <td>
@@ -366,7 +366,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="col-xs-8">
+                    <td class="col-xs-6">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name:</p>
                     </td>
                     <td>
@@ -385,7 +385,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="col-xs-8">
+                    <td class="col-xs-6">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type:</p>
                     </td>
                     <td>
@@ -401,7 +401,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="col-xs-8">
+                    <td class="col-xs-6">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No:</p>
                     </td>
                     <td>
@@ -419,7 +419,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="col-xs-8">
+                    <td class="col-xs-6">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation:</p>
                     </td>
                     <td>
@@ -436,7 +436,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="col-xs-8">
+                    <td class="col-xs-6">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Office Telephone:
 
 
@@ -457,7 +457,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="col-xs-8">
+                    <td class="col-xs-6">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>MobileNo:</p>
                     </td>
                     <td>
@@ -475,7 +475,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="col-xs-8">
+                    <td class="col-xs-6">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>EmailAddress:</p>
                     </td>
                     <td>

@@ -73,7 +73,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
                 boolean autoOrNon = isAutoOrNon(licenceNo);
 
-                if(!autoOrNon){
+                if(autoOrNon){
 
                     try {
                         isAuto(v.get(i),request);
@@ -164,7 +164,6 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
         List<String> list = useLicenceIdFindHciNameAndAddress(id);
 
-        for(OrgUserRoleDto orgUserRoleDto :sendMailUser){
 
             for(String every:list){
             String address = every.substring(every.indexOf("/")+1);
@@ -184,11 +183,21 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 emailDto.setContent(templateMessageByContent);
                 emailDto.setSubject(EMAIL_SUBJECT);
                 emailDto.setSender("MOH");
+                emailDto.setClientQueryCode("sss");
+
+                List<String> receipts=new ArrayList<>();
+                for(OrgUserRoleDto orgUserRoleDto :sendMailUser){
+                    String emailAddress = orgUserRoleDto.getEmailAddress();
+
+                    receipts.add(emailAddress);
+                }
+                if(!receipts.isEmpty()){
+                    emailDto.setReceipts(receipts);
+                    String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
+                }
 
 
-                String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
 
-             }
         }
 
     }
@@ -254,39 +263,47 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
             FeeDto feeDto = hcsaConfigClient.renewFee(licenceFeeDtos).getEntity();
              total = feeDto.getTotal();
+            for(String every:useLicenceIdFindHciNameAndAddress){
+                String hciName = every.substring(0, every.indexOf("/"));
+                String address = every.substring(every.indexOf("/") + 1);
+                Map<String ,Object> map=new HashMap<>();
+                String format = simpleDateFormat.format(expiryDate);
+                map.put("Licence_Expiry_Date",expiryDate.toString());
+                map.put("Payment_Amount",total);
+                map.put("NAME_OF_HCI",hciName);
+                map.put("HCI_Address",address);
+                map.put("GIRO_Account_Number","***");
+                map.put("IAIS_URL","IAIS_URL");
+                map.put("System_Generated_Special_Link","System_Generated_Special_Link");
+                map.put("Name_of_Service",svcName);
+                map.put("Licence_Expiry_Date",format);
+                MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate("8D6746B1-6F37-EA11-BE7E-000C29F371DC").getEntity();
+                String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
 
-        }
+                EmailDto emailDto=new EmailDto();
+                emailDto.setContent(templateMessageByContent);
+                emailDto.setSubject(EMAIL_SUBJECT);
+                emailDto.setSender("MOH");
+                emailDto.setClientQueryCode("");
 
-        for( OrgUserRoleDto orgUserRoleDto :sendMailUser){
+                List<String> receipts=new ArrayList<>();
+                for( OrgUserRoleDto orgUserRoleDto :sendMailUser){
+                    String emailAddress = orgUserRoleDto.getEmailAddress();
+                    if(!emailAddress.isEmpty()){
+                        receipts.add(emailAddress);
+                    }
 
+                }
+                if(!receipts.isEmpty()){
+                    emailDto.setReceipts(receipts);
+                    String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
 
-         for(String every:useLicenceIdFindHciNameAndAddress){
-            String hciName = every.substring(0, every.indexOf("/"));
-            String address = every.substring(every.indexOf("/") + 1);
-            Map<String ,Object> map=new HashMap<>();
-            String format = simpleDateFormat.format(expiryDate);
-            map.put("Licence_Expiry_Date",expiryDate.toString());
-            map.put("Payment_Amount",total);
-            map.put("NAME_OF_HCI",hciName);
-            map.put("HCI_Address",address);
-            map.put("GIRO_Account_Number","***");
-            map.put("IAIS_URL","IAIS_URL");
-            map.put("System_Generated_Special_Link","System_Generated_Special_Link");
-            map.put("Name_of_Service",svcName);
-            map.put("Licence_Expiry_Date",format);
-            MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate("8D6746B1-6F37-EA11-BE7E-000C29F371DC").getEntity();
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
+                }
 
-
-             EmailDto emailDto=new EmailDto();
-             emailDto.setContent(templateMessageByContent);
-             emailDto.setSubject(EMAIL_SUBJECT);
-             emailDto.setSender("MOH");
-
-
-             String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
             }
         }
+
+
 
     }
 

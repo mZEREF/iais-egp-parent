@@ -39,6 +39,7 @@
                 <%--(<span class="fileSize"></span>MB)--%>
             </div>
             <input class="selectedFile" id="selectedFile" name = "${docConfig.id}selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
+            <span id="error_file"${status.index}></span>
           </div>
         </div>
       </div>

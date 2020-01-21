@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
@@ -666,14 +667,16 @@ public class ClinicalLaboratoryDelegator {
 
             }
             ParamUtil.setSessionAttr(bpc.request, "reloadLaboratoryDisciplines", (Serializable) reloadChkLstMap);
+
+            currentSvcDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
+            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcDto);
             if (!errorMap.isEmpty()) {
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.LABORATORYDISCIPLINES);
                 return;
             }
-            currentSvcDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
-            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcDto);
         }
+
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines end ...."));
     }
 
@@ -915,7 +918,7 @@ public class ClinicalLaboratoryDelegator {
         List<AppSvcDocDto> appSvcDocDtoList = new ArrayList<>();
         AppSvcDocDto appSvcDocDto = null;
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-
+        Map<String,String> errorMap=new HashMap<>();
         String crudActionType =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
         String crudActionTypeTab =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
@@ -988,6 +991,7 @@ public class ClinicalLaboratoryDelegator {
             }
 
         }
+        String crud_action_values =mulReq.getParameter( "nextStep");
 
 
 
@@ -996,7 +1000,62 @@ public class ClinicalLaboratoryDelegator {
         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoList);
         setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
         log.debug(StringUtil.changeForLog("the do doDocuments end ...."));
+
+
+        if("next".equals(crud_action_values)){
+            doValidateSvcDocument(bpc.request,errorMap);
+
+            if(!errorMap.isEmpty()){
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"serviceForms");
+                String crud_action_type_form_page = mulReq.getParameter( "crud_action_type_form_page");
+                ParamUtil.setRequestAttr(bpc.request,"crud_action_type_form_page",crud_action_type_form_page);
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.DOCUMENTS);
+                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                return;
+            }
+        }
+
     }
+
+
+    private void  doValidateSvcDocument(HttpServletRequest request,Map<String,String> errorMap){
+
+        AppSubmissionDto appSubmissionDto =(AppSubmissionDto)request.getSession().getAttribute("AppSubmissionDto");
+        if(appSubmissionDto!=null){
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if(appSvcRelatedInfoDtoList!=null){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtoList){
+                    List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                    if(appSvcDocDtoLit!=null){
+
+                        for(int i=0;i<appSvcDocDtoLit.size();i++){
+
+                            Integer docSize = appSvcDocDtoLit.get(i).getDocSize();
+                            String docName = appSvcDocDtoLit.get(i).getDocName();
+                            if(docSize>4*1024*1024){
+                                errorMap.put("file"+i,"File size is too large!");
+                            }
+
+                            Boolean flag=false;
+                            String substring = docName.substring(docName.lastIndexOf(".") + 1);
+                            FileType[] fileType = FileType.values();
+                            for(FileType f:fileType){
+                                if(f.name().equalsIgnoreCase(substring)){
+                                    flag=true;
+                                }
+                            }
+
+                            if(!flag){
+                                errorMap.put("file"+i,"Wrong file type");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
 
     /**
      * StartStep: doSaveDraft

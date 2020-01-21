@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -391,14 +392,18 @@ public class NewApplicationDelegator {
                 appSubmissionDto.setClickEditPage(clickEditPages);
             }
 
-            Map<String, String> errorMap= doValidatePremiss(bpc);
-            if(errorMap.size()>0){
-                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
-                return;
-            }
 
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+            String crud_action_value = ParamUtil.getString(bpc.request, "crud_action_value");
+            if(!"saveDraft".equals(crud_action_value)){
+                Map<String, String> errorMap= doValidatePremiss(bpc);
+                if(errorMap.size()>0){
+                    ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
+                    return;
+                }
+            }
+
         }
 
 
@@ -1020,11 +1025,40 @@ public class NewApplicationDelegator {
             doPO(hcsaSvcPersonnelDtos,errorMap,appSvcPrincipalOfficersDtoList,serviceId,sB);
             List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.get(i).getAppSvcPersonnelDtoList();
             doAppSvcPersonnelDtoList(hcsaSvcPersonnelDtos,errorMap,appSvcPersonnelDtoList,serviceId,sB);
-
+            List<AppSvcDocDto> appSvcDocDtoLit = dto.get(i).getAppSvcDocDtoLit();
+            doSvcDocument(errorMap,appSvcDocDtoLit,serviceId,sB);
         }
 
 
         return  errorMap;
+    }
+
+    private void doSvcDocument(Map<String,String> map,   List<AppSvcDocDto> appSvcDocDtoLit,String serviceId,StringBuilder sB ){
+        if(appSvcDocDtoLit!=null){
+            for (AppSvcDocDto appSvcDocDto:appSvcDocDtoLit){
+                Integer docSize = appSvcDocDto.getDocSize();
+                String docName = appSvcDocDto.getDocName();
+                Boolean flag=false;
+                if(docSize>4*1024*1024){
+                    flag=true;
+                }
+                String substring = docName.substring(docName.lastIndexOf(".") + 1);
+                FileType[] fileType = FileType.values();
+                for(FileType f:fileType){
+                    if(f.name().equalsIgnoreCase(substring)){
+                        flag=true;
+                    }
+                }
+
+                if(!flag){
+                 /*   sB.append(serviceId);*/
+                }
+            }
+
+
+        }
+
+
     }
 
     private void dolabory(Map<String,String> map ,List<AppSvcLaboratoryDisciplinesDto> list,String serviceId, StringBuilder sB){
@@ -1817,11 +1851,10 @@ public class NewApplicationDelegator {
                         if(endDate<startDate){
                             errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR003");
                         }
-                     /*   String isOtherLic = appGrpPremisesDtoList.get(i).getIsOtherLic();
+                        String isOtherLic = appGrpPremisesDtoList.get(i).getIsOtherLic();
                         if(StringUtil.isEmpty(isOtherLic)){
                             errorMap.put("isOtherLic"+i,"UC_CHKLMD001_ERR002");
                         }
-*/
 
                         //set  time
                         String errorStartMM = errorMap.get("onsiteStartMM"+i);
