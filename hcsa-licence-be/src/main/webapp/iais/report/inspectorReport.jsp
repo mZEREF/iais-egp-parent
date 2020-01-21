@@ -72,10 +72,13 @@
                         </tr>
                         <tr>
                             <td class="col-xs-4">
-                                <p>Principal Officer:</p>
+                                <p>Principal Officers:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.principalOfficer}</p>
+                                <p>${insRepDto.principalOfficers}</p>
+                                <c:forEach items="${insRepDto.principalOfficers}" var="po">
+                                    <c:out value="${po}"/>
+                                </c:forEach>
                             </td>
                         </tr>
                         <tr>
@@ -156,7 +159,7 @@
                                 <p>Report Noted By:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.reportedBy}</p>
+                                <p>${insRepDto.reportNoteBy}</p>
                             </td>
                         </tr>
                     </table>
@@ -200,9 +203,9 @@
                                         </tbody>
                                     </table>
                                 </c:if>
-                                <c:if test="${insRepDto.otherCheckList.adItemList == null}">
-                                    NO RESULT !
-                                </c:if>
+                                <%--                                <c:if test="${insRepDto.otherCheckList.adItemList == null}">--%>
+                                <%--                                    NO RESULT !--%>
+                                <%--                                </c:if>--%>
                             </td>
                         </tr>
                     </table>
@@ -272,7 +275,7 @@
                                     </table>
                                 </c:if>
                                 <c:if test="${insRepDto.ncRegulation == null}">
-                                    NO RESULT !
+                                    <p>0</p>
                                 </c:if>
                             </td>
                         </tr>
@@ -330,7 +333,7 @@
                                     </table>
                                 </c:if>
                                 <c:if test="${insRepDto.ncRectification == null}">
-                                    NO RESULT !
+                                    <p>NA</p>
                                 </c:if>
                             </td>
                         </tr>
@@ -385,11 +388,11 @@
                                 <p>TCU needed:</p>
                             </td>
                             <td class="col-xs-4">
-                                <input type="checkbox" name="tvuNeeded">
+                                <input type="checkbox" name="tvuNeeded" onchange="javascirpt:z(this);" value="1212" checked>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
-                        <tr>
+                        <tr id = "tcuDate" hidden>
                             <td class="col-xs-4">
                                 <p>TCU Date:</p>
                             </td>
@@ -399,8 +402,6 @@
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
-
-
                         <tr>
                             <td class="col-xs-4">
                                 <p>Recommendation:</p>
@@ -408,30 +409,38 @@
                             <td class="col-xs-4">
                                 <iais:select name="recommendation" options="recommendationOption"
                                              firstOption="Please select"
-                                             value="${appPremisesRecommendationDto.recommendation}"/>
+                                             value="${appPremisesRecommendationDto.recommendation}"
+                                             onchange="javascirpt:y(this.value);"/>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
-
-                        <tr>
+                        <tr id="period" hidden>
                             <td class="col-xs-4">
-                                <p>period:</p>
+                                <p>Period:</p>
                             </td>
                             <td class="col-xs-4">
                                 <iais:select name="period" options="riskOption" firstOption="Please select"
                                              onchange="javascirpt:x(this.value);"
                                              value="${appPremisesRecommendationDto.period}"/>
                                 <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
-                                <div id="recom1" hidden>
-                                    <input id=recomInNumber type="text" name="number" value="${number}">
-                                    <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
-                                    <iais:select id="chronoUnit" name="chrono" options="chronoOption"
-                                                 firstOption="Please select" value="${chrono}"/>
-                                    <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
+                        <tr id="selfPeriod" hidden>
+                            <td class="col-xs-4">
+                                <p>Other Period:</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <input id=recomInNumber type="text" name="number" value="${number}">
+                                <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
+                                <iais:select id="chronoUnit" name="chrono" options="chronoOption"
+                                             firstOption="Please select" value="${chrono}"/>
+                                <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+
+
                     </table>
                 </div>
             </div>
@@ -448,17 +457,48 @@
 <script type="text/javascript">
     function x(obj) {
         if (obj == "Others") {
-            document.getElementById("recom1").style.display = "";
-            $("#recom1").show();
+            document.getElementById("selfPeriod").style.display = "";
+            $("#selfPeriod").show();
         } else {
-            document.getElementById("recom1").style.display = "none";
+            document.getElementById("selfPeriod").style.display = "none";
         }
     }
 
+    function y(obj) {
+        if (obj == "Approval") {
+            document.getElementById("period").style.display = "";
+            $("#period").show();
+        } else {
+            document.getElementById("period").style.display = "none";
+        }
+    }
+    function z(checkbox) {
+        if (checkbox.checked ==true) {
+            document.getElementById("tcuDate").style.display = "";
+            $("#tcuDate").show();
+        } else {
+            document.getElementById("tcuDate").style.display = "none";
+        }
+    }
+
+
     $(document).ready(function () {
-        if ($("#period").val() == "Others") {
-            x("Others");
+        if ($("#period").val() == "Approval") {
+            y("Approval");
         }
     });
+
+    $(document).ready(function () {
+        if ($("#selfPeriod").val() == "Others") {
+            y("Others");
+        }
+    });
+    $(document).ready(function () {
+        if($('#tcuDate').is(':checked')) {
+
+            $("#tcuDate").show();
+        }
+    });
+
 </script>
 

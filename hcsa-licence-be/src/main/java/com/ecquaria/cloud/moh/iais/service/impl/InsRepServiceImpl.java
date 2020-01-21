@@ -145,6 +145,7 @@ public class InsRepServiceImpl implements InsRepService {
             subsumedServices.add(subsumedDto.getName());
         }
         inspectionReportDto.setSubsumedServices(subsumedServices);
+
         List<ChecklistQuestionDto> listChecklistQuestionDtos = hcsaChklClient.getcheckListQuestionDtoList(svcCode, "Inspection").getEntity();
         List<ReportNcRegulationDto> listReportNcRegulationDto = new ArrayList<>();
         List<ReportNcRectifiedDto> listReportNcRectifiedDto = new ArrayList<>();

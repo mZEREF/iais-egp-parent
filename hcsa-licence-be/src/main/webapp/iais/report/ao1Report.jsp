@@ -198,9 +198,9 @@
                                         </tbody>
                                     </table>
                                 </c:if>
-                                <c:if test="${insRepDto.otherCheckList.adItemList == null}">
-                                    NO RESULT !
-                                </c:if>
+<%--                                <c:if test="${insRepDto.otherCheckList.adItemList == null}">--%>
+<%--                                    NO RESULT !--%>
+<%--                                </c:if>--%>
                             </td>
                         </tr>
                     </table>
@@ -270,7 +270,7 @@
                                     </table>
                                 </c:if>
                                 <c:if test="${insRepDto.ncRegulation == null}">
-                                    NO RESULT !
+                                    <p>0</p>
                                 </c:if>
                             </td>
                         </tr>
