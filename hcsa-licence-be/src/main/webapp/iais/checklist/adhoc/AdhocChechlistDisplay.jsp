@@ -64,7 +64,7 @@
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
               <div class="panel panel-default">
                 <div class="panel-heading" id="headingPremise" role="tab">
-                  <h4 class="panel-title"><a role="button" data-toggle="" href="#collapsePremise" aria-expanded="" aria-controls="">${sec.section}</a></h4>
+                  <h4 class="panel-title">${sec.section}</h4>
                 </div>
                 <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
                   <div class="panel-body">
@@ -108,7 +108,7 @@
               <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                 <div class="panel panel-default">
                   <div class="panel-heading"  role="tab">
-                    <h4 class="panel-title"><a role="button" data-toggle="" href="#collapsePremise" aria-expanded="" aria-controls="">Adhoc Item</a></h4>
+                    <h4 class="panel-title">Adhoc Item</h4>
                   </div>
                   <div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPremise">
                     <div class="panel-body">
