@@ -29,7 +29,7 @@
     <br>
     <br>
     <input type="hidden" name="inspectorPreType" value="">
-    <input type="hidden" id="actionValue" name="actionValue" value="">
+    <input type="hidden" id="actionValue" name="actionValue" value="<c:out value="${actionValue}"/>">
     <input type="hidden" id="processDec" name="processDec" value="">
 
     <iais:body >
@@ -56,7 +56,7 @@
                 <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments"
                                              role="tab" data-toggle="tab">Documents</a></div>
 
-                <div class="swiper-slide"><a href="#tabInspection" aria-controls="tabInspection"
+                <div class="swiper-slide"><a id="preInspSelfChList" href="#tabInspection" aria-controls="tabInspection"
                                              role="tab" data-toggle="tab">Checklist</a></div>
                 <div class="swiper-slide"><a href="#tabProcessing" aria-controls="tabProcessing"
                                              role="tab" data-toggle="tab">Processing</a></div>
@@ -151,6 +151,7 @@
                   </div>
                 </div>
               </div>
+
               <div class="tab-pane" id="tabDocuments" role="tabpanel">
                 <div class="alert alert-info" role="alert"><strong>
                   <h4>Supporting Document</h4>
@@ -164,15 +165,14 @@
                     <div class="table-gp">
                       <table class="table">
                         <thead>
-                        <tr>
-                          <th>Document</th>
-                          <th>File</th>
-                          <th>Size</th>
-                          <th>Submitted By</th>
-                          <th>Date Submitted</th>
-                        </tr>
+                          <tr>
+                            <th>Document</th>
+                            <th>File</th>
+                            <th>Size</th>
+                            <th>Submitted By</th>
+                            <th>Date Submitted</th>
+                          </tr>
                         </thead>
-
                         <tbody>
                         <c:forEach items="${applicationViewDto.appSupDocDtoList}"
                                    var="appSupDocDto">
@@ -195,11 +195,12 @@
                           </tr>
                         </c:forEach>
                         </tbody>
-
                       </table>
-                      <div class="alert alert-info" role="alert"><strong>
-                        <h4>Internal Document</h4>
-                      </strong></div>
+                      <div class="alert alert-info" role="alert">
+                        <strong>
+                          <h4>Internal Document</h4>
+                        </strong>
+                      </div>
                       <div class="text ">
                         <p><span>These are documents uploaded by an agency officer to support back office processing.</span>
                         </p>
@@ -226,7 +227,6 @@
                     </div>
                   </div>
                 </div>
-
               </div>
 
               <div class="tab-pane" id="tabInspection" role="tabpanel">
@@ -235,11 +235,10 @@
                     <div class="center-content">
                       <c:forEach var = "item" items="${inspectionChecklistAttr}" varStatus="status">
                         <c:if test="${item.common eq true}">
-                          <div class="bg-title">
+                          <div class="bg-panel-heading">
                             <h2>General Regulation</h2>
                           </div>
                         </c:if>
-
                         <c:if test="${item.common eq false}">
                           <c:choose>
                             <c:when test="${empty item.svcSubType}">
@@ -253,7 +252,7 @@
                         <c:forEach var = "sec" items="${item.sectionDtos}">
                           <div class="panel panel-default">
                             <div class="panel-heading" id="headingPremise" role="tab">
-                              <h4 class="panel-title"><a role="button" data-toggle="" href="#collapsePremise" aria-expanded="" aria-controls="">${sec.section}</a></h4>
+                              <h4 class="panel-title">${sec.section}</h4>
                             </div>
                             <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
                               <div class="panel-body">
@@ -293,7 +292,7 @@
                       <c:if test="${!empty adhocCheckListAttr}">
                         <div class="panel panel-default">
                           <div class="panel-heading"  role="tab">
-                            <h4 class="panel-title"><a role="button" data-toggle="" href="#collapsePremise" aria-expanded="" aria-controls="">Adhoc Item</a></h4>
+                            <h4 class="panel-title">Adhoc Item</h4>
                           </div>
                           <div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPremise">
                             <div class="panel-body">
@@ -325,6 +324,7 @@
                           </div>
                         </div>
                       </c:if>
+                      <button class="btn btn-lg btn-login-edit" style="float:right" type="button" onclick="javascript:doInspectionPreTaskEdit();">Edit</button>
                     </div>
                   </div>
                 </div>
@@ -347,7 +347,7 @@
                               </iais:value>
                             </iais:row>
                             <iais:row>
-                              <iais:field value="Remarks" required="true"/>
+                              <iais:field value="Remarks"/>
                               <iais:value width="300">
                                 <textarea maxlength="300" id="preInspecRemarks" name="preInspecRemarks" cols="70" rows="7" ><c:out value="${inspectionPreTaskDto.reMarks}"></c:out></textarea>
                                 <br><span class="error-msg" name="iaisErrorMsg" id="error_reMarks"></span>
@@ -359,11 +359,59 @@
                                 <iais:select name="selectValue" options="processDecOption" firstOption="Please select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectionPreTaskChange(this.value)"></iais:select>
                               </iais:value>
                             </iais:row>
+                            <div class="alert alert-info" role="alert">
+                              <strong>
+                                <h4>Processing History</h4>
+                              </strong>
+                            </div>
+                            <div class="row">
+                              <div class="col-xs-12">
+                                <div class="table-gp">
+                                  <table class="table">
+                                    <thead>
+                                    <tr>
+                                      <th>Username</th>
+                                      <th>Working Group</th>
+                                      <th>Status Update</th>
+                                      <th>Remarks</th>
+                                      <th>Last Updated</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <c:forEach
+                                            items="${applicationViewDto.appPremisesRoutingHistoryDtoList}"
+                                            var="appPremisesRoutingHistoryDto">
+                                      <tr>
+                                        <td>
+                                          <p><c:out
+                                                  value="${appPremisesRoutingHistoryDto.actionby}"></c:out></p>
+                                        </td>
+                                        <td>
+                                          <p><c:out
+                                                  value="${appPremisesRoutingHistoryDto.workingGroup}"></c:out></p>
+                                        </td>
+                                        <td>
+                                          <p><c:out
+                                                  value="${appPremisesRoutingHistoryDto.processDecision}"></c:out></p>
+                                        </td>
+                                        <td>
+                                          <p><c:out
+                                                  value="${appPremisesRoutingHistoryDto.internalRemarks}"></c:out></p>
+                                        </td>
+                                        <td>
+                                          <p><c:out
+                                                  value="${appPremisesRoutingHistoryDto.updatedDt}"></c:out></p>
+                                        </td>
+                                      </tr>
+                                    </c:forEach>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
                             <iais:action >
                               <button class="btn btn-lg btn-login-back" style="float:left" type="button" onclick="javascript:doInspectionPreTaskBack()"><a style="color: black;" href = "${inboxUrl}">Back</a></button>
                               <button class="btn btn-lg btn-login-submit" style="float:right" type="button" onclick="javascript:doInspectionPreTaskSubmit()">Submit</button>
-                              <span style="float:right">&nbsp;</span>
-                              <button class="btn btn-lg btn-login-edit" style="float:right" type="button" onclick="javascript:doInspectionPreTaskEdit();">Edit</button>
                             </iais:action>
                           </iais:section>
                         </div>
@@ -381,6 +429,17 @@
 </div>
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
+    $(document).ready(function() {
+        var actionValue = $("#actionValue").val();
+        if(actionValue == "edit"){
+            inspectionPreTaskJump();
+        }
+    });
+
+    function inspectionPreTaskJump(){
+        $("#preInspSelfChList").click();
+    }
+
     function inspectionPreTaskSubmit(action){
         $("[name='inspectorPreType']").val(action);
         var mainPoolForm = document.getElementById('mainReviewForm');

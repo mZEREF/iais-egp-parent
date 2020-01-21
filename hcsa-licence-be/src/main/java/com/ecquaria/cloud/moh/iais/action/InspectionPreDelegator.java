@@ -95,6 +95,7 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request,"commonDto", null);
         ParamUtil.setSessionAttr(bpc.request,"serListDto", null);
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, null);
+        ParamUtil.setSessionAttr(bpc.request, "actionValue", null);
     }
 
     /**
@@ -193,6 +194,7 @@ public class InspectionPreDelegator {
         }
 
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
+        ParamUtil.setSessionAttr(bpc.request, "actionValue", actionValue);
     }
 
     /**
