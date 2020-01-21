@@ -22,14 +22,17 @@
                                                 data-toggle="tab">Documents</a></li>
     <li id="checkListli" class="complete" role="presentation"><a id="checkList" aria-controls="tabCheckList" role="tab"
                                                   data-toggle="tab">CheckList</a></li>
-    <li id="emailViewli" class="complete" role="presentation"><a id="processing" aria-controls="tabProcessing" role="tab"
-                                                data-toggle="tab">Processing</a></li>
+    <li id="emailViewli" class="complete" role="presentation"><a id="letter" aria-controls="tabLetter" role="tab"
+                                                                 data-toggle="tab">Letter</a></li>
+    <li id="processingli" class="complete" role="presentation"><a id="processing" aria-controls="tabProcessing" role="tab"
+                                                                 data-toggle="tab">Processing</a></li>
 </ul>
 <div class="tab-nav-mobile visible-xs visible-sm">
     <div class="swiper-wrapper" role="tablist">
         <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></div>
         <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a></div>
         <div class="swiper-slide"><a href="#tabCheckList" aria-controls="tabCheckList" role="tab" data-toggle="tab">CheckList</a></div>
+        <div class="swiper-slide"><a href="#tabLetter" aria-controls="tabLetter" role="tab" data-toggle="tab">Letter</a></div>
         <div class="swiper-slide"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a></div>
     </div>
     <div class="swiper-button-prev"></div>

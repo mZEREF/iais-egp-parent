@@ -176,7 +176,7 @@
 
                             </div>
 
-                            <div class="tab-pane active" id="tabProcessing" role="tabpanel" >
+                            <div class="tab-pane active" id="tabLetter" role="tabpanel" >
                                 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
                                 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/jquery-3.4.1.min.js"></script>
                                 <jsp:useBean id="insEmailDto" scope="session" type="com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto"/>
@@ -207,6 +207,23 @@
                                             </div>
                                         </td>
                                     </tr>
+
+                                    </tbody>
+                                </table>
+                                <p class="text-right text-center-mobile">
+                                    <iais:action style="text-align:center;">
+                                        <button type="button" class="search btn" onclick="javascript:doPreview();">Preview</button>
+                                        <button type="button" class="search btn" onclick="javascript:doReload();">Reload</button>
+                                    </iais:action >
+                                </p>
+                            </div>
+                            <div class="tab-pane " id="tabProcessing" role="tabpanel" >
+                                <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+                                <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/jquery-3.4.1.min.js"></script>
+                                <jsp:useBean id="insEmailDto" scope="session" type="com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto"/>
+                                <table class="table">
+                                    <tbody>
+
                                     <div class="alert alert-info" role="alert">
                                         <p><span><strong>Processing Status Update</strong></span></p>
                                     </div>
@@ -243,7 +260,7 @@
                                         <td>
                                             <div class="col-sm-9">
                                                 <select id="decision-validate-email" name="decision">
-                                                    <option>Please select</option>
+                                                    <option>Select</option>
                                                     <c:forEach items="${appTypeOption}" var="decision">
                                                         <option  value="${decision.value}">${decision.text}</option>
                                                     </c:forEach>
@@ -256,8 +273,6 @@
                                 <p class="text-right text-center-mobile">
                                     <iais:action style="text-align:center;">
                                         <button type="button" class="search btn" onclick="javascript:doSend();">Submit</button>
-                                        <button type="button" class="search btn" onclick="javascript:doPreview();">Preview</button>
-                                        <button type="button" class="search btn" onclick="javascript:doReload();">Reload</button>
                                     </iais:action >
                                 </p>
                                 <div class="alert alert-info" role="alert">

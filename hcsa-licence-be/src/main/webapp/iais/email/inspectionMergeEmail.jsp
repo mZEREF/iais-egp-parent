@@ -27,9 +27,6 @@
                             <li class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
                             <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
-
-                            <li class="incomplete" role="presentation"><a href="#tabCheckList" aria-controls="CheckList" role="tab"
-                                                                          data-toggle="tab">CheckList</a></li>
                             <li class="complete" role="presentation"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab"
                                                                         data-toggle="tab">Processing</a></li>
                         </ul>

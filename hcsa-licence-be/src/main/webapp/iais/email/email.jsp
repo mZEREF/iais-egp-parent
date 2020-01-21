@@ -30,95 +30,14 @@
             </div>
         </td>
     </tr>
-    <div class="alert alert-info" role="alert">
-        <p><span><strong>Processing Status Update</strong></span></p>
-    </div>
-    <tr height="1">
-        <td class="col-xs-2" >
-            <p >
-                Current Status:
-            </p>
-        </td>
-        <td>
-            <div class="col-sm-9">
-                <p>${insEmailDto.appStatus}</p>
-            </div>
-        </td>
-    </tr>
-    <tr height="1">
-        <td class="col-xs-2" >
-            <p >
-                remarks:
-            </p>
-        </td>
-        <td>
-            <div class="col-sm-9">
-                <p><textarea name="remarks" cols="90" rows="6"  title="content"  >${insEmailDto.remarks}</textarea></p>
-            </div>
-        </td>
-    </tr>
-    <tr height="1">
-        <td class="col-xs-2" >
-            <p >
-                Processing Decision:
-            </p>
-        </td>
-        <td>
-            <div class="col-sm-9">
-                <select id="decision-email" name="decision">
-                    <option>Select</option>
-                    <c:forEach items="${appTypeOption}" var="decision">
-                        <option  value="${decision.value}">${decision.text}</option>
-                    </c:forEach>
-                </select>
-            </div>
-        </td>
-    </tr>
+
     </tbody>
 </table>
 <p class="text-right text-center-mobile">
 
     <iais:action style="text-align:center;">
-        <button type="button" class="search btn" onclick="javascript:doSend();">Submit</button>
         <button type="button" class="search btn" onclick="javascript:doPreview();">Preview</button>
     </iais:action>
 </p>
-<br>
-<div class="alert alert-info" role="alert">
-    <p><span><strong>Processing History</strong></span></p>
-</div>
-<table class="table">
-    <thead>
-    <tr align="center">
-        <iais:sortableHeader needSort="false" field="USERNAME" value="Username"></iais:sortableHeader>
-        <iais:sortableHeader needSort="false"  field="WORKING GROUP" value="Working Group"></iais:sortableHeader>
-        <iais:sortableHeader needSort="false"  field="APP_STATUS" value="Status Update"></iais:sortableHeader>
-        <iais:sortableHeader needSort="false"  field="REMARKS" value="remarks"></iais:sortableHeader>
-        <iais:sortableHeader needSort="false" field="UPDATED_DT" value="Last Updated"></iais:sortableHeader>
-    </tr>
-    </thead>
-    <tbody>
-    <c:choose>
-        <c:when test="${empty appPremisesRoutingHistoryDtos}">
-            <tr>
-                <td colspan="7">
-                    <iais:message key="ACK018" escape="true"></iais:message>
-                </td>
-            </tr>
-        </c:when>
-        <c:otherwise>
-            <c:forEach var="pool" items="${appPremisesRoutingHistoryDtos}" varStatus="status">
-                <tr>
-                    <td><c:out value="${pool.actionby}"/></td>
-                    <td><c:out value="${pool.wrkGrpId}"/></td>
-                    <td><c:out value="${pool.appStatus}"/></td>
-                    <td><c:out value="${pool.internalRemarks}"/></td>
-                    <td><c:out value="${pool.updatedDt}" /></td>
-                </tr>
-            </c:forEach>
-        </c:otherwise>
-    </c:choose>
 
-    </tbody>
-</table>
 
