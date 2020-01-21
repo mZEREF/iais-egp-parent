@@ -146,35 +146,7 @@ public class HcsaApplicationDelegator {
 //            verified.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
         }
 //        applicationViewDto.setVerified(verified)
-// History
-        List<String> actionByList=new ArrayList<>();
-        for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:applicationViewDto.getAppPremisesRoutingHistoryDtoList()
-             ) {
-            actionByList.add(appPremisesRoutingHistoryDto.getActionby());
-        }
-        List<OrgUserDto> actionByRealNameList=applicationViewService.getUserNameById(actionByList);
-        for (int i = 0; i <applicationViewDto.getAppPremisesRoutingHistoryDtoList().size(); i++) {
-            String username="-";
-            for (int j = 0; j <actionByRealNameList.size() ; j++) {
-                if ((applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getActionby()).equals(actionByRealNameList.get(j).getId())){
-                    username=actionByRealNameList.get(j).getDisplayName();
-                    break;
-                }
-            }
-            applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setActionby(username);
-            String statusUpdate=MasterCodeUtil.getCodeDesc(applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getAppStatus());
-            applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setAppStatus(statusUpdate);
-            String workGroupId = applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getWrkGrpId();
-            if (!StringUtil.isEmpty(workGroupId)){
-                log.info("Wrk Group Id ======>" + workGroupId);
-                String workingGroupName=applicationViewService.getWrkGrpName(workGroupId);
-                if (!StringUtil.isEmpty(workingGroupName)){
-                    applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setWorkingGroup(workingGroupName);
-                }else{
-                    applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setWorkingGroup("-");
-                }
-            }
-        }
+//        History
 
         //   rollback
         Map<String,String> rollBackMap=new HashMap<>();
