@@ -37,7 +37,7 @@
                 <iais:value>
                     <label class="col-xs-6 col-md-6" for="appStatusSelect">Application Status:</label>
                     <div class="col-xs-6 col-md-6">
-                        <iais:select name="appStatusSelect" id="appStatusSelect" options="appStatusSelect"
+                        <iais:select codeCategory="CATE_ID_APP_STATUS" name="appStatusSelect" id="appStatusSelect"
                                      firstOption="All"></iais:select>
                     </div>
                 </iais:value>
@@ -104,7 +104,7 @@
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Type</p>
-                                    <p>${app.applicationType}</p>
+                                    <p><iais:code code="${app.applicationType}"></iais:code></p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Service</p>
@@ -112,7 +112,7 @@
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Status</p>
-                                    <p>${app.status}</p>
+                                    <p><iais:code code="${app.status}"></iais:code></p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Date Submitted</p>

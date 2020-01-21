@@ -233,15 +233,11 @@ public class InterInboxDelegator {
         SearchResult appResult = inboxService.appDoQuery(appParam);
         List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
         for (InboxAppQueryDto appDto:inboxAppQueryDtoList) {
-            String appType = MasterCodeUtil.getCodeDesc(appDto.getApplicationType());
-            String appStatus = MasterCodeUtil.getCodeDesc(appDto.getStatus());
             String serviceName = "N.A.";
             if (appDto.getServiceId() != null){
                 serviceName = inboxService.getServiceNameById(appDto.getServiceId());
             }
-            appDto.setApplicationType(appType);
             appDto.setServiceId(serviceName);
-            appDto.setStatus(appStatus);
         }
 
         if(!StringUtil.isEmpty(appResult)){
