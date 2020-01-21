@@ -166,7 +166,7 @@ public class InspecEmailDelegator {
         AppPremisesRoutingHistoryDto appPremisesRoutingHisDto= appPremisesRoutingHistoryDtos.get(0);
         String upDt=appPremisesRoutingHistoryDtos.get(0).getUpdatedDt();
         for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1:appPremisesRoutingHistoryDtos){
-            if(appPremisesRoutingHistoryDto1.getUpdatedDt().compareTo(upDt)<0){
+            if(appPremisesRoutingHistoryDto1.getUpdatedDt().compareTo(upDt)>0){
                 upDt=appPremisesRoutingHistoryDto1.getUpdatedDt();
                 appPremisesRoutingHisDto=appPremisesRoutingHistoryDto1;
             }

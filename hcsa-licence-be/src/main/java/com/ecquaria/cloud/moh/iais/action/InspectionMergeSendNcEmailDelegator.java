@@ -203,10 +203,10 @@ public class InspectionMergeSendNcEmailDelegator {
                     AppPremisesRoutingHistoryDto appPremisesRoutingHisDto= appPremisesRoutingHistoryDtos.get(0);
                     String upDt=appPremisesRoutingHistoryDtos.get(0).getUpdatedDt();
                     for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1:appPremisesRoutingHistoryDtos){
-                        if(appPremisesRoutingHistoryDto1.getUpdatedDt().compareTo(upDt)<0){
-                            upDt=appPremisesRoutingHistoryDto1.getUpdatedDt();
+                        if(appPremisesRoutingHistoryDto1.getUpdatedDt().compareTo(upDt)<0&&appPremisesRoutingHistoryDto1.getRoleId()==RoleConsts.USER_ROLE_INSPECTIOR){
                             appPremisesRoutingHisDto=appPremisesRoutingHistoryDto1;
                         }
+                        upDt=appPremisesRoutingHistoryDto1.getUpdatedDt();
                     }
 
                     applicationViewDto1.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER);
@@ -256,10 +256,10 @@ public class InspectionMergeSendNcEmailDelegator {
                 AppPremisesRoutingHistoryDto appPremisesRoutingHisDto= appPremisesRoutingHistoryDtos.get(0);
                 String upDt=appPremisesRoutingHistoryDtos.get(0).getUpdatedDt();
                 for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:appPremisesRoutingHistoryDtos){
-                    if(appPremisesRoutingHistoryDto.getUpdatedDt().compareTo(upDt)<0){
-                        upDt=appPremisesRoutingHistoryDto.getUpdatedDt();
+                    if(appPremisesRoutingHistoryDto.getUpdatedDt().compareTo(upDt)<0&&appPremisesRoutingHistoryDto.getRoleId()==RoleConsts.USER_ROLE_INSPECTIOR){
                         appPremisesRoutingHisDto=appPremisesRoutingHistoryDto;
                     }
+                    upDt=appPremisesRoutingHistoryDto.getUpdatedDt();
                 }
 
                 applicationViewDto1.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT);
