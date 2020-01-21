@@ -108,10 +108,14 @@ public class InspectionMergeSendNcEmailDelegator {
         String oneEmail=inspEmailService.getInsertEmail(appPremisesCorrelationDtos.get(0).getId()).getMessageContent();
         mesContext.append(oneEmail.substring(0,oneEmail.indexOf("Below are the review outcome")));
         List<String> appPremCorrIds=new ArrayList<>();
+        List<String> svcNames=new ArrayList<>();
+
         for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
                 ) {
             String ncEmail= inspEmailService.getInsertEmail(appPremisesCorrelationDto.getId()).getMessageContent();
             appPremCorrIds.add(appPremisesCorrelationDto.getId());
+            ApplicationViewDto appViewDto = inspEmailService.getAppViewByCorrelationId(appPremisesCorrelationDto.getId());
+            svcNames.add(inspectionService.getHcsaServiceDtoByServiceId(appViewDto.getApplicationDto().getServiceId()).getSvcName());
             mesContext.append(ncEmail.substring(ncEmail.indexOf("Below are the review outcome"),ncEmail.indexOf("<p>Thank you</p>")));
         }
         mesContext.append(oneEmail.substring(oneEmail.indexOf("<p>Thank you</p>")));
@@ -126,6 +130,7 @@ public class InspectionMergeSendNcEmailDelegator {
         ParamUtil.setSessionAttr(request,"appPremCorrIds", (Serializable) appPremCorrIds);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setSessionAttr(request,MSG_CON, mesContext.toString());
+        ParamUtil.setRequestAttr(request,"svcNames",svcNames);
         ParamUtil.setSessionAttr(request,"applicationViewDto",applicationViewDto);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
     }

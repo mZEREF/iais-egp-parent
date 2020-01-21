@@ -332,9 +332,9 @@ public class InspectReviseNcEmailDelegator {
         String upDt=appPremisesRoutingHistoryDtos.get(0).getUpdatedDt();
         for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1:appPremisesRoutingHistoryDtos){
             if(appPremisesRoutingHistoryDto1.getUpdatedDt().compareTo(upDt)>0){
-                upDt=appPremisesRoutingHistoryDto1.getUpdatedDt();
                 appPremisesRoutingHisDto=appPremisesRoutingHistoryDto1;
             }
+            upDt=appPremisesRoutingHistoryDto1.getUpdatedDt();
             if(!StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getWrkGrpId())) {
                 appPremisesRoutingHistoryDto1.setWrkGrpId(applicationViewService.getWrkGrpName(appPremisesRoutingHistoryDto1.getWrkGrpId()));
             }

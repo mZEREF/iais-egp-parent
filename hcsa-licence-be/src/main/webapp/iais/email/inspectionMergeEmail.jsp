@@ -232,8 +232,8 @@
                                         </td>
                                         <td>
                                             <div class="col-sm-9">
-                                                <select id="decision-email" name="decision" onchange="thisTime()" >
-                                                    <option>Select</option>
+                                                <select id="decision_email" name="decision" onchange="thisTime()" >
+                                                    <option selected>Select</option>
                                                     <c:forEach items="${appTypeOption}" var="decision">
                                                         <option  value="${decision.value}">${decision.text}</option>
                                                     </c:forEach>
@@ -249,8 +249,8 @@
                                         </td>
                                         <td>
                                             <div class="col-sm-9">
-                                                <c:forEach items="${appPremCorrIds}" var="revise" varStatus="index">
-                                                    <input type="checkbox"  name="revise${index.index+1}" value="${revise}">NC/BP ${index.index+1}</input>
+                                                <c:forEach items="${svcNames}" var="revise" varStatus="index">
+                                                    <input type="checkbox"  name="revise${index.index+1}" value="${revise}">${revise}</input>
                                                 </c:forEach>
 
                                             </div>
@@ -284,8 +284,7 @@
     }
 
     function doSend(){
-        var decision=document.getElementById("decision-email");
-        if(decision.value==="Revise email/Letter Content"){
+        if($('#decision_email option:selected').val()=="REDECI005"){
             var checkOne = false;
             var checkBox = $('input[type = checkbox]');
             for (var i = 0; i < checkBox.length; i++) {
@@ -308,15 +307,13 @@
     }
 
     function thisTime() {
-        $("#selectReviseNc").show();
-        // var decision=document.getElementById("decision-email");
-        //
-        // if(decision.value==="Revise email/Letter Content"){
-        //     $("#selectReviseNc").show();
-        // }
-        // else {
-        //     $("#selectReviseNc").hide();
-        // }
+
+        if($('#decision_email option:selected').val()=="REDECI005"){
+            $("#selectReviseNc").show();
+        }
+        else {
+            $("#selectReviseNc").hide();
+        }
     }
 </script>
 
