@@ -29,7 +29,7 @@
                 <iais:value>
                     <label class="col-xs-12 col-md-4 control-label" for="codeCategory">Code Category.</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                        <input id="codeCategory" name="codeCategory" type="text">
+                        <input id="codeCategory" name="codeCategory" type="text" maxlength="25">
                     </div>
                 </iais:value>
             </div>
@@ -37,7 +37,7 @@
                 <iais:value>
                     <label class="col-xs-12 col-md-4 control-label" for="description">Code Description.</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                        <input id="description" name="codeDescription" type="text">
+                        <input id="description" name="codeDescription" type="text" maxlength="255">
                     </div>
                 </iais:value>
             </div>
@@ -65,8 +65,7 @@
                     </div>
                 </iais:value>
             </div>
-
-            <div class="application-tab-footer">
+            <div class="form-group">
                 <div class="row">
                     <div class="col-xs-12 col-md-12">
                         <div class="text-right"><a class="btn btn-primary" id="MC_Search">Search</a></div>
@@ -75,4 +74,5 @@
             </div>
         </div>
     </div>
+
 </div>
