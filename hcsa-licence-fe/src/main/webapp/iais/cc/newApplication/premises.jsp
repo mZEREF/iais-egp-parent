@@ -157,7 +157,7 @@
                         </div>
                         <iais:row cssClass="onSiteSelect hidden">
                           <iais:field value="Add or select a premises from the list" width="12" mandatory="true"/>
-                          <iais:value  cssClass="col-xs-11 col-sm-7 col-md-5">
+                          <iais:value id="onSiteSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                               <c:choose>
                                 <c:when test="${appGrpPremisesDto.premisesType == onSite}">
                                   <iais:select cssClass="premSelect" id="onSiteSel" name="onSiteSelect"  options="premisesSelect" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
@@ -170,7 +170,7 @@
                         </iais:row>
                         <iais:row cssClass="conveyanceSelect hidden">
                           <iais:field value="Add or select a premises from the list" width="12" mandatory="true"/>
-                          <iais:value  cssClass="col-xs-11 col-sm-7 col-md-5">
+                          <iais:value id="conveyanceSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                             <c:choose>
                               <c:when test="${appGrpPremisesDto.premisesType == conv}">
                                 <iais:select cssClass="premSelect" id="conveyanceSel" name="conveyanceSelect"  options="conveyancePremSel" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
@@ -210,7 +210,7 @@
                           </iais:row>
                           <iais:row>
                             <iais:field value="Address Type " mandatory="true" width="12"/>
-                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
+                            <iais:value id="onSiteAddressType" cssClass="col-xs-7 col-sm-4 col-md-3">
                               <iais:select cssClass="siteAddressType" name="onSiteAddressType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Select address type" value="${appGrpPremisesDto.addrType}"></iais:select>
                               <span class="error-msg" name="iaisErrorMsg" id="error_addrType${status.index}"></span>
                             </iais:value>
@@ -411,7 +411,7 @@
                           </iais:row>
                           <iais:row>
                             <iais:field value="Address Type " mandatory="true" width="12"/>
-                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
+                            <iais:value id="conveyanceAddrType" cssClass="col-xs-7 col-sm-4 col-md-3">
                               <iais:select name="conveyanceAddrType" cssClass="conveyanceAddressType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Select address type" value="${appGrpPremisesDto.conveyanceAddressType}"></iais:select>
                               <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceAddressType${status.index}"></span>
                             </iais:value>
@@ -572,9 +572,9 @@
                     <div class="col-xs-12 col-sm-6">
                       <div class="button-group">
                         <c:if test="${requestInformationConfig==null}">
-                        <a class="btn btn-secondary premiseSaveDraft" >Save as Draft</a>
+                        <a class="btn btn-secondary premiseSaveDraft" id="SaveDraft" >Save as Draft</a>
                         </c:if>
-                        <a class="btn btn-primary next premiseId" >Next</a></div>
+                        <a class="btn btn-primary next premiseId" id="Next" >Next</a></div>
                     </div>
                   </div>
                 </div>
@@ -637,10 +637,10 @@
 
         removePH();
         //Binding method
-        $('.premiseId').click(function(){
+        $('#Next').click(function(){
           submit('documents',null,null);
         });
-        $('.premiseSaveDraft').click(function(){
+        $('#SaveDraft').click(function(){
           submit('premises','saveDraft',null);
         });
 

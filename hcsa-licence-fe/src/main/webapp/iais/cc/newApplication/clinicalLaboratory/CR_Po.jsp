@@ -59,6 +59,7 @@
                 <c:if test="${ReloadPrincipalOfficers != null && ReloadPrincipalOfficers.size()>0}" >
                   <c:set var="principalOfficer" value="${ReloadPrincipalOfficers[status.index]}"/>
                 </c:if>
+                <c:set var="suffix" value="${status.index}" />
                 <div class="po-content">
               <div class="">
                 <div class="row">
@@ -68,7 +69,7 @@
                         <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a Principal Officer</label>
                         <span class="upload_controls"></span>
                       </div>
-                      <div class="col-sm-5">
+                      <div class="col-sm-5" id="assignSelect${suffix}">
                         <div class="">
                           <iais:select cssClass="poSelect"  name="assignSelect" options="PrincipalOfficersAssignSelect"  value="${principalOfficer.assignSelect}" ></iais:select>
                           <div id="control--runtime--2--errorMsg_right" style="display: none;" class="error_placements"></div>
@@ -86,7 +87,7 @@
                         <label  class="control-label control-set-font control-font-label">Name</label>
                         <span class="mandatory">*</span>
                       </div>
-                      <div class="col-sm-4">
+                      <div class="col-sm-4" id="salutation${suffix}">
                         <iais:select  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${principalOfficer.salutation}" firstOption="Please Select"></iais:select>
                       </div>
                       <div class="col-sm-4">
@@ -105,7 +106,7 @@
                         </label>
                       </div>
                       <div class="col-sm-4">
-                        <div class="">
+                        <div class="" id="idType${suffix}">
                           <iais:select  name="idType"  value="${principalOfficer.idType}" options="IdTypeSelect"></iais:select>
                           <span class="error-msg" name="iaisErrorMsg" id="error_idType"></span>
                         </div>
@@ -124,7 +125,7 @@
                         <label  class="control-label control-set-font control-font-label">Designation</label>
                         <span class="mandatory">*</span>
                       </div>
-                      <div class="col-sm-5">
+                      <div class="col-sm-5" id="designation${suffix}">
                         <iais:select name="designation" codeCategory="CATE_ID_DESIGNATION" value="${principalOfficer.designation}" firstOption="Please Select"></iais:select>
                       </div>
 
@@ -276,7 +277,7 @@
                         <label  class="control-label control-set-font control-font-label">Name</label>
                         <span class="mandatory">*</span>
                       </div>
-                      <div class="col-sm-4">
+                      <div class="col-sm-4" id="deputySalutation${suffix}">
                         <iais:select  name="deputySalutation" codeCategory="CATE_ID_SALUTATION" value="${deputy.salutation}" firstOption="Select Salution"></iais:select>
                       </div>
                       <div class="col-sm-4">
@@ -295,7 +296,7 @@
                         </label>
 
                       </div>
-                      <div class="col-sm-4">
+                      <div class="col-sm-4" id="deputyIdType${suffix}">
                         <div class="">
                           <iais:select  name="deputyIdType" value="${deputy.idType}" options="IdTypeSelect"></iais:select>
                           <span name="iaisErrorMsg" class="error-msg" id="error_deputyIdType"></span>
@@ -315,7 +316,7 @@
                         <label  class="control-label control-set-font control-font-label">Designation</label>
                         <span class="mandatory">*</span>
                       </div>
-                      <div class="col-sm-5">
+                      <div class="col-sm-5" id="deputyDesignation${suffix}">
                         <iais:select name="deputyDesignation" codeCategory="CATE_ID_DESIGNATION" value="${deputy.designation}" firstOption="Select Designation"></iais:select>
                         <span class="error-msg" id="error_deputyDesignation" name="iaisErrorMsg"></span>
                       </div>

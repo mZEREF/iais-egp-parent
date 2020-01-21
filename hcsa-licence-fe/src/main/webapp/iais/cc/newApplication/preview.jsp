@@ -121,14 +121,14 @@
                                 <div class="application-tab-footer">
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-6">
-                                            <p><a id = "docBack" class="back" ><em class="fa fa-angle-left"></em> Back</a></p>
+                                            <p><a id = "Back" class="back" ><em class="fa fa-angle-left"></em> Back</a></p>
                                         </div>
                                         <div class="col-xs-12 col-sm-6">
                                             <div class="button-group">
                                                 <c:if test="${requestInformationConfig==null}">
-                                                <a class="btn btn-secondary" id = "previewSaveDraft">Save as Draft</a>
+                                                <a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a>
                                                 </c:if>
-                                                <a class="next btn btn-primary" id = "previewNext">SUBMIT & PAY </a></div>
+                                                <a class="next btn btn-primary" id = "Next">SUBMIT & PAY </a></div>
                                         </div>
                                     </div>
                                 </div>
@@ -150,13 +150,13 @@
         $('#docEdit').click(function(){
             submit('documents',null,null);
         });
-        $('#docBack').click(function(){
+        $('#Back').click(function(){
             submit('serviceForms',null,null);
         });
-        $('#previewSaveDraft').click(function(){
+        $('#SaveDraft').click(function(){
             submit('preview','saveDraft',null);
         });
-        $('#previewNext').click(function(){
+        $('#Next').click(function(){
             submit('payment','doSubmit',null);
         });
 
