@@ -101,18 +101,20 @@ public class AdhocChecklistDelegator {
         if (!isIntranet){
             return;
         }*/
-
+        List<ChecklistConfigDto> inspectionChecklist = (List<ChecklistConfigDto>)ParamUtil.getSessionAttr(request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR);
         TaskDto task = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         if (task != null){
             String refNo = task.getRefNo();
             ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(refNo);
             if (applicationViewDto != null){
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-                List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
-                log.info("inspectionChecklist info =====>>>>>>>>>>> " + inspectionChecklist.toString());
-                ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
+                if(inspectionChecklist == null) {
+                    inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
+                    log.info("inspectionChecklist info =====>>>>>>>>>>> " + inspectionChecklist.toString());
+                }
             }
         }
+        ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
     }
 
 

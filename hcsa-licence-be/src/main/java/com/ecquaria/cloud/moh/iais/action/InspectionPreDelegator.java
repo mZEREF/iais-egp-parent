@@ -94,6 +94,7 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO, null);
         ParamUtil.setSessionAttr(bpc.request,"commonDto", null);
         ParamUtil.setSessionAttr(bpc.request,"serListDto", null);
+        ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, null);
     }
 
     /**
@@ -115,24 +116,16 @@ public class InspectionPreDelegator {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appStatus = applicationDto.getStatus();
         inspectionPreTaskDto.setAppStatus(appStatus);
-        Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> mapInDto = inspectionPreTaskService.getSelfCheckListByCorrId(taskDto.getRefNo());
-        InspectionFillCheckListDto inspectionFillCheckListDto = new InspectionFillCheckListDto();
-        List<InspectionFillCheckListDto> ifcDtos = new ArrayList<>();
-        if(mapInDto != null) {
-            for (Map.Entry<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> entry : mapInDto.entrySet()) {
-                inspectionFillCheckListDto = entry.getKey();
-                ifcDtos = entry.getValue();
-            }
-        }
         setInboxUrlToSession(bpc);
         List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption();
+        List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
+
+        ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
         ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONDTO, applicationDto);
         ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO, applicationViewDto);
-        ParamUtil.setSessionAttr(bpc.request,"commonDto",inspectionFillCheckListDto);
-        ParamUtil.setSessionAttr(bpc.request,"serListDto", (Serializable) ifcDtos);
     }
 
     private void setInboxUrlToSession(BaseProcessClass bpc) {
@@ -244,5 +237,37 @@ public class InspectionPreDelegator {
         inspectionPreTaskService.routingBack(taskDto, inspectionPreTaskDto.getReMarks());
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocCheckListConifgDto);
+    }
+
+    /**
+     * StartStep: inspectionPreInspectorSelf
+     *
+     * @param bpc
+     * @throws
+     */
+    public void inspectionPreInspectorSelf(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the inspectionPreInspectorSelf start ...."));
+        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> mapInDto = inspectionPreTaskService.getSelfCheckListByCorrId(taskDto.getRefNo());
+        InspectionFillCheckListDto inspectionFillCheckListDto = new InspectionFillCheckListDto();
+        List<InspectionFillCheckListDto> ifcDtos = new ArrayList<>();
+        if(mapInDto != null) {
+            for (Map.Entry<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> entry : mapInDto.entrySet()) {
+                inspectionFillCheckListDto = entry.getKey();
+                ifcDtos = entry.getValue();
+            }
+        }
+        ParamUtil.setSessionAttr(bpc.request,"commonDto",inspectionFillCheckListDto);
+        ParamUtil.setSessionAttr(bpc.request,"serListDto", (Serializable) ifcDtos);
+    }
+
+    /**
+     * StartStep: inspectionPreInspector
+     *
+     * @param bpc
+     * @throws
+     */
+    public void inspectionPreInspector(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the inspectionPreInspector start ...."));
     }
 }

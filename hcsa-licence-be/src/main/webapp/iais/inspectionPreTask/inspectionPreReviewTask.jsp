@@ -112,6 +112,9 @@
                       View Application
                     </button>
                   </a>
+                  <button type="button" class="btn btn-primary" onclick="javascript:doInspectionPreTaskSelfBack()">
+                    Self-Assessment Checklists
+                  </button>
                 </div>
                 <div>&nbsp</div>
                 <div class="panel panel-default">
@@ -225,68 +228,109 @@
                 </div>
 
               </div>
+
               <div class="tab-pane" id="tabInspection" role="tabpanel">
                 <div class="row">
                   <div class="col-xs-12">
-                    <c:if test="${commonDto.sectionDtoList != null}">
-                      <h3>Common</h3>
-                    </c:if>
-                    <div class="table-gp">
-                      <c:forEach var ="section" items ="${commonDto.sectionDtoList}">
-                        <br/>
-                        <h4><c:out value="${section.sectionName}"></c:out></h4>
-                        <table class="table">
-                          <thead>
-                          <tr>
-                            <th>No.</th>
-                            <th>Regulation Clause Number</th>
-                            <th>Item</th>
-                          </tr>
-                          </thead>
-                          <tbody>
-                          <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
-                            <tr>
-                              <td class="row_no">${(status.index + 1) }</td>
-                              <td>${item.incqDto.regClauseNo}</td>
-                              <td>${item.incqDto.checklistItem}</td>
-                            </tr>
-                          </c:forEach>
-                          </tbody>
-                        </table>
-                      </c:forEach>
-                    </div>
-                    <c:forEach var ="cdto" items ="${serListDto}" varStatus="status">
-                      <h3>${cdto.svcName}</h3>
-                      <div class="table-gp">
-                        <c:forEach var ="section" items ="${cdto.sectionDtoList}">
-                          <br/>
-                          <h4><c:out value="${section.sectionName}"></c:out></h4>
-                          <table class="table">
-                            <thead>
-                            <tr>
-                              <th>No.</th>
-                              <th>Regulation Clause Number</th>
-                              <th>Item</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
-                              <tr>
-                                <td class="row_no">${(status.index + 1) }</td>
-                                <td>${item.incqDto.regClauseNo}</td>
-                                <td>${item.incqDto.checklistItem}</td>
-                              </tr>
-                            </c:forEach>
-                            </tbody>
-                          </table>
+                    <div class="center-content">
+                      <c:forEach var = "item" items="${inspectionChecklistAttr}" varStatus="status">
+                        <c:if test="${item.common eq true}">
+                          <div class="bg-title">
+                            <h2>General Regulation</h2>
+                          </div>
+                        </c:if>
+
+                        <c:if test="${item.common eq false}">
+                          <c:choose>
+                            <c:when test="${empty item.svcSubType}">
+                              <h2>${item.svcName}</h2>
+                            </c:when>
+                            <c:otherwise>
+                              <h2>${item.svcName} | ${item.svcSubType}</h2>
+                            </c:otherwise>
+                          </c:choose>
+                        </c:if>
+                        <c:forEach var = "sec" items="${item.sectionDtos}">
+                          <div class="panel panel-default">
+                            <div class="panel-heading" id="headingPremise" role="tab">
+                              <h4 class="panel-title"><a role="button" data-toggle="" href="#collapsePremise" aria-expanded="" aria-controls="">${sec.section}</a></h4>
+                            </div>
+                            <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
+                              <div class="panel-body">
+                                <table class="table">
+                                  <thead>
+                                  <tr>
+                                    <th>Regulation Clause Number</th>
+                                    <th>Regulations</th>
+                                    <th>Checklist Item</th>
+                                    <th>Risk Level</th>
+                                  </tr>
+                                  </thead>
+                                  <tbody>
+                                  <c:forEach var = "chklitem" items = "${sec.checklistItemDtos}" varStatus="status">
+                                    <tr>
+                                      <td>
+                                        <p>${chklitem.regulationClauseNo}</p>
+                                      </td>
+                                      <td>
+                                        <p>${chklitem.regulationClause}</p>
+                                      </td>
+                                      <td>
+                                        <p>${chklitem.checklistItem}</p>
+                                      </td>
+                                      <td>
+                                        <p><iais:code code="${chklitem.riskLevel}"></iais:code></p>
+                                      </td>
+                                    </tr>
+                                  </c:forEach>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
                         </c:forEach>
-                      </div>
-                    </c:forEach>
+                      </c:forEach>
+                      <c:if test="${!empty adhocCheckListAttr}">
+                        <div class="panel panel-default">
+                          <div class="panel-heading"  role="tab">
+                            <h4 class="panel-title"><a role="button" data-toggle="" href="#collapsePremise" aria-expanded="" aria-controls="">Adhoc Item</a></h4>
+                          </div>
+                          <div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPremise">
+                            <div class="panel-body">
+                              <table class="table">
+                                <thead>
+                                <tr>
+                                  <th>Checklist Item</th>
+                                  <th>Answer Type</th>
+                                  <th>Risk Level</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach var = "adhocItem" items = "${adhocCheckListAttr.allAdhocItem}" varStatus="status">
+                                  <tr>
+                                    <td>
+                                      <p>${adhocItem.question}</p>
+                                    </td>
+                                    <td>
+                                      <p><iais:code code="${adhocItem.answerType}"></iais:code></p>
+                                    </td>
+                                    <td>
+                                      <p><iais:code code="${adhocItem.riskLvl}"></iais:code></p>
+                                    </td>
+                                  </tr>
+                                </c:forEach>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </c:if>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="tab-pane" id="tabProcessing" role="tabpanel">
 
+              <div class="tab-pane" id="tabProcessing" role="tabpanel">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                   <h3>
                     <span>Review Task</span>
@@ -346,6 +390,11 @@
     function doInspectionPreTaskEdit() {
         $("#actionValue").val('edit');
         inspectionPreTaskSubmit('edit');
+    }
+
+    function doInspectionPreTaskSelfBack() {
+        $("#actionValue").val('self');
+        inspectionPreTaskSubmit('self');
     }
 
     function doInspectionPreTaskBack() {
