@@ -62,7 +62,7 @@ public final class IaisEGPHelper extends EGPHelper {
         if (user != null) {
             dto.setNricNumber(user.getId());
             dto.setMohUserId(user.getId());
-            dto.setMohUserGuid(AppConsts.USER_ID_ANONYMOUS);
+            dto.setMohUserGuid(user.getId());
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             if (loginContext != null) {
                 dto.setMohUserGuid(loginContext.getUserId());
