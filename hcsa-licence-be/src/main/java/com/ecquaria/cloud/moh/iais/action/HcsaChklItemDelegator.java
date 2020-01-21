@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -191,7 +192,6 @@ public class HcsaChklItemDelegator {
         }
 
         String json = "";
-        int reduceSize = 0;
         File toFile = FileUtils.multipartFileToFile(file);
         errorMap = new HashMap<>(1);
         errorMap.put(FILE_UPLOAD_ERROR, "Please remove the same data from Excel.");
@@ -200,29 +200,19 @@ public class HcsaChklItemDelegator {
             switch (value){
                 case REGULATION:
                     List<HcsaChklSvcRegulationDto> regulationDtoList = FileUtils.transformToJavaBean(toFile, HcsaChklSvcRegulationDto.class);
-                    List<HcsaChklSvcRegulationDto> passRegulationDtoList = regulationDtoList.stream().distinct().collect(Collectors.toList());
-                    reduceSize = regulationDtoList.size() - passRegulationDtoList.size();
-                    if (reduceSize > 0){
-                        ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
-                        return;
-                    }
+                    regulationDtoList = regulationDtoList.stream().filter(i -> !StringUtil.isEmpty(i.getClauseNo())).collect(Collectors.toList());
+                    json = hcsaChklService.submitUploadRegulation(regulationDtoList);
 
-                    json = hcsaChklService.submitUploadRegulation(passRegulationDtoList);
                     break;
                 case CHECKLIST_ITEM:
-                    List<ChecklistItemDto> checklistItemDtoList = FileUtils.transformToJavaBean(toFile, ChecklistItemDto.class);
-                    List<ChecklistItemDto> passItemDtoList =  checklistItemDtoList.stream().distinct().collect(Collectors.toList());
-                    reduceSize = checklistItemDtoList.size() - passItemDtoList.size();
-                    if (reduceSize > 0){
-                        ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
-                        return;
-                    }
 
+                    List<ChecklistItemDto> checklistItemDtoList = FileUtils.transformToJavaBean(toFile, ChecklistItemDto.class);
+                    checklistItemDtoList = checklistItemDtoList.stream().filter(i -> !StringUtil.isEmpty(i.getChecklistItem())).collect(Collectors.toList());
                     json  = hcsaChklService.submitUploadItem(checklistItemDtoList);
                     break;
                 default:
             }
-        }catch (IaisRuntimeException e){
+        }catch (Exception e){
             errorMap.put(FILE_UPLOAD_ERROR, "CHKL_ERR011");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
@@ -754,7 +744,16 @@ public class HcsaChklItemDelegator {
                 QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
                 SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
                 if (searchResult != null){
+
+                    //master code to description
                     List<CheckItemQueryDto> checkItemQueryDtoList = searchResult.getRows();
+                    for (CheckItemQueryDto checkItemQueryDto : checkItemQueryDtoList){
+                        checkItemQueryDto.setAnswerType(MasterCodeUtil.getCodeDesc(checkItemQueryDto.getAnswerType()));
+                        String riskLvl = MasterCodeUtil.getCodeDesc(checkItemQueryDto.getRiskLevel());
+                        checkItemQueryDto.setRiskLevel("".equals(riskLvl) ? "-" : riskLvl);
+                        checkItemQueryDto.setStatus(MasterCodeUtil.getCodeDesc(checkItemQueryDto.getStatus()));
+                    }
+
                     file = ExcelWriter.exportExcel(checkItemQueryDtoList, CheckItemQueryDto.class, "Checklist_Items_Upload_Template");
                 }
                 break;
