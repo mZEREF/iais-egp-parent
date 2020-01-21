@@ -1,1 +1,1 @@
-<%@include file="/iais/email/reviseNcEmail.jsp"%>
+<%@include file="/iais/email/validateEmail.jsp"%>

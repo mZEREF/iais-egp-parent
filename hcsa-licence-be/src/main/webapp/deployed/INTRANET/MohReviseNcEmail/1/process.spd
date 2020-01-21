@@ -72,6 +72,20 @@
     <JavaCode defClass="" executor="" methodName="preCheckList_OnStepProcess_0" name="preCheckList_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preProcessing" x="380" y="610">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preProcessing_OnStepProcess_0" name="preProcessing_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doProcessing" x="740" y="610">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doProcessing_OnStepProcess_0" name="doProcessing_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="emailViewPage" stageIndicator="" x="536" y="356">
@@ -93,6 +107,12 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreviewEmailPage" stageIndicator="" x="546" y="536">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ProcessingPage" stageIndicator="" x="560" y="610">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -164,6 +184,18 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
    <position>{(100,330)(206,336)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preProcessing" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(296,336)(425,660)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ProcessingPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preProcessing" style="oblique">
+   <position>{(425,660)(605,660)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doProcessing" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ProcessingPage" style="oblique">
+   <position>{(605,660)(785,660)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doProcessing" style="oblique">
+   <position>{(785,660)(876,316)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/preCheckList" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="719" y="265">
@@ -177,6 +209,7 @@
    <SwitchCase component="/Steps/AutomaticStep/preEmailView" value="&quot;emailView&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/SendEmail" value="&quot;send&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PreviewEmail" value="&quot;preview&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preProcessing" value="&quot;processing&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

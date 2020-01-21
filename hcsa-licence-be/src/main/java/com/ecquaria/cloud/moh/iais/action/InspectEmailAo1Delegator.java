@@ -174,6 +174,10 @@ public class InspectEmailAo1Delegator {
         ParamUtil.setSessionAttr(request,MSG_CON,content);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
     }
+    public void doProcessing(BaseProcessClass bpc){
+        log.info("=======>>>>>doProcessing>>>>>>>>>>>>>>>>emailRequest");
+        HttpServletRequest request = bpc.request;
+    }
 
     public void previewEmail(BaseProcessClass bpc){
         log.info("=======>>>>>previewEmail>>>>>>>>>>>>>>>>emailRequest");
@@ -335,6 +339,15 @@ public class InspectEmailAo1Delegator {
         HttpServletRequest request = bpc.request;
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, TASK_DTO);
         String correlationId = taskDto.getRefNo();
+        InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail(correlationId);
+        ParamUtil.setSessionAttr(request,"draftEmailId",inspectionEmailTemplateDto.getId());
+        ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
+    }
+    public void preProcess(BaseProcessClass bpc)  {
+        log.info("=======>>>>>preEmailView>>>>>>>>>>>>>>>>emailRequest");
+        HttpServletRequest request = bpc.request;
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, TASK_DTO);
+        String correlationId = taskDto.getRefNo();
         String appPremCorrId=correlationId;
         InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail(appPremCorrId);
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);
@@ -344,7 +357,7 @@ public class InspectEmailAo1Delegator {
         for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1:appPremisesRoutingHistoryDtos){
             if(appPremisesRoutingHistoryDto1.getUpdatedDt().compareTo(upDt)>0){
                 appPremisesRoutingHisDto=appPremisesRoutingHistoryDto1;
-             }
+            }
             upDt=appPremisesRoutingHistoryDto1.getUpdatedDt();
             if(!StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getWrkGrpId())) {
                 appPremisesRoutingHistoryDto1.setWrkGrpId(applicationViewService.getWrkGrpName(appPremisesRoutingHistoryDto1.getWrkGrpId()));
@@ -372,6 +385,7 @@ public class InspectEmailAo1Delegator {
         ParamUtil.setSessionAttr(request,"draftEmailId",inspectionEmailTemplateDto.getId());
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
     }
+
     public void emailView(BaseProcessClass bpc) {
         log.info("=======>>>>>emailView>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;

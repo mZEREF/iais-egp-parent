@@ -72,6 +72,20 @@
     <JavaCode defClass="" executor="" methodName="emailView_OnStepProcess_0" name="emailView_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preProcess" x="340" y="480">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preProcess_OnStepProcess_0" name="preProcess_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doProcessing" x="720" y="480">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doProcessing_OnStepProcess_0" name="doProcessing_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreviewEmailPage" stageIndicator="" x="527" y="401">
@@ -93,6 +107,12 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="checkListpage" stageIndicator="" x="460" y="130">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ProcessingPage" stageIndicator="" x="500" y="480">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -159,10 +179,22 @@
    <position>{(720,150)(547,57)(370,150)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/emailView" linkstyle="Direct" name="" sourceName="/Pages/WebPage/PreviewEmailPage" style="oblique">
-   <position>{(547,421)(725,450)}</position>
+   <position>{(547,421)(700,420)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/emailView" style="oblique">
-   <position>{(725,450)(857,181)}</position>
+   <position>{(700,420)(857,181)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preProcess" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(277,201)(385,530)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ProcessingPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preProcess" style="oblique">
+   <position>{(385,530)(545,530)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doProcessing" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ProcessingPage" style="oblique">
+   <position>{(545,530)(765,530)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doProcessing" style="oblique">
+   <position>{(765,530)(857,181)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -177,6 +209,7 @@
    <SwitchCase component="/Steps/AutomaticStep/preEmailView" value="&quot;emailView&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/SendEmail" value="&quot;send&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PreviewEmail" value="&quot;preview&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preProcess" value="&quot;processing&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

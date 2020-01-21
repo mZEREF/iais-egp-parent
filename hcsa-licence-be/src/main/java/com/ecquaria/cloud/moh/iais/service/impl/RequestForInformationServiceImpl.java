@@ -117,7 +117,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION,
             ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY,
             ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION
-};
+    };
     private final String[] licServiceType=new String[]{
             ApplicationConsts.SERVICE_CONFIG_TYPE_BASE,
             ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED,
@@ -238,7 +238,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
                         try {
 
-                            this.download(processFileTrackDto,licPremisesReqForInfoDto,name);
+                            this.download(processFileTrackDto,name);
                             //save success
                         }catch (Exception e){
                             //save bad
@@ -313,7 +313,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     }
 
     @Override
-    public boolean download( ProcessFileTrackDto processFileTrackDto,LicPremisesReqForInfoDto licPremisesReqForInfoDto,String fileName) {
+    public boolean download( ProcessFileTrackDto processFileTrackDto,String fileName) {
 
         Boolean flag=false;
         File file =new File(downZip+File.separator+fileName+File.separator+FOLDER);
@@ -334,7 +334,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                             by.write(size,0,count);
                             count= fileInputStream.read(size);
                         }
-                        Boolean aBoolean = fileToDto(by.toString(), licPremisesReqForInfoDto);
+                        Boolean aBoolean = fileToDto(by.toString());
                         flag=aBoolean;
                         if(aBoolean&&processFileTrackDto!=null){
                             changeStatus(processFileTrackDto);
@@ -348,10 +348,9 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         }
         return flag;
     }
-    private Boolean fileToDto(String str,LicPremisesReqForInfoDto licPremisesReqForInfoDto){
+    private Boolean fileToDto(String str){
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = JsonUtil.parseToObject(str, LicPremisesReqForInfoDto.class);
-        licPremisesReqForInfoDto=licPremisesReqForInfoDto1;
-        return requestForInformationClient.rfiFeUpdateToBe(licPremisesReqForInfoDto).getStatusCode() == 200;
+        return requestForInformationClient.rfiFeUpdateToBe(licPremisesReqForInfoDto1).getStatusCode() == 200;
 
     }
 
@@ -387,6 +386,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                                     false, fileName.toString(), (int) f.length(), f.getParentFile());
                         } catch (IOException e) {
                             e.printStackTrace();
+                            log.error(e.getMessage(),e);
                         }
                         try ( InputStream input = new FileInputStream(f);){
                             if(fileItem!=null){

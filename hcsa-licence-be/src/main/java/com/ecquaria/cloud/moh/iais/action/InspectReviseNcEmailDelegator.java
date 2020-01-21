@@ -120,7 +120,7 @@ public class InspectReviseNcEmailDelegator {
         AccessUtil.initLoginUserInfo(bpc.request);
         String taskId = ParamUtil.getRequestString(request,"taskId");
         if (StringUtil.isEmpty(taskId)) {
-            taskId = "F9359FD4-5934-EA11-BE7D-000C29F371DC";
+            taskId = "1B9D06DC-223C-EA11-BE7E-000C29F371DC";
         }
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
         String appPremCorrId = taskDto.getRefNo();
@@ -324,6 +324,16 @@ public class InspectReviseNcEmailDelegator {
         HttpServletRequest request = bpc.request;
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, TASK_DTO);
         String correlationId = taskDto.getRefNo();
+        InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail(correlationId);
+        ParamUtil.setSessionAttr(request,"draftEmailId",inspectionEmailTemplateDto.getId());
+        ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
+    }
+
+    public void preProcess(BaseProcessClass bpc)  {
+        log.info("=======>>>>>preProcess>>>>>>>>>>>>>>>>emailRequest");
+        HttpServletRequest request = bpc.request;
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, TASK_DTO);
+        String correlationId = taskDto.getRefNo();
         String appPremCorrId=correlationId;
         InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail(appPremCorrId);
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);
@@ -361,6 +371,12 @@ public class InspectReviseNcEmailDelegator {
         ParamUtil.setSessionAttr(request,"draftEmailId",inspectionEmailTemplateDto.getId());
         ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
     }
+
+    public void doProcessing(BaseProcessClass bpc){
+        log.info("=======>>>>>doProcessing>>>>>>>>>>>>>>>>emailRequest");
+        HttpServletRequest request = bpc.request;
+    }
+
     public void emailView(BaseProcessClass bpc) {
         log.info("=======>>>>>emailView>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;

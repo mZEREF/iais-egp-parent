@@ -47,8 +47,11 @@
         $('#checkList').click(function(){
             submit('checkList',null,null);
         });
-        $('#processing').click(function(){
+        $('#letter').click(function(){
             submit('emailView',null,null);
+        });
+        $('#processing').click(function(){
+            submit('processing',null,null);
         });
     });
 

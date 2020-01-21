@@ -74,4 +74,14 @@ public class INTRANET___MohAO1ValidateEmail___1 extends BaseProcessClass {
 	// 		emailView->OnStepProcess
 	}
 
+	public void preProcess_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preProcess", this);
+// 		preProcess->OnStepProcess
+	}
+
+	public void doProcessing_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doProcessing", this);
+// 		doProcessing->OnStepProcess
+	}
+
 }
