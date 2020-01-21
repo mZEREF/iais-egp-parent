@@ -6,9 +6,9 @@
         <div class="row">
             <div class="col-md-12">
                 <iais:value>
-                    <label class="col-xs-5 col-md-5" for="licNoPath">Search By Licence No or Path of:</label>
+                    <label class="col-xs-5 col-md-5" for="licNoPath">Search By Licence No or Part of:</label>
                     <div class="col-xs-5 col-md-56">
-                        <input id="licNoPath" name="licNoPath" type="text">
+                        <input id="licNoPath" name="licNoPath" type="text" maxlength="15" value="<%=request.getParameter("licNoPath")==null?"":request.getParameter("licNoPath")%>">
                     </div>
                 </iais:value>
             </div>
@@ -28,8 +28,9 @@
                 <iais:value>
                     <label class="col-xs-5 col-md-5" for="licStatus">Licence Status:</label>
                     <div class="col-xs-5 col-md-5">
+                        <%String licStatus = request.getParameter("licStatus");%>
                         <iais:select name="licStatus" id="licStatus" options="licStatus"
-                                     firstOption="All"></iais:select>
+                                     firstOption="<%=licStatus%>" value="<%=licStatus%>"></iais:select>
                     </div>
                 </iais:value>
             </div>
@@ -39,13 +40,15 @@
                 <iais:value>
                     <label class="col-md-3" for="fStartDate">Licence Start Date:</label>
                     <div class="col-md-3">
-                        <iais:datePicker id="fStartDate" name="fStartDate"/>
+                        <%Date fStartDate = Formatter.parseDate(request.getParameter("fStartDate"));%>
+                        <iais:datePicker id="fStartDate" name="fStartDate" dateVal="<%=fStartDate%>"/>
                     </div>
                     <div class="col-xs-1 col-md-1">
-                        <span>TO</span>
+                        <span>To</span>
                     </div>
                     <div class="col-md-3">
-                        <iais:datePicker id="eStartDate" name="eStartDate"/>
+                        <%Date eStartDate = Formatter.parseDate(request.getParameter("eStartDate"));%>
+                        <iais:datePicker id="eStartDate" name="eStartDate" dateVal="<%=eStartDate%>"/>
                     </div>
                 </iais:value>
             </div>
@@ -55,19 +58,21 @@
                 <iais:value>
                     <label class="col-xs-3 col-md-3">Licence Expiry Date:</label>
                     <div class="col-xs-3 col-md-3">
-                        <iais:datePicker id="fExpiryDate" name="fExpiryDate"/>
+                        <%Date fExpiryDate = Formatter.parseDate(request.getParameter("fExpiryDate"));%>
+                        <iais:datePicker id="fExpiryDate" name="fExpiryDate" dateVal="<%=fExpiryDate%>"/>
                     </div>
                 </iais:value>
                 <div class="col-xs-1 col-md-1">
-                    <span>TO</span>
+                    <span>To</span>
                 </div>
                 <iais:value>
                     <div class="col-xs-3 col-md-3">
-                        <iais:datePicker id="eExpiryDate" name="eExpiryDate"/>
+                        <%Date eExpiryDate = Formatter.parseDate(request.getParameter("eExpiryDate"));%>
+                        <iais:datePicker id="eExpiryDate" name="fExpiryDate" dateVal="<%=eExpiryDate%>"/>
                     </div>
                 </iais:value>
                 <div class="col-xs-2 col-md-2">
-                    <button type="button" class="btn btn-primary" onclick="doSearchLic()">SUBMIT</button>
+                    <button type="button" class="btn btn-primary" onclick="doSearchLic()">Search</button>
                 </div>
             </div>
         </div>

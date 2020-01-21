@@ -7,9 +7,9 @@
         <div class="row">
             <div class="col-md-6">
                 <iais:value>
-                    <label class="col-xs-6 col-md-6" for="appNoPath">Search By Application No or Path of:</label>
+                    <label class="col-xs-6 col-md-6" for="appNoPath">Search by Application No or Part of:</label>
                     <div class="col-xs-6 col-md-6">
-                        <input id="appNoPath" name="appNoPath" type="text">
+                        <input id="appNoPath" name="appNoPath" type="text" maxlength="15" value="<%=request.getParameter("appNoPath")==null?"":request.getParameter("appNoPath")%>">
                     </div>
                 </iais:value>
             </div>
@@ -46,21 +46,23 @@
         <div class="row">
             <div class="col-md-12">
                 <iais:value>
-                    <label class="col-xs-3 col-md-3">Date Submitted:</label>
+                    <label class="col-xs-3 col-md-3" for="esd">Date Submitted:</label>
                     <div class="col-xs-3 col-md-3" style="margin-left: -7px">
-                        <iais:datePicker id="esd" name="esd"/>
+                        <%Date esd = Formatter.parseDate(request.getParameter("esd"));%>
+                        <iais:datePicker id="esd" name="esd" dateVal="<%=esd%>"/>
                     </div>
                 </iais:value>
                 <div class="col-xs-1 col-md-1">
-                    <span>TO</span>
+                    <span>To</span>
                 </div>
                 <iais:value>
                     <div class="col-xs-3 col-md-3">
-                        <iais:datePicker id="eed" name="eed"/>
+                        <%Date eed = Formatter.parseDate(request.getParameter("eed"));%>
+                        <iais:datePicker id="eed" name="eed" dateVal="<%=eed%>"/>
                     </div>
                 </iais:value>
                 <div class="col-xs-2 col-md-2">
-                    <button type="button" class="btn btn-primary" onclick="doSearchApp()">SUBMIT</button>
+                    <button type="button" class="btn btn-primary" onclick="doSearchApp()">Search</button>
                 </div>
             </div>
         </div>

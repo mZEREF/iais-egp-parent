@@ -42,7 +42,7 @@
             <#if id??> AND CHARINDEX(:id, app.id) >0</#if>
             <#if appType??> AND B.app_type = :appType</#if>
             <#if serviceType??> AND B.service_id = :serviceType</#if>
-            <#if appNo??> AND B.application_no = :appNo</#if>
+            <#if appNo??> AND B.application_no like :appNo</#if>
             <#if appStatus??> AND B.status = :appStatus</#if>
             <#if createDtStart??> AND B .created_dt > :createDtStart</#if>
             <#if createDtEnd??> AND B .created_dt < :createDtEnd</#if>
@@ -69,7 +69,7 @@
             <#if eStartDate??> AND lic.start_date < :eStartDate</#if>
             <#if fExpiryDate??> AND lic.expiry_date > :fExpiryDate</#if>
             <#if eExpiryDate??> AND lic.expiry_date < :eExpiryDate</#if>
-            <#if licNo??> AND lic.licence_no = :licNo</#if>
+            <#if licNo??> AND lic.licence_no like :licNo</#if>
         ]]>
     </sql>
 

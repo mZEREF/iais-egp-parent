@@ -182,7 +182,7 @@ public class InterInboxDelegator {
         String eExpiryDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "eExpiryDate")),
                 SystemAdminBaseConstants.DATE_FORMAT);
         if(licenceNo != null){
-            licSearchMap.put("licNo",licenceNo);
+            licSearchMap.put("licNo","%"+licenceNo+"%");
         }
         if(serviceType != null && !serviceType.equals(InboxConst.SEARCH_ALL)){
             licSearchMap.put("serviceType",serviceType);
@@ -191,7 +191,6 @@ public class InterInboxDelegator {
             licSearchMap.put("licStatus",licStatus);
         }
         if(!StringUtil.isEmpty(fStartDate)){
-            licSearchMap.put("fStartDate",fStartDate);
         }
         if(!StringUtil.isEmpty(eStartDate)){
             licSearchMap.put("eStartDate",eStartDate);
@@ -277,7 +276,7 @@ public class InterInboxDelegator {
             appSearchMap.put("appStatus",applicationStatus);
         }
         if(applicationNo != null && !applicationNo.equals(InboxConst.SEARCH_ALL)){
-            appSearchMap.put("appNo",applicationNo);
+            appSearchMap.put("appNo","%"+applicationNo+"%");
         }
         if(serviceType != null && !serviceType.equals(InboxConst.SEARCH_ALL)){
             appSearchMap.put("serviceType",serviceType);

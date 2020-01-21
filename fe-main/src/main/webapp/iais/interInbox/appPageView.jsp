@@ -4,6 +4,8 @@
 <%@ taglib uri="http://www.ecquaria.com/menu" prefix="menu" %>
 <%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.Formatter" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");

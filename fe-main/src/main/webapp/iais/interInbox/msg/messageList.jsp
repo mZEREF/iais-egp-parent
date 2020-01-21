@@ -24,8 +24,8 @@
                     <iais:value>
                         <div class="input-group">
                             <input class="form-control" id="inboxAdvancedSearch" type="text"
-                                   placeholder="Message Subject." name="inboxAdvancedSearch"
-                                   aria-label="inboxAdvancedSearch"><span class="input-group-btn">
+                                   placeholder="Search Your Keywords" name="inboxAdvancedSearch"
+                                   aria-label="inboxAdvancedSearch" maxlength="50"><span class="input-group-btn">
                                 <button class="btn btn-default buttonsearch" title="Search by keywords"
                                         onclick="searchBySubject()"><em class="fa fa-search"></em></button></span>
                         </div>
@@ -43,8 +43,7 @@
                 <thead>
                 <tr>
                     <iais:sortableHeader needSort="true" field="subject" value="Subject"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true" field="message_type"
-                                         value="Message Type"></iais:sortableHeader>
+                    <iais:sortableHeader needSort="true" field="message_type" value="Message Type"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true" field="ref_no" value="Ref. No."></iais:sortableHeader>
                     <iais:sortableHeader needSort="true" field="service_id" value="Service"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true" field="CREATED_DT" value="Date"></iais:sortableHeader>
@@ -81,7 +80,7 @@
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Date</p>
                                     <p><fmt:formatDate value="${inboxQuery.createdAt}"
-                                                       pattern="MM/dd/yyyy HH:mm:ss"/></p>
+                                                       pattern="dd MMM yyyy,hh:mm"/></p>
                                 </td>
                             </tr>
                         </c:forEach>
