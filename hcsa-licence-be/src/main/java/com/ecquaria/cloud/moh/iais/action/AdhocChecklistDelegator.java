@@ -103,13 +103,16 @@ public class AdhocChecklistDelegator {
         }*/
 
         TaskDto task = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
-            ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo("A22E14F4-8A33-EA11-BE78-000C29D29DB0");
+        if (task != null){
+            String refNo = task.getRefNo();
+            ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(refNo);
             if (applicationViewDto != null){
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
                 List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
                 log.info("inspectionChecklist info =====>>>>>>>>>>> " + inspectionChecklist.toString());
                 ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
             }
+        }
     }
 
 
