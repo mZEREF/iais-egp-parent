@@ -36,5 +36,7 @@ public interface InspEmailService {
     List<NcAnswerDto> getNcAnswerDtoList(InspectionFillCheckListDto cDto, InspectionFillCheckListDto commonDto,
                                          AdCheckListShowDto adchklDto,List<NcAnswerDto> acDtoList);
     LicenseeDto getLicenseeDtoById ( String id);
+    List<ApplicationDto> getApplicationDtosByCorreId( String appCorreId);
+    List<AppPremisesCorrelationDto>getAppPremisesCorrelationsByPremises(String appCorrId);
 
 }

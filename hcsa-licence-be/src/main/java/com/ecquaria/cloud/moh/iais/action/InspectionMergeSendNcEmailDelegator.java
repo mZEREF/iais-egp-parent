@@ -103,7 +103,8 @@ public class InspectionMergeSendNcEmailDelegator {
         }
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=inspEmailService.getAppPremisesCorrelationsByAppGroupId(applicationViewDto.getApplicationDto().getAppGrpId());
+
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=inspEmailService.getAppPremisesCorrelationsByPremises(correlationId);
         StringBuilder mesContext=new StringBuilder();
         String oneEmail=inspEmailService.getInsertEmail(appPremisesCorrelationDtos.get(0).getId()).getMessageContent();
         mesContext.append(oneEmail.substring(0,oneEmail.indexOf("Below are the review outcome")));

@@ -236,7 +236,7 @@ public class InspectEmailAo1Delegator {
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
 
             boolean flag=true;
-            List<ApplicationDto> applicationDtos= applicationService.getApplicaitonsByAppGroupId(applicationViewDto.getApplicationDto().getAppGrpId());
+            List<ApplicationDto> applicationDtos= inspEmailService.getApplicationDtosByCorreId(applicationViewDto.getAppPremisesCorrelationId());
             for (ApplicationDto appDto:applicationDtos
             ) {
                 if(!appDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING)){

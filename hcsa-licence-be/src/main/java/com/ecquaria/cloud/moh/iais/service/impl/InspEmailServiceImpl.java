@@ -144,6 +144,16 @@ public class InspEmailServiceImpl implements InspEmailService {
         return licenseeClient.getLicenseeDtoById(id).getEntity();
     }
 
+    @Override
+    public List<ApplicationDto> getApplicationDtosByCorreId(String appCorreId) {
+        return appPremisesCorrClient.getApplicationDtosByCorreId(appCorreId).getEntity();
+    }
+
+    @Override
+    public List<AppPremisesCorrelationDto> getAppPremisesCorrelationsByPremises(String appCorrId) {
+        return appPremisesCorrClient.getAppPremisesCorrelationsByPremises(appCorrId).getEntity();
+    }
+
     public void getAdhocNcItem(List<AdhocNcCheckItemDto> adhocItemList,List<NcAnswerDto> ncList){
         if(adhocItemList!=null && !adhocItemList.isEmpty()){
             NcAnswerDto ncDto = null;
