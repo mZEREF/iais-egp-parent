@@ -1,6 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.config.FeignMultipartConfig;
+import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author Jinhua
  * @date 2019/11/26 12:29
  */
-@FeignClient(name = "FILE-REPOSITORY", configuration = {FeignMultipartConfig.class},
+@FeignClient(name = "FILE-REPOSITORY", configuration = {FeignConfiguration.class},
         fallback = FileRepoClientFallback.class)
 public interface FileRepoClient {
     @RequestMapping(method = RequestMethod.POST, produces =  MediaType.APPLICATION_JSON_VALUE ,
