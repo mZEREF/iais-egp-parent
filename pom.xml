@@ -277,19 +277,7 @@
                     <name>Nexus Repository</name>
                     <url>http://nexus:8081/repository/maven-public/</url>
                     <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                </repository>
-                <repository>
-                    <id>nexus-repo-snapshots</id>
-                    <name>Nexus Repository</name>
-                    <url>http://nexus:8081/repository/maven-snapshots/</url>
-                    <snapshots>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
+                        <enabled>false</enabled>
                     </snapshots>
                     <releases>
                         <enabled>true</enabled>
