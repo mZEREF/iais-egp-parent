@@ -20,7 +20,6 @@
         <revision>0.1</revision>
         <engine-version>202004-2001071710</engine-version>
         <org.codehaus.mojo.version>1.4</org.codehaus.mojo.version>
-        <spring.boot.version>1.5.13.RELEASE</spring.boot.version>
         <biz.paluch.maven.configurator.version>1.0.1</biz.paluch.maven.configurator.version>
         <jacoco.version>0.8.5</jacoco.version>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
