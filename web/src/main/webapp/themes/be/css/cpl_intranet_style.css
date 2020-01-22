@@ -672,7 +672,7 @@ a[data-toggle="collapse"] {
     position: relative;
 }
 
-a[aria-expanded="false"]::before, a[aria-expanded="true"]::before {
+/*a[aria-expanded="false"]::before, a[aria-expanded="true"]::before {
     content: '\e259';
     display: block;
     position: absolute;
@@ -682,7 +682,7 @@ a[aria-expanded="false"]::before, a[aria-expanded="true"]::before {
 }
 a[aria-expanded="true"]::before {
     content: '\e260';
-}
+}*/
 
 
 ul ul a {
@@ -775,6 +775,24 @@ a.article, a.article:hover {
   float: left;
   width: 100%;
 }
+
+.hiddenRow {
+    padding: 0px 8px !important;
+    background-color: #f3f3f3; 
+}
+.accordian-body span{
+  color:#a2a2a2 !important;
+}
+
+.hiddenRow .table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 0px;
+    background: transparent;
+    font-size: 13px;
+}
+
+
 /* ---------------------------------------------------
     MEDIAQUERIES
 ----------------------------------------------------- */
@@ -788,7 +806,8 @@ a.article, a.article:hover {
     #sidebarCollapse span {
         display: none;
     }
-}
+   
+}  
 
 /********************************************************/
 
@@ -2564,8 +2583,7 @@ span.error-msg {
   -ms-transform-origin: 0 0;
   transform-origin: 0 0;
   -webkit-transform: none;
-  -moz-transform: none;
-  -ms-transform: none;
+  -moz-transform: none   -ms-transform: none;
   -o-transform: none;
   transform: none;
   background: none;
@@ -3088,7 +3106,7 @@ span.error-msg {
   height: 0;
   right: -12px;
   margin-top: -10px;
-  top: 50%;
+  top: 50%; 
   border-style: solid;
   border-width: 10px 0 10px 12px;
   border-color: transparent transparent transparent transparent;
@@ -3382,7 +3400,7 @@ span.error-msg {
   position: relative;
   margin-right: 25px;
 }
-.table-gp table.table > tbody > tr > td p a[data-toggle=collapse]:after {
+.table-gp table.table > tbody > tr > td p a[data-toggle=collapse]:after { 
   content: "";
   position: absolute;
   font-family: fontawesome;
@@ -3510,6 +3528,13 @@ span.error-msg {
   .table-gp table.table > tbody > tr.collapse.in {
     padding-left: 15px;
     display: block;
+  }
+  .hiddenRow {
+    width: 100% !important;
+  }
+  .hiddenRow table.table > tbody > tr > td {
+      width: 100%;
+      display: inline-grid;
   }
 }
 @media only screen and (min-width : 768px) and (max-width : 992px) {
@@ -3998,8 +4023,14 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 }
 
 .main-content .tab-gp.dashboard-tab {
-  margin-top: -38px;
+  margin-top: 7px;/*-38px*/
 }
+
+.tab-gp .tab-content {
+  padding: 30px 10px;
+}
+
+
 .main-content .tab-gp.dashboard-tab .tab-search.sticky {
   position: fixed;
   background-color: white;
