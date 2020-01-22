@@ -5,7 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
-import com.ecquaria.cloud.moh.iais.config.FeignMultipartConfig;
+import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author suocheng
  * @date 2019/12/14 17:33
  */
-@FeignClient(value = "eicgate", url="${iais.intra.gateway.url}", configuration = {FeignMultipartConfig.class},
+@FeignClient(value = "eicgate", url="${iais.intra.gateway.url}", configuration = {FeignConfiguration.class},
         fallback = BeEicGatewayClientFallback.class)
 public interface BeEicGatewayClient {
     @RequestMapping(value = "/v1/hcsa-licence-transport-licence/",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
