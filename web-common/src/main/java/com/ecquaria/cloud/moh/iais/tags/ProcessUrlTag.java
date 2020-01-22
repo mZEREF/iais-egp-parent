@@ -7,7 +7,7 @@ import com.ecquaria.csrfguard.CsrfGuard;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 
 /**
@@ -15,9 +15,9 @@ import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
  *
  * @author lupeng
  */
+@Slf4j
 public class ProcessUrlTag extends TagSupport {
     private static final long serialVersionUID = -8544224262301150921L;
-    private static Logger log = Logger.getLogger(ProcessUrlTag.class.getName());
 
     private String value;
     private String project;

@@ -13,12 +13,12 @@
     <parent>
         <groupId>com.ecquaria.egp</groupId>
         <artifactId>egp-engine-service</artifactId>
-        <version>19.04.2</version>
+        <version>202004-2001071710</version>
     </parent>
 
     <properties>
         <revision>0.1</revision>
-        <engine-version>19.04.2</engine-version>
+        <engine-version>202004-2001071710</engine-version>
         <org.codehaus.mojo.version>1.4</org.codehaus.mojo.version>
         <spring.boot.version>1.5.13.RELEASE</spring.boot.version>
         <biz.paluch.maven.configurator.version>1.0.1</biz.paluch.maven.configurator.version>
