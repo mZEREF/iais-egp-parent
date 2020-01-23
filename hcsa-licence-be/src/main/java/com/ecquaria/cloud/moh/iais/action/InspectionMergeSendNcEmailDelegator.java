@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
@@ -31,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
@@ -71,6 +73,8 @@ public class InspectionMergeSendNcEmailDelegator {
     private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
+    @Autowired
+    EmailClient emailClient;
     @Autowired
     AppInspectionStatusClient appInspectionStatusClient;
     private static final String INS_EMAIL_DTO="insEmailDto";
@@ -295,6 +299,12 @@ public class InspectionMergeSendNcEmailDelegator {
 
             }
             inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
+            EmailDto emailDto=new EmailDto();
+            emailDto.setContent(inspectionEmailTemplateDto.getMessageContent());
+            emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
+            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+
+            String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
         }
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
 

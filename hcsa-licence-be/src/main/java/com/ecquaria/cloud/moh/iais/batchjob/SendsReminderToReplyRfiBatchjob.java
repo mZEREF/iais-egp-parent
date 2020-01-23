@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
@@ -11,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +42,8 @@ public class SendsReminderToReplyRfiBatchjob {
     InspEmailService inspEmailService;
     @Autowired
     private BeEicGatewayClient gatewayClient;
-
+    @Autowired
+    EmailClient emailClient;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -76,7 +79,12 @@ public class SendsReminderToReplyRfiBatchjob {
         map.put("DETAILS",StringUtil.viewHtml(licPremisesReqForInfoDto.getOfficerRemarks()));
         map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
         String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);
+        EmailDto emailDto=new EmailDto();
+        emailDto.setContent(mesContext);
+        emailDto.setSubject(rfiEmailTemplateDto.getSubject());
+        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
 
+        String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
 
         licPremisesReqForInfoDto.setReminder(licPremisesReqForInfoDto.getReminder()+1);
         Calendar cal = Calendar.getInstance();
