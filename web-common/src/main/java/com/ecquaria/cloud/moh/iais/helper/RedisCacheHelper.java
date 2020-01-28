@@ -43,9 +43,7 @@ public class RedisCacheHelper {
     }
 
     public void set(String key, Object value, long expire){
-        RedisSerializer<Object> valueSerializer = (RedisSerializer<Object>)redisTemplate.getValueSerializer();
-        byte[] serialize = valueSerializer.serialize(value);
-        this.redisTemplate.opsForValue().set(key, serialize);
+        this.redisTemplate.opsForValue().set(key, value);
         if(expire != NOT_EXPIRE){
             redisTemplate.expire(key, expire, TimeUnit.SECONDS);
         }
@@ -64,14 +62,12 @@ public class RedisCacheHelper {
     }
 
     public <T> T get(String key, long expire) {
-        byte[] value = (byte[])this.redisTemplate.opsForValue().get(key);
+        Object value = this.redisTemplate.opsForValue().get(key);
         if(expire != NOT_EXPIRE){
             redisTemplate.expire(key, expire, TimeUnit.SECONDS);
         }
 
-        RedisSerializer<Object> valueSerializer = (RedisSerializer<Object>)redisTemplate.getValueSerializer();
-
-        return value == null ? null : (T)valueSerializer.deserialize(value);
+        return value == null ? null : (T) value;
     }
 
     public <T> T get(String key) {
