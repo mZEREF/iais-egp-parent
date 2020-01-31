@@ -13,12 +13,12 @@
     <parent>
         <groupId>com.ecquaria.egp</groupId>
         <artifactId>egp-engine-service</artifactId>
-        <version>202004-2001071710</version>
+        <version>19.04.2</version>
     </parent>
 
     <properties>
         <revision>0.1</revision>
-        <engine-version>202004-2001071710</engine-version>
+        <engine-version>19.04.2</engine-version>
         <org.codehaus.mojo.version>1.4</org.codehaus.mojo.version>
         <biz.paluch.maven.configurator.version>1.0.1</biz.paluch.maven.configurator.version>
         <jacoco.version>0.8.5</jacoco.version>
@@ -67,12 +67,12 @@
             <dependency>
                 <groupId>io.github.openfeign.form</groupId>
                 <artifactId>feign-form</artifactId>
-                <version>3.8.0</version>
+                <version>3.2.2</version>
             </dependency>
             <dependency>
                 <groupId>io.github.openfeign.form</groupId>
                 <artifactId>feign-form-spring</artifactId>
-                <version>3.8.0</version>
+                <version>3.2.2</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -197,7 +197,7 @@
             <dependency>
                 <groupId>io.github.openfeign</groupId>
                 <artifactId>feign-httpclient</artifactId>
-                <version>10.6.0</version>
+                <version>9.5.1</version>
             </dependency>
 
         </dependencies>

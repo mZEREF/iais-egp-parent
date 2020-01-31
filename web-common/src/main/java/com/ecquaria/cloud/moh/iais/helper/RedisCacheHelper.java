@@ -14,12 +14,14 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * RedisCacheHelper
@@ -30,7 +32,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RedisCacheHelper {
     @Autowired
-    private RedisTemplate<Object, Object> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     public static final  long SESSION_DEFAULT_EXPIRE = 60L * 30L;
     /**  set do not expire */
@@ -41,7 +43,9 @@ public class RedisCacheHelper {
     }
 
     public void set(String key, Object value, long expire){
-        this.redisTemplate.opsForValue().set(key, value);
+        RedisSerializer<Object> valueSerializer = (RedisSerializer<Object>)redisTemplate.getValueSerializer();
+        byte[] serialize = valueSerializer.serialize(value);
+        this.redisTemplate.opsForValue().set(key, serialize);
         if(expire != NOT_EXPIRE){
             redisTemplate.expire(key, expire, TimeUnit.SECONDS);
         }
@@ -60,12 +64,14 @@ public class RedisCacheHelper {
     }
 
     public <T> T get(String key, long expire) {
-        Object value = this.redisTemplate.opsForValue().get(key);
+        byte[] value = (byte[])this.redisTemplate.opsForValue().get(key);
         if(expire != NOT_EXPIRE){
             redisTemplate.expire(key, expire, TimeUnit.SECONDS);
         }
 
-        return value == null ? null : (T) value;
+        RedisSerializer<Object> valueSerializer = (RedisSerializer<Object>)redisTemplate.getValueSerializer();
+
+        return value == null ? null : (T)valueSerializer.deserialize(value);
     }
 
     public <T> T get(String key) {
@@ -85,7 +91,7 @@ public class RedisCacheHelper {
     }
 
     public void clear(String cacheName) {
-        Set<Object> keys = redisTemplate.keys(cacheName + ":");
+        Set<String> keys = redisTemplate.keys(cacheName + ":");
         if (CollectionUtils.isNotEmpty(keys)) {
             redisTemplate.delete(keys);
         }

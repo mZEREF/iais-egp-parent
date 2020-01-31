@@ -98,7 +98,7 @@ public class RedisCacheHelperTest {
 
     @Test
     public void testDelete() {
-        when(redisTemplate.delete(KEY)).thenReturn(true);
+        doNothing().when(redisTemplate).delete(KEY);
         rch.delete(KEY);
         rch.delete("cname", "key");
         Set<String> keys = new HashSet<>();
