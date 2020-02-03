@@ -105,7 +105,7 @@
                                         <thead>
                                         <tr>
                                             <th>S/N</th>
-                                            <th>Application No</th>
+                                            <th>Application No.</th>
                                             <th>Application Type</th>
                                             <th>Submission Type</th>
                                             <th>Application Date</th>
