@@ -2122,6 +2122,8 @@ public class NewApplicationDelegator {
         List<AppSvcPrincipalOfficersDto> poDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, "AppSvcPrincipalOfficersDto");
         Map<String, String> oneErrorMap = new HashMap<>();
         StringBuilder stringBuilder =new StringBuilder();
+        int poIndex=0;
+        int dpoIndex=0;
         for (int i=0;i< poDto.size();i++) {
             StringBuilder stringBuilder1 =new StringBuilder();
             String psnType = poDto.get(i).getPsnType();
@@ -2139,17 +2141,18 @@ public class NewApplicationDelegator {
                     String salutation = poDto.get(i).getSalutation();
                     String designation = poDto.get(i).getDesignation();
                     String idType = poDto.get(i).getIdType();
+
                     if("-1".equals(idType)){
-                        oneErrorMap.put("idType","UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("idType"+poIndex,"UC_CHKLMD001_ERR001");
                     }
                     if(StringUtil.isEmpty(name)){
-                        oneErrorMap.put("name","UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("name"+poIndex,"UC_CHKLMD001_ERR001");
                     }
                     if(StringUtil.isEmpty(salutation)){
-                        oneErrorMap.put("salutation","UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("salutation"+poIndex,"UC_CHKLMD001_ERR001");
                     }
                     if(StringUtil.isEmpty(designation)){
-                        oneErrorMap.put("designation","UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("designation"+poIndex,"UC_CHKLMD001_ERR001");
                     }
                     if(!StringUtil.isEmpty(idNo)){
                         if("FIN".equals(idType)){
@@ -2173,26 +2176,27 @@ public class NewApplicationDelegator {
                     }
                     if(!StringUtil.isEmpty(mobileNo)){
                         if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                            oneErrorMap.put("mobileNo", "CHKLMD001_ERR004");
+                            oneErrorMap.put("mobileNo"+poIndex, "CHKLMD001_ERR004");
                         }
                     }else {
-                        oneErrorMap.put("mobileNo", "UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("mobileNo"+poIndex, "UC_CHKLMD001_ERR001");
                     }
                     if(!StringUtil.isEmpty(emailAddr)) {
                         if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
-                            oneErrorMap.put("emailAddr", "CHKLMD001_ERR006");
+                            oneErrorMap.put("emailAddr"+poIndex, "CHKLMD001_ERR006");
                         }
                     }else {
-                        oneErrorMap.put("emailAddr", "UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("emailAddr"+poIndex, "UC_CHKLMD001_ERR001");
                     }
                     if(!StringUtil.isEmpty(officeTelNo)) {
                         if (!officeTelNo.matches("^[6][0-9]{7}$")) {
-                            oneErrorMap.put("officeTelNo", "CHKLMD001_ERR007");
+                            oneErrorMap.put("officeTelNo"+poIndex, "CHKLMD001_ERR007");
                         }
                     }else {
-                        oneErrorMap.put("officeTelNo", "UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("officeTelNo"+poIndex, "UC_CHKLMD001_ERR001");
                     }
                 }
+                poIndex++;
             }
 
             if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)){
@@ -2205,29 +2209,29 @@ public class NewApplicationDelegator {
                 String modeOfMedAlert = poDto.get(i).getModeOfMedAlert();
                 String designation = poDto.get(i).getDesignation();
                 if(StringUtil.isEmpty(modeOfMedAlert)||"-1".equals(modeOfMedAlert)){
-                    oneErrorMap.put("modeOfMedAlert","UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("modeOfMedAlert"+dpoIndex,"UC_CHKLMD001_ERR001");
                 }
 
                 if(StringUtil.isEmpty(designation)||"-1".equals(designation)){
-                    oneErrorMap.put("deputyDesignation","UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyDesignation"+dpoIndex,"UC_CHKLMD001_ERR001");
                 }
                 if(StringUtil.isEmpty(salutation)){
-                    oneErrorMap.put("deputySalutation","UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputySalutation"+dpoIndex,"UC_CHKLMD001_ERR001");
                 }
 
                 if(StringUtil.isEmpty(idType)||"-1".equals(idType)){
-                    oneErrorMap.put("deputyIdType","UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyIdType"+dpoIndex,"UC_CHKLMD001_ERR001");
                 }
                 if(StringUtil.isEmpty(name)){
-                    oneErrorMap.put("deputyName","UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyName"+dpoIndex,"UC_CHKLMD001_ERR001");
                 }
                 if(StringUtil.isEmpty(idNo)){
-                    oneErrorMap.put("deputyIdNo","UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyIdNo"+dpoIndex,"UC_CHKLMD001_ERR001");
                 }
                 if("FIN".equals(idType)){
                     boolean b = SgNoValidator.validateFin(idNo);
                     if(!b){
-                        oneErrorMap.put("deputyIdNo","CHKLMD001_ERR005");
+                        oneErrorMap.put("deputyIdNo"+dpoIndex,"CHKLMD001_ERR005");
                     }else {
                         stringBuilder1.append(idType).append(idNo);
                     }
@@ -2235,29 +2239,29 @@ public class NewApplicationDelegator {
                 if("NRIC".equals(idType)){
                     boolean b1 = SgNoValidator.validateNric(idNo);
                     if(!b1){
-                        oneErrorMap.put("deputyIdNo","CHKLMD001_ERR005");
+                        oneErrorMap.put("deputyIdNo"+dpoIndex,"CHKLMD001_ERR005");
                     }else {
                         stringBuilder1.append(idType).append(idNo);
                     }
                 }
 
                 if(StringUtil.isEmpty(mobileNo)){
-                    oneErrorMap.put("deputyMobileNo","UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyMobileNo"+dpoIndex,"UC_CHKLMD001_ERR001");
                 }
                 else {
                     if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                        oneErrorMap.put("deputyMobileNo", "CHKLMD001_ERR004");
+                        oneErrorMap.put("deputyMobileNo"+dpoIndex, "CHKLMD001_ERR004");
                     }
                 }
                 if(StringUtil.isEmpty(emailAddr)){
-                    oneErrorMap.put("deputyEmailAddr","UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyEmailAddr"+dpoIndex,"UC_CHKLMD001_ERR001");
                 }else {
                     if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
-                        oneErrorMap.put("deputyEmailAddr", "CHKLMD001_ERR006");
+                        oneErrorMap.put("deputyEmailAddr"+dpoIndex, "CHKLMD001_ERR006");
                     }
                 }
 
-
+                dpoIndex++;
             }
             String s = stringBuilder.toString();
 
