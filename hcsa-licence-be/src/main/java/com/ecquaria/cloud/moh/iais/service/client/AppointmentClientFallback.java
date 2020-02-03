@@ -54,4 +54,12 @@ public class AppointmentClientFallback implements AppointmentClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<ApptNonAvailabilityDateDto> getNonAvailabilityById(String id) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
