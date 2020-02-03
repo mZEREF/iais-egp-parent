@@ -46,21 +46,21 @@
                         <c:if test="${curRole eq 'INSPECTOR_LEAD'}">
                           <iais:field value="Name" required="true"/>
                           <iais:value width="7">
-                            <iais:select name="nonAvaUserName" options="nonAvaUserName" firstOption="Please select" value="${inspNonAvailabilityDto.userName}" ></iais:select>
+                            <iais:select name="nonAvaUserName" options="nonAvaUserName" firstOption="Please select" value="${inspNonAvailabilityDto.userCorrId}" ></iais:select>
                             <br><span class="error-msg" name="iaisErrorMsg" id="error_userName"></span>
                           </iais:value>
                         </c:if>
                         <c:if test="${curRole ne 'INSPECTOR_LEAD'}">
                           <iais:field value="Name"/>
                           <iais:value width="7">
-                            <label><c:out value="${inspNonAvailabilityDto.userName}"/></label>
+                            <label><c:out value="${userName}"/></label>
                           </iais:value>
                         </c:if>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Blocked Out Date" required="true"/>
                         <iais:value width="7">
-                          <label>From <iais:datePicker id = "nonAvaStartDate" name = "nonAvaStartDate" value="${inspNonAvailabilityDto.nonAvaStartDate}"></iais:datePicker> to <iais:datePicker id = "nonAvaEndDate" name = "nonAvaEndDate" value="${inspNonAvailabilityDto.nonAvaEndDate}"></iais:datePicker></label>
+                          <label>From <iais:datePicker id = "nonAvaStartDate" name = "nonAvaStartDate" value="${inspNonAvailabilityDto.blockOutStart}"></iais:datePicker> to <iais:datePicker id = "nonAvaEndDate" name = "nonAvaEndDate" value="${inspNonAvailabilityDto.blockOutEnd}"></iais:datePicker></label>
                           <br><span class="error-msg" name="iaisErrorMsg" id="error_nonAvaStartDate"></span>
                           <br><span class="error-msg" name="iaisErrorMsg" id="error_nonAvaEndDate"></span>
                         </iais:value>
@@ -68,7 +68,7 @@
                       <iais:row>
                         <iais:field value="Blocked Out Date Description"/>
                         <iais:value width="7">
-                          <textarea id="blockOutDesc" name="blockOutDesc" cols="70" rows="7" maxlength="255" ><c:out value="${inspNonAvailabilityDto.blockOutDesc}"></c:out></textarea>
+                          <textarea id="blockOutDesc" name="blockOutDesc" cols="70" rows="7" maxlength="255" ><c:out value="${inspNonAvailabilityDto.nonAvaDescription}"></c:out></textarea>
                         </iais:value>
                       </iais:row>
                       <iais:row>
