@@ -548,7 +548,7 @@
                           </c:choose>
                           <div class="form-group">
                             <div class="col-xs-9 col-sm-5 col-md-4">
-                              <button class="addPubHolDay" type="button">add Public Holiday</button>
+                              <button class="addPubHolDay" type="button">Add Public Holiday</button>
                             </div>
                           </div>
                         </div>

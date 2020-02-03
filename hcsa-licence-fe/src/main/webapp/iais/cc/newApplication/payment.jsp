@@ -106,7 +106,7 @@
             return;
         }
 
-        submit('','ack',null);
+        submit('payment','ack',null);
     });
 </script>
 
