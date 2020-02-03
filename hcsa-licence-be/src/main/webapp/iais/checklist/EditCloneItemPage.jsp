@@ -9,6 +9,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <webui:setLayout name="iais-intranet"/>
 
 

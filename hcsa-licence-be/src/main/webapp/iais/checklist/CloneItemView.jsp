@@ -10,7 +10,7 @@
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
 <webui:setLayout name="iais-intranet"/>
 
-
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
