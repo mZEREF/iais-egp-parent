@@ -37,15 +37,15 @@
         <div class="col-xs-12">
           <div class="tab-gp dashboard-tab">
             <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-              <li class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
+              <li id="preInspTabInfo" class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
                                                         data-toggle="tab">Info</a></li>
-              <li class="complete" role="presentation"><a href="#tabDocuments"
+              <li id="preInspTabDocuments" class="complete" role="presentation"><a href="#tabDocuments"
                                                           aria-controls="tabDocuments" role="tab"
                                                           data-toggle="tab">Documents</a></li>
-              <li id="ApplicationViewInspection" class="complete" role="presentation" style="display: block"><a href="#tabInspection"
+              <li id="preInspTabInspection" class="complete" role="presentation" style="display: block"><a href="#tabInspection"
                                                                                                                 aria-controls="tabInspection" role="tab"
                                                                                                                 data-toggle="tab">Checklist</a></li>
-              <li class="incomplete" role="presentation"><a href="#tabProcessing"
+              <li id="preInspTabProcessing" class="incomplete" role="presentation"><a href="#tabProcessing"
                                                             aria-controls="tabProcessing" role="tab"
                                                             data-toggle="tab">Processing</a></li>
             </ul>
@@ -438,6 +438,12 @@
 
     function inspectionPreTaskJump(){
         $("#preInspSelfChList").click();
+        $("#preInspTabInfo").removeClass('active');
+        $("#preInspTabDocuments").removeClass('active');
+        $("#preInspTabInspection").removeClass('active');
+        $("#preInspTabProcessing").removeClass('active');
+        $("#preInspTabInspection").addClass('active');
+
     }
 
     function inspectionPreTaskSubmit(action){
