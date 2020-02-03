@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,13 @@ public class ServiceMenuDelegator {
 
     @Autowired
     private ServiceConfigService serviceConfigService;
+    public void doStart(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the  doStart start 1...."));
+        AccessUtil.initLoginUserInfo(bpc.request);
+
+        log.debug(StringUtil.changeForLog("the  doStart end 1...."));
+    }
+
     public void beforeJump(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the  before jump start 1...."));
 
