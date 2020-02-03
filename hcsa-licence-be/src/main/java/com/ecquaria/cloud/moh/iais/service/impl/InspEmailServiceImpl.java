@@ -54,8 +54,13 @@ public class InspEmailServiceImpl implements InspEmailService {
     OrganizationClient licenseeClient;
 
     @Override
-    public String insertEmailTemplate(InspectionEmailTemplateDto inspectionEmailTemplateDto) {
-        return insEmailClient.insertEmailTemplate(inspectionEmailTemplateDto).getEntity();
+    public String updateEmailDraft(InspectionEmailTemplateDto inspectionEmailTemplateDto) {
+        return insEmailClient.updateEmailDraft(inspectionEmailTemplateDto).getEntity();
+    }
+
+    @Override
+    public String insertEmailDraft(InspectionEmailTemplateDto inspectionEmailTemplateDto) {
+        return insEmailClient.insertEmailDraft(inspectionEmailTemplateDto).getEntity();
     }
 
     @Override
@@ -78,10 +83,6 @@ public class InspEmailServiceImpl implements InspEmailService {
         return systemClient.loadingEmailTemplate(id).getEntity();
     }
 
-    @Override
-    public ApplicationDto getApplicationDtoByAppPremCorrId(String appPremCorrId) {
-        return insEmailClient.getApplicationDtoByAppPremCorrId(appPremCorrId).getEntity();
-    }
     @Override
     public List<ChecklistQuestionDto> getcheckListQuestionDtoList(String svcCode,String svcType){
         return hcsaChklClient.getcheckListQuestionDtoList(svcCode,"Inspection").getEntity();

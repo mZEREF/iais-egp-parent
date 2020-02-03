@@ -58,6 +58,9 @@
                                                 <label>
                                                     <input type="checkbox" name="reqType" />Supporting Documents
                                                 </label>
+                                                <label>
+                                                    <input type="checkbox"  />Other
+                                                </label>
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">

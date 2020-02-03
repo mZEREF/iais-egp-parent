@@ -23,12 +23,12 @@ import java.util.Map;
  * @date 2019/11/23
  */
 public interface InspEmailService {
-    String insertEmailTemplate(InspectionEmailTemplateDto inspectionEmailTemplateDto);
+    String updateEmailDraft(InspectionEmailTemplateDto inspectionEmailTemplateDto);
+    String insertEmailDraft(InspectionEmailTemplateDto inspectionEmailTemplateDto);
     void recallEmailTemplate(String id);
     InspectionEmailTemplateDto getInsertEmail(String appPremCorrId);
     ApplicationViewDto getAppViewByCorrelationId(String correlationId);
     InspectionEmailTemplateDto loadingEmailTemplate(String id);
-    ApplicationDto getApplicationDtoByAppPremCorrId(String appPremCorrId);
     List<ChecklistQuestionDto> getcheckListQuestionDtoList(String svcCode, String svcType);
     Map<String, String > SendAndSaveEmail(EmailDto emailDto);
     AppInsRepDto getAppInsRepDto(String appCorrId);

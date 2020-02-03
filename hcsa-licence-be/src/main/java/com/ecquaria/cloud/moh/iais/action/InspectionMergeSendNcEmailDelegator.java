@@ -298,7 +298,7 @@ public class InspectionMergeSendNcEmailDelegator {
                 createAppPremisesRoutingHistory(applicationViewDto1.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,taskDto2,HcsaConsts.ROUTING_STAGE_POT,taskDto2.getUserId());
 
             }
-            inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
+            inspEmailService.updateEmailDraft(inspectionEmailTemplateDto);
             EmailDto emailDto=new EmailDto();
             emailDto.setContent(inspectionEmailTemplateDto.getMessageContent());
             emailDto.setSubject(inspectionEmailTemplateDto.getSubject());

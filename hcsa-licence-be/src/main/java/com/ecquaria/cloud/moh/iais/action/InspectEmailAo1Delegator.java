@@ -124,8 +124,8 @@ public class InspectEmailAo1Delegator {
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getRequestString(request,"taskId");
         if (StringUtil.isEmpty(taskId)) {
-            taskId = "53921192-9337-EA11-BE7E-000C29F371DC";
-        }
+            taskId = "06528289-4246-EA11-BE7F-000C29F371DC";
+    }
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
         String appPremCorrId = taskDto.getRefNo();
         List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
@@ -294,7 +294,7 @@ public class InspectEmailAo1Delegator {
 
 
         }
-        inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
+        inspEmailService.updateEmailDraft(inspectionEmailTemplateDto);
 
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
 
@@ -502,7 +502,7 @@ public class InspectEmailAo1Delegator {
         inspectionEmailTemplateDto.setMessageContent(mesContext);
         String draftEmailId= (String) ParamUtil.getSessionAttr(request,"draftEmailId");
         inspectionEmailTemplateDto.setId(draftEmailId);
-        inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
+        inspEmailService.updateEmailDraft(inspectionEmailTemplateDto);
         return mesContext;
     }
 

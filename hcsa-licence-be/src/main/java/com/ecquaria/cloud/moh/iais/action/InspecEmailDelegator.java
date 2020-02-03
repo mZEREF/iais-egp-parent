@@ -307,7 +307,7 @@ public class InspecEmailDelegator {
             }
 
         }
-        inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
+        inspEmailService.insertEmailDraft(inspectionEmailTemplateDto);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
 
     }

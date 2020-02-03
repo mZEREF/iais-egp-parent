@@ -120,7 +120,7 @@ public class InspectReviseNcEmailDelegator {
         AccessUtil.initLoginUserInfo(bpc.request);
         String taskId = ParamUtil.getRequestString(request,"taskId");
         if (StringUtil.isEmpty(taskId)) {
-            taskId = "1B9D06DC-223C-EA11-BE7E-000C29F371DC";
+            taskId = "07528289-4246-EA11-BE7F-000C29F371DC";
         }
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
         String appPremCorrId = taskDto.getRefNo();
@@ -274,7 +274,7 @@ public class InspectReviseNcEmailDelegator {
                 createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT,taskDto1,HcsaConsts.ROUTING_STAGE_POT,taskDto1.getUserId(),inspectionEmailTemplateDto.getRemarks());
             }
         }
-        inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
+        inspEmailService.updateEmailDraft(inspectionEmailTemplateDto);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
 
     }
@@ -491,7 +491,7 @@ public class InspectReviseNcEmailDelegator {
         inspectionEmailTemplateDto.setMessageContent(mesContext);
         String draftEmailId= (String) ParamUtil.getSessionAttr(request,"draftEmailId");
         inspectionEmailTemplateDto.setId(draftEmailId);
-        inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
+        inspEmailService.updateEmailDraft(inspectionEmailTemplateDto);
         return mesContext;
     }
     public CheckListVadlidateDto getValueFromPage(HttpServletRequest request) {
