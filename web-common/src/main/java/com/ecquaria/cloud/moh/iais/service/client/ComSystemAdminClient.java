@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "iais-organization", configuration = FeignConfiguration.class,
         fallback = ComSystemAdminClientFallback.class)
 public interface ComSystemAdminClient {
-    @GetMapping(value = "/iais-orguser-be/users-by-loginId/{user_id}")
+    @GetMapping(value = "/iais-orgUserRole/users-by-loginId/{user_id}")
     FeignResponseEntity<OrgUserDto> retrieveOrgUserAccount(@PathVariable("user_id") String userId);
     @GetMapping(value = "/iais-workgroup/wrkgroups/{userId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getWorkGrpsByUserId(@PathVariable(name = "userId") String userId);
