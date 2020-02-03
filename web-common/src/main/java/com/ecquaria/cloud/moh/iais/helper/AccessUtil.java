@@ -120,14 +120,16 @@ public class AccessUtil {
             loginContext.setUserId(orgUser.getId());
             loginContext.setLoginId(user.getId());
             loginContext.setUserDomain(user.getUserDomain());
-            List<String> wrkGrps = client.getWorkGrpsByUserId(orgUser.getId()).getEntity();
-            if (wrkGrps != null && !wrkGrps.isEmpty()) {
-                loginContext.getWrkGrpIds().addAll(wrkGrps);
-            }
             List<String> userRoles = client.retrieveUserRoles(orgUser.getId()).getEntity();
             if (userRoles != null && !userRoles.isEmpty()) {
                 loginContext.getRoleIds().addAll(userRoles);
                 loginContext.setCurRoleId(userRoles.get(0));
+            }
+            if (AppConsts.USER_DOMAIN_INTRANET.equals(orgUser.getUserDomain())) {
+                List<String> wrkGrps = client.getWorkGrpsByUserId(orgUser.getId()).getEntity();
+                if (wrkGrps != null && !wrkGrps.isEmpty()) {
+                    loginContext.getWrkGrpIds().addAll(wrkGrps);
+                }
             }
         }
         ParamUtil.setSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
