@@ -49,6 +49,9 @@
           <c:forEach var="baseItem" items="${baseService}" varStatus="status">
             <li><span><iais:service value="${baseItem}"></iais:service></span> (Base Service)</li>
           </c:forEach>
+          <c:forEach var="specifiedItem" items="${specifiedService}" varStatus="status">
+            <li><span><iais:service value="${specifiedItem}"></iais:service></span> (Specified Service)</li>
+          </c:forEach>
         </ul>
         <div class="gray-content-box">
           <div class="h3-with-desc">
@@ -122,7 +125,8 @@
   }
 
   function doBack() {
-      SOP.Crud.cfxSubmit("mainForm", "doBack");
+      $("input[name='switch_action_type']").val("doBack");
+      $("#mainForm").submit();
   }
   
 </script>

@@ -79,21 +79,17 @@ public class ServiceMenuDelegator {
         }else{
             List<String> baselist = new ArrayList<>();
             List<String> sepcifiedlist = new ArrayList<>();
-            for (String item:basechks
-            ) {
+            for (String item:basechks) {
                 baselist.add(item);
             }
             if(sepcifiedchk != null){
-                for (String item:sepcifiedchk
-                ) {
+                for (String item:sepcifiedchk) {
                     sepcifiedlist.add(item);
                 }
                 List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  serviceConfigService.getCorrelation();
                 List<String> necessaryBaseServiceList = new ArrayList<>();
-                for (String item: sepcifiedlist
-                ) {
-                    for (HcsaServiceCorrelationDto dto:hcsaServiceCorrelationDtoList
-                    ) {
+                for (String item: sepcifiedlist) {
+                    for (HcsaServiceCorrelationDto dto:hcsaServiceCorrelationDtoList) {
                         if(dto.getSpecifiedSvcId().equals(item)){
                             necessaryBaseServiceList.add(dto.getBaseSvcId());
                         }
@@ -102,10 +98,8 @@ public class ServiceMenuDelegator {
                 necessaryBaseServiceList.removeAll(baselist);
                 if(necessaryBaseServiceList.size() > 0){
                     String err = "";
-                    for (String item:necessaryBaseServiceList
-                         ) {
-                        for (HcsaServiceDto dto:baseService
-                             ) {
+                    for (String item:necessaryBaseServiceList) {
+                        for (HcsaServiceDto dto:baseService) {
                             if(dto.getId().equals(item)){
                                 err = err + dto.getSvcName() + ",";
                             }
