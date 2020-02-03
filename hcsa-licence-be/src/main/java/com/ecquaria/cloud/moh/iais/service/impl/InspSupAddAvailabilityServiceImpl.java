@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonAvailabilityDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -52,5 +53,28 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
             apptNonAvailabilityDateDto = appointmentClient.getNonAvailabilityById(nonAvaId).getEntity();
         }
         return apptNonAvailabilityDateDto;
+    }
+
+    @Override
+    public void deleteNonAvailabilityById(String removeId) {
+        ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = getApptNonAvailabilityDateDtoById(removeId);
+        apptNonAvailabilityDateDto.setNonAvaStatus(AppConsts.COMMON_STATUS_DELETED);
+        updateNonAvailability(apptNonAvailabilityDateDto);
+    }
+
+    @Override
+    public ApptNonAvailabilityDateDto createNonAvailability(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto) {
+        if(apptNonAvailabilityDateDto != null){
+            return appointmentClient.createNonAvailability(apptNonAvailabilityDateDto).getEntity();
+        }
+        return null;
+    }
+
+    @Override
+    public ApptNonAvailabilityDateDto updateNonAvailability(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto) {
+        if(apptNonAvailabilityDateDto != null){
+            return appointmentClient.updateNonAvailability(apptNonAvailabilityDateDto).getEntity();
+        }
+        return null;
     }
 }
