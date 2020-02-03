@@ -2136,7 +2136,7 @@ public class NewApplicationDelegator {
         return errorMap;
     }
 
-
+    //todo change
     public static Map<String,  String> doValidatePo(HttpServletRequest request) {
         List<AppSvcPrincipalOfficersDto> poDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, "AppSvcPrincipalOfficersDto");
         Map<String, String> oneErrorMap = new HashMap<>();

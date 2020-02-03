@@ -268,7 +268,6 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 String address = every.substring(every.indexOf("/") + 1);
                 Map<String ,Object> map=new HashMap<>();
                 String format = simpleDateFormat.format(expiryDate);
-                map.put("Licence_Expiry_Date",expiryDate.toString());
                 map.put("Payment_Amount",total);
                 map.put("NAME_OF_HCI",hciName);
                 map.put("HCI_Address",address);

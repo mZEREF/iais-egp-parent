@@ -7,6 +7,8 @@
   </c:forEach>
 </c:if>
 <c:forEach var="docConfig" items="${serviceDocConfigDto}" varStatus="status">
+  <c:set var="fileIndex" value="${status.index}"></c:set>
+
   <c:set var="svcDoc" value="${ReloadSvcDoc[docConfig.id]}" />
   <c:set var="svcDelFlag" value="${docConfig.id}flag"/>
   <div class="row">
@@ -39,7 +41,13 @@
                 <%--(<span class="fileSize"></span>MB)--%>
             </div>
             <input class="selectedFile" id="selectedFile" name = "${docConfig.id}selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
-            <span id="error_file"${status.index}></span>
+
+           <c:if test="${svcDoc.docName!=null}">
+
+             <span name="iaisErrorMsg" class="error-msg" id="error_file${fileIndex}"></span>
+           </c:if>
+
+
           </div>
         </div>
       </div>

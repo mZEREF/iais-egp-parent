@@ -78,7 +78,7 @@
                                       <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}"/></label></span>
                                     </wrms:value></p>
                                     <p><strong>Operating Hours (End):</strong> ${appGrpPremDto.wrkTimeTo}  <wrms:value width="7">
-                                      <span class="newVal " attr="${appGrpPremDto.conveyanceVehicleNo}" style="display: none"><label><c:out value=""/></label></span>
+                                      <span class="newVal " attr="${appGrpPremDto.wrkTimeTo}" style="display: none"><label><c:out value=""/></label></span>
                                       <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}"/></label></span>
                                     </wrms:value></p>
 
@@ -117,8 +117,20 @@
                                   </div>
                                   <div class="pop-up">
                                     <div class="pop-up-body">
-                                      <div class="field col-sm-4 control-label formtext"><label>Licensee (Company)</label></div>
-                                      <div class="field col-sm-4 control-label formtext"><label>Name:</label></div>
+                                      <div class="field col-sm-4 control-label formtext"><p><strong>Licensee (Company)</strong></p>
+                                        <p><strong>Name:</strong></p>
+                                        <br>
+                                        <p><strong>AuthoriseD Person 1</strong></p>
+                                        <p><strong>Name:</strong></p>
+                                        <p><strong>ID:</strong></p>
+                                        <br>
+                                        <p><strong>AuthoriseD Person 2</strong></p>
+                                        <p><strong>Name:</strong></p>
+                                        <p><strong>ID:</strong></p>
+                                        <br>
+                                        <p><strong>MedAlert Contact Person</strong></p>
+                                      </div>
+
                                       <c:forEach var="appGrpPrimaryDocDto" items="${appSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
                                         <div class="content-body fileUploadContainer">
                                           <div class="control col-sm-5">

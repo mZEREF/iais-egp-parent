@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeO
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -112,6 +113,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         FileRepoDto fileRepoDto = new FileRepoDto();
         fileRepoDto.setFileName(file.getOriginalFilename());
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+    /*    AuditTrailDto internet = AuditTrailHelper.getBatchJobDto("internet");*/
         fileRepoDto.setAuditTrailDto(auditTrailDto);
         fileRepoDto.setRelativePath(sharedPath);
         String fileRepoStr = JsonUtil.parseToJson(fileRepoDto);

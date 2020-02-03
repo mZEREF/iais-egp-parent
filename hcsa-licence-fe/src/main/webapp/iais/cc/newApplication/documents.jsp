@@ -74,6 +74,7 @@
                           </c:choose>
                           <br/>
                           <input class="selectedFile commDoc" id="commonDoc"  name = "${commKey}" type="file" style="display: none;" aria-label="selectedFile1" >
+                          <span name="iaisErrorMsg" class="error-msg" id="error_${commKey}"></span><br>
                           <a class="btn btn-file-upload btn-secondary" >Upload</a><br/>
                         </div>
                       </div>
@@ -111,6 +112,7 @@
                             </c:choose>
                             <br/>
                             <input class="selectedFile premDoc"  name = "${premKey}" type="file" style="display: none;" aria-label="selectedFile1">
+                            <span name="iaisErrorMsg" class="error-msg" id="error_${premKey}"></span><br>
                             <a class="btn btn-file-upload btn-secondary" >Upload</a><br/>
                           </div>
                         </div>
@@ -134,6 +136,7 @@
         </div>
       </div>
     </div>
+  <%@ include file="/include/validation.jsp" %>
     <input type="hidden" name="pageCon" value="valPremiseList" >
 </form>
 
