@@ -8,9 +8,11 @@
 <input type="hidden" id = "controlFormLi" value="<%=actionForm%>">
 <input type="hidden" name="crud_action_type_tab" value="">
 <ul id = "tabUl" class="nav nav-pills nav-stacked hidden-xs hidden-sm" role="tablist">
-<c:forEach items="${hcsaServiceDtoList}" var="list">
-    <li id = "${list.svcCode}li"  class="complete" role="presentation"><a id = "${list.svcCode}" aria-controls="lorem1" role="tab" data-toggle="tab">${list.svcName}</a></li>
-</c:forEach>
+    <c:if test="${hcsaServiceDtoList.size()>1}">
+        <c:forEach items="${hcsaServiceDtoList}" var="list">
+            <li id = "${list.svcCode}li"  class="complete" role="presentation"><a id = "${list.svcCode}" aria-controls="lorem1" role="tab" data-toggle="tab">${list.svcName}</a></li>
+        </c:forEach>
+    </c:if>
 </ul>
 <div class="mobile-side-nav-tab visible-xs visible-sm">
     <select id="serviceSelect">
