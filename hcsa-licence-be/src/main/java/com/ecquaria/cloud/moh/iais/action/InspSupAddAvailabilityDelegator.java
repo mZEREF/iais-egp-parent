@@ -8,13 +8,25 @@ package com.ecquaria.cloud.moh.iais.action;
  **/
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonAvailabilityDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.InspSupAddAvailabilityService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Delegator("inspSupAddAvailabilityDelegator")
 @Slf4j
@@ -48,7 +60,8 @@ public class InspSupAddAvailabilityDelegator {
     public void inspSupAddAvailabilityInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityInit start ...."));
         AccessUtil.initLoginUserInfo(bpc.request);
-
+        ParamUtil.setSessionAttr(bpc.request, "curRole", null);
+        ParamUtil.setSessionAttr(bpc.request, "inspSupAddAvailabilityType", null);
     }
 
     /**
@@ -59,6 +72,20 @@ public class InspSupAddAvailabilityDelegator {
      */
     public void inspSupAddAvailabilityPre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityPre start ...."));
+        String actionValue = (String)ParamUtil.getRequestAttr(bpc.request, "actionValue");
+        if(InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue)) {
+            ParamUtil.setSessionAttr(bpc.request, "inspSupAddAvailabilityType", actionValue);
+            ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", null);
+        } else if(InspectionConstants.SWITCH_ACTION_EDIT.equals(actionValue)) {
+            String nonAvaId = ParamUtil.getRequestString(bpc.request, "nonAvaId");
+            ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = inspSupAddAvailabilityService.getApptNonAvailabilityDateDtoById(nonAvaId);
+            ParamUtil.setSessionAttr(bpc.request, "inspSupAddAvailabilityType", actionValue);
+            ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", null);
+        } else if(InspectionConstants.SWITCH_ACTION_DELETE.equals(actionValue)) {
+            ParamUtil.setSessionAttr(bpc.request, "inspSupAddAvailabilityType", actionValue);
+        } else {
+            ParamUtil.setSessionAttr(bpc.request, "inspSupAddAvailabilityType", InspectionConstants.SWITCH_ACTION_BACK);
+        }
     }
 
     /**
@@ -72,46 +99,6 @@ public class InspSupAddAvailabilityDelegator {
     }
 
     /**
-     * StartStep: inspSupAddAvailabilitySearch
-     *
-     * @param bpc
-     * @throws
-     */
-    public void inspSupAddAvailabilitySearch(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the inspSupAddAvailabilitySearch start ...."));
-    }
-
-    /**
-     * StartStep: inspSupAddAvailabilitySort
-     *
-     * @param bpc
-     * @throws
-     */
-    public void inspSupAddAvailabilitySort(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the inspSupAddAvailabilitySort start ...."));
-    }
-
-    /**
-     * StartStep: inspSupAddAvailabilityPage
-     *
-     * @param bpc
-     * @throws
-     */
-    public void inspSupAddAvailabilityPage(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityPage start ...."));
-    }
-
-    /**
-     * StartStep: inspSupAddAvailabilityQuery
-     *
-     * @param bpc
-     * @throws
-     */
-    public void inspSupAddAvailabilityQuery(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityQuery start ...."));
-    }
-
-    /**
      * StartStep: inspSupAddAvailabilityAdd
      *
      * @param bpc
@@ -119,6 +106,18 @@ public class InspSupAddAvailabilityDelegator {
      */
     public void inspSupAddAvailabilityAdd(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityAdd start ...."));
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<String> roleList =new ArrayList<>(loginContext.getRoleIds());
+        if(roleList.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)){
+            ParamUtil.setSessionAttr(bpc.request, "curRole", RoleConsts.USER_ROLE_INSPECTION_LEAD);
+        } else {
+            ParamUtil.setSessionAttr(bpc.request, "curRole", RoleConsts.USER_ROLE_INSPECTIOR);
+            OrgUserDto oDto = inspSupAddAvailabilityService.getOrgUserDtoById(loginContext.getUserId());
+            ParamUtil.setSessionAttr(bpc.request, "userName", oDto.getDisplayName());
+        }
+        List<SelectOption> recurrenceOption = inspSupAddAvailabilityService.getRecurrenceOption();
+        ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
+        ParamUtil.setSessionAttr(bpc.request, "recurrenceOption", (Serializable) recurrenceOption);
     }
 
     /**
