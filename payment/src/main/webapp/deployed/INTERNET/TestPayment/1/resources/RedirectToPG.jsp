@@ -1,0 +1,1 @@
+<%@include file="/iais/payment/RedirectToPG.jsp"%>
