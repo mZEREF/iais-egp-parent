@@ -861,17 +861,22 @@ public class LicenceApproveBatchjob {
             licenceDto.setVersion(licenceDto1.getVersion()+1);
             licenceDto.setFeeRetroNeeded(licenceDto1.isFeeRetroNeeded());
             licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
-            licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
+            if(applicationGroupDto!=null){
+                licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
+            }
         }else {
             //todo:The latest choose from Giro pay Date, Approved Date,Aso set Date,
-            Date startDate = applicationGroupDto.getModifiedAt();
-            log.debug(StringUtil.changeForLog("The startDate is -->:"+startDate));
-            if(startDate == null){
-                startDate = new Date();
+            if(applicationGroupDto!=null){
+                Date startDate = applicationGroupDto.getModifiedAt();
+                log.debug(StringUtil.changeForLog("The startDate is -->:"+startDate));
+                if(startDate == null){
+                    startDate = new Date();
+                }
+                licenceDto.setStartDate(startDate);
+                licenceDto.setExpiryDate(getExpiryDate(licenceDto.getStartDate(),yearLength));
+                licenceDto.setGrpLic(applicationGroupDto.getIsGrpLic() == 1);
+                licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
             }
-            licenceDto.setStartDate(startDate);
-            licenceDto.setExpiryDate(getExpiryDate(licenceDto.getStartDate(),yearLength));
-            licenceDto.setGrpLic(applicationGroupDto.getIsGrpLic() == 1);
             licenceDto.setOrganizationId(organizationId);
             licenceDto.setOriginLicenceId(originLicenceId);
 
@@ -886,7 +891,7 @@ public class LicenceApproveBatchjob {
             licenceDto.setFeeRetroNeeded(false);
             //todo:Judge the licence status
             licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
-            licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
+
         }
         List<ApplicationDto> applicationDtos1 =  new ArrayList<>();
         if(applicationDto!=null){
