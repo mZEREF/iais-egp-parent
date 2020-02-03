@@ -13,6 +13,11 @@
 <%
     String webroot = IaisEGPConstant.BE_CSS_ROOT;
 %>
+<style>
+    label{
+        float: left;
+    }
+</style>
 <div class="main-content">
     <form method="post" id="mainSupForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/include/formHidden.jsp" %>
@@ -29,7 +34,7 @@
                 </h3>
                 <iais:section title="" id="supPoolList">
                     <iais:row>
-                        <iais:field value="choose role"/>
+                        <iais:field value="Select Role"/>
                         <iais:value width="10">
                             <iais:select name="roleIds" onchange="chooseCurRole()" options="roleIds"
                                          firstOption="${curRole}" value="${curRole}"></iais:select>
@@ -44,15 +49,9 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="HCI Name"/>
+                        <iais:field value="HCI Name / HCI Address"/>
                         <iais:value width="18">
                             <input type="text" name="hci_name" value="${hci_name}"/>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row>
-                        <iais:field value="HCI Address"/>
-                        <iais:value width="18">
-                            <input type="text" name="hci_address" value="${blk_no}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -94,7 +93,7 @@
             <div class="col-xs-12">
                 <div class="components">
                     <h3>
-                        <span>Search Result</span>
+                        <span>Search Results</span>
                     </h3>
 
 
@@ -104,19 +103,19 @@
                                 <div class="table-gp">
                                     <table class="table"  style="border-collapse:collapse;">
                                         <thead>
-                                            <tr>
-                                                <th>S/N</th>
-                                                <th>Application No</th>
-                                                <th>Application Type</th>
-                                                <th>Submission Type</th>
-                                                <th>Application Date <span class="sort"></span></th>
-                                                <th>Payment Status</th>
-                                            </tr>
+                                        <tr>
+                                            <th>S/N</th>
+                                            <th>Application No</th>
+                                            <th>Application Type</th>
+                                            <th>Submission Type</th>
+                                            <th>Application Date</th>
+                                            <th>Payment Status</th>
+                                        </tr>
                                         </thead>
                                         <c:choose>
                                             <c:when test="${empty supTaskSearchResult.rows}">
                                                 <tr>
-                                                    <td class="col-xs-12">
+                                                    <td  colspan="6" >
                                                         <iais:message key="No Result!" escape="true"></iais:message>
                                                         <!--No Record!!-->
                                                     </td>
@@ -359,7 +358,7 @@
         }
 
     }
-    
+
     function chooseAllcheckBox(id) {
         if($('#checkbox' + id).prop('checked')){
             $('#advfilterson' + id + ' input[type="checkbox"]').prop("checked",true)
