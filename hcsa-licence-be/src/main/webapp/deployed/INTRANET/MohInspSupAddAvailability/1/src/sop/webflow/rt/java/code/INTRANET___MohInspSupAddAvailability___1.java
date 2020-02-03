@@ -11,6 +11,7 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohInspSupAddAvailability___1 extends BaseProcessClass {
@@ -36,26 +37,6 @@ public class INTRANET___MohInspSupAddAvailability___1 extends BaseProcessClass {
 	public void inspSupAddAvailabilityStep_OnStepProcess_0() throws Exception {
 	// 		InspSupAddAvailabilityStep->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "inspSupAddAvailabilityStep", this);
-	}
-
-	public void inspSupAddAvailabilitySearch_OnStepProcess_0() throws Exception {
-	// 		InspSupAddAvailabilitySearch->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "inspSupAddAvailabilitySearch", this);
-	}
-
-	public void inspSupAddAvailabilitySort_OnStepProcess_0() throws Exception {
-	// 		InspSupAddAvailabilitySort->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "inspSupAddAvailabilitySort", this);
-	}
-
-	public void inspSupAddAvailabilityPage_OnStepProcess_0() throws Exception {
-	// 		InspSupAddAvailabilityPage->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "inspSupAddAvailabilityPage", this);
-	}
-
-	public void inspSupAddAvailabilityQuery_OnStepProcess_0() throws Exception {
-	// 		InspSupAddAvailabilityQuery->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "inspSupAddAvailabilityQuery", this);
 	}
 
 	public void inspSupAddAvailabilityAdd_OnStepProcess_0() throws Exception {
