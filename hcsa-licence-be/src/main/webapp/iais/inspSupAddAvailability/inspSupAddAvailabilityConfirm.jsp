@@ -44,7 +44,7 @@
                   <div class="panel-main-content">
                     <iais:section title="" id = "addAvailability">
                       <iais:row>
-                        <iais:field value="Name" required="true"/>
+                        <iais:field value="Name"/>
                         <iais:value width="7">
                           <label><c:out value="${inspNonAvailabilityDto.userName}"/></label>
                         </iais:value>
@@ -53,26 +53,18 @@
                         <iais:field value="Blocked Out Date" required="true"/>
                         <iais:value width="7">
                           <label>From <fmt:formatDate value='${inspNonAvailabilityDto.nonAvaStartDate}' pattern='dd/MM/yyyy' /> to <fmt:formatDate value='${inspNonAvailabilityDto.nonAvaEndDate}' pattern='dd/MM/yyyy' /></label>
-                          <br><span class="error-msg" name="iaisErrorMsg" id="error_nonAvaStartDate"></span>
-                          <br><span class="error-msg" name="iaisErrorMsg" id="error_nonAvaEndDate"></span>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Blocked Out Date Description"/>
                         <iais:value width="7">
-                          <textarea id="blockOutDesc" name="blockOutDesc" cols="70" rows="7" ><c:out value="${inspNonAvailabilityDto.blockOutDesc}"></c:out></textarea>
+                          <textarea id="blockOutDesc" name="blockOutDesc" cols="70" rows="7" disabled><c:out value="${inspNonAvailabilityDto.blockOutDesc}"></c:out></textarea>
                         </iais:value>
                       </iais:row>
                       <iais:row>
-                        <iais:field value="Recurrence" required="true"/>
+                        <iais:field value="Recurrence"/>
                         <iais:value width="7">
                           <label><c:out value="${inspNonAvailabilityDto.recurrence}"/></label>
-                        </iais:value>
-                      </iais:row>
-                      <iais:row>
-                        <iais:field value="Recurrence End Date" required="true"/>
-                        <iais:value width="7">
-                          <fmt:formatDate value='${inspNonAvailabilityDto.recurrenceEndDate}' pattern='dd/MM/yyyy' />
                         </iais:value>
                       </iais:row>
                       <iais:action >

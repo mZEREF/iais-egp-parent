@@ -43,16 +43,19 @@
                   <div class="panel-main-content">
                     <iais:section title="" id = "addAvailability">
                       <iais:row>
-                        <iais:field value="Name" required="true"/>
-                        <iais:value width="7">
-                          <c:if test="${curRole eq 'INSPECTOR_LEAD'}">
+                        <c:if test="${curRole eq 'INSPECTOR_LEAD'}">
+                          <iais:field value="Name" required="true"/>
+                          <iais:value width="7">
                             <iais:select name="nonAvaUserName" options="nonAvaUserName" firstOption="Please select" value="${inspNonAvailabilityDto.userName}" ></iais:select>
                             <br><span class="error-msg" name="iaisErrorMsg" id="error_userName"></span>
-                          </c:if>
-                          <c:if test="${curRole ne 'INSPECTOR_LEAD'}">
+                          </iais:value>
+                        </c:if>
+                        <c:if test="${curRole ne 'INSPECTOR_LEAD'}">
+                          <iais:field value="Name"/>
+                          <iais:value width="7">
                             <label><c:out value="${inspNonAvailabilityDto.userName}"/></label>
-                          </c:if>
-                        </iais:value>
+                          </iais:value>
+                        </c:if>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Blocked Out Date" required="true"/>
@@ -72,12 +75,7 @@
                         <iais:field value="Recurrence" required="true"/>
                         <iais:value width="7">
                           <iais:select name="recurrenceOption" options="recurrenceOption" firstOption="Please select" value="${inspNonAvailabilityDto.recurrence}" ></iais:select>
-                        </iais:value>
-                      </iais:row>
-                      <iais:row>
-                        <iais:field value="Recurrence End Date" required="true"/>
-                        <iais:value width="7">
-                          <iais:datePicker id = "recurrenceEndDate" name = "recurrenceEndDate" value="${recurrenceEndDate}"></iais:datePicker>
+                          <br><span class="error-msg" name="iaisErrorMsg" id="error_recurrence"></span>
                         </iais:value>
                       </iais:row>
                       <iais:action >
