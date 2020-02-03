@@ -81,7 +81,7 @@ public class ServiceMenuDelegator {
         String[] sepcifiedchk = ParamUtil.getStrings(bpc.request, SPECIFIED_SERVICE_CHECK_BOX_ATTR);
         List<HcsaServiceDto> baseService = (List<HcsaServiceDto> )ParamUtil.getSessionAttr(bpc.request,BASE_SERVICE_DTO_ATTR);
         if(basechks == null){
-            String noneerr = "please select base service.";
+            String noneerr = "Please select base service.";
             ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, noneerr);
             ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, AppConsts.FALSE);
         }else{
