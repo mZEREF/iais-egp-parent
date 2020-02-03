@@ -11,7 +11,6 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
-
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohServiceFeMenu___1 extends BaseProcessClass {
@@ -20,7 +19,7 @@ public class INTERNET___MohServiceFeMenu___1 extends BaseProcessClass {
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess
-		
+		EngineHelper.delegate(DELEGATOR, "doStart", this);
 	}
 
 	public void validation_OnStepProcess_0() throws Exception {
