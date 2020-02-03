@@ -58,7 +58,7 @@
                       <iais:row>
                         <iais:field value="Blocked Out Date Description"/>
                         <iais:value width="7">
-                          <textarea id="blockOutDesc" name="blockOutDesc" cols="70" rows="7" disabled><c:out value="${inspNonAvailabilityDto.blockOutDesc}"></c:out></textarea>
+                          <textarea id="blockOutDesc" name="blockOutDesc" cols="70" rows="7" maxlength="255" disabled><c:out value="${inspNonAvailabilityDto.blockOutDesc}"></c:out></textarea>
                         </iais:value>
                       </iais:row>
                       <iais:row>
