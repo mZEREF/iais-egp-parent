@@ -77,4 +77,11 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
         }
         return null;
     }
+
+    @Override
+    public String dateIsContainNonWork(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto) {
+        String dateContainFlag = AppConsts.FALSE;
+        
+        return dateContainFlag;
+    }
 }

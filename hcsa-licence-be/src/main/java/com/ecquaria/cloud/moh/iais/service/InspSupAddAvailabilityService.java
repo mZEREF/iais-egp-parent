@@ -64,4 +64,13 @@ public interface InspSupAddAvailabilityService {
       * @Descripation: update Non-Availability
       */
     ApptNonAvailabilityDateDto updateNonAvailability(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/2/4
+      * @Param: apptNonAvailabilityDateDto
+      * @return: String
+      * @Descripation: date Is Contain Non Work
+      */
+    String dateIsContainNonWork(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto);
 }
