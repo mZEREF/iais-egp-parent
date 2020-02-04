@@ -9,14 +9,14 @@
                 <label class="col-md-3 control-label" for="inboxType">Type</label>
                 <div class="col-md-8">
                     <iais:select name="inboxType" id="inboxType" options="inboxTypeSelect"
-                                 firstOption="Select an type"></iais:select>
+                                 firstOption="Select a type"></iais:select>
                 </div>
             </div>
             <div class="col-md-4">
                 <label class="col-md-3 control-label" for="inboxService">Service</label>
                 <div class="col-md-8">
                     <iais:select name="inboxService" id="inboxService" options="inboxServiceSelect"
-                                 firstOption="Select an service"></iais:select>
+                                 firstOption="Select a service"></iais:select>
                 </div>
             </div>
             <div class="col-md-4">
