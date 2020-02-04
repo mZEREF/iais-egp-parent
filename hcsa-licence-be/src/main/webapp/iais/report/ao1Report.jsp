@@ -73,8 +73,8 @@
                                 <p>Principal Officer:</p>
                             </td>
                             <td class="col-xs-8">
-                              <c:if test="${insRepDto.ncRegulation != null && not empty insRepDto.ncRegulation}">
-                                  <p><c:forEach items="${insRepDto.ncRegulation}" var="poName">
+                              <c:if test="${insRepDto.principalOfficer != null && not empty insRepDto.principalOfficer}">
+                                  <p><c:forEach items="${insRepDto.principalOfficer}" var="poName">
                                       <c:out value="${poName}"/><br>
                                   </c:forEach></p>
                               </c:if>
