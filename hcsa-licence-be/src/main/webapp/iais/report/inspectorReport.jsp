@@ -227,10 +227,10 @@
                                 <p>Marked for Audit:</p>
                             </td>
                             <td class="col-xs-8">
-                                <c:if test="${insRepDto.markedForAudit ==true}">
+                                <c:if test="${insRepDto.markedForAudit}">
                                     <p>Yes</p>
                                 </c:if>
-                                <c:if test="${insRepDto.markedForAudit ==false}">
+                                <c:if test="${!insRepDto.markedForAudit}">
                                     <p>No</p>
                                 </c:if>
                             </td>
