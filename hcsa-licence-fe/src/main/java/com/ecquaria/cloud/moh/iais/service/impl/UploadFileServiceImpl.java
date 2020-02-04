@@ -432,14 +432,14 @@ public class UploadFileServiceImpl implements UploadFileService {
                     appliGrpPremisesDtoSet.add(appliGrpPremisesDto);
                     appGrpIds.add(appliGrpPremisesDto.getId());
                 }
-                for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto :appPremPhOpenPeriodDtos){
+            /*    for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto :appPremPhOpenPeriodDtos){
                     String premId = appPremPhOpenPeriodDto.getPremId();
                     if(appliGrpPremisesDtoId.equals(premId)){
                         appPremPhOpenPeriodDtoSet.add(appPremPhOpenPeriodDto);
                     }
 
                 }
-
+*/
             }
             for (AppGrpPersonnelDto appGrpPersonnelDto:appGrpPersonnel){
                 String appGrpId = appGrpPersonnelDto.getAppGrpId();
