@@ -117,7 +117,7 @@
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
                                     <p style="width: 153px"><fmt:formatDate value="${app.createdAt}"
-                                                                            pattern="MM/dd/yyyy HH:mm:ss"/></p>
+                                                                            pattern="dd/MM/yyyy HH:mm:ss"/></p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title" for="appAction">Actions</p>

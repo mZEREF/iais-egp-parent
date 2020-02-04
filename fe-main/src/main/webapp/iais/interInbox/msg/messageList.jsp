@@ -80,7 +80,7 @@
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Date</p>
                                     <p><fmt:formatDate value="${inboxQuery.createdAt}"
-                                                       pattern="dd MMM yyyy,hh:mm"/></p>
+                                                       pattern="dd/MM/yyyy HH:mm:ss"/></p>
                                 </td>
                             </tr>
                         </c:forEach>

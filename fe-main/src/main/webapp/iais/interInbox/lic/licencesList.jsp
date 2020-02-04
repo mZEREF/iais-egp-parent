@@ -143,12 +143,12 @@
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Start Date</p>
                                     <p><fmt:formatDate value="${licenceQuery.startDate}"
-                                                       pattern="MM/dd/yyyy HH:mm:ss"/></p>
+                                                       pattern="dd/MM/yyyy HH:mm:ss"/></p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
                                     <p><fmt:formatDate value="${licenceQuery.expiryDate}"
-                                                       pattern="MM/dd/yyyy HH:mm:ss"/></p>
+                                                       pattern="dd/MM/yyyy HH:mm:ss"/></p>
                                 </td>
                             </tr>
                         </c:forEach>
