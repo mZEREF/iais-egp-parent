@@ -31,11 +31,24 @@
     <input type="hidden" name="currentValidateId" value="">
     <div class="bg-title"><h2>Blacked Out Dates</h2></div>
 
-    <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  onchange="doSearch()" options = "wrlGrpNameOpt" firstOption="Please Select" value="${shortName}" ></iais:select>
+    <iais:section title="" id = "demoList">
+      <iais:row>
+        <iais:field value="Working Group"/>
+        <iais:value width="18">
+          <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  onchange="doSearch()" options = "wrlGrpNameOpt" firstOption="Please Select" value="${shortName}" ></iais:select>
+        </iais:value>
+      </iais:row>
 
-    <td>
-      <iais:select name="dropYearOpt" id="dropYearOpt"  onchange="doSearch()" options = "dropYearOpt" firstOption="Please Select" value="${dropYear}" ></iais:select>
-    </td>
+
+      <iais:row>
+        <iais:field value="Year."/>
+        <iais:value width="18">
+          <iais:select name="dropYearOpt" id="dropYearOpt"  onchange="doSearch()" options = "dropYearOpt" firstOption="Please Select" value="${dropYear}" ></iais:select>
+        </iais:value>
+      </iais:row>
+
+    </iais:section>
+
 
     <div>
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
@@ -44,15 +57,16 @@
               <br><br>
               <div class="col-xs-12">
                 <div class="components">
+                  <iais:pagination  param="blackedOutDateQueryAttr" result="blackedOutDateResultAttr"/>
                   <div class="table-gp">
                     <table class="table">
                       <thead>
                       <tr>
                         <iais:sortableHeader needSort="false"   field="index" value="No."></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true"   field="year" value="Year"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true"   field="startDate" value="Blacked Out Date Start"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true"   field="endDate" value="Blacked Out Date End"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true"   field="desc" value="Blacked Out Date Description"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="false"   field="year" value="Year"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true"   field="START_DATE" value="Blacked Out Date Start"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true"   field="END_DATE" value="Blacked Out Date End"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="false"   field="desc" value="Blacked Out Date Description"></iais:sortableHeader>
                         <iais:sortableHeader needSort="false"   field="status" value="Status"></iais:sortableHeader>
                         <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
                       </tr>
@@ -67,16 +81,18 @@
                           </tr>
                         </c:when>
                         <c:otherwise>
-                          <c:forEach var="blackDateAttr" items="${blackedOutDateResultAttr}" varStatus="status">
+                          <c:forEach var="blackDateAttr" items="${blackedOutDateResultAttr.rows}" varStatus="status">
                             <tr>
                               <td>${status.index + 1}</td>
                               <td>
                                 <fmt:formatDate value="${blackDateAttr.startDate}" pattern="yyyy"></fmt:formatDate>
                               </td>
-                              <td>${blackDateAttr.startDate}</td>
-                              <td>${blackDateAttr.endDate}</td>
+
+                              <td><fmt:formatDate value="${blackDateAttr.startDate}" pattern="MM/dd/yyyy"/></td>
+                              <td><fmt:formatDate value="${blackDateAttr.endDate}" pattern="MM/dd/yyyy"/></td>
+
                               <td>${blackDateAttr.desc}</td>
-                              <td>${blackDateAttr.status}</td>
+                              <td><iais:code code="${blackDateAttr.status}"></iais:code></td>
                               <td>
                                 <input type="hidden" id="blackDateId" name="blackDateId" value="">
                                 <button type="button"  id="deleteBtnId" name="blackDateId"  onclick="doDelete('<iais:mask name="blackDateId" value="${blackDateAttr.id}"/>')"  class="btn btn-default btn-sm" >Delete</button>
@@ -93,7 +109,7 @@
                     <div class="table-footnote">
                       <div class="row">
                         <div class="col-xs-6 col-md-4">
-                          <td class="row_no">${(status.index + 1) + (blackedOutDateQueryAttr.pageNo - 1) * blackedOutDateQueryAttr.pageSize}</td>
+
                         </div>
                         <div class="col-xs-6 col-md-8 text-right">
                           <div class="nav">
@@ -113,7 +129,6 @@
 
 
                           <div class="text-right text-center-mobile">
-                            <a class="btn btn-primary next" id="cancelBtnId">Cancel</a>
                             <a class="btn btn-primary next" id="addBtnId" >Add</a>
                           </div>
                         </div>
@@ -176,6 +191,14 @@
       SOP.Crud.cfxSubmit("mainForm", "doSearch");
   }
 
+
+  function jumpToPagechangePage(){
+      SOP.Crud.cfxSubmit("mainForm", "doPage");
+  }
+
+  function sortRecords(sortFieldName,sortType){
+      SOP.Crud.cfxSubmit("mainForm","doFilter",sortFieldName,sortType);
+  }
 
 </script>
 

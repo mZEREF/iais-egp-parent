@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.InspectorCalendarQueryDto;
 import com.ecquaria.cloud.moh.iais.service.AppointmentService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OnlineApptClient;
@@ -34,7 +35,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 	@Override
 	public SearchResult<ApptBlackoutDateQueryDto> doQuery(SearchParam searchParam) {
 
-		List<Date> dates = applicationBeClient.getInspectionRecomInDateByCorreId(null).getEntity();
+		//List<Date> dates = applicationBeClient.getInspectionRecomInDateByCorreId(null).getEntity();
 
 		return onlineApptClient.doQuery(searchParam).getEntity();
 	}
@@ -72,6 +73,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 	@Override
 	public Map<String,List<Date>> getUnavailableTime(AppointmentDto appointmentDto) {
 		return onlineApptClient.getUserCalendarByUserId(appointmentDto).getEntity();
+	}
+
+	@Override
+	public SearchResult<InspectorCalendarQueryDto> queryInspectorCalendar(SearchParam searchParam) {
+		return onlineApptClient.queryInspectorCalendar(searchParam).getEntity();
 	}
 
 }

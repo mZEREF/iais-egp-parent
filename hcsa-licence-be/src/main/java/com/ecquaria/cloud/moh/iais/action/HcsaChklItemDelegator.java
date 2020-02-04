@@ -115,7 +115,7 @@ public class HcsaChklItemDelegator {
 
 
     /**
-     * @AutoStep: uploadRegulation
+     * @AutoStep: preUploadData
      * @param:
      * @return:
      * @author: yichen

@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.InspectorCalendarQueryDto;
 
 import java.util.Date;
 import java.util.List;
@@ -37,5 +38,7 @@ public interface AppointmentService {
 	 */
 	Map<String,List<Date>> getUnavailableTime(AppointmentDto appointmentDto);
 
+
+	SearchResult<InspectorCalendarQueryDto> queryInspectorCalendar(SearchParam searchParam);
 
 }

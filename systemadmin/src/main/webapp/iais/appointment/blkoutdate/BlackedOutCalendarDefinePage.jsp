@@ -90,7 +90,7 @@
           </div>
       </div>
 
-      <div class="form-group">
+      <%--<div class="form-group">
           <div class="col-md-12">
             <label class="col-md-2">Status:
             </label>
@@ -99,7 +99,7 @@
                            firstOption="Select Status" value="${itemRequestAttr.status}"></iais:select>
             </div>
         </div>
-      </div>
+      </div>--%>
 
       <div class="col-xs-12 col-sm-6">
         <p><a class="back" onclick="doCancel();"><i class="fa fa-angle-left"></i> Back</a></p>

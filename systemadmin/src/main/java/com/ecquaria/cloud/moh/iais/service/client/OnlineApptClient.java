@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.InspectorCalendarQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.Date;
@@ -52,5 +53,8 @@ public interface OnlineApptClient {
 
 	@GetMapping(value = "/user-id/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	FeignResponseEntity<List<String>> getIdByAgencyUserId(@PathVariable("userId") String userId);
+
+	@PostMapping(value = "/iais-appointment/inspector-calendar/results", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	FeignResponseEntity<SearchResult<InspectorCalendarQueryDto>> queryInspectorCalendar(@RequestBody SearchParam searchParam);
 
 }

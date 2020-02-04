@@ -82,4 +82,12 @@ public class OnlineApptClientFallback implements OnlineApptClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<SearchResult<InspectorCalendarQueryDto>> queryInspectorCalendar(SearchParam searchParam) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
