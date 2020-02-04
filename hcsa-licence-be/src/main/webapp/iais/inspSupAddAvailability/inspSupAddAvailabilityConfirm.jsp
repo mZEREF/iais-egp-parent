@@ -29,8 +29,8 @@
     <br>
     <br>
     <input type="hidden" name="inspSupAddAvailabilityType" value="">
-    <input type="hidden" name="actionValue" value="">
-    <input type="hidden" name="lastActionValue" id="lastActionValue" value="<c:out value="${inspNonAvailabilityDto.lastActionValue}"/>">
+    <input type="hidden" name="nonActionValue" value="">
+    <input type="hidden" name="lastActionValue" id="lastActionValue" value="<c:out value="${actionValue}"/>">
     <iais:body >
       <div class="container">
         <div class="col-xs-12">
@@ -42,6 +42,9 @@
               <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                 <div class="panel-body">
                   <div class="panel-main-content">
+                    <c:if test="${'true' eq containDate}">
+                      <iais:message key="ACK052" escape="true"></iais:message>
+                    </c:if>
                     <iais:section title="" id = "addAvailability">
                       <iais:row>
                         <iais:field value="Name"/>
@@ -86,12 +89,12 @@
 <script type="text/javascript">
     function doInspAvailabilityConBack() {
         var lastActionValue = $("[name='lastActionValue']").val();
-        $("[name='actionValue']").val(lastActionValue);
+        $("[name='nonActionValue']").val(lastActionValue);
         inspAvailabilityConSubmit(lastActionValue);
     }
 
     function doInspAvailabilityConSubmit() {
-        $("[name='actionValue']").val('submit');
+        $("[name='nonActionValue']").val('submit');
         inspAvailabilityConSubmit('submit');
     }
     function inspAvailabilityConSubmit(action){

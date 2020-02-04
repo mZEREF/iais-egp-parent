@@ -29,7 +29,7 @@
     <br>
     <br>
     <input type="hidden" name="inspSupAddAvailabilityType" value="">
-    <input type="hidden" name="actionValue" value="">
+    <input type="hidden" name="nonActionValue" value="">
     <iais:body >
       <div class="container">
         <div class="col-xs-12">
@@ -46,7 +46,7 @@
                         <c:if test="${curRole eq 'INSPECTOR_LEAD'}">
                           <iais:field value="Name" required="true"/>
                           <iais:value width="7">
-                            <iais:select name="nonAvaUserName" options="nonAvaUserName" firstOption="Please select" value="${inspNonAvailabilityDto.userCorrId}" ></iais:select>
+                            <iais:select name="nonAvaUserNameId" options="nonAvaUserName" firstOption="Please select" value="${inspNonAvailabilityDto.userCorrId}" ></iais:select>
                             <br><span class="error-msg" name="iaisErrorMsg" id="error_userName"></span>
                           </iais:value>
                         </c:if>
@@ -74,7 +74,7 @@
                       <iais:row>
                         <iais:field value="Recurrence" required="true"/>
                         <iais:value width="7">
-                          <iais:select name="recurrenceOption" options="recurrenceOption" firstOption="Please select" value="${inspNonAvailabilityDto.recurrence}" ></iais:select>
+                          <iais:select name="recurrence" options="recurrenceOption" firstOption="Please select" value="${inspNonAvailabilityDto.recurrence}" ></iais:select>
                           <br><span class="error-msg" name="iaisErrorMsg" id="error_recurrence"></span>
                         </iais:value>
                       </iais:row>
@@ -96,12 +96,12 @@
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
     function doInspAvailabilityAddBack() {
-        $("[name='actionValue']").val('back');
+        $("[name='nonActionValue']").val('back');
         inspAvailabilityAddSubmit('back');
     }
 
     function doInspAvailabilityAddNext() {
-        $("[name='actionValue']").val('confirm');
+        $("[name='nonActionValue']").val('confirm');
         inspAvailabilityAddSubmit('confirm');
     }
     function inspAvailabilityAddSubmit(action){
