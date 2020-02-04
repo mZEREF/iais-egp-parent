@@ -22,6 +22,7 @@ public interface InsRepService {
     InspectionReportDto getInsRepDto (TaskDto taskDto, ApplicationViewDto applicationViewDto , LoginContext loginContext);
 
     void saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
+    void saveTcuRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     void updateRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     List<SelectOption> getRiskOption(ApplicationViewDto applicationViewDto);
     ApplicationViewDto getApplicationViewDto (String appNo);

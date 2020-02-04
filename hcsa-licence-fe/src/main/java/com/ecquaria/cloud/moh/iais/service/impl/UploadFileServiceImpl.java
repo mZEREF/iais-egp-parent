@@ -502,10 +502,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 
                 for(AppSvcKeyPersonnelDto appSvcKeyPersonnelDto:appSvcKeyPersonnel){
                     String applicationId = appSvcKeyPersonnelDto.getApplicationId();
-                    String appGrpPsnExtId = appSvcKeyPersonnelDto.getAppGrpPsnExtId();
                     String appGrpPsnId = appSvcKeyPersonnelDto.getAppGrpPsnId();
-                    if(applicationDtoId.equals(applicationId)&&appGrpPersonExtIds.contains(appGrpPsnExtId)
-                            &&appGrpPersonIds.contains(appGrpPsnId)){
+                    if(applicationDtoId.equals(applicationId) &&appGrpPersonIds.contains(appGrpPsnId)){
                         appSvcKeyPersonnelDtoSet.add(appSvcKeyPersonnelDto);
                         appSvcKeyPersonIds.add(appSvcKeyPersonnelDto.getId());
                     }

@@ -268,8 +268,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 answerDto.setRemark(icqDtoList.get(i).getRemark());
                 answerDto.setItemId(icqDtoList.get(i).getItemId());
                 if("No".equals(icqDtoList.get(i).getChkanswer())&&ncflag){
-                   answerDto.setIsRec(appPremisesPreInspectionNcItemDtoList.get(j).getIsRecitfied()+"");
-                   j++;
+                    answerDto.setIsRec(appPremisesPreInspectionNcItemDtoList.get(j).getIsRecitfied()+"");
+                    j++;
                 }
                 answerDto.setSectionName(icqDtoList.get(i).getSectionName());
                 answerDtoList.add(answerDto);
@@ -293,7 +293,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             e.printStackTrace();
             throw e;
         }
-     }
+    }
 
 
     public List<AppPremisesPreInspectionNcItemDto> getAppPremisesPreInspectionNcItemDto(InspectionFillCheckListDto dto,AppPremPreInspectionNcDto ncDto){
@@ -327,7 +327,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     }
     @Override
     public TaskDto getTaskDtoById(String taskId){
-       return organizationClient.getTaskById(taskId).getEntity();
+        return organizationClient.getTaskById(taskId).getEntity();
     }
 
     @Override
@@ -370,6 +370,9 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                     inquest.setConfigId(temp.getConfigId());
                     inquest.setRegClauseNo(item.getRegulationClauseNo());
                     inquest.setRegClause(item.getRegulationClause());
+                    if(temp.getSection()!=null){
+                        inquest.setSectionNameSub(temp.getSection().replace(" ",""));
+                    }
                     inquest.setChecklistItem(item.getChecklistItem());
                     checkList.add(inquest);
                 }
@@ -869,7 +872,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     }
 
     @Override
-    public void getRateOfCheckList(InspectionFDtosDto serListDto, AdCheckListShowDto adchklDto, InspectionFillCheckListDto commonDto, String appPremCorrId) {
+    public void getRateOfCheckList(InspectionFDtosDto serListDto, AdCheckListShowDto adchklDto, InspectionFillCheckListDto commonDto) {
         if(serListDto.getFdtoList()!=null){
             getServiceTotalAndNc(serListDto);
         }

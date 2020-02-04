@@ -171,7 +171,7 @@ public class NewApplicationDelegator {
         String loginId = "internet";
         //?
         List<AppGrpPremisesDto> list = serviceConfigService.getAppGrpPremisesDtoByLoginId(loginId);
-        SelectOption sp0 = new SelectOption("-1", "Select One");
+        SelectOption sp0 = new SelectOption("-1", "Please select");
         premisesSelect.add(sp0);
         SelectOption sp1 = new SelectOption("newPremise", "Add a new premises");
         premisesSelect.add(sp1);
@@ -186,7 +186,7 @@ public class NewApplicationDelegator {
         }
         //his to do
         List conveyancePremSel = new ArrayList<SelectOption>();
-        SelectOption cps1 = new SelectOption("-1", "Select One");
+        SelectOption cps1 = new SelectOption("-1", "Please select");
         SelectOption cps2 = new SelectOption("newPremise", "Add a new premises");
         conveyancePremSel.add(cps1);
         conveyancePremSel.add(cps2);

@@ -24,7 +24,12 @@ public class InsRepRecValidate implements CustomizeValidator {
         String remarks = ParamUtil.getRequestString(httpServletRequest, "remarks");
         String chrono = ParamUtil.getRequestString(httpServletRequest, CHRONO);
         String number = ParamUtil.getRequestString(httpServletRequest, NUMBER);
-        if (OTHERS.equals(recommendation)) {
+        String tcuNeeded = ParamUtil.getRequestString(httpServletRequest, "tcuNeed");
+        String tcuDate = ParamUtil.getRequestString(httpServletRequest, "tcuDate");
+        String enforcement = ParamUtil.getRequestString(httpServletRequest, "engageEnforcement");
+        String enforcementRemarks = ParamUtil.getRequestString(httpServletRequest, "enforcementRemarks");
+        String periods = ParamUtil.getRequestString(httpServletRequest, "periods");
+        if (OTHERS.equals(periods)) {
             if (StringUtil.isEmpty(chrono)) {
                 errorMap.put("chronoUnit", "ERR0009");
             } else if (StringUtil.isEmpty(number)) {
@@ -40,9 +45,16 @@ public class InsRepRecValidate implements CustomizeValidator {
         if (!StringUtil.isEmpty(remarks)) {
             int length = remarks.length();
             if (length > 4000) {
-                errorMap.put(remarks, "remarks must be less than 4000");
+                errorMap.put("remarks", "remarks must be less than 4000");
             }
         }
-        return errorMap;
+
+        if(!StringUtil.isEmpty(tcuNeeded)&&StringUtil.isEmpty(tcuDate)){
+            errorMap.put("tcuDate", "ERR0009");
+        }
+        if(!StringUtil.isEmpty(enforcement)&&StringUtil.isEmpty(enforcementRemarks)){
+            errorMap.put("enforcementRemarks", "ERR0009");
+        }
+            return errorMap;
     }
 }

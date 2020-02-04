@@ -260,6 +260,7 @@ public class InspecEmailDelegator {
             TaskDto taskDto1=new TaskDto();
             taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_AO1);
             taskDto1.setRefNo(taskDto.getRefNo());
+            taskDto1.setTaskType(taskDto.getTaskType());
             taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
             taskDto1.setRoleId(RoleConsts.USER_ROLE_AO1);
             taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
@@ -296,6 +297,7 @@ public class InspecEmailDelegator {
                 hcsaSvcStageWorkingGroupDto.setOrder(3);
                 TaskDto taskDto1=new TaskDto();
                 taskDto1.setRefNo(taskDto.getRefNo());
+                taskDto1.setTaskType(taskDto.getTaskType());
                 taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
                 taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
                 taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
@@ -345,7 +347,7 @@ public class InspecEmailDelegator {
         taskDto.setSlaAlertInDays(2);
         taskDto.setPriority(0);
         taskDto.setSlaInDays(5);
-        taskDto.setTaskType(schemeType);
+        //taskDto.setTaskType(schemeType);
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         list.add(taskDto);
