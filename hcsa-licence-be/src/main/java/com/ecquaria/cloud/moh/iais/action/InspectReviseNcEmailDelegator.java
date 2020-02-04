@@ -528,7 +528,11 @@ public class InspectReviseNcEmailDelegator {
         taskDto.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
 
         taskDto.setId(null);
-        taskDto.setDateAssigned(null);
+        if (StringUtil.isEmpty(taskDto.getUserId())) {
+            taskDto.setDateAssigned(null);
+        } else {
+            taskDto.setDateAssigned(new Date());
+        }
         taskDto.setSlaDateCompleted(null);
         taskDto.setSlaRemainInDays(null);
         taskDto.setScore(count);
