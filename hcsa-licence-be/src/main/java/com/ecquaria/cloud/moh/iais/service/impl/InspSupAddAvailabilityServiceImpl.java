@@ -81,7 +81,9 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
     @Override
     public String dateIsContainNonWork(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto) {
         String dateContainFlag = AppConsts.FALSE;
-        
+        if(apptNonAvailabilityDateDto != null) {
+            dateContainFlag = appointmentClient.dateIsContainNonWork(apptNonAvailabilityDateDto).getEntity();
+        }
         return dateContainFlag;
     }
 }
