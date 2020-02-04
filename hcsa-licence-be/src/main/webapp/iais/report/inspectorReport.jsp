@@ -248,7 +248,7 @@
                                 <p>Non-Compliances:</p>
                             </td>
                             <td class="col-xs-8">
-                                <c:if test="${insRepDto.ncRegulation}">
+                                <c:if test="${not empty insRepDto.ncRegulation}">
                                     <table class="table">
                                         <thead>
                                         <tr>
