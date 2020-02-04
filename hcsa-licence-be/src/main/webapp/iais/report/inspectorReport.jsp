@@ -10,7 +10,7 @@
 <%
     String webroot = IaisEGPConstant.BE_CSS_ROOT;
 %>
-<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+<%--<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>--%>
     <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="confirmAction" value="">
     <div class="tab-pane" id="tabInspection" role="tabpanel">
@@ -212,6 +212,7 @@
                     <div class="text ">
                         <p><span>Part II: Findings</span></p>
                     </div>
+                    <div class="table-gp">
                     <table class="table">
                         <tr>
                             <td class="col-xs-4">
@@ -227,7 +228,7 @@
                             </td>
                             <td class="col-xs-8">
                                 <c:if test="${insRepDto.markedForAudit ==true}">
-                                    <p>YES</p>
+                                    <p>Yes</p>
                                 </c:if>
                                 <c:if test="${insRepDto.markedForAudit ==false}">
                                     <p>No</p>
@@ -287,7 +288,18 @@
                                 <p>${insRepDto.status}</p>
                             </td>
                         </tr>
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>Risk Level:</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <iais:select name="riskLevel" options="riskLevelOptions" firstOption="Please select"
+                                             value="${appPremisesRecommendationDto.recommendation}"/>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
                     </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -351,6 +363,15 @@
                             <td class="col-xs-4">
                             </td>
                         </tr>
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>Rectified Within KPI?</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <p>YES</p>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -366,39 +387,22 @@
                     <table class="table">
                         <tr>
                             <td class="col-xs-4">
-                                <p>Follow up Action:</p>
-                            </td>
-                            <td class="col-xs-4">
-                                <input name="followUpAction" type="text" value="" MAXLENGTH="4000">
-                            </td>
-                            <td class="col-xs-4"></td>
-                        </tr>
-                        <tr>
-                            <td class="col-xs-4">
-                                <p>Risk Level:</p>
-                            </td>
-                            <td class="col-xs-4">
-                                <iais:select name="riskLevel" options="riskLevelOptions" firstOption="Please select"
-                                             value="${appPremisesRecommendationDto.recommendation}"/>
-                            </td>
-                            <td class="col-xs-4"></td>
-                        </tr>
-                        <tr>
-                            <td class="col-xs-4">
                                 <p>TCU needed:</p>
                             </td>
                             <td class="col-xs-4">
-                                <input type="checkbox" name="tvuNeeded" onchange="javascirpt:z(this);" value="1212" checked>
+                                <input type="checkbox" id="tcuNeeded" name="tcuNeed" onchange="javascirpt:changeTcu();"
+                                <c:if test="${appPremisesRecommendationDto.tcuNeeded =='on'}">checked</c:if>
+                                >
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
-                        <tr id = "tcuDate" hidden>
+                        <tr id="tcuDate" hidden>
                             <td class="col-xs-4">
                                 <p>TCU Date:</p>
                             </td>
                             <td class="col-xs-4">
-                                <iais:datePicker id="tcuData" name="tcuData" dateVal=""/>
-                                <span id="error_tcuData" name="iaisErrorMsg" class="error-msg"></span>
+                                <iais:datePicker id="tcuDate" name="tcuDate" dateVal=""/>
+                                <span id="error_tcuDate" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
@@ -410,7 +414,7 @@
                                 <iais:select name="recommendation" options="recommendationOption"
                                              firstOption="Please select"
                                              value="${appPremisesRecommendationDto.recommendation}"
-                                             onchange="javascirpt:y(this.value);"/>
+                                             onchange="javascirpt:changeRecommendation(this.value);"/>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
@@ -419,8 +423,8 @@
                                 <p>Period:</p>
                             </td>
                             <td class="col-xs-4">
-                                <iais:select name="period" options="riskOption" firstOption="Please select"
-                                             onchange="javascirpt:x(this.value);"
+                                <iais:select name="periods" options="riskOption" firstOption="Please select"
+                                             onchange="javascirpt:changePeriod(this.value);"
                                              value="${appPremisesRecommendationDto.period}"/>
                                 <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
@@ -439,23 +443,71 @@
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
-
-
                     </table>
                 </div>
             </div>
         </div>
-        <%--        </div>--%>
-        <div align="right">
-            <button id="submitButton" type="submit" class="btn btn-primary">
-                Submit
-            </button>
+        <div class="alert alert-info" role="alert">
+            <strong>
+                <h4>Section F (After Action)</h4>
+            </strong>
         </div>
-        <%@include file="/include/validation.jsp" %>
-</form>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="table-gp">
+                    <table class="table">
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>Follow up Action:</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <input name="followUpAction" type="text" value="" MAXLENGTH="4000">
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>To Engage Enforcement?:</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <input type="checkbox" id="enforcement" name="engageEnforcement" onchange="javascirpt:changeEngage();"
+                                       <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if>
+                                >
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                        <tr id ="engageRemarks" hidden >
+                            <td class="col-xs-4">
+                                <p>Enforcement Remarks</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <input name="enforcementRemarks" type="text" value="" MAXLENGTH="4000">
+                                <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+<%--    <div align="right">--%>
+<%--        <button id="submitButton" type="submit" class="btn btn-primary">--%>
+<%--            Submit--%>
+<%--        </button>--%>
+<%--    </div>--%>
+    <%@include file="/include/validation.jsp" %>
+<%--</form>--%>
 
 <script type="text/javascript">
-    function x(obj) {
+
+    function submit() {
+        if($("#processingDecision").val() == "submit"){
+            $("#mainForm").submit();
+        }
+    }
+
+    function changePeriod(obj) {
         if (obj == "Others") {
             document.getElementById("selfPeriod").style.display = "";
             $("#selfPeriod").show();
@@ -464,39 +516,46 @@
         }
     }
 
-    function y(obj) {
+    function changeRecommendation(obj) {
         if (obj == "Approval") {
             document.getElementById("period").style.display = "";
             $("#period").show();
-        } else {
+        }else{
             document.getElementById("period").style.display = "none";
         }
     }
-    function z(checkbox) {
-        if (checkbox.checked ==true) {
+
+    function changeTcu() {
+        if ($('#tcuNeeded').is(':checked')) {
             document.getElementById("tcuDate").style.display = "";
             $("#tcuDate").show();
-        } else {
+        }else {
             document.getElementById("tcuDate").style.display = "none";
         }
     }
 
-
-    $(document).ready(function () {
-        if ($("#period").val() == "Approval") {
-            y("Approval");
+    function changeEngage() {
+        if ($('#enforcement').is(':checked')) {
+            document.getElementById("engageRemarks").style.display = "";
+            $("#engageRemarks").show();
+        } else {
+            document.getElementById("engageRemarks").style.display = "none";
         }
-    });
+    }
+
 
     $(document).ready(function () {
-        if ($("#selfPeriod").val() == "Others") {
-            y("Others");
+        if ($("#recommendation").val() == "Approval") {
+            changeRecommendation("Approval");
         }
-    });
-    $(document).ready(function () {
-        if($('#tcuDate').is(':checked')) {
-
+        if ($("#periods").val() == "Others") {
+            changePeriod("Others");
+        }
+        if ($('#tcuNeeded').is(':checked')) {
             $("#tcuDate").show();
+        }
+        if ($('#enforcement').is(':checked')) {
+            $("#engageRemarks").show();
         }
     });
 

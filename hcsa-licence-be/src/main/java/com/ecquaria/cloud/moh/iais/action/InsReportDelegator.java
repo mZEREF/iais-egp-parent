@@ -2,23 +2,13 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -26,26 +16,16 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloudfeign.FeignException;
-import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
 import java.io.Serializable;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author weilu
@@ -104,6 +84,8 @@ public class InsReportDelegator {
         List<SelectOption> chronoOption = getChronoOption();
         List<SelectOption> recommendationOption = getRecommendationOption();
         List<SelectOption> riskLevelOptions = getriskLevel();
+        List<SelectOption> processingDecision = getProcessingDecision();
+        ParamUtil.setSessionAttr(bpc.request, "processingDecision", (Serializable) processingDecision);
         ParamUtil.setSessionAttr(bpc.request, "riskLevelOptions", (Serializable) riskLevelOptions);
         ParamUtil.setSessionAttr(bpc.request, "recommendationOption", (Serializable) recommendationOption);
         ParamUtil.setSessionAttr(bpc.request, "chronoOption", (Serializable) chronoOption);
@@ -129,8 +111,17 @@ public class InsReportDelegator {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;
         }
-        AppPremisesRecommendationDto appPremisesRecommendationDto1 = prepareForSave(bpc, appPremisesCorrelationId);
+        List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = prepareForSave(bpc, appPremisesCorrelationId);
+        AppPremisesRecommendationDto appPremisesRecommendationDto1 = appPremisesRecommendationDtoList.get(0);
+        AppPremisesRecommendationDto appPremisesRecommendationDto2 = appPremisesRecommendationDtoList.get(1);
+        AppPremisesRecommendationDto appPremisesRecommendationDto3 = appPremisesRecommendationDtoList.get(2);
+
+
         insRepService.saveRecommendation(appPremisesRecommendationDto1);
+        Date recomInDate = appPremisesRecommendationDto2.getRecomInDate();
+        if(recomInDate!=null){
+            insRepService.saveRecommendation(appPremisesRecommendationDto2);
+        }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         insRepService.routingTaskToAo1(taskDto, applicationDto, appPremisesCorrelationId);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
@@ -140,39 +131,50 @@ public class InsReportDelegator {
     private AppPremisesRecommendationDto prepareRecommendation(BaseProcessClass bpc) {
         String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
-        String period = ParamUtil.getRequestString(bpc.request, "period");
+        String periods = ParamUtil.getRequestString(bpc.request, "periods");
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
         String number = ParamUtil.getRequestString(bpc.request, NUMBER);
+        String tcuNeeded = ParamUtil.getRequestString(bpc.request, "tcuNeed");
+        String tcuDateStr = ParamUtil.getRequestString(bpc.request, "tcuDate");
+        Date tcuDate = DateUtil.parseDate(tcuDateStr, "dd/MM/yyyy");
+        String enforcement = ParamUtil.getRequestString(bpc.request, "engageEnforcement");
+        String enforcementRemarks = ParamUtil.getRequestString(bpc.request, "enforcementRemarks");
         ParamUtil.setSessionAttr(bpc.request, CHRONO, chrono);
         ParamUtil.setSessionAttr(bpc.request, NUMBER, number);
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         appPremisesRecommendationDto.setRemarks(remarks);
         appPremisesRecommendationDto.setRecommendation(recommendation);
-        appPremisesRecommendationDto.setPeriod(period);
+        appPremisesRecommendationDto.setPeriod(periods);
+        appPremisesRecommendationDto.setTcuNeeded(tcuNeeded);
+        appPremisesRecommendationDto.setTcuDate(tcuDate);
+        appPremisesRecommendationDto.setEngageEnforcement(enforcement);
+        appPremisesRecommendationDto.setEngageEnforcementRemarks(enforcementRemarks);
         return appPremisesRecommendationDto;
     }
 
-    private AppPremisesRecommendationDto prepareForSave(BaseProcessClass bpc, String appPremisesCorrelationId) {
+    private List<AppPremisesRecommendationDto> prepareForSave(BaseProcessClass bpc, String appPremisesCorrelationId) {
+        List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = new ArrayList<>();
         String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
-        String period = ParamUtil.getRequestString(bpc.request, "period");
+        String periods = ParamUtil.getRequestString(bpc.request, "periods");
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
         String number = ParamUtil.getRequestString(bpc.request, NUMBER);
-        ParamUtil.setSessionAttr(bpc.request, CHRONO, chrono);
-        ParamUtil.setSessionAttr(bpc.request, NUMBER, number);
+        String tcuDateStr = ParamUtil.getRequestString(bpc.request, "tcuDate");
+        Date tcuDate = DateUtil.parseDate(tcuDateStr, "dd/MM/yyyy");
+        String enforcementRemarks = ParamUtil.getRequestString(bpc.request, "enforcementRemarks");
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         appPremisesRecommendationDto.setRemarks(remarks);
         appPremisesRecommendationDto.setRecomInDate(new Date());
         appPremisesRecommendationDto.setRecomDecision(InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT);
         appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
         appPremisesRecommendationDto.setRecommendation(recommendation);
-        if (OTHERS.equals(period) && !StringUtil.isEmpty(chrono) && !StringUtil.isEmpty(number)) {
+        if (OTHERS.equals(periods) && !StringUtil.isEmpty(chrono) && !StringUtil.isEmpty(number)) {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
             appPremisesRecommendationDto.setChronoUnit(chrono);
             appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
-        } else if (!StringUtil.isEmpty(period) && !OTHERS.equals(period)) {
-            String[] split_number = period.split("\\D");
-            String[] split_unit = period.split("\\d");
+        } else if (!StringUtil.isEmpty(periods) && !OTHERS.equals(periods)) {
+            String[] split_number = periods.split("\\D");
+            String[] split_unit = periods.split("\\d");
             String chronoRe = split_unit[1];
             String numberRe = split_number[0];
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
@@ -180,7 +182,19 @@ public class InsReportDelegator {
             appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(numberRe));
             appPremisesRecommendationDto.setRecommendation(recommendation);
         }
-        return appPremisesRecommendationDto;
+        AppPremisesRecommendationDto tcuAppPremisesRecommendationDto = new AppPremisesRecommendationDto();
+        tcuAppPremisesRecommendationDto.setRecomInDate(tcuDate);
+        tcuAppPremisesRecommendationDto.setRecomType("tcuNeeded");
+        tcuAppPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+
+        AppPremisesRecommendationDto engageEnforcementAppPremisesRecommendationDto = new AppPremisesRecommendationDto();
+        engageEnforcementAppPremisesRecommendationDto.setRecomType("engageEnforcement");
+        engageEnforcementAppPremisesRecommendationDto.setRemarks(enforcementRemarks);
+        engageEnforcementAppPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+        appPremisesRecommendationDtos.add(appPremisesRecommendationDto);
+        appPremisesRecommendationDtos.add(tcuAppPremisesRecommendationDto);
+        appPremisesRecommendationDtos.add(engageEnforcementAppPremisesRecommendationDto);
+        return appPremisesRecommendationDtos;
     }
 
     private List<SelectOption> getChronoOption() {
@@ -197,7 +211,7 @@ public class InsReportDelegator {
     private List<SelectOption> getRecommendationOption() {
         List<SelectOption> recommendationResult = new ArrayList<>();
         SelectOption so1 = new SelectOption("Approval", "Proceed with Licence Issuance");
-        SelectOption so2 = new SelectOption("Approval LTCs", "Proceed with Licence Issuance (with LTCs)");
+        SelectOption so2 = new SelectOption("Approval", "Proceed with Licence Issuance (with LTCs)");
         SelectOption so3 = new SelectOption("Reject", "Reject Licence");
         recommendationResult.add(so1);
         recommendationResult.add(so2);
@@ -213,6 +227,13 @@ public class InsReportDelegator {
         riskLevelResult.add(so1);
         riskLevelResult.add(so2);
         riskLevelResult.add(so3);
+        return riskLevelResult;
+    }
+
+    private List<SelectOption> getProcessingDecision() {
+        List<SelectOption> riskLevelResult = new ArrayList<>();
+        SelectOption so1 = new SelectOption("submit", "Submit inspection report for review");
+        riskLevelResult.add(so1);
         return riskLevelResult;
     }
 

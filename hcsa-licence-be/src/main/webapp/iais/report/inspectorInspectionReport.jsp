@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais"%>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -23,7 +24,7 @@
                                                                         data-toggle="tab">Documents</a></li>
                             <li class="complete" role="presentation"><a href="#tabInspectionReport" aria-controls="tabProcessing" role="tab"
                                                                         data-toggle="tab">Inspection Report</a></li>
-                            <li class="complete" role="presentation"><a href="#tabInspectionReport" aria-controls="tabProcessing" role="tab"
+                            <li class="complete" role="presentation"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab"
                                                                         data-toggle="tab">Processing</a></li>
 
                         </ul>
@@ -32,7 +33,7 @@
                                 <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></div>
                                 <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a></div>
                                 <div class="swiper-slide"><a href="#tabInspectionReport" aria-controls="tabInspectionReport" role="tab" data-toggle="tab">Inspection Report</a></div>
-                                <div class="swiper-slide"><a href="#tabInspectionReport" aria-controls="tabInspectionReport" role="tab" data-toggle="tab">Processing</a></div>
+                                <div class="swiper-slide"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a></div>
                             </div>
                             <div class="swiper-button-prev"></div>
                             <div class="swiper-button-next"></div>
@@ -121,7 +122,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
                                 <div class="alert alert-info" role="alert"><strong>
                                     <h4>Supporting Document</h4>
@@ -201,6 +201,106 @@
                             </div>
                             <div class="tab-pane" id="tabInspectionReport" role="tabpanel">
                                 <jsp:include page="/iais/report/inspectorReport.jsp"></jsp:include>
+                            </div>
+                            <div class="tab-pane" id="tabProcessing" role="tabpanel">
+                                <div class="col-xs-12">
+                                    <div class="table-gp">
+                                        <div class="alert alert-info" role="alert">
+                                            <strong>
+                                                <h4>Processing Status Update</h4>
+                                            </strong>
+                                        </div>
+                                        <div class="table-gp">
+                                        <table class="table">
+                                            <tr>
+                                                <td class="col-xs-4">
+                                                    <p>Current Status:</p>
+                                                </td>
+                                                <td class="col-xs-8">
+                                                    <p>${applicationViewDto.currentStatus}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="col-xs-4">
+                                                    <p>Remarks:</p>
+                                                </td>
+                                                <div>
+                                                    <td class="col-xs-4">
+                                                        <input name="processingRemarks" type="text" value="" MAXLENGTH="4000">
+                                                        <span id="error_processingRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                                                    </td>
+                                                </div>
+                                                <td class="col-xs-4"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="col-xs-4">
+                                                    <p>Processing Decision:</p>
+                                                </td>
+                                                <td class="col-xs-4">
+                                                    <iais:select name="processingDecision" options="processingDecision" firstOption="Please select" value=""/>
+                                                </td>
+                                                <td class="col-xs-4"></td>
+                                            </tr>
+                                        </table>
+                                            <div align="right">
+                                                <button id="submitButton" type="submit" class="btn btn-primary" onclick="submit()">
+                                                    Next
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-info" role="alert">
+                                            <strong>
+                                                <h4>Processing History</h4>
+                                            </strong>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="table-gp">
+                                                    <table class="table">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Username</th>
+                                                            <th>Working Group</th>
+                                                            <th>Status Update</th>
+                                                            <th>Remarks</th>
+                                                            <th>Last Updated</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <c:forEach
+                                                                items="${applicationViewDto.appPremisesRoutingHistoryDtoList}"
+                                                                var="appPremisesRoutingHistoryDto">
+                                                            <tr>
+                                                                <td>
+                                                                    <p><c:out
+                                                                            value="${appPremisesRoutingHistoryDto.actionby}"></c:out></p>
+                                                                </td>
+                                                                <td>
+                                                                    <p><c:out
+                                                                            value="${appPremisesRoutingHistoryDto.workingGroup}"></c:out></p>
+                                                                </td>
+                                                                <td>
+                                                                    <p><c:out
+                                                                            value="${appPremisesRoutingHistoryDto.processDecision}"></c:out></p>
+                                                                </td>
+                                                                <td>
+                                                                    <p><c:out
+                                                                            value="${appPremisesRoutingHistoryDto.internalRemarks}"></c:out></p>
+                                                                </td>
+                                                                <td>
+                                                                    <p><c:out
+                                                                            value="${appPremisesRoutingHistoryDto.updatedDt}"></c:out></p>
+                                                                </td>
+                                                            </tr>
+                                                        </c:forEach>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
