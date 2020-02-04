@@ -158,7 +158,7 @@
                           </div>
                         </div>
                         <iais:row cssClass="onSiteSelect hidden">
-                          <iais:field value="Add or select a premises from the list" width="12" mandatory="true"/>
+                          <iais:field value="Add or select a premises from the list : " width="12" mandatory="true"/>
                           <iais:value id="onSiteSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                               <c:choose>
                                 <c:when test="${appGrpPremisesDto.premisesType == onSite}">
@@ -171,7 +171,7 @@
                           </iais:value>
                         </iais:row>
                         <iais:row cssClass="conveyanceSelect hidden">
-                          <iais:field value="Add or select a premises from the list" width="12" mandatory="true"/>
+                          <iais:field value="Add or select a premises from the list : " width="12" mandatory="true"/>
                           <iais:value id="conveyanceSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                             <c:choose>
                               <c:when test="${appGrpPremisesDto.premisesType == conv}">
