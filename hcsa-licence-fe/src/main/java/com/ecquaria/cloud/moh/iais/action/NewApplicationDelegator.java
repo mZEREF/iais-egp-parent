@@ -1510,7 +1510,7 @@ public class NewApplicationDelegator {
             
             premTypeBuffer.append("<div class=\"col-xs-6 col-md-2\">")
                     .append("<div class=\"form-check\">")
-                    .append("<input class=\"form-check-input premTypeRadio "+className+" \"  type=\"radio\" name=\"premType"+currentLength+"\" value = "+type+" aria-invalid=\"false\">");
+                    .append("<input class=\"form-check-input premTypeRadio "+className+"\"  type=\"radio\" name=\"premType"+currentLength+"\" value = "+type+" aria-invalid=\"false\">");
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)){
                 premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>On-site</label>");
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)){
@@ -2404,7 +2404,10 @@ public class NewApplicationDelegator {
                     appPremPhOpenPeriod.setOnsiteStartFromMM(onsitePbHolDayStartMM);
                     appPremPhOpenPeriod.setOnsiteEndToHH(onsitePbHolDayEndHH);
                     appPremPhOpenPeriod.setOnsiteEndToMM(onsitePbHolDayEndMM);
-                    appPremPhOpenPeriods.add(appPremPhOpenPeriod);
+                    if(!StringUtil.isEmpty(onsitePubHoliday)||!StringUtil.isEmpty(onsitePbHolDayStartHH) || !StringUtil.isEmpty(onsitePbHolDayStartMM)
+                            ||!StringUtil.isEmpty(onsitePbHolDayEndHH) ||!StringUtil.isEmpty(onsitePbHolDayEndMM)){
+                        appPremPhOpenPeriods.add(appPremPhOpenPeriod);
+                    }
                 }
 
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType[i])){

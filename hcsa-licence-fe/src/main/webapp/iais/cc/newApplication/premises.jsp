@@ -309,7 +309,7 @@
                             </div>
                           </div>
                           <c:choose>
-                            <c:when test="${appGrpPremisesDto.appPremPhOpenPeriodList != null && 'ONSITE'== appGrpPremisesDto.premisesType}">
+                            <c:when test="${appGrpPremisesDto.appPremPhOpenPeriodList.size()>0 && 'ONSITE'== appGrpPremisesDto.premisesType}">
                               <c:forEach var="ph" items="${appGrpPremisesDto.appPremPhOpenPeriodList}" varStatus="phStat" >
                                 <div class="pubHolidayContent">
                                   <iais:row>
@@ -475,7 +475,7 @@
                             </div>
                           </div>
                           <c:choose>
-                            <c:when test="${appGrpPremisesDto.appPremPhOpenPeriodList != null && 'CONVEYANCE'== appGrpPremisesDto.premisesType}">
+                            <c:when test="${appGrpPremisesDto.appPremPhOpenPeriodList.size()>0 && 'CONVEYANCE'== appGrpPremisesDto.premisesType}">
                               <c:forEach var="ph" items="${appGrpPremisesDto.appPremPhOpenPeriodList}" varStatus="phStat" >
                                 <div class="pubHolidayContent">
                                   <iais:row>
