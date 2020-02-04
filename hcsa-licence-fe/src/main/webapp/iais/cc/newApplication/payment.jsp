@@ -22,9 +22,8 @@
                             <div class="tab-pane active" id="paymentTab" role="tabpanel">
                                 <h2>Payment Summary</h2>
                                 <p >
-                                    Total amount due:<div  id="totalAmount" aria-valuenow="8888.88">
-                                <c:out value="${AppSubmissionDto.amount}"></c:out>
-                                <c:if test="${AppSubmissionDto.amount != null && AppSubmissionDto.amount != ''}">$</c:if></div>
+                                    Total amount due:
+                                <c:out value="${AppSubmissionDto.amountStr}"></c:out>
                                 </p>
                                 <table class="table">
                                     <thead>
@@ -61,8 +60,7 @@
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title" >Amount</p>
                                             <p id="fee">
-                                                <c:out value="${AppSubmissionDto.amount}"></c:out>
-                                                <c:if test="${AppSubmissionDto.amount != null && AppSubmissionDto.amount != ''}">$</c:if>
+                                                <c:out value="${AppSubmissionDto.amountStr}"></c:out>
                                             </p>
                                         </td>
                                     </tr>

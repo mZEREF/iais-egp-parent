@@ -111,16 +111,16 @@
                           <input class="premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>
                           <input class="premSelValue" type="hidden" value="${appGrpPremisesDto.premisesSelect}"/>
                           <c:forEach var="premisesType" items="${premisesType}">
-                            <div class="col-xs-6 col-md-2">
-                                <div class="form-check">
-                                  <c:choose>
-                                    <c:when test="${'ONSITE' == premisesType}">
+                              <c:choose>
+                                  <c:when test="${'ONSITE' == premisesType}">
                                       <c:set var="className" value="onSite"/>
-                                    </c:when>
-                                    <c:when test="${'CONVEYANCE' == premisesType}">
+                                  </c:when>
+                                  <c:when test="${'CONVEYANCE' == premisesType}">
                                       <c:set var="className" value="conveyance" />
-                                    </c:when>
-                                  </c:choose>
+                                  </c:when>
+                              </c:choose>
+                              <div class="col-xs-5 <c:if test="${'onSite'==className}">col-md-3</c:if> <c:if test="${'conveyance'==className}">col-md-4</c:if> ">
+                                <div class="form-check">
                                   <c:if test="${appGrpPremisesDto.premisesType!=premisesType}">
                                     <input class="form-check-input premTypeRadio ${className}"  type="radio" name="premType${status.index}" value = "${premisesType}" aria-invalid="false">
                                   </c:if>
@@ -130,10 +130,12 @@
 
                                   <label class="form-check-label" ><span class="check-circle"></span>
                                     <c:if test="${premisesType == onSite}">
-                                      <c:out value="On-site" />
+                                      <c:out value="On-site" /><br/>
+                                        <span>(at a fixed address)</span>
                                     </c:if>
                                     <c:if test="${premisesType == conv}">
-                                      <c:out value="Conveyance" />
+                                      <c:out value="Conveyance" /><br/>
+                                        <span>(in a mobile clinic / ambulance)</span>
                                     </c:if>
                                   </label>
                                 </div>
@@ -142,7 +144,7 @@
                           </c:forEach>
 
                           <c:if test="${!status.first && requestInformationConfig==null}">
-                          <div class="col-xs-6 col-md-2">
+                          <div class="col-xs-5 col-md-1">
                             <div class="form-check">
                               <strong class="removeBtn">X</strong>
                             </div>
@@ -398,6 +400,17 @@
                               <span  class="error-msg"  name="iaisErrorMsg" id="error_conveyanceVehicleNo${status.index}"></span>
                             </iais:value>
                           </iais:row>
+
+                          <iais:row>
+                            <iais:field value="Vehicle Owner's Name. " mandatory="true" width="12"/>
+                            <iais:value width="3">
+                              <iais:select  name="conveyanceSalutation" codeCategory="CATE_ID_SALUTATION" value="${appGrpPremisesDto.conveyanceSalutation}" firstOption="Please Select"></iais:select>
+                            </iais:value>
+                            <iais:value width="5">
+                              <iais:input maxLength="10" type="text" name="conveyanceVehicleOwnerName"  value="${appGrpPremisesDto.conveyanceVehicleOwnerName}"></iais:input>
+                            </iais:value>
+                          </iais:row>
+
                           <iais:row cssClass="postalCodeDiv">
                             <iais:field value="Postal Code " mandatory="true" width="12"/>
                             <iais:value width="5">
@@ -559,7 +572,7 @@
                 </div>
                 <div class="row">
                   <div class="col-xs-12">
-                    <c:if test="${requestInformationConfig==null && 'APTY005' !=AppSubmissionDto.appType && AppSubmissionDto.appSvcRelatedInfoDtoList.size()== 1}">
+                    <c:if test="${requestInformationConfig==null && 'APTY005' !=AppSubmissionDto.appType && !multiBase}">
                       <button id="addPremBtn" type="button">Add Premises</button>
                     </c:if>
                   </div>
@@ -805,6 +818,8 @@ var retrieveAddr = function(){
                 addPubHolDay();
                 
                 removePH();
+
+                otherLic();
                 
                 $('.date_picker').datepicker({
                     format:"dd/mm/yyyy"

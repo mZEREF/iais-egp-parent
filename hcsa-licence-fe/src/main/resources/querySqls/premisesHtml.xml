@@ -11,7 +11,7 @@
           <label class="col-xs-12 col-md-4 control-label" for="premisesType">What is your premises type? <span class="mandatory">*</span></label>
           <input class="premTypeValue" type="hidden" name="premType" value="">
           (1)
-          <div class="col-xs-6 col-md-2">
+          <div class="col-xs-5 col-md-1">
             <div class="form-check">
                 <b class=" removeBtn">X</b>
             </div>
@@ -133,11 +133,11 @@
             <div class=" col-xs-7 col-sm-4 col-md-6">
               <input type="hidden" name="onSiteIsOtherLic" value=""/>
               <div class="form-check col-sm-3">
-                <input class="form-check-input other-lic"  type="radio" name="otherLicence${status.index}" value = "0" aria-invalid="false">
+                <input class="form-check-input other-lic"  type="radio" name="otherLicence(0)" value = "0" aria-invalid="false">
                 <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
               </div>
               <div class="form-check col-sm-3">
-                <input class="form-check-input other-lic"  type="radio" name="otherLicence${status.index}" value = "1" aria-invalid="false">
+                <input class="form-check-input other-lic"  type="radio" name="otherLicence(0)" value = "1" aria-invalid="false">
                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
               </div>
             </div>
@@ -207,6 +207,17 @@
               <span  class="error-msg"  name="iaisErrorMsg" id="error_conveyanceVehicleNo(00)"></span>
             </div>
           <div class="clear"></div></div>
+
+          <div class="form-group">
+            <label class="col-xs-12 col-md-4 control-label">Vehicle Owner's Name. <span class="mandatory">*</span></label>
+            <div class="col-sm-4 col-md-2 col-xs-3">
+                (6)
+            </div>
+            <div class="col-sm-4 col-md-2 col-xs-5">
+                <input type="text" name="conveyanceVehicleOwnerName" maxlength="10" autocomplete="off"><span id="error_conveyanceVehicleOwnerName" name="iaisErrorMsg" class="error-msg"></span>
+            </div>
+            <div class="clear"></div>
+           </div>
           <div class="form-group postalCodeDiv">
             <label class="col-xs-12 col-md-4 control-label">Postal Code <span class="mandatory">*</span></label>
             <div class="col-sm-4 col-md-2 col-xs-5">
