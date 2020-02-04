@@ -252,6 +252,7 @@ public class InspectEmailAo1Delegator {
                 hcsaSvcStageWorkingGroupDto.setOrder(3);
                 TaskDto taskDto1=new TaskDto();
                 taskDto1.setRefNo(taskDto.getRefNo());
+                taskDto1.setTaskType(taskDto.getTaskType());
                 taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
                 taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
                 taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
@@ -287,7 +288,7 @@ public class InspectEmailAo1Delegator {
             taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
             taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
             taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
-
+            taskDto1.setTaskType(taskDto.getTaskType());
             List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
             taskService.createTasks(taskDtos);
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER, InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,taskDto1,HcsaConsts.ROUTING_STAGE_POT,taskDto1.getUserId(),inspectionEmailTemplateDto.getRemarks());
@@ -537,7 +538,7 @@ public class InspectEmailAo1Delegator {
         taskDto.setSlaAlertInDays(2);
         taskDto.setPriority(0);
         taskDto.setSlaInDays(5);
-        taskDto.setTaskType(schemeType);
+        //taskDto.setTaskType(schemeType);
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         list.add(taskDto);

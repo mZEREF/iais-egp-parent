@@ -234,6 +234,7 @@ public class InspectionMergeSendNcEmailDelegator {
                     hcsaSvcStageWorkingGroupDto.setOrder(1);
                     TaskDto taskDto2=new TaskDto();
                     taskDto2.setRefNo(appPremCorrIds.get(i));
+                    taskDto2.setTaskType(taskDto.getTaskType());
                     taskDto2.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
                     taskDto2.setUserId(appPremisesRoutingHisDto.getActionby());
                     taskDto2.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
@@ -287,6 +288,7 @@ public class InspectionMergeSendNcEmailDelegator {
                 hcsaSvcStageWorkingGroupDto.setOrder(1);
                 TaskDto taskDto2=new TaskDto();
                 taskDto2.setRefNo(appPremCorrIds.get(i));
+                taskDto2.setTaskType(taskDto.getTaskType());
                 taskDto2.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
                 taskDto2.setUserId(appPremisesRoutingHisDto.getActionby());
                 taskDto2.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
@@ -298,7 +300,6 @@ public class InspectionMergeSendNcEmailDelegator {
                 createAppPremisesRoutingHistory(applicationViewDto1.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,taskDto2,HcsaConsts.ROUTING_STAGE_POT,taskDto2.getUserId());
 
             }
-            inspEmailService.updateEmailDraft(inspectionEmailTemplateDto);
             EmailDto emailDto=new EmailDto();
             emailDto.setContent(inspectionEmailTemplateDto.getMessageContent());
             emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
@@ -341,7 +342,7 @@ public class InspectionMergeSendNcEmailDelegator {
         taskDto.setSlaAlertInDays(2);
         taskDto.setPriority(0);
         taskDto.setSlaInDays(5);
-        taskDto.setTaskType(schemeType);
+       // taskDto.setTaskType(schemeType);
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         list.add(taskDto);
