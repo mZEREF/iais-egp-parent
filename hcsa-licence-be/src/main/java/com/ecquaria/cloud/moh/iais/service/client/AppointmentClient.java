@@ -38,4 +38,7 @@ public interface AppointmentClient {
 
     @GetMapping(value = "/appt-nonava/{id}")
     FeignResponseEntity<ApptNonAvailabilityDateDto> getNonAvailabilityById(@PathVariable("id") String id);
+
+    @GetMapping(value = "/appt-nonava-contain")
+    FeignResponseEntity<String> dateIsContainNonWork(@RequestBody ApptNonAvailabilityDateDto apptNonAvailabilityDateDto);
 }
