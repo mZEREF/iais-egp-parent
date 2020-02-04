@@ -32,9 +32,36 @@ public interface InspSupAddAvailabilityService {
     /**
       * @author: shicheng
       * @Date 2020/2/3
-      * @Param: 
-      * @return: 
-      * @Descripation: 
+      * @Param: nonAvaId
+      * @return: ApptNonAvailabilityDateDto
+      * @Descripation: get ApptNonAvailabilityDateDto By Id
       */
     ApptNonAvailabilityDateDto getApptNonAvailabilityDateDtoById(String nonAvaId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/2/3
+      * @Param: removeId
+      * @return: void
+      * @Descripation: delete Non-Availability By Id
+      */
+    void deleteNonAvailabilityById(String removeId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/2/3
+      * @Param: apptNonAvailabilityDateDto
+      * @return: ApptNonAvailabilityDateDto
+      * @Descripation: create Non-Availability
+      */
+    ApptNonAvailabilityDateDto createNonAvailability(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/2/3
+      * @Param: apptNonAvailabilityDateDto
+      * @return: ApptNonAvailabilityDateDto
+      * @Descripation: update Non-Availability
+      */
+    ApptNonAvailabilityDateDto updateNonAvailability(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto);
 }

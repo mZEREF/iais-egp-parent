@@ -33,6 +33,8 @@ public class ServiceMenuDelegator {
     private static final String BASE_SERVICE_CHECK_BOX_ATTR = "basechk";
     private static final String SPECIFIED_SERVICE_CHECK_BOX_ATTR = "sepcifiedchk";
     private static final String BASE_SERVICE_ATTR = "baseService";
+    private static final String BASE_SERVICE_ATTR_CHECKED = "baseServiceChecked";
+    private static final String SPECIFIED_SERVICE_ATTR_CHECKED = "specifiedServiceChecked";
     private static final String BASE_SERVICE_DTO_ATTR = "baseServiceDto";
     private static final String SPECIFIED_SERVICE_ATTR = "specifiedService";
     private static final String ERROR_ATTR = "err";
@@ -45,6 +47,8 @@ public class ServiceMenuDelegator {
     public void doStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the  doStart start 1...."));
         AccessUtil.initLoginUserInfo(bpc.request);
+        ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED,null);
+        ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED, null);
 
         log.debug(StringUtil.changeForLog("the  doStart end 1...."));
     }
@@ -69,7 +73,12 @@ public class ServiceMenuDelegator {
         List<HcsaServiceDto> specifiedService = hcsaServiceDtoList.stream()
                 .filter(hcsaServiceDto -> SPECIFIED_SERVICE.equals(hcsaServiceDto.getSvcType())).collect(Collectors.toList());
 
+        List<String> baseServiceChecked = (List<String>)ParamUtil.getSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED);
+        List<String> specifiedServiceChecked = (List<String>)ParamUtil.getSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED);
+
         ParamUtil.setRequestAttr(bpc.request, BASE_SERVICE_ATTR, baseService);
+        ParamUtil.setRequestAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, baseServiceChecked);
+        ParamUtil.setRequestAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED, specifiedServiceChecked);
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_DTO_ATTR, (Serializable) baseService);
         ParamUtil.setRequestAttr(bpc.request, SPECIFIED_SERVICE_ATTR, specifiedService);
 
@@ -121,11 +130,16 @@ public class ServiceMenuDelegator {
                     ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR, (Serializable) baselist);
                     ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, (Serializable) sepcifiedlist);
                     ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, AppConsts.TRUE);
+                    ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, (Serializable) baselist);
+                    ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED, (Serializable) sepcifiedlist);
+
                 }
             }else{
                 ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR, (Serializable) baselist);
                 ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, (Serializable) sepcifiedlist);
                 ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, AppConsts.TRUE);
+                ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, (Serializable) baselist);
+                ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED, (Serializable) sepcifiedlist);
             }
         }
     }

@@ -42,10 +42,11 @@
             </div>
             <input class="selectedFile" id="selectedFile" name = "${docConfig.id}selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
 
-           <c:if test="${svcDoc.docName!=null}">
+            <c:if test="${svcDoc.docName!=null}">
+              <span name="iaisErrorMsg" class="error-msg" id="error_file${status.index}"></span>
+            </c:if>
 
-             <span name="iaisErrorMsg" class="error-msg" id="error_file${fileIndex}"></span>
-           </c:if>
+
 
 
           </div>

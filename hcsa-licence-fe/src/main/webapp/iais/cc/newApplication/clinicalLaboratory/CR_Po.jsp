@@ -92,7 +92,7 @@
                       </div>
                       <div class="col-sm-4">
                         <input name="name" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.name}" >
-                        <span class="error-msg" name="iaisErrorMsg" id="error_name"></span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
                       </div>
                     </div>
                   </div>
@@ -108,7 +108,7 @@
                       <div class="col-sm-4">
                         <div class="" id="idType${suffix}">
                           <iais:select  name="idType"  value="${principalOfficer.idType}" options="IdTypeSelect"></iais:select>
-                          <span class="error-msg" name="iaisErrorMsg" id="error_idType"></span>
+                          <span class="error-msg" name="iaisErrorMsg" id="error_idType${status.index}"></span>
                         </div>
                       </div>
                       <div class="col-sm-4">
@@ -141,7 +141,7 @@
                       </div>
                       <div class="col-sm-4">
                         <input name="mobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.mobileNo}" >
-                        <span class="error-msg"  name="iaisErrorMsg" id="error_mobileNo"></span>
+                        <span class="error-msg"  name="iaisErrorMsg" id="error_mobileNo${status.index}"></span>
                       </div>
                     </div>
                   </div>
@@ -155,7 +155,7 @@
                       </div>
                       <div class="col-sm-4">
                         <input name="officeTelNo" type="text"  id="officeTelNo" maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.officeTelNo}" >
-                        <span class="error-msg" name="iaisErrorMsg" id="error_officeTelNo" ></span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_officeTelNo${status.index}" ></span>
                       </div>
                     </div>
                   </div>
@@ -169,7 +169,7 @@
                       </div>
                       <div class="col-sm-4">
                         <input name="emailAddress" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.emailAddr}" >
-                        <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr" ></span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr${status.index}" ></span>
                       </div>
                     </div>
                   </div>
@@ -282,7 +282,7 @@
                       </div>
                       <div class="col-sm-4">
                         <input name="deputyName"  type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.name}"  size="30">
-                        <span class="error-msg" name="iaisErrorMsg" id="error_deputyName"></span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_deputyName${status.index}"></span>
                       </div>
                     </div>
                   </div>
@@ -299,12 +299,12 @@
                       <div class="col-sm-4" id="deputyIdType${suffix}">
                         <div class="">
                           <iais:select  name="deputyIdType" value="${deputy.idType}" options="IdTypeSelect"></iais:select>
-                          <span name="iaisErrorMsg" class="error-msg" id="error_deputyIdType"></span>
+                          <span name="iaisErrorMsg" class="error-msg" id="error_deputyIdType${status.index}"></span>
                         </div>
                       </div>
                       <div class="col-sm-4">
                         <input  name="deputyIdNo" type="text"  class=" form-control control-input control-set-font control-font-normal" value="${deputy.idNo}" size="30">
-                        <span class="error-msg"  name="iaisErrorMsg" id="error_deputyIdNo"></span>
+                        <span class="error-msg"  name="iaisErrorMsg" id="error_deputyIdNo${status.index}"></span>
                       </div>
                     </div>
                   </div>
@@ -318,7 +318,7 @@
                       </div>
                       <div class="col-sm-5" id="deputyDesignation${suffix}">
                         <iais:select name="deputyDesignation" codeCategory="CATE_ID_DESIGNATION" value="${deputy.designation}" firstOption="Select Designation"></iais:select>
-                        <span class="error-msg" id="error_deputyDesignation" name="iaisErrorMsg"></span>
+                        <span class="error-msg" id="error_deputyDesignation${status.index}" name="iaisErrorMsg"></span>
                       </div>
                     </div>
                   </div>
@@ -332,7 +332,7 @@
                       </div>
                       <div class="col-sm-4">
                         <input name="deputyMobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${deputy.mobileNo}" size="30">
-                        <span class="error-msg"  name="iaisErrorMsg"  id="error_deputyMobileNo"></span>
+                        <span class="error-msg"  name="iaisErrorMsg"  id="error_deputyMobileNo${status.index}"></span>
                       </div>
                     </div>
                   </div>
@@ -346,7 +346,7 @@
                       </div>
                       <div class="col-sm-4">
                         <input name="deputyEmailAddr" type="text" class="form-control control-input control-set-font control-font-normal" value="${deputy.emailAddr}" size="30">
-                        <span class="error-msg" name="iaisErrorMsg"  id="error_deputyEmailAddr" ></span>
+                        <span class="error-msg" name="iaisErrorMsg"  id="error_deputyEmailAddr${status.index}" ></span>
                       </div>
                     </div>
                   </div>
@@ -360,7 +360,7 @@
                       </div>
                       <div class="col-sm-4">
                         <iais:select  name="modeOfMedAlert" value="${deputy.modeOfMedAlert}" options="MedAlertSelect"></iais:select>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_modeOfMedAlert" ></span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_modeOfMedAlert${status.index}" ></span>
                       </div>
                     </div>
                   </div>

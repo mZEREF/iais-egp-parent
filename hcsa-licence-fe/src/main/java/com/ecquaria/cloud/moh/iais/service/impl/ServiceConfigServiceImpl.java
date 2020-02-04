@@ -113,7 +113,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         FileRepoDto fileRepoDto = new FileRepoDto();
         fileRepoDto.setFileName(file.getOriginalFilename());
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-    /*    AuditTrailDto internet = AuditTrailHelper.getBatchJobDto("internet");*/
+        AuditTrailDto internet = AuditTrailHelper.getBatchJobDto("internet");
         fileRepoDto.setAuditTrailDto(auditTrailDto);
         fileRepoDto.setRelativePath(sharedPath);
         String fileRepoStr = JsonUtil.parseToJson(fileRepoDto);
