@@ -58,20 +58,12 @@ public class InsReportDelegator {
         AccessUtil.initLoginUserInfo(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", null);
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, null);
-    }
-
-
-    public void inspectionReportPre(BaseProcessClass bpc) {
-        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>inspectionReportPre");
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String taskId;
-        taskId = ParamUtil.getRequestString(bpc.request, "taskId");
-        if (StringUtil.isEmpty(taskId)) {
-            taskId = "B7A46131-6637-EA11-BE7E-000C29F371DC";
-        }
+        String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(correlationId);
+        ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");
         if (insRepDto == null) {
             insRepDto = insRepService.getInsRepDto(taskDto, applicationViewDto, loginContext);
@@ -92,7 +84,10 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(bpc.request, "riskOption", (Serializable) riskOption);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
-        ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
+    }
+
+    public void inspectionReportPre(BaseProcessClass bpc) {
+
     }
 
     public void inspectorReportSave(BaseProcessClass bpc) throws FeignException {
