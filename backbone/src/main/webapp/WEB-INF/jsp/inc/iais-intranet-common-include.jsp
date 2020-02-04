@@ -11,7 +11,7 @@
 <meta name="keywords" content="">
 
 <%@ include file="/WEB-INF/jsp/inc/iaisscript.jsp" %>
-
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet">
 <link href="<%=webroot%>css/bootstrap.min.css" rel="stylesheet">
 <link href="<%=webroot%>css/custom.css" rel="stylesheet">
 <link href="<%=webroot%>css/responsiveindex.css" rel="stylesheet">
