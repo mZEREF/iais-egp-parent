@@ -36,8 +36,155 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         tcuVad(serListDto,errMap);
         commonVad(request,errMap);
         ahocVad(request,errMap);
-
+        fillUpVad(request,errMap);
+        otherinfoVad(serListDto,errMap);
         return errMap;
+    }
+
+    private void fillUpVad(HttpServletRequest request, Map<String, String> errMap) {
+        if(commFillUpVad(request)&&serviceFillUpVad(request)&& adhocFillUpVad(request)){
+
+        }else{
+            errMap.put("fillchkl","UC_INSTA004_ERR008");
+        }
+    }
+
+    private boolean adhocFillUpVad(HttpServletRequest request) {
+        AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
+        if(showDto!=null){
+            List<AdhocNcCheckItemDto> itemDtoList = showDto.getAdItemList();
+            if(itemDtoList!=null && !itemDtoList.isEmpty()){
+                for(AdhocNcCheckItemDto temp:itemDtoList){
+                    if(StringUtil.isEmpty(temp.getAdAnswer())){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean serviceFillUpVad(HttpServletRequest request) {
+        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
+        int flagNum = 0;
+        if(serListDto!=null&&!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
+            for(InspectionFillCheckListDto fDto:serListDto.getFdtoList()){
+                if(!fillServiceVad(fDto)){
+                    flagNum++;
+                };
+            }
+        }
+        if(flagNum>0){
+            return false;
+        }
+        return true;
+    }
+
+    private boolean commFillUpVad(HttpServletRequest request) {
+        InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
+        if (icDto != null) {
+            List<InspectionCheckQuestionDto> cqDtoList = icDto.getCheckList();
+            if(cqDtoList!=null && !cqDtoList.isEmpty()){
+                for(InspectionCheckQuestionDto temp:cqDtoList){
+                    if(StringUtil.isEmpty(temp.getChkanswer())){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+
+    private void otherinfoVad(InspectionFDtosDto serListDto, Map<String, String> errMap) {
+        boolean timeflag = timeVad(serListDto,errMap);
+        if(timeflag){
+            timeLaterVad(serListDto,errMap);
+        }
+        inspDateVad(serListDto,errMap);
+    }
+
+    private void timeLaterVad(InspectionFDtosDto serListDto, Map<String, String> errMap) {
+        String startHour = serListDto.getStartHour();
+        String startMin = serListDto.getStartMin();
+        String endHour = serListDto.getEndHour();
+        String endMin = serListDto.getEndMin();
+        try {
+            int sh = Integer.parseInt(startHour);
+            int sm = Integer.parseInt(startMin);
+            int eh = Integer.parseInt(endHour);
+            int em = Integer.parseInt(endMin);
+            if(sh>eh){
+                errMap.put("timevad","UC_INSTA004_ERR006");
+            } else if(sh==eh&&sm>em){
+                errMap.put("timevad","UC_INSTA004_ERR006");
+            }
+        }catch (Exception e){
+            Log.debug(e.toString());
+        }
+
+    }
+
+    private void inspDateVad(InspectionFDtosDto serListDto, Map<String, String> errMap) {
+        String inspectionDate = serListDto.getInspectionDate();
+        try {
+            Date date = Formatter.parseDate(inspectionDate);
+            if(date.getTime()<System.currentTimeMillis()){
+                errMap.put("inspectionDate","UC_INSTA004_ERR007");//
+            }
+        }catch (Exception e){
+            Log.debug(e.toString());
+        }
+    }
+
+    private boolean timeVad(InspectionFDtosDto serListDto, Map<String, String> errMap) {
+        int flagNum = 0;
+        String startHour = serListDto.getStartHour();
+        String startMin = serListDto.getStartMin();
+        String endHour = serListDto.getEndHour();
+        String endMin = serListDto.getEndMin();
+        try {
+            int sh = Integer.parseInt(startHour);
+            int sm = Integer.parseInt(startMin);
+            if(sh>=0&&sh<=24&&sm>=0&&sm<=60){
+            }else{
+                flagNum++;
+                errMap.put("sTime","UC_INSTA004_ERR005");
+            }
+        }catch (Exception e){
+            Log.debug(e.toString());
+            flagNum++;
+            errMap.put("sTime","UC_INSTA004_ERR005");
+        }
+        try {
+            int sh = Integer.parseInt(endHour);
+            int sm = Integer.parseInt(endMin);
+            if(sh>=0&&sh<=24&&sm>=0&&sh<=60){
+            }else{
+                flagNum++;
+                errMap.put("eTime","UC_INSTA004_ERR005");
+            }
+        }catch (Exception e){
+            Log.debug(e.toString());
+            flagNum++;
+            errMap.put("eTime","UC_INSTA004_ERR005");
+        }
+        if(flagNum==0){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean fillServiceVad(InspectionFillCheckListDto fDto){
+        List<InspectionCheckQuestionDto> cqDtoList = fDto.getCheckList();
+        if(!IaisCommonUtils.isEmpty(cqDtoList)){
+            for(InspectionCheckQuestionDto temp:cqDtoList){
+                if(StringUtil.isEmpty(temp.getChkanswer())){
+                   return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void getServiceMsg(InspectionFillCheckListDto fDto,Map<String, String> errMap){
@@ -45,7 +192,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         if(!IaisCommonUtils.isEmpty(cqDtoList)){
             for(InspectionCheckQuestionDto temp:cqDtoList){
                 if(StringUtil.isEmpty(temp.getChkanswer())){
-                    errMap.put(fDto.getSubName()+temp.getSectionName()+temp.getItemId(),ERR0010);
+                    errMap.put(fDto.getSubName()+temp.getSectionNameSub()+temp.getItemId(),ERR0010);
                 }
             }
         }
@@ -58,7 +205,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             if(cqDtoList!=null && !cqDtoList.isEmpty()){
                 for(InspectionCheckQuestionDto temp:cqDtoList){
                     if(StringUtil.isEmpty(temp.getChkanswer())){
-                        errMap.put(temp.getSectionName()+temp.getItemId()+"com",ERR0010);
+                        errMap.put(temp.getSectionNameSub()+temp.getItemId()+"com",ERR0010);
                     }
                 }
             }else{

@@ -189,7 +189,6 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     @Override
     public List<AppPremisesPreInspectionNcItemDto> getNcItemDtoByAppCorrId(String appCorrId) {
-       // AppPremPreInspectionNcDto ncDto = RestApiUtil.getByPathParam("hcsa-config:8883/iais-apppreinsnc-be/AppPremNcByAppCorrId{appCorrId}", appCorrId, AppPremPreInspectionNcDto.class);
         AppPremPreInspectionNcDto ncDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appCorrId).getEntity();
         String ncId = ncDto.getId();
         List<AppPremisesPreInspectionNcItemDto> ncItemDtoList = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
@@ -212,8 +211,11 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
         saveSerListDto(serListDto,appPremId);
         saveAdhocDto(showDto,appPremId);
-        saveRecommend(serListDto,appPremId);
+        saveInspectionDate(serListDto,appPremId);
+        saveStartTime(serListDto,appPremId);
+        saveEndTime(serListDto,appPremId);
         saveOtherInspection(serListDto,appPremId);
+        saveRecommend(serListDto,appPremId);
         List<InspectionFillCheckListDto> fillcheckDtoList = new ArrayList<>();
         if(!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
             for(InspectionFillCheckListDto temp:serListDto.getFdtoList()){
@@ -228,21 +230,101 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
     }
 
-    private void saveOtherInspection(InspectionFDtosDto serListDto, String appPremId) {
-        AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremId,InspectionConstants.RECOM_TYPE_OTHER_INSPECTIORS).getEntity();
-        if(appPreRecommentdationDto!=null){
-            appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-            fillUpCheckListGetAppClient.updateAppRecom(appPreRecommentdationDto);
-            appPreRecommentdationDto.setVersion(appPreRecommentdationDto.getVersion()+1);
-        }else{
-            appPreRecommentdationDto = new AppPremisesRecommendationDto();
-            appPreRecommentdationDto.setVersion(1);
+    public void saveInspectionDate(InspectionFDtosDto serListDto, String appPremId) {
+        String inspectionDate = null;
+        if(serListDto!=null){
+            inspectionDate = serListDto.getInspectionDate();
+            if(!StringUtil.isEmpty(inspectionDate)){
+                AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                if(appPreRecommentdationDto!=null){
+                    appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                    fillUpCheckListGetAppClient.updateAppRecom(appPreRecommentdationDto);
+                    appPreRecommentdationDto.setId(null);
+                    appPreRecommentdationDto.setVersion(appPreRecommentdationDto.getVersion()+1);
+                }else{
+                    appPreRecommentdationDto = new AppPremisesRecommendationDto();
+                    appPreRecommentdationDto.setVersion(1);
+                }
+                appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                appPreRecommentdationDto.setAppPremCorreId(appPremId);
+                appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
+                appPreRecommentdationDto.setRecomDecision(inspectionDate);
+                fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
+            }
         }
-        appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        appPreRecommentdationDto.setAppPremCorreId(appPremId);
-        appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_OTHER_INSPECTIORS);
-        appPreRecommentdationDto.setRemarks(serListDto.getOtherinspectionofficer());
-        fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
+
+    }
+
+    private void saveStartTime(InspectionFDtosDto serListDto, String appPremId) {
+        String startTime = null;
+        if(serListDto!=null){
+            startTime = serListDto.getStartTime();
+            if(!StringUtil.isEmpty(startTime)){
+                AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremId,InspectionConstants.RECOM_TYPE_INSPCTION_START_TIME).getEntity();
+                if(appPreRecommentdationDto!=null){
+                    appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                    fillUpCheckListGetAppClient.updateAppRecom(appPreRecommentdationDto);
+                    appPreRecommentdationDto.setVersion(appPreRecommentdationDto.getVersion()+1);
+                    appPreRecommentdationDto.setId(null);
+                }else{
+                    appPreRecommentdationDto = new AppPremisesRecommendationDto();
+                    appPreRecommentdationDto.setVersion(1);
+                }
+                appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                appPreRecommentdationDto.setAppPremCorreId(appPremId);
+                appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_START_TIME);
+                appPreRecommentdationDto.setRecomDecision(startTime);
+                fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
+            }
+        }
+
+    }
+    public void saveEndTime(InspectionFDtosDto serListDto, String appPremId) {
+        if(serListDto!=null){
+            String endTime = serListDto.getEndTime();
+            if(!StringUtil.isEmpty(endTime)){
+                AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremId,InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME).getEntity();
+                if(appPreRecommentdationDto!=null){
+                    appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                    fillUpCheckListGetAppClient.updateAppRecom(appPreRecommentdationDto);
+                    appPreRecommentdationDto.setVersion(appPreRecommentdationDto.getVersion()+1);
+                    appPreRecommentdationDto.setId(null);
+                }else{
+                    appPreRecommentdationDto = new AppPremisesRecommendationDto();
+                    appPreRecommentdationDto.setVersion(1);
+                }
+                appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                appPreRecommentdationDto.setAppPremCorreId(appPremId);
+                appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME);
+                appPreRecommentdationDto.setRecomDecision(endTime);
+                fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
+            }
+        }
+
+    }
+
+    private void saveOtherInspection(InspectionFDtosDto serListDto, String appPremId) {
+        if(serListDto!=null){
+            if(!StringUtil.isEmpty(serListDto.getOtherinspectionofficer())){
+                AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremId,InspectionConstants.RECOM_TYPE_OTHER_INSPECTIORS).getEntity();
+                if(appPreRecommentdationDto!=null){
+                    appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                    fillUpCheckListGetAppClient.updateAppRecom(appPreRecommentdationDto);
+                    appPreRecommentdationDto.setVersion(appPreRecommentdationDto.getVersion()+1);
+                    appPreRecommentdationDto.setId(null);
+                }else{
+                    appPreRecommentdationDto = new AppPremisesRecommendationDto();
+                    appPreRecommentdationDto.setVersion(1);
+
+                }
+                appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                appPreRecommentdationDto.setAppPremCorreId(appPremId);
+                appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_OTHER_INSPECTIORS);
+                appPreRecommentdationDto.setRemarks(serListDto.getOtherinspectionofficer());
+                fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
+            }
+        }
+
     }
 
     private void saveNcItem(List<InspectionFillCheckListDto> fillcheckDtoList, String appPremId) {

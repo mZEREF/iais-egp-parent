@@ -1,0 +1,1 @@
+<%@include file="/iais/inspectionncList/viewCheckListSuccess.jsp"%>
