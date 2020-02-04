@@ -359,7 +359,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     public static   List<ApplicationListFileDto> parse(String str){
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
-        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = applicationListDto.getAppPremPhOpenPeriodDtos();
+        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = applicationListDto.getAppPremPhOpenPeriods();
         List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
         List<AppGrpPersonnelDto> appGrpPersonnel = applicationListDto.getAppGrpPersonnel();
         List<AppGrpPersonnelExtDto> appGrpPersonnelExt = applicationListDto.getAppGrpPersonnelExt();
@@ -432,14 +432,13 @@ public class UploadFileServiceImpl implements UploadFileService {
                     appliGrpPremisesDtoSet.add(appliGrpPremisesDto);
                     appGrpIds.add(appliGrpPremisesDto.getId());
                 }
-            /*    for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto :appPremPhOpenPeriodDtos){
+                for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto :appPremPhOpenPeriodDtos){
                     String premId = appPremPhOpenPeriodDto.getPremId();
                     if(appliGrpPremisesDtoId.equals(premId)){
                         appPremPhOpenPeriodDtoSet.add(appPremPhOpenPeriodDto);
                     }
 
                 }
-*/
             }
             for (AppGrpPersonnelDto appGrpPersonnelDto:appGrpPersonnel){
                 String appGrpId = appGrpPersonnelDto.getAppGrpId();
@@ -562,7 +561,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             applicationListFileDto.setAppGrpPremises(appGrpPremisesDtos);
             applicationListFileDto.setAppGrpPrimaryDoc (appGrpPrimaryDocDtos);
 
-            applicationListFileDto.setAppPremPhOpenPeriodDtos(appPremPhOpenPeriodDtoList);
+            applicationListFileDto.setAppPremPhOpenPeriods(appPremPhOpenPeriodDtoList);
 
             applicationListFileDto.setAppPremisesCorrelation (appPremisesCorrelationDtos);
             applicationListFileDto.setAppSvcPremisesScope  (appSvcPremisesScopeDtos);
