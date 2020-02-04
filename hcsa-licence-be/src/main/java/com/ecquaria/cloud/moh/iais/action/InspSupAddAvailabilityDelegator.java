@@ -226,6 +226,7 @@ public class InspSupAddAvailabilityDelegator {
         ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = (ApptNonAvailabilityDateDto) ParamUtil.getSessionAttr(bpc.request, "inspNonAvailabilityDto");
         String containDate = inspSupAddAvailabilityService.dateIsContainNonWork(apptNonAvailabilityDateDto);
         ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", apptNonAvailabilityDateDto);
+        ParamUtil.setSessionAttr(bpc.request, "containDate", containDate);
     }
 
     /**
@@ -238,10 +239,13 @@ public class InspSupAddAvailabilityDelegator {
         log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityStep2 start ...."));
         String actionValue = (String)ParamUtil.getSessionAttr(bpc.request, "inspSupAddAvailabilityType");
         ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = (ApptNonAvailabilityDateDto) ParamUtil.getSessionAttr(bpc.request, "inspNonAvailabilityDto");
-        if(InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue)) {
-            inspSupAddAvailabilityService.createNonAvailability(apptNonAvailabilityDateDto);
-        } else if(InspectionConstants.SWITCH_ACTION_EDIT.equals(actionValue)) {
-            inspSupAddAvailabilityService.updateNonAvailability(apptNonAvailabilityDateDto);
+        String nonActionValue = ParamUtil.getRequestString(bpc.request, "nonActionValue");
+        if(InspectionConstants.SWITCH_ACTION_SUBMIT.equals(nonActionValue)) {
+            if (InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue)) {
+                inspSupAddAvailabilityService.createNonAvailability(apptNonAvailabilityDateDto);
+            } else if (InspectionConstants.SWITCH_ACTION_EDIT.equals(actionValue)) {
+                inspSupAddAvailabilityService.updateNonAvailability(apptNonAvailabilityDateDto);
+            }
         }
         ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", apptNonAvailabilityDateDto);
     }
