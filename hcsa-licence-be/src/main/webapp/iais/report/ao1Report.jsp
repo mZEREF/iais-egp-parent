@@ -75,7 +75,7 @@
                             <td class="col-xs-8">
                               <c:if test="${insRepDto.ncRegulation != null && not empty insRepDto.ncRegulation}">
                                   <p><c:forEach items="${insRepDto.ncRegulation}" var="poName">
-                                      <c:out value="${poName}"/>
+                                      <c:out value="${poName}"/><br>
                                   </c:forEach></p>
                               </c:if>
                             </td>
