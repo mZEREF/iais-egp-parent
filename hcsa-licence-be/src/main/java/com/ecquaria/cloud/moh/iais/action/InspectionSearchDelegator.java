@@ -241,7 +241,7 @@ public class InspectionSearchDelegator {
     public void inspectionSupSearchQuery1(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchQuery1 start ...."));
         SearchParam searchParam = getSearchParam(bpc);
-        List<TaskDto> commPools =(List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
+        List<TaskDto> commPools = (List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         QueryHelp.setMainSql("inspectionQuery", "assignInspectorSupper",searchParam);
         SearchResult<InspectionSubPoolQueryDto> searchResult = inspectionService.getSupPoolByParam(searchParam);
@@ -273,17 +273,13 @@ public class InspectionSearchDelegator {
                     inspectionTaskPoolListDto = iDto;
                 }
             }
-            if(StringUtil.isEmpty(inspectionTaskPoolListDto.getInspector())){
-                if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_INSPECTIOR)){
-                    inspectionTaskPoolListDto.setInspectorFlag(AppConsts.TRUE);
-                } else {
-                    inspectionTaskPoolListDto.setInspectorFlag(AppConsts.FALSE);
-                }
-            } else {
-                inspectionTaskPoolListDto.setInspectorFlag(AppConsts.TRUE);
-            }
             //get inspector Option
             inspectionTaskPoolListDto = inspectionService.inputInspectorOption(inspectionTaskPoolListDto, loginContext);
+            if(!(IaisCommonUtils.isEmpty(inspectionTaskPoolListDto.getInspectorOption()))){
+                inspectionTaskPoolListDto.setInspectorFlag(AppConsts.TRUE);
+            } else {
+                inspectionTaskPoolListDto.setInspectorFlag(AppConsts.FALSE);
+            }
         }
 
         ParamUtil.setSessionAttr(bpc.request, "inspectionTaskPoolListDto", inspectionTaskPoolListDto);

@@ -85,28 +85,31 @@
                         </c:forEach>
                       </iais:value>
                     </iais:row>
-                    <c:if test="${'true' == inspectionTaskPoolListDto.inspectorFlag}">
-                      <iais:row>
-                        <iais:field value="Inspector" required="true"/>
-                        <iais:value width="10">
+                    <iais:row>
+                      <iais:field value="Inspector" required="true"/>
+                      <iais:value width="10">
+                        <c:if test="${'true' == inspectionTaskPoolListDto.inspectorFlag}">
                           <c:if test="${inspectionTaskPoolListDto.inspectorCheck == null}">
                             <c:forEach items="${inspectionTaskPoolListDto.inspectorOption}" var="name">
-                                <input type="checkbox" name="inspectorCheck" id="inspectorCheck" value="<c:out value="${name.value}"/>"/><label><c:out value="${name.text}"/></label>
+                              <input type="checkbox" name="inspectorCheck" id="inspectorCheck" value="<c:out value="${name.value}"/>"/><label><c:out value="${name.text}"/></label>
                             </c:forEach>
                           </c:if>
                           <c:if test="${inspectionTaskPoolListDto.inspectorCheck != null}">
                             <c:forEach items="${inspectionTaskPoolListDto.inspectorOption}" var="name">
                               <input type="checkbox" name="inspectorCheck" id="inspectorCheck" value="<c:out value="${name.value}"/>"
-                                <c:forEach items="${inspectionTaskPoolListDto.inspectorCheck}" var="checkName">
-                                   <c:if test="${name.value eq checkName.value}">checked="checked"</c:if>
-                                </c:forEach>
+                                      <c:forEach items="${inspectionTaskPoolListDto.inspectorCheck}" var="checkName">
+                                        <c:if test="${name.value eq checkName.value}">checked="checked"</c:if>
+                                      </c:forEach>
                               /><label><c:out value="${name.text}"/></label>
                             </c:forEach>
                           </c:if>
                           <br><span class="error-msg" name="iaisErrorMsg" id="error_inspectorCheck"></span>
-                        </iais:value>
-                      </iais:row>
-                    </c:if>
+                        </c:if>
+                        <c:if test="${'false' == inspectionTaskPoolListDto.inspectorFlag}">
+                          <label>-</label>
+                        </c:if>
+                      </iais:value>
+                    </iais:row>
                     <iais:row>
                       <iais:field value="Inspection Type"/>
                       <iais:value width="7">
