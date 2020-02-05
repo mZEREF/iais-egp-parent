@@ -353,13 +353,7 @@ public class InspectEmailAo1Delegator {
         InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail(appPremCorrId);
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppId(applicationViewDto.getApplicationDto().getId());
-        AppPremisesRoutingHistoryDto appPremisesRoutingHisDto= appPremisesRoutingHistoryDtos.get(0);
-        String upDt=appPremisesRoutingHistoryDtos.get(0).getUpdatedDt();
         for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1:appPremisesRoutingHistoryDtos){
-            if(appPremisesRoutingHistoryDto1.getUpdatedDt().compareTo(upDt)>0){
-                appPremisesRoutingHisDto=appPremisesRoutingHistoryDto1;
-            }
-            upDt=appPremisesRoutingHistoryDto1.getUpdatedDt();
             if(!StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getWrkGrpId())) {
                 appPremisesRoutingHistoryDto1.setWrkGrpId(applicationViewService.getWrkGrpName(appPremisesRoutingHistoryDto1.getWrkGrpId()));
             }
@@ -380,7 +374,7 @@ public class InspectEmailAo1Delegator {
         if(content!=null){
             inspectionEmailTemplateDto.setMessageContent(content);
         }
-        inspectionEmailTemplateDto.setAppStatus(appPremisesRoutingHisDto.getAppStatus());
+        inspectionEmailTemplateDto.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getStatus()}).get(0).getText());
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setRequestAttr(request,"appPremisesRoutingHistoryDtos", appPremisesRoutingHistoryDtos);
         ParamUtil.setSessionAttr(request,"draftEmailId",inspectionEmailTemplateDto.getId());

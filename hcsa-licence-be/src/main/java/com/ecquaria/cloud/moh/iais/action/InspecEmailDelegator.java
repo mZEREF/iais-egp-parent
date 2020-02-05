@@ -163,13 +163,7 @@ public class InspecEmailDelegator {
         inspectionEmailTemplateDto.setMessageContent(mesContext);
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT});
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppId(applicationViewDto.getApplicationDto().getId());
-        AppPremisesRoutingHistoryDto appPremisesRoutingHisDto= appPremisesRoutingHistoryDtos.get(0);
-        String upDt=appPremisesRoutingHistoryDtos.get(0).getUpdatedDt();
         for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1:appPremisesRoutingHistoryDtos){
-            if(appPremisesRoutingHistoryDto1.getUpdatedDt().compareTo(upDt)>0){
-                appPremisesRoutingHisDto=appPremisesRoutingHistoryDto1;
-            }
-            upDt=appPremisesRoutingHistoryDto1.getUpdatedDt();
             if(!StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getWrkGrpId())) {
                 appPremisesRoutingHistoryDto1.setWrkGrpId(applicationViewService.getWrkGrpName(appPremisesRoutingHistoryDto1.getWrkGrpId()));
             }
@@ -185,7 +179,7 @@ public class InspecEmailDelegator {
                 appPremisesRoutingHistoryDto1.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRoutingHistoryDto1.getAppStatus()}).get(0).getText());
             }
         }
-        inspectionEmailTemplateDto.setAppStatus(appPremisesRoutingHisDto.getAppStatus());
+        inspectionEmailTemplateDto.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getStatus()}).get(0).getText());
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
         ParamUtil.setSessionAttr(request,"appPremCorrId",appPremCorrId);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);

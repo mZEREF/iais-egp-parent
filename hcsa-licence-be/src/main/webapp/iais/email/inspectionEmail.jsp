@@ -239,8 +239,8 @@
                                         </td>
                                         <td>
                                             <div class="col-sm-9">
-                                                <select id="decision-email" name="decision">
-                                                    <option>Select</option>
+                                                <select id="decision_email" name="decision">
+                                                    <option value="Select">Select</option>
                                                     <c:forEach items="${appTypeOption}" var="decision">
                                                         <option  value="${decision.value}">${decision.text}</option>
                                                     </c:forEach>
@@ -311,7 +311,13 @@
     }
 
     function doSend(){
-        SOP.Crud.cfxSubmit("mainForm", "send");
+
+        if($('#decision_email option:selected').val()=="Select"){
+            alert("Please choose to deal with the decision");
+        }
+        else {
+            SOP.Crud.cfxSubmit("mainForm", "send");
+        }
     }
 
 

@@ -232,7 +232,7 @@
                                         </td>
                                         <td>
                                             <div class="col-sm-9">
-                                                <select id="decision_email" name="decision" onchange="thisTime()" >
+                                                <select id="decision_merge_email" name="decision" onchange="thisTime()" >
                                                     <option selected>Select</option>
                                                     <c:forEach items="${appTypeOption}" var="decision">
                                                         <option  value="${decision.value}">${decision.text}</option>
@@ -284,7 +284,11 @@
     }
 
     function doSend(){
-        if($('#decision_email option:selected').val()=="REDECI005"){
+        if($('#decision_merge_email option:selected').val()=="Select"){
+            alert("Please choose to deal with the decision");
+        }
+
+        if($('#decision_merge_email option:selected').val()=="REDECI005"){
             var checkOne = false;
             var checkBox = $('input[type = checkbox]');
             for (var i = 0; i < checkBox.length; i++) {
@@ -308,7 +312,7 @@
 
     function thisTime() {
 
-        if($('#decision_email option:selected').val()=="REDECI005"){
+        if($('#decision_merge_email option:selected').val()=="REDECI005"){
             $("#selectReviseNc").show();
         }
         else {
