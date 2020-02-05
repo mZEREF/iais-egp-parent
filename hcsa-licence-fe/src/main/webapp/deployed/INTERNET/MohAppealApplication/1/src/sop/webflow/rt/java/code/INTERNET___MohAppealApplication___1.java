@@ -36,4 +36,9 @@ public class INTERNET___MohAppealApplication___1 extends BaseProcessClass {
         EngineHelper.delegate(DELEGATOR, "start", this);
     }
 
+    public void save_OnStepProcess_0() throws Exception {
+    // 		save->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "save", this);
+    }
+
 }

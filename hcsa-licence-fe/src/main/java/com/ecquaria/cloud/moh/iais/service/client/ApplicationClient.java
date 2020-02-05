@@ -168,4 +168,7 @@ public interface ApplicationClient  {
 
     @PostMapping(value = "/iais-application/appGrps-by-ids", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationGroupDto>>getApplicationGroupsByIds(@RequestBody List<String> appGrpIds);
+
+    @GetMapping(value = "/application-last-version",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationDto> getApplicationDtoByVersion( @RequestParam(name = "applicationNo") String applicationNo);
 }

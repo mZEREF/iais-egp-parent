@@ -24,22 +24,55 @@
     </div>
 
     <div class="col-xs-12 col-md-5">
-      <input type="text" name="">
+      <input type="text" name="appealingFor">
     </div>
   </div>
-  <div class="col-xs-12 col-md-10">
+  <div class="col-xs-12 col-md-8" >
     <h2>Reason for Appeal</h2>
-    <select>
-      <option>please select an appeal reason</option>
-      <option>Appeal against rejection</option>
-      <option>Appeal against late renewal fee</option>
+    <select id="reasonSelect" name="reasonSelect">
+      <option value="">please select an appeal reason</option>
+      <option value="MS001">Appeal against rejection</option>
+      <option value="MS002">Appeal against late renewal fee</option>
+      <option value="MS003">Appeal for appointment of additional CGO to a service</option>
+      <option value="MS004">Appeal against use of restricted words in HCI Name</option>
+      <option value="MS005">Appeal for change of licence period</option>
+
     </select>
 
+      <div >
+
+        <%@include file="cgo.jsp"%>
+
+      </div>
+
+
+
+
+
+      <div class="form-check-gp">
+        <h2>Select HCI Name To Appeal</h2>
+        <div class="form-check" >
+          <input class="form-check-input"  type="checkbox" name="selectHciName" aria-invalid="false" value="">
+          <label class="form-check-label"><span class="check-square"></span>Default</label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="selectHciName" aria-invalid="false" value="">
+          <label class="form-check-label" ><span class="check-square"></span>Default</label>
+        </div>
+
+      </div>
+
   </div>
+
+    <div class="col-xs-12 col-md-10" >
+      <h2>Proposed  HCI Name</h2>
+      <input type="text" maxlength="100" name="proposedHciName">
+    </div>
 <div class="col-xs-12 col-md-10">
 
   <h2>Any supporting remarks</h2>
-  <textarea cols="50" rows="10"></textarea>
+  <textarea cols="50" rows="10" name="remarks" maxlength="300"></textarea>
 
 </div >
   <div class="col-xs-12 col-md-10">
@@ -64,11 +97,23 @@
     </div>
   </form>
 </div>
-<script>
+<script  type="text/javascript">
 
 $('#submit').click(function () {
 
     SOP.Crud.cfxSubmit("mainForm", "submit");
+
+});
+
+
+$('#save').click(function () {
+    SOP.Crud.cfxSubmit("mainForm", "save");
+});
+
+$('#reasonSelect').change(function () {
+
+  var reason= $('#reasonSelect option:selected').val();
+
 
 });
 

@@ -51,7 +51,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.sql.Time;
-import java.text.DecimalFormat;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -112,7 +111,7 @@ public class NewApplicationDelegator {
         AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto=new AppSvcPrincipalOfficersDto();
         list.add(appSvcPrincipalOfficersDto);
         ParamUtil.setSessionAttr(bpc.request,"AppSvcPrincipalOfficersDto",(Serializable) list);
-    
+
         //Primary Documents
         ParamUtil.setSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO, null);
         ParamUtil.setSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO, null);
@@ -172,7 +171,7 @@ public class NewApplicationDelegator {
         String loginId = "internet";
         //?
         List<AppGrpPremisesDto> list = serviceConfigService.getAppGrpPremisesDtoByLoginId(loginId);
-        SelectOption sp0 = new SelectOption("-1", "Please select");
+        SelectOption sp0 = new SelectOption("-1", "Select One");
         premisesSelect.add(sp0);
         SelectOption sp1 = new SelectOption("newPremise", "Add a new premises");
         premisesSelect.add(sp1);
@@ -187,7 +186,7 @@ public class NewApplicationDelegator {
         }
         //his to do
         List conveyancePremSel = new ArrayList<SelectOption>();
-        SelectOption cps1 = new SelectOption("-1", "Please select");
+        SelectOption cps1 = new SelectOption("-1", "Select One");
         SelectOption cps2 = new SelectOption("newPremise", "Add a new premises");
         conveyancePremSel.add(cps1);
         conveyancePremSel.add(cps2);
@@ -199,6 +198,7 @@ public class NewApplicationDelegator {
             Set<String> premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
             ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
         }
+
 
         //reload dateTime
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
@@ -227,9 +227,9 @@ public class NewApplicationDelegator {
                         appGrpPremisesDto.setConEndHH(String.valueOf(localTimeTo.getHour()));
                         appGrpPremisesDto.setConEndMM(String.valueOf(localTimeTo.getMinute()));
                     }
-                    
+
                 }
-                
+
                 List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = appGrpPremisesDto.getAppPremPhOpenPeriodList();
                 if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriods)){
                     for(AppPremPhOpenPeriodDto appPremPhOpenPeriod:appPremPhOpenPeriods){
@@ -259,20 +259,6 @@ public class NewApplicationDelegator {
                 }
             }
         }
-
-        //
-        int baseSvcCount = 0;
-        for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtoList){
-            if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equalsIgnoreCase(hcsaServiceDto.getSvcType())) {
-                baseSvcCount++;
-            }
-        }
-        if(baseSvcCount>1 ){
-            ParamUtil.setRequestAttr(bpc.request, "multiBase", AppConsts.TRUE);
-        }else{
-            ParamUtil.setRequestAttr(bpc.request, "multiBase", AppConsts.FALSE);
-        }
-
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do preparePremises end ...."));
     }
@@ -352,13 +338,6 @@ public class NewApplicationDelegator {
      */
     public void preparePayment(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do preparePayment start ...."));
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        if(!StringUtil.isEmpty(appSubmissionDto.getAmount())){
-            DecimalFormat decimalFormat = new DecimalFormat("###,###");
-            String amountStr = "$"+decimalFormat.format(appSubmissionDto.getAmount());
-            appSubmissionDto.setAmountStr(amountStr);
-        }
-
         log.debug(StringUtil.changeForLog("the do preparePayment end ...."));
     }
 
@@ -787,7 +766,7 @@ public class NewApplicationDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess",isrfiSuccess);
 
-        
+
         log.debug(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
 
@@ -820,7 +799,7 @@ public class NewApplicationDelegator {
                     isAuto = compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
                 }
                 //send eamil
-                
+
             }
         }
 
@@ -854,8 +833,8 @@ public class NewApplicationDelegator {
         }
         return isAuto;
     }
-    
-    
+
+
     private boolean compareHciName(List<AppGrpPremisesDto> appGrpPremisesDtos,List<AppGrpPremisesDto> oldAppGrpPremisesDtos){
         int length = appGrpPremisesDtos.size();
         int oldLength = oldAppGrpPremisesDtos.size();
@@ -887,7 +866,7 @@ public class NewApplicationDelegator {
         //is same
         return true;
     }
-    
+
     private String getHciName(AppGrpPremisesDto appGrpPremisesDto){
         String hciName = "";
         if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
@@ -897,7 +876,7 @@ public class NewApplicationDelegator {
         }
         return hciName;
     }
-    
+
     private AmendmentFeeDto getAmendmentFeeDto(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto){
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         boolean changeHciName = compareHciName(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
@@ -907,7 +886,7 @@ public class NewApplicationDelegator {
         amendmentFeeDto.setChangeInLocation(!changeLocation);
         return amendmentFeeDto;
     }
-    
+
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             return appSvcRelatedInfoDtos.get(0);
@@ -1523,21 +1502,19 @@ public class NewApplicationDelegator {
 
         for(String type:premType){
             String className = "";
-            String width = "col-md-3";
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)){
                 className = "onSite";
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)){
                 className = "conveyance";
-                width = "col-md-4";
             }
-            
-            premTypeBuffer.append("<div class=\"col-xs-5 "+width+"\">")
+
+            premTypeBuffer.append("<div class=\"col-xs-6 col-md-2\">")
                     .append("<div class=\"form-check\">")
-                    .append("<input class=\"form-check-input premTypeRadio "+className+"\"  type=\"radio\" name=\"premType"+currentLength+"\" value = "+type+" aria-invalid=\"false\">");
+                    .append("<input class=\"form-check-input premTypeRadio "+className+" \"  type=\"radio\" name=\"premType"+currentLength+"\" value = "+type+" aria-invalid=\"false\">");
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)){
-                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>On-site<br/><span>(at a fixed address)</span></label>");
+                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>On-site</label>");
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)){
-                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>Conveyance<br/><span>(in a mobile clinic / ambulance)</span></label>");
+                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>Conveyance</label>");
             }
             premTypeBuffer.append("</div>")
                     .append("</div>");
@@ -1564,7 +1541,6 @@ public class NewApplicationDelegator {
         //Address Type on-site
         List<SelectOption> addrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
         Map<String,String> addrTypesAttr = new HashMap<>();
-        addrTypesAttr.put("class", "siteAddressType");
         addrTypesAttr.put("id", "siteAddressType");
         addrTypesAttr.put("name", "onSiteAddressType");
         addrTypesAttr.put("style", "display: none;");
@@ -1573,20 +1549,10 @@ public class NewApplicationDelegator {
         //Address Type conveyance
         List<SelectOption> conAddrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
         Map<String,String> conAddrTypesAttr = new HashMap<>();
-        conAddrTypesAttr.put("class", "conveyanceAddressType");
         conAddrTypesAttr.put("id", "siteAddressType");
         conAddrTypesAttr.put("name", "conveyanceAddrType");
         conAddrTypesAttr.put("style", "display: none;");
         String conAddrTypeSelectStr = generateDropDownHtml(conAddrTypesAttr, conAddrTypes, FIRESTOPTION);
-
-        //Vehicle Salutation
-        List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-        Map<String,String> salutationAttr = new HashMap<>();
-        salutationAttr.put("name", "conveyanceSalutation");
-        salutationAttr.put("style", "display: none;");
-        String salutationSelectStr = NewApplicationDelegator.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
-
-
 
         sql = sql.replace("(0)", currentLength);
         sql = sql.replace("(1)", premTypeBuffer.toString());
@@ -1594,7 +1560,6 @@ public class NewApplicationDelegator {
         sql = sql.replace("(3)", premConvSelectStr);
         sql = sql.replace("(4)", addrTypeSelectStr);
         sql = sql.replace("(5)", conAddrTypeSelectStr);
-        sql = sql.replace("(6)", salutationSelectStr);
 
         log.debug(StringUtil.changeForLog("the add premises html end ...."));
         return sql;
@@ -2349,7 +2314,7 @@ public class NewApplicationDelegator {
             int i = 0;
             if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
                 premisesType = new String[appGrpPremisesDtos.size()];
-                
+
                 for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
                     premisesType[i] =  appGrpPremisesDto.getPremisesType();
                 }
@@ -2390,8 +2355,6 @@ public class NewApplicationDelegator {
         String [] conStartMM = ParamUtil.getStrings(request, "conveyanceStartMM");
         String [] conEndHHS = ParamUtil.getStrings(request, "conveyanceEndHH");
         String [] conEndMMS = ParamUtil.getStrings(request, "conveyanceEndMM");
-        String [] conSalutation = ParamUtil.getStrings(request,"conveyanceSalutation");
-        String [] conVehicleOwnerName = ParamUtil.getStrings(request,"conveyanceVehicleOwnerName");
         //every prem's ph length
         String [] phLength = ParamUtil.getStrings(request,"phLength");
         String [] premValue = ParamUtil.getStrings(request, "premValue");
@@ -2445,10 +2408,7 @@ public class NewApplicationDelegator {
                     appPremPhOpenPeriod.setOnsiteStartFromMM(onsitePbHolDayStartMM);
                     appPremPhOpenPeriod.setOnsiteEndToHH(onsitePbHolDayEndHH);
                     appPremPhOpenPeriod.setOnsiteEndToMM(onsitePbHolDayEndMM);
-                    if(!StringUtil.isEmpty(onsitePubHoliday)||!StringUtil.isEmpty(onsitePbHolDayStartHH) || !StringUtil.isEmpty(onsitePbHolDayStartMM)
-                            ||!StringUtil.isEmpty(onsitePbHolDayEndHH) ||!StringUtil.isEmpty(onsitePbHolDayEndMM)){
-                        appPremPhOpenPeriods.add(appPremPhOpenPeriod);
-                    }
+                    appPremPhOpenPeriods.add(appPremPhOpenPeriod);
                 }
 
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType[i])){
@@ -2465,8 +2425,6 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setConveyanceUnitNo(conUnitNo[i]);
                 appGrpPremisesDto.setConveyanceBuildingName(conBuildingName[i]);
                 appGrpPremisesDto.setConveyanceAddressType(conSiteAddressType[i]);
-                appGrpPremisesDto.setConveyanceSalutation(conSalutation[i]);
-                appGrpPremisesDto.setConveyanceVehicleOwnerName(conVehicleOwnerName[i]);
                 for(int j =0; j<length; j++){
                     AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();
                     String convPubHolidayName = premValue[i]+"conveyancePubHoliday"+j;
@@ -2632,12 +2590,7 @@ public class NewApplicationDelegator {
             sBuffer.append("<option value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
         }
         sBuffer.append("</select>");
-        String classNameValue = premisesOnSiteAttr.get("class");
-        String className = "premSelect";
-        if(!StringUtil.isEmpty(classNameValue)){
-            className =  classNameValue;
-        }
-        sBuffer.append("<div class=\"nice-select "+className+"\" tabindex=\"0\">");
+        sBuffer.append("<div class=\"nice-select premSelect\" tabindex=\"0\">");
         if(StringUtil.isEmpty(firestOption)){
             sBuffer.append("<span class=\"current\">"+selectOptionList.get(0).getText()+"</span>");
         }else {

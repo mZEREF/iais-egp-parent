@@ -337,4 +337,12 @@ public class ApplicationClientFallback implements ApplicationClient {
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<ApplicationDto> getApplicationDtoByVersion(String applicationNo) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 }
