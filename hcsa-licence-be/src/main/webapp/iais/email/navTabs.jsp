@@ -17,14 +17,14 @@
 <input type="hidden" name="crud_action_additional" value="">
 <input type="hidden" id = "controlLi" value="<%=action%>">
 <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-    <li id="infoli" class="complete" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab" >Info</a></li>
-    <li id="documentsli" class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
+    <li id="infoli" class="" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab" >Info</a></li>
+    <li id="documentsli" class="" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
                                                 data-toggle="tab">Documents</a></li>
-    <li id="checkListli" class="complete" role="presentation"><a id="checkList" aria-controls="tabCheckList" role="tab"
+    <li id="checkListli" class="" role="presentation"><a id="checkList" aria-controls="tabCheckList" role="tab"
                                                   data-toggle="tab">CheckList</a></li>
-    <li id="emailViewli" class="complete" role="presentation"><a id="letter" aria-controls="tabLetter" role="tab"
+    <li id="emailViewli" class="" role="presentation"><a id="letter" aria-controls="tabLetter" role="tab"
                                                                  data-toggle="tab">Letter</a></li>
-    <li id="processingli" class="complete" role="presentation"><a id="processing" aria-controls="tabProcessing" role="tab"
+    <li id="processingli" class="" role="presentation"><a id="processing" aria-controls="tabProcessing" role="tab"
                                                                  data-toggle="tab">Processing</a></li>
 </ul>
 <div class="tab-nav-mobile visible-xs visible-sm">

@@ -173,10 +173,12 @@ public class InspectEmailAo1Delegator {
         String content=ParamUtil.getString(request,MSG_CON);
         ParamUtil.setSessionAttr(request,MSG_CON,content);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"emailView");
     }
     public void doProcessing(BaseProcessClass bpc){
         log.info("=======>>>>>doProcessing>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"processing");
     }
 
     public void previewEmail(BaseProcessClass bpc){
@@ -308,7 +310,7 @@ public class InspectEmailAo1Delegator {
 
     public void preCheckList(BaseProcessClass bpc) {
         log.info("=======>>>>>preCheckList>>>>>>>>>>>>>>>>emailRequest");
-
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"checkList");
     }
     public void checkListNext(BaseProcessClass bpc)  {
         log.info("=======>>>>>checkListNext>>>>>>>>>>>>>>>>emailRequest");
@@ -334,6 +336,7 @@ public class InspectEmailAo1Delegator {
                 insepctionNcCheckListService.submit(commonDto,adchklDto,serListDto,taskDto.getRefNo());
             }
         }
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"checkList");
     }
     public void preEmailView(BaseProcessClass bpc)  {
         log.info("=======>>>>>preEmailView>>>>>>>>>>>>>>>>emailRequest");
@@ -343,6 +346,7 @@ public class InspectEmailAo1Delegator {
         InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail(correlationId);
         ParamUtil.setSessionAttr(request,"draftEmailId",inspectionEmailTemplateDto.getId());
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"emailView");
     }
     public void preProcess(BaseProcessClass bpc)  {
         log.info("=======>>>>>preEmailView>>>>>>>>>>>>>>>>emailRequest");
@@ -379,6 +383,7 @@ public class InspectEmailAo1Delegator {
         ParamUtil.setRequestAttr(request,"appPremisesRoutingHistoryDtos", appPremisesRoutingHistoryDtos);
         ParamUtil.setSessionAttr(request,"draftEmailId",inspectionEmailTemplateDto.getId());
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"processing");
     }
 
     public void emailView(BaseProcessClass bpc) {
