@@ -100,6 +100,20 @@ public class InsReportAoDelegator {
         String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
         Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
         String option  = recomInNumber + chronoUnit;
+        AppPremisesRecommendationDto tcuRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, "tcuNeeded").getEntity();
+        AppPremisesRecommendationDto engageRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, "engage").getEntity();
+        if(tcuRecommendationDto!=null){
+            Date recomInDate = tcuRecommendationDto.getRecomInDate();
+            String tcuNeed = "on";
+            ParamUtil.setSessionAttr(bpc.request, "recomInDate", recomInDate);
+            ParamUtil.setSessionAttr(bpc.request, "tcuNeed", tcuNeed);
+        }
+        if(engageRecommendationDto!=null){
+            String remarks = engageRecommendationDto.getRemarks();
+            String engage = "on";
+            ParamUtil.setSessionAttr(bpc.request, "remarks", remarks);
+            ParamUtil.setSessionAttr(bpc.request, "engage", engage);
+        }
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
 //        SelectOption so1 = new SelectOption(APPROVAL,APPROVAL);
 //        SelectOption so2 = new SelectOption(REJECT,REJECT);

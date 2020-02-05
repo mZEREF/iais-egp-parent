@@ -122,6 +122,7 @@ public class InsReportDelegator {
         }
         String engageEnforcementRemarks = appPremisesRecommendationDto3.getEngageEnforcementRemarks();
         if(!StringUtil.isEmpty(engageEnforcementRemarks)){
+            appPremisesRecommendationDto3.setRemarks(engageEnforcementRemarks);
             insRepService.saveRecommendation(appPremisesRecommendationDto3);
         }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();

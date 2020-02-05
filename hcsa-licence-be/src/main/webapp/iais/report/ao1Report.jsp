@@ -393,16 +393,22 @@
                             <td class="col-xs-4">
                                 <input type="checkbox" id="tcuNeeded" name="tcuNeed" onchange="javascirpt:changeTcu();"
                                        <c:if test="${preapreRecommendationDto.tcuNeeded =='on'}">checked</c:if>
+                                       <c:if test="${tcuNeed =='on'}">checked</c:if>
                                 >
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
                         <tr id="tcuDate" hidden>
                             <td class="col-xs-4">
-                                <p>TCU Date:</p>
+                                <p>TCU Date:${recomInDate}</p>
                             </td>
                             <td class="col-xs-4">
-                                <iais:datePicker id="tcuDate" name="tcuDate" dateVal="${preapreRecommendationDto.tcuDate}"/>
+                                <c:if test="${preapreRecommendationDto.tcuDate == null}">
+                                    <iais:datePicker id="tcuDate" name="tcuDate" dateVal="${recomInDate}"/>
+                                </c:if>
+                                <c:if test="${preapreRecommendationDto.tcuDate != null}">
+                                    <iais:datePicker id="tcuDate" name="tcuDate" dateVal="${preapreRecommendationDto.tcuDate}" />
+                                </c:if>
                                 <span id="error_tcuDate" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
@@ -482,6 +488,7 @@
                                 <input type="checkbox" id="enforcement" name="engageEnforcement"
                                        onchange="javascirpt:changeEngage();"
                                        <c:if test="${preapreRecommendationDto.engageEnforcement =='on'}">checked</c:if>
+                                       <c:if test="${engage =='on'}">checked</c:if>
                                 >
                             </td>
                             <td class="col-xs-4"></td>
@@ -492,7 +499,9 @@
                             </td>
                             <td class="col-xs-4">
                                 <p><textarea name="enforcementRemarks" cols="90" rows="6" title="content"
-                                             MAXLENGTH="4000">${preapreRecommendationDto.engageEnforcementRemarks}</textarea></p>
+                                             MAXLENGTH="4000"><c:if test="${preapreRecommendationDto.engageEnforcementRemarks ==null}">${remarks}</c:if>
+                                <c:if test="${preapreRecommendationDto.engageEnforcementRemarks !=null}">${preapreRecommendationDto.engageEnforcementRemarks}</c:if>
+                                </textarea></p>
                                 <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
