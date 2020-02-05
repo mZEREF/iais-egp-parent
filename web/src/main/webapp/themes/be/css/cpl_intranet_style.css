@@ -2575,7 +2575,7 @@ span.error-msg {
   border-color: #1989BF;
 }
 .nice-select:after {
-  content: "";
+  content: "\f107";
   font-family: fontawesome;
   font-size: 30px;
   color: #6c6c6c;
@@ -3513,7 +3513,7 @@ span.error-msg {
     padding-right: 2%;
   }
   .table-gp table.table > tbody > tr > td p {
-    font-size: 1.4rem;
+      font-size: 1.4rem;
   }
   .table-gp table.table > tbody > tr > td p.table-row-title {
     font-weight: 600;
@@ -3589,7 +3589,7 @@ span.error-msg {
 
 @media only screen and (min-width : 1201px) {
   #tabApplication table.table > thead > tr > th:last-child,
-#tabApplication table.table > tbody > tr > td:last-child {
+#tabApplication table.table > tbody > tr > td:last-child {  
     width: 200px;
   }
 }
