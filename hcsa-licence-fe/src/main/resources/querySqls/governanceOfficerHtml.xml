@@ -8,7 +8,7 @@
             <td class="first last" style="width: 100%;">
               <div id="control--runtime--2" class="control control-caption-horizontal">
                 <div class=" form-group form-horizontal formgap">
-                  <div class="control-label formtext assign-header">
+                  <div class="control-label formtext assign-header cgo-header">
                     Clinical Governance Officer <label class="assign-psn-item"></label>
                   </div><br/>
                   <div class="col-sm-5 control-label formtext ">

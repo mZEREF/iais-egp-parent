@@ -213,7 +213,7 @@
                           <iais:row>
                             <iais:field value="Address Type " mandatory="true" width="12"/>
                             <iais:value id="onSiteAddressType${premValue}" cssClass="col-xs-7 col-sm-4 col-md-3">
-                              <iais:select cssClass="siteAddressType" name="onSiteAddressType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Select address type" value="${appGrpPremisesDto.addrType}"></iais:select>
+                              <iais:select cssClass="siteAddressType" name="onSiteAddressType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Please Select" value="${appGrpPremisesDto.addrType}"></iais:select>
                               <span class="error-msg" name="iaisErrorMsg" id="error_addrType${status.index}"></span>
                             </iais:value>
                           </iais:row>
@@ -425,7 +425,7 @@
                           <iais:row>
                             <iais:field value="Address Type " mandatory="true" width="12"/>
                             <iais:value id="conveyanceAddrType${premValue}" cssClass="col-xs-7 col-sm-4 col-md-3">
-                              <iais:select name="conveyanceAddrType" cssClass="conveyanceAddressType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Select address type" value="${appGrpPremisesDto.conveyanceAddressType}"></iais:select>
+                              <iais:select name="conveyanceAddrType" cssClass="conveyanceAddressType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Please Select" value="${appGrpPremisesDto.conveyanceAddressType}"></iais:select>
                               <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceAddressType${status.index}"></span>
                             </iais:value>
                           </iais:row>

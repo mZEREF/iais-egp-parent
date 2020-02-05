@@ -1,12 +1,12 @@
 <style>
-  
+
 
 
 </style>
 
 
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">
-  <div id="wizard-page-title">A Clinical Governance Officer is responsible for the clinical and technical oversight of a medical service.</div>
+ <h4>A Clinical Governance Officer is responsible for the clinical and technical oversight of a medical service.</h4>
   <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
     <div id="control--runtime--0" class="page control control-area  container-p-1">
       <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>
@@ -93,7 +93,7 @@
                         <c:otherwise>
                           <div id="control--runtime--2" class="control control-caption-horizontal">
                             <div class=" form-group form-horizontal formgap">
-                              <div class="control-label formtext assign-header">
+                              <div class="control-label formtext assign-header cgo-header">
                                 Clinical Governance Officer <label class="assign-psn-item">${status.index+1}</label>
                               </div><br/>
                               <div class="col-sm-5 control-label formtext ">
@@ -167,7 +167,7 @@
                                     <span class="upload_controls"></span>
                                   </div>
                                   <div class="col-sm-5" id="salutation${suffix}">
-                                    <iais:select  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${currentCgo.salutation}" firstOption="Please Select"></iais:select>
+                                    <iais:select cssClass="salutationSel"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${currentCgo.salutation}" firstOption="Please Select"></iais:select>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_salutation${status.index}"></span>
                                   </div>
                                 </div>
@@ -206,7 +206,7 @@
                                   </div>
                                   <div class="col-sm-5" id="idType${suffix}">
                                     <div class="">
-                                      <iais:select  name="idType" value="${currentCgo.idType}" options="IdTypeSelect"></iais:select>
+                                      <iais:select cssClass="idTypeSel"  name="idType" value="${currentCgo.idType}" options="IdTypeSelect"></iais:select>
                                       <span class="error-msg" name="iaisErrorMsg" id="error_idTyp${status.index}"></span>
                                     </div>
                                   </div>
@@ -247,7 +247,7 @@
                                   </div>
                                   <div class="col-sm-5" id="designation${suffix}">
                                     <div class="">
-                                      <iais:select name="designation" codeCategory="CATE_ID_DESIGNATION" value="${currentCgo.designation}" firstOption="Select Designation"></iais:select>
+                                      <iais:select cssClass="designationSel" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${currentCgo.designation}" firstOption="Select Designation"></iais:select>
                                       <span class="error-msg" name="iaisErrorMsg" id="error_designation${status.index}"></span>
                                     </div>
                                   </div>
@@ -266,7 +266,7 @@
                                   </div>
                                   <div class="col-sm-5" id="professionType${suffix}">
                                     <div class="professionRegoType">
-                                      <iais:select name="professionType" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${currentCgo.professionType}" firstOption="Select professionRegoType"></iais:select>
+                                      <iais:select cssClass="professionTypeSel" name="professionType" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${currentCgo.professionType}" firstOption="Select professionRegoType"></iais:select>
                                       <span class="error-msg" name="iaisErrorMsg" id="error_professionType${status.index}"></span>
                                     </div>
                                   </div>

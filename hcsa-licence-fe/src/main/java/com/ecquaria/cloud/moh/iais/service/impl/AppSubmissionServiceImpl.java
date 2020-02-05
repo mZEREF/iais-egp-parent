@@ -114,7 +114,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public Double getGroupAmount(AppSubmissionDto appSubmissionDto) {
+    public FeeDto getGroupAmount(AppSubmissionDto appSubmissionDto) {
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount start ...."));
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -162,10 +162,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl linenceFeeQuaryDtos.size() is -->:"+linenceFeeQuaryDtos.size()));
         FeeDto entity = appConfigClient.newFee(linenceFeeQuaryDtos).getEntity();
-        Double amount = entity.getTotal();
-        log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl amount is -->:"+amount));
+        //Double amount = entity.getTotal();
+        //log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl amount is -->:"+amount));
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount end ...."));
-        return  amount;
+        return  entity;
     }
 
     @Override
