@@ -85,9 +85,11 @@
                                 <p>Subsumed Services:</p>
                             </td>
                             <td class="col-xs-8">
+                        <c:if test="${insRepDto.subsumedServices != null && not empty insRepDto.subsumedServices}">
                                 <c:forEach var="service" items="${insRepDto.subsumedServices}">
                                     <p><c:out value="${service}"></c:out></p>
                                 </c:forEach>
+                        </c:if>
                             </td>
                         </tr>
                     </table>
@@ -408,6 +410,15 @@
                         </tr>
                         <tr>
                             <td class="col-xs-4">
+                                <p>Inspectior Recommendation:</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <p>${option}</p>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-4">
                                 <p>Recommendation:</p>
                             </td>
                             <td class="col-xs-4">
@@ -508,9 +519,7 @@
     }
 
     function submit() {
-        if ($("#processingDecision").val() == "submit") {
             $("#mainForm").submit();
-        }
     }
 
     function submit(action) {
@@ -530,7 +539,7 @@
     }
 
     function changeRecommendation(obj) {
-        if (obj == "Approval") {
+        if (obj == "Other") {
             document.getElementById("period").style.display = "";
             $("#period").show();
         } else {

@@ -104,9 +104,12 @@ public class InsReportAoDelegator {
 //        SelectOption so2 = new SelectOption(REJECT,REJECT);
 //        riskOption.add(so1);
 //        riskOption.add(so2);
+        List<SelectOption> recommendationOption = getRecommendationOption();
+
         List<SelectOption> chronoOption = getChronoOption();
         List<SelectOption> riskLevelOptions = getriskLevel();
         List<SelectOption> processingDecision = getProcessingDecision();
+        ParamUtil.setSessionAttr(bpc.request, "recommendationOption", (Serializable) recommendationOption);
         ParamUtil.setSessionAttr(bpc.request, "processingDecision", (Serializable) processingDecision);
         ParamUtil.setSessionAttr(bpc.request, "riskLevelOptions", (Serializable) riskLevelOptions);
         ParamUtil.setSessionAttr(bpc.request, "chronoOption", (Serializable) chronoOption);
@@ -159,7 +162,7 @@ public class InsReportAoDelegator {
         }
         AppPremisesRecommendationDto recommendationDto = prepareRecommendation(bpc, appPremisesCorrelationId);
         insRepService.updateRecommendation(recommendationDto);
-        if(REJECT.equals(recommendationDto.getRecommendation())){
+        if(REJECT.equals(recommendationDto.getRecomDecision())){
             insRepService.routBackTaskToInspector(taskDto,applicationDto,appPremisesCorrelationId);
             ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
             return;
@@ -173,6 +176,7 @@ public class InsReportAoDelegator {
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
         String number = ParamUtil.getRequestString(bpc.request, NUMBER);
+        String processingDecision = ParamUtil.getRequestString(bpc.request, "processingDecision");
         ParamUtil.setSessionAttr(bpc.request, CHRONO, chrono);
         ParamUtil.setSessionAttr(bpc.request, NUMBER, number);
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
@@ -184,11 +188,11 @@ public class InsReportAoDelegator {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
             appPremisesRecommendationDto.setChronoUnit(chrono);
             appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
-        }else if(APPROVAL.equals(recommendation)){
+        }else if(APPROVAL.equals(processingDecision)){
             appPremisesRecommendationDto.setRecomDecision(ApplicationConsts.APPLICATION_STATUS_APPROVED);
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-        }else if(REJECT.equals(recommendation)){
-            appPremisesRecommendationDto.setRecomDecision(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+        }else if(REJECT.equals(processingDecision)){
+            appPremisesRecommendationDto.setRecomDecision("Reject");
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
         } else {
             String[] split_number = recommendation.split("\\D");
@@ -237,11 +241,22 @@ public class InsReportAoDelegator {
 
     private List<SelectOption> getProcessingDecision() {
         List<SelectOption> riskLevelResult = new ArrayList<>();
-        SelectOption so1 = new SelectOption("submit", "Acknowledge inspection report");
-        SelectOption so2 = new SelectOption("submit", "Revise inspection report");
+        SelectOption so1 = new SelectOption(APPROVAL, "Acknowledge inspection report");
+        SelectOption so2 = new SelectOption(REJECT, "Revise inspection report");
         riskLevelResult.add(so1);
         riskLevelResult.add(so2);
         return riskLevelResult;
+    }
+
+    private List<SelectOption> getRecommendationOption() {
+        List<SelectOption> recommendationResult = new ArrayList<>();
+        SelectOption so1 = new SelectOption("Approval", "ACCEPT");
+        SelectOption so2 = new SelectOption("Reject", "REJECT");
+        SelectOption so3 = new SelectOption("Other", "Other");
+        recommendationResult.add(so1);
+        recommendationResult.add(so2);
+        recommendationResult.add(so3);
+        return recommendationResult;
     }
 
 }

@@ -87,9 +87,11 @@
                             <p>Subsumed Services:</p>
                         </td>
                         <td class="col-xs-8">
-                            <c:forEach var="service" items="${insRepDto.subsumedServices}">
-                                <p><c:out value="${service}"></c:out></p>
-                            </c:forEach>
+                            <c:if test="${insRepDto.subsumedServices != null && not empty insRepDto.subsumedServices}">
+                                <c:forEach var="service" items="${insRepDto.subsumedServices}">
+                                    <p><c:out value="${service}"></c:out></p>
+                                </c:forEach>
+                            </c:if>
                         </td>
                     </tr>
                 </table>
