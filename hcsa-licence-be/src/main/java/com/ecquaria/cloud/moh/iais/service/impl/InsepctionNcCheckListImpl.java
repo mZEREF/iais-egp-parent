@@ -37,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
+import com.esotericsoftware.minlog.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -249,6 +250,14 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 appPreRecommentdationDto.setAppPremCorreId(appPremId);
                 appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
                 appPreRecommentdationDto.setRecomDecision(inspectionDate);
+                Date insDate = null;
+                try {
+                    insDate = Formatter.parseDate(inspectionDate);
+                }catch (Exception e){
+                    Log.debug(e.toString());
+
+                }
+                appPreRecommentdationDto.setRecomInDate(insDate);
                 fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
             }
         }

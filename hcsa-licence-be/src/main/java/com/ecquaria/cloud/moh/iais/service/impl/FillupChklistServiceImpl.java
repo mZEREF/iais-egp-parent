@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -839,36 +840,32 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     }
 
     @Override
-    public List<String> getInspectiors(String appPremCorrId) {
+    public List<String> getInspectiors(TaskDto taskDto) {
         List<String> inspectiors = new ArrayList<>();
-        List<TaskDto> dtos = organizationClient.getTaskByAppNo(appPremCorrId).getEntity();
-        if(!IaisCommonUtils.isEmpty(dtos)){
-            for(TaskDto temp:dtos){
-                OrgUserDto userDto = null;
-                if(temp.getUserId()!=null) {
-                    userDto = organizationClient.retrieveOrgUserAccountById(temp.getUserId()).getEntity();
-                    if(userDto.getDisplayName()!=null){
-                        inspectiors.add(userDto.getDisplayName());
-                    }
-                }
+        String workGrpId = taskDto.getWkGrpId();
+        List<OrgUserDto> orgDtos = organizationClient.getUsersByWorkGroupName(workGrpId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+        if(!IaisCommonUtils.isEmpty(orgDtos)){
+            for(OrgUserDto temp:orgDtos){
+                inspectiors.add(temp.getDisplayName());
             }
         }
         return inspectiors;
     }
 
     @Override
-    public String getInspectionLeader(String appPremCorrId) {
-        String inspectiorLeader = null;
-        List<TaskDto> dtos = organizationClient.getTaskByAppNo(appPremCorrId).getEntity();
-        if(!IaisCommonUtils.isEmpty(dtos)){
-            for(TaskDto temp:dtos){
-                if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(temp.getRoleId())){
-                    OrgUserDto userDto = organizationClient.retrieveOrgUserAccountById(temp.getUserId()).getEntity();
-                    inspectiorLeader =  userDto.getDisplayName();
-                }
+    public String getInspectionLeader(TaskDto taskDto) {
+        String workGrpId = taskDto.getWkGrpId();
+        List<String> leaders = null;
+        String leaderStr = null;
+        leaders =  organizationClient.getInspectionLead(workGrpId).getEntity();
+
+        if(!IaisCommonUtils.isEmpty(leaders)){
+            for(String temp:leaders){
+                OrgUserDto userDto = organizationClient.retrieveOrgUserAccountById(temp).getEntity();
+                leaderStr = userDto.getDisplayName()+" ";
             }
         }
-        return inspectiorLeader;
+        return leaderStr;
     }
 
     @Override

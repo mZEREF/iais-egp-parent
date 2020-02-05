@@ -51,9 +51,9 @@ public interface FillupChklistService {
 
     String getInspectionDate(String appPremCorrId);
 
-    List<String> getInspectiors(String appPremCorrId);
+    List<String> getInspectiors(TaskDto TaskDto);
 
-    String getInspectionLeader(String appPremCorrId);
+    String getInspectionLeader(TaskDto taskDto);
 
     void getRateOfCheckList(InspectionFDtosDto serListDto, AdCheckListShowDto adchklDto, InspectionFillCheckListDto commonDto);
 

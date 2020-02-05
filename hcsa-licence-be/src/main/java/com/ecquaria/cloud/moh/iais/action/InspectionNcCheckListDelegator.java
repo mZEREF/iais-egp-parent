@@ -126,8 +126,8 @@ public class InspectionNcCheckListDelegator {
             adchklDto = fillupChklistService.getAdhoc(appPremCorrId);
         }
         String inspectionDate = fillupChklistService.getInspectionDate(appPremCorrId);
-        List<String> inspeciotnOfficers  = fillupChklistService.getInspectiors(appPremCorrId);
-        String inspectionleader = fillupChklistService.getInspectionLeader(appPremCorrId);
+        List<String> inspeciotnOfficers  = fillupChklistService.getInspectiors(taskDto);
+        String inspectionleader = fillupChklistService.getInspectionLeader(taskDto);
         serListDto.setInspectionDate(inspectionDate);
         serListDto.setInspectionofficer(inspeciotnOfficers);
         serListDto.setInspectionLeader(inspectionleader);
@@ -277,7 +277,7 @@ public class InspectionNcCheckListDelegator {
         }
         ParamUtil.setSessionAttr(request,"adchklDto",showPageDto);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        //fillupChklistService.routingTask(taskDto,null,loginContext,flag);
+        fillupChklistService.routingTask(taskDto,null,loginContext,flag);
     }
 
     public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){
