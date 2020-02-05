@@ -90,6 +90,7 @@ public class InsRepServiceImpl implements InsRepService {
         String appId = applicationDto.getId();
         String appGrpId = applicationDto.getAppGrpId();
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
+        String status = applicationDto.getStatus();
         String appTypeCode = insRepClient.getAppType(appId).getEntity();
         ApplicationGroupDto applicationGroupDto = insRepClient.getApplicationGroupDto(appGrpId).getEntity();
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(appInsRepDto.getLicenseeId()).getEntity();
@@ -219,6 +220,7 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setInspectionTime(null);
         inspectionReportDto.setBestPractice(bestPractice);
         inspectionReportDto.setTaskRemarks(remarks);
+        inspectionReportDto.setCurrentStatus(status);
         return inspectionReportDto;
     }
 

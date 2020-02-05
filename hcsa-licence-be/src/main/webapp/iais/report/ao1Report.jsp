@@ -73,8 +73,8 @@
                                 <p>Principal Officer:</p>
                             </td>
                             <td class="col-xs-8">
-                              <c:if test="${insRepDto.principalOfficer != null && not empty insRepDto.principalOfficer}">
-                                  <p><c:forEach items="${insRepDto.principalOfficer}" var="poName">
+                              <c:if test="${insRepDto.principalOfficers != null && not empty insRepDto.principalOfficers}">
+                                  <p><c:forEach items="${insRepDto.principalOfficers}" var="poName">
                                       <c:out value="${poName}"/><br>
                                   </c:forEach></p>
                               </c:if>
@@ -202,9 +202,6 @@
                                         </tbody>
                                     </table>
                                 </c:if>
-<%--                                <c:if test="${insRepDto.otherCheckList.adItemList == null}">--%>
-<%--                                    NO RESULT !--%>
-<%--                                </c:if>--%>
                             </td>
                         </tr>
                     </table>
@@ -286,6 +283,16 @@
                                 <p>${insRepDto.status}</p>
                             </td>
                         </tr>
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>Risk Level:</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <iais:select name="riskLevel" options="riskLevelOptions" firstOption="Please select"
+                                             value="${appPremisesRecommendationDto.recommendation}"/>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -348,6 +355,16 @@
                             <td class="col-xs-4">
                             </td>
                         </tr>
+
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>Rectified Within KPI?</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <p>YES</p>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -359,33 +376,118 @@
         </div>
         <div class="row">
             <div class="col-xs-12">
+                <div class="table-gp">
                     <table class="table">
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>TCU needed:</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <input type="checkbox" id="tcuNeeded" name="tcuNeed" onchange="javascirpt:changeTcu();"
+                                       <c:if test="${appPremisesRecommendationDto.tcuNeeded =='on'}">checked</c:if>
+                                >
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                        <tr id="tcuDate" hidden>
+                            <td class="col-xs-4">
+                                <p>TCU Date:</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <iais:datePicker id="tcuDate" name="tcuDate" dateVal=""/>
+                                <span id="error_tcuDate" name="iaisErrorMsg" class="error-msg"></span>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
                         <tr>
                             <td class="col-xs-4">
                                 <p>Recommendation:</p>
                             </td>
-                            <td class="col-xs-8">
-                                <iais:select name="recommendation" options="riskOption" firstOption="Please select"
-                                             onchange="javascirpt:x(this.value);"
-                                             value="${preapreRecommendationDto.recommendation}"/>
-                                <span id="error_recommendation" name="iaisErrorMsg" class="error-msg"></span>
-                                <div id="recom1" hidden>
-                                    <input id=recomInNumber type="text" name="number" value="${number}">
-                                    <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
-                                    <iais:select id="chronoUnit" name="chrono" options="chronoOption"
-                                                 firstOption="Please select" value="${chrono}"/>
-                                    <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
+                            <td class="col-xs-4">
+                                <iais:select name="recommendation" options="recommendationOption"
+                                             firstOption="Please select"
+                                             value="${appPremisesRecommendationDto.recommendation}"
+                                             onchange="javascirpt:changeRecommendation(this.value);"/>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                        <tr id="period" hidden>
+                            <td class="col-xs-4">
+                                <p>Period:</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <iais:select name="periods" options="riskOption" firstOption="Please select"
+                                             onchange="javascirpt:changePeriod(this.value);"
+                                             value="${appPremisesRecommendationDto.period}"/>
+                                <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                        <tr id="selfPeriod" hidden>
+                            <td class="col-xs-4">
+                                <p>Other Period:</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <input id=recomInNumber type="text" name="number" value="${number}">
+                                <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
+                                <iais:select id="chronoUnit" name="chrono" options="chronoOption"
+                                             firstOption="Please select" value="${chrono}"/>
+                                <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
                     </table>
+                </div>
+            </div>
+        </div>
+        <div class="alert alert-info" role="alert">
+            <strong>
+                <h4>Section F (After Action)</h4>
+            </strong>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="table-gp">
+                    <table class="table">
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>Follow up Action:</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <p><textarea name="followUpAction" cols="90" rows="6"  title="content"  ></textarea></p>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>To Engage Enforcement?:</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <input type="checkbox" id="enforcement" name="engageEnforcement"
+                                       onchange="javascirpt:changeEngage();"
+                                       <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if>
+                                >
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                        <tr id="engageRemarks" hidden>
+                            <td class="col-xs-4">
+                                <p>Enforcement Remarks</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <p><textarea name="enforcementRemarks" cols="90" rows="6"  title="content" MAXLENGTH="4000" ></textarea></p>
+                                <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-        <div class="modal-footer">
-            <button id="approveButton" type="submit" class="btn btn-primary" onclick="doSubmit()">Submit</button>
-        </div>
+<%--        <div class="modal-footer">--%>
+<%--            <button id="approveButton" type="submit" class="btn btn-primary" onclick="doSubmit()">Submit</button>--%>
+<%--        </div>--%>
     <%@include file="/include/validation.jsp" %>
 </form>
 
@@ -398,6 +500,12 @@
         submit('approve');
     }
 
+    function submit() {
+        if ($("#processingDecision").val() == "submit") {
+            $("#mainForm").submit();
+        }
+    }
+
     function submit(action) {
         $("[name='action_type']").val(action);
         var mainPoolForm = document.getElementById('aomainForm');
@@ -405,18 +513,55 @@
 
     }
 
-    function x(obj) {
+    function changePeriod(obj) {
         if (obj == "Others") {
-            document.getElementById("recom1").style.display = "";
-            $("#recom1").show();
+            document.getElementById("selfPeriod").style.display = "";
+            $("#selfPeriod").show();
         } else {
-            document.getElementById("recom1").style.display = "none";
+            document.getElementById("selfPeriod").style.display = "none";
         }
     }
 
+    function changeRecommendation(obj) {
+        if (obj == "Approval") {
+            document.getElementById("period").style.display = "";
+            $("#period").show();
+        } else {
+            document.getElementById("period").style.display = "none";
+        }
+    }
+
+    function changeTcu() {
+        if ($('#tcuNeeded').is(':checked')) {
+            document.getElementById("tcuDate").style.display = "";
+            $("#tcuDate").show();
+        } else {
+            document.getElementById("tcuDate").style.display = "none";
+        }
+    }
+
+    function changeEngage() {
+        if ($('#enforcement').is(':checked')) {
+            document.getElementById("engageRemarks").style.display = "";
+            $("#engageRemarks").show();
+        } else {
+            document.getElementById("engageRemarks").style.display = "none";
+        }
+    }
+
+
     $(document).ready(function () {
-        if ($("#recommendation").val() == "Others") {
-            x("Others");
+        if ($("#recommendation").val() == "Approval") {
+            changeRecommendation("Approval");
+        }
+        if ($("#periods").val() == "Others") {
+            changePeriod("Others");
+        }
+        if ($('#tcuNeeded').is(':checked')) {
+            $("#tcuDate").show();
+        }
+        if ($('#enforcement').is(':checked')) {
+            $("#engageRemarks").show();
         }
     });
 

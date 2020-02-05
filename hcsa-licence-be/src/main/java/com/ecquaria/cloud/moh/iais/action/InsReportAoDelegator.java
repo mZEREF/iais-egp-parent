@@ -83,6 +83,9 @@ public class InsReportAoDelegator {
 
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String taskId = ParamUtil.getString(bpc.request,"taskId");
+        if(StringUtil.isEmpty(taskId)){
+            taskId = "F2733132-A137-EA11-BE7E-000C29F371DC";
+        }
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(correlationId);
@@ -97,11 +100,15 @@ public class InsReportAoDelegator {
         Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
         String option  = recomInNumber + chronoUnit;
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
-        SelectOption so1 = new SelectOption(APPROVAL,APPROVAL);
-        SelectOption so2 = new SelectOption(REJECT,REJECT);
-        riskOption.add(so1);
-        riskOption.add(so2);
+//        SelectOption so1 = new SelectOption(APPROVAL,APPROVAL);
+//        SelectOption so2 = new SelectOption(REJECT,REJECT);
+//        riskOption.add(so1);
+//        riskOption.add(so2);
         List<SelectOption> chronoOption = getChronoOption();
+        List<SelectOption> riskLevelOptions = getriskLevel();
+        List<SelectOption> processingDecision = getProcessingDecision();
+        ParamUtil.setSessionAttr(bpc.request, "processingDecision", (Serializable) processingDecision);
+        ParamUtil.setSessionAttr(bpc.request, "riskLevelOptions", (Serializable) riskLevelOptions);
         ParamUtil.setSessionAttr(bpc.request, "chronoOption", (Serializable) chronoOption);
         ParamUtil.setSessionAttr(bpc.request, "riskOption", (Serializable)riskOption);
         ParamUtil.setSessionAttr(bpc.request, "option", option);
@@ -215,6 +222,26 @@ public class InsReportAoDelegator {
         ChronoResult.add(so2);
         ChronoResult.add(so3);
         return ChronoResult;
+    }
+
+    private List<SelectOption> getriskLevel() {
+        List<SelectOption> riskLevelResult = new ArrayList<>();
+        SelectOption so1 = new SelectOption("Low", "Low");
+        SelectOption so2 = new SelectOption("Moderate", "Moderate");
+        SelectOption so3 = new SelectOption("High", "High");
+        riskLevelResult.add(so1);
+        riskLevelResult.add(so2);
+        riskLevelResult.add(so3);
+        return riskLevelResult;
+    }
+
+    private List<SelectOption> getProcessingDecision() {
+        List<SelectOption> riskLevelResult = new ArrayList<>();
+        SelectOption so1 = new SelectOption("submit", "Acknowledge inspection report");
+        SelectOption so2 = new SelectOption("submit", "Revise inspection report");
+        riskLevelResult.add(so1);
+        riskLevelResult.add(so2);
+        return riskLevelResult;
     }
 
 }

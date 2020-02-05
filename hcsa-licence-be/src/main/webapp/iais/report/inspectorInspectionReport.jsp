@@ -217,20 +217,21 @@
                                                     <p>Current Status:</p>
                                                 </td>
                                                 <td class="col-xs-8">
-                                                    <p>${applicationViewDto.currentStatus}</p>
+                                                    <p> <iais:code code="${insRepDto.currentStatus}"></iais:code></p>
+
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td class="col-xs-4">
-                                                    <p>Remarks:</p>
+                                            <tr height="1">
+                                                <td class="col-xs-2" >
+                                                    <p >
+                                                        remarks:
+                                                    </p>
                                                 </td>
-                                                <div>
-                                                    <td class="col-xs-4">
-                                                        <input name="processingRemarks" type="text" value="" MAXLENGTH="4000">
-                                                        <span id="error_processingRemarks" name="iaisErrorMsg" class="error-msg"></span>
-                                                    </td>
-                                                </div>
-                                                <td class="col-xs-4"></td>
+                                                <td>
+                                                    <div class="col-sm-9">
+                                                        <p><textarea name="remarks" cols="90" rows="6"  title="content"  ></textarea></p>
+                                                    </div>
+                                                </td>
                                             </tr>
 
                                             <tr>
@@ -245,7 +246,7 @@
                                         </table>
                                             <div align="right">
                                                 <button id="submitButton" type="submit" class="btn btn-primary" onclick="submit()">
-                                                    Next
+                                                    Submit
                                                 </button>
                                             </div>
                                         </div>
