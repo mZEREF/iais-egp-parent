@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -172,7 +173,7 @@ public class NewApplicationDelegator {
         String loginId = "internet";
         //?
         List<AppGrpPremisesDto> list = serviceConfigService.getAppGrpPremisesDtoByLoginId(loginId);
-        SelectOption sp0 = new SelectOption("-1", "Please select");
+        SelectOption sp0 = new SelectOption("-1", FIRESTOPTION);
         premisesSelect.add(sp0);
         SelectOption sp1 = new SelectOption("newPremise", "Add a new premises");
         premisesSelect.add(sp1);
@@ -187,7 +188,7 @@ public class NewApplicationDelegator {
         }
         //his to do
         List conveyancePremSel = new ArrayList<SelectOption>();
-        SelectOption cps1 = new SelectOption("-1", "Please select");
+        SelectOption cps1 = new SelectOption("-1", FIRESTOPTION);
         SelectOption cps2 = new SelectOption("newPremise", "Add a new premises");
         conveyancePremSel.add(cps1);
         conveyancePremSel.add(cps2);
@@ -199,6 +200,7 @@ public class NewApplicationDelegator {
             Set<String> premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
             ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
         }
+
 
         //reload dateTime
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
@@ -943,7 +945,9 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the appGroupNo is -->:") + appGroupNo);
         appSubmissionDto.setAppGrpNo(appGroupNo);
         //get Amount
-        Double amount = amount = appSubmissionService.getGroupAmount(appSubmissionDto);
+        FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto);
+        appSubmissionDto.setAmountDetail(feeDto.getFeeDetail().toString());
+        Double amount = feeDto.getTotal();
         log.debug(StringUtil.changeForLog("the amount is -->:") + amount);
         appSubmissionDto.setAmount(amount);
         //judge is the preInspection

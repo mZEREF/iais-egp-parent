@@ -1306,6 +1306,7 @@ public class ClinicalLaboratoryDelegator {
         //salutation
         List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
         Map<String,String> salutationAttr = new HashMap<>();
+        salutationAttr.put("class", "salutationSel");
         salutationAttr.put("name", "salutation");
         salutationAttr.put("style", "display: none;");
         String salutationSelectStr = NewApplicationDelegator.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
@@ -1313,6 +1314,7 @@ public class ClinicalLaboratoryDelegator {
         //ID Type
         List<SelectOption> idTypeList = getIdTypeSelOp();
         Map<String,String>  idTypeAttr = new HashMap<>();
+        idTypeAttr.put("class", "idTypeSel");
         idTypeAttr.put("name", "idType");
         idTypeAttr.put("style", "display: none;");
         String idTypeSelectStr = NewApplicationDelegator.generateDropDownHtml(idTypeAttr, idTypeList, null);
@@ -1320,6 +1322,7 @@ public class ClinicalLaboratoryDelegator {
         //Designation
         List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
         Map<String,String> designationAttr = new HashMap<>();
+        designationAttr.put("class", "designationSel");
         designationAttr.put("name", "designation");
         designationAttr.put("style", "display: none;");
         String designationSelectStr = NewApplicationDelegator.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
@@ -1327,6 +1330,7 @@ public class ClinicalLaboratoryDelegator {
         //Professional Regn Type
         List<SelectOption> proRegnTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE);
         Map<String,String> proRegnTypeAttr = new HashMap<>();
+        proRegnTypeAttr.put("class", "professionTypeSel");
         proRegnTypeAttr.put("name", "professionType");
         proRegnTypeAttr.put("style", "display: none;");
         String proRegnTypeSelectStr = NewApplicationDelegator.generateDropDownHtml(proRegnTypeAttr, proRegnTypeList, NewApplicationDelegator.FIRESTOPTION);
