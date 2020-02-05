@@ -151,4 +151,11 @@ public class OrganizationClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
+
+    public FeignResponseEntity<LicenseeDto> getTasksByUserIdAndRole(String id, String role) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
