@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.CheckListDraftDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.CheckListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
@@ -30,7 +29,6 @@ import com.esotericsoftware.minlog.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -167,10 +165,10 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
         InspectionFDtosDto serListDto = null;
         String viewChkFlag = ParamUtil.getString(mulReq,"viewchk");
-        CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("selectedFile");
+  /*      CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("selectedFile");
         CheckListFileDto fileDto = new CheckListFileDto();
         fileDto.setFileName(file.getOriginalFilename());;
-        ParamUtil.setSessionAttr(mulReq,CHECKLISTFILEDTO,fileDto);
+        ParamUtil.setSessionAttr(mulReq,CHECKLISTFILEDTO,fileDto);*/
         if(!StringUtil.isEmpty(viewChkFlag)){
             /*serListDto = getDataFromPage(request);
             InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
