@@ -2487,7 +2487,11 @@ public class NewApplicationDelegator {
                     appPremPhOpenPeriod.setConvStartFromMM(convPbHolDayStartMM);
                     appPremPhOpenPeriod.setConvEndToHH(convPbHolDayEndHH);
                     appPremPhOpenPeriod.setConvEndToMM(convPbHolDayEndMM);
-                    appPremPhOpenPeriods.add(appPremPhOpenPeriod);
+
+                    if(!StringUtil.isEmpty(convPubHoliday)||!StringUtil.isEmpty(convPbHolDayStartHH) || !StringUtil.isEmpty(convPbHolDayStartMM)
+                            ||!StringUtil.isEmpty(convPbHolDayEndHH) ||!StringUtil.isEmpty(convPbHolDayEndMM)){
+                        appPremPhOpenPeriods.add(appPremPhOpenPeriod);
+                    }
                 }
             }
             appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriods);
