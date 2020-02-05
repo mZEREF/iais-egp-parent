@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
@@ -160,8 +161,25 @@ public class InsReportAoDelegator {
             ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.FALSE);
             return;
         }
+
         AppPremisesRecommendationDto recommendationDto = prepareRecommendation(bpc, appPremisesCorrelationId);
         insRepService.updateRecommendation(recommendationDto);
+        String tcuNeeded = preapreRecommendationDto.getTcuNeeded();
+        String engageEnforcement = preapreRecommendationDto.getEngageEnforcement();
+        if(!StringUtil.isEmpty(tcuNeeded)){
+            AppPremisesRecommendationDto recommendationDtoTcu = new AppPremisesRecommendationDto();
+            recommendationDtoTcu.setAppPremCorreId(appPremisesCorrelationId);
+            recommendationDtoTcu.setRecomInDate(preapreRecommendationDto.getTcuDate());
+            recommendationDtoTcu.setRecomDecision("tcuNeeded");
+            insRepService.updateTcuRecommendation(recommendationDto);
+        }
+        if(!StringUtil.isEmpty(engageEnforcement)){
+            AppPremisesRecommendationDto recommendationDtoEngage = new AppPremisesRecommendationDto();
+            recommendationDtoEngage.setAppPremCorreId(appPremisesCorrelationId);
+            recommendationDtoEngage.setRemarks(preapreRecommendationDto.getEngageEnforcementRemarks());
+            recommendationDtoEngage.setRecomDecision("engage");
+            insRepService.updateengageRecommendation(recommendationDto);
+        }
         if(REJECT.equals(recommendationDto.getRecomDecision())){
             insRepService.routBackTaskToInspector(taskDto,applicationDto,appPremisesCorrelationId);
             ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
@@ -207,13 +225,30 @@ public class InsReportAoDelegator {
         return appPremisesRecommendationDto;
     }
     private AppPremisesRecommendationDto prepareRecommendation (BaseProcessClass bpc){
+        String periods = ParamUtil.getRequestString(bpc.request, "periods");
+        String riskLevel = ParamUtil.getRequestString(bpc.request, "riskLevel");
+        String followUpAction = ParamUtil.getRequestString(bpc.request, "followUpAction");
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
         String number = ParamUtil.getRequestString(bpc.request, NUMBER);
         ParamUtil.setSessionAttr(bpc.request, CHRONO, chrono);
         ParamUtil.setSessionAttr(bpc.request, NUMBER, number);
+        String tcuNeeded = ParamUtil.getRequestString(bpc.request, "tcuNeed");
+        String tcuDateStr = ParamUtil.getRequestString(bpc.request, "tcuDate");
+        Date tcuDate = DateUtil.parseDate(tcuDateStr, "dd/MM/yyyy");
+        String enforcement = ParamUtil.getRequestString(bpc.request, "engageEnforcement");
+        String enforcementRemarks = ParamUtil.getRequestString(bpc.request, "enforcementRemarks");
+        ParamUtil.setSessionAttr(bpc.request, CHRONO, chrono);
+        ParamUtil.setSessionAttr(bpc.request, NUMBER, number);
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         appPremisesRecommendationDto.setRecommendation(recommendation);
+        appPremisesRecommendationDto.setPeriod(periods);
+        appPremisesRecommendationDto.setTcuNeeded(tcuNeeded);
+        appPremisesRecommendationDto.setTcuDate(tcuDate);
+        appPremisesRecommendationDto.setEngageEnforcement(enforcement);
+        appPremisesRecommendationDto.setEngageEnforcementRemarks(enforcementRemarks);
+        appPremisesRecommendationDto.setRiskLevel(riskLevel);
+        appPremisesRecommendationDto.setFollowUpAction(followUpAction);
         return appPremisesRecommendationDto;
     }
 
@@ -252,7 +287,7 @@ public class InsReportAoDelegator {
         List<SelectOption> recommendationResult = new ArrayList<>();
         SelectOption so1 = new SelectOption("Approval", "ACCEPT");
         SelectOption so2 = new SelectOption("Reject", "REJECT");
-        SelectOption so3 = new SelectOption("Other", "Other");
+        SelectOption so3 = new SelectOption(OTHERS, "Other");
         recommendationResult.add(so1);
         recommendationResult.add(so2);
         recommendationResult.add(so3);

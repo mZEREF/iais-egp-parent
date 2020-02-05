@@ -10,7 +10,6 @@
 <%
     String webroot = IaisEGPConstant.BE_CSS_ROOT;
 %>
-<form method="post" id="aomainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="action_type" value="">
     <div class="row">
         <div class="alert alert-info" role="alert">
@@ -25,7 +24,7 @@
                                 <p>Licence No:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.licenceNo}</p>
+                                <p><c:out value="${insRepDto.licenceNo}"/></p>
                             </td>
                         </tr>
                         <tr>
@@ -33,7 +32,7 @@
                                 <p>Service Name:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.serviceName}</p>
+                                <p><c:out value="${insRepDto.serviceName}"/></p>
                             </td>
                         </tr>
                         <tr>
@@ -41,7 +40,7 @@
                                 <p>HCI Code:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.hciCode}</p>
+                                <p><c:out value="${insRepDto.hciCode}"/></p>
                             </td>
                         </tr>
                         <tr>
@@ -49,7 +48,7 @@
                                 <p>HCI Name:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.hciName}</p>
+                                <p><c:out value="${insRepDto.hciName}"/></p>
                             </td>
                         </tr>
                         <tr>
@@ -57,7 +56,7 @@
                                 <p>HCI Address:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.hciAddress}</p>
+                                <p><c:out value="${insRepDto.hciAddress}"/></p>
                             </td>
                         </tr>
                         <tr>
@@ -65,7 +64,7 @@
                                 <p>Licensee Name:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.licenseeName}</p>
+                                <p><c:out value="${insRepDto.licenseeName}"/></p>
                             </td>
                         </tr>
                         <tr>
@@ -73,11 +72,11 @@
                                 <p>Principal Officer:</p>
                             </td>
                             <td class="col-xs-8">
-                              <c:if test="${insRepDto.principalOfficers != null && not empty insRepDto.principalOfficers}">
-                                  <p><c:forEach items="${insRepDto.principalOfficers}" var="poName">
-                                      <c:out value="${poName}"/><br>
-                                  </c:forEach></p>
-                              </c:if>
+                                <c:if test="${insRepDto.principalOfficers != null && not empty insRepDto.principalOfficers}">
+                                    <p><c:forEach items="${insRepDto.principalOfficers}" var="poName">
+                                        <c:out value="${poName}"/><br>
+                                    </c:forEach></p>
+                                </c:if>
                             </td>
                         </tr>
                         <tr>
@@ -85,11 +84,11 @@
                                 <p>Subsumed Services:</p>
                             </td>
                             <td class="col-xs-8">
-                        <c:if test="${insRepDto.subsumedServices != null && not empty insRepDto.subsumedServices}">
-                                <c:forEach var="service" items="${insRepDto.subsumedServices}">
-                                    <p><c:out value="${service}"></c:out></p>
-                                </c:forEach>
-                        </c:if>
+                                <c:if test="${insRepDto.subsumedServices != null && not empty insRepDto.subsumedServices}">
+                                    <c:forEach var="service" items="${insRepDto.subsumedServices}">
+                                        <p><c:out value="${service}"></c:out></p>
+                                    </c:forEach>
+                                </c:if>
                             </td>
                         </tr>
                     </table>
@@ -117,7 +116,7 @@
                                 <p>Time of Inspection:</p>
                             </td>
                             <td class="col-xs-8">
-                                <fmt:formatDate value="${insRepDto.inspectionDate}"
+                                <fmt:formatDate value="${insRepDto.inspectionTime}"
                                                 pattern="dd/MM/yyyy"></fmt:formatDate>
                             </td>
                         </tr>
@@ -126,7 +125,7 @@
                                 <p>Reason for Visit:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.reasonForVisit}</p>
+                                <p><c:out value="${insRepDto.reasonForVisit}"/></p>
                             </td>
                         </tr>
                         <tr>
@@ -159,7 +158,7 @@
                                 <p>Reported By:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.reportedBy}</p>
+                                <p><c:out value="${insRepDto.reportedBy}"/></p>
                             </td>
                         </tr>
                         <tr>
@@ -167,7 +166,7 @@
                                 <p>Report Noted By:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.reportedBy}</p>
+                                <p><c:out value="${insRepDto.reportedBy}"/></p>
                             </td>
                         </tr>
                     </table>
@@ -190,7 +189,7 @@
                             </td>
 
                             <td class="col-xs-8">
-                                <p>${insRepDto.serviceName}</p>
+                                <p><c:out value="${insRepDto.serviceName}"/></p>
                                 <c:if test="${insRepDto.otherCheckList.adItemList != null}">
                                     <table class="table">
                                         <thead>
@@ -223,7 +222,7 @@
                                 <p>Remarks:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.taskRemarks}</p>
+                                <p><c:out value="${insRepDto.taskRemarks}"/></p>
                             </td>
                         </tr>
                         <tr>
@@ -244,7 +243,7 @@
                                 <p>Recommended Best Practices:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.bestPractice}</p>
+                                <p><c:out value="${insRepDto.bestPractice}"/></p>
                             </td>
                         </tr>
                         <tr>
@@ -289,7 +288,7 @@
                                 <p>Status:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.status}</p>
+                                <p><c:out value="${insRepDto.status}"/></p>
                             </td>
                         </tr>
                         <tr>
@@ -297,8 +296,8 @@
                                 <p>Risk Level:</p>
                             </td>
                             <td class="col-xs-4">
-                                <iais:select name="riskLevel" options="riskLevelOptions" firstOption="Please select"
-                                             value="${appPremisesRecommendationDto.recommendation}"/>
+                                <iais:select name="riskLevel" options="riskLevelOptions" firstOption="Please select" value="${preapreRecommendationDto.riskLevel}"/>
+                                <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
@@ -358,7 +357,7 @@
                             </td>
                             <div>
                                 <td class="col-xs-4">
-                                    <p>${appPremisesRecommendationDto.remarks}</p>
+                                    <p><c:out value="${appPremisesRecommendationDto.remarks}"/></p>
                                 </td>
                             </div>
                             <td class="col-xs-4">
@@ -393,7 +392,7 @@
                             </td>
                             <td class="col-xs-4">
                                 <input type="checkbox" id="tcuNeeded" name="tcuNeed" onchange="javascirpt:changeTcu();"
-                                       <c:if test="${appPremisesRecommendationDto.tcuNeeded =='on'}">checked</c:if>
+                                       <c:if test="${preapreRecommendationDto.tcuNeeded =='on'}">checked</c:if>
                                 >
                             </td>
                             <td class="col-xs-4"></td>
@@ -403,7 +402,7 @@
                                 <p>TCU Date:</p>
                             </td>
                             <td class="col-xs-4">
-                                <iais:datePicker id="tcuDate" name="tcuDate" dateVal=""/>
+                                <iais:datePicker id="tcuDate" name="tcuDate" dateVal="${preapreRecommendationDto.tcuDate}"/>
                                 <span id="error_tcuDate" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
@@ -422,9 +421,8 @@
                                 <p>Recommendation:</p>
                             </td>
                             <td class="col-xs-4">
-                                <iais:select name="recommendation" options="recommendationOption"
-                                             firstOption="Please select"
-                                             value="${appPremisesRecommendationDto.recommendation}"
+                                <iais:select name="recommendation" id="aorecommendation" options="recommendationOption" firstOption="Please select"
+                                             value="${preapreRecommendationDto.recommendation}"
                                              onchange="javascirpt:changeRecommendation(this.value);"/>
                             </td>
                             <td class="col-xs-4"></td>
@@ -436,7 +434,7 @@
                             <td class="col-xs-4">
                                 <iais:select name="periods" options="riskOption" firstOption="Please select"
                                              onchange="javascirpt:changePeriod(this.value);"
-                                             value="${appPremisesRecommendationDto.period}"/>
+                                             value="${preapreRecommendationDto.period}"/>
                                 <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
@@ -472,7 +470,7 @@
                                 <p>Follow up Action:</p>
                             </td>
                             <td class="col-xs-4">
-                                <p><textarea name="followUpAction" cols="90" rows="6"  title="content"  ></textarea></p>
+                                <p><textarea name="followUpAction" cols="90" rows="6" title="content">${preapreRecommendationDto.followUpAction}</textarea></p>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
@@ -483,7 +481,7 @@
                             <td class="col-xs-4">
                                 <input type="checkbox" id="enforcement" name="engageEnforcement"
                                        onchange="javascirpt:changeEngage();"
-                                       <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if>
+                                       <c:if test="${preapreRecommendationDto.engageEnforcement =='on'}">checked</c:if>
                                 >
                             </td>
                             <td class="col-xs-4"></td>
@@ -493,7 +491,8 @@
                                 <p>Enforcement Remarks</p>
                             </td>
                             <td class="col-xs-4">
-                                <p><textarea name="enforcementRemarks" cols="90" rows="6"  title="content" MAXLENGTH="4000" ></textarea></p>
+                                <p><textarea name="enforcementRemarks" cols="90" rows="6" title="content"
+                                             MAXLENGTH="4000">${preapreRecommendationDto.engageEnforcementRemarks}</textarea></p>
                                 <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
@@ -503,23 +502,19 @@
             </div>
         </div>
     </div>
-<%--        <div class="modal-footer">--%>
-<%--            <button id="approveButton" type="submit" class="btn btn-primary" onclick="doSubmit()">Submit</button>--%>
-<%--        </div>--%>
     <%@include file="/include/validation.jsp" %>
-</form>
 
 <script type="text/javascript">
-    function doBack() {
-        submit('back');
-    }
 
-    function doSubmit() {
-        submit('approve');
-    }
-
-    function submit() {
+    function reportaosubmit() {
+        if ($("#aoprocessingDecision").val() =="Approval" &&$("#aorecommendation").val() =="Approval"){
             $("#mainForm").submit();
+        }else if ($("#aoprocessingDecision").val() =="Reject"&&$("#aorecommendation").val() =="Reject"){
+            $("[name='action_type']").val("back");
+             $("#mainForm").submit();
+
+        }
+
     }
 
     function submit(action) {
@@ -539,7 +534,7 @@
     }
 
     function changeRecommendation(obj) {
-        if (obj == "Other") {
+        if (obj == "Others") {
             document.getElementById("period").style.display = "";
             $("#period").show();
         } else {

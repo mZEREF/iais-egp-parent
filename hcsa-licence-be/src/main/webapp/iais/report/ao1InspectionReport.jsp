@@ -250,15 +250,14 @@
                                                         <p>Processing Decision:</p>
                                                     </td>
                                                     <td class="col-xs-4">
-                                                        <iais:select name="processingDecision" options="processingDecision" firstOption="Please select" value=""/>
+                                                        <iais:select name="processingDecision" id="aoprocessingDecision" options="processingDecision" firstOption="Please select" value=""/>
                                                     </td>
                                                     <td class="col-xs-4"></td>
                                                 </tr>
                                             </table>
                                             <div align="right">
-                                                <button id="submitButton" type="submit" class="btn btn-primary"
-                                                        onclick="submit()">
-                                                    Submit
+                                                <button id="submitButton" type="button" class="btn btn-primary" onclick="reportaosubmit()">
+                                                    SUBMIT
                                                 </button>
                                             </div>
                                         </div>

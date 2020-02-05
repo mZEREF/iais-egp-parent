@@ -10,7 +10,6 @@
 <%
     String webroot = IaisEGPConstant.BE_CSS_ROOT;
 %>
-<%--<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>--%>
 <%@ include file="/include/formHidden.jsp" %>
 <input type="hidden" name="confirmAction" value="">
 <div class="tab-pane" id="tabInspection" role="tabpanel">
@@ -299,8 +298,8 @@
                                 <p>Risk Level:</p>
                             </td>
                             <td class="col-xs-4">
-                                <iais:select name="riskLevel" options="riskLevelOptions" firstOption="Please select"
-                                             value="${appPremisesRecommendationDto.recommendation}"/>
+                                <iais:select name="riskLevel" options="riskLevelOptions" firstOption="Please select" value="${appPremisesRecommendationDto.riskLevel}"/>
+                                <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
@@ -407,7 +406,7 @@
                             <p>TCU Date:</p>
                         </td>
                         <td class="col-xs-4">
-                            <iais:datePicker id="tcuDate" name="tcuDate" dateVal=""/>
+                            <iais:datePicker id="tcuDate" name="tcuDate" dateVal="${appPremisesRecommendationDto.tcuDate}"/>
                             <span id="error_tcuDate" name="iaisErrorMsg" class="error-msg"></span>
                         </td>
                         <td class="col-xs-4"></td>
@@ -467,7 +466,7 @@
                             <p>Follow up Action:</p>
                         </td>
                         <td class="col-xs-4">
-                            <p><textarea name="followUpAction" cols="90" rows="6"  title="content"  ></textarea></p>
+                            <p><textarea name="followUpAction" cols="90" rows="6"  title="content">${appPremisesRecommendationDto.followUpAction}</textarea></p>
                         </td>
                         <td class="col-xs-4"></td>
                     </tr>
@@ -488,7 +487,7 @@
                             <p>Enforcement Remarks</p>
                         </td>
                         <td class="col-xs-4">
-                            <p><textarea name="enforcementRemarks" cols="90" rows="6"  title="content" MAXLENGTH="4000" ></textarea></p>
+                            <p><textarea name="enforcementRemarks" cols="90" rows="6"  title="content" MAXLENGTH="4000" >${appPremisesRecommendationDto.engageEnforcementRemarks}</textarea></p>
                             <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
                         </td>
                         <td class="col-xs-4"></td>
@@ -498,17 +497,11 @@
         </div>
     </div>
 </div>
-<%--    <div align="right">--%>
-<%--        <button id="submitButton" type="submit" class="btn btn-primary">--%>
-<%--            Submit--%>
-<%--        </button>--%>
-<%--    </div>--%>
 <%@include file="/include/validation.jsp" %>
-<%--</form>--%>
 
 <script type="text/javascript">
 
-    function submit() {
+    function insRepsubmit() {
         if ($("#processingDecision").val() == "submit") {
             $("#mainForm").submit();
         }

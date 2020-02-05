@@ -245,8 +245,8 @@
                                             </tr>
                                         </table>
                                             <div align="right">
-                                                <button id="submitButton" type="submit" class="btn btn-primary" onclick="submit()">
-                                                    Submit
+                                                <button id="submitButton" type="button" class="btn btn-primary" onclick="insRepsubmit()">
+                                                    SUBMIT
                                                 </button>
                                             </div>
                                         </div>

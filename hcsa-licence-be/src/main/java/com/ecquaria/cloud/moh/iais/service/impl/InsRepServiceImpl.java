@@ -242,20 +242,41 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     @Override
-    public void saveTcuRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
+    public void updateTcuRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
         String appPremCorreId = appPremisesRecommendationDto.getAppPremCorreId();
         Integer version = 1;
         AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, "tcuNeeded").getEntity();
         if (oldAppPremisesRecommendationDto == null) {
             appPremisesRecommendationDto.setVersion(version);
         } else {
-            version = oldAppPremisesRecommendationDto.getVersion() + 1;
-            appPremisesRecommendationDto.setVersion(version);
             oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
         }
-        appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        insRepClient.saveRecommendationData(appPremisesRecommendationDto);
+        version = oldAppPremisesRecommendationDto.getVersion() + 1;
+        oldAppPremisesRecommendationDto.setVersion(version);
+        oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        oldAppPremisesRecommendationDto.setRecomInDate(appPremisesRecommendationDto.getTcuDate());
+        oldAppPremisesRecommendationDto.setId(null);
+        insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
+    }
+
+    @Override
+    public void updateengageRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
+        String appPremCorreId = appPremisesRecommendationDto.getAppPremCorreId();
+        Integer version = 1;
+        AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, "engage").getEntity();
+        if (oldAppPremisesRecommendationDto == null) {
+            appPremisesRecommendationDto.setVersion(version);
+        } else {
+            oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
+        }
+        version = oldAppPremisesRecommendationDto.getVersion() + 1;
+        oldAppPremisesRecommendationDto.setVersion(version);
+        oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        oldAppPremisesRecommendationDto.setRemarks(appPremisesRecommendationDto.getEngageEnforcementRemarks());
+        oldAppPremisesRecommendationDto.setId(null);
+        insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
     }
 
     @Override

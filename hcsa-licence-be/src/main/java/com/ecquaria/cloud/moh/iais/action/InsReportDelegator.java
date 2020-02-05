@@ -120,6 +120,10 @@ public class InsReportDelegator {
         if(recomInDate!=null){
             insRepService.saveRecommendation(appPremisesRecommendationDto2);
         }
+        String engageEnforcementRemarks = appPremisesRecommendationDto3.getEngageEnforcementRemarks();
+        if(!StringUtil.isEmpty(engageEnforcementRemarks)){
+            insRepService.saveRecommendation(appPremisesRecommendationDto3);
+        }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         insRepService.routingTaskToAo1(taskDto, applicationDto, appPremisesCorrelationId);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
@@ -127,9 +131,11 @@ public class InsReportDelegator {
     }
 
     private AppPremisesRecommendationDto prepareRecommendation(BaseProcessClass bpc) {
+        String riskLevel = ParamUtil.getRequestString(bpc.request, "riskLevel");
         String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
         String periods = ParamUtil.getRequestString(bpc.request, "periods");
+        String followUpAction = ParamUtil.getRequestString(bpc.request, "followUpAction");
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
         String number = ParamUtil.getRequestString(bpc.request, NUMBER);
         String tcuNeeded = ParamUtil.getRequestString(bpc.request, "tcuNeed");
@@ -147,6 +153,8 @@ public class InsReportDelegator {
         appPremisesRecommendationDto.setTcuDate(tcuDate);
         appPremisesRecommendationDto.setEngageEnforcement(enforcement);
         appPremisesRecommendationDto.setEngageEnforcementRemarks(enforcementRemarks);
+        appPremisesRecommendationDto.setRiskLevel(riskLevel);
+        appPremisesRecommendationDto.setFollowUpAction(followUpAction);
         return appPremisesRecommendationDto;
     }
 
@@ -186,8 +194,8 @@ public class InsReportDelegator {
         tcuAppPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
 
         AppPremisesRecommendationDto engageEnforcementAppPremisesRecommendationDto = new AppPremisesRecommendationDto();
-        engageEnforcementAppPremisesRecommendationDto.setRecomType("engageEnforcement");
-        engageEnforcementAppPremisesRecommendationDto.setRemarks(enforcementRemarks);
+        engageEnforcementAppPremisesRecommendationDto.setRecomType("engage");
+        engageEnforcementAppPremisesRecommendationDto.setEngageEnforcementRemarks(enforcementRemarks);
         engageEnforcementAppPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
         appPremisesRecommendationDtos.add(appPremisesRecommendationDto);
         appPremisesRecommendationDtos.add(tcuAppPremisesRecommendationDto);
