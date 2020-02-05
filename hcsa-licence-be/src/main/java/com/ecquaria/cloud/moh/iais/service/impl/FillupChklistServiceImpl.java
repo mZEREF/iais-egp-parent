@@ -607,6 +607,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         String stgId = taskDto.getTaskKey();
         List<TaskDto> dtos = organizationClient.getTaskByAppNo(taskDto.getRefNo()).getEntity();
         removeOtherTask(dtos,taskDto.getId());
+        ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER);
         HcsaSvcStageWorkingGroupDto dto = new HcsaSvcStageWorkingGroupDto();
         dto.setStageId(stgId);
         dto.setServiceId(svcId);
@@ -634,6 +635,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         if(hcsaSvcStageWorkingGroupDtos!= null && hcsaSvcStageWorkingGroupDtos.size() > 0) {
             updatedtaskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
         }
+        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),updateApplicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, null, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
         List<TaskDto> createTaskDtoList = new ArrayList<>();
         createTaskDtoList.add(updatedtaskDto);
         taskService.createTasks(createTaskDtoList);
