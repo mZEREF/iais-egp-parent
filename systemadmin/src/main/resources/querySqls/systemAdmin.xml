@@ -105,7 +105,7 @@
         <![CDATA[
             select audit_id,action_time, operation, nric_number, uen_id, moh_user_id, login_type, session_id, client_ip
             ,user_agent, application_number, license_number, module, function_name, programme_name, before_action,
-            after_action, validation_fail_detail, view_params, failed_reason, operation_type from at_audit_trail
+            after_action, validation_fail_detail, view_params, failed_reason, [domain] from at_audit_trail
             where 1 = 1
             <#if operation??> and operation = :operation</#if>
             <#if nric_number??> and nric_number = :nricnumber</#if>
@@ -118,7 +118,7 @@
         <![CDATA[
             select audit_id,action_time, operation, nric_number, uen_id, moh_user_id, login_type, session_id, client_ip
             ,user_agent, application_number, license_number, module, function_name, programme_name, before_action,
-            after_action, validation_fail_detail, view_params, failed_reason, operation_type from at_audit_trail
+            after_action, validation_fail_detail, view_params, failed_reason, [domain] from at_audit_trail
             where 1 = 1 and operation not in(4, 9, 11, 12, 13, 14, 15, 16, 18, 19, 20, 21, 22, 23, 24 )
             <#if operation??> and operation = :operation</#if>
             <#if nric_number??> and nric_number = :nricnumber</#if>

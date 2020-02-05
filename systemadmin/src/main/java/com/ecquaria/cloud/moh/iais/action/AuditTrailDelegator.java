@@ -92,6 +92,7 @@ public class AuditTrailDelegator {
         SearchParam trailDtoSearchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         SearchResult<AuditTrailQueryDto> trailDtoSearchResult = null;
         boolean isAdmin = AccessUtil.isAdministrator();
+        isAdmin = false;
         if(isAdmin){
             preSelectOptionOfFull(request);
             QueryHelp.setMainSql("systemAdmin", "queryFullModeAuditTrail", trailDtoSearchParam);
