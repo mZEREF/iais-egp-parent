@@ -134,9 +134,11 @@
                             <p>Inspected By:</p>
                         </td>
                         <td class="col-xs-8">
-                            <c:forEach items="${insRepDto.inspectors}" var="inspector" varStatus="status">
+                            <c:if test="${insRepDto.inspectors != null && not empty insRepDto.inspectors}">
+                                <p><c:forEach items="${insRepDto.inspectors}" var="inspector" varStatus="status">
                                 <p><c:out value="${inspector}"></c:out></p>
-                            </c:forEach>
+                            </c:forEach></p>
+                            </c:if>
                         </td>
                     </tr>
                     <tr>

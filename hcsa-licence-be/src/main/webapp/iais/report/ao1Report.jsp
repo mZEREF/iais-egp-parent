@@ -132,9 +132,12 @@
                                 <p>Inspected By:</p>
                             </td>
                             <td class="col-xs-8">
-                                <c:forEach items="${insRepDto.inspectors}" var="inspector" varStatus="status">
+                                <c:if test="${insRepDto.inspectors != null && not empty insRepDto.inspectors}">
+                                    <p><c:forEach items="${insRepDto.inspectors}" var="inspector" varStatus="status">
                                     <p><c:out value="${inspector}"></c:out></p>
-                                </c:forEach>
+                                </c:forEach></p>
+                                </c:if>
+
                             </td>
                         </tr>
                         <tr>
@@ -142,7 +145,11 @@
                                 <p>Other Inspection Officer:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.inspectOffices}</p>
+                                <c:if test="${insRepDto.inspectOffices != null && not empty insRepDto.inspectOffices}">
+                                    <p><c:forEach items="${insRepDto.inspectOffices}" var="ioName">
+                                        <c:out value="${ioName}"/><br>
+                                    </c:forEach></p>
+                                </c:if>
                             </td>
                         </tr>
                         <tr>
@@ -223,7 +230,7 @@
                             </td>
                             <td class="col-xs-8">
                                 <c:if test="${insRepDto.markedForAudit}">
-                                    <p>YES</p>
+                                    <p>Yes</p>
                                 </c:if>
                                 <c:if test="${!insRepDto.markedForAudit}">
                                     <p>No</p>
