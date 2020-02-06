@@ -23,7 +23,7 @@
     <li id="checkListli" class="" role="presentation"><a id="checkList" aria-controls="tabCheckList" role="tab"
                                                   data-toggle="tab">CheckList</a></li>
     <li id="emailViewli" class="" role="presentation"><a id="letter" aria-controls="tabLetter" role="tab"
-                                                                 data-toggle="tab">Letter</a></li>
+                                                                 data-toggle="tab">Email</a></li>
     <li id="processingli" class="" role="presentation"><a id="processing" aria-controls="tabProcessing" role="tab"
                                                                  data-toggle="tab">Processing</a></li>
 </ul>

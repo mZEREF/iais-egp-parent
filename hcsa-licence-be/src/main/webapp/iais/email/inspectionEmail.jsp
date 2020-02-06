@@ -23,7 +23,7 @@
                             <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
                             <li class="active" role="presentation"><a href="#tabLetter" aria-controls="tabLetter" role="tab"
-                                                                      data-toggle="tab">Letter</a></li>
+                                                                      data-toggle="tab">Email</a></li>
                             <li class="complete" role="presentation"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab"
                                                                       data-toggle="tab">Processing</a></li>
                         </ul>
