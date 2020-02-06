@@ -28,6 +28,7 @@ public interface InsRepService {
     void updateFollowRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     void updateRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     List<SelectOption> getRiskOption(ApplicationViewDto applicationViewDto);
+    List<String> getPeriods(ApplicationViewDto applicationViewDto);
     ApplicationViewDto getApplicationViewDto (String appNo);
     ApplicationDto updateApplicaiton(ApplicationDto applicationDto);
     String  getRobackUserId(String appId,String stageId);

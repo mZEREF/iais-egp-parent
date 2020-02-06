@@ -384,11 +384,9 @@ public class InsRepServiceImpl implements InsRepService {
         List<String> list = new ArrayList<>();
         list.add(serviceId);
         List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
-        String svcName = "";
         String svcCode = "";
         if (listHcsaServices != null && !listHcsaServices.isEmpty()) {
             for (HcsaServiceDto hcsaServiceDto : listHcsaServices) {
-                svcName = hcsaServiceDto.getSvcName();
                 svcCode = hcsaServiceDto.getSvcCode();
             }
         }
@@ -410,6 +408,36 @@ public class InsRepServiceImpl implements InsRepService {
         }
         SelectOption so = new SelectOption("Others", "Others");
         riskResult.add(so);
+        return riskResult;
+    }
+
+    @Override
+    public List<String> getPeriods(ApplicationViewDto applicationViewDto) {
+        String serviceId = applicationViewDto.getApplicationDto().getServiceId();
+        List<String> list = new ArrayList<>();
+        list.add(serviceId);
+        List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
+        String svcCode = "";
+        if (listHcsaServices != null && !listHcsaServices.isEmpty()) {
+            for (HcsaServiceDto hcsaServiceDto : listHcsaServices) {
+                svcCode = hcsaServiceDto.getSvcCode();
+            }
+        }
+        List<String> riskResult = new ArrayList<>();
+        RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
+        riskAcceptiionDto.setScvCode(svcCode);
+        List<RiskAcceptiionDto> listRiskAcceptiionDto = new ArrayList<>();
+        listRiskAcceptiionDto.add(riskAcceptiionDto);
+        List<RiskResultDto> listRiskResultDto = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();
+        if (listRiskResultDto != null && !listRiskResultDto.isEmpty()) {
+            for (RiskResultDto riskResultDto : listRiskResultDto) {
+                String dateType = riskResultDto.getDateType();
+                String codeDesc = MasterCodeUtil.getCodeDesc(dateType);
+                String count = String.valueOf(riskResultDto.getTimeCount());
+                String recommTime = count + codeDesc;
+                riskResult.add(recommTime);
+            }
+        }
         return riskResult;
     }
 
