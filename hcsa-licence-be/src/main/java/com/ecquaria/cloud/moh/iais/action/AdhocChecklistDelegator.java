@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -28,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
@@ -103,17 +105,18 @@ public class AdhocChecklistDelegator {
         }*/
         List<ChecklistConfigDto> inspectionChecklist = (List<ChecklistConfigDto>)ParamUtil.getSessionAttr(request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR);
         TaskDto task = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
-        if (task != null){
+        if (task != null) {
             String refNo = task.getRefNo();
             ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(refNo);
-            if (applicationViewDto != null){
+            if (applicationViewDto != null) {
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-                if(inspectionChecklist == null) {
+                if (inspectionChecklist == null) {
                     inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
                     log.info("inspectionChecklist info =====>>>>>>>>>>> " + inspectionChecklist.toString());
                 }
             }
         }
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH, null);
         ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
     }
 
@@ -149,7 +152,6 @@ public class AdhocChecklistDelegator {
     public void doSort(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-
         CrudHelper.doSorting(searchParam,bpc.request);
     }
 
@@ -265,28 +267,33 @@ public class AdhocChecklistDelegator {
      */
     public void receiveItemPool(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        log.debug("receive item by item pool ==>>> start");
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
-        SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
 
         // remove has select item in the pool, you can modify my methods with SQL parameters
         AdhocCheckListConifgDto adhocCheckListConifgDto = getAdhocConfigObj(request);
-        if (adhocCheckListConifgDto != null) {
+        if (adhocCheckListConifgDto != null){
             List<AdhocChecklistItemDto> allAdhocItem = adhocCheckListConifgDto.getAllAdhocItem();
-            List<CheckItemQueryDto> rows = searchResult.getRows();
-            Iterator<CheckItemQueryDto> iter = rows.iterator();
-            while (iter.hasNext()) {
-                String remId = iter.next().getItemId();
+            if (!IaisCommonUtils.isEmpty(allAdhocItem)){
+                log.debug("indicates that a record has been selected ");
+                String statusStr = SqlHelper.constructNotInCondition("item.id", allAdhocItem.size());
+                // <#if adhocItemId??> and ${adhocItemId} = :status</#if>
+                searchParam.addParam("adhocItemId", statusStr);
+                int indx = 0;
                 for (AdhocChecklistItemDto adhocChecklistItemDto : allAdhocItem){
-                    if (adhocChecklistItemDto.getItemId() != null && adhocChecklistItemDto.getItemId().equals(remId)){
-                        iter.remove();
-                    }
+                    String itemId = adhocChecklistItemDto.getItemId();
+                    searchParam.addFilter("item.id"+indx, itemId);
+                    indx++;
                 }
             }
-
         }
+
+        QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
+        SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT, searchResult);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH, searchParam);
+        log.debug("receive item by item pool ==>>> start");
     }
 
     /**
