@@ -10,7 +10,7 @@
 %>
 
 <div class="main-content">
-  <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
+  <form id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
@@ -39,36 +39,28 @@
 
     </select>
 
-      <div >
+      <div style="display: none" id="cgo">
 
         <%@include file="cgo.jsp"%>
 
       </div>
 
-
-
-
-
-      <div class="form-check-gp">
+      <div class="form-check-gp" id="selectHciNameAppeal" style="display: none">
         <h2>Select HCI Name To Appeal</h2>
         <div class="form-check" >
-          <input class="form-check-input"  type="checkbox" name="selectHciName" aria-invalid="false" value="">
+          <input class="form-check-input"  onclick="isCheck(this)" type="checkbox" name="selectHciName" aria-invalid="false" value="11">
           <label class="form-check-label"><span class="check-square"></span>Default</label>
         </div>
 
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="selectHciName" aria-invalid="false" value="">
-          <label class="form-check-label" ><span class="check-square"></span>Default</label>
+        <div class="col-xs-12 col-md-10" id="proposedHciName" style="display: none" >
+          <h2>Proposed  HCI Name</h2>
+          <input type="text" maxlength="100" name="proposedHciName">
         </div>
 
       </div>
 
   </div>
 
-    <div class="col-xs-12 col-md-10" >
-      <h2>Proposed  HCI Name</h2>
-      <input type="text" maxlength="100" name="proposedHciName">
-    </div>
 <div class="col-xs-12 col-md-10">
 
   <h2>Any supporting remarks</h2>
@@ -78,7 +70,18 @@
   <div class="col-xs-12 col-md-10">
     <div>
       <label>File Upload for Appeal Reasons</label><br>
-      <button >Browse File</button>
+      <div class="text-center col-xs-12">
+        <div class="document-upload-list">
+          <div class="file-upload-gp">
+            <div class="fileContent col-xs-12">
+              <input class="selectedFile" id="selectedFile" name = "${docConfig.id}selectedFile" type="file" style="display: none;" aria-label="selectedFile1">
+              <a class="btn btn-file-upload btn-secondary" >Upload</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
     </div>
 
   </div>
@@ -113,8 +116,47 @@ $('#save').click(function () {
 $('#reasonSelect').change(function () {
 
   var reason= $('#reasonSelect option:selected').val();
+  if("MS003"==reason){
+      $('#cgo').attr("style" ,"display: block");
+
+  }else  {
+      $('#cgo').attr("style" ,"display: none");
+
+  }
+  if("MS004"==reason){
+    $('#selectHciNameAppeal').attr("style","display: block");
+
+    // $('#idChecked').click(function () {
+      // if($('#idChecked').prop("checked")){
+      //   $('#proposedHciName').attr("style","display: block");
+      // }else {
+      //
+      // }
+      // });
+  }else {
+      $('#selectHciNameAppeal').attr("style","display: none");
+  }
+    
+});
 
 
+function isCheck(obj) {
+
+  if($(obj).prop("checked")){
+      $('#proposedHciName').attr("style","display: block");
+  }else {
+      $('#proposedHciName').attr("style","display: none");
+  }
+
+}
+
+
+$('.selectedFile').change(function () {
+    var file = $(this).val();
+    $(this).parent().children('div:eq(0)').children('span:eq(0)').html(getFileName(file));
+    $(this).parent().children('div:eq(0)').removeClass('hidden');
+    $fileUploadContentEle = $(this).closest('div.file-upload-gp');
+    $fileUploadContentEle.find('.delBtn').removeClass('hidden');
 });
 
 </script>

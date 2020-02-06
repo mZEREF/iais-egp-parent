@@ -22,7 +22,7 @@
     <div class="form-group">
       <div class="col-xs-12 col-md-10">
         Your appeal application has been successfully submitted, the application number is
-          <strong style="text-decoration: underline">APPL-20190307-00010.</strong>
+          <strong style="text-decoration: underline">${newApplicationNo}</strong>
         <br><br><br>
       </div>
 
@@ -35,7 +35,12 @@
         <td style="text-align: center">HCI Name</td>
         <td style="text-align: center">HCI Address</td>
       </tr>
-
+        <tr>
+          <td style="text-align: center">${licenceNo}</td>
+          <td style="text-align: center">${svcName}</td>
+          <td style="text-align: center">${hciName}</td>
+          <td style="text-align: center">${hciAddress}</td>
+        </tr>
 
       </table>
 

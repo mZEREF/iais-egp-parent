@@ -57,6 +57,7 @@ public class AppealDelegator {
     public void submit(BaseProcessClass bpc){
         log.info("start**************submit************");
         String s = appealService.submitData(bpc.request);
+        bpc.request.setAttribute("newApplicationNo",s);
         log.info("end**************submit************");
     }
 
@@ -77,6 +78,7 @@ public class AppealDelegator {
 
     @RequestMapping(value = "/governance-officer", method = RequestMethod.GET)
     public @ResponseBody String genGovernanceOfficerHtmlList(HttpServletRequest request){
+
         List<SelectOption> cgoSelectList = new ArrayList<>();
         SelectOption sp0 = new SelectOption("-1", "Select Personnel");
         cgoSelectList.add(sp0);
@@ -85,7 +87,7 @@ public class AppealDelegator {
         ParamUtil.setSessionAttr(request, "CgoSelectList", (Serializable) cgoSelectList);
 
         List<SelectOption> idTypeSelectList = getIdTypeSelOp();
-        ParamUtil.setRequestAttr(request, "IdTypeSelect", idTypeSelectList);
+        ParamUtil.setSessionAttr(request, "IdTypeSelect",(Serializable)  idTypeSelectList);
 
         String currentSvcCode = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
         List<SelectOption> specialtySelectList = genSpecialtySelectList(currentSvcCode);
