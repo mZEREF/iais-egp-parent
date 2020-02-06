@@ -239,6 +239,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                             if(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())){
                                 ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
                                 applicationService.updateFEApplicaiton(applicationDto1);
+                                inspecTaskCreAndAssDto.setApplicationStatus(applicationDto1.getStatus());
                                 createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), null, td.getWkGrpId());
                             } else {
                                 createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), applicationDto.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
