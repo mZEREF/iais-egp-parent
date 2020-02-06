@@ -57,6 +57,7 @@ public class InspectionSearchDelegator {
      */
     public void inspectionSupSearchStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchStart start ...."));
+        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("Inspection Sup Assign", "Sup Assign Task");
     }
 
@@ -68,7 +69,6 @@ public class InspectionSearchDelegator {
      */
     public void inspectionSupSearchInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchInit start ...."));
-        AccessUtil.initLoginUserInfo(bpc.request);
         ParamUtil.setSessionAttr(bpc.request,"inspectionTaskPoolListDto", null);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", null);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", null);
