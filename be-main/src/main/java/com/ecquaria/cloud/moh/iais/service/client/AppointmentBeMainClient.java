@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @FeignClient(name = "iais-appointment", configuration = FeignConfiguration.class,
         fallback = AppointmentBeMainClientFallback.class)
@@ -41,4 +43,7 @@ public interface AppointmentBeMainClient {
 
     @GetMapping(value = "/appt-nonava-contain")
     FeignResponseEntity<String> dateIsContainNonWork(@RequestBody ApptNonAvailabilityDateDto apptNonAvailabilityDateDto);
+
+    @GetMapping(value = "/appt-nonava/daylist")
+    FeignResponseEntity<Map<Integer, Integer>> getWorkAndNonMap(@RequestBody List<Date> dates);
 }
