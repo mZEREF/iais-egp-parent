@@ -97,11 +97,48 @@ public class InspectionCheckListValidation implements CustomizeValidator {
 
 
     private void otherinfoVad(InspectionFDtosDto serListDto, Map<String, String> errMap) {
-        boolean timeflag = timeVad(serListDto,errMap);
-        if(timeflag){
-            timeLaterVad(serListDto,errMap);
+        int startFlagNum = isNullStartTimeVad(serListDto,errMap);
+        int endFLagNum = isNullEndTimeVad(serListDto,errMap);
+        if(startFlagNum==2&&endFLagNum==2){
+            boolean timeflag = timeVad(serListDto,errMap);
+            if(timeflag){
+                timeLaterVad(serListDto,errMap);
+            }
         }
-        inspDateVad(serListDto,errMap);
+    }
+
+    private int isNullStartTimeVad(InspectionFDtosDto serListDto, Map<String, String> errMap) {
+        String startHour = serListDto.getStartHour();
+        String startMin = serListDto.getStartMin();
+        if(StringUtil.isEmpty(startHour)&&StringUtil.isEmpty(startMin)){
+            return 0;
+        }else if(!StringUtil.isEmpty(startHour)&&StringUtil.isEmpty(startMin)){
+            errMap.put("sTime","UC_INSTA004_ERR005");
+            return 1;
+        }else if(StringUtil.isEmpty(startHour)&&!StringUtil.isEmpty(startMin)){
+            errMap.put("sTime","UC_INSTA004_ERR005");
+            return 1;
+        }else{
+            return 2;
+        }
+
+    }
+
+    private int isNullEndTimeVad(InspectionFDtosDto serListDto, Map<String, String> errMap) {
+        String startHour = serListDto.getEndHour();
+        String startMin = serListDto.getEndMin();
+        if(StringUtil.isEmpty(startHour)&&StringUtil.isEmpty(startMin)){
+            return 0;
+        }else if(!StringUtil.isEmpty(startHour)&&StringUtil.isEmpty(startMin)){
+            errMap.put("eTime","UC_INSTA004_ERR005");
+            return 1;
+        }else if(StringUtil.isEmpty(startHour)&&!StringUtil.isEmpty(startMin)){
+            errMap.put("eTime","UC_INSTA004_ERR005");
+            return 1;
+        }else{
+            return 2;
+        }
+
     }
 
     private void timeLaterVad(InspectionFDtosDto serListDto, Map<String, String> errMap) {
@@ -125,17 +162,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
 
     }
 
-    private void inspDateVad(InspectionFDtosDto serListDto, Map<String, String> errMap) {
-        String inspectionDate = serListDto.getInspectionDate();
-        try {
-            Date date = Formatter.parseDate(inspectionDate);
-            if(date.getTime()<System.currentTimeMillis()){
-                errMap.put("inspectionDate","UC_INSTA004_ERR007");//
-            }
-        }catch (Exception e){
-            Log.debug(e.toString());
-        }
-    }
+
 
     private boolean timeVad(InspectionFDtosDto serListDto, Map<String, String> errMap) {
         int flagNum = 0;

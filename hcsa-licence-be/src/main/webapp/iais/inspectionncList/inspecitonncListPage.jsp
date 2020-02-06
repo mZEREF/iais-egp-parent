@@ -232,7 +232,7 @@
                                     </div>
                                     <div class="input-group">
                                         <div class="ax_default text_area">
-                                            <span  style="font-size: 18px"><strong>Inspection Start Time</strong></span>
+                                            <span  style="font-size: 18px"><strong>Inspection Start Time (HH MM)</strong></span>
                                         </div>
                                         <div style="float: left"><input type="text" maxlength="2" name="startHour" value="<c:out value="${serListDto.startHour}"/>"></div><div style="float: left;padding-left: 10px;"><input type="text" maxlength="2" name="startHourMin" value="<c:out value="${serListDto.startMin}"/>"></div>
                                         <span class="error-msg" id="error_sTime" name="iaisErrorMsg"></span>
@@ -240,7 +240,7 @@
 
                                     <div class="input-group">
                                         <div class="ax_default text_area">
-                                            <span  style="font-size: 18px"><strong>Inspection End Time</strong></span>
+                                            <span  style="font-size: 18px"><strong>Inspection End Time(HH MM)</strong></span>
                                         </div>
                                         <div style="float: left"><input type="text" maxlength="2" name="endHour" value="<c:out value="${serListDto.endHour}"/>"></div><div style="float: left;padding-left: 10px;"><input type="text" maxlength="2" name="endHourMin" value="<c:out value="${serListDto.endMin}"/>"></div>
                                         <span class="error-msg" id="error_eTime" name="iaisErrorMsg"></span>
