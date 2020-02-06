@@ -19,6 +19,12 @@ import java.util.List;
  * @date 2019/12/4 16:02
  */
 public class HcsaLicenceClientFallback {
+    FeignResponseEntity<List<LicenceDto>> retrieveLicenceDtos(List<String> licenceIds){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
     FeignResponseEntity<Integer> licenceNumber( String hciCode){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

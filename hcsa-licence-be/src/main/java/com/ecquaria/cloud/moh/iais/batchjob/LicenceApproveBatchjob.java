@@ -909,7 +909,7 @@ public class LicenceApproveBatchjob {
        return "29ABCF6D-770B-EA11-BE7D-000C29F371DC";
     }
 
-    private Date getExpiryDate(Date startDate, int yearLength){
+    public static Date getExpiryDate(Date startDate, int yearLength){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(startDate);
         calendar.add(Calendar.YEAR,yearLength);
