@@ -110,8 +110,16 @@ public class InspectionMergeSendNcEmailDelegator {
 
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=inspEmailService.getAppPremisesCorrelationsByPremises(correlationId);
         StringBuilder mesContext=new StringBuilder();
-        String oneEmail=inspEmailService.getInsertEmail(appPremisesCorrelationDtos.get(0).getId()).getMessageContent();
-        mesContext.append(oneEmail.substring(0,oneEmail.indexOf("Below are the review outcome")));
+        String oneEmail="";
+        for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
+             ) {
+             oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
+            if(oneEmail.contains("Below are the review outcome")){
+                mesContext.append(oneEmail.substring(0,oneEmail.indexOf("Below are the review outcome")));
+                break;
+            }
+        }
+
         List<String> appPremCorrIds=new ArrayList<>();
         List<String> svcNames=new ArrayList<>();
 
@@ -121,9 +129,18 @@ public class InspectionMergeSendNcEmailDelegator {
             appPremCorrIds.add(appPremisesCorrelationDto.getId());
             ApplicationViewDto appViewDto = inspEmailService.getAppViewByCorrelationId(appPremisesCorrelationDto.getId());
             svcNames.add(inspectionService.getHcsaServiceDtoByServiceId(appViewDto.getApplicationDto().getServiceId()).getSvcName());
-            mesContext.append(ncEmail.substring(ncEmail.indexOf("Below are the review outcome"),ncEmail.indexOf("<p>Thank you</p>")));
+            if(oneEmail.contains("Below are the review outcome") && oneEmail.contains("<p>Thank you</p>")){
+                mesContext.append(ncEmail.substring(ncEmail.indexOf("Below are the review outcome"),ncEmail.indexOf("<p>Thank you</p>")));
+            }
         }
-        mesContext.append(oneEmail.substring(oneEmail.indexOf("<p>Thank you</p>")));
+        for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
+             ) {
+            oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
+            if(oneEmail.contains("<p>Thank you</p>")){
+                mesContext.append(oneEmail.substring(oneEmail.indexOf("<p>Thank you</p>")));
+                break;
+            }
+        }
         InspectionEmailTemplateDto inspectionEmailTemplateDto= new InspectionEmailTemplateDto();
         inspectionEmailTemplateDto.setAppPremCorrId(applicationViewDto.getAppPremisesCorrelationId());
         inspectionEmailTemplateDto.setMessageContent(mesContext.toString());
