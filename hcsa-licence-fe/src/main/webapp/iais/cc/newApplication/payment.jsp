@@ -35,35 +35,83 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    <c:forEach items="${AppSubmissionDto.feeInfoDtos}" var="feeInfoDto">
+                                        <c:set var="baseSvcFeeExt" value="${feeInfoDto.baseSvcFeeExt}"/>
+                                        <c:set var="complexSpecifiedFeeExt" value="${feeInfoDto.complexSpecifiedFeeExt}"/>
+                                        <c:set var="simpleSpecifiedFeeExt" value="${feeInfoDto.simpleSpecifiedFeeExt}"/>
+                                        <!--todo:includedSvcFeeExtList -->
+                                        <!--base -->
                                     <tr>
                                         <td>
-                                            <p class="visible-xs visible-sm table-row-title">Service</p>
-                                            <c:forEach var="hcsaServiceDtoList" items="${hcsaServiceDtoList}">
-                                                <p>
-                                                    <c:out value="${hcsaServiceDtoList.svcName}"></c:out>
-                                                </p>
-
+                                            <c:forEach var="svcName" items="${baseSvcFeeExt.svcNames}">
+                                                <p> <c:out value="${svcName}"></c:out></p>
                                             </c:forEach>
                                         </td>
                                         <td>
-                                            <p class="visible-xs visible-sm table-row-title">Application Type</p>
                                             <p>
-                                                <iais:code code="${AppSubmissionDto.appType}" />
+                                                New Licence
                                             </p>
                                         </td>
                                         <td>
-                                            <p class="visible-xs visible-sm table-row-title">Application No.</p>
                                             <p>
                                                 <c:out value="${AppSubmissionDto.appGrpNo}"></c:out>
                                             </p>
                                         </td>
                                         <td>
-                                            <p class="visible-xs visible-sm table-row-title" >Amount</p>
-                                            <p id="fee">
-                                                <c:out value="${AppSubmissionDto.amountStr}"></c:out>
+                                            <p>
+                                                <c:out value="${baseSvcFeeExt.amountStr}"></c:out>
                                             </p>
                                         </td>
                                     </tr>
+
+                                        <!--simpleSpecifiedFeeExt -->
+                                    <c:if test="${simpleSpecifiedFeeExt.svcNames.size()>0 }">
+                                        <tr>
+                                            <td>
+                                                <p>&nbsp;&nbsp;Simple Specified Services</p>
+                                                <c:forEach var="svcName" items="${simpleSpecifiedFeeExt.svcNames}">
+                                                    <p>&nbsp;&nbsp;- <c:out value="${svcName}"></c:out></p>
+                                                </c:forEach>
+
+                                            </td>
+                                            <td>
+                                                <p></p>
+                                            </td>
+                                            <td>
+                                                <p> </p>
+                                            </td>
+                                            <td>
+                                                <p >
+                                                    <c:out value="${simpleSpecifiedFeeExt.amountStr}"></c:out>
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    </c:if>
+
+                                          <!--complexSpecifiedFeeExt -->
+                                    <c:if test="${complexSpecifiedFeeExt.svcNames.size()>0 }">
+                                        <tr>
+                                            <td class="breakdown">
+                                                <p>&nbsp;&nbsp;Complex Specified Services (${complexSpecifiedFeeExt.svcNames.size()})</p>
+                                                <c:forEach var="svcName" items="${complexSpecifiedFeeExt.svcNames}">
+                                                    <p>&nbsp;&nbsp;- <c:out value="${svcName}"></c:out></p>
+                                                </c:forEach>
+                                            </td>
+                                            <td>
+                                                <p></p>
+                                            </td>
+                                            <td>
+                                                <p> </p>
+                                            </td>
+                                            <td>
+                                                <p >
+                                                    <c:out value="${complexSpecifiedFeeExt.amountStr}"></c:out>
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    </c:if>
+
+                                    </c:forEach>
                                     </tbody>
                                 </table>
                                 <h2>Payment Method</h2>

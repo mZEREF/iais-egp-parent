@@ -421,6 +421,10 @@
         $('.new-officer-form > table> tbody> tr:nth-child(5) > td >div.control > div.form-group > div:nth-child(2)').removeClass('col-sm-3');
         $('.new-officer-form > table> tbody> tr:nth-child(5) > td >div.control > div.form-group > div:nth-child(2)').addClass('col-sm-4');
         //get from cpl_custom_form_script
+
+        //init font-size
+        $('.cgo-header').css('font-size',"18px");
+
         $('select.assignSel').change(function () {
             $parentEle = $(this).closest('td.first');
             if ($(this).val() == "newOfficer") {
@@ -503,6 +507,9 @@
                         $parentEle.find('> .new-officer-form').addClass('hidden');
                     }
                 });
+                //init font-size
+                $('.cgo-header').css('font-size',"18px");
+
                 <!--change psn item -->
                 changePsnItem();
             },

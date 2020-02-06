@@ -946,7 +946,7 @@ public class NewApplicationDelegator {
         appSubmissionDto.setAppGrpNo(appGroupNo);
         //get Amount
         FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto);
-        appSubmissionDto.setAmountDetail(feeDto.getFeeDetail().toString());
+        appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
         Double amount = feeDto.getTotal();
         log.debug(StringUtil.changeForLog("the amount is -->:") + amount);
         appSubmissionDto.setAmount(amount);
