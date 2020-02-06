@@ -113,17 +113,26 @@ public class InsReportDelegator {
         AppPremisesRecommendationDto appPremisesRecommendationDto1 = appPremisesRecommendationDtoList.get(0);
         AppPremisesRecommendationDto appPremisesRecommendationDto2 = appPremisesRecommendationDtoList.get(1);
         AppPremisesRecommendationDto appPremisesRecommendationDto3 = appPremisesRecommendationDtoList.get(2);
-
+        AppPremisesRecommendationDto appPremisesRecommendationDto4 = appPremisesRecommendationDtoList.get(3);
+        AppPremisesRecommendationDto appPremisesRecommendationDto5 = appPremisesRecommendationDtoList.get(4);
 
         insRepService.saveRecommendation(appPremisesRecommendationDto1);
         Date recomInDate = appPremisesRecommendationDto2.getRecomInDate();
         if(recomInDate!=null){
             insRepService.saveRecommendation(appPremisesRecommendationDto2);
         }
-        String engageEnforcementRemarks = appPremisesRecommendationDto3.getEngageEnforcementRemarks();
-        if(!StringUtil.isEmpty(engageEnforcementRemarks)){
-            appPremisesRecommendationDto3.setRemarks(engageEnforcementRemarks);
+        String remarks = appPremisesRecommendationDto3.getRemarks();
+        if(!StringUtil.isEmpty(remarks)){
+            appPremisesRecommendationDto3.setRemarks(remarks);
             insRepService.saveRecommendation(appPremisesRecommendationDto3);
+        }
+        String riskLevel = appPremisesRecommendationDto4.getRecomDecision();
+        if(!StringUtil.isEmpty(riskLevel)){
+            insRepService.saveRecommendation(appPremisesRecommendationDto4);
+        }
+        String followRemarks = appPremisesRecommendationDto5.getRemarks();
+        if(!StringUtil.isEmpty(followRemarks)){
+            insRepService.saveRecommendation(appPremisesRecommendationDto5);
         }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         insRepService.routingTaskToAo1(taskDto, applicationDto, appPremisesCorrelationId);
@@ -161,7 +170,9 @@ public class InsReportDelegator {
 
     private List<AppPremisesRecommendationDto> prepareForSave(BaseProcessClass bpc, String appPremisesCorrelationId) {
         List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = new ArrayList<>();
+        String riskLevel = ParamUtil.getRequestString(bpc.request, "riskLevel");
         String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
+        String followUpAction = ParamUtil.getRequestString(bpc.request, "followUpAction");
         String periods = ParamUtil.getRequestString(bpc.request, "periods");
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
@@ -191,16 +202,29 @@ public class InsReportDelegator {
         }
         AppPremisesRecommendationDto tcuAppPremisesRecommendationDto = new AppPremisesRecommendationDto();
         tcuAppPremisesRecommendationDto.setRecomInDate(tcuDate);
-        tcuAppPremisesRecommendationDto.setRecomType("tcuNeeded");
+        tcuAppPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_TCU_NEEDED);
         tcuAppPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
 
         AppPremisesRecommendationDto engageEnforcementAppPremisesRecommendationDto = new AppPremisesRecommendationDto();
-        engageEnforcementAppPremisesRecommendationDto.setRecomType("engage");
-        engageEnforcementAppPremisesRecommendationDto.setEngageEnforcementRemarks(enforcementRemarks);
+        engageEnforcementAppPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE);
+        engageEnforcementAppPremisesRecommendationDto.setRemarks(enforcementRemarks);
         engageEnforcementAppPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+
+        AppPremisesRecommendationDto riskLevelAppPremisesRecommendationDto = new AppPremisesRecommendationDto();
+        riskLevelAppPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL);
+        riskLevelAppPremisesRecommendationDto.setRecomDecision(riskLevel);
+        riskLevelAppPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+
+        AppPremisesRecommendationDto followAppPremisesRecommendationDto = new AppPremisesRecommendationDto();
+        followAppPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION);
+        followAppPremisesRecommendationDto.setRemarks(followUpAction);
+        followAppPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+
         appPremisesRecommendationDtos.add(appPremisesRecommendationDto);
         appPremisesRecommendationDtos.add(tcuAppPremisesRecommendationDto);
         appPremisesRecommendationDtos.add(engageEnforcementAppPremisesRecommendationDto);
+        appPremisesRecommendationDtos.add(riskLevelAppPremisesRecommendationDto);
+        appPremisesRecommendationDtos.add(followAppPremisesRecommendationDto);
         return appPremisesRecommendationDtos;
     }
 

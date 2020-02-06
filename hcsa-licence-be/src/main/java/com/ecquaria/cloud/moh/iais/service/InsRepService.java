@@ -24,6 +24,8 @@ public interface InsRepService {
     void saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     void updateTcuRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     void updateengageRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
+    void updateRiskRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
+    void updateFollowRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     void updateRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     List<SelectOption> getRiskOption(ApplicationViewDto applicationViewDto);
     ApplicationViewDto getApplicationViewDto (String appNo);

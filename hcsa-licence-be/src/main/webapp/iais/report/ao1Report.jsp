@@ -296,7 +296,9 @@
                                 <p>Risk Level:</p>
                             </td>
                             <td class="col-xs-4">
-                                <iais:select name="riskLevel" options="riskLevelOptions" firstOption="Please select" value="${preapreRecommendationDto.riskLevel}"/>
+
+                                <c:if test="${preapreRecommendationDto.riskLevel == null}"> <iais:select name="riskLevel" options="riskLevelOptions"  firstOption="Please select" value="${riskLevel}"/></c:if>
+                                <c:if test="${preapreRecommendationDto.riskLevel != null}"> <iais:select name="riskLevel" options="riskLevelOptions"  firstOption="Please select" value="${preapreRecommendationDto.riskLevel}"/></c:if>
                                 <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
@@ -476,7 +478,10 @@
                                 <p>Follow up Action:</p>
                             </td>
                             <td class="col-xs-4">
-                                <p><textarea name="followUpAction" cols="90" rows="6" title="content">${preapreRecommendationDto.followUpAction}</textarea></p>
+                                <p><textarea name="followUpAction" cols="90" rows="6" title="content">
+                                    <c:if test="${preapreRecommendationDto.followUpAction == null}">${followRemarks}</c:if>
+                                <c:if test="${preapreRecommendationDto.followUpAction != null}">${preapreRecommendationDto.followUpAction}</c:if>
+                                    </textarea></p>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>

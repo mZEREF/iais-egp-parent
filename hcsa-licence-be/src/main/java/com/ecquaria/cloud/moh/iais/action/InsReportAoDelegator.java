@@ -100,8 +100,10 @@ public class InsReportAoDelegator {
         String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
         Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
         String option  = recomInNumber + chronoUnit;
-        AppPremisesRecommendationDto tcuRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, "tcuNeeded").getEntity();
-        AppPremisesRecommendationDto engageRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, "engage").getEntity();
+        AppPremisesRecommendationDto tcuRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_TCU_NEEDED).getEntity();
+        AppPremisesRecommendationDto engageRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
+        AppPremisesRecommendationDto riskRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity();
+        AppPremisesRecommendationDto followRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
         if(tcuRecommendationDto!=null){
             Date recomInDate = tcuRecommendationDto.getRecomInDate();
             String tcuNeed = "on";
@@ -114,11 +116,16 @@ public class InsReportAoDelegator {
             ParamUtil.setSessionAttr(bpc.request, "remarks", remarks);
             ParamUtil.setSessionAttr(bpc.request, "engage", engage);
         }
+        if(riskRecommendationDto!=null){
+            String riskLevel = riskRecommendationDto.getRecomDecision();
+            ParamUtil.setSessionAttr(bpc.request, "riskLevel", riskLevel);
+        }
+        if(followRecommendationDto!=null){
+            String followRemarks = followRecommendationDto.getRemarks();
+            ParamUtil.setSessionAttr(bpc.request, "followRemarks", followRemarks);
+        }
+
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
-//        SelectOption so1 = new SelectOption(APPROVAL,APPROVAL);
-//        SelectOption so2 = new SelectOption(REJECT,REJECT);
-//        riskOption.add(so1);
-//        riskOption.add(so2);
         List<SelectOption> recommendationOption = getRecommendationOption();
 
         List<SelectOption> chronoOption = getChronoOption();
@@ -180,25 +187,37 @@ public class InsReportAoDelegator {
         insRepService.updateRecommendation(recommendationDto);
         String tcuNeeded = preapreRecommendationDto.getTcuNeeded();
         String engageEnforcement = preapreRecommendationDto.getEngageEnforcement();
+        String riskLevel = preapreRecommendationDto.getRiskLevel();
+        String followUpAction = preapreRecommendationDto.getFollowUpAction();
         if(!StringUtil.isEmpty(tcuNeeded)){
             AppPremisesRecommendationDto recommendationDtoTcu = new AppPremisesRecommendationDto();
             recommendationDtoTcu.setAppPremCorreId(appPremisesCorrelationId);
             recommendationDtoTcu.setRecomInDate(preapreRecommendationDto.getTcuDate());
-            recommendationDtoTcu.setRecomDecision("tcuNeeded");
-            insRepService.updateTcuRecommendation(recommendationDto);
+            insRepService.updateTcuRecommendation(recommendationDtoTcu);
         }
         if(!StringUtil.isEmpty(engageEnforcement)){
             AppPremisesRecommendationDto recommendationDtoEngage = new AppPremisesRecommendationDto();
             recommendationDtoEngage.setAppPremCorreId(appPremisesCorrelationId);
             recommendationDtoEngage.setRemarks(preapreRecommendationDto.getEngageEnforcementRemarks());
-            recommendationDtoEngage.setRecomDecision("engage");
-            insRepService.updateengageRecommendation(recommendationDto);
+            insRepService.updateengageRecommendation(recommendationDtoEngage);
         }
-        if(REJECT.equals(recommendationDto.getRecomDecision())){
-            insRepService.routBackTaskToInspector(taskDto,applicationDto,appPremisesCorrelationId);
-            ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
-            return;
+        if(!StringUtil.isEmpty(riskLevel)){
+            AppPremisesRecommendationDto recommendationDtoRisk = new AppPremisesRecommendationDto();
+            recommendationDtoRisk.setAppPremCorreId(appPremisesCorrelationId);
+            recommendationDtoRisk.setRecomDecision(riskLevel);
+            insRepService.updateRiskRecommendation(recommendationDtoRisk);
         }
+        if(!StringUtil.isEmpty(followUpAction)){
+            AppPremisesRecommendationDto recommendationDtoFollow = new AppPremisesRecommendationDto();
+            recommendationDtoFollow.setAppPremCorreId(appPremisesCorrelationId);
+            recommendationDtoFollow.setRemarks(followUpAction);
+            insRepService.updateFollowRecommendation(recommendationDtoFollow);
+        }
+//        if(REJECT.equals(recommendationDto.getRecomDecision())){
+//            insRepService.routBackTaskToInspector(taskDto,applicationDto,appPremisesCorrelationId);
+//            ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
+//            return;
+//        }
         insRepService.routingTaskToAo2(taskDto,applicationDto,appPremisesCorrelationId);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
         ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);

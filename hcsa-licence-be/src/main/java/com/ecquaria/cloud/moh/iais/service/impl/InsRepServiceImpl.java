@@ -188,14 +188,27 @@ public class InsRepServiceImpl implements InsRepService {
             inspectionReportDto.setNcRectification(null);
         }
         AppPremisesRecommendationDto NcRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_TCU).getEntity();
-        Date inspectionDate = null;
         if(NcRecommendationDto==null){
             inspectionReportDto.setMarkedForAudit(false);
         }else {
             inspectionReportDto.setMarkedForAudit(true);
-            inspectionDate = NcRecommendationDto.getRecomInDate();
         }
 
+        Date inspectionDate = null;
+        Date inspectionStartTime = null;
+        Date inspectionEndTime = null;
+        AppPremisesRecommendationDto appPreRecommentdationDtoStart = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSPCTION_START_TIME).getEntity();
+        AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+        AppPremisesRecommendationDto appPreRecommentdationDtoEnd = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME).getEntity();
+        if(appPreRecommentdationDtoDate!=null){
+            inspectionDate = appPreRecommentdationDtoDate.getRecomInDate();
+        }
+        if(appPreRecommentdationDtoStart!=null){
+            inspectionStartTime = appPreRecommentdationDtoStart.getRecomInDate();
+        }
+        if(appPreRecommentdationDtoEnd!=null){
+            inspectionEndTime = appPreRecommentdationDtoEnd.getRecomInDate();
+        }
         String bestPractice = null;
         String remarks = null;
         if (NcRecommendationDto != null) {
@@ -207,7 +220,6 @@ public class InsRepServiceImpl implements InsRepService {
         if(adhocCheckListDto!=null){
             inspectionReportDto.setOtherCheckList(adhocCheckListDto);
         }
-
 
 
         inspectionReportDto.setServiceName(svcName);
@@ -244,8 +256,9 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public void updateTcuRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
         String appPremCorreId = appPremisesRecommendationDto.getAppPremCorreId();
+        Date tcuDate = appPremisesRecommendationDto.getRecomInDate();
         Integer version = 1;
-        AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, "tcuNeeded").getEntity();
+        AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, InspectionConstants.RECOM_TYPE_INSPCTION_TCU_NEEDED).getEntity();
         if (oldAppPremisesRecommendationDto == null) {
             appPremisesRecommendationDto.setVersion(version);
         } else {
@@ -255,7 +268,7 @@ public class InsRepServiceImpl implements InsRepService {
         version = oldAppPremisesRecommendationDto.getVersion() + 1;
         oldAppPremisesRecommendationDto.setVersion(version);
         oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        oldAppPremisesRecommendationDto.setRecomInDate(appPremisesRecommendationDto.getTcuDate());
+        oldAppPremisesRecommendationDto.setRecomInDate(tcuDate);
         oldAppPremisesRecommendationDto.setId(null);
         insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
     }
@@ -264,7 +277,45 @@ public class InsRepServiceImpl implements InsRepService {
     public void updateengageRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
         String appPremCorreId = appPremisesRecommendationDto.getAppPremCorreId();
         Integer version = 1;
-        AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, "engage").getEntity();
+        AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
+        if (oldAppPremisesRecommendationDto == null) {
+            appPremisesRecommendationDto.setVersion(version);
+        } else {
+            oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
+        }
+        version = oldAppPremisesRecommendationDto.getVersion() + 1;
+        oldAppPremisesRecommendationDto.setVersion(version);
+        oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        oldAppPremisesRecommendationDto.setRemarks(appPremisesRecommendationDto.getRemarks());
+        oldAppPremisesRecommendationDto.setId(null);
+        insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
+    }
+
+    @Override
+    public void updateRiskRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
+        String appPremCorreId = appPremisesRecommendationDto.getAppPremCorreId();
+        Integer version = 1;
+        AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity();
+        if (oldAppPremisesRecommendationDto == null) {
+            appPremisesRecommendationDto.setVersion(version);
+        } else {
+            oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
+        }
+        version = oldAppPremisesRecommendationDto.getVersion() + 1;
+        oldAppPremisesRecommendationDto.setVersion(version);
+        oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        oldAppPremisesRecommendationDto.setRecomDecision(appPremisesRecommendationDto.getRecomDecision());
+        oldAppPremisesRecommendationDto.setId(null);
+        insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
+    }
+
+    @Override
+    public void updateFollowRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
+        String appPremCorreId = appPremisesRecommendationDto.getAppPremCorreId();
+        Integer version = 1;
+        AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
         if (oldAppPremisesRecommendationDto == null) {
             appPremisesRecommendationDto.setVersion(version);
         } else {
