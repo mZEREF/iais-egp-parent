@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppointmentBeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.BelicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
@@ -76,6 +77,9 @@ public class BackendAjaxController {
 
     @Autowired
     private OrganizationMainClient organizationMainClient;
+
+    @Autowired
+    private AppointmentBeMainClient appointmentBeMainClient;
 
     @RequestMapping(value = "appGroup.do", method = RequestMethod.POST)
     public @ResponseBody
@@ -164,9 +168,10 @@ public class BackendAjaxController {
                                 completeDate = new Date();
                             }
                             workAndNonWorkDays = getWorkAndNonWorkDays(workAndNonWorkDays, startDate, completeDate);
-                            //todo days
-                            Map<Integer, Integer> workAndNonMapS = MiscUtil.getActualWorkingDays(startDate, completeDate, taskDto.getWkGrpId());
-                            for(Map.Entry<Integer, Integer> map:workAndNonMapS.entrySet()){
+                        }
+                        Map<Integer, Integer> workAndNonMapS = appointmentBeMainClient.getWorkAndNonMap(workAndNonWorkDays).getEntity();
+                        if(workAndNonMapS != null && workAndNonMapS.size() > 0) {
+                            for (Map.Entry<Integer, Integer> map : workAndNonMapS.entrySet()) {
                                 allWorkDays = allWorkDays + map.getKey();
                                 allHolidays = allHolidays + map.getValue();
                             }
@@ -235,8 +240,11 @@ public class BackendAjaxController {
                 } else {
                     completeDate = td.getSlaDateCompleted();
                 }
-                Map<Integer, Integer> workAndNonMapS = MiscUtil.getActualWorkingDays(startDate, completeDate, td.getWkGrpId());
-                for(Map.Entry<Integer, Integer> map:workAndNonMapS.entrySet()){
+                workAndNonWorkDays = getWorkAndNonWorkDays(workAndNonWorkDays, startDate, completeDate);
+            }
+            Map<Integer, Integer> workAndNonMapS = appointmentBeMainClient.getWorkAndNonMap(workAndNonWorkDays).getEntity();
+            if(workAndNonMapS != null && workAndNonMapS.size() > 0) {
+                for (Map.Entry<Integer, Integer> map : workAndNonMapS.entrySet()) {
                     allWorkDays = allWorkDays + map.getKey();
                     allHolidays = allHolidays + map.getValue();
                 }
@@ -295,9 +303,10 @@ public class BackendAjaxController {
                 completeDate = td.getSlaDateCompleted();
             }
             workAndNonWorkDays = getWorkAndNonWorkDays(workAndNonWorkDays, startDate, completeDate);
-            //todo days
-            Map<Integer, Integer> workAndNonMapS = MiscUtil.getActualWorkingDays(startDate, completeDate, td.getWkGrpId());
-            for(Map.Entry<Integer, Integer> map:workAndNonMapS.entrySet()){
+        }
+        Map<Integer, Integer> workAndNonMapS = appointmentBeMainClient.getWorkAndNonMap(workAndNonWorkDays).getEntity();
+        if(workAndNonMapS != null && workAndNonMapS.size() > 0) {
+            for (Map.Entry<Integer, Integer> map : workAndNonMapS.entrySet()) {
                 allWorkDays = allWorkDays + map.getKey();
                 allHolidays = allHolidays + map.getValue();
             }
