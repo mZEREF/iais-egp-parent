@@ -323,7 +323,7 @@ public class InterInboxDelegator {
         StringBuilder url = new StringBuilder();
         url.append("https://").append(bpc.request.getServerName())
                 .append("/hcsa-licence-web/eservice/INTERNET/MohRequestForChange")
-                .append("?licenceId=").append(licId);
+                .append("?licenceId=").append(licIdValue);
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
     }
