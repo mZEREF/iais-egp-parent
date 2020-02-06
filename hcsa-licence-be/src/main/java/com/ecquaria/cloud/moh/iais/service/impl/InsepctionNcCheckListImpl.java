@@ -268,7 +268,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         String startTime = null;
         if(serListDto!=null){
             startTime = serListDto.getStartTime();
-            if(!StringUtil.isEmpty(startTime)){
+            if(!StringUtil.isEmpty(serListDto.getStartHour())&&!StringUtil.isEmpty(serListDto.getStartMin())){
                 AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremId,InspectionConstants.RECOM_TYPE_INSPCTION_START_TIME).getEntity();
                 if(appPreRecommentdationDto!=null){
                     appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
@@ -291,7 +291,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     public void saveEndTime(InspectionFDtosDto serListDto, String appPremId) {
         if(serListDto!=null){
             String endTime = serListDto.getEndTime();
-            if(!StringUtil.isEmpty(endTime)){
+            if(!StringUtil.isEmpty(serListDto.getEndHour())&&!StringUtil.isEmpty(serListDto.getEndMin())){
                 AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremId,InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME).getEntity();
                 if(appPreRecommentdationDto!=null){
                     appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
