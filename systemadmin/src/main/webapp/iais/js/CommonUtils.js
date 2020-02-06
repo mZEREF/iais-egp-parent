@@ -21,8 +21,12 @@ var Utils = {
 
 $(".btn-login-search").click(function () {
     var val = $(".btn-login-submit").value;
-    console.log("==>>>>")
     SOP.Crud.cfxSubmit("mainForm", 'doQuery', val);
+})
+
+$(".btn-login-export").click(function () {
+    var val = $(".btn-login-export").value;
+    SOP.Crud.cfxSubmit("mainForm", 'doExport', val);
 })
 
 function jumpToPagechangePage(){
