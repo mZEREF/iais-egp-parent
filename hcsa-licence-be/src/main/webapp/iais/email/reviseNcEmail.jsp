@@ -257,7 +257,7 @@
                                     <tr height="1">
                                         <td class="col-xs-2" >
                                             <p >
-                                                Processing Decision:
+                                                Processing Decision:<b style="color:#ff0000;">*</b>
                                             </p>
                                         </td>
                                         <td>
@@ -346,7 +346,7 @@
 
     function doSend(){
         if($('#decision-revise-email option:selected').val()=="Select"){
-            alert("Please choose to deal with the decision");
+            ;
         }
         else {
             SOP.Crud.cfxSubmit("mainForm", "send");
