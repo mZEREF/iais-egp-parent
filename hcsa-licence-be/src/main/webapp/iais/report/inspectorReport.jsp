@@ -298,7 +298,8 @@
                                 <p>Risk Level:</p>
                             </td>
                             <td class="col-xs-4">
-                                <iais:select name="riskLevel" options="riskLevelOptions" firstOption="Please select" value="${appPremisesRecommendationDto.riskLevel}"/>
+                                <c:if test="${appPremisesRecommendationDto.riskLevel == null}"> <iais:select name="riskLevel" options="riskLevelOptions"  firstOption="Please select" value="${riskLevel}"/></c:if>
+                                <c:if test="${appPremisesRecommendationDto.riskLevel != null}"> <iais:select name="riskLevel" options="riskLevelOptions"  firstOption="Please select" value="${appPremisesRecommendationDto.riskLevel}"/></c:if>
                                 <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
@@ -360,7 +361,10 @@
                         </td>
                         <div>
                             <td class="col-xs-4">
-                                <p><textarea name="remarks" cols="90" rows="6"  title="content"  >${appPremisesRecommendationDto.remarks}</textarea></p>
+                                <p><textarea name="remarks" cols="90" rows="6"  title="content"  >
+                                    <c:if test="${appPremisesRecommendationDto.remarks ==null}">${reportRemarks}</c:if>
+                                <c:if test="${appPremisesRecommendationDto.remarks !=null}">${appPremisesRecommendationDto.remarks}</c:if>
+                                    </textarea></p>
                                 <span id="error_remarks" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                         </div>
@@ -397,6 +401,7 @@
                         <td class="col-xs-4">
                             <input type="checkbox" id="tcuNeeded" name="tcuNeed" onchange="javascirpt:changeTcu();"
                                    <c:if test="${appPremisesRecommendationDto.tcuNeeded =='on'}">checked</c:if>
+                                   <c:if test="${tcuNeed =='on'}">checked</c:if>
                             >
                         </td>
                         <td class="col-xs-4"></td>
@@ -406,7 +411,12 @@
                             <p>TCU Date:</p>
                         </td>
                         <td class="col-xs-4">
-                            <iais:datePicker id="tcuDate" name="tcuDate" dateVal="${appPremisesRecommendationDto.tcuDate}"/>
+                            <c:if test="${appPremisesRecommendationDto.tcuDate == null}">
+                                <iais:datePicker id="tcuDate" name="tcuDate" dateVal="${recomInDate}"/>
+                            </c:if>
+                            <c:if test="${appPremisesRecommendationDto.tcuDate != null}">
+                                <iais:datePicker id="tcuDate" name="tcuDate" dateVal="${appPremisesRecommendationDto.tcuDate}"/>
+                            </c:if>
                             <span id="error_tcuDate" name="iaisErrorMsg" class="error-msg"></span>
                         </td>
                         <td class="col-xs-4"></td>
@@ -466,7 +476,10 @@
                             <p>Follow up Action:</p>
                         </td>
                         <td class="col-xs-4">
-                            <p><textarea name="followUpAction" cols="90" rows="6"  title="content">${appPremisesRecommendationDto.followUpAction}</textarea></p>
+                            <p><textarea name="followUpAction" cols="90" rows="6"  title="content">
+                            <c:if test="${appPremisesRecommendationDto.followUpAction == null}">${followRemarks}</c:if>
+                                <c:if test="${appPremisesRecommendationDto.followUpAction != null}">${appPremisesRecommendationDto.followUpAction}</c:if>
+                            </textarea></p>
                         </td>
                         <td class="col-xs-4"></td>
                     </tr>
@@ -478,6 +491,8 @@
                             <input type="checkbox" id="enforcement" name="engageEnforcement"
                                    onchange="javascirpt:changeEngage();"
                                    <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if>
+                                   <c:if test="${engage =='on'}">checked</c:if>
+
                             >
                         </td>
                         <td class="col-xs-4"></td>
@@ -487,7 +502,10 @@
                             <p>Enforcement Remarks</p>
                         </td>
                         <td class="col-xs-4">
-                            <p><textarea name="enforcementRemarks" cols="90" rows="6"  title="content" MAXLENGTH="4000" >${appPremisesRecommendationDto.engageEnforcementRemarks}</textarea></p>
+                            <p><textarea name="enforcementRemarks" cols="90" rows="6"  title="content" MAXLENGTH="4000" >
+                                <c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks ==null}">${remarks}</c:if>
+                                <c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks !=null}">${appPremisesRecommendationDto.engageEnforcementRemarks}</c:if>
+                                </textarea></p>
                             <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
                         </td>
                         <td class="col-xs-4"></td>

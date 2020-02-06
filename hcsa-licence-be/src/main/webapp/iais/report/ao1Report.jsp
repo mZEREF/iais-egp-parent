@@ -296,7 +296,6 @@
                                 <p>Risk Level:</p>
                             </td>
                             <td class="col-xs-4">
-
                                 <c:if test="${preapreRecommendationDto.riskLevel == null}"> <iais:select name="riskLevel" options="riskLevelOptions"  firstOption="Please select" value="${riskLevel}"/></c:if>
                                 <c:if test="${preapreRecommendationDto.riskLevel != null}"> <iais:select name="riskLevel" options="riskLevelOptions"  firstOption="Please select" value="${preapreRecommendationDto.riskLevel}"/></c:if>
                                 <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
@@ -429,8 +428,7 @@
                                 <p>Recommendation:</p>
                             </td>
                             <td class="col-xs-4">
-                                <iais:select name="recommendation" id="aorecommendation" options="recommendationOption" firstOption="Please select"
-                                             value="${preapreRecommendationDto.recommendation}"
+                                <iais:select name="recommendation" id="aorecommendation" options="recommendationOption" firstOption="Please select" value="${preapreRecommendationDto.recommendation}"
                                              onchange="javascirpt:changeRecommendation(this.value);"/>
                             </td>
                             <td class="col-xs-4"></td>
