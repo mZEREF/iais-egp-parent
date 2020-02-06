@@ -19,91 +19,94 @@
 
                         <%@ include file="./navTabs.jsp" %>
                         <div class="tab-content">
-                            <div class="tab-pane" id="tabInfo" role="tabpanel">
+                          c<div class="tab-pane" id="tabInfo" role="tabpanel">
 
-                                <div class="panel panel-default">
-                                    <!-- Default panel contents -->
-                                    <div class="panel-heading"><b>Submission Details</b></div>
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div class="table-gp">
-                                                <table class="table table-bordered">
-                                                    <tbody>
-                                                    <tr>
-                                                        <td class="col-xs-6" align="right">Application No. (Overall)</td>
-                                                        <td class="col-xs-6">${applicationViewDto.applicationDto.applicationNo}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Application No.</td>
-                                                        <td>${applicationViewDto.applicationNoOverAll}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Application Type</td>
-                                                        <td>${applicationViewDto.applicationDto.applicationType}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Service Type</td>
-                                                        <td>${applicationViewDto.applicationDto.serviceId}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Submission Date</td>
-                                                        <td>${applicationViewDto.submissionDate}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Current Status</td>
-                                                        <td>${applicationViewDto.currentStatus}</td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div align="center">
-                                    <button type="button" class="btn btn-primary">
-                                        View Application
-                                    </button>
-                                </div>
-                                <div>&nbsp</div>
-                                <div class="panel panel-default">
-                                    <div class="panel-heading"><b>Applicant Details</b></div>
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div class="table-gp">
-                                                <table class="table table-bordered">
-                                                    <tbody>
-                                                    <tr>
-                                                        <td class="col-xs-6" align="right">HCI Code</td>
-                                                        <td class="col-xs-6">-</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">HCI Name</td>
-                                                        <td>${applicationViewDto.hciName}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">HCI ADDRESS</td>
-                                                        <td>${applicationViewDto.hciAddress}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Telephone</td>
-                                                        <td>${applicationViewDto.telephone}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Fax</td>
-                                                        <td>-</td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                            <div class="panel panel-default">
+                                <!-- Default panel contents -->
+                                <div class="panel-heading"><strong>Submission Details</strong></div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="table-gp">
+                                            <table class="table table-bordered">
+                                                <tbody>
+                                                <tr>
+                                                    <td class="col-xs-6" align="right">Application No. (Overall)
+                                                    </td>
+                                                    <td class="col-xs-6">${applicationViewDto.applicationNoOverAll}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="right">Application No.</td>
+                                                    <td>${applicationViewDto.applicationDto.applicationNo}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="right">Application Type</td>
+                                                    <td>${applicationViewDto.applicationType}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="right">Clinical Laboratory</td>
+                                                    <td>${applicationViewDto.serviceType}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="right">Submission Date</td>
+                                                    <td>${applicationViewDto.submissionDate}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="right">Current Status</td>
+                                                    <td>${applicationViewDto.currentStatus}</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <div align="center">
+                                <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?appId=${applicationViewDto.applicationDto.id}" target="_blank">
+                                    <button type="button" class="btn btn-primary">
+                                        View Application
+                                    </button>
+                                </a>
+                            </div>
+                            <div>&nbsp</div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading"><strong>Applicant Details</strong></div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="table-gp">
+                                            <table class="table table-bordered">
+                                                <tbody>
+                                                <tr>
+                                                    <td class="col-xs-6" align="right">HCI Code</td>
+                                                    <td class="col-xs-6">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="right">HCI Name</td>
+                                                    <td>${applicationViewDto.hciName}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="right">HCI Address</td>
+                                                    <td>${applicationViewDto.hciAddress}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="right">Telephone</td>
+                                                    <td>${applicationViewDto.telephone}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="right">Fax</td>
+                                                    <td>-</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                <div class="alert alert-info" role="alert"><b>
+                                <div class="alert alert-info" role="alert"><strong>
                                     <h4>Supporting Document</h4>
-                                </b></div>
+                                </strong></div>
                                 <div id="u8522_text" class="text ">
                                     <p><span>These are documents uploaded by the applicant or an officer on behalf of the applicant. Listed
 												documents are those defined for this digital service only.</span></p>
@@ -123,13 +126,14 @@
                                                 </thead>
 
                                                 <tbody>
-                                                <c:forEach items="${applicationViewDto.appSupDocDtoList}" var="appSupDocDto">
+                                                <c:forEach items="${applicationViewDto.appSupDocDtoList}"
+                                                           var="appSupDocDto">
                                                     <tr>
                                                         <td>
-                                                            <p><c:out value="${appSupDocDto.document}"></c:out></p>
+                                                            <p><c:out value="${appSupDocDto.file}"></c:out></p>
                                                         </td>
                                                         <td>
-                                                            <p><a href="#"><c:out value="${appSupDocDto.file}"></c:out></a></p>
+                                                            <p><a href="#"><c:out value="${appSupDocDto.document}"></c:out></a></p>
                                                         </td>
                                                         <td>
                                                             <p><c:out value="${appSupDocDto.size}"></c:out></p>
@@ -148,8 +152,9 @@
                                             <div class="alert alert-info" role="alert"><strong>
                                                 <h4>Internal Document</h4>
                                             </strong></div>
-                                            <div  class="text ">
-                                                <p><span>These are documents uploaded by an agency officer to support back office processing.</span></p>
+                                            <div class="text ">
+                                                <p><span>These are documents uploaded by an agency officer to support back office processing.</span>
+                                                </p>
                                             </div>
                                             <table class="table">
                                                 <thead>
@@ -164,7 +169,7 @@
                                                 </thead>
                                                 <tbody>
                                                 <tr>
-                                                    <td colspan="6" align="center">
+                                                    <td colspan="5" align="center">
                                                         <p>No record found.</p>
                                                     </td>
                                                 </tr>

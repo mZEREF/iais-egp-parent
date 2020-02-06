@@ -64,14 +64,4 @@
         mainForm.submit();
     }
 
-
-    function doPreview(){
-        SOP.Crud.cfxSubmit("mainForm", "preview");
-    }
-
-    function doSend(){
-        SOP.Crud.cfxSubmit("mainForm", "send");
-
-    }
-
 </script>
