@@ -126,6 +126,7 @@ public class BackendAjaxController {
         HcsaSvcKpiDto hcsaSvcKpiDto = hcsaConfigClient.searchKpiResult(hcsaServiceDto.getSvcCode(), applicationDto.getApplicationType()).getEntity();
         int days = 0;
         if(hcsaSvcKpiDto != null){
+            List<Date> workAndNonWorkDays = new ArrayList<>();
             if(taskDto.getTaskKey().equals(HcsaConsts.ROUTING_STAGE_INS)) {
                 String subStage = getSubStageByInspectionStatus(inspectionAppInGroupQueryDto);
                 Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
@@ -162,6 +163,8 @@ public class BackendAjaxController {
                             } else {
                                 completeDate = new Date();
                             }
+                            workAndNonWorkDays = getWorkAndNonWorkDays(workAndNonWorkDays, startDate, completeDate);
+                            //todo days
                             Map<Integer, Integer> workAndNonMapS = MiscUtil.getActualWorkingDays(startDate, completeDate, taskDto.getWkGrpId());
                             for(Map.Entry<Integer, Integer> map:workAndNonMapS.entrySet()){
                                 allWorkDays = allWorkDays + map.getKey();
@@ -190,6 +193,7 @@ public class BackendAjaxController {
 
     private Map<Integer, Integer> getWorkingDaysBySubStage(String subStage, TaskDto taskDto) {
         Map<Integer, Integer> workAndNonMap = new HashMap();
+        List<Date> workAndNonWorkDays = new ArrayList<>();
         List<String> processUrls = new ArrayList<>();
         if(StringUtil.isEmpty(subStage)){
             return null;
@@ -281,6 +285,7 @@ public class BackendAjaxController {
 
     private Map<Integer, Integer> getActualWorkingDays(List<TaskDto> taskDtoList, int allWorkDays, int allHolidays) {
         Map<Integer, Integer> workAndNonMap = new HashMap();
+        List<Date> workAndNonWorkDays = new ArrayList<>();
         for(TaskDto td : taskDtoList){
             Date startDate = td.getDateAssigned();
             Date completeDate;
@@ -289,6 +294,8 @@ public class BackendAjaxController {
             } else {
                 completeDate = td.getSlaDateCompleted();
             }
+            workAndNonWorkDays = getWorkAndNonWorkDays(workAndNonWorkDays, startDate, completeDate);
+            //todo days
             Map<Integer, Integer> workAndNonMapS = MiscUtil.getActualWorkingDays(startDate, completeDate, td.getWkGrpId());
             for(Map.Entry<Integer, Integer> map:workAndNonMapS.entrySet()){
                 allWorkDays = allWorkDays + map.getKey();
@@ -297,6 +304,16 @@ public class BackendAjaxController {
         }
         workAndNonMap.put(allWorkDays, allHolidays);
         return workAndNonMap;
+    }
+
+    private List<Date> getWorkAndNonWorkDays(List<Date> workAndNonWorkDays, Date startDate, Date completeDate) {
+        List<Date> days = MiscUtil.getDateInPeriodByRecurrence(startDate, completeDate);
+        if(!IaisCommonUtils.isEmpty(days)){
+            for(Date date : days){
+                workAndNonWorkDays.add(date);
+            }
+        }
+        return workAndNonWorkDays;
     }
 
     private String getSubStageByInspectionStatus(InspectionAppInGroupQueryDto inspectionAppInGroupQueryDto) {
