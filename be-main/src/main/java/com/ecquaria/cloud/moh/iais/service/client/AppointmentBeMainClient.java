@@ -38,12 +38,12 @@ public interface AppointmentBeMainClient {
     @PutMapping(value = "/iais-appointment/appt-nonavau", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApptNonAvailabilityDateDto> updateNonAvailability(@RequestBody ApptNonAvailabilityDateDto apptNonAvailabilityDateDto);
 
-    @GetMapping(value = "/appt-nonava/{id}")
+    @GetMapping(value = "/iais-appointment/appt-nonava/{id}")
     FeignResponseEntity<ApptNonAvailabilityDateDto> getNonAvailabilityById(@PathVariable("id") String id);
 
-    @GetMapping(value = "/appt-nonava-contain")
+    @GetMapping(value = "/iais-appointment/appt-nonava-contain")
     FeignResponseEntity<String> dateIsContainNonWork(@RequestBody ApptNonAvailabilityDateDto apptNonAvailabilityDateDto);
 
-    @GetMapping(value = "/appt-nonava/daylist")
+    @GetMapping(value = "/iais-appointment/appt-nonava/daylist")
     FeignResponseEntity<Map<Integer, Integer>> getWorkAndNonMap(@RequestBody List<Date> dates);
 }
