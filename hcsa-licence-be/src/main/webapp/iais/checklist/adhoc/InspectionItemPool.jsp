@@ -80,7 +80,7 @@
                   <div class="table-footnote">
                     <div class="row">
                       <div class="col-xs-6 col-md-4">
-                        <td class="row_no">${(status.index + 1) + (checklistItemSearch.pageNo - 1) * checklistItemSearch.pageSize}</td>
+
                       </div>
                       <div class="col-xs-6 col-md-8 text-right">
                         <div class="nav">

@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -83,6 +84,24 @@ public class InsReportDelegator {
         AppPremisesRecommendationDto engageRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
         AppPremisesRecommendationDto riskRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity();
         AppPremisesRecommendationDto followRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
+        String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
+        Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
+        String option  = recomInNumber + chronoUnit;
+        List<String> periods = insRepService.getPeriods(applicationViewDto);
+        if(periods!=null&&!periods.isEmpty()){
+            for(String period : periods){
+                if(option.equals(period)){
+                    ParamUtil.setSessionAttr(bpc.request, "option", option);
+                    break;
+                }else{
+                    ParamUtil.setSessionAttr(bpc.request, "option", "Others");
+                }
+            }
+        }
+
+        String recomDecision = appPremisesRecommendationDto.getRecomDecision();
+        String codeDesc = MasterCodeUtil.getCodeDesc(recomDecision);
+        ParamUtil.setSessionAttr(bpc.request, "recomDecision", codeDesc);
         if(appPremisesRecommendationDto!=null){
             String reportRemarks = appPremisesRecommendationDto.getRemarks();
             ParamUtil.setSessionAttr(bpc.request, "reportRemarks", reportRemarks);
@@ -108,6 +127,7 @@ public class InsReportDelegator {
             String followRemarks = followRecommendationDto.getRemarks();
             ParamUtil.setSessionAttr(bpc.request, "followRemarks", followRemarks);
         }
+
 
 
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);

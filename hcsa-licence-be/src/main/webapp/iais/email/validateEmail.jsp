@@ -19,7 +19,7 @@
 
                         <%@ include file="./navTabs.jsp" %>
                         <div class="tab-content">
-                          c<div class="tab-pane" id="tabInfo" role="tabpanel">
+                            <div class="tab-pane" id="tabInfo" role="tabpanel">
 
                             <div class="panel panel-default">
                                 <!-- Default panel contents -->

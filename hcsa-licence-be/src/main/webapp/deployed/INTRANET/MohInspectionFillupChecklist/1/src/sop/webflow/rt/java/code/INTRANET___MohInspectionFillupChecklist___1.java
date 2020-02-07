@@ -42,4 +42,14 @@ public class INTRANET___MohInspectionFillupChecklist___1 extends BaseProcessClas
 	// 		init->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "init", this);
 	}
+
+	public void preViewCheckList_OnStepProcess_0() throws Exception {
+	// 		preViewCheckList->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preViewCheckList", this);
+	}
+
+	public void doCheckList_OnStepProcess_0() throws Exception {
+	// 		doCheckList->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doCheckList", this);
+	}
 }

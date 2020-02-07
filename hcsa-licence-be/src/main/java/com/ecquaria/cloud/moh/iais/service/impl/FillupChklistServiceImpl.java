@@ -448,15 +448,35 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     }
 
     @Override
-    public void saveDraft(InspectionFDtosDto serListDto, InspectionFillCheckListDto comDto, AdCheckListShowDto adDto) {
-        CheckListDraftDto checkListDraftDto = new CheckListDraftDto();
+    public void saveDraft( InspectionFillCheckListDto comDto, AdCheckListShowDto adDto,InspectionFDtosDto serListDto,String refNo) {
+        //create new appckl
+        if(comDto!=null){
+            saveCommDraft(comDto,refNo);
+        }
+
+        if(serListDto!=null){
+            saveSerListDtoDraft(serListDto,refNo);
+        }
+
+        if(adDto!=null){
+            saveAdhocDraft(adDto,refNo);
+        }
+        /*List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklList(refNo).getEntity();
+        if(!IaisCommonUtils.isEmpty(chkList)){
+            for(AppPremisesPreInspectChklDto temp:chkList){
+                String id = temp.getId();
+                String conifgId = temp.getChkLstConfId();
+
+            }
+        }*/
+        /*CheckListDraftDto checkListDraftDto = new CheckListDraftDto();
         //checkListDraftDto.setGeneralDto(icDto);
         checkListDraftDto.setComDto(comDto);
         String insDraft =JsonUtil.parseToJson(checkListDraftDto);
         AppPremInsDraftDto insDraftDto = new AppPremInsDraftDto();
         insDraftDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         insDraftDto.setAnswer(insDraft);
-      /*  AppPremisesPreInspectChklDto appDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(icDto.getCheckList().get(0).getAppPreCorreId(),icDto.getCheckList().get(0).getConfigId()).getEntity();
+        AppPremisesPreInspectChklDto appDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(icDto.getCheckList().get(0).getAppPreCorreId(),icDto.getCheckList().get(0).getConfigId()).getEntity();
         if (appDto == null) {
             appDto = new AppPremisesPreInspectChklDto();
             appDto.setVersion(1+"");
@@ -466,7 +486,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             appDto.setChkLstConfId(icDto.getCheckList().get(0).getConfigId());
             appDto = fillUpCheckListGetAppClient.saveAppPreInspChkl(appDto).getEntity();
         }
-        insDraftDto.setPreInsChklId(appDto.getId());*/
+        insDraftDto.setPreInsChklId(appDto.getId());
         //Date date = newDate()
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
@@ -500,8 +520,112 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             }
         }
         fillUpCheckListGetAppClient.saveAppInsDraft(insDraftDto);
-        fillUpCheckListGetAppClient.saveAdhocDraft(adhocSaveList);
+        fillUpCheckListGetAppClient.saveAdhocDraft(adhocSaveList);*/
 
+    }
+
+
+
+    private void saveAdhocDraft(AdCheckListShowDto adDto, String refNo) {
+        if(adhocFillUpVad(adDto)) {
+            List<AdhocNcCheckItemDto> adhocItemList = adDto.getAdItemList();
+            List<AdhocDraftDto> adhocSaveList = new ArrayList<>();
+            if (adhocItemList != null && !adhocItemList.isEmpty()) {
+                AdhocDraftDto saveDto = null;
+                for (AdhocNcCheckItemDto temp : adhocItemList) {
+                    saveDto = new AdhocDraftDto();
+                    AdhocSaveAnswerDto anwAnswerDto = new AdhocSaveAnswerDto();
+                    anwAnswerDto.setAnswer(temp.getAdAnswer());
+                    anwAnswerDto.setRemark(temp.getRemark());
+                    if (temp.getRectified()) {
+                        anwAnswerDto.setIsRec(1);
+                    } else {
+                        anwAnswerDto.setIsRec(0);
+                    }
+                    String answerStr = JsonUtil.parseToJson(anwAnswerDto);
+                    saveDto.setAdhocItemId(temp.getId());
+                    saveDto.setAnswer(answerStr);
+                    saveDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    adhocSaveList.add(saveDto);
+                }
+                fillUpCheckListGetAppClient.saveAdhocDraft(adhocSaveList);
+            }
+        }
+    }
+
+    private void saveSerListDtoDraft(InspectionFDtosDto serListDto, String refNo) {
+        if(!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
+            for(InspectionFillCheckListDto temp:serListDto.getFdtoList()){
+                saveCommDraft(temp,refNo);
+            }
+        }
+    }
+    private boolean commFillUpVad(InspectionFillCheckListDto icDto) {
+        if (icDto != null) {
+            List<InspectionCheckQuestionDto> cqDtoList = icDto.getCheckList();
+            if(cqDtoList!=null && !cqDtoList.isEmpty()){
+                for(InspectionCheckQuestionDto temp:cqDtoList){
+                    if(!StringUtil.isEmpty(temp.getChkanswer())){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+
+
+    private boolean adhocFillUpVad(AdCheckListShowDto showDto) {
+        if(showDto!=null){
+            List<AdhocNcCheckItemDto> itemDtoList = showDto.getAdItemList();
+            if(itemDtoList!=null && !itemDtoList.isEmpty()){
+                for(AdhocNcCheckItemDto temp:itemDtoList){
+                    if(!StringUtil.isEmpty(temp.getAdAnswer())){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+
+    private void saveCommDraft(InspectionFillCheckListDto comDto, String refNo) {
+        if(commFillUpVad(comDto)) {
+            if (!IaisCommonUtils.isEmpty(comDto.getCheckList())) {
+                //update status
+                AppPremisesPreInspectChklDto appChklDto = getAppChkIdBycConfigIdAndRefNo(comDto.getConfigId(), refNo);
+                //create new appChkl
+                appChklDto.setChkLstConfId(comDto.getConfigId());
+                appChklDto.setAppPremCorrId(refNo);
+                appChklDto.setVersion(Integer.parseInt(appChklDto.getVersion())+1+"");
+                appChklDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                appChklDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                appChklDto.setId(null);
+                String appChkId = fillUpCheckListGetAppClient.saveAppPreInspChkl(appChklDto).getEntity().getId();
+                AppPremInsDraftDto insDraftDto = new AppPremInsDraftDto();
+                Calendar c = Calendar.getInstance();
+                c.setTime(new Date());
+                c.set(Calendar.HOUR_OF_DAY, 9);
+                c.set(Calendar.MINUTE, 0);
+                c.set(Calendar.SECOND, 0);
+                insDraftDto.setClockin(c.getTime());
+                c.set(Calendar.HOUR_OF_DAY, 17);
+                c.set(Calendar.MINUTE, 0);
+                c.set(Calendar.SECOND, 0);
+                insDraftDto.setClockout(c.getTime());
+                String insDraft = JsonUtil.parseToJson(comDto);
+                insDraftDto.setAnswer(insDraft);
+                insDraftDto.setPreInsChklId(appChkId);
+                insDraftDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                fillUpCheckListGetAppClient.saveAppInsDraft(insDraftDto);
+            }
+        }
+    }
+
+    private AppPremisesPreInspectChklDto getAppChkIdBycConfigIdAndRefNo(String configId, String refNo) {
+        return fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(refNo,configId).getEntity();
     }
 
     @Override
@@ -607,7 +731,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         String stgId = taskDto.getTaskKey();
         List<TaskDto> dtos = organizationClient.getTaskByAppNo(taskDto.getRefNo()).getEntity();
         removeOtherTask(dtos,taskDto.getId());
-        ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER);
+        ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_EMAIL);
         HcsaSvcStageWorkingGroupDto dto = new HcsaSvcStageWorkingGroupDto();
         dto.setStageId(stgId);
         dto.setServiceId(svcId);
@@ -670,7 +794,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         updatedtaskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
         updatedtaskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         updatedtaskDto.setSlaDateCompleted(null);
-        updatedtaskDto.setRoleId(loginContext.getCurRoleId());
+        updatedtaskDto.setRoleId( RoleConsts.USER_ROLE_INSPECTIOR);
         List<ApplicationDto> applicationDtos = new ArrayList<>();
         applicationDtos.add(applicationDto);
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);

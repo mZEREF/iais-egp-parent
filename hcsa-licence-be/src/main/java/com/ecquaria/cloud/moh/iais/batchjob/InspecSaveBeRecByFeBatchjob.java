@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.InspecSaveBeRecByService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -24,9 +23,6 @@ import java.util.List;
 @Delegator("inspecSaveBeRecByFeDelegator")
 @Slf4j
 public class InspecSaveBeRecByFeBatchjob {
-
-    @Autowired
-    private TaskService taskService;
 
     @Autowired
     private InspecSaveBeRecByService inspecSaveBeRecByService;

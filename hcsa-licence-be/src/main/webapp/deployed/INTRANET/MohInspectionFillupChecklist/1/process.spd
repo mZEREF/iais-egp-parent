@@ -37,6 +37,20 @@
     <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preViewCheckList" x="560" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preViewCheckList_OnStepProcess_0" name="preViewCheckList_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doCheckList" x="170" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doCheckList_OnStepProcess_0" name="doCheckList_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="310" y="100">
@@ -57,6 +71,12 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page4" stageIndicator="" x="370" y="230">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Links>
@@ -72,9 +92,6 @@
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionChecklist" style="rectanular">
    <position>{(420,120)(610,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Page2" style="rectanular">
-   <position>{(840,120)(930,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Page3" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/SubmitInspection" style="rectanular">
    <position>{(990,120)(1140,120)}</position>
   </SynchronousLink>
@@ -82,26 +99,29 @@
    <position>{(90,120)(150,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(610,120)(750,120)}</position>
+   <position>{(610,120)(760,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Page2" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(750,120)(840,120)}</position>
+   <position>{(760,120)(840,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/AssignedInspectionTask" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(610,120)(208,22)(150,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/AssignedInspectionTask" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(750,120)(201,358)(150,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preViewCheckList" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(610,120)(580,250)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/SubmitInspection" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
-   <position>{(930,120)(990,120)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/Page4" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preViewCheckList" style="rectanular">
+   <position>{(580,250)(390,250)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/AssignedInspectionTask" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
-   <position>{(930,120)(202,1)(150,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doCheckList" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Page4" style="rectanular">
+   <position>{(390,250)(190,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/AssignedInspectionTask" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doCheckList" style="rectanular">
+   <position>{(190,250)(150,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Pages/WebPage/Page2" componentIfTrue="/Steps/AutomaticStep/AssignedInspectionTask" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond1" operator="!=" rightOperand="isValid" x="730" y="100">
+  <Condition componentIfFalse="/Pages/WebPage/Page2" componentIfTrue="/Steps/AutomaticStep/AssignedInspectionTask" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond1" operator="!=" rightOperand="isValid" x="740" y="100">
    <Description/>
   </Condition>
  </Conditions>
@@ -110,11 +130,7 @@
    <Description/>
    <SwitchCase component="/Conditions/Condition/Cond1" value="&quot;next&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/AssignedInspectionTask" value="&quot;back&quot;"/>
-  </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="910" y="100">
-   <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/SubmitInspection" value="&quot;submit&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/AssignedInspectionTask" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preViewCheckList" value="&quot;vewChkl&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

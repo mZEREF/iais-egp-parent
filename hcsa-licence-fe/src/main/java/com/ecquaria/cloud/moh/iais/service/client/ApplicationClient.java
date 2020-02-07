@@ -5,7 +5,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -169,6 +171,11 @@ public interface ApplicationClient  {
     @PostMapping(value = "/iais-application/appGrps-by-ids", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationGroupDto>>getApplicationGroupsByIds(@RequestBody List<String> appGrpIds);
 
-    @GetMapping(value = "/application-last-version",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/appeal/application-last-version",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationDtoByVersion( @RequestParam(name = "applicationNo") String applicationNo);
+    @PostMapping(value = "/appeal/application-appeal",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppealDto> submitAppeal(@RequestBody AppealDto appealDto);
+
+    @GetMapping(value = "/list-hci-name-address",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppInsRepDto> getHciNameAndAddress(@RequestParam("appId") String appId);
 }

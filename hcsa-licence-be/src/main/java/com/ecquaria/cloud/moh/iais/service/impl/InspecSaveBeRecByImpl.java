@@ -17,8 +17,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.InspecSaveBeRecByService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
@@ -61,15 +59,12 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     @Autowired
     private SystemParamConfig systemParamConfig;
-    @Autowired
-    private SystemBeLicClient systemBeLicClient;
-    @Autowired
-    private SubmissionClient submissionClient;
-    @Autowired
-    private ApplicationClient applicationClient;
 
     @Autowired
-    private FileRepoClient fileRepoClient;
+    private SystemBeLicClient systemBeLicClient;
+
+    @Autowired
+    private SubmissionClient submissionClient;
 
     @Override
     public List<ProcessFileTrackDto> getFileTypeAndStatus(String applicationStatusFeToBeRectification, String commonStatusActive) {
@@ -242,7 +237,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     private List<FileRepoDto> saveUploadFile(String toString, File file, AuditTrailDto intranet, String submissionId) {
         List<FileRepoDto> list = new ArrayList<>();
         ApplicationListFileDto applicationListFileDto = JsonUtil.parseToObject(toString, ApplicationListFileDto.class);
-        boolean flag = false;
         List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = applicationListFileDto.getAppPremPreInspectionNcDocDtos();
         if(!(IaisCommonUtils.isEmpty(appPremPreInspectionNcDocDtos))) {
             for (AppPremPreInspectionNcDocDto aItemDocDto : appPremPreInspectionNcDocDtos) {
@@ -257,7 +251,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     private List<FileRepoDto> genFileByNcItemId(String fileReportId, File file, AuditTrailDto intranet,
                         String submissionId) {
         List<FileRepoDto> list = new ArrayList<>();
-        boolean flag = false;
         if(file.isDirectory()) {
             File[] files = file.listFiles();
             for (File file2 : files) {

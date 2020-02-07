@@ -298,8 +298,12 @@
                                 <p>Risk Level:</p>
                             </td>
                             <td class="col-xs-4">
-                                <c:if test="${appPremisesRecommendationDto.riskLevel == null}"> <iais:select name="riskLevel" options="riskLevelOptions"  firstOption="Please select" value="${riskLevel}"/></c:if>
-                                <c:if test="${appPremisesRecommendationDto.riskLevel != null}"> <iais:select name="riskLevel" options="riskLevelOptions"  firstOption="Please select" value="${appPremisesRecommendationDto.riskLevel}"/></c:if>
+                                <c:if test="${appPremisesRecommendationDto.riskLevel == null}"> <iais:select
+                                        name="riskLevel" options="riskLevelOptions" firstOption="Please select"
+                                        value="${riskLevel}"/></c:if>
+                                <c:if test="${appPremisesRecommendationDto.riskLevel != null}"> <iais:select
+                                        name="riskLevel" options="riskLevelOptions" firstOption="Please select"
+                                        value="${appPremisesRecommendationDto.riskLevel}"/></c:if>
                                 <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
@@ -361,7 +365,7 @@
                         </td>
                         <div>
                             <td class="col-xs-4">
-                                <p><textarea name="remarks" cols="90" rows="6"  title="content"  >
+                                <p><textarea name="remarks" cols="90" rows="6" title="content">
                                     <c:if test="${appPremisesRecommendationDto.remarks ==null}">${reportRemarks}</c:if>
                                 <c:if test="${appPremisesRecommendationDto.remarks !=null}">${appPremisesRecommendationDto.remarks}</c:if>
                                     </textarea></p>
@@ -415,7 +419,8 @@
                                 <iais:datePicker id="tcuDate" name="tcuDate" dateVal="${recomInDate}"/>
                             </c:if>
                             <c:if test="${appPremisesRecommendationDto.tcuDate != null}">
-                                <iais:datePicker id="tcuDate" name="tcuDate" dateVal="${appPremisesRecommendationDto.tcuDate}"/>
+                                <iais:datePicker id="tcuDate" name="tcuDate"
+                                                 dateVal="${appPremisesRecommendationDto.tcuDate}"/>
                             </c:if>
                             <span id="error_tcuDate" name="iaisErrorMsg" class="error-msg"></span>
                         </td>
@@ -425,24 +430,44 @@
                         <td class="col-xs-4">
                             <p>Recommendation:</p>
                         </td>
-                        <td class="col-xs-4">
-                            <iais:select name="recommendation" options="recommendationOption"
-                                         firstOption="Please select"
-                                         value="${appPremisesRecommendationDto.recommendation}"
-                                         onchange="javascirpt:changeRecommendation(this.value);"/>
-                        </td>
+                        <c:if test="${appPremisesRecommendationDto.recommendation==null}">
+                            <td class="col-xs-4">
+                                <iais:select name="recommendation" options="recommendationOption"
+                                             firstOption="Please select"
+                                             value="Approval"
+                                             onchange="javascirpt:changeRecommendation(this.value);"/>
+                            </td>
+                        </c:if>
+                        <c:if test="${appPremisesRecommendationDto.recommendation !=null}">
+                            <td>
+                                <iais:select name="recommendation" options="recommendationOption"
+                                             firstOption="Please select"
+                                             value="${appPremisesRecommendationDto.recommendation}"
+                                             onchange="javascirpt:changeRecommendation(this.value);"/>
+                            </td>
+                        </c:if>
                         <td class="col-xs-4"></td>
                     </tr>
                     <tr id="period" hidden>
                         <td class="col-xs-4">
-                            <p>Period:</p>
+                            <p>Period:</p>period${option}
                         </td>
+                    <c:if test="${appPremisesRecommendationDto.period !=null}">
                         <td class="col-xs-4">
                             <iais:select name="periods" options="riskOption" firstOption="Please select"
                                          onchange="javascirpt:changePeriod(this.value);"
                                          value="${appPremisesRecommendationDto.period}"/>
                             <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
                         </td>
+                    </c:if>
+                        <c:if test="${appPremisesRecommendationDto.period ==null}">
+                            <td class="col-xs-4">option
+                                <iais:select name="periods" options="riskOption" firstOption="Please select"
+                                             onchange="javascirpt:changePeriod(this.value);"
+                                             value="${option}"/>
+                                <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
+                            </td>
+                        </c:if>
                         <td class="col-xs-4"></td>
                     </tr>
                     <tr id="selfPeriod" hidden>
@@ -476,7 +501,7 @@
                             <p>Follow up Action:</p>
                         </td>
                         <td class="col-xs-4">
-                            <p><textarea name="followUpAction" cols="90" rows="6"  title="content">
+                            <p><textarea name="followUpAction" cols="90" rows="6" title="content">
                             <c:if test="${appPremisesRecommendationDto.followUpAction == null}">${followRemarks}</c:if>
                                 <c:if test="${appPremisesRecommendationDto.followUpAction != null}">${appPremisesRecommendationDto.followUpAction}</c:if>
                             </textarea></p>
@@ -502,7 +527,7 @@
                             <p>Enforcement Remarks</p>
                         </td>
                         <td class="col-xs-4">
-                            <p><textarea name="enforcementRemarks" cols="90" rows="6"  title="content" MAXLENGTH="4000" >
+                            <p><textarea name="enforcementRemarks" cols="90" rows="6" title="content" MAXLENGTH="4000">
                                 <c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks ==null}">${remarks}</c:if>
                                 <c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks !=null}">${appPremisesRecommendationDto.engageEnforcementRemarks}</c:if>
                                 </textarea></p>

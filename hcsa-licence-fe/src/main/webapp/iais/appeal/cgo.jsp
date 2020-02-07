@@ -208,7 +208,7 @@
                                     </div>
                                     <div class="col-sm-5" id="idType${suffix}">
                                       <div class="">
-                                        <iais:select  name="idType" value="${currentCgo.idType}" options="IdTypeSelect"></iais:select>
+                                        <iais:select cssClass="assignSel" name="idType" value="${currentCgo.idType}" options="IdTypeSelect"></iais:select>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_idTyp${status.index}"></span>
                                       </div>
                                     </div>

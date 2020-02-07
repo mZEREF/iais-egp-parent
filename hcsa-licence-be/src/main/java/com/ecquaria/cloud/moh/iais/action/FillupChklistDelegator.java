@@ -2,7 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
@@ -14,25 +14,26 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import com.esotericsoftware.minlog.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -46,7 +47,7 @@ import java.util.Map;
 @Slf4j
 public class FillupChklistDelegator {
 
-    private static final String SERLISTDTO="serListDto";
+
     @Autowired
     FillupChklistService fillupChklistService;
     @Autowired
@@ -57,6 +58,12 @@ public class FillupChklistDelegator {
     InspectionAssignTaskService inspectionAssignTaskService;
     @Autowired
     TaskService taskService;
+    private static final String SERLISTDTO="serListDto";
+    private static final String COMMONDTO="commonDto";
+    private static final String ADHOCLDTO="adchklDto";
+    private static final String TASKDTO="taskDto";
+    private static final String APPLICATIONVIEWDTO = "applicationViewDto";
+    private static final String CHECKLISTFILEDTO = "checkListFileDto";
     public FillupChklistDelegator(FillupChklistService fillupChklistService){
         this.fillupChklistService = fillupChklistService;
     }
@@ -68,37 +75,52 @@ public class FillupChklistDelegator {
      * @throws
      */
     public void start(BaseProcessClass bpc){
+        Log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,"adchklDto",null);
-        ParamUtil.setSessionAttr(request,"fillCheckListDto",null);
-        ParamUtil.setSessionAttr(request,"commonDto",null);
-        ParamUtil.setSessionAttr(request,"taskDto",null);
+        ParamUtil.setSessionAttr(request,ADHOCLDTO,null);
+        ParamUtil.setSessionAttr(request,COMMONDTO,null);
+        ParamUtil.setSessionAttr(request,TASKDTO,null);
+        ParamUtil.setSessionAttr(request,APPLICATIONVIEWDTO,null);
+        ParamUtil.setSessionAttr(request,CHECKLISTFILEDTO,null);
+    }
+    public void successViewPre(BaseProcessClass bpc){
+        Log.info("=======>>>>>successViewPre>>>>>>>>>>>>>>>>successViewPre");
+        HttpServletRequest request = bpc.request;
+        InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
+        serListDto.setCheckListTab("chkList");
+        ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
+    }
+
+    public void successViewBack(BaseProcessClass bpc){
+        Log.info("=======>>>>>successViewBack>>>>>>>>>>>>>>>>successViewBack");
+        HttpServletRequest request = bpc.request;
+
     }
 
     public void init(BaseProcessClass bpc){
         Log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
+        AccessUtil.initLoginUserInfo(bpc.request);
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getRequestString(request,"taskId");
         if (StringUtil.isEmpty(taskId)) {
-            taskId = "F9359FD4-5934-EA11-BE7D-000C29F371DC";
+            taskId = "B3A5C76D-9C3A-EA11-BE7E-000C29F371DC";
         }
         String serviceType = "Inspection";
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appPremCorrId = taskDto.getRefNo();
         CheckListDraftDto checkListDraftDto = fillupChklistService.getDraftByTaskId(taskId,serviceType);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
-        //InspectionFillCheckListDto cDto = null;
         InspectionFillCheckListDto commonDto = null;
         List<InspectionFillCheckListDto> cDtoList = null;
         InspectionFDtosDto serListDto = new InspectionFDtosDto();
         List<InspectionFillCheckListDto> commonList = null;
         if(checkListDraftDto!=null){
-            //cDto = checkListDraftDto.getGeneralDto();
             commonDto = checkListDraftDto.getComDto();
         }else{
             cDtoList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"service");
             serListDto.setFdtoList(cDtoList);
+            fillupChklistService.getSvcName(serListDto);
             serListDto.setBestPractice("");
             serListDto.setTcuRemark("");
             serListDto.setTuc("");
@@ -112,10 +134,16 @@ public class FillupChklistDelegator {
         if(adchklDto==null){
             adchklDto = fillupChklistService.getAdhoc(appPremCorrId);
         }
-        ParamUtil.setSessionAttr(request,"taskDto",taskDto);
-        ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);
-        ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
-        ParamUtil.setSessionAttr(request,"commonDto",commonDto);
+        String inspectionDate = fillupChklistService.getInspectionDate(appPremCorrId);
+        List<String> inspeciotnOfficers  = fillupChklistService.getInspectiors(taskDto);
+        String inspectionleader = fillupChklistService.getInspectionLeader(taskDto);
+        serListDto.setInspectionDate(inspectionDate);
+        serListDto.setInspectionofficer(inspeciotnOfficers);
+        serListDto.setInspectionLeader(inspectionleader);
+        ParamUtil.setSessionAttr(request,TASKDTO,taskDto);
+        ParamUtil.setSessionAttr(request,APPLICATIONVIEWDTO,appViewDto);
+        ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
+        ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
     }
     /**
@@ -125,22 +153,17 @@ public class FillupChklistDelegator {
      * @throws
      */
     public void assignedInspectionTask(BaseProcessClass bpc) {
-        AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
+        Log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
         HttpServletRequest request = bpc.request;
-        List<SelectOption> isTcuOption = new ArrayList<>();
-        SelectOption op = new SelectOption("Yes","Yes");
-        SelectOption op2 = new SelectOption("No","No");
-        isTcuOption.add(op);
-        isTcuOption.add(op2);
-        ParamUtil.setRequestAttr(request,"isTcuOption",isTcuOption);
-    }
-
-    public CheckListVadlidateDto getValueFromPage(HttpServletRequest request) {
-        CheckListVadlidateDto dto = new CheckListVadlidateDto();
-        getDataFromPage(request);
-        getCommonDataFromPage(request);
-        getAdhocDtoFromPage(request);
-        return dto;
+        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request,"taskDto");
+        AdCheckListShowDto adchklDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
+        InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
+        InspectionFillCheckListDto commonDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
+        //fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
+        ParamUtil.setSessionAttr(request,TASKDTO,taskDto);
+        ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
+        ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
+        ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
     }
 
 
@@ -151,49 +174,42 @@ public class FillupChklistDelegator {
      * @throws
      */
     public void inspectionChecklist(BaseProcessClass bpc) {
-        /*HttpServletRequest request = bpc.request;
-        InspectionFillCheckListDto cDto = getDataFromPage(request);
-        InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
-        AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
-        InspectionCheckListValidation InspectionCheckListValidation = new InspectionCheckListValidation();
-        ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
-        ParamUtil.setSessionAttr(request,"fillCheckListDto",cDto);
-        ParamUtil.setSessionAttr(request,"commonDto",commonDto);
-        Map<String, String> errMap = InspectionCheckListValidation.validate(request);
-        String draftFalg = ParamUtil.getString(request,"draftFalg");
-        if(StringUtil.isEmpty(draftFalg)) {
-            if (!errMap.isEmpty()) {
-                ParamUtil.setRequestAttr(request, "isValid", "N");
-                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
-            } else {
-                ParamUtil.setRequestAttr(request, "isValid", "Y");
-            }
-        }else{
-            fillupChklistService.saveDraft(cDto,commonDto,adchklDto);
-            ParamUtil.setRequestAttr(request, "isValid", "N");
-        }*/
         Log.info("=======>>>>>doNextStep>>>>>>>>>>>>>>>>doNextRequest");
         HttpServletRequest request = bpc.request;
-        InspectionFDtosDto serListDto = getDataFromPage(request);
-        InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
-        AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
-        ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
-        ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
-        ParamUtil.setSessionAttr(request,"commonDto",commonDto);
-        InspectionCheckListValidation InspectionCheckListValidation = new InspectionCheckListValidation();
-        Map<String, String> errMap = InspectionCheckListValidation.validate(request);
-        String draftFalg = ParamUtil.getString(request,"draftFalg");
-        if(StringUtil.isEmpty(draftFalg)) {
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
 
-        }else{
-            fillupChklistService.saveDraft(serListDto,commonDto,adchklDto);
-        }
-        if(!errMap.isEmpty()){
-            ParamUtil.setRequestAttr(request, "isValid", "N");
-            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
-        }else{
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
+        InspectionFDtosDto serListDto = null;
+        String viewChkFlag = ParamUtil.getString(mulReq,"viewchk");
+        if(!StringUtil.isEmpty(viewChkFlag)){
             ParamUtil.setRequestAttr(request, "isValid", "Y");
+        }else {
+            serListDto = getOtherInfo(mulReq);
+            ParamUtil.setSessionAttr(mulReq,SERLISTDTO,serListDto);
+            TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(mulReq,"taskDto");
+            InspectionFillCheckListDto comDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(mulReq,"commonDto");
+            AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(mulReq,"adchklDto");
+            ParamUtil.setRequestAttr(request, "isValid", "Y");
+            boolean flag = insepctionNcCheckListService.isHaveNcOrBestPractice(serListDto, comDto, showDto);
+            //insepctionNcCheckListService.submit(comDto, showDto, serListDto, taskDto.getRefNo());
+            AdCheckListShowDto showPageDto = new AdCheckListShowDto();
+            try {
+                showPageDto = (AdCheckListShowDto) CopyUtil.copyMutableObject(showDto);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            fillupChklistService.saveDraft(comDto,showDto,serListDto,taskDto.getRefNo());
+
+            serListDto.setCheckListTab(null);
+            ParamUtil.setSessionAttr(request, SERLISTDTO, serListDto);
+
+            ParamUtil.setSessionAttr(request, "adchklDto", showPageDto);
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         }
+
     }
 
 
@@ -222,29 +238,78 @@ public class FillupChklistDelegator {
         fillupChklistService.merge(comDto,icDto);
         fillupChklistService.saveDto(icDto);
     }
-    public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){
-        InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
-        List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
-        for(InspectionCheckQuestionDto temp:checkListDtoList){
-            String answer = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comrad");
-            String remark = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comremark");
-            String rectified = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comrec");
-            if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
-                temp.setRectified(true);
-            }else{
-                temp.setRectified(false);
-            }
-            temp.setChkanswer(answer);
-            temp.setRemark(remark);
+    private InspectionFDtosDto getOtherInfo(MultipartHttpServletRequest request) {
+        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
+        String tcuflag = ParamUtil.getString(request,"tcuType");
+        String tcu = null;
+        if(!StringUtil.isEmpty(tcuflag)){
+            tcu = ParamUtil.getString(request,"tuc");
         }
-        fillupChklistService.fillInspectionFillCheckListDto(cDto);
-        ParamUtil.setSessionAttr(request,"commonDto",cDto);
-        return cDto;
+        String bestpractice = ParamUtil.getString(request,"bestpractice");
+        String tcuremark = ParamUtil.getString(request,"tcuRemark");
+        String otherOfficers = ParamUtil.getString(request,"otherinspector");
+
+        //startHour   startHourMin  endHour endHourMin
+        String inspectionDate = ParamUtil.getString(request,"inspectionDate");
+        String startHour = ParamUtil.getString(request,"startHour");
+        String startMin = ParamUtil.getString(request,"startHourMin");
+        String endHour = ParamUtil.getString(request,"endHour");
+        String endMin = ParamUtil.getString(request,"endHourMin");
+        String startTime = startHour+" : "+startMin;
+        String endTime =  endHour+" : "+endMin;
+        serListDto.setStartTime(startTime);
+        serListDto.setEndTime(endTime);
+        serListDto.setStartHour(startHour);
+        serListDto.setEndHour(endHour);
+        serListDto.setStartMin(startMin);
+        serListDto.setEndMin(endMin);
+        serListDto.setInspectionDate(inspectionDate);
+        serListDto.setOtherinspectionofficer(otherOfficers);
+        serListDto.setTcuRemark(tcuremark);
+        if(!StringUtil.isEmpty(tcuflag)){
+            serListDto.setTcuFlag(true);
+            serListDto.setTuc(tcu);
+        }else{
+            serListDto.setTcuFlag(false);
+        }
+        serListDto.setBestPractice(bestpractice);
+        ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
+        return serListDto;
     }
 
 
+    public CheckListVadlidateDto getValueFromPage(HttpServletRequest request) {
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest)request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        CheckListVadlidateDto dto = new CheckListVadlidateDto();
+        getDataFromPage(request);
+        getOtherInfo(mulReq);
+        getCommonDataFromPage(request);
+        getAdhocDtoFromPage(request);
+        return dto;
+    }
 
-    public InspectionFDtosDto getDataFromPage(HttpServletRequest request){
+    public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){
+        InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
+        if(cDto!=null&&cDto.getCheckList()!=null&&!cDto.getCheckList().isEmpty()){
+            List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
+            for(InspectionCheckQuestionDto temp:checkListDtoList){
+                String answer = ParamUtil.getString(request,temp.getSectionNameSub()+temp.getItemId()+"comrad");
+                String remark = ParamUtil.getString(request,temp.getSectionNameSub()+temp.getItemId()+"comremark");
+                String rectified = ParamUtil.getString(request,temp.getSectionNameSub()+temp.getItemId()+"comrec");
+                if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
+                    temp.setRectified(true);
+                }else{
+                    temp.setRectified(false);
+                }
+                temp.setChkanswer(answer);
+                temp.setRemark(remark);
+            }
+            fillupChklistService.fillInspectionFillCheckListDto(cDto);
+        }
+        return cDto;
+    }
+
+    public InspectionFDtosDto getServiceCheckListDataFormViewPage(HttpServletRequest request){
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
         if(!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
             for(InspectionFillCheckListDto fdto:serListDto.getFdtoList()){
@@ -257,19 +322,33 @@ public class FillupChklistDelegator {
                 }
             }
         }
-        String tcu = ParamUtil.getString(request,"tuc");
-        String bestpractice = ParamUtil.getString(request,"bestpractice");
-        String tcuremark = ParamUtil.getString(request,"tcuRemark");
-        serListDto.setTcuRemark(tcuremark);
-        serListDto.setTuc(tcu);
-        serListDto.setBestPractice(bestpractice);
         return serListDto;
     }
 
+    public InspectionFDtosDto getDataFromPage(HttpServletRequest request){
+        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
+        String tcu = ParamUtil.getString(request,"tuc");
+        String bestpractice = ParamUtil.getString(request,"bestpractice");
+        String tcuremark = ParamUtil.getString(request,"tcuRemark");
+        String otherOfficers = ParamUtil.getString(request,"otherinspector");
+        String startTime = ParamUtil.getString(request,"startTime");
+        String endTime =  ParamUtil.getString(request,"endTime");
+        serListDto.setStartTime(startTime);
+        serListDto.setEndTime(endTime);
+        serListDto.setOtherinspectionofficer(otherOfficers);
+        serListDto.setTcuRemark(tcuremark);
+        serListDto.setTuc(tcu);
+        serListDto.setBestPractice(bestpractice);
+        ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
+        return serListDto;
+    }
+
+
+
     public void getServiceData(InspectionCheckQuestionDto temp,InspectionFillCheckListDto fdto,HttpServletRequest request){
-        String answer = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionName()+temp.getItemId()+"rad");
-        String remark = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionName()+temp.getItemId()+"remark");
-        String rectified = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionName()+temp.getItemId()+"rec");
+        String answer = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameSub()+temp.getItemId()+"rad");
+        String remark = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameSub()+temp.getItemId()+"remark");
+        String rectified = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameSub()+temp.getItemId()+"rec");
         if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
             temp.setRectified(true);
         }else{
@@ -299,4 +378,39 @@ public class FillupChklistDelegator {
         showDto.setAdItemList(itemDtoList);
         return showDto;
     }
+
+    public void doCheckList(BaseProcessClass bpc){
+        Log.info("=======>>>>>doCheckList>>>>>>>>>>>>>>>>doCheckList");
+        HttpServletRequest request = bpc.request;
+        InspectionFDtosDto serListDto = null;
+        serListDto = getServiceCheckListDataFormViewPage(request);
+        InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
+        AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
+        serListDto.setCheckListTab("chkList");
+        fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
+        if(serListDto!=null){
+            int totalNcNum = serListDto.getGeneralNc()+serListDto.getServiceNc()+serListDto.getAdhocNc();
+            serListDto.setTotalNcNum(totalNcNum);
+        }
+        ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
+        ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
+        ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
+    }
+
+    public void preViewCheckList(BaseProcessClass bpc){
+        Log.info("=======>>>>>preViewCheckList>>>>>>>>>>>>>>>>preViewCheckList");
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
+
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
+        HttpServletRequest request = bpc.request;
+        getOtherInfo(mulReq);
+
+
+    }
+
+
+
 }

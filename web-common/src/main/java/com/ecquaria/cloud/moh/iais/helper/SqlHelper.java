@@ -57,5 +57,31 @@ public class SqlHelper {
     }
 
 
+    public static String constructNotInCondition(String fieldName, int size) {
+        StringBuilder sBuilder = new StringBuilder();
+        if (size > 0){
+            sBuilder.append(" ((").append(fieldName).append(" not in (:").append(fieldName).append(0);
+
+            int counter = 1;
+            for (int i = 1; i < size; i++) {
+                if (counter < 900) {
+                    sBuilder.append(", :").append(fieldName).append(i);
+                    counter++;
+                } else {
+                    //split for every 900 elements
+                    sBuilder.append(")) or (").append(fieldName).append(" not in (:").append(fieldName).append(i);
+                    counter = 0;
+                }
+            }
+
+            sBuilder.append(")))");
+        }else{
+            sBuilder.append(" 1 = 2 ");
+        }
+
+        return sBuilder.toString();
+    }
+
+
     private SqlHelper() {throw new IllegalStateException("Utility class");}
 }
