@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="3" minorVersion="0" name="MohInspectorCalendar" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="4" minorVersion="0" name="MohInspectorCalendar" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
@@ -55,6 +55,13 @@
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="switchAction" x="500" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="switchAction_OnStepProcess_0" name="switchAction_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="calendar" stageIndicator="" x="420" y="100">
@@ -71,9 +78,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/calendar" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preLoad" style="rectanular">
    <position>{(270,120)(440,120)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/calendar" style="rectanular">
-   <position>{(440,120)(580,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doQuery" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(580,120)(530,260)}</position>
@@ -113,6 +117,12 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/InvokeStep/delete" style="rectanular">
    <position>{(1060,220)(610,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/switchAction" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/calendar" style="rectanular">
+   <position>{(440,120)(520,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/switchAction" style="rectanular">
+   <position>{(520,120)(580,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>

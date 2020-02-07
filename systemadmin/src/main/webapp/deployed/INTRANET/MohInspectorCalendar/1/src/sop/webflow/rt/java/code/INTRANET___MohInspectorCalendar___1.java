@@ -38,4 +38,8 @@ public class INTRANET___MohInspectorCalendar___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doSorting", this);
 	}
 
+	public void switchAction_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "switchAction", this);
+	}
+
 }
