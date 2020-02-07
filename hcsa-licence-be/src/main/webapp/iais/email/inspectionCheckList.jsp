@@ -184,11 +184,7 @@
 
                             </div>
                             <div class="tab-pane active" id="tabCheckList" role="tabpanel">
-                                <div class="alert alert-info" role="alert">
-                                    <strong>
-                                        <h4>Processing Status Update</h4>
-                                    </strong>
-                                </div>
+
                                 <div class="row">
                                     <div class="col-xs-12">
 
