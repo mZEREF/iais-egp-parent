@@ -24,7 +24,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -95,7 +94,7 @@ public class InspectorCalendarDelegator {
 				appointmentService.queryInspectorCalendar(searchParam);
 
 		ParamUtil.setSessionAttr(request, AppointmentConstants.INSPECTOR_CALENDAR_QUERY_ATTR, searchParam);
-		ParamUtil.setRequestAttr(request, AppointmentConstants.INSPECTOR_CALENDAR_RESULT_ATTR, searchResult);
+		ParamUtil.setSessionAttr(request, AppointmentConstants.INSPECTOR_CALENDAR_RESULT_ATTR, searchResult);
 	}
 
 	/**
