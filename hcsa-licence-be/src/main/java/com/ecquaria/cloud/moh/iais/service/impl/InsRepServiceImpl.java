@@ -331,7 +331,7 @@ public class InsRepServiceImpl implements InsRepService {
             version = oldAppPremisesRecommendationDto.getVersion() + 1;
             oldAppPremisesRecommendationDto.setVersion(version);
             oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            oldAppPremisesRecommendationDto.setRemarks(appPremisesRecommendationDto.getEngageEnforcementRemarks());
+            oldAppPremisesRecommendationDto.setRemarks(appPremisesRecommendationDto.getRemarks());
             oldAppPremisesRecommendationDto.setId(null);
             insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
         }

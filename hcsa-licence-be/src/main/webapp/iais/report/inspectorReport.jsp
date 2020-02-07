@@ -403,7 +403,7 @@
                             <p>TCU needed:</p>
                         </td>
                         <td class="col-xs-4">
-                            <input type="checkbox" id="tcuNeeded" name="tcuNeed" onchange="javascirpt:changeTcu();"
+                            <input type="checkbox" id="tcuNeeded" name="tcuNeeded" onchange="javascirpt:changeTcu();"
                                    <c:if test="${appPremisesRecommendationDto.tcuNeeded =='on'}">checked</c:if>
                                    <c:if test="${tcuNeed =='on'}">checked</c:if>
                             >
@@ -450,7 +450,7 @@
                     </tr>
                     <tr id="period" hidden>
                         <td class="col-xs-4">
-                            <p>Period:</p>period${option}
+                            <p>Period:</p>
                         </td>
                     <c:if test="${appPremisesRecommendationDto.period !=null}">
                         <td class="col-xs-4">
@@ -475,10 +475,19 @@
                             <p>Other Period:</p>
                         </td>
                         <td class="col-xs-4">
-                            <input id=recomInNumber type="text" name="number" value="${number}">
+                            <input id=recomInNumber type="text" name="number" <c:if test="${number ==null}">value="${recnumber}"</c:if>
+                                   <c:if test="${number !=null}">value="${number}"</c:if>>
                             <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
-                            <iais:select id="chronoUnit" name="chrono" options="chronoOption"
-                                         firstOption="Please select" value="${chrono}"/>
+                            <c:if test="${chrono ==null}">
+                                <iais:select id="chronoUnit" name="chrono" options="chronoOption"
+                                             firstOption="Please select" value="${recchrono}"/>
+
+                            </c:if>
+                            <c:if test="${chrono !=null}">
+                                <iais:select id="chronoUnit" name="chrono" options="chronoOption"
+                                             firstOption="Please select" value="${chrono}"/>
+                            </c:if>
+
                             <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
                         </td>
                         <td class="col-xs-4"></td>

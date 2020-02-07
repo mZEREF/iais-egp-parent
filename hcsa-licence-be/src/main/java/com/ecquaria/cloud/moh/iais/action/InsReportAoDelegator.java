@@ -185,20 +185,22 @@ public class InsReportAoDelegator {
 
         AppPremisesRecommendationDto recommendationDto = prepareRecommendation(bpc, appPremisesCorrelationId);
         insRepService.updateRecommendation(recommendationDto);
-        String tcuNeeded = preapreRecommendationDto.getTcuNeeded();
+        String tcuNeeded = ParamUtil.getRequestString(bpc.request, "tcuNeeded");
+        Date tcuDate = preapreRecommendationDto.getTcuDate();
         String engageEnforcement = preapreRecommendationDto.getEngageEnforcement();
         String riskLevel = preapreRecommendationDto.getRiskLevel();
         String followUpAction = preapreRecommendationDto.getFollowUpAction();
         if(!StringUtil.isEmpty(tcuNeeded)){
             AppPremisesRecommendationDto recommendationDtoTcu = new AppPremisesRecommendationDto();
             recommendationDtoTcu.setAppPremCorreId(appPremisesCorrelationId);
-            recommendationDtoTcu.setRecomInDate(preapreRecommendationDto.getTcuDate());
+            recommendationDtoTcu.setRecomInDate(tcuDate);
             insRepService.updateTcuRecommendation(recommendationDtoTcu);
         }
         if(!StringUtil.isEmpty(engageEnforcement)){
             AppPremisesRecommendationDto recommendationDtoEngage = new AppPremisesRecommendationDto();
             recommendationDtoEngage.setAppPremCorreId(appPremisesCorrelationId);
-            recommendationDtoEngage.setRemarks(preapreRecommendationDto.getEngageEnforcementRemarks());
+            String engageEnforcementRemarks = preapreRecommendationDto.getEngageEnforcementRemarks();
+            recommendationDtoEngage.setRemarks(engageEnforcementRemarks);
             insRepService.updateengageRecommendation(recommendationDtoEngage);
         }
         if(!StringUtil.isEmpty(riskLevel)){
@@ -208,10 +210,10 @@ public class InsReportAoDelegator {
             insRepService.updateRiskRecommendation(recommendationDtoRisk);
         }
         if(!StringUtil.isEmpty(followUpAction)){
-            AppPremisesRecommendationDto recommendationDtoFollow = new AppPremisesRecommendationDto();
-            recommendationDtoFollow.setAppPremCorreId(appPremisesCorrelationId);
-            recommendationDtoFollow.setRemarks(followUpAction);
-            insRepService.updateFollowRecommendation(recommendationDtoFollow);
+            AppPremisesRecommendationDto followRecommendationDtoFollow = new AppPremisesRecommendationDto();
+            followRecommendationDtoFollow.setAppPremCorreId(appPremisesCorrelationId);
+            followRecommendationDtoFollow.setRemarks(followUpAction);
+            insRepService.updateFollowRecommendation(followRecommendationDtoFollow);
         }
 //        if(REJECT.equals(recommendationDto.getRecomDecision())){
 //            insRepService.routBackTaskToInspector(taskDto,applicationDto,appPremisesCorrelationId);
@@ -227,7 +229,7 @@ public class InsReportAoDelegator {
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
         String number = ParamUtil.getRequestString(bpc.request, NUMBER);
-        String processingDecision = ParamUtil.getRequestString(bpc.request, "processingDecision");
+        String periods = ParamUtil.getRequestString(bpc.request, "periods");
         ParamUtil.setSessionAttr(bpc.request, CHRONO, chrono);
         ParamUtil.setSessionAttr(bpc.request, NUMBER, number);
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
@@ -239,15 +241,15 @@ public class InsReportAoDelegator {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
             appPremisesRecommendationDto.setChronoUnit(chrono);
             appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
-        }else if(APPROVAL.equals(processingDecision)){
+        }else if(APPROVAL.equals(recommendation)){
             appPremisesRecommendationDto.setRecomDecision(ApplicationConsts.APPLICATION_STATUS_APPROVED);
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-        }else if(REJECT.equals(processingDecision)){
+        }else if(REJECT.equals(recommendation)){
             appPremisesRecommendationDto.setRecomDecision("Reject");
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
         } else {
-            String[] split_number = recommendation.split("\\D");
-            String[] split_unit = recommendation.split("\\d");
+            String[] split_number = periods.split("\\D");
+            String[] split_unit = periods.split("\\d");
             String chronoRe = split_unit[1];
             String numberRe = split_number[0];
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);

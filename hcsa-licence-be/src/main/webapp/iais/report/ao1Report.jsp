@@ -392,7 +392,7 @@
                                 <p>TCU needed:</p>
                             </td>
                             <td class="col-xs-4">
-                                <input type="checkbox" id="tcuNeeded" name="tcuNeed" onchange="javascirpt:changeTcu();"
+                                <input type="checkbox" id="tcuNeeded" name="tcuNeeded" onchange="javascirpt:changeTcu();"
                                        <c:if test="${preapreRecommendationDto.tcuNeeded =='on'}">checked</c:if>
                                        <c:if test="${tcuNeed =='on'}">checked</c:if>
                                 >
@@ -524,7 +524,8 @@
         }else if ($("#aoprocessingDecision").val() =="Reject"&&$("#aorecommendation").val() =="Reject"){
             $("[name='action_type']").val("back");
              $("#mainForm").submit();
-
+        }else if ($("#aorecommendation").val() =="Others") {
+            $("#mainForm").submit();
         }
 
     }

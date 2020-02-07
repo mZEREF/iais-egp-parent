@@ -95,6 +95,9 @@ public class InsReportDelegator {
                     break;
                 }else{
                     ParamUtil.setSessionAttr(bpc.request, "option", "Others");
+                    ParamUtil.setSessionAttr(bpc.request, "recnumber", recomInNumber);
+                    ParamUtil.setSessionAttr(bpc.request, "recchrono", chronoUnit);
+                    break;
                 }
             }
         }
@@ -203,7 +206,7 @@ public class InsReportDelegator {
         String followUpAction = ParamUtil.getRequestString(bpc.request, "followUpAction");
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
         String number = ParamUtil.getRequestString(bpc.request, NUMBER);
-        String tcuNeeded = ParamUtil.getRequestString(bpc.request, "tcuNeed");
+        String tcuNeeded = ParamUtil.getRequestString(bpc.request, "tcuNeeded");
         String tcuDateStr = ParamUtil.getRequestString(bpc.request, "tcuDate");
         Date tcuDate = DateUtil.parseDate(tcuDateStr, "dd/MM/yyyy");
         String enforcement = ParamUtil.getRequestString(bpc.request, "engageEnforcement");
