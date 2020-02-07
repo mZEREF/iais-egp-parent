@@ -84,27 +84,31 @@ public class InsReportDelegator {
         AppPremisesRecommendationDto engageRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
         AppPremisesRecommendationDto riskRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity();
         AppPremisesRecommendationDto followRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
-        String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
-        Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
-        String option  = recomInNumber + chronoUnit;
-        List<String> periods = insRepService.getPeriods(applicationViewDto);
-        if(periods!=null&&!periods.isEmpty()){
-            for(String period : periods){
-                if(option.equals(period)){
-                    ParamUtil.setSessionAttr(bpc.request, "option", option);
-                    break;
-                }else{
-                    ParamUtil.setSessionAttr(bpc.request, "option", "Others");
-                    ParamUtil.setSessionAttr(bpc.request, "recnumber", recomInNumber);
-                    ParamUtil.setSessionAttr(bpc.request, "recchrono", chronoUnit);
-                    break;
+        if(appPremisesRecommendationDto!=null){
+            String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
+            Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
+            String option  = recomInNumber + chronoUnit;
+            List<String> periods = insRepService.getPeriods(applicationViewDto);
+            if(periods!=null&&!periods.isEmpty()){
+                for(String period : periods){
+                    if(option.equals(period)){
+                        ParamUtil.setSessionAttr(bpc.request, "option", option);
+                        break;
+                    }else{
+                        ParamUtil.setSessionAttr(bpc.request, "option", "Others");
+                        ParamUtil.setSessionAttr(bpc.request, "recnumber", recomInNumber);
+                        ParamUtil.setSessionAttr(bpc.request, "recchrono", chronoUnit);
+                        break;
+                    }
                 }
             }
+            String recomDecision = appPremisesRecommendationDto.getRecomDecision();
+            String codeDesc = MasterCodeUtil.getCodeDesc(recomDecision);
+            ParamUtil.setSessionAttr(bpc.request, "recomDecision", codeDesc);
+        }else{
+            ParamUtil.setSessionAttr(bpc.request, "option", null);
         }
 
-        String recomDecision = appPremisesRecommendationDto.getRecomDecision();
-        String codeDesc = MasterCodeUtil.getCodeDesc(recomDecision);
-        ParamUtil.setSessionAttr(bpc.request, "recomDecision", codeDesc);
         if(appPremisesRecommendationDto!=null){
             String reportRemarks = appPremisesRecommendationDto.getRemarks();
             ParamUtil.setSessionAttr(bpc.request, "reportRemarks", reportRemarks);
@@ -137,8 +141,8 @@ public class InsReportDelegator {
         List<SelectOption> chronoOption = getChronoOption();
         List<SelectOption> recommendationOption = getRecommendationOption();
         List<SelectOption> riskLevelOptions = getriskLevel();
-        List<SelectOption> processingDecision = getProcessingDecision();
-        ParamUtil.setSessionAttr(bpc.request, "processingDecision", (Serializable) processingDecision);
+        List<SelectOption> processingDe = getProcessingDecision();
+        ParamUtil.setSessionAttr(bpc.request, "processingDe", (Serializable) processingDe);
         ParamUtil.setSessionAttr(bpc.request, "riskLevelOptions", (Serializable) riskLevelOptions);
         ParamUtil.setSessionAttr(bpc.request, "recommendationOption", (Serializable) recommendationOption);
         ParamUtil.setSessionAttr(bpc.request, "chronoOption", (Serializable) chronoOption);
@@ -200,6 +204,7 @@ public class InsReportDelegator {
 
     private AppPremisesRecommendationDto prepareRecommendation(BaseProcessClass bpc) {
         String riskLevel = ParamUtil.getRequestString(bpc.request, "riskLevel");
+        String processingDecision = ParamUtil.getRequestString(bpc.request, "processingDecision");
         String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
         String periods = ParamUtil.getRequestString(bpc.request, "periods");
@@ -223,6 +228,7 @@ public class InsReportDelegator {
         appPremisesRecommendationDto.setEngageEnforcementRemarks(enforcementRemarks);
         appPremisesRecommendationDto.setRiskLevel(riskLevel);
         appPremisesRecommendationDto.setFollowUpAction(followUpAction);
+        appPremisesRecommendationDto.setProcessingDecision(processingDecision);
         return appPremisesRecommendationDto;
     }
 
@@ -321,7 +327,7 @@ public class InsReportDelegator {
 
     private List<SelectOption> getProcessingDecision() {
         List<SelectOption> riskLevelResult = new ArrayList<>();
-        SelectOption so1 = new SelectOption("submit", "Submit inspection report for review");
+        SelectOption so1 = new SelectOption("submit", "Submit Inspection Report for review");
         riskLevelResult.add(so1);
         return riskLevelResult;
     }

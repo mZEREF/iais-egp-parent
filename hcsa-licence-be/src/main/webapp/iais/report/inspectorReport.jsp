@@ -365,7 +365,7 @@
                         </td>
                         <div>
                             <td class="col-xs-4">
-                                <p><textarea name="remarks" cols="90" rows="6" title="content">
+                                <p><textarea name="remarks" cols="90" rows="6" title="content" maxlength="8000">
                                     <c:if test="${appPremisesRecommendationDto.remarks ==null}">${reportRemarks}</c:if>
                                 <c:if test="${appPremisesRecommendationDto.remarks !=null}">${appPremisesRecommendationDto.remarks}</c:if>
                                     </textarea></p>
@@ -434,7 +434,6 @@
                             <td class="col-xs-4">
                                 <iais:select name="recommendation" options="recommendationOption"
                                              firstOption="Please select"
-                                             value="Approval"
                                              onchange="javascirpt:changeRecommendation(this.value);"/>
                             </td>
                         </c:if>
@@ -461,10 +460,8 @@
                         </td>
                     </c:if>
                         <c:if test="${appPremisesRecommendationDto.period ==null}">
-                            <td class="col-xs-4">option
-                                <iais:select name="periods" options="riskOption" firstOption="Please select"
-                                             onchange="javascirpt:changePeriod(this.value);"
-                                             value="${option}"/>
+                            <td class="col-xs-4">
+                                <iais:select name="periods" options="riskOption" firstOption="Please select" onchange="javascirpt:changePeriod(this.value);"/>
                                 <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                         </c:if>
@@ -510,7 +507,7 @@
                             <p>Follow up Action:</p>
                         </td>
                         <td class="col-xs-4">
-                            <p><textarea name="followUpAction" cols="90" rows="6" title="content">
+                            <p><textarea name="followUpAction" cols="90" rows="6" title="content" maxlength="8000">
                             <c:if test="${appPremisesRecommendationDto.followUpAction == null}">${followRemarks}</c:if>
                                 <c:if test="${appPremisesRecommendationDto.followUpAction != null}">${appPremisesRecommendationDto.followUpAction}</c:if>
                             </textarea></p>
@@ -554,9 +551,7 @@
 <script type="text/javascript">
 
     function insRepsubmit() {
-        if ($("#processingDecision").val() == "submit") {
             $("#mainForm").submit();
-        }
     }
 
     function changePeriod(obj) {

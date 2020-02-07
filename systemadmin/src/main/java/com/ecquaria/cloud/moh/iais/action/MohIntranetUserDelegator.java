@@ -56,7 +56,7 @@ public class MohIntranetUserDelegator {
     private UserClient userClient;
 
     public void start(BaseProcessClass bpc) {
-        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
+        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>user");
         AuditTrailHelper.auditFunction("Create User", "Create User");
         ParamUtil.setSessionAttr(bpc.request,IntranetUserConstant.SEARCH_PARAM,null);
         ParamUtil.setSessionAttr(bpc.request,IntranetUserConstant.SEARCH_RESULT,null);

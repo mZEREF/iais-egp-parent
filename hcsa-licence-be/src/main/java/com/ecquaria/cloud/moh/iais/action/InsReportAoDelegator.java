@@ -97,9 +97,12 @@ public class InsReportAoDelegator {
         insRepDto.setReportedBy(inspectorAo.getReportedBy());
 
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-        String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
-        Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
-        String option  = recomInNumber + chronoUnit;
+        if(appPremisesRecommendationDto!=null){
+            String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
+            Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
+            String option  = recomInNumber + chronoUnit;
+            ParamUtil.setSessionAttr(bpc.request, "option", option);
+        }
         AppPremisesRecommendationDto tcuRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_TCU_NEEDED).getEntity();
         AppPremisesRecommendationDto engageRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
         AppPremisesRecommendationDto riskRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity();
@@ -130,13 +133,12 @@ public class InsReportAoDelegator {
 
         List<SelectOption> chronoOption = getChronoOption();
         List<SelectOption> riskLevelOptions = getriskLevel();
-        List<SelectOption> processingDecision = getProcessingDecision();
+        List<SelectOption> processingDe = getProcessingDecision();
         ParamUtil.setSessionAttr(bpc.request, "recommendationOption", (Serializable) recommendationOption);
-        ParamUtil.setSessionAttr(bpc.request, "processingDecision", (Serializable) processingDecision);
+        ParamUtil.setSessionAttr(bpc.request, "processingDe", (Serializable) processingDe);
         ParamUtil.setSessionAttr(bpc.request, "riskLevelOptions", (Serializable) riskLevelOptions);
         ParamUtil.setSessionAttr(bpc.request, "chronoOption", (Serializable) chronoOption);
         ParamUtil.setSessionAttr(bpc.request, "riskOption", (Serializable)riskOption);
-        ParamUtil.setSessionAttr(bpc.request, "option", option);
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, appPremisesRecommendationDto);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
@@ -262,6 +264,7 @@ public class InsReportAoDelegator {
     private AppPremisesRecommendationDto prepareRecommendation (BaseProcessClass bpc){
         String periods = ParamUtil.getRequestString(bpc.request, "periods");
         String riskLevel = ParamUtil.getRequestString(bpc.request, "riskLevel");
+        String processingDecision = ParamUtil.getRequestString(bpc.request, "processingDecision");
         String followUpAction = ParamUtil.getRequestString(bpc.request, "followUpAction");
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
@@ -284,6 +287,7 @@ public class InsReportAoDelegator {
         appPremisesRecommendationDto.setEngageEnforcementRemarks(enforcementRemarks);
         appPremisesRecommendationDto.setRiskLevel(riskLevel);
         appPremisesRecommendationDto.setFollowUpAction(followUpAction);
+        appPremisesRecommendationDto.setProcessingDecision(processingDecision);
         return appPremisesRecommendationDto;
     }
 
@@ -311,8 +315,8 @@ public class InsReportAoDelegator {
 
     private List<SelectOption> getProcessingDecision() {
         List<SelectOption> riskLevelResult = new ArrayList<>();
-        SelectOption so1 = new SelectOption(APPROVAL, "Acknowledge inspection report");
-        SelectOption so2 = new SelectOption(REJECT, "Revise inspection report");
+        SelectOption so1 = new SelectOption(APPROVAL, "Acknowledge Inspection Report");
+        SelectOption so2 = new SelectOption(REJECT, "Revise Inspection Report");
         riskLevelResult.add(so1);
         riskLevelResult.add(so2);
         return riskLevelResult;

@@ -234,28 +234,28 @@
                                                 <tr height="1">
                                                     <td class="col-xs-2">
                                                         <p>
-                                                            remarks:
+                                                            Remarks:
                                                         </p>
                                                     </td>
                                                     <td>
                                                         <div class="col-sm-9">
-                                                            <p><textarea name="remarks" cols="90" rows="6"
-                                                                         title="content"></textarea></p>
+                                                            <p><textarea name="remarks" cols="90" rows="6" maxlength="8000" title="content"></textarea></p>
                                                         </div>
                                                     </td>
                                                 </tr>
 
                                                 <tr>
                                                     <td class="col-xs-4">
-                                                        <p>Processing Decision:</p>
+                                                        <p><b style="color:#ff0000;">*</b>Processing Decision:</p>
                                                     </td>
                                                     <td class="col-xs-4">
-                                                        <iais:select name="processingDecision" id="aoprocessingDecision" options="processingDecision" firstOption="Please select" value=""/>
+                                                        <iais:select name="processingDecision" id="processingDecision" options="processingDe" firstOption="Please select" value="${appPremisesRecommendationDto.processingDecision}"/>
+                                                        <span id="error_processingDecision" name="iaisErrorMsg" class="error-msg"></span>
                                                     </td>
                                                     <td class="col-xs-4"></td>
                                                 </tr>
                                             </table>
-                                            <div align="right">
+                                            <div align="center">
                                                 <button id="submitButton" type="button" class="btn btn-primary" onclick="reportaosubmit()">
                                                     SUBMIT
                                                 </button>

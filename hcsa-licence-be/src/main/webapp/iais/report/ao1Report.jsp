@@ -348,7 +348,7 @@
                                     </table>
                                 </c:if>
                                 <c:if test="${insRepDto.ncRectification == null}">
-                                    NO RESULT !
+                                    NA
                                 </c:if>
                             </td>
                         </tr>
@@ -416,45 +416,10 @@
                         </tr>
                         <tr>
                             <td class="col-xs-4">
-                                <p>Inspectior Recommendation:</p>
-                            </td>
-                            <td class="col-xs-4">
-                                <p>${option}</p>
-                            </td>
-                            <td class="col-xs-4"></td>
-                        </tr>
-                        <tr>
-                            <td class="col-xs-4">
                                 <p>Recommendation:</p>
                             </td>
                             <td class="col-xs-4">
-                                <iais:select name="recommendation" id="aorecommendation" options="recommendationOption" firstOption="Please select" value="${preapreRecommendationDto.recommendation}"
-                                             onchange="javascirpt:changeRecommendation(this.value);"/>
-                            </td>
-                            <td class="col-xs-4"></td>
-                        </tr>
-                        <tr id="period" hidden>
-                            <td class="col-xs-4">
-                                <p>Period:</p>
-                            </td>
-                            <td class="col-xs-4">
-                                <iais:select name="periods" options="riskOption" firstOption="Please select"
-                                             onchange="javascirpt:changePeriod(this.value);"
-                                             value="${preapreRecommendationDto.period}"/>
-                                <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
-                            </td>
-                            <td class="col-xs-4"></td>
-                        </tr>
-                        <tr id="selfPeriod" hidden>
-                            <td class="col-xs-4">
-                                <p>Other Period:</p>
-                            </td>
-                            <td class="col-xs-4">
-                                <input id=recomInNumber type="text" name="number" value="${number}">
-                                <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
-                                <iais:select id="chronoUnit" name="chrono" options="chronoOption"
-                                             firstOption="Please select" value="${chrono}"/>
-                                <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
+                                <p>${option}</p>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
@@ -519,12 +484,12 @@
 <script type="text/javascript">
 
     function reportaosubmit() {
-        if ($("#aoprocessingDecision").val() =="Approval" &&$("#aorecommendation").val() =="Approval"){
+        if ($("#processingDecision").val() =="Approval"){
             $("#mainForm").submit();
-        }else if ($("#aoprocessingDecision").val() =="Reject"&&$("#aorecommendation").val() =="Reject"){
+        }else if ($("#processingDecision").val() =="Reject"){
             $("[name='action_type']").val("back");
              $("#mainForm").submit();
-        }else if ($("#aorecommendation").val() =="Others") {
+        }else {
             $("#mainForm").submit();
         }
 

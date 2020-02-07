@@ -1,6 +1,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais"%>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -224,27 +225,28 @@
                                             <tr height="1">
                                                 <td class="col-xs-2" >
                                                     <p >
-                                                        remarks:
+                                                        Remarks:
                                                     </p>
                                                 </td>
                                                 <td>
                                                     <div class="col-sm-9">
-                                                        <p><textarea name="remarks" cols="90" rows="6"  title="content"  ></textarea></p>
+                                                        <p><textarea name="remarks" cols="90" rows="6"  title="content" MAXLENGTH="8000"></textarea></p>
                                                     </div>
                                                 </td>
                                             </tr>
 
                                             <tr>
                                                 <td class="col-xs-4">
-                                                    <p>Processing Decision:</p>
+                                                    <p><b style="color:#ff0000;">*</b>Processing Decision:</p>
                                                 </td>
                                                 <td class="col-xs-4">
-                                                    <iais:select name="processingDecision" options="processingDecision" firstOption="Please select" value=""/>
+                                                    <iais:select name="processingDecision" options="processingDe" firstOption="Please select" value="${appPremisesRecommendationDto.processingDecision}"/>
+                                                    <span id="error_processingDecision" name="iaisErrorMsg" class="error-msg"></span>
                                                 </td>
                                                 <td class="col-xs-4"></td>
                                             </tr>
                                         </table>
-                                            <div align="right">
+                                            <div align="center">
                                                 <button id="submitButton" type="button" class="btn btn-primary" onclick="insRepsubmit()">
                                                     SUBMIT
                                                 </button>
