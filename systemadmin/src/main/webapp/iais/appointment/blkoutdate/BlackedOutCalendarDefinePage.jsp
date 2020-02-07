@@ -26,15 +26,12 @@
 <div class="main-content">
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
     <input type="hidden" name="currentValidateId" value="">
 
     <br><br>
 
     <c:if test="${switchPageAction == 'create'}">
-      <div class="bg-title"><h2>Add Blacked Out Dates Form</h2></div>
+      <div class="bg-title"><h2>Create Blacked Out Dates Form</h2></div>
     </c:if>
     <c:if test="${switchPageAction == 'update'}">
       <div class="bg-title"><h2>Update Blacked Out Dates Form</h2></div>
@@ -49,20 +46,27 @@
           <div class="col-md-12">
             <label class="col-md-2">Group Name
             </label>
+
             <div class="col-md-7">
               <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt" options="wrlGrpNameOpt"
-                           firstOption="Please Select"></iais:select>
+                           firstOption="Please Select" value="${shortName}"></iais:select>
+              <span id="error_shortName" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
         </div>
       </c:if>
+
+
 
       <div class="form-group">
           <div class="col-md-12">
             <label class="col-md-2">Blacked Out Date: From
             </label>
             <div class="col-md-5">
-              <iais:datePicker name="startDate" dateVal="${blackedOutDateAttr.startDate}"></iais:datePicker>
+              <iais:datePicker name="startDate"
+                                dateVal="${blackedOutDateAttr.startDate}"
+              ></iais:datePicker>
+              <span id="error_startDate" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
       </div>
@@ -73,8 +77,9 @@
             </label>
             <div class="col-md-5">
               <iais:datePicker name="endDate"
-                               dateVal="${blackedOutDateAttr.endDate}"></iais:datePicker>
+                                dateVal="${blackedOutDateAttr.endDate}"></iais:datePicker>
             </div>
+            <span id="error_endDate" name="iaisErrorMsg" class="error-msg"></span>
           </div>
       </div>
 
@@ -86,6 +91,7 @@
             <div class="col-md-5">
               <input type="text" name="desc" maxlength="255"
                      value="${blackedOutDateAttr.desc}">
+              <span id="error_desc" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
       </div>

@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.List;
+
 /**
  * @author weilu
  * @date 2019/12/25 15:45
@@ -50,4 +52,8 @@ public interface IntranetUserClient {
 
     @PostMapping(value = "/iais-workgroup/work-group/results", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<WorkingGroupQueryDto>> getWorkingGroupBySearchParam(@RequestBody SearchParam searchParam);
+
+    @GetMapping(value = "/iais-task/corrids-workgid/{workGroupId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<TaskDto>> getCorrIdsByWorkGroupId(@PathVariable("workGroupId")String workGroupId);
+
 }

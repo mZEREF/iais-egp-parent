@@ -25,9 +25,6 @@
 <div class="main-content">
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
     <input type="hidden" name="currentValidateId" value="">
     <div class="bg-title"><h2>Blacked Out Dates</h2></div>
 
@@ -73,7 +70,7 @@
                       </thead>
                       <tbody>
                       <c:choose>
-                        <c:when test="${empty blackedOutDateResultAttr}">
+                        <c:when test="${empty blackedOutDateResultAttr.rows}">
                           <tr>
                             <td colspan="6">
                               No Record!!
@@ -113,15 +110,6 @@
                         </div>
                         <div class="col-xs-6 col-md-8 text-right">
                           <div class="nav">
-                            <ul class="pagination">
-                              <li class="hidden"><a href="#" aria-label="Previous"><span aria-hidden="true"><em class="fa fa-chevron-left"></em></span></a></li>
-                              <li class="active"><a href="#">1</a></li>
-                              <li><a href="#">2</a></li>
-                              <li><a href="#">3</a></li>
-                              <li><a href="#" aria-label="Next"><span aria-hidden="true"><em class="fa fa-chevron-right"></em></span></a></li>
-
-                            </ul>
-
 
                           </div>
                           <br><br>
@@ -129,7 +117,7 @@
 
 
                           <div class="text-right text-center-mobile">
-                            <a class="btn btn-primary next" id="addBtnId" >Add</a>
+                            <a class="btn btn-primary next" id="addBtnId" >Create</a>
                           </div>
                         </div>
                       </div>
