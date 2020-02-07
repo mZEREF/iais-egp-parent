@@ -41,7 +41,10 @@ public class UploadDelegator {
         for(ApplicationListFileDto applicationListFileDto :parse){
 
             String s = JsonUtil.parseToJson(applicationListFileDto);
-            uploadFileService.saveFile(s);
+            Boolean aBoolean = uploadFileService.saveFile(s);
+            if(!aBoolean){
+                continue;
+            }
             log.info("------------------- saveFile  end --------------");
             boolean b = uploadFileService.compressFile();
             log.info("------------------- compressFile  end --------------");

@@ -88,6 +88,11 @@ public class UploadFileServiceImpl implements UploadFileService {
     public Boolean saveFile(String  str) {
         ApplicationListFileDto applicationListFileDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
         List<ApplicationGroupDto> applicationGroup = applicationListFileDto.getApplicationGroup();
+        List<AppPremisesCorrelationDto> appPremisesCorrelation = applicationListFileDto.getAppPremisesCorrelation();
+        if(appPremisesCorrelation.isEmpty()){
+            log.info("appPremisesCorrelation is empty data is not ");
+            return false;
+        }
         groupId="";
         if(!applicationGroup.isEmpty()){
              groupId = applicationGroup.get(0).getId();
@@ -126,6 +131,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             ApplicationListFileDto applicationListFileDto = JsonUtil.parseToObject(entity, ApplicationListFileDto.class);
             List<AppSvcDocDto> appSvcDoc = applicationListFileDto.getAppSvcDoc();
             List<ApplicationGroupDto> applicationGroup = applicationListFileDto.getApplicationGroup();
+            List<AppPremisesCorrelationDto> appPremisesCorrelation = applicationListFileDto.getAppPremisesCorrelation();
             groupId=applicationGroup.get(0).getId();
             List<AppGrpPrimaryDocDto> appGrpPrimaryDoc = applicationListFileDto.getAppGrpPrimaryDoc();
             appSvcDoc(appSvcDoc,appGrpPrimaryDoc);
@@ -376,6 +382,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
         List<ApplicationListFileDto> applicationListFileDtoList=new ArrayList<>();
         for(ApplicationGroupDto every :applicationGroup){
+
             Set<String > appGrpIds=new HashSet<>();
             Set<String> appGrpPersonIds=new HashSet<>();
             Set<String> appGrpPersonExtIds=new HashSet<>();

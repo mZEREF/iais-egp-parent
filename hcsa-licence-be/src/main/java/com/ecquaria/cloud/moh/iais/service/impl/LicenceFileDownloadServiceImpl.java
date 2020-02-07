@@ -239,7 +239,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     public Boolean  download( ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,String fileName
-    ,String groupPath) {
+    ,String groupPath)  throws Exception {
 
         Boolean flag=false;
 
@@ -262,7 +262,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                                 count= fileInputStream.read(size);
                             }
 
-                            Boolean aBoolean = fileToDto(by.toString(), listApplicationDto, requestForInfList);
+                            Boolean aBoolean = fileToDto(by.toString(), listApplicationDto, requestForInfList,processFileTrackDto);
                             flag=aBoolean;
                             /*  Boolean backups = backups(flag, filzz);*/
                             if(aBoolean){
@@ -277,6 +277,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             }
                         }catch (Exception e){
                             log.error(e.getMessage(),e);
+                           throw new Exception();
                         }
 
                     }
@@ -371,7 +372,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
 
 
-    private Boolean fileToDto(String str,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList){
+    private Boolean fileToDto(String str,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,ProcessFileTrackDto processFileTrackDto)
+            throws Exception {
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
         List<AppGrpPersonnelDto> appGrpPersonnel = applicationListDto.getAppGrpPersonnel();
@@ -427,27 +429,29 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             every.setAuditTrailDto(intranet);
         }
         applicationListDto.setAuditTrailDto(intranet);
-        Boolean flag=applicationClient.getDownloadFile(applicationListDto).getStatusCode() == 200;
-        if(flag){
-            log.info("-----------getDownloadFile-------");
-            List<ApplicationDto> list = this.listApplication();
-             this. requestForInfList(requestForInfList);
-             Map<String,List<String>> map=new HashMap<>();
-             List<String> oldStauts=new ArrayList<>();
-             oldStauts.add(ApplicationConsts.APPLICATION_SUCCESS_ZIP);
-             List<String > newStatus=new ArrayList<>();
-             newStatus.add(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
-             listApplicationDto.addAll(list);
-             List<String> applicationGroupIds=new ArrayList<>();
-             for(ApplicationGroupDto every:applicationGroup){
-                 String id = every.getId();
-                 applicationGroupIds.add(id);
-             }
-             map.put("oldStatus",oldStauts);
-             map.put("newStatus",newStatus);
-             map.put("groupIds",applicationGroupIds);
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        Boolean flag=false;
+        try {
+             flag=applicationClient.getDownloadFile(applicationListDto).getStatusCode() == 200;
+            if(flag){
+                log.info("-----------getDownloadFile-------");
+                List<ApplicationDto> list = this.listApplication();
+                this. requestForInfList(requestForInfList);
+                Map<String,List<String>> map=new HashMap<>();
+                List<String> oldStauts=new ArrayList<>();
+                oldStauts.add(ApplicationConsts.APPLICATION_SUCCESS_ZIP);
+                List<String > newStatus=new ArrayList<>();
+                newStatus.add(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+                listApplicationDto.addAll(list);
+                List<String> applicationGroupIds=new ArrayList<>();
+                for(ApplicationGroupDto every:applicationGroup){
+                    String id = every.getId();
+                    applicationGroupIds.add(id);
+                }
+                map.put("oldStatus",oldStauts);
+                map.put("newStatus",newStatus);
+                map.put("groupIds",applicationGroupIds);
+                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
           /*  int statusCode = beEicGatewayClient.updateStatus(map, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getStatusCode();
             *//* requeOrNew(applicationGroup,application,listApplicationDto,requestForInfList);*//*
@@ -474,6 +478,16 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
             }*/
 
+            }
+
+        }catch (Exception e){
+             log.info("have error is save data" +e);
+            processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            AuditTrailDto batchJobDto = AuditTrailHelper.getBatchJobDto("INTRANET");
+            processFileTrackDto.setAuditTrailDto(batchJobDto);
+            processFileTrackDto.setStatus("PFT004");
+            systemClient.updateProcessFileTrack(processFileTrackDto);
+            throw new Exception();
         }
 
         return flag;
