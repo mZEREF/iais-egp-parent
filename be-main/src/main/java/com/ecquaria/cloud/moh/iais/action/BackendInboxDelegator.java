@@ -165,6 +165,19 @@ public class BackendInboxDelegator {
             searchParam.setPageSize(10);
             searchParam.setPageNo(1);
             searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
+        }else{
+            String pageSizeString = ParamUtil.getRequestString(bpc.request, "pageJumpNoPageSize");
+            String pageNoString = ParamUtil.getRequestString(bpc.request, "pageJumpNoTextchangePage");
+            int pageSize = 10;
+            int pageNo = 1;
+            if(pageSizeString != null){
+                pageSize = Integer.parseInt(pageSizeString);
+            }
+            if(pageNoString != null){
+                pageNo = Integer.parseInt(pageNoString);
+            }
+            searchParam.setPageSize(pageSize);
+            searchParam.setPageNo(pageNo);
         }
         return searchParam;
     }
@@ -306,18 +319,9 @@ public class BackendInboxDelegator {
                     routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,RoleConsts.USER_ROLE_AO3,applicationViewDto,taskDto);
                     log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
                 }else if(RoleConsts.USER_ROLE_AO3.equals(loginContext.getCurRoleId())){
-                    String action =  ParamUtil.getRequestString(bpc.request, "action");
-                    if(!StringUtil.isEmpty(action) && "trigger".equals(action)){
-                        log.debug(StringUtil.changeForLog("the do approve start ...."));
-                        routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_APPROVED,null,applicationViewDto,taskDto);
-                        log.debug(StringUtil.changeForLog("the do approve end ...."));
-                    }else{
-                        //trigger to DMS
-                        ApplicationDto application=applicationViewDto.getApplicationDto();
-                        application.setStatus(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS);
-                        applicationViewDto.setApplicationDto(application);
-                        applicationViewService.updateFEApplicaiton(application);
-                    }
+                    log.debug(StringUtil.changeForLog("the do approve start ...."));
+                    routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_APPROVED,null,applicationViewDto,taskDto);
+                    log.debug(StringUtil.changeForLog("the do approve end ...."));
                 }
             }
             //update commPools
