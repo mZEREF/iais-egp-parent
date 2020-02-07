@@ -98,9 +98,9 @@ public class InspectionMergeSendNcEmailDelegator {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getRequestString(request,"taskId");
-        if(StringUtil.isEmpty(taskId)){
-            taskId= "6E5A002D-9437-EA11-BE7E-000C29F371DC";
-        }
+//        if(StringUtil.isEmpty(taskId)){
+//            taskId= "6E5A002D-9437-EA11-BE7E-000C29F371DC";
+//        }
         TaskDto taskDto = taskService.getTaskById(taskId);
         if(StringUtil.isEmpty(taskDto)){
             taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
@@ -131,6 +131,9 @@ public class InspectionMergeSendNcEmailDelegator {
             svcNames.add(inspectionService.getHcsaServiceDtoByServiceId(appViewDto.getApplicationDto().getServiceId()).getSvcName());
             if(oneEmail.contains("Below are the review outcome") && oneEmail.contains("<p>Thank you</p>")){
                 mesContext.append(ncEmail.substring(ncEmail.indexOf("Below are the review outcome"),ncEmail.indexOf("<p>Thank you</p>")));
+            }
+            else {
+                mesContext.append(ncEmail);
             }
         }
         for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos

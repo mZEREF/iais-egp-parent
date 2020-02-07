@@ -123,9 +123,9 @@ public class InspectEmailAo1Delegator {
         AccessUtil.initLoginUserInfo(bpc.request);
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getRequestString(request,"taskId");
-        if (StringUtil.isEmpty(taskId)) {
-            taskId = "06528289-4246-EA11-BE7F-000C29F371DC";
-    }
+//        if (StringUtil.isEmpty(taskId)) {
+//            taskId = "06528289-4246-EA11-BE7F-000C29F371DC";
+//         }
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
         String appPremCorrId = taskDto.getRefNo();
         List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
