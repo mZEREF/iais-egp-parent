@@ -66,10 +66,12 @@
                     <thead>
                     <tr>
                       <iais:sortableHeader needSort="false"   field="index" value="No."></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"   field="NAME" value="User Name"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="YEAR" value="Year"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="BLOCK_OUT_START" value="User Block Date Start"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="BLOCK_OUT_END" value="User Block Date End"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false"   field="REMARKS" value="User Block Date Description"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
                     </tr>
                     </thead>
                     <tbody>
@@ -95,6 +97,11 @@
                             <td><fmt:formatDate value="${calendar.userBlockDateEnd}" pattern="MM/dd/yyyy"/></td>
 
                             <td>${calendar.description}</td>
+                            <td>
+                              <input type="hidden" id="nonAvailId" name="nonAvailId" value="">
+                              <button type="button"   onclick="doDelete('<iais:mask name="nonAvailId" value="${calendar.id}"/>')"  class="btn btn-default btn-sm" >Delete</button>
+                              <button type="button"  onclick="doEdit('<iais:mask name="nonAvailId" value="${calendar.id}"/>')" class="btn btn-default btn-sm" >Update</button>
+                            </td>
                           </tr>
                         </c:forEach>
 
@@ -124,12 +131,30 @@
 
     </div>
 
+    <div class="text-right text-center-mobile">
+      <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doAdd();">Add</a>
+    </div>
+
   </form>
 </div>
 
 <script>
     function doSearch() {
         SOP.Crud.cfxSubmit("mainForm", "doQuery");
+    }
+
+    function doAdd() {
+        SOP.Crud.cfxSubmit("mainForm", "add");
+    }
+
+    function doEdit(val) {
+        $('#nonAvailId').val(val);
+        SOP.Crud.cfxSubmit("mainForm", "edit", val);
+    }
+
+    function doDelete(val) {
+        $('#nonAvailId').val(val);
+        SOP.Crud.cfxSubmit("mainForm", "delete", val);
     }
     
     function doClear() {

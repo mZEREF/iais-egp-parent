@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="3" minorVersion="0" name="MohInspectorCalendar" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preLoad" x="250" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preLoad_OnStepProcess_0" name="preLoad_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doQuery" x="510" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doQuery_OnStepProcess_0" name="doQuery_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doPaging" x="620" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doPaging_OnStepProcess_0" name="doPaging_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doSorting" x="720" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doSorting_OnStepProcess_0" name="doSorting_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="add" processname="MohInspSupAddAvailability" project="INTRANET" version="-1" x="850" y="220">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="update" processname="MohInspSupAddAvailability" project="INTRANET" version="-1" x="950" y="200">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="delete" processname="MohInspSupAddAvailability" project="INTRANET" version="-1" x="1040" y="200">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="calendar" stageIndicator="" x="420" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preLoad" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Step1" style="rectanular">
+   <position>{(120,120)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/calendar" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preLoad" style="rectanular">
+   <position>{(270,120)(440,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/calendar" style="rectanular">
+   <position>{(440,120)(580,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doQuery" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(580,120)(530,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doQuery" style="oblique">
+   <position>{(530,260)(610,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preLoad" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(610,400)(277,402)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doPaging" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(580,120)(640,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSorting" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(580,120)(740,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doPaging" style="rectanular">
+   <position>{(640,270)(610,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doSorting" style="rectanular">
+   <position>{(740,250)(610,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/add" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(580,120)(870,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/update" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(580,120)(970,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/delete" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(580,120)(1060,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/InvokeStep/add" style="rectanular">
+   <position>{(870,240)(610,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/InvokeStep/update" style="rectanular">
+   <position>{(970,220)(610,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/InvokeStep/delete" style="rectanular">
+   <position>{(1060,220)(610,400)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="560" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/doQuery" value="&quot;doQuery&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doPaging" value="&quot;doPaging&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doSorting" value="&quot;doSorting&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/add" value="&quot;add&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/update" value="&quot;edit&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/delete" value="&quot;delete&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="590" y="380">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>
