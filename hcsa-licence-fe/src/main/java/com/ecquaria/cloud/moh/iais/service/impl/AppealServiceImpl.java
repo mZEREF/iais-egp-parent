@@ -67,7 +67,7 @@ public class AppealServiceImpl implements AppealService {
         appliSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
 
         AppealDto appealDto=new AppealDto();
-        appealDto.setApplicationId(appealingFor);
+
         appealDto.setRemarks(remarks);
         appealDto.setAppealReason(reasonSelect);
         appealDto.setNewHciName(proposedHciName);
