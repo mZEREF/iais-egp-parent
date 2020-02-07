@@ -94,8 +94,8 @@
     }
 
     function doInspAvailabilityConSubmit() {
-        $("[name='nonActionValue']").val('submit');
-        inspAvailabilityConSubmit('submit');
+        $("[name='nonActionValue']").val('back');
+        inspAvailabilityConSubmit('back');
     }
     function inspAvailabilityConSubmit(action){
         $("[name='inspSupAddAvailabilityType']").val(action);
