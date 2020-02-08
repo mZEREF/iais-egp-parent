@@ -190,7 +190,7 @@ public class InsRepServiceImpl implements InsRepService {
         AppPremisesRecommendationDto NcRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_TCU).getEntity();
         if(NcRecommendationDto==null){
             inspectionReportDto.setMarkedForAudit(false);
-        }else {
+        }else if(NcRecommendationDto!=null&&NcRecommendationDto.getRecomInDate()!=null) {
             inspectionReportDto.setMarkedForAudit(true);
         }
 
@@ -505,7 +505,7 @@ public class InsRepServiceImpl implements InsRepService {
         String taskKey = taskDto.getTaskKey();
         String appId = applicationDto.getId();
         String stageId = taskDto.getTaskKey();
-        ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW);
+        ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION);
         updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
         completedTask(taskDto);
         String subStage = getSubStage(taskDto);
