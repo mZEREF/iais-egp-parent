@@ -99,6 +99,15 @@ public final class IaisEGPHelper extends EGPHelper {
         return dto;
     }
 
+    public static Boolean isAfterDate(Date start, Date end){
+        if (start == null || end == null){
+            throw new IaisRuntimeException("No has input for Date!");
+        }
+
+        return end.compareTo(start) == 1  || end.compareTo(start) == 0 ? true : false;
+    }
+
+
     /**
      * use by delegator to clear session attr, prefix of param need use 'Param_'
      * @param request HttpServletRequest

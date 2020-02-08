@@ -41,4 +41,6 @@ public interface AppointmentService {
 
 	SearchResult<InspectorCalendarQueryDto> queryInspectorCalendar(SearchParam searchParam);
 
+	List<Date> getCurrentWorkingGroupInspectionDate(String wrkGrpId);
+
 }

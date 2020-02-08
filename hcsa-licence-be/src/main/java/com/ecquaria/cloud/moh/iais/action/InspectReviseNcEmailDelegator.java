@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
@@ -188,12 +187,7 @@ public class InspectReviseNcEmailDelegator {
         ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,APP_VIEW_DTO);
         String serviceId=applicationViewDto.getApplicationDto().getServiceId();
         TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"send".equals(currentAction)){
-            return;
-        }
         String decision=ParamUtil.getString(request,"decision");
-        if(decision.equals("Select")){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
@@ -202,12 +196,10 @@ public class InspectReviseNcEmailDelegator {
         if (inspectionEmailTemplateDto.getSubject().isEmpty()){
             Map<String,String> errorMap = new HashMap<>();
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
-            ParamUtil.setRequestAttr(request,DemoConstants.ISVALID,"N");
         }
         if (inspectionEmailTemplateDto.getMessageContent().isEmpty()){
             Map<String,String> errorMap = new HashMap<>();
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
-            ParamUtil.setRequestAttr(request,DemoConstants.ISVALID,"N");
         }
         if (decision.equals(InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW)){
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW);
@@ -238,45 +230,7 @@ public class InspectReviseNcEmailDelegator {
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,taskDto1,HcsaConsts.ROUTING_STAGE_POT,taskDto1.getUserId(),inspectionEmailTemplateDto.getRemarks());
 
         }
-        else {
-            applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING);
-            applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
-            AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
-            appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_REVIEW_CHECKLIST_EMAIL);
-            appInspectionStatusDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            appInspectionStatusClient.update(appInspectionStatusDto1);
-            taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
-            completedTask(taskDto);
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
 
-            boolean flag=true;
-            List<ApplicationDto> applicationDtos= inspEmailService.getApplicationDtosByCorreId(applicationViewDto.getAppPremisesCorrelationId());
-            for (ApplicationDto appDto:applicationDtos
-            ) {
-                if(!appDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING)){
-                    flag=false;
-                }
-            }
-            if(flag){
-
-                HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-                hcsaSvcStageWorkingGroupDto.setType(applicationViewDto.getApplicationDto().getApplicationType());
-                hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
-                hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
-                hcsaSvcStageWorkingGroupDto.setOrder(3);
-                TaskDto taskDto1=new TaskDto();
-                taskDto1.setRefNo(taskDto.getRefNo());
-                taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
-                taskDto1.setTaskType(taskDto.getTaskType());
-                taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
-                taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
-                taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
-                taskDto1.setUserId(organizationClient.getInspectionLead(taskDto1.getWkGrpId()).getEntity().get(0));
-                List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
-                taskService.createTasks(taskDtos);
-                createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT,taskDto1,HcsaConsts.ROUTING_STAGE_POT,taskDto1.getUserId(),inspectionEmailTemplateDto.getRemarks());
-            }
-        }
         inspEmailService.updateEmailDraft(inspectionEmailTemplateDto);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
 

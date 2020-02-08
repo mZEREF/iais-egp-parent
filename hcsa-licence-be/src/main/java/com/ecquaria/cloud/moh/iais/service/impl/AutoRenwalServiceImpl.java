@@ -154,7 +154,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
         String svcName = licenceDto.getSvcName();
 
-        OrganizationDto organizationBy = getOrganizationBy(licenceDto.getOrganizationId());
+        OrganizationDto organizationBy = getOrganizationBy(licenceDto.getOriginLicenceId());
         String id1 = organizationBy.getId();
         List<OrgUserRoleDto> sendMailUser = getSendMailUser(id1);
 
@@ -208,7 +208,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     private void isAuto(LicenceDto licenceDto ,HttpServletRequest request ) throws IOException, TemplateException {
         /*Name of Service*/
 
-        OrganizationDto organizationBy = getOrganizationBy(licenceDto.getOrganizationId());
+        OrganizationDto organizationBy = getOrganizationBy(licenceDto.getOriginLicenceId());
         String id1 = organizationBy.getId();
         List<OrgUserRoleDto> sendMailUser = getSendMailUser(id1);
 
