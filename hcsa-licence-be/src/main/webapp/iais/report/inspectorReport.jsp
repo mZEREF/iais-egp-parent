@@ -118,7 +118,9 @@
                             <p>Time of Inspection:</p>
                         </td>
                         <td class="col-xs-8">
-                            <fmt:formatDate value="${insRepDto.inspectionTime}"
+                            <fmt:formatDate value="${insRepDto.inspectionStartTime}"
+                                            pattern="dd/MM/yyyy"></fmt:formatDate>-
+                            <fmt:formatDate value="${insRepDto.inspectionEndTime}"
                                             pattern="dd/MM/yyyy"></fmt:formatDate>
                         </td>
                     </tr>
@@ -381,7 +383,7 @@
                             <p>Rectified Within KPI?</p>
                         </td>
                         <td class="col-xs-4">
-                            <p>YES</p>
+                            <p>Yes</p>
                         </td>
                         <td class="col-xs-4"></td>
                     </tr>

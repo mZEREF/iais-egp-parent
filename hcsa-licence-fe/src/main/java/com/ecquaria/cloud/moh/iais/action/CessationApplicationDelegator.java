@@ -17,6 +17,8 @@ public class CessationApplicationDelegator {
     }
 
     public void init(BaseProcessClass bpc){
+        String appNo = "";
+
 
     }
 
