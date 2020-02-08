@@ -66,6 +66,7 @@ public class ApplicationGroupServiceImpl implements ApplicationGroupService {
                 EventBusConsts.OPERATION_APPLICATION_UPDATE,
                 sopUrl,
                 callBackUrl, EventBusConsts.SOP_USER_ID,false,project,processName,step);
+        req.addCallbackParam("eventRefNo", eventApplicationGroupDto.getEventRefNo());
         //
         SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
         return null;
