@@ -38,7 +38,7 @@ public interface LicenceClient {
     FeignResponseEntity<String> doUpdate(@RequestBody LicenceDto licenceDto);
 
     @RequestMapping(path= "/hcsa-licence-rfc/licence-bylicence-byNo/{licenceNo}", method = RequestMethod.GET)
-    FeignResponseEntity<LicenceDto> getLicBylicNo();
+    FeignResponseEntity<LicenceDto> getLicBylicNo(@RequestParam(value = "licenceNo")String licenceNo);
 
     @RequestMapping(path = "/hcsa-licence/licence-by-licno",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> getLicDtosByLicNos(@RequestBody List<String> licenceNos);
@@ -48,4 +48,5 @@ public interface LicenceClient {
 
     @GetMapping(value = "/licence-id-premises",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getPremisesDto(@RequestParam("licenceId") String licenceId);
+
 }

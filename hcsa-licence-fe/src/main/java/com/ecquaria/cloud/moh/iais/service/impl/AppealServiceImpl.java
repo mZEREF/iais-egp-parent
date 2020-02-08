@@ -1,17 +1,28 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealDto;
+
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppliSpecialDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
+
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
+import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
@@ -19,13 +30,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Wenkang
@@ -40,6 +54,9 @@ public class AppealServiceImpl implements AppealService {
     private SystemAdminClient systemAdminClient;
     @Autowired
     private LicenceClient licenceClient;
+    @Autowired
+    private AppConfigClient appConfigClient;
+
     @Override
     public List<String> reasonAppeal(String applicationNoOrLicenceNo) {
         ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion(applicationNoOrLicenceNo).getEntity();
@@ -56,12 +73,11 @@ public class AppealServiceImpl implements AppealService {
     public String submitData(HttpServletRequest request) {
 
         String appealingFor = request.getParameter("appealingFor");
-        ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion("AN191217000189-01").getEntity();
+        ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion("AN191226000315-03").getEntity();
 
         String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
         StringBuilder stringBuilder =new StringBuilder(appNo);
         String s = stringBuilder.append("-1").toString();
-
 
 
         String reasonSelect = request.getParameter("reasonSelect");
@@ -74,20 +90,7 @@ public class AppealServiceImpl implements AppealService {
 
         AppealPageDto appealDto=new AppealPageDto();
         //group
-        ApplicationGroupDto applicationGroupDto=new ApplicationGroupDto();
-        applicationGroupDto.setSubmitDt(new Date());
-        applicationGroupDto.setGroupNo(appNo);
-        applicationGroupDto.setStatus("AGST006");
-        applicationGroupDto.setAmount(0.0);
-        applicationGroupDto.setIsPreInspection(1);
-        applicationGroupDto.setIsInspectionNeeded(1);
-        applicationGroupDto.setLicenseeId("36F8537B-FE17-EA11-BE78-000C29D29DB0");
-        applicationGroupDto.setIsBundledFee(0);
-        applicationGroupDto.setIsCharitable(0);
-        applicationGroupDto.setIsByGiro(0);
-        applicationGroupDto.setIsGrpLic(0);
-        applicationGroupDto.setDeclStmt("N");
-        applicationGroupDto.setSubmitBy("C55C9E62-750B-EA11-BE7D-000C29F371DC+");
+        ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo);
 
 
         ApplicationDto applicationDto1 =new ApplicationDto();
@@ -112,10 +115,7 @@ public class AppealServiceImpl implements AppealService {
 
         }
 
-        applicationClient.submitAppeal(appealDto);
-
-
-
+            applicationClient.submitAppeal(appealDto);
 
 
         return s;
@@ -124,21 +124,60 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public String saveData(HttpServletRequest request) {
-        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+
         String appealingFor =  request.getParameter("appealingFor");
         String reasonSelect = request.getParameter("reasonSelect");
         String[] selectHciNames = request.getParameterValues("selectHciName");
         String proposedHciName = request.getParameter("proposedHciName");
         String remarks = request.getParameter("remarks");
-
+        String licenceYear = request.getParameter("licenceYear");
         List appSvcCgoDtoList = reAppSvcCgo(request);
         ParamUtil.setRequestAttr(request, "CgoMandatoryCount", appSvcCgoDtoList.size());
 
         ParamUtil.setSessionAttr(request, "GovernanceOfficersList", (Serializable) appSvcCgoDtoList);
 
+
+
+        AppealPageDto appealPageDto = reAppealPage(request);
+        String s = JsonUtil.parseToJson(appealPageDto);
+        AppSubmissionDto appSubmissionDto=new AppSubmissionDto();
+        String apty = systemAdminClient.draftNumber("APTY001").getEntity();
+        appSubmissionDto.setDraftNo(apty);
+        appSubmissionDto.setAmountStr(s);
+        appSubmissionDto.setDraftStatus("CMSTAT001");
+        appSubmissionDto.setAppType("APTY002");
+      /*  applicationClient.saveDraft(appSubmissionDto);*/
+        request.setAttribute("remark",remarks);
+        request.setAttribute("proposedHciName",proposedHciName);
+        request.setAttribute("appealingFor",appealingFor);
+        request.setAttribute("reasonSelect",reasonSelect);
+        request.setAttribute("licenceYear",licenceYear);
         return null;
     }
 
+    @Override
+    public void getMessage(HttpServletRequest request) {
+        String appealingFor =  request.getParameter("appealingFor");
+        ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion("AN191226000315-03").getEntity();
+        String serviceId = applicationDto.getServiceId();
+        applicationDto.getAppGrpId();
+        List<String> list=new ArrayList<>();
+        list.add(serviceId);
+        List<HcsaServiceDto> entity = appConfigClient.getHcsaService(list).getEntity();
+        for(int  i=0;i<entity.size();i++){
+            String svcName = entity.get(i).getSvcName();
+            request.getSession().setAttribute("serviceName",svcName);
+        }
+        String applicationNo = applicationDto.getApplicationNo();
+        request.getSession().setAttribute("applicationNo",applicationNo);
+    }
+
+    @Override
+    public Map<String,String> validate(HttpServletRequest request) {
+        Map<String,String> errorMap=new HashMap<>();
+        validae(request,errorMap);
+        return errorMap;
+    }
 
 
     private List<AppSvcCgoDto>  reAppSvcCgo(HttpServletRequest request){
@@ -177,11 +216,11 @@ public class AppealServiceImpl implements AppealService {
             appSvcCgoDto.setDesignation(designation[i]);
             appSvcCgoDto.setProfessionType(professionType[i]);
             appSvcCgoDto.setProfessionRegoNo(professionRegoNo[i]);
-     /*       String specialtyStr = specialty[i];
+            String specialtyStr = specialty[i];
             appSvcCgoDto.setSpeciality(specialtyStr);
             if("other".equals(specialtyStr)){
                 appSvcCgoDto.setSpecialityOther(specialtyOther[i]);
-            }*/
+            }
             //qualification
             appSvcCgoDto.setQualification(qualification[i]);
             appSvcCgoDto.setMobileNo(mobileNo[i]);
@@ -190,5 +229,181 @@ public class AppealServiceImpl implements AppealService {
             appSvcCgoDtoList.add(appSvcCgoDto);
         }
         return appSvcCgoDtoList;
+    }
+
+
+    public void validae(HttpServletRequest request, Map<String,String> map){
+        AppealPageDto appealPageDto = reAppealPage(request);
+        String remarks = appealPageDto.getRemarks();
+        if (StringUtil.isEmpty(remarks)) {
+            map.put("remarks","UC_CHKLMD001_ERR001");
+        }
+        String appealReason = appealPageDto.getAppealReason();
+        if (StringUtil.isEmpty(appealReason)){
+            map.put("reason","UC_CHKLMD001_ERR001");
+        }else {
+            if("MS003".equals(appealReason)){
+                List<AppSvcCgoDto> appSvcCgoList = appealPageDto.getAppSvcCgoDto();
+                StringBuilder stringBuilder =new StringBuilder();
+                for(int i=0;i<appSvcCgoList.size();i++ ){
+                    StringBuilder stringBuilder1=new StringBuilder();
+                    String assignSelect = appSvcCgoList.get(i).getAssignSelect();
+                    if("-1".equals(assignSelect)){
+                        map.put("assignSelect"+i, "UC_CHKLMD001_ERR002");
+                    }else {
+                        String idTyp = appSvcCgoList.get(i).getIdType();
+                        if("-1".equals(idTyp)){
+                            map.put("idTyp"+i, "UC_CHKLMD001_ERR002");
+                        }
+                        String salutation = appSvcCgoList.get(i).getSalutation();
+                        if(StringUtil.isEmpty(salutation)){
+                            map.put("salutation"+i,"UC_CHKLMD001_ERR001");
+                        }
+                        String speciality = appSvcCgoList.get(i).getSpeciality();
+                        if("-1".equals(speciality)){
+                            map.put("speciality"+i,"UC_CHKLMD001_ERR002");
+                        }
+                        String professionType = appSvcCgoList.get(i).getProfessionType();
+                        if(StringUtil.isEmpty(professionType)){
+                            map.put("professionType"+i,"UC_CHKLMD001_ERR002");
+                        }
+                        String designation = appSvcCgoList.get(i).getDesignation();
+                        if(StringUtil.isEmpty(designation)){
+                            map.put("designation"+i,"UC_CHKLMD001_ERR001");
+                        }
+                        String professionRegoNo = appSvcCgoList.get(i).getProfessionRegoNo();
+                        if(StringUtil.isEmpty(professionRegoNo)){
+                            map.put("professionRegoNo"+i,"UC_CHKLMD001_ERR001");
+                        }
+                        String idNo = appSvcCgoList.get(i).getIdNo();
+                        //to do
+                        if(StringUtil.isEmpty(idNo)){
+                            map.put("idNo"+i,"UC_CHKLMD001_ERR001");
+                        }else {
+                            if("FIN".equals(idTyp)){
+                                boolean b = SgNoValidator.validateFin(idNo);
+                                if(!b){
+                                    map.put("idNo"+i,"CHKLMD001_ERR005");
+                                }
+                                stringBuilder1.append(idTyp).append(idNo);
+
+                            }
+                            if("NRIC".equals(idTyp)){
+                                boolean b1 = SgNoValidator.validateNric(idNo);
+                                if(!b1){
+                                    map.put("idNo"+i,"CHKLMD001_ERR005");
+                                }
+                                stringBuilder1.append(idTyp).append(idNo);
+
+                            }
+
+                        }
+                        //to do
+
+                        String Specialty = appSvcCgoList.get(i).getSpeciality();
+                        if (StringUtil.isEmpty(Specialty)) {
+                            map.put("speciality"+i, "UC_CHKLMD001_ERR002");
+                        }
+
+                        String specialty = appSvcCgoList.get(i).getSpeciality();
+                        if(StringUtil.isEmpty(specialty)){
+                            map.put("specialty"+i, "UC_CHKLMD001_ERR001");
+                        }
+                        String name = appSvcCgoList.get(i).getName();
+                        if(StringUtil.isEmpty(name)){
+                            map.put("name"+i,"UC_CHKLMD001_ERR001");
+                        }
+
+                        String mobileNo = appSvcCgoList.get(i).getMobileNo();
+                        if(StringUtil.isEmpty(mobileNo)){
+                            map.put("mobileNo"+i, "UC_CHKLMD001_ERR001");
+                        }else if (!StringUtil.isEmpty(mobileNo)) {
+                            if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
+                                map.put("mobileNo"+i, "CHKLMD001_ERR004");
+                            }
+                        }
+                        String emailAddr = appSvcCgoList.get(i).getEmailAddr();
+                        if(StringUtil.isEmpty(emailAddr)){
+                            map.put("emailAddr"+i, "UC_CHKLMD001_ERR001");
+                        }else if (!StringUtil.isEmpty(emailAddr)) {
+                            if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
+                                map.put("emailAddr"+i, "CHKLMD001_ERR006");
+                            }
+                        }
+                        String s = stringBuilder.toString();
+                        if(!StringUtil.isEmpty(stringBuilder1.toString())){
+                            if(s.contains(stringBuilder1.toString())){
+                                map.put("idNo","UC_CHKLMD001_ERR002");
+                            }else {
+                                stringBuilder.append(stringBuilder1.toString());
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+
+    }
+
+    private AppealPageDto reAppealPage(HttpServletRequest request){
+        AppealPageDto appealPageDto=new AppealPageDto();
+        List<AppSvcCgoDto> appSvcCgoDtos = reAppSvcCgo(request);
+
+        String appealingFor =  request.getParameter("appealingFor");
+        String reasonSelect = request.getParameter("reasonSelect");
+        String licenceYear = request.getParameter("licenceYear");
+        String selectHciNames = request.getParameter("selectHciName");
+        String proposedHciName = request.getParameter("proposedHciName");
+        String remarks = request.getParameter("remarks");
+        appealPageDto.setAppealReason(reasonSelect);
+        appealPageDto.setAppSvcCgoDto(appSvcCgoDtos);
+        appealPageDto.setNewHciName(proposedHciName);
+        appealPageDto.setRemarks(remarks);
+        if(!StringUtil.isEmpty(licenceYear)){
+            appealPageDto.setNewLicYears(Integer.parseInt(licenceYear));
+        }
+
+        return appealPageDto;
+    }
+
+
+    private void licencePresmises(String  licenceNo){
+        LicenceDto entity = licenceClient.getLicBylicNo(licenceNo).getEntity();
+        String id = entity.getId();
+
+        List<PremisesDto> premisesDtos = licenceClient.getPremisess(id).getEntity();
+
+        List<AppSvcCgoDto> list=new ArrayList<>();
+        for(PremisesDto every:premisesDtos){
+            AppSvcCgoDto appSvcCgoDto = MiscUtil.transferEntityDto(every, AppSvcCgoDto.class);
+            list.add(appSvcCgoDto);
+        }
+
+        String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
+    }
+
+    private ApplicationGroupDto getApplicationGroupDto(String appNo){
+
+        ApplicationGroupDto applicationGroupDto=new ApplicationGroupDto();
+        applicationGroupDto.setSubmitDt(new Date());
+        applicationGroupDto.setGroupNo(appNo);
+        applicationGroupDto.setStatus("AGST006");
+        applicationGroupDto.setAmount(0.0);
+        applicationGroupDto.setIsPreInspection(1);
+        applicationGroupDto.setIsInspectionNeeded(1);
+        applicationGroupDto.setLicenseeId("36F8537B-FE17-EA11-BE78-000C29D29DB0");
+        applicationGroupDto.setIsBundledFee(0);
+        applicationGroupDto.setIsCharitable(0);
+        applicationGroupDto.setIsByGiro(0);
+        applicationGroupDto.setIsGrpLic(0);
+        applicationGroupDto.setDeclStmt("N");
+        applicationGroupDto.setSubmitBy("C55C9E62-750B-EA11-BE7D-000C29F371DC");
+        return applicationGroupDto;
+
     }
 }

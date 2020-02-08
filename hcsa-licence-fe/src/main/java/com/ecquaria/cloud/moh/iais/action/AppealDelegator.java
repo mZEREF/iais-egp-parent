@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import lombok.extern.slf4j.Slf4j;
@@ -42,14 +43,21 @@ public class AppealDelegator {
     public void preparetionData(BaseProcessClass bpc){
         log.info("start**************preparetionData************");
 
-
+        appealService.getMessage(bpc.request);
         log.info("end**************preparetionData************");
     }
 
 
     public void switchProcess(BaseProcessClass bpc ){
         log.info("start**************switchProcess************");
+        Map<String, String> validate = appealService.validate(bpc.request);
+        if(!validate.isEmpty()){
+            bpc. request.setAttribute("crud_action_type","save");
+            bpc. request.setAttribute("errorMsg", WebValidationHelper.generateJsonStr(validate));
+            return;
+        }
 
+        bpc. request.setAttribute("crud_action_type","submit");
         log.info("end**************switchProcess************");
     }
 
@@ -57,13 +65,15 @@ public class AppealDelegator {
     public void submit(BaseProcessClass bpc){
         log.info("start**************submit************");
         String s = appealService.submitData(bpc.request);
+
         bpc.request.setAttribute("newApplicationNo",s);
         log.info("end**************submit************");
     }
 
     public void start(BaseProcessClass bpc){
         log.info("start**************start************");
-
+        bpc.getSession().removeAttribute("serviceName");
+        bpc.getSession().removeAttribute("applicationNo");
         log.info("end**************start************");
     }
 
@@ -134,30 +144,12 @@ public class AppealDelegator {
 
         //Specialty
 
-
         Map<String,String> specialtyAttr = new HashMap<>();
         specialtyAttr.put("name", "specialty");
         specialtyAttr.put("class", "specialty");
         specialtyAttr.put("style", "display: none;");
-        if(specialtySelectList==null){
-            specialtySelectList=new ArrayList<>();
-            SelectOption selectOption=new SelectOption();
-            selectOption.setText("Please Select");
-            selectOption.setValue("-1");
-            SelectOption selectOption1=new SelectOption();
-            selectOption1.setValue("1");
-            selectOption1.setText("Pathology");
-            SelectOption selectOption2=new SelectOption();
-            selectOption2.setText("Haematology");
-            selectOption2.setValue("2");
-            SelectOption selectOption3=new SelectOption();
-            selectOption3.setValue("3");
-            selectOption3.setText("Others");
-            specialtySelectList.add(selectOption);
-            specialtySelectList.add(selectOption1);
-            specialtySelectList.add(selectOption2);
-            specialtySelectList.add(selectOption3);
-        }
+
+        specialtySelectList= genSpecialtySelectList("CLB");
         String specialtySelectStr = getHtml(specialtyAttr, specialtySelectList, null);
 
 

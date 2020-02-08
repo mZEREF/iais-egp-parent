@@ -94,7 +94,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Override
     public LicenceDto getByLicNo(String licNo) {
-        return licenceClient.getLicBylicNo().getEntity();
+        return licenceClient.getLicBylicNo(licNo).getEntity();
     }
 
     @Override
