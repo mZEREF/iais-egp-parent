@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -39,6 +40,8 @@ public class AppealApproveBatchjob {
         List<LicenceDto> rollBackLicence = new ArrayList<>();
         List<AppSvcKeyPersonnelDto> appealPersonnel = new ArrayList<>();
         List<AppSvcKeyPersonnelDto> rollBackPersonnel = new ArrayList<>();
+        List<AppGrpPremisesDto> appealAppGrpPremisesDto = new ArrayList<>();
+        List<AppGrpPremisesDto> rollBackAppGrpPremisesDto = new ArrayList<>();
         if(!IaisCommonUtils.isEmpty(appealApproveDtos)){
             for (AppealApproveDto appealApproveDto: appealApproveDtos){
                 ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
@@ -48,7 +51,7 @@ public class AppealApproveBatchjob {
                     switch(appealType){
                         case ApplicationConsts.APPEAL_TYPE_APPLICAITON :
                             appealApplicaiton(appealApplicaiton,rollBackApplication,appealPersonnel,rollBackPersonnel,
-                                    appealApproveDto);
+                                    appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,appealApproveDto);
                             appealOther(appealApplicaiton,rollBackApplication,applicationDto);
                             break;
                         case ApplicationConsts.APPEAL_TYPE_LICENCE :
@@ -69,6 +72,8 @@ public class AppealApproveBatchjob {
                                    List<ApplicationDto> rollBackApplication,
                                    List<AppSvcKeyPersonnelDto> appealPersonnel,
                                    List<AppSvcKeyPersonnelDto> rollBackPersonnel,
+                                   List<AppGrpPremisesDto> appealAppGrpPremisesDto,
+                                   List<AppGrpPremisesDto> rollBackAppGrpPremisesDto,
                                    AppealApproveDto appealApproveDto) throws Exception {
         ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
         AppealDto appealDto = appealApproveDto.getAppealDto();
@@ -85,7 +90,7 @@ public class AppealApproveBatchjob {
                     applicationAddCGO(appealPersonnel,rollBackPersonnel,appealApproveDto);
                     break;
                 case ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME :
-                    applicationChangeHciName();
+                    applicationChangeHciName(appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,appealApproveDto);
                     break;
             }
         }
@@ -104,26 +109,41 @@ public class AppealApproveBatchjob {
 
     }
     private void applicationLateRenewFee(){
-
+     // do not need to do.
     }
     private void applicationAddCGO(List<AppSvcKeyPersonnelDto> appealPersonnel,
                                    List<AppSvcKeyPersonnelDto> rollBackPersonnel,
                                    AppealApproveDto appealApproveDto) throws Exception {
         AppealDto appealDto = appealApproveDto.getAppealDto();
-        if(appealDto!=null){
-            //String  applicaitonId = appealDto.getApplicationId();
+        ApplicationDto appealApplication = appealApproveDto.getAppealApplicationDto();
+        if(appealDto!=null&&appealApplication!=null){
+            String  appealApplicaitonId = appealApplication.getId();
             List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = appealApproveDto.getAppSvcKeyPersonnelDtos();
             if(!IaisCommonUtils.isEmpty(appSvcKeyPersonnelDtos)){
                 for (AppSvcKeyPersonnelDto appSvcKeyPersonnelDto : appSvcKeyPersonnelDtos){
                     rollBackPersonnel.add(appSvcKeyPersonnelDto);
                     AppSvcKeyPersonnelDto appealAppSvcKeyPersonnelDto = (AppSvcKeyPersonnelDto) CopyUtil.copyMutableObject(appSvcKeyPersonnelDto);
-                    //appealAppSvcKeyPersonnelDto.setApplicationId(applicaitonId);
+                    appealAppSvcKeyPersonnelDto.setApplicationId(appealApplicaitonId);
                     appealPersonnel.add(appealAppSvcKeyPersonnelDto);
                 }
             }
         }
     }
-    private void applicationChangeHciName(){
+    private void applicationChangeHciName(List<AppGrpPremisesDto> appealAppGrpPremisesDto,
+                                          List<AppGrpPremisesDto> rollBackAppGrpPremisesDto,
+                                          AppealApproveDto appealApproveDto) throws Exception {
+        AppealDto appealDto = appealApproveDto.getAppealDto();
+        AppGrpPremisesDto appGrpPremisesDto = appealApproveDto.getAppGrpPremisesDto();
+        if(appealDto!=null&&appGrpPremisesDto!=null){
+            rollBackAppGrpPremisesDto.add(appGrpPremisesDto);
+           String hciName = appealDto.getNewHciName();
+           if(!StringUtil.isEmpty(hciName)){
+               AppGrpPremisesDto appGrpPremisesDto1 = (AppGrpPremisesDto)
+                       CopyUtil.copyMutableObject(appGrpPremisesDto);
+               appGrpPremisesDto1.setHciName(hciName);
+               appealAppGrpPremisesDto.add(appGrpPremisesDto1);
+           }
+        }
 
     }
     private void appealLicence(List<LicenceDto> appealLicence,
