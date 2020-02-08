@@ -105,6 +105,6 @@ public interface OrganizationClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<TaskDto>> getTasksByUserIdAndRole(@PathVariable(value = "userId") String userId,@PathVariable(value = "roleId") String roleId);
 
-    @PostMapping(value = "/task-email-comp",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-task/task-email-comp",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getTaskByProcessUrl(@RequestBody List<String> processUrl);
 }
