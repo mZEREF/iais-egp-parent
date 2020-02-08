@@ -111,7 +111,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_INFORMATION,
             ApplicationConsts.APPLICATION_STATUS_LICENCE_START_DATE,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
             ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION,
             ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,
             ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION,
