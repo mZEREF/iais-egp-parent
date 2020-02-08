@@ -111,13 +111,13 @@ public class AppealApproveBatchjob {
                                    AppealApproveDto appealApproveDto) throws Exception {
         AppealDto appealDto = appealApproveDto.getAppealDto();
         if(appealDto!=null){
-            String  applicaitonId = appealDto.getApplicationId();
+            //String  applicaitonId = appealDto.getApplicationId();
             List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = appealApproveDto.getAppSvcKeyPersonnelDtos();
             if(!IaisCommonUtils.isEmpty(appSvcKeyPersonnelDtos)){
                 for (AppSvcKeyPersonnelDto appSvcKeyPersonnelDto : appSvcKeyPersonnelDtos){
                     rollBackPersonnel.add(appSvcKeyPersonnelDto);
                     AppSvcKeyPersonnelDto appealAppSvcKeyPersonnelDto = (AppSvcKeyPersonnelDto) CopyUtil.copyMutableObject(appSvcKeyPersonnelDto);
-                    appealAppSvcKeyPersonnelDto.setApplicationId(applicaitonId);
+                    //appealAppSvcKeyPersonnelDto.setApplicationId(applicaitonId);
                     appealPersonnel.add(appealAppSvcKeyPersonnelDto);
                 }
             }
