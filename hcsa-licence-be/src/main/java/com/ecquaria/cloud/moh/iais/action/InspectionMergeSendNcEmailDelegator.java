@@ -112,8 +112,8 @@ public class InspectionMergeSendNcEmailDelegator {
         StringBuilder mesContext=new StringBuilder();
         String oneEmail="";
         for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
-             ) {
-             oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
+        ) {
+            oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
             if(oneEmail.contains("Below are the review outcome")){
                 mesContext.append(oneEmail.substring(0,oneEmail.indexOf("Below are the review outcome")));
                 break;
@@ -124,7 +124,7 @@ public class InspectionMergeSendNcEmailDelegator {
         List<String> svcNames=new ArrayList<>();
 
         for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
-                ) {
+        ) {
             String ncEmail= inspEmailService.getInsertEmail(appPremisesCorrelationDto.getId()).getMessageContent();
             appPremCorrIds.add(appPremisesCorrelationDto.getId());
             ApplicationViewDto appViewDto = inspEmailService.getAppViewByCorrelationId(appPremisesCorrelationDto.getId());
@@ -137,7 +137,7 @@ public class InspectionMergeSendNcEmailDelegator {
             }
         }
         for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
-             ) {
+        ) {
             oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
             if(oneEmail.contains("<p>Thank you</p>")){
                 mesContext.append(oneEmail.substring(oneEmail.indexOf("<p>Thank you</p>")));
@@ -269,7 +269,7 @@ public class InspectionMergeSendNcEmailDelegator {
             }
         }
         else {
-            applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION);
+            applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT);
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
             AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
             appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_NC_RECTIFICATION_EMAIL);
@@ -293,7 +293,7 @@ public class InspectionMergeSendNcEmailDelegator {
                     upDt=appPremisesRoutingHistoryDto.getUpdatedDt();
                 }
 
-                applicationViewDto1.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION);
+                applicationViewDto1.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT);
                 applicationViewService.updateApplicaiton(applicationViewDto1.getApplicationDto());
                 AppInspectionStatusDto appInspectionStatusDto2 = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremCorrIds.get(i)).getEntity();
                 appInspectionStatusDto2.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY);
@@ -317,7 +317,7 @@ public class InspectionMergeSendNcEmailDelegator {
 
                 List<TaskDto> taskDtos = prepareTaskList(taskDto2,hcsaSvcStageWorkingGroupDto);
                 taskService.createTasks(taskDtos);
-                createAppPremisesRoutingHistory(applicationViewDto1.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,taskDto2,HcsaConsts.ROUTING_STAGE_POT,taskDto2.getUserId());
+                createAppPremisesRoutingHistory(applicationViewDto1.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,taskDto2,HcsaConsts.ROUTING_STAGE_POT,taskDto2.getUserId());
 
             }
             EmailDto emailDto=new EmailDto();
@@ -325,7 +325,7 @@ public class InspectionMergeSendNcEmailDelegator {
             emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
             emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
 
-            String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
+            //String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
         }
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
 
@@ -362,7 +362,7 @@ public class InspectionMergeSendNcEmailDelegator {
         taskDto.setSlaAlertInDays(2);
         taskDto.setPriority(0);
         taskDto.setSlaInDays(5);
-       // taskDto.setTaskType(schemeType);
+        // taskDto.setTaskType(schemeType);
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         list.add(taskDto);
