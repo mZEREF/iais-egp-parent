@@ -34,21 +34,96 @@
                                         </iais:row>
                                         <iais:row>
                                             <iais:value width="18">
-                                                <input type="radio" name="select_search" value="application" checked />Application No
+                                                <input type="radio" name="select_search" value="hci" />HCI Name
+                                            </iais:value>
+                                            <iais:value width="18">
+                                                <input type="radio" name="select_search" value="application" />Application No
                                             </iais:value>
                                             <iais:value width="18">
                                                 <input type="radio" name="select_search" value="licence" />Licence No
                                             </iais:value>
+
+                                            <iais:value width="18">
+                                                <input type="radio" name="select_search" value="licensee" />Licensee Name
+                                            </iais:value>
+                                            <iais:value width="18">
+                                                <input type="radio" name="select_search" value="servicePersonnel" />Service Personnel Name
+                                            </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">
-                                            <button type="button" class="search btn" onclick="javascript:doSearch();">Search</button>
-                                            <button type="button" class="search btn" onclick="javascript:doAdvancedSearch();">Advanced</button>
-                                            <button type="button" class="search btn" onclick="javascript:doClear();">Clear</button>
+                                            <button type="button" class="btn btn-lg btn-login-submit" type="button"
+                                                    style="background:#2199E8; color: white" onclick="javascript:doSearch();">Search</button>
+                                            <button type="button" class="btn btn-lg btn-login-submit" type="button"
+                                                    style="background:#2199E8; color: white" onclick="javascript:doAdvancedSearch();">Advanced</button>
+                                            <button type="button" class="btn btn-lg btn-login-clear" type="button"
+                                                    style="background:#2199E8; color: white" onclick="javascript:doClear();">Clear</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="col-xs-14">
+                <div class="components">
+                    <h3>
+                        <span>Search Result</span>
+                    </h3>
+                    <div class="table-gp">
+                        <table class="table">
+                            <thead>
+                            <tr align="center">
+                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="APPLICATION_NO" value="Application No."></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="APP_TYPE" value="Application Type"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="LICENCE_NO" value="Licence No."></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="HCI_NAME" value="HCI Name "></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="ADDRESS" value=" Address"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="LICENSEE_NAME" value="Licensee NAME"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="SERVICE_NAME" value="Service NAME"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="Licence_Period" value="Licence Period"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="Licence_Status" value="Licence Status"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="past_compliance_history" value="Past Compliance History"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="current_risk_tagging" value="Current Risk Tagging"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <c:choose>
+                                <c:when test="${empty SearchResult.rows}">
+                                    <tr>
+                                        <td colspan="7">
+                                            <iais:message key="ACK018" escape="true"></iais:message>
+                                        </td>
+                                    </tr>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
+                                        <tr>
+                                            <td class="row_no"><c:out value="${status.index + 1}"/></td>
+                                            <td><a onclick="doAppInfo('${pool.licenseeId}')">${pool.applicationNo}</a></td>
+                                            <td><c:out value="${pool.applicationType}"/></td>
+                                            <td><c:out value="${pool.licenceNo}"/></td>
+                                            <td><c:out value="${pool.hciCode}"/></td>
+                                            <td><c:out value="${pool.hciName}"/></td>
+                                            <td><c:out value="${pool.blkNo}-${pool.floorNo}-${pool.unitNo}-${pool.streetName}-${pool.buildingName}"/></td>
+                                            <td><c:out value="${pool.licenseeName}"/></td>
+                                            <td><c:out value="${pool.serviceName}"/></td>
+                                            <td><fmt:formatDate value="${pool.startDate}" pattern="dd/MM/yyyy" />-<fmt:formatDate value="${pool.expiryDate}" pattern="dd/MM/yyyy" /></td>
+                                            <td><c:out value="${pool.licenceStatus}"/></td>
+                                            <td><c:out value="${pool.pastComplianceHistory}"/></td>
+                                            <td><c:out value="${pool.currentRiskTagging}"/></td>
+
+                                        </tr>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

@@ -19,8 +19,17 @@
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <br><br><br><br>
                     <h3>
-                        <span>Advanced Search Criteria For Licence</span>
+                        <span>Advanced Search Criteria</span>
                     </h3>
+                    <h4>
+                        <span>
+                            Search By Application
+                            <label>
+                                <input type="radio" name="select_search" value="application" />
+                            </label>
+                        </span>
+
+                    </h4>
                     <div class="panel panel-default">
                         <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                             <div class="panel-body">
@@ -58,16 +67,161 @@
                                                 <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['expiry_date']}"></iais:datePicker>
                                             </iais:value>
                                         </iais:row>
-                                        <iais:action style="text-align:center;">
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doLicSearch()">Search</button>
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doLicBack()">Back</button>
-                                            <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doLicClear()">Clear</button>
-                                        </iais:action>
                                     </iais:section>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <h4>l
+                        <span>Search By HCI
+                        <label>
+                            <input type="radio" name="select_search" value="HCI" />
+                        </label></span>
+                    </h4>
+                    <div class="panel panel-default">
+                        <div class="panel-collapse collapse in" id="collapseTwo" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                            <div class="panel-body">
+                                <div class="panel-main-content">
+                                    <iais:section title="" id = "supPoolList">
+                                        <iais:row>
+                                            <iais:field value="Licence No:"/>
+                                            <iais:value width="18">
+                                                <label>
+                                                    <input type="text" name="licence_no" value="${SearchParam.filters['licence_no']}" />
+                                                </label>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Service Licence Type"/>
+                                            <iais:value width="18">
+                                                <iais:select name="service_licence_type" options="licSvcTypeOption" firstOption="Please select" value="${licSvcTypeOption}" ></iais:select>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Licence Status"/>
+                                            <iais:value width="18">
+                                                <iais:select name="licence_status" options="licStatusOption" firstOption="Please select" value="${licStatusOption}" ></iais:select>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Licence Period:"/>
+                                            <iais:value width="18">
+                                                <iais:datePicker id = "sub_date" name = "sub_date" value="${SearchParam.filters['start_date']}" ></iais:datePicker>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="To:"/>
+                                            <iais:value width="18">
+                                                <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['expiry_date']}"></iais:datePicker>
+                                            </iais:value>
+                                        </iais:row>
+                                    </iais:section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h4>
+                        <span>Search By Licensee
+                        <label>
+                            <input type="radio" name="select_search" value="licensee" />
+                        </label></span>
+                    </h4>
+                    <div class="panel panel-default">
+                        <div class="panel-collapse collapse in" id="collapseThree" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                            <div class="panel-body">
+                                <div class="panel-main-content">
+                                    <iais:section title="" id = "supPoolList">
+                                        <iais:row>
+                                            <iais:field value="Licence No:"/>
+                                            <iais:value width="18">
+                                                <label>
+                                                    <input type="text" name="licence_no" value="${SearchParam.filters['licence_no']}" />
+                                                </label>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Service Licence Type"/>
+                                            <iais:value width="18">
+                                                <iais:select name="service_licence_type" options="licSvcTypeOption" firstOption="Please select" value="${licSvcTypeOption}" ></iais:select>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Licence Status"/>
+                                            <iais:value width="18">
+                                                <iais:select name="licence_status" options="licStatusOption" firstOption="Please select" value="${licStatusOption}" ></iais:select>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Licence Period:"/>
+                                            <iais:value width="18">
+                                                <iais:datePicker id = "sub_date" name = "sub_date" value="${SearchParam.filters['start_date']}" ></iais:datePicker>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="To:"/>
+                                            <iais:value width="18">
+                                                <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['expiry_date']}"></iais:datePicker>
+                                            </iais:value>
+                                        </iais:row>
+                                    </iais:section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h4>
+                        <span>Search By Service Personnel Details (CGO, PO, DPO & MedAlert)
+                        <label>
+                            <input type="radio" name="select_search" value="servicePersonnel" />
+                        </label></span>
+                    </h4>
+                    <div class="panel panel-default">
+                        <div class="panel-collapse collapse in" id="collapseFour" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                            <div class="panel-body">
+                                <div class="panel-main-content">
+                                    <iais:section title="" id = "supPoolList">
+                                        <iais:row>
+                                            <iais:field value="Licence No:"/>
+                                            <iais:value width="18">
+                                                <label>
+                                                    <input type="text" name="licence_no" value="${SearchParam.filters['licence_no']}" />
+                                                </label>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Service Licence Type"/>
+                                            <iais:value width="18">
+                                                <iais:select name="service_licence_type" options="licSvcTypeOption" firstOption="Please select" value="${licSvcTypeOption}" ></iais:select>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Licence Status"/>
+                                            <iais:value width="18">
+                                                <iais:select name="licence_status" options="licStatusOption" firstOption="Please select" value="${licStatusOption}" ></iais:select>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Licence Period:"/>
+                                            <iais:value width="18">
+                                                <iais:datePicker id = "sub_date" name = "sub_date" value="${SearchParam.filters['start_date']}" ></iais:datePicker>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="To:"/>
+                                            <iais:value width="18">
+                                                <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['expiry_date']}"></iais:datePicker>
+                                            </iais:value>
+                                        </iais:row>
+
+                                    </iais:section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <iais:action style="text-align:center;">
+                        <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doLicSearch()">Search</button>
+                        <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doLicBack()">Back</button>
+                        <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doLicClear()">Clear</button>
+                    </iais:action>
                 </div>
             </div>
         </div>

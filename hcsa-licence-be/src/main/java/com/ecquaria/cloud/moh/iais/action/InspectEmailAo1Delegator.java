@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
@@ -230,40 +229,13 @@ public class InspectEmailAo1Delegator {
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING);
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
             AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
-            appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_REVIEW_CHECKLIST_EMAIL);
+            appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER);
             appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             appInspectionStatusClient.update(appInspectionStatusDto);
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_AO1);
             completedTask(taskDto);
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
 
-            boolean flag=true;
-            List<ApplicationDto> applicationDtos= inspEmailService.getApplicationDtosByCorreId(applicationViewDto.getAppPremisesCorrelationId());
-            for (ApplicationDto appDto:applicationDtos
-            ) {
-                if(!appDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING)){
-                    flag=false;
-                }
-            }
-            if(flag){
-
-                HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-                hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
-                hcsaSvcStageWorkingGroupDto.setType(applicationViewDto.getApplicationDto().getApplicationType());
-                hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
-                hcsaSvcStageWorkingGroupDto.setOrder(3);
-                TaskDto taskDto1=new TaskDto();
-                taskDto1.setRefNo(taskDto.getRefNo());
-                taskDto1.setTaskType(taskDto.getTaskType());
-                taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
-                taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
-                taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
-                taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
-                taskDto1.setUserId(organizationClient.getInspectionLead(taskDto1.getWkGrpId()).getEntity().get(0));
-                List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
-                taskService.createTasks(taskDtos);
-                createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT,taskDto1,HcsaConsts.ROUTING_STAGE_POT,taskDto1.getUserId(),inspectionEmailTemplateDto.getRemarks());
-            }
         }
         else {
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER);

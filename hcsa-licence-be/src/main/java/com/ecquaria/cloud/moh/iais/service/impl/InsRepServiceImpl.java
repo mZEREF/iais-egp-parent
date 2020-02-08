@@ -229,7 +229,8 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setReasonForVisit(reasonForVisit);
         //todo:date
         inspectionReportDto.setInspectionDate(inspectionDate);
-        inspectionReportDto.setInspectionTime(null);
+        inspectionReportDto.setInspectionStartTime(inspectionStartTime);
+        inspectionReportDto.setInspectionEndTime(inspectionEndTime);
         inspectionReportDto.setBestPractice(bestPractice);
         inspectionReportDto.setTaskRemarks(remarks);
         inspectionReportDto.setCurrentStatus(status);
