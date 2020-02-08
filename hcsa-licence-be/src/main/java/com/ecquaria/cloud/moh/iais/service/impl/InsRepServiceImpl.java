@@ -505,7 +505,7 @@ public class InsRepServiceImpl implements InsRepService {
         String taskKey = taskDto.getTaskKey();
         String appId = applicationDto.getId();
         String stageId = taskDto.getTaskKey();
-        ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT);
+        ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW);
         updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
         completedTask(taskDto);
         String subStage = getSubStage(taskDto);

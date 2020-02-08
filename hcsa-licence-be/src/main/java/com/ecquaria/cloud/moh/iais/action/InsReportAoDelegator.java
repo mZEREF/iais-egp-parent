@@ -228,7 +228,7 @@ public class InsReportAoDelegator {
     }
 
     private AppPremisesRecommendationDto prepareRecommendation (BaseProcessClass bpc,String appPremisesCorrelationId){
-        String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
+        String processingDecision = ParamUtil.getRequestString(bpc.request, "processingDecision");
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
         String number = ParamUtil.getRequestString(bpc.request, NUMBER);
         String periods = ParamUtil.getRequestString(bpc.request, "periods");
@@ -236,28 +236,13 @@ public class InsReportAoDelegator {
         ParamUtil.setSessionAttr(bpc.request, NUMBER, number);
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         appPremisesRecommendationDto.setRecomInDate(new Date());
-        appPremisesRecommendationDto.setRecomDecision(InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT);
         appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
-        appPremisesRecommendationDto.setRecommendation(recommendation);
-        if(OTHERS.equals(recommendation)&&!StringUtil.isEmpty(chrono)&&!StringUtil.isEmpty(number)){
-            appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-            appPremisesRecommendationDto.setChronoUnit(chrono);
-            appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
-        }else if(APPROVAL.equals(recommendation)){
+        if(APPROVAL.equals(processingDecision)){
             appPremisesRecommendationDto.setRecomDecision(ApplicationConsts.APPLICATION_STATUS_APPROVED);
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-        }else if(REJECT.equals(recommendation)){
-            appPremisesRecommendationDto.setRecomDecision("Reject");
+        }else if(REJECT.equals(processingDecision)){
+            appPremisesRecommendationDto.setRecomDecision(ApplicationConsts.PROCESSING_DECISION_REJECT);
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-        } else {
-            String[] split_number = periods.split("\\D");
-            String[] split_unit = periods.split("\\d");
-            String chronoRe = split_unit[1];
-            String numberRe = split_number[0];
-            appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-            appPremisesRecommendationDto.setChronoUnit(chronoRe);
-            appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(numberRe));
-            appPremisesRecommendationDto.setRecommendation(recommendation);
         }
         return appPremisesRecommendationDto;
     }

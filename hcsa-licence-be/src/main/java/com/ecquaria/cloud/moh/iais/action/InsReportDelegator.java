@@ -80,28 +80,28 @@ public class InsReportDelegator {
             insRepDto.setInspectors(inspectorUser.getInspectors());
         }
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-        AppPremisesRecommendationDto tcuRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_TCU_NEEDED).getEntity();
-        AppPremisesRecommendationDto engageRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
-        AppPremisesRecommendationDto riskRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity();
-        AppPremisesRecommendationDto followRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
-        if(appPremisesRecommendationDto!=null){
-            String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
-            Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
-            String option  = recomInNumber + chronoUnit;
-            List<String> periods = insRepService.getPeriods(applicationViewDto);
-            if(periods!=null&&!periods.isEmpty()){
-                for(String period : periods){
-                    if(option.equals(period)){
-                        ParamUtil.setSessionAttr(bpc.request, "option", option);
-                        break;
-                    }else{
-                        ParamUtil.setSessionAttr(bpc.request, "option", "Others");
-                        ParamUtil.setSessionAttr(bpc.request, "recnumber", recomInNumber);
-                        ParamUtil.setSessionAttr(bpc.request, "recchrono", chronoUnit);
-                        break;
+            AppPremisesRecommendationDto tcuRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_TCU_NEEDED).getEntity();
+            AppPremisesRecommendationDto engageRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
+            AppPremisesRecommendationDto riskRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity();
+            AppPremisesRecommendationDto followRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
+            if(appPremisesRecommendationDto!=null){
+                String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
+                Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
+                String option  = recomInNumber + chronoUnit;
+                List<String> periods = insRepService.getPeriods(applicationViewDto);
+                if(periods!=null&&!periods.isEmpty()){
+                    for(String period : periods){
+                        if(option.equals(period)){
+                            ParamUtil.setSessionAttr(bpc.request, "option", option);
+                            break;
+                        }else{
+                            ParamUtil.setSessionAttr(bpc.request, "option", "Others");
+                            ParamUtil.setSessionAttr(bpc.request, "recnumber", recomInNumber);
+                            ParamUtil.setSessionAttr(bpc.request, "recchrono", chronoUnit);
+                            break;
+                        }
                     }
                 }
-            }
             String recomDecision = appPremisesRecommendationDto.getRecomDecision();
             String codeDesc = MasterCodeUtil.getCodeDesc(recomDecision);
             ParamUtil.setSessionAttr(bpc.request, "recomDecision", codeDesc);
