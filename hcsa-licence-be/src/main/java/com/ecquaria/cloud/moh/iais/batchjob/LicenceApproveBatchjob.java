@@ -873,7 +873,7 @@ public class LicenceApproveBatchjob {
                 }
                 licenceDto.setStartDate(startDate);
                 licenceDto.setExpiryDate(LicenceUtil.getExpiryDate(licenceDto.getStartDate(),yearLength));
-                licenceDto.setEndDate(licenceDto.getEndDate());
+                licenceDto.setEndDate(licenceDto.getExpiryDate());
                 licenceDto.setGrpLic(applicationGroupDto.getIsGrpLic() == 1);
                 licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
             }
