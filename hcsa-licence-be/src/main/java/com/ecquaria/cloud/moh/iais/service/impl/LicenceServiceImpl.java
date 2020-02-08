@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicEicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -143,7 +144,7 @@ public class LicenceServiceImpl implements LicenceService {
                 EventBusConsts.SERVICE_NAME_LICENCESAVE,
                 EventBusConsts.OPERATION_LICENCE_SAVE,
                 sopUrl,
-                callBackUrl, EventBusConsts.SOP_USER_ID,true,project,processName,step);
+                callBackUrl, EventBusConsts.SOP_USER_ID,false,project,processName,step);
         //
         SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
 
@@ -161,5 +162,15 @@ public class LicenceServiceImpl implements LicenceService {
     @Override
     public EventBusLicenceGroupDtos getEventBusLicenceGroupDtosByRefNo(String refNo) {
         return hcsaLicenceClient.getEventBusLicenceGroupDtosByRefNo(refNo).getEntity();
+    }
+
+    @Override
+    public LicEicRequestTrackingDto updateLicEicRequestTrackingDto(LicEicRequestTrackingDto licEicRequestTrackingDto) {
+        return hcsaLicenceClient.updateLicEicRequestTracking(licEicRequestTrackingDto).getEntity();
+    }
+
+    @Override
+    public LicEicRequestTrackingDto getLicEicRequestTrackingDtoByRefNo(String refNo) {
+        return hcsaLicenceClient.getLicEicRequestTrackingDto(refNo).getEntity();
     }
 }
