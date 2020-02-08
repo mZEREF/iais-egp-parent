@@ -139,7 +139,26 @@ public class AppealDelegator {
         specialtyAttr.put("name", "specialty");
         specialtyAttr.put("class", "specialty");
         specialtyAttr.put("style", "display: none;");
-      /*  String specialtySelectStr = getHtml(specialtyAttr, specialtySelectList, null);*/
+        if(specialtySelectList==null){
+            specialtySelectList=new ArrayList<>();
+            SelectOption selectOption=new SelectOption();
+            selectOption.setText("Please Select");
+            selectOption.setValue("-1");
+            SelectOption selectOption1=new SelectOption();
+            selectOption1.setValue("1");
+            selectOption1.setText("Pathology");
+            SelectOption selectOption2=new SelectOption();
+            selectOption2.setText("Haematology");
+            selectOption2.setValue("2");
+            SelectOption selectOption3=new SelectOption();
+            selectOption3.setValue("3");
+            selectOption3.setText("Others");
+            specialtySelectList.add(selectOption);
+            specialtySelectList.add(selectOption1);
+            specialtySelectList.add(selectOption2);
+            specialtySelectList.add(selectOption3);
+        }
+        String specialtySelectStr = getHtml(specialtyAttr, specialtySelectList, null);
 
 
 
@@ -148,8 +167,7 @@ public class AppealDelegator {
         sql = sql.replace("(3)", idTypeSelectStr);
         sql = sql.replace("(4)", designationSelectStr);
         sql = sql.replace("(5)", proRegnTypeSelectStr);
-      /*  sql = sql.replace("(6)", specialtySelectStr);
-*/
+        sql = sql.replace("(6)", specialtySelectStr);
 
 
         log.debug(StringUtil.changeForLog("gen governance officer html end ...."));

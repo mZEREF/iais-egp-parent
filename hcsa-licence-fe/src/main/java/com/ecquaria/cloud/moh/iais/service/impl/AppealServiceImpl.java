@@ -2,15 +2,19 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppliSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,7 @@ import sop.servlet.webflow.HttpHandler;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +36,8 @@ import java.util.List;
 public class AppealServiceImpl implements AppealService {
     @Autowired
     private ApplicationClient applicationClient;
+    @Autowired
+    private SystemAdminClient systemAdminClient;
     @Autowired
     private LicenceClient licenceClient;
     @Override
@@ -49,14 +56,13 @@ public class AppealServiceImpl implements AppealService {
     public String submitData(HttpServletRequest request) {
 
         String appealingFor = request.getParameter("appealingFor");
-        ApplicationDto entity = applicationClient.getApplicationDtoByVersion(appealingFor).getEntity();
-        AppInsRepDto appInsRepDto = applicationClient.getHciNameAndAddress(entity.getId()).getEntity();
-        String hciName = appInsRepDto.getHciName();
-        String hciAddress = appInsRepDto.getHciAddress();
-        LicenceDto licenceDto = licenceClient.getLicenceByAppId(entity.getId()).getEntity();
+        ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion("AN191217000189-01").getEntity();
 
-        String licenceNo = licenceDto.getLicenceNo();
-        String svcName = licenceDto.getSvcName();
+        String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
+        StringBuilder stringBuilder =new StringBuilder(appNo);
+        String s = stringBuilder.append("-1").toString();
+
+
 
         String reasonSelect = request.getParameter("reasonSelect");
         String selectHciNames = request.getParameter("selectHciName");
@@ -66,18 +72,54 @@ public class AppealServiceImpl implements AppealService {
         AppliSpecialDocDto appliSpecialDocDto =new AppliSpecialDocDto();
         appliSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
 
-        AppealDto appealDto=new AppealDto();
+        AppealPageDto appealDto=new AppealPageDto();
+        //group
+        ApplicationGroupDto applicationGroupDto=new ApplicationGroupDto();
+        applicationGroupDto.setSubmitDt(new Date());
+        applicationGroupDto.setGroupNo(appNo);
+        applicationGroupDto.setStatus("AGST006");
+        applicationGroupDto.setAmount(0.0);
+        applicationGroupDto.setIsPreInspection(1);
+        applicationGroupDto.setIsInspectionNeeded(1);
+        applicationGroupDto.setLicenseeId("36F8537B-FE17-EA11-BE78-000C29D29DB0");
+        applicationGroupDto.setIsBundledFee(0);
+        applicationGroupDto.setIsCharitable(0);
+        applicationGroupDto.setIsByGiro(0);
+        applicationGroupDto.setIsGrpLic(0);
+        applicationGroupDto.setDeclStmt("N");
+        applicationGroupDto.setSubmitBy("C55C9E62-750B-EA11-BE7D-000C29F371DC+");
 
+
+        ApplicationDto applicationDto1 =new ApplicationDto();
+        applicationDto1.setApplicationType("APTY001");
+        applicationDto1.setApplicationNo(s);
+        applicationDto1.setStatus("APST007");
+        applicationDto1.setServiceId(applicationDto.getServiceId());
+        applicationDto1.setVersion(1);
+        applicationDto1.setLicenceId(applicationDto.getLicenceId());
+        List<ApplicationDto> list=new ArrayList<>();
+        list.add(applicationDto1);
+        appealDto.setApplicationGroupDto(applicationGroupDto);
         appealDto.setRemarks(remarks);
         appealDto.setAppealReason(reasonSelect);
         appealDto.setNewHciName(proposedHciName);
         appealDto.setRelateRecId("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
+        appealDto.setAppId(applicationDto.getId());
+        appealDto.setApplicationDto(list);
+        appealDto.setAppealType("NEWAPP");
+        if(appSvcCgoDtos!=null&&!appSvcCgoDtos.isEmpty()){
+            appealDto.setAppSvcCgoDto(appSvcCgoDtos);
 
-        request.setAttribute("licenceNo",licenceNo);
-        request.setAttribute("svcName",svcName);
-        request.setAttribute("hciName",hciName);
-        request.setAttribute("hciAddress",hciAddress);
-        return "AN191206000138-03";
+        }
+
+        applicationClient.submitAppeal(appealDto);
+
+
+
+
+
+        return s;
+
     }
 
     @Override
