@@ -109,9 +109,9 @@
             where 1 = 1
             <#if operation??> and operation = :operation</#if>
             <#if nric_number??> and nric_number = :nricnumber</#if>
-            <#if startDate??> and action_time >= CONVERT(datetime, :startDate, 20)  </#if>
-            <#if endDate??> and action_time <= CONVERT(datetime, :endDate, 20)  </#if>
-            <#if operationType??> and [domain] <= :operationType </#if>
+            <#if startDate??> and action_time >= CONVERT(datetime, :startDate, 103) </#if>
+            <#if endDate??> and action_time <= CONVERT(datetime, :endDate, 103) </#if>
+            <#if operationType??> and [domain] = :operationType </#if>
         ]]>
     </sql>
 
@@ -123,9 +123,9 @@
             where 1 = 1 and operation not in(4, 9, 11, 12, 13, 14, 15, 16, 18, 19, 20, 21, 22, 23, 24 )
             <#if operation??> and operation = :operation</#if>
             <#if nric_number??> and nric_number = :nricnumber</#if>
-            <#if startDate??> and action_time >= CONVERT(datetime, :startDate, 20) </#if>
-            <#if endDate??> and action_time <= CONVERT(datetime, :endDate, 20) </#if>
-            <#if operationType??> and [domain] <= :operationType </#if>
+            <#if startDate??> and action_time >= CONVERT(datetime, :startDate, 103) </#if>
+            <#if endDate??> and action_time <= CONVERT(datetime, :endDate, 103) </#if>
+            <#if operationType??> and [domain] = :operationType </#if>
         ]]>
     </sql>
 

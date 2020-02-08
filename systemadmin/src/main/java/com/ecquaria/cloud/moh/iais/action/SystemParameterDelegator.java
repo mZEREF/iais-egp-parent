@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.SystemParameterService;
 import lombok.extern.slf4j.Slf4j;
@@ -83,6 +84,9 @@ public class SystemParameterDelegator {
      */
     public void loadData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+
+        //flush cache
+        //SystemParamCacheHelper.flush();
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("systemAdmin", "querySystemParam", searchParam);
@@ -157,14 +161,14 @@ public class SystemParameterDelegator {
 
         String domainType = ParamUtil.getString(request, SystemParameterConstants.PARAM_DOMAIN_TYPE);
         String module = ParamUtil.getString(request, SystemParameterConstants.PARAM_MODULE);
-        String units = ParamUtil.getString(request, SystemParameterConstants.PARAM_UNITS);
+        String value = ParamUtil.getString(request, SystemParameterConstants.PARAM_VALUE);
         String description = ParamUtil.getString(request, SystemParameterConstants.PARAM_DESCRIPTION);
 
         SystemParameterDto editDto = (SystemParameterDto) ParamUtil.getSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO);
         editDto.setDomainType(domainType);
         editDto.setDomainType(domainType);
         editDto.setModule(module);
-        editDto.setUnits(units);
+        editDto.setValue(value);
         editDto.setDescription(description);
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(editDto, "edit");

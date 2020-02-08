@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamCacheHelper;
 import com.ecquaria.cloud.moh.iais.sql.SqlMapLoader;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +55,7 @@ public class AppInitializer implements ServletContextListener {
             initMessages();
             MasterCodeUtil.refreshCache();
             HcsaServiceCacheHelper.receiveServiceMapping();
+            //SystemParamCacheHelper.receiveAllSystemParam();
         } catch (Exception ex) {
             log.error("Failed to initialize the application.", ex);
         }

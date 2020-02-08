@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  *description:
  */
 
-@FeignClient(name = "system-admin", url = "http://system-admin:8886", configuration = FeignConfiguration.class,
+@FeignClient(name = "system-admin", configuration = FeignConfiguration.class,
         fallback = SystemClientFallback.class)
 public interface SystemClient {
 

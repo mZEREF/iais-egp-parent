@@ -1,61 +1,62 @@
-/*
 package com.ecquaria.cloud.moh.iais.validation;
 
-*/
-/*
- *author: yichen
- *date time:9/19/2019 1:54 PM
- *description:
- *//*
 
-
+import com.ecquaria.cloud.moh.iais.common.constant.audit.AuditTrailConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamCacheHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 
 @Slf4j
 public class AuditTrailDtoValidate implements CustomizeValidator {
-    private static final int LIMITEDDATE = 90;
+    private static final int MONTH_DAY = 30;
 
-
+	@Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = new HashMap<>();
-        long currentTimeMillis = System.currentTimeMillis();
-        int bit = 1000 * 60 * 60 * 24;
-        long from = 0;
-        long to = 0;
-       */
-/* Date startDate = IaisEGPHelper.parseToDate(ParamUtil.getDate(request, AuditTrailConstant.PARAM_STARTDATE));
-        Date endDate = IaisEGPHelper.parseToDate(ParamUtil.getDate(request, AuditTrailConstant.PARAM_ENDDATE));
+		String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+		String startDate = ParamUtil.getRequestString(request, AuditTrailConstants.PARAM_STARTDATE);
+		String endDate = ParamUtil.getRequestString(request, AuditTrailConstants.PARAM_ENDDATE);
+		switch (currentAction){
+			case AuditTrailConstants.ACTION_QUERY:
+				if (StringUtils.isEmpty(startDate)
+						|| StringUtils.isEmpty(endDate)){
+					errMap.put("actionTime", MessageCodeKey.ERR0010);
+				}else {
+					int reduceDay = getReduceDay(IaisEGPHelper.parseToDate(startDate, "dd/MM/yyyy"),
+							IaisEGPHelper.parseToDate(endDate, "dd/MM/yyyy"));
 
-        if (endDate != null){
-            to = endDate.getTime();
-            if(to > currentTimeMillis){
-                errMap.put(AuditTrailConstant.PARAM_ENDDATE, "The end date cannot be greater than the current time");
-            }
-        }
+					String paramVal = SystemParamCacheHelper
+							.getParamValueById(SystemParamCacheHelper.AUDIT_TRAIL_TIME_LIMIT);
 
-        if(startDate != null && endDate == null){
-            from = startDate.getTime();
-            if(endDate == null){
-                to = currentTimeMillis;
-            }else{
-                to = endDate.getTime();
-            }
+					String msg = MessageUtil.getMessageDesc("GENERAL_ERR0010");
 
-            int day = (int) (to - from) / bit;
-            if (day > LIMITEDDATE){
-                errMap.put(AuditTrailConstant.PARAM_STARTDATE, "The Start time and end time cannot differ more than three months");
-            }
-        }*//*
-
+					if ((reduceDay > (Integer.valueOf(paramVal) * MONTH_DAY))){
+						errMap.put("actionTime", MessageUtil.formatMessage(msg, paramVal));
+					}
+				}
+				break;
+			default:
+				//nonthing
+		}
 
         return errMap;
     }
 
+    private Integer getReduceDay(Date startDate, Date endDate){
+	    int day = (int) ((endDate.getTime() - startDate.getTime()) / (1000*3600*24));
+	    return day;
+    }
+
 }
-*/

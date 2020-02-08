@@ -26,7 +26,9 @@ $(".btn-login-search").click(function () {
 
 $(".btn-login-export").click(function () {
     var val = $(".btn-login-export").value;
+    showWaiting();
     SOP.Crud.cfxSubmit("mainForm", 'doExport', val);
+    dismissWaiting();
 })
 
 function jumpToPagechangePage(){

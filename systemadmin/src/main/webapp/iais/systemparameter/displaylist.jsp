@@ -102,11 +102,12 @@
                                                         <td><iais:code code="${resultRow.module}"></iais:code></td>
                                                         <td>${resultRow.description}</td>
                                                             <td><iais:code code="${resultRow.paramType}"></iais:code></td>
-                                                        <td>${resultRow.units}</td>
+                                                        <td>${resultRow.value}</td>
                                                         <td><iais:code code="${resultRow.status}"></iais:code></td>
                                                         <td>
-                                                            <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${resultRow.id}');"/>
-                                                            <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${resultRow.id}');"/>
+                                                            <c:if test="${resultRow.update == true }">
+                                                                <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${resultRow.id}');"/>
+                                                            </c:if>
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
@@ -119,18 +120,10 @@
                                     <div class="table-footnote">
                                         <div class="row">
                                             <div class="col-xs-6 col-md-4">
-                                                <td class="row_no">${(status.index + 1) + (systemParamSearchParam.pageNo - 1) * systemParamSearchParam.pageSize}</td>
                                             </div>
                                             <div class="col-xs-6 col-md-8 text-right">
                                                 <div class="nav">
-                                                    <ul class="pagination">
-                                                        <li class="hidden"><a href="#" aria-label="Previous"><span aria-hidden="true"><em class="fa fa-chevron-left"></em></span></a></li>
-                                                        <li class="active"><a href="#">1</a></li>
-                                                        <li><a href="#">2</a></li>
-                                                        <li><a href="#">3</a></li>
-                                                        <li><a href="#" aria-label="Next"><span aria-hidden="true"><em class="fa fa-chevron-right"></em></span></a></li>
 
-                                                    </ul>
 
 
                                                 </div>

@@ -70,7 +70,10 @@ public class AuditTrailDelegator {
         AuditTrailHelper.auditFunction("AuditTrail",
                 "Implement logging mechanisms to enable the timely detection and investigation" +
                         " of events that can lead to ICT security violations or incidents.");
+
         HttpServletRequest request = bpc.request;
+
+        ParamUtil.setSessionAttr(request, "isFullMode", null);
         //AccessUtil.initLoginUserInfo(request);
     }
 
@@ -83,6 +86,7 @@ public class AuditTrailDelegator {
     public void prepareSwitch(BaseProcessClass bpc) {
         log.debug("The prepareSwitch start ...");
         String crudAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+
         log.debug("*******************crudAction-->:" + crudAction);
         log.debug("The prepareSwitch end ...");
     }
@@ -96,23 +100,14 @@ public class AuditTrailDelegator {
     public void prepareData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
 
-        SearchParam trailDtoSearchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        SearchResult<AuditTrailQueryDto> trailDtoSearchResult = null;
         boolean isAdmin = AccessUtil.isAdministrator();
-        isAdmin = false;
         preSelectOption(request);
-        if(isAdmin){
-            QueryHelp.setMainSql("systemAdmin", "queryFullModeAuditTrail", trailDtoSearchParam);
-            trailDtoSearchResult = auditTrailService.listAuditTrailDto(trailDtoSearchParam);
-            ParamUtil.setRequestAttr(request, "isFullMode", "Y");
-        }else{
-            QueryHelp.setMainSql("systemAdmin", "queryDataMaskModeAuditTrail", trailDtoSearchParam);
-            ParamUtil.setRequestAttr(request, "isFullMode", "N");
-            trailDtoSearchResult = auditTrailService.listAuditTrailDto(trailDtoSearchParam);
+        if (isAdmin){
+            ParamUtil.setSessionAttr(request, "isFullMode", "Y");
+        }else {
+            ParamUtil.setSessionAttr(request, "isFullMode", "N");
         }
 
-        ParamUtil.setSessionAttr(request, AuditTrailConstants.PARAM_SEARCH, trailDtoSearchParam);
-        ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_SEARCHRESULT, trailDtoSearchResult);
     }
 
     public void prepareFullMode(BaseProcessClass bpc){
@@ -193,8 +188,8 @@ public class AuditTrailDelegator {
         String operation = ParamUtil.getString(request, AuditTrailConstants.PARAM_OPERATION);
         String user = ParamUtil.getString(request, AuditTrailConstants.PARAM_USER);
 
-        String startDate = ParamUtil.getDate(request, AuditTrailConstants.PARAM_STARTDATE);
-        String endDate = ParamUtil.getDate(request, AuditTrailConstants.PARAM_ENDDATE);
+        String startDate = ParamUtil.getString(request, AuditTrailConstants.PARAM_STARTDATE);
+        String endDate = ParamUtil.getString(request, AuditTrailConstants.PARAM_ENDDATE);
 
         ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_OPERATIONTYPE, operationType);
         ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_OPERATION, operation);
@@ -219,7 +214,8 @@ public class AuditTrailDelegator {
             Map<String, String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
-        }else{
+            return;
+        }else {
             //Corresponding XML param
             searchParam.addFilter(AuditTrailConstants.PARAM_OPERATIONTYPE, Integer.valueOf(operationType), true);
 
@@ -235,6 +231,25 @@ public class AuditTrailDelegator {
                 searchParam.addFilter(AuditTrailConstants.PARAM_ENDDATE, endDate, true);
             }
         }
+
+        SearchParam trailDtoSearchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        SearchResult<AuditTrailQueryDto> trailDtoSearchResult = null;
+
+        String isFullMode = (String) ParamUtil.getSessionAttr(request, "isFullMode");
+        switch (isFullMode){
+            case "Y":
+                QueryHelp.setMainSql("systemAdmin", "queryFullModeAuditTrail", trailDtoSearchParam);
+                trailDtoSearchResult = auditTrailService.listAuditTrailDto(trailDtoSearchParam);
+                break;
+            case "N":
+                QueryHelp.setMainSql("systemAdmin", "queryDataMaskModeAuditTrail", trailDtoSearchParam);
+                trailDtoSearchResult = auditTrailService.listAuditTrailDto(trailDtoSearchParam);
+                break;
+            default:
+        }
+
+        ParamUtil.setSessionAttr(request, AuditTrailConstants.PARAM_SEARCH, trailDtoSearchParam);
+        ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_SEARCHRESULT, trailDtoSearchResult);
     }
 
     /**

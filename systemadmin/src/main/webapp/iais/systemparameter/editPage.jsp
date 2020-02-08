@@ -53,11 +53,11 @@
             </div>
 
             <div class="form-group">
-                <label class="col-md-1">Units:
+                <label class="col-md-1">Value:
                 </label>
                 <div class="col-md-3">
-                    <input name="units" type="text" value="${parameterRequestDto.units}">
-                    <span id="error_units" name="iaisErrorMsg" class="error-msg"></span>
+                    <input name="value" type="text" value="${parameterRequestDto.value}">
+                    <span id="error_value" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
 
