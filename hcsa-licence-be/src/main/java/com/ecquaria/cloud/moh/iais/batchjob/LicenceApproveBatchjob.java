@@ -50,20 +50,19 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
+import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * LicenceApproveBatchjob
@@ -872,7 +871,7 @@ public class LicenceApproveBatchjob {
                     startDate = new Date();
                 }
                 licenceDto.setStartDate(startDate);
-                licenceDto.setExpiryDate(getExpiryDate(licenceDto.getStartDate(),yearLength));
+                licenceDto.setExpiryDate(LicenceUtil.getExpiryDate(licenceDto.getStartDate(),yearLength));
                 licenceDto.setGrpLic(applicationGroupDto.getIsGrpLic() == 1);
                 licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
             }
@@ -908,12 +907,6 @@ public class LicenceApproveBatchjob {
        return "29ABCF6D-770B-EA11-BE7D-000C29F371DC";
     }
 
-    public static Date getExpiryDate(Date startDate, int yearLength){
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(startDate);
-        calendar.add(Calendar.YEAR,yearLength);
-        return  calendar.getTime();
-    }
 
     private Integer getVersionByHciCode(String hciCode){
         Integer result = 1;
