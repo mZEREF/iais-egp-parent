@@ -977,4 +977,5 @@ public class LicenceApproveBatchjob {
         private String errorMessage;
         private LicenceGroupDto licenceGroupDto;
     }
+
 }
