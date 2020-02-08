@@ -66,12 +66,6 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     private SystemParamConfig systemParamConfig;
 
     @Autowired
-    private HcsaConfigClient hcsaConfigClient;
-
-    @Autowired
-    private AppointmentClient appointmentClient;
-
-    @Autowired
     private InspectionTaskClient inspectionTaskClient;
 
     @Autowired
