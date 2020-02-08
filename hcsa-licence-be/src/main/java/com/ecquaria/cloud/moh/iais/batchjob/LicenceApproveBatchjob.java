@@ -145,8 +145,8 @@ public class LicenceApproveBatchjob {
                eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
                applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
                //step2 save licence to Fe DB
-               EventBusLicenceGroupDtos eventBusLicenceGroupDtos1 =  licenceService.getEventBusLicenceGroupDtosByRefNo(eventRefNo);
-               licenceService.createFESuperLicDto(eventBusLicenceGroupDtos1);
+//               EventBusLicenceGroupDtos eventBusLicenceGroupDtos1 =  licenceService.getEventBusLicenceGroupDtosByRefNo(eventRefNo);
+//               licenceService.createFESuperLicDto(eventBusLicenceGroupDtos1);
            }
         //todo:send the email to admin for fail Data.
         //else{ rollback step1}
@@ -852,6 +852,7 @@ public class LicenceApproveBatchjob {
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())&&licenceDto1!=null){
             licenceDto.setStartDate(licenceDto1.getStartDate());
             licenceDto.setExpiryDate(licenceDto1.getExpiryDate());
+            licenceDto.setEndDate(licenceDto1.getEndDate());
             licenceDto.setGrpLic(licenceDto1.isGrpLic());
             licenceDto.setOriginLicenceId(originLicenceId);
             licenceDto.setMigrated(licenceDto1.isMigrated());
@@ -872,6 +873,7 @@ public class LicenceApproveBatchjob {
                 }
                 licenceDto.setStartDate(startDate);
                 licenceDto.setExpiryDate(LicenceUtil.getExpiryDate(licenceDto.getStartDate(),yearLength));
+                licenceDto.setEndDate(licenceDto.getEndDate());
                 licenceDto.setGrpLic(applicationGroupDto.getIsGrpLic() == 1);
                 licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
             }
