@@ -430,13 +430,11 @@
                     </tr>
                     <tr>
                         <td class="col-xs-4">
-                            <p>Recommendation:</p>
+                            <p>Recommendation:</p>value="${recomDecision}
                         </td>
-                        <c:if test="${appPremisesRecommendationDto.recommendation==null}">
+                        <c:if test="${appPremisesRecommendationDto.recommendation==null && recomDecision!=null}">
                             <td class="col-xs-4">
-                                <iais:select name="recommendation" options="recommendationOption"
-                                             firstOption="Please select"
-                                             onchange="javascirpt:changeRecommendation(this.value);"/>
+                                <iais:select name="recommendation" value="${recomDecision}" options="recommendationOption" firstOption="Please select" onchange="javascirpt:changeRecommendation(this.value);"/>
                             </td>
                         </c:if>
                         <c:if test="${appPremisesRecommendationDto.recommendation !=null}">
@@ -463,7 +461,7 @@
                     </c:if>
                         <c:if test="${appPremisesRecommendationDto.period ==null}">
                             <td class="col-xs-4">
-                                <iais:select name="periods" options="riskOption" firstOption="Please select" onchange="javascirpt:changePeriod(this.value);"/>
+                                <iais:select name="periods" value="${option}" options="riskOption" firstOption="Please select" onchange="javascirpt:changePeriod(this.value);"/>
                                 <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                         </c:if>
@@ -566,7 +564,7 @@
     }
 
     function changeRecommendation(obj) {
-        if (obj == "Approval") {
+        if (obj == "Approved") {
             document.getElementById("period").style.display = "";
             $("#period").show();
         } else {
@@ -594,8 +592,8 @@
 
 
     $(document).ready(function () {
-        if ($("#recommendation").val() == "Approval") {
-            changeRecommendation("Approval");
+        if ($("#recommendation").val() == "Approved") {
+            changeRecommendation("Approved");
         }
         if ($("#periods").val() == "Others") {
             changePeriod("Others");

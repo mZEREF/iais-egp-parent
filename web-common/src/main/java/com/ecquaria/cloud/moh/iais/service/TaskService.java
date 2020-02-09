@@ -12,6 +12,7 @@ import com.ecquaria.cloudfeign.FeignException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * TaskService
@@ -71,4 +72,13 @@ public interface TaskService {
       * @Descripation: get  lowest score User Id By workGroupId
       */
     TaskDto getUserIdForWorkGroup(String workGroupId) throws FeignException;
+
+
+    /**
+     *@Author :weilu on 2020/2/8 17:03
+     *@param :
+     *@return :
+     *@Description :
+     */
+    Set<String> getInspectiors(String corrId , String status, String roleId);
 }

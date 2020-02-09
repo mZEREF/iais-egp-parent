@@ -360,7 +360,7 @@
                             </td>
                             <div>
                                 <td class="col-xs-4">
-                                    <p><c:out value="${appPremisesRecommendationDto.remarks}"/></p>
+                                    <p><c:out value="${inspectorRemarks}"/></p>
                                 </td>
                             </div>
                             <td class="col-xs-4">

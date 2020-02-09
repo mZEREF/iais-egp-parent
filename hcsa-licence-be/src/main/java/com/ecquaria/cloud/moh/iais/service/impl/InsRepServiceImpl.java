@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author weilu
@@ -527,6 +528,7 @@ public class InsRepServiceImpl implements InsRepService {
         List<String> listUserId = new ArrayList<>();
         String userId = loginContext.getUserId();
         String wkGrpId = taskDto.getWkGrpId();
+        String correlationId = taskDto.getRefNo();
         listUserId.add(userId);
         List<OrgUserDto> userList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
         String reportBy = userList.get(0).getDisplayName();
@@ -540,19 +542,25 @@ public class InsRepServiceImpl implements InsRepService {
         String leadName = leadList.get(0).getDisplayName();
         reportDtoForInspector.setReportedBy(reportBy);
         reportDtoForInspector.setReportNoteBy(leadName);
-
-        List<OrgUserDto> orgUserDtos = taskService.getUsersByWorkGroupId(wkGrpId, AppConsts.COMMON_STATUS_ACTIVE);
+        Set<String> inspectiors = taskService.getInspectiors(correlationId, "TSTATUS003", "INSPECTOR");
         List<String> inspectors = new ArrayList<>();
-        for (OrgUserDto orgUserDto : orgUserDtos) {
-            inspectors.add(orgUserDto.getDisplayName());
+        for(String inspector :inspectiors){
+            inspectors.add(inspector);
         }
-        reportDtoForInspector.setInspectors(inspectors);
+        List<OrgUserDto> inspectorList = organizationClient.retrieveOrgUserAccount(inspectors).getEntity();
+        List<String> inspectorsName = new ArrayList<>();
+        for(OrgUserDto orgUserDto :inspectorList){
+            String displayName = orgUserDto.getDisplayName();
+            inspectorsName.add(displayName);
+        }
+        reportDtoForInspector.setInspectors(inspectorsName);
         return reportDtoForInspector;
     }
 
     @Override
-    public InspectionReportDto getInspectorAo(ApplicationViewDto applicationViewDto) {
+    public InspectionReportDto getInspectorAo(TaskDto taskDto,ApplicationViewDto applicationViewDto) {
         List<String> listUserId = new ArrayList<>();
+        String correlationId = taskDto.getRefNo();
         String appId = applicationViewDto.getApplicationDto().getId();
         InspectionReportDto reportDtoForAo = new InspectionReportDto();
         String userId = getRobackUserId(appId, HcsaConsts.ROUTING_STAGE_INS);
@@ -571,12 +579,18 @@ public class InsRepServiceImpl implements InsRepService {
             String leadName = leadList.get(0).getDisplayName();
             reportDtoForAo.setReportedBy(reportBy);
             reportDtoForAo.setReportNoteBy(leadName);
-            List<OrgUserDto> orgUserDtos = taskService.getUsersByWorkGroupId(wkGrpIds.get(0), AppConsts.COMMON_STATUS_ACTIVE);
+            Set<String> inspectiors = taskService.getInspectiors(correlationId, "TSTATUS003", "INSPECTOR");
             List<String> inspectors = new ArrayList<>();
-            for (OrgUserDto orgUserDto : orgUserDtos) {
-                inspectors.add(orgUserDto.getDisplayName());
+            for(String inspector :inspectiors){
+                inspectors.add(inspector);
             }
-            reportDtoForAo.setInspectors(inspectors);
+            List<OrgUserDto> inspectorList = organizationClient.retrieveOrgUserAccount(inspectors).getEntity();
+            List<String> inspectorsName = new ArrayList<>();
+            for(OrgUserDto orgUserDto :inspectorList){
+                String displayName = orgUserDto.getDisplayName();
+                inspectorsName.add(displayName);
+            }
+            reportDtoForAo.setInspectors(inspectorsName);
         }
         return reportDtoForAo;
     }
