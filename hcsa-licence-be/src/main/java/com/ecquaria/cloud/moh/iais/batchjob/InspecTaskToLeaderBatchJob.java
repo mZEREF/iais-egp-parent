@@ -110,29 +110,37 @@ public class InspecTaskToLeaderBatchJob {
 
     private void createTask(int report, int leadTask, int allApp, List<AppInspectionStatusDto> appInspectionStatusDtos) {
         int all = report + leadTask;
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         if(all == allApp){
-            for(AppInspectionStatusDto appInsStatusDto : appInspectionStatusDtos){
+            AppInspectionStatusDto appInsStatusDto = null;
+            for(AppInspectionStatusDto appInspStatusDto : appInspectionStatusDtos){
                 if(appInsStatusDto.getStatus().equals(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER)){
-                    ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(appInsStatusDto.getAppPremCorreId()).getEntity();
-                    HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-                    hcsaSvcStageWorkingGroupDto.setServiceId(applicationViewDto.getApplicationDto().getServiceId());
-                    hcsaSvcStageWorkingGroupDto.setType(applicationViewDto.getApplicationDto().getApplicationType());
-                    hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
-                    hcsaSvcStageWorkingGroupDto.setOrder(3);
-                    List<TaskDto> taskDtoList = organizationClient.getTaskByAppNo(appInsStatusDto.getAppPremCorreId()).getEntity();
-                    if(!IaisCommonUtils.isEmpty(taskDtoList)){
-                        TaskDto taskDto = taskDtoList.get(0);
-                        TaskDto taskDto1 = new TaskDto();
-                        taskDto1.setRefNo(appInsStatusDto.getAppPremCorreId());
-                        taskDto1.setTaskType(taskDto.getTaskType());
-                        taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
-                        taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
-                        taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
-                        taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
-                        taskDto1.setUserId(organizationClient.getInspectionLead(taskDto1.getWkGrpId()).getEntity().get(0));
-                        List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
-                        taskService.createTasks(taskDtos);
-                    }
+                    appInsStatusDto = appInspStatusDto;
+                    appInspStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_REVIEW_CHECKLIST_EMAIL);
+                    appInspStatusDto.setAuditTrailDto(intranet);
+                    appInspectionStatusClient.update(appInspStatusDto);
+                }
+            }
+            if(appInsStatusDto != null){
+                ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(appInsStatusDto.getAppPremCorreId()).getEntity();
+                HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+                hcsaSvcStageWorkingGroupDto.setServiceId(applicationViewDto.getApplicationDto().getServiceId());
+                hcsaSvcStageWorkingGroupDto.setType(applicationViewDto.getApplicationDto().getApplicationType());
+                hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
+                hcsaSvcStageWorkingGroupDto.setOrder(3);
+                List<TaskDto> taskDtoList = organizationClient.getTaskByAppNo(appInsStatusDto.getAppPremCorreId()).getEntity();
+                if(!IaisCommonUtils.isEmpty(taskDtoList)){
+                    TaskDto taskDto = taskDtoList.get(0);
+                    TaskDto taskDto1 = new TaskDto();
+                    taskDto1.setRefNo(appInsStatusDto.getAppPremCorreId());
+                    taskDto1.setTaskType(taskDto.getTaskType());
+                    taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
+                    taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
+                    taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
+                    taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
+                    taskDto1.setUserId(organizationClient.getInspectionLead(taskDto1.getWkGrpId()).getEntity().get(0));
+                    List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
+                    taskService.createTasks(taskDtos);
                 }
             }
         }
