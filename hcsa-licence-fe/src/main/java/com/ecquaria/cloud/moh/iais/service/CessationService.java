@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
+
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppCessDto;
 
 /**
  * @author weilu
@@ -8,5 +9,5 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
  */
 public interface CessationService {
 
-    AppInsRepDto getAppData(String appNo);
+    AppCessDto getAppCessDtoByLicNo(String licId);
 }
