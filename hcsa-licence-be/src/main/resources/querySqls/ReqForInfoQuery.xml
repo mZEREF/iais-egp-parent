@@ -20,6 +20,10 @@
             <#if appStatus??> AND app.status = :appStatus</#if>
             <#if subDate??> AND T4.submit_dt >= convert(date,:subDate)</#if>
             <#if toDate??> AND T4.submit_dt <= convert(date,:toDate)</#if>
+            <#if hciCode??> AND T3.HCI_CODE = :hciCode</#if>
+            <#if hciName??> AND T3.HCI_NAME = :hciName</#if>
+            <#if hciStreetName??> AND T3.STREET_NAME = :hciStreetName</#if>
+            <#if hciPostalCode??> AND T3.POSTAL_NAME = :hciPostalCode</#if>
         ]]>
     </sql>
 
@@ -47,9 +51,16 @@
             WHERE 1=1
             <#if licence_status??> AND lic.STATUS = :licence_status</#if>
             <#if start_date??> AND lic.start_date >= :start_date</#if>
+            <#if start_to_date??> AND lic.start_date <= :start_to_date</#if>
             <#if expiry_date??> AND lic.expiry_date <= :expiry_date</#if>
+            <#if expiry_start_date??> AND lic.expiry_date >= :expiry_start_date</#if>
             <#if licence_no??> AND lic.licence_no = :licence_no</#if>
             <#if app_id??> AND licApp.APPLICATION_ID = :app_id</#if>
+            <#if org_id??> AND lic.ORGANIZATION_ID = :org_id</#if>
+            <#if hciCode??> AND Prem.HCI_CODE = :hciCode</#if>
+            <#if hciName??> AND Prem.HCI_NAME = :hciName</#if>
+            <#if hciStreetName??> AND Prem.STREET_NAME = :hciStreetName</#if>
+            <#if hciPostalCode??> AND Prem.POSTAL_NAME = :hciPostalCode</#if>
         ]]>
     </sql>
 </sqls>
