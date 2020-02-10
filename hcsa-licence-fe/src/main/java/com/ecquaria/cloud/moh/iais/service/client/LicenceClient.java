@@ -46,7 +46,7 @@ public interface LicenceClient {
     @GetMapping(value = "/licence-app-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto>  getLicenceByAppId(@RequestParam("appId") String appId);
 
-    @GetMapping(value = "/licence-id-premises",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/hcsa-licence/licence-id-premises",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getPremisesDto(@RequestParam("licenceId") String licenceId);
 
 }
