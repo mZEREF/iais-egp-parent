@@ -97,13 +97,17 @@ public class UploadFileServiceImpl implements UploadFileService {
         String s = FileUtil.genMd5FileChecksum(str.getBytes());
         if(!applicationGroup.isEmpty()){
              groupId = applicationGroup.get(0).getId();
-             s=applicationGroup.get(0).getId();
+
         }
 
 
         File file=MiscUtil.generateFile(download+File.separator+groupId, s+fileFormat);
 
         File groupPath=new File(download+File.separator+groupId);
+        if(groupPath.exists()){
+            log.info("this file is exists! ");
+            return false;
+        }
         if(!groupPath.exists()){
             groupPath.mkdirs();
         }
