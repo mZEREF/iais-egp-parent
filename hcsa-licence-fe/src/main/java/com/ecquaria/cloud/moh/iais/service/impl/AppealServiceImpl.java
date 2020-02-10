@@ -376,7 +376,7 @@ public class AppealServiceImpl implements AppealService {
         LicenceDto entity = licenceClient.getLicBylicNo(licenceNo).getEntity();
         String id = entity.getId();
 
-        List<PremisesDto> premisesDtos = licenceClient.getPremisess(id).getEntity();
+        List<PremisesDto> premisesDtos = licenceClient.getPremisesDto(id).getEntity();
 
         List<AppSvcCgoDto> list=new ArrayList<>();
         for(PremisesDto every:premisesDtos){
