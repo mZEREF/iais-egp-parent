@@ -150,6 +150,8 @@ public class AppealDelegator {
         specialtyAttr.put("style", "display: none;");
 
         specialtySelectList= genSpecialtySelectList("CLB");
+        ParamUtil.setSessionAttr(request, "SpecialtySelectList",(Serializable)  specialtySelectList);
+
         String specialtySelectStr = getHtml(specialtyAttr, specialtySelectList, null);
 
 

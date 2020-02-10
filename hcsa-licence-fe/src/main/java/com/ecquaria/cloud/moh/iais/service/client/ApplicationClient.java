@@ -177,6 +177,6 @@ public interface ApplicationClient  {
     @PostMapping(value = "/appeal/application-appeal",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppealPageDto> submitAppeal(@RequestBody AppealPageDto appealDto);
 
-    @GetMapping(value = "/list-hci-name-address",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/appeal/list-hci-name-address",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppInsRepDto> getHciNameAndAddress(@RequestParam("appId") String appId);
 }
