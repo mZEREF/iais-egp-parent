@@ -29,7 +29,7 @@
     <br>
     <input type="hidden" name="apptInspectionDateSwitch" value="">
     <input type="hidden" name="actionValue" value="">
-    <input type="hidden" name="processDec" value="">
+    <input type="hidden" name="processDec" value="${apptInspectionDateDto.processDec}">
     <iais:body >
       <div class="container">
         <div class="col-xs-12">
@@ -45,8 +45,8 @@
                       <iais:row>
                         <iais:field value="Available Appointment Dates"/>
                         <iais:value width="7">
-                          <c:if test="${inspectionDateList != null}">
-                            <c:forEach items="${inspectionDateList}" var="inspectionDate">
+                          <c:if test="${apptInspectionDateDto.inspectionDateList != null}">
+                            <c:forEach items="${apptInspectionDateDto.inspectionDateList}" var="inspectionDate">
                               <label><c:out value="${inspectionDate}"/></label>
                             </c:forEach>
                           </c:if>
@@ -55,7 +55,7 @@
                       <iais:row>
                         <iais:field value="Processing Decision"/>
                         <iais:value width="7">
-                          <iais:select name="inspecProessDec" options="inspecProDec" firstOption="Please select" value="${apptInspectionDate.selectValue}" onchange="javascript:apptInspectionDateChange(this.value)"></iais:select>
+                          <iais:select name="inspecProessDec" options="inspecProDec" firstOption="Please select" value="${apptInspectionDateDto.selectValue}" onchange="javascript:apptInspectionDateChange(this.value)"></iais:select>
                         </iais:value>
                       </iais:row>
                       <iais:action >
@@ -99,11 +99,8 @@
   }
 
   function apptInspectionDateConfirm() {
-    var actionValue = $("#processDec").val();
-    if("REDECI002" == actionValue){
-        $("#actionValue").val('success');
-        apptInspectionDateSubmit("success");
-    } else if ("REDECI001" == actionValue){
+    var processDec = $("#processDec").val();
+    if("REDECI017" == processDec || "REDECI018" == processDec){
         $("#actionValue").val('success');
         apptInspectionDateSubmit("success");
     } else {
