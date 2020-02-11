@@ -74,6 +74,7 @@ public class InspectionPreDelegator {
      */
     public void inspectionPreInspectorStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorStart start ...."));
+        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("Inspector Pre Task", "Pre Inspection Task");
     }
 
@@ -85,7 +86,6 @@ public class InspectionPreDelegator {
      */
     public void inspectionPreInspectorInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorInit start ...."));
-        AccessUtil.initLoginUserInfo(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", null);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", null);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", null);

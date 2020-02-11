@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -27,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,56 +76,10 @@ public class AppealServiceImpl implements AppealService {
     public String submitData(HttpServletRequest request) {
 
         String appealingFor = request.getParameter("appealingFor");
-        ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion("AN191226000315-03").getEntity();
-
-        String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
-        StringBuilder stringBuilder =new StringBuilder(appNo);
-        String s = stringBuilder.append("-1").toString();
 
 
-        String reasonSelect = request.getParameter("reasonSelect");
-        String selectHciNames = request.getParameter("selectHciName");
-        String proposedHciName = request.getParameter("proposedHciName");
-        String remarks = request.getParameter("remarks");
-        List<AppSvcCgoDto> appSvcCgoDtos=null;
-        if("MS003".equals(reasonSelect)){
-           appSvcCgoDtos = reAppSvcCgo(request);
-        }
-
-        AppliSpecialDocDto appliSpecialDocDto =new AppliSpecialDocDto();
-        appliSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
-
-        AppealPageDto appealDto=new AppealPageDto();
-        //group
-        ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo);
-
-
-        ApplicationDto applicationDto1 =new ApplicationDto();
-        applicationDto1.setApplicationType("APTY001");
-        applicationDto1.setApplicationNo(s);
-        applicationDto1.setStatus("APST007");
-        applicationDto1.setServiceId(applicationDto.getServiceId());
-        applicationDto1.setVersion(1);
-        applicationDto1.setLicenceId(applicationDto.getLicenceId());
-        List<ApplicationDto> list=new ArrayList<>();
-        list.add(applicationDto1);
-        appealDto.setApplicationGroupDto(applicationGroupDto);
-        appealDto.setRemarks(remarks);
-        appealDto.setAppealReason(reasonSelect);
-        appealDto.setNewHciName(proposedHciName);
-        appealDto.setRelateRecId("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
-        appealDto.setAppId(applicationDto.getId());
-        appealDto.setApplicationDto(list);
-        appealDto.setAppealType("NEWAPP");
-        if(appSvcCgoDtos!=null&&!appSvcCgoDtos.isEmpty()){
-            appealDto.setAppSvcCgoDto(appSvcCgoDtos);
-
-        }
-
-            applicationClient.submitAppeal(appealDto);
-
-
-        return s;
+        return     licencePresmises(request,appealingFor);
+   /*     return   licencePresmises(request ,appealingFor);*/
 
     }
 
@@ -164,6 +120,13 @@ public class AppealServiceImpl implements AppealService {
     public void getMessage(HttpServletRequest request) {
         String appealingFor =  request.getParameter("appealingFor");
         ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion("AN191226000315-03").getEntity();
+    /*    LicenceDto licenceDto = licenceClient.getLicBylicNo("L/20CLB0156/CLB/001/201").getEntity();
+        List<PremisesListQueryDto> premisesListQueryDtos = licenceClient.getPremises(licenceDto.getId()).getEntity();
+        for(int i=0;i<premisesListQueryDtos.size();i++){
+            String hciName = premisesListQueryDtos.get(i).getHciName();
+            String address = premisesListQueryDtos.get(i).getAddress();
+
+        }*/
         String serviceId = applicationDto.getServiceId();
         String id = applicationDto.getId();
         if(id!=null){
@@ -385,19 +348,75 @@ public class AppealServiceImpl implements AppealService {
     }
 
 
-    private void licencePresmises(String  licenceNo){
-        LicenceDto entity = licenceClient.getLicBylicNo(licenceNo).getEntity();
-        String id = entity.getId();
+    private String licencePresmises(HttpServletRequest request,String  licenceNo){
 
-        List<PremisesDto> premisesDtos = licenceClient.getPremisesDto(id).getEntity();
+//      licenceClient.getLicBylicNo("L/20CLB0156/CLB/001/201").getEntity();
 
+        ApplicationDto entity1 = applicationClient.getApplicationsByLicenceId("7ECAE165-534A-EA11-BE7F-000C29F371DC").getEntity();
+
+        LicenceDto entity=new LicenceDto();
+                String id = entity.getId();
+        String svcName = entity.getSvcName();
+        List<ApplicationDto> applicationDtoListlist=new ArrayList<>();
+     /*   List<PremisesDto> premisesDtos = licenceClient.getPremisesDto(id).getEntity();*/
+        String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
+        ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo);
+        StringBuilder stringBuilder =new StringBuilder(appNo);
+        String s = stringBuilder.append("-1").toString();
+        List<AppGrpPremisesDto> premisesDtos=new ArrayList<>();
+        AppGrpPremisesDto premisesDto=new AppGrpPremisesDto();
+        premisesDto.setHciName("fff");
+        premisesDto.setPremisesType("ONSIT");
+        premisesDto.setPostalCode("POST");
+        premisesDto.setAddrType("ADRESS");
+        premisesDto.setStreetName("STR");
+
+        premisesDtos.add(premisesDto);
         List<AppSvcCgoDto> list=new ArrayList<>();
-        for(PremisesDto every:premisesDtos){
+        for(AppGrpPremisesDto every:premisesDtos){
             AppSvcCgoDto appSvcCgoDto = MiscUtil.transferEntityDto(every, AppSvcCgoDto.class);
             list.add(appSvcCgoDto);
+            ApplicationDto applicationDto=new ApplicationDto();
+            applicationDto.setStatus("APST007");
+            applicationDto.setApplicationType("APTY001");
+            applicationDto.setVersion(1);
+            if(entity1!=null){
+                applicationDto.setVersion(entity1.getVersion()+1);
+            }
+            applicationDto.setLicenceId("7ECAE165-534A-EA11-BE7F-000C29F371DC");
+            applicationDto.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
+            applicationDto.setApplicationNo(s);
+            applicationDto.setOriginLicenceId("0750A47B-B327-EA11-BE7D-000C29F371DC");
+
+            applicationDtoListlist.add(applicationDto);
         }
 
-        String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
+
+        String reasonSelect = request.getParameter("reasonSelect");
+        String selectHciNames = request.getParameter("selectHciName");
+        String proposedHciName = request.getParameter("proposedHciName");
+        String remarks = request.getParameter("remarks");
+        List<AppSvcCgoDto> appSvcCgoDtos=null;
+        if("MS003".equals(reasonSelect)){
+            appSvcCgoDtos = reAppSvcCgo(request);
+        }
+
+        AppealPageDto appealDto=new AppealPageDto();
+        appealDto.setApplicationGroupDto(applicationGroupDto);
+        appealDto.setRemarks(remarks);
+        appealDto.setAppealReason(reasonSelect);
+        appealDto.setNewHciName(proposedHciName);
+
+        appealDto.setAppId("7ECAE165-534A-EA11-BE7F-000C29F371DC");
+        appealDto.setApplicationDto(applicationDtoListlist);
+        appealDto.setAppealType("NEWLICEN");
+        if(appSvcCgoDtos!=null&&!appSvcCgoDtos.isEmpty()){
+            appealDto.setAppSvcCgoDto(appSvcCgoDtos);
+
+        }
+        appealDto.setAppGrpPremisesDtos(premisesDtos);
+        applicationClient.submitAppeal(appealDto);
+        return s;
     }
 
     private ApplicationGroupDto getApplicationGroupDto(String appNo){
@@ -416,11 +435,13 @@ public class AppealServiceImpl implements AppealService {
         applicationGroupDto.setIsGrpLic(0);
         applicationGroupDto.setDeclStmt("N");
         applicationGroupDto.setSubmitBy("C55C9E62-750B-EA11-BE7D-000C29F371DC");
+        applicationGroupDto.setAppType(ApplicationConsts.APPLICATION_TYPE_APPEAL);
         return applicationGroupDto;
 
     }
 
-    private void applicationPresmies(HttpServletRequest request, String applicationNo){
+    private String applicationPresmies(HttpServletRequest request, String applicationNo){
+
         ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion("AN191226000315-03").getEntity();
 
         String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
@@ -444,13 +465,17 @@ public class AppealServiceImpl implements AppealService {
         //group
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo);
 
-
         ApplicationDto applicationDto1 =new ApplicationDto();
         applicationDto1.setApplicationType("APTY001");
         applicationDto1.setApplicationNo(s);
         applicationDto1.setStatus("APST007");
         applicationDto1.setServiceId(applicationDto.getServiceId());
+        String status = applicationDto.getStatus();
         applicationDto1.setVersion(1);
+        if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
+            applicationDto1.setVersion(applicationDto.getVersion()+1);
+        }
+
         applicationDto1.setLicenceId(applicationDto.getLicenceId());
         List<ApplicationDto> list=new ArrayList<>();
         list.add(applicationDto1);
@@ -468,5 +493,6 @@ public class AppealServiceImpl implements AppealService {
         }
 
         applicationClient.submitAppeal(appealDto);
+        return s;
     }
 }

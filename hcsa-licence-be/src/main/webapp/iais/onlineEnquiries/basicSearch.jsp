@@ -34,20 +34,19 @@
                                         </iais:row>
                                         <iais:row>
                                             <iais:value width="18">
-                                                <input type="radio" name="select_search" value="hci" />HCI Name
+                                                <input type="radio" name="hci" />HCI Name
                                             </iais:value>
                                             <iais:value width="18">
-                                                <input type="radio" name="select_search" value="application" />Application No
+                                                <input type="radio" name="application"  />Application No
                                             </iais:value>
                                             <iais:value width="18">
-                                                <input type="radio" name="select_search" value="licence" />Licence No
-                                            </iais:value>
-
-                                            <iais:value width="18">
-                                                <input type="radio" name="select_search" value="licensee" />Licensee Name
+                                                <input type="radio" name="licence" />Licence No
                                             </iais:value>
                                             <iais:value width="18">
-                                                <input type="radio" name="select_search" value="servicePersonnel" />Service Personnel Name
+                                                <input type="radio" name="licensee"  />Licensee Name
+                                            </iais:value>
+                                            <iais:value width="18">
+                                                <input type="radio" name="servicePersonnel"  />Service Personnel Name
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">
@@ -138,21 +137,22 @@
     }
 
     function doAdvancedSearch(){
-        var radios=document.getElementsByName("select_search");
-        for (var i = 0, length = radios.length; i < length; i++) {
-            if (radios[i].checked) {
-                SOP.Crud.cfxSubmit("mainForm", radios[i].value);
-                break;
-            }
-        }
+        SOP.Crud.cfxSubmit("mainForm", "advSearch");
     }
+
     function doSearch(){
-        var radios=document.getElementsByName("select_search");
-        for (var i = 0, length = radios.length; i < length; i++) {
-            if (radios[i].checked) {
-                SOP.Crud.cfxSubmit("mainForm", radios[i].value+"Adv");
-                break;
-            }
+        var chkNum = 0;
+        var checkBox = $('input[type = checkbox]');
+        for (var i = 0; i < checkBox.length; i++) {
+            if (checkBox[i].checked) {
+                chkNum++;
+            };
+        };
+        if(chkNum==0||chkNum==1){
+            SOP.Crud.cfxSubmit("mainForm", "basicSearch");
+        }
+        else {
+            SOP.Crud.cfxSubmit("mainForm", "advSearch");
         }
     }
 
@@ -160,5 +160,8 @@
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
         submit('licSort');
+    }
+    function doAppInfo(licenseeId) {
+        SOP.Crud.cfxSubmit("mainForm", "details",licenseeId);
     }
 </script>

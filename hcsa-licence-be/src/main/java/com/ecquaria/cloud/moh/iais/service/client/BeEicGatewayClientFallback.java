@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
@@ -67,5 +69,24 @@ public class BeEicGatewayClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
-
+    public FeignResponseEntity<AppealApplicationDto> updateAppealApplication(AppealApplicationDto appealApplicationDto,
+                                                                             String date,
+                                                                             String authorization,
+                                                                             String dateSec,
+                                                                             String authorizationSec){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+    public FeignResponseEntity<AppealLicenceDto> updateAppealLicence(AppealLicenceDto appealLicenceDto,
+                                                                     String date,
+                                                                     String authorization,
+                                                                     String dateSec,
+                                                                     String authorizationSec){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

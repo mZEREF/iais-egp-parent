@@ -51,5 +51,15 @@ public class INTERNET___MohRfcPersonnelList___1 extends BaseProcessClass {
 			EngineHelper.delegate(DELEGATOR, "prepareAckPage", this);
 		}
 
+	public void step1_OnStepProcess_0() throws Exception {
+	// 		Step1->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "personnleListStart", this);
+	}
+
+	public void step1_OnStepProcess_1() throws Exception {
+	// 		Step1->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "personnleListStart", this);
+	}
+
 	
 }

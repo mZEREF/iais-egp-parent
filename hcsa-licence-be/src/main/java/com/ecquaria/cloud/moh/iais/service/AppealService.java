@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
 import java.util.List;
 
 /**
@@ -11,5 +13,9 @@ import java.util.List;
  */
 
 public interface AppealService {
-    public List<AppealApproveDto> getAppealApproveDtos();
+    public List<AppealApproveGroupDto> getAppealApproveDtos();
+    public AppealLicenceDto createAppealLicenceDto(AppealLicenceDto appealLicenceDto);
+    public AppealApplicationDto createAppealApplicationDto(AppealApplicationDto appealApplicationDto);
+    public AppealLicenceDto updateFEAppealLicenceDto(AppealLicenceDto appealLicenceDto);
+
 }

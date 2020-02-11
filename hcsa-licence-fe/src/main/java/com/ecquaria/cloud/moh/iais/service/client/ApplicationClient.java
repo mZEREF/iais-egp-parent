@@ -164,4 +164,6 @@ public interface ApplicationClient  {
     @PostMapping(value = "/iais-submission/application-rfc-licences",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppSubmissionDto>> saveAppsForRequestForChangeByList(@RequestBody List<AppSubmissionDto> appSubmissionDtos);
 
+    @GetMapping(value = "/appeal/list-application-by-licene-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationDto> getApplicationsByLicenceId(@RequestParam("licenceId") String licenceId);
 }

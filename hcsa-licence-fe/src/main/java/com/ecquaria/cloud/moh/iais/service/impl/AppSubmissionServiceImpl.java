@@ -287,7 +287,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public AppSubmissionDto submitRequestChange(AppSubmissionDto appSubmissionDto, Process process) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appSubmissionDto = applicationClient.saveAppsForRequestForChange(appSubmissionDto).getEntity();
-        eventBus(appSubmissionDto, process);
+        //eventBus(appSubmissionDto, process);
         return appSubmissionDto;
     }
     

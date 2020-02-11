@@ -4,15 +4,22 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicEicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.AppealApplicaionService;
+import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.submission.client.model.ServiceStatus;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.kafka.GlobalConstants;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +42,12 @@ public class LicencEventBusCallBackDelegator {
 
     @Autowired
     private LicenceService licenceService;
+
+    @Autowired
+    private AppealService appealService;
+
+    @Autowired
+    private AppealApplicaionService appealApplicaionService;
 
     /**
      * StartStep: Start
@@ -108,10 +121,52 @@ public class LicencEventBusCallBackDelegator {
                     }else{
                         log.error(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
                     }
+                }else if(EventBusConsts.OPERATION_LICENCE_SAVE_APPEAL.equals(operation)){
+                    LicEicRequestTrackingDto licEicRequestTrackingDto = licenceService.getLicEicRequestTrackingDtoByRefNo(eventRefNum);
+                    AppealLicenceDto appealLicenceDto = getObjectLic(licEicRequestTrackingDto,AppealLicenceDto.class);
+                    if(appealLicenceDto!=null){
+                        appealService.updateFEAppealLicenceDto(appealLicenceDto);
+                    }else{
+                        log.error(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
+                    }
+                }else if(EventBusConsts.OPERATION_LICENCE_SAVE_APPEAL.equals(operation)){
+                    AppEicRequestTrackingDto appEicRequestTrackingDto = appealApplicaionService.getAppEicRequestTrackingDtoByRefNo(eventRefNum);
+                    AppealApplicationDto appealApplicationDto = getObjectApp(appEicRequestTrackingDto,AppealApplicationDto.class);
+                    if(appealApplicationDto!=null){
+                        appealApplicaionService.updateFEAppealApplicationDto(appealApplicationDto);
+                    }else{
+                        log.error(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
+                    }
                 }
             }
 
         }
         log.info(StringUtil.changeForLog("The LicenceService callBack end ..."));
+    }
+
+    private <T> T getObjectApp(AppEicRequestTrackingDto appEicRequestTrackingDto, Class<T> cls){
+        T result = null;
+        if(appEicRequestTrackingDto!=null){
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                result = mapper.readValue(appEicRequestTrackingDto.getDtoObj(), cls);
+            } catch (IOException e) {
+                log.error(StringUtil.changeForLog(e.getMessage()),e);
+            }
+        }
+        return  result;
+    }
+
+    private <T> T getObjectLic(LicEicRequestTrackingDto licEicRequestTrackingDto, Class<T> cls){
+        T result = null;
+        if(licEicRequestTrackingDto!=null){
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                 result = mapper.readValue(licEicRequestTrackingDto.getDtoObj(), cls);
+            } catch (IOException e) {
+                log.error(StringUtil.changeForLog(e.getMessage()),e);
+            }
+        }
+        return  result;
     }
 }

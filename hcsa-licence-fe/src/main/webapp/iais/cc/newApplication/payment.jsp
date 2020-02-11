@@ -35,83 +35,107 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <c:forEach items="${AppSubmissionDto.feeInfoDtos}" var="feeInfoDto">
-                                        <c:set var="baseSvcFeeExt" value="${feeInfoDto.baseSvcFeeExt}"/>
-                                        <c:set var="complexSpecifiedFeeExt" value="${feeInfoDto.complexSpecifiedFeeExt}"/>
-                                        <c:set var="simpleSpecifiedFeeExt" value="${feeInfoDto.simpleSpecifiedFeeExt}"/>
-                                        <!--todo:includedSvcFeeExtList -->
-                                        <!--base -->
-                                    <tr>
-                                        <td>
-                                            <c:forEach var="svcName" items="${baseSvcFeeExt.svcNames}">
-                                                <p> <c:out value="${svcName}"></c:out></p>
+                                    <c:choose>
+                                        <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
+                                            <c:forEach var="svc" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}">
+                                                <tr>
+                                                    <td>
+                                                        <p><c:out value="${svc.serviceName}"></c:out></p>
+                                                    </td>
+                                                    <td>
+                                                        <p>Amendment</p>
+                                                    </td>
+                                                    <td>
+                                                        <p><c:out value="${AppSubmissionDto.appGrpNo}"></c:out></p>
+                                                    </td>
+                                                    <td>
+                                                        <p><c:out value="${AppSubmissionDto.amountStr}"></c:out></p>
+                                                    </td>
+                                                </tr>
                                             </c:forEach>
-                                        </td>
-                                        <td>
-                                            <p>
-                                                New Licence
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <p>
-                                                <c:out value="${AppSubmissionDto.appGrpNo}"></c:out>
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <p>
-                                                <c:out value="${baseSvcFeeExt.amountStr}"></c:out>
-                                            </p>
-                                        </td>
-                                    </tr>
+                                        </c:when>
 
-                                        <!--simpleSpecifiedFeeExt -->
-                                    <c:if test="${simpleSpecifiedFeeExt.svcNames.size()>0 }">
-                                        <tr>
-                                            <td>
-                                                <p>&nbsp;&nbsp;Simple Specified Services</p>
-                                                <c:forEach var="svcName" items="${simpleSpecifiedFeeExt.svcNames}">
-                                                    <p>&nbsp;&nbsp;- <c:out value="${svcName}"></c:out></p>
-                                                </c:forEach>
+                                        <c:otherwise>
+                                            <c:forEach items="${AppSubmissionDto.feeInfoDtos}" var="feeInfoDto">
+                                                <c:set var="baseSvcFeeExt" value="${feeInfoDto.baseSvcFeeExt}"/>
+                                                <c:set var="complexSpecifiedFeeExt" value="${feeInfoDto.complexSpecifiedFeeExt}"/>
+                                                <c:set var="simpleSpecifiedFeeExt" value="${feeInfoDto.simpleSpecifiedFeeExt}"/>
+                                                <!--todo:includedSvcFeeExtList -->
+                                                <!--base -->
+                                                <tr>
+                                                    <td>
+                                                        <c:forEach var="svcName" items="${baseSvcFeeExt.svcNames}">
+                                                            <p> <c:out value="${svcName}"></c:out></p>
+                                                        </c:forEach>
+                                                    </td>
+                                                    <td>
+                                                        <p>
+                                                            New Licence
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        <p>
+                                                            <c:out value="${AppSubmissionDto.appGrpNo}"></c:out>
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        <p>
+                                                            <c:out value="${baseSvcFeeExt.amountStr}"></c:out>
+                                                        </p>
+                                                    </td>
+                                                </tr>
 
-                                            </td>
-                                            <td>
-                                                <p></p>
-                                            </td>
-                                            <td>
-                                                <p> </p>
-                                            </td>
-                                            <td>
-                                                <p >
-                                                    <c:out value="${simpleSpecifiedFeeExt.amountStr}"></c:out>
-                                                </p>
-                                            </td>
-                                        </tr>
-                                    </c:if>
+                                                <!--simpleSpecifiedFeeExt -->
+                                                <c:if test="${simpleSpecifiedFeeExt.svcNames.size()>0 }">
+                                                    <tr>
+                                                        <td>
+                                                            <p>&nbsp;&nbsp;Simple Specified Services</p>
+                                                            <c:forEach var="svcName" items="${simpleSpecifiedFeeExt.svcNames}">
+                                                                <p>&nbsp;&nbsp;- <c:out value="${svcName}"></c:out></p>
+                                                            </c:forEach>
 
-                                          <!--complexSpecifiedFeeExt -->
-                                    <c:if test="${complexSpecifiedFeeExt.svcNames.size()>0 }">
-                                        <tr>
-                                            <td class="breakdown">
-                                                <p>&nbsp;&nbsp;Complex Specified Services (${complexSpecifiedFeeExt.svcNames.size()})</p>
-                                                <c:forEach var="svcName" items="${complexSpecifiedFeeExt.svcNames}">
-                                                    <p>&nbsp;&nbsp;- <c:out value="${svcName}"></c:out></p>
-                                                </c:forEach>
-                                            </td>
-                                            <td>
-                                                <p></p>
-                                            </td>
-                                            <td>
-                                                <p> </p>
-                                            </td>
-                                            <td>
-                                                <p >
-                                                    <c:out value="${complexSpecifiedFeeExt.amountStr}"></c:out>
-                                                </p>
-                                            </td>
-                                        </tr>
-                                    </c:if>
+                                                        </td>
+                                                        <td>
+                                                            <p></p>
+                                                        </td>
+                                                        <td>
+                                                            <p> </p>
+                                                        </td>
+                                                        <td>
+                                                            <p >
+                                                                <c:out value="${simpleSpecifiedFeeExt.amountStr}"></c:out>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                </c:if>
 
-                                    </c:forEach>
+                                                <!--complexSpecifiedFeeExt -->
+                                                <c:if test="${complexSpecifiedFeeExt.svcNames.size()>0 }">
+                                                    <tr>
+                                                        <td class="breakdown">
+                                                            <p>&nbsp;&nbsp;Complex Specified Services (${complexSpecifiedFeeExt.svcNames.size()})</p>
+                                                            <c:forEach var="svcName" items="${complexSpecifiedFeeExt.svcNames}">
+                                                                <p>&nbsp;&nbsp;- <c:out value="${svcName}"></c:out></p>
+                                                            </c:forEach>
+                                                        </td>
+                                                        <td>
+                                                            <p></p>
+                                                        </td>
+                                                        <td>
+                                                            <p> </p>
+                                                        </td>
+                                                        <td>
+                                                            <p >
+                                                                <c:out value="${complexSpecifiedFeeExt.amountStr}"></c:out>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                </c:if>
+
+                                            </c:forEach>
+                                        </c:otherwise>
+                                    </c:choose>
+
                                     </tbody>
                                 </table>
                                 <h2>Payment Method</h2>

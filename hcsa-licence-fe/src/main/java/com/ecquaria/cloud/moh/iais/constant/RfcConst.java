@@ -35,6 +35,9 @@ public class RfcConst {
 
 
 
+    public static final String SWITCH_VALUE = "switch_value";
+
+
     //rfc amendType text
     public static final String REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION_TEXT = "Premises Information";
     public static final String REQUEST_FOR_CHANGE_TYPE_MEDALERT_PERSONNEL_TEXT  = "MedAlert Personnel";

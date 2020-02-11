@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
@@ -67,4 +69,17 @@ public interface BeEicGatewayClient {
                                            @RequestHeader("date-Secondary") String dateSec,
                                            @RequestHeader("authorization-Secondary") String authorizationSec
     );
+
+    @RequestMapping(value = "/v1/hcsa-licence-transport-appeal/",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppealLicenceDto> updateAppealLicence(@RequestBody AppealLicenceDto appealLicenceDto,
+                                                              @RequestHeader("date") String date,
+                                                              @RequestHeader("authorization") String authorization,
+                                                              @RequestHeader("date-Secondary") String dateSec,
+                                                              @RequestHeader("authorization-Secondary") String authorizationSec);
+    @RequestMapping(value = "/v1/appeal-beApplication/",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppealApplicationDto> updateAppealApplication(@RequestBody AppealApplicationDto appealApplicationDto,
+                                                                @RequestHeader("date") String date,
+                                                                @RequestHeader("authorization") String authorization,
+                                                                @RequestHeader("date-Secondary") String dateSec,
+                                                                @RequestHeader("authorization-Secondary") String authorizationSec);
 }
