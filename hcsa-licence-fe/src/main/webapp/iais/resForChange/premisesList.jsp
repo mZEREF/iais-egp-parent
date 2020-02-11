@@ -81,7 +81,7 @@
     
     var index =  $premAddrEle.find('.statusIndex').val();
     $('#hiddenIndex').val(index);
-    doSubmitForm('prepareEdit','', '');
+    doSubmitForm('prePremisesEdit','', '');
   
   });
   
