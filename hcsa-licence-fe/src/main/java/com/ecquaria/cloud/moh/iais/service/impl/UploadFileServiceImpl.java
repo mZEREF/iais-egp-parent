@@ -104,10 +104,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         File file=MiscUtil.generateFile(download+File.separator+groupId, s+fileFormat);
 
         File groupPath=new File(download+File.separator+groupId);
-        if(groupPath.exists()){
-            log.info("this file is exists! ");
-            return false;
-        }
+
         if(!groupPath.exists()){
             groupPath.mkdirs();
         }
