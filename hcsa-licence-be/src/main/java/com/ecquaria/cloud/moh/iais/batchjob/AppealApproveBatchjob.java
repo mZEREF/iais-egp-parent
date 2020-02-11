@@ -1,16 +1,24 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import java.util.ArrayList;
@@ -33,38 +41,66 @@ public class AppealApproveBatchjob {
     private AppealService appealService;
     public void doBatchJob(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("The AppealApproveBatchjob is end ..."));
-        List<AppealApproveDto> appealApproveDtos = appealService.getAppealApproveDtos();
-        List<ApplicationDto> appealApplicaiton = new ArrayList();
-        List<ApplicationDto> rollBackApplication = new ArrayList<>();
-        List<LicenceDto> appealLicence = new ArrayList<>();
-        List<LicenceDto> rollBackLicence = new ArrayList<>();
-        List<AppSvcKeyPersonnelDto> appealPersonnel = new ArrayList<>();
-        List<AppSvcKeyPersonnelDto> rollBackPersonnel = new ArrayList<>();
-        List<AppGrpPremisesDto> appealAppGrpPremisesDto = new ArrayList<>();
-        List<AppGrpPremisesDto> rollBackAppGrpPremisesDto = new ArrayList<>();
-        if(!IaisCommonUtils.isEmpty(appealApproveDtos)){
-            for (AppealApproveDto appealApproveDto: appealApproveDtos){
-                ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
-                AppealDto appealDto = appealApproveDto.getAppealDto();
-                if(applicationDto!= null && appealDto != null){
-                 String  appealType = appealDto.getAppealType();
-                    switch(appealType){
-                        case ApplicationConsts.APPEAL_TYPE_APPLICAITON :
-                            appealApplicaiton(appealApplicaiton,rollBackApplication,appealPersonnel,rollBackPersonnel,
-                                    appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,appealApproveDto);
-                            appealOther(appealApplicaiton,rollBackApplication,applicationDto);
-                            break;
-                        case ApplicationConsts.APPEAL_TYPE_LICENCE :
-                            appealLicence(appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),
-                                    appealDto.getNewLicYears());
-                            appealOther(appealApplicaiton,rollBackApplication,applicationDto);
-                            break;
+        List<AppealApproveGroupDto> appealApproveGroupDtos = appealService.getAppealApproveDtos();
+        if(!IaisCommonUtils.isEmpty(appealApproveGroupDtos)){
+          for (AppealApproveGroupDto appealApproveGroupDto :appealApproveGroupDtos ){
+              ApplicationGroupDto applicationGroupDto = appealApproveGroupDto.getApplicationGroupDto();
+              List<AppealApproveDto> appealApproveDtos = appealApproveGroupDto.getAppealApproveDtoList();
+              if(!IaisCommonUtils.isEmpty(appealApproveDtos)&&applicationGroupDto!=null){
+                  List<ApplicationDto> appealApplicaiton = new ArrayList();
+                  List<ApplicationDto> rollBackApplication = new ArrayList<>();
+                  List<LicenceDto> appealLicence = new ArrayList<>();
+                  List<LicenceDto> rollBackLicence = new ArrayList<>();
+                  List<AppSvcKeyPersonnelDto> appealPersonnel = new ArrayList<>();
+                  List<AppSvcKeyPersonnelDto> rollBackPersonnel = new ArrayList<>();
+                  List<AppGrpPremisesDto> appealAppGrpPremisesDto = new ArrayList<>();
+                  List<AppGrpPremisesDto> rollBackAppGrpPremisesDto = new ArrayList<>();
+                  for (AppealApproveDto appealApproveDto: appealApproveDtos){
+                      ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
+                      AppealDto appealDto = appealApproveDto.getAppealDto();
+                      if(applicationDto!= null && appealDto != null){
+                          String  appealType = appealDto.getAppealType();
+                          switch(appealType){
+                              case ApplicationConsts.APPEAL_TYPE_APPLICAITON :
+                                  appealApplicaiton(appealApplicaiton,rollBackApplication,appealPersonnel,rollBackPersonnel,
+                                          appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,appealApproveDto);
+                                  appealOther(appealApplicaiton,rollBackApplication,applicationDto);
+                                  break;
+                              case ApplicationConsts.APPEAL_TYPE_LICENCE :
+                                  appealLicence(appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),
+                                          appealDto.getNewLicYears());
+                                  appealOther(appealApplicaiton,rollBackApplication,applicationDto);
+                                  break;
 //                        case ApplicationConsts.APPEAL_TYPE_OTHER :
 //                            appealOther(appealApplicaiton,rollBackApplication,applicationDto);
 //                            break;
-                    }
-                }
-            }
+                          }
+                      }
+                  }
+                  //event bus
+                  AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+                  String eventRefNo = EventBusHelper.getEventRefNo();
+                  //licence
+                  AppealLicenceDto appealLicenceDto = new AppealLicenceDto();
+                  appealLicenceDto.setEventRefNo(eventRefNo);
+                  appealLicenceDto.setAppealLicence(appealLicence);
+                  appealLicenceDto.setRollBackLicence(rollBackLicence);
+                  appealLicenceDto.setAuditTrailDto(auditTrailDto);
+                  //application
+                  AppealApplicationDto appealApplicationDto = new  AppealApplicationDto();
+                  appealApplicationDto.setEventRefNo(eventRefNo);
+                  appealApplicationDto.setRollBackApplicationGroupDto(applicationGroupDto);
+                  ApplicationGroupDto appealApplicationGroupDto = (ApplicationGroupDto) CopyUtil.copyMutableObject(applicationGroupDto);
+                  appealApplicationDto.setAppealApplicationGroupDto(appealApplicationGroupDto);
+                  appealApplicationDto.setAppealApplicationDto(appealApplicaiton);
+                  appealApplicationDto.setRollBackApplicationDto(rollBackApplication);
+                  appealApplicationDto.setAppealPersonnel(appealPersonnel);
+                  appealApplicationDto.setRollBackPersonnel(rollBackPersonnel);
+                  appealApplicationDto.setAppealAppGrpPremisesDto(appealAppGrpPremisesDto);
+                  appealApplicationDto.setRollBackAppGrpPremisesDto(rollBackAppGrpPremisesDto);
+
+              }
+          }
         }
         log.debug(StringUtil.changeForLog("The AppealApproveBatchjob is start ..."));
     }
