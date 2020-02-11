@@ -13,7 +13,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.MessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,12 +126,13 @@ public class MessageDelegator {
             return;
         }
 
+        preSelectOption(request);
         String domainType = ParamUtil.getString(request, MessageConstants.PARAM_DOMAIN_TYPE);
         String msgType = ParamUtil.getString(request, MessageConstants.PARAM_MSG_TYPE);
         String module = ParamUtil.getString(request, MessageConstants.PARAM_MODULE);
         String description = ParamUtil.getString(request, MessageConstants.PARAM_DESCRIPTION);
         String message = ParamUtil.getString(request, MessageConstants.PARAM_MESSAGE);
-
+        String status = ParamUtil.getString(request, MessageConstants.PARAM_STATUS);
 
         MessageDto editDto = (MessageDto) ParamUtil.getSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO);
         editDto.setDomainType(domainType);
@@ -135,16 +140,40 @@ public class MessageDelegator {
         editDto.setModule(module);
         editDto.setDescription(description);
         editDto.setMessage(message);
-
+        editDto.setStatus(status);
         ValidationResult validationResult = WebValidationHelper.validateProperty(editDto, "edit");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
         }else {
-            messageService.saveMessage(editDto);
+            ParamUtil.setSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO, editDto);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
         }
+
+    }
+
+    /**
+     * AutoStep: editSubmit
+     * @param bpc
+     */
+    public void editSubmit(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if ("editSubmit".equals(currentAction)){
+            MessageDto editDto = (MessageDto) ParamUtil.getSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO);
+            messageService.saveMessage(editDto);
+        }
+
+    }
+
+    /**
+     * AutoStep: backAfter
+     * @param bpc
+     */
+    public void backAfter(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        preSelectOption(request);
 
     }
 
@@ -157,7 +186,7 @@ public class MessageDelegator {
         String msgId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(msgId)) {
             MessageDto messageDto = messageService.getMessageById(msgId);
-            messageDto.setStatus(AppConsts.COMMON_STATUS_DELETED);
+            messageDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             messageService.saveMessage(messageDto);
         }
     }
@@ -177,20 +206,38 @@ public class MessageDelegator {
         String module = ParamUtil.getString(request, MessageConstants.PARAM_MODULE);
 
 
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
+        ParamUtil.setRequestAttr(request, MessageConstants.PARAM_DOMAIN_TYPE, domainType);
+        ParamUtil.setRequestAttr(request, MessageConstants.PARAM_MSG_TYPE, msgType);
+        ParamUtil.setRequestAttr(request, MessageConstants.PARAM_MODULE, module);
 
-        if (!StringUtil.isEmpty(domainType)){
-            searchParam.addFilter(MessageConstants.PARAM_DOMAIN_TYPE, domainType, true);
+        MessageDto dto = new MessageDto();
+        dto.setDomainType(domainType);
+        dto.setMsgType(msgType);
+        dto.setModule(module);
+
+        ValidationResult validationResult = WebValidationHelper.validateProperty(dto, "search");
+        if(validationResult != null && validationResult.isHasErrors()) {
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
+        }else {
+            SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
+
+            if (!StringUtil.isEmpty(domainType)){
+                searchParam.addFilter(MessageConstants.PARAM_DOMAIN_TYPE, domainType, true);
+            }
+
+
+            if(!StringUtil.isEmpty(msgType)){
+                searchParam.addFilter(MessageConstants.PARAM_MSG_TYPE, msgType, true);
+            }
+
+            if(!StringUtil.isEmpty(module)){
+                searchParam.addFilter(MessageConstants.PARAM_MODULE, module, true);
+            }
+
         }
 
-
-        if(!StringUtil.isEmpty(msgType)){
-            searchParam.addFilter(MessageConstants.PARAM_MSG_TYPE, msgType, true);
-        }
-
-        if(!StringUtil.isEmpty(module)){
-            searchParam.addFilter(MessageConstants.PARAM_MODULE, module, true);
-        }
     }
 
     /**
@@ -216,8 +263,7 @@ public class MessageDelegator {
         preSelectOption(request);
         if(!StringUtil.isEmpty(msgId)){
             MessageDto messageDto = messageService.getMessageById(msgId);
-            ParamUtil.setSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO, messageDto);
-        }
+            ParamUtil.setSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO, messageDto);        }
     }
 
     /**

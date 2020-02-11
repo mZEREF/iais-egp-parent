@@ -11,49 +11,54 @@
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
 
     <br><br>
     <div class="main-content">
         <div class="container">
             <div class="form-horizontal">
                 <div class="form-group">
-                    <label class="col-xs-4 col-md-2 control-label" >Domain Type</label>
+                    <label class="col-xs-4 col-md-2 control-label" >Type</label>
                     <div class="col-xs-5 col-md-3">
-                        <iais:select name="domainType" id="domainType" options="domainTypeSelect" firstOption="Please select" onchange="displaySection()"></iais:select>
+                        <iais:select name="domainType" id="domainType" value="${domainType}" options="domainTypeSelect" firstOption="Please select" onchange="displaySection()"></iais:select>
+
+                    </div>
+                    <span id="error_domainType" name="iaisErrorMsg" class="error-msg"></span>
+                </div>
+
+                <div id = "msgTypeRow" class="form-group" >
+                    <label class="col-xs-4 col-md-2 control-label" >Message Type</label>
+                    <div class="col-xs-5 col-md-3">
+                        <iais:select name="msgType" value="${msgType}" options="msgTypeSelect" firstOption="Please select" ></iais:select>
                     </div>
                 </div>
 
-                <div id = "msgTypeRow" class="form-group" style="display:none">
-                    <label class="col-xs-4 col-md-2 control-label" >Msg Type</label>
-                    <div class="col-xs-5 col-md-3">
-                        <iais:select name="msgType" options="msgTypeSelect" firstOption="Please select" ></iais:select>
-                    </div>
-                </div>
-
-                <div id = "moduleTypeRow" class="form-group" style="display:none">
+                <div id = "moduleTypeRow" class="form-group" >
                     <label class="col-xs-4 col-md-2 control-label" >Module</label>
                     <div class="col-xs-5 col-md-3">
-                        <iais:select name="module"  options="moduleTypeSelect" firstOption="Please select" ></iais:select>
+                        <iais:select name="module"  value="${module}" options="moduleTypeSelect" firstOption="Please select" ></iais:select>
                     </div>
                 </div>
             </div>
 
+            <iais:action style="text-align:center;">
+                <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doSearch()">Search</button>
+                <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doClear()">Clear</button>
+            </iais:action>
 
             <div class="components">
-                <h2 class="component-title">Search &amp; Result</h2>
+                <iais:pagination  param="msgSearchParam" result="msgSearchResult"/>
+                <h2 class="component-title">Search &amp; Results</h2>
                 <div class="table-gp">
                     <table class="table">
                         <thead>
                         <tr>
                             <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
-                            <iais:sortableHeader needSort="true"  field="domain_type" value="Domain Type"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true"  field="domain_type" value="Type"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true"   field="msg_type" value="Message Type"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true"   field="description" value="Description"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true"   field="message" value="Message"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true"   field="status" value="Status"></iais:sortableHeader>
                             <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
                         </tr>
                         </thead>
@@ -74,8 +79,9 @@
                                         <td>${msgQuery.domainType}</td>
                                         <td>${msgQuery.msgType}</td>
                                         <td>${msgQuery.module}</td>
-                                        <td>${msgQuery.description}</td>
-                                        <td>${msgQuery.message}</td>
+                                        <td align="left">${msgQuery.description}</td>
+                                        <td align="left">${msgQuery.message}</td>
+                                        <td><iais:code code="${msgQuery.status}"></iais:code></td>
                                         <td>
                                             <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${msgQuery.id}');"/>
                                             <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${msgQuery.id}');"/>
@@ -86,35 +92,10 @@
                         </c:choose>
                         </tbody>
                     </table>
-                    <div class="table-footnote">
-                        <div class="row">
-                            <div class="col-xs-6 col-md-4">
-                                <p class="count">5 out of 25</p>
-                            </div>
-                            <div class="col-xs-6 col-md-8 text-right">
-                                <div class="nav">
-                                    <ul class="pagination">
-                                        <li class="hidden"><a href="#" aria-label="Previous"><span aria-hidden="true"><em class="fa fa-chevron-left"></em></span></a></li>
-                                        <li class="active"><a href="#">1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#">3</a></li>
-                                        <li><a href="#" aria-label="Next"><span aria-hidden="true"><em class="fa fa-chevron-right"></em></span></a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
 
-                <div class="application-tab-footer">
-                    <td>
-                        <div class="text-right text-center-mobile">
-                            <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSearch();">Search</a>
 
-                        </div>
-
-                    </td>
-                </div>
 
             </div>
             </div>
@@ -122,7 +103,7 @@
 
     </div>
 </form>
-
+<%@include file="/include/validation.jsp"%>
 <script type="text/javascript">
     function doSearch(){
         SOP.Crud.cfxSubmit("mainForm", "doSearch");
@@ -137,7 +118,7 @@
     }
 
     function prepareEdit(id){
-        if(confirm('are sure you want to edit ? ')){
+        if(confirm('Are sure you want to edit ? ')){
             SOP.Crud.cfxSubmit("mainForm", "prepareEdit", id);
         }
     }
@@ -148,18 +129,15 @@
         }
     }
 
-    function displaySection(){
-       var val = document.getElementById("domainType").value;
-       if(val == null){
-           return;
-       }
 
-       var msgTypeRow = document.getElementById("msgTypeRow");
-       var moduleTypeRow = document.getElementById("moduleTypeRow");
-       if(msgTypeRow && moduleTypeRow){
-           msgTypeRow.style = "block";
-           moduleTypeRow.style = "block";
-       }
+    function doClear() {
+        $("#domainType option[text = 'Please select']").val("selected", "selected");
+        $("#domainType").val("");
+        $("#msgType option[text = 'Please select']").val("selected", "selected");
+        $("#msgType").val("");
+        $("#module option[text = 'Please select']").val("selected", "selected");
+        $("#module").val("");
+        $(".current").text("Please select");
     }
 
 </script>

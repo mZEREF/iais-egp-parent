@@ -70,7 +70,7 @@
                 </div>
             </div>
 
-            <%--<div class="form-group">
+            <div class="form-group">
                 <label class="col-md-1">Status:
                 </label>
                 <div class="col-md-3">
@@ -78,19 +78,15 @@
                                  firstOption="Select Status" filterValue="CMSTAT002" value="${parameterRequestDto.status}"></iais:select>
                     <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
-            </div>--%>
+            </div>
         </div>
-        <div class="application-tab-footer">
-            <td>
-                <div class="text-right text-center-mobile">
-                    <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doCancel();">Cancel</a>
-                    <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doEdit('${parameterRequestDto.id}');">Edit</a>
+        <td>
+            <div class="text-right text-center-mobile">
+                <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doCancel();">Cancel</a>
+                <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doEdit('${parameterRequestDto.id}');">Edit</a>
+            </div>
 
-                </div>
-
-            </td>
-        </div>
-
+        </td>
 
 
 
