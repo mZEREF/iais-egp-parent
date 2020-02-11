@@ -40,9 +40,41 @@ public class INTERNET___MohRfcPermisesList___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "preparePremisesEdit", this);
 	}
 
-	public void jump_OnStepProcess_0() throws Exception {
-	// 		jump->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "jump", this);
+	public void init_OnStepProcess_0() throws Exception {
+	// 		init->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepare", this);
+	}
+
+	public void controlSwitch_OnStepProcess_0() throws Exception {
+	// 		ControlSwitch->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "controlSwitch", this);
+	}
+
+	public void prepareAckPage_OnStepProcess_0 () throws Exception { 
+		// 		PrepareAckPage->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareAckPage", this);
+	}
+
+	public void jumpBlank_OnStepProcess_0() throws Exception {
+	 	
+	// 		jumpBlank->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "jumpBank", this);
+	}
+
+	public void doPayment_OnStepProcess_0() throws Exception { 
+		
+	// 		doPayment->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doPayment", this);
+	}
+
+	public void back_OnStepProcess_0() throws Exception {
+	// 		back->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "back", this);
+	}
+
+	public void preparePayment_OnStepProcess_0() throws Exception {
+	// 		preparePayment->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prePayment", this);
 	}
 
 }
