@@ -25,7 +25,7 @@ public interface LicenceClient {
     @GetMapping(path= "/hcsa-licence-rfc/licence-premises", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesListQueryDto>> getPremises(@RequestParam(value = "licenseeId" ) String licenseeId);
     
-    @PutMapping(value = "/licence-status", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/hcsa-licence-rfc/licence-status", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> doUpdate(@RequestBody LicenceDto licenceDto);
 
     @RequestMapping(path= "/hcsa-licence-rfc/licence-bylicence-byNo/{licenceNo}", method = RequestMethod.GET)

@@ -257,7 +257,7 @@
     });
 
     $('#previewAndSub').click(function () {
-        doSubmitForm('payment','', '');
+        doSubmitForm('prePayment','', '');
     });
 
     $('#back').click(function () {

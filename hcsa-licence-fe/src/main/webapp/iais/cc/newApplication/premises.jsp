@@ -671,6 +671,10 @@
         <c:if test="${AppSubmissionDto.appEditSelectDto!=null && !AppSubmissionDto.appEditSelectDto.premisesEdit}">
         disabledPage();
         </c:if>
+
+        <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
+          $('input[name="onSiteHciName"]').prop('disabled',true);
+        </c:if>
     });
 
 
