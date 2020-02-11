@@ -535,7 +535,6 @@ public class RequestForChangeMenuDelegator {
                     .append("&backUrl=").append(backUrl);
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
-            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE,"test");
             return;
         }else if("GIRO".equals(payMethod)){
             String appGrpId = appSubmissionDto.getAppGrpId();
