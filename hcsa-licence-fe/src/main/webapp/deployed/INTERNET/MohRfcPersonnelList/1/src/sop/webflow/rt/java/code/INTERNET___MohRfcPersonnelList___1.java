@@ -33,9 +33,23 @@ public class INTERNET___MohRfcPersonnelList___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doPersonnelEdit", this);
 	}
 
-	public void jump_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "jump", this);
-	}
+	public void init_OnStepProcess_0 () throws Exception { 
+	
+		// 		init->OnStepProcess
+			EngineHelper.delegate(DELEGATOR, "preparePersonnel", this);
+		} 
+
+	public void controlSwitch_OnStepProcess_0 () throws Exception { 
+	
+		// 		ControlSwitch->OnStepProcess
+			EngineHelper.delegate(DELEGATOR, "controlSwitch", this);
+		}
+
+	public void prepareAckPage_OnStepProcess_0 () throws Exception { 
+	 
+			// 		PrepareAckPage->OnStepProcess
+			EngineHelper.delegate(DELEGATOR, "prepareAckPage", this);
+		}
 
 	
 }
