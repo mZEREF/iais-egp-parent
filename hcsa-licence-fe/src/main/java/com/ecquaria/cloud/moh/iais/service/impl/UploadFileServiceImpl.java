@@ -311,7 +311,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     private void deleteFile(){
         File file =new File(download);
-        File fileRepPath=new File(download+File.separator+"files");
+        File fileRepPath=new File(download+File.separator+groupId);
         MiscUtil.checkDirs(fileRepPath);
         MiscUtil.checkDirs(file);
         if(fileRepPath.isDirectory()){
