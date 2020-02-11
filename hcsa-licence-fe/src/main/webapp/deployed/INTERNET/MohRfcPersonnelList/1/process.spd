@@ -2,61 +2,75 @@
 <Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohRfcPersonnelList" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Step1" x="60" y="170">
+  <StartStep defClass="" executor="" icon="" name="Step1" x="-70" y="240">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preparePersonnelList" x="180" y="170">
+  <AutomaticStep defClass="" executor="" icon="" name="preparePersonnelList" x="240" y="170">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="preparePersonnelList_OnStepProcess_0" name="preparePersonnelList_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doPersonnelList" x="500" y="170">
+  <AutomaticStep defClass="" executor="" icon="" name="doPersonnelList" x="490" y="170">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doPersonnelList_OnStepProcess_0" name="doPersonnelList_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preparePersonnelEdit" x="350" y="290">
+  <AutomaticStep defClass="" executor="" icon="" name="preparePersonnelEdit" x="240" y="280">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="preparePersonnelEdit_OnStepProcess_0" name="preparePersonnelEdit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doPersonnelEdit" x="100" y="290">
+  <AutomaticStep defClass="" executor="" icon="" name="doPersonnelEdit" x="490" y="280">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doPersonnelEdit_OnStepProcess_0" name="doPersonnelEdit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="jump" x="120" y="400">
+  <AutomaticStep defClass="" executor="" icon="" name="preparePersonnel" x="20" y="240">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="jump_OnStepProcess_0" name="jump_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ControlSwitch" x="620" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="controlSwitch_OnStepProcess_0" name="controlSwitch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepareAckPage" x="240" y="410">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareAckPage_OnStepProcess_0" name="prepareAckPage_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="personnelList" stageIndicator="" x="340" y="170">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="personnelList" stageIndicator="" x="380" y="170">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="personnelEdit" stageIndicator="" x="230" y="290">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="personnelEdit" stageIndicator="" x="370" y="280">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ack" stageIndicator="" x="120" y="580">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ack" stageIndicator="" x="410" y="410">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -66,45 +80,59 @@
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Pages/WebPage/personnelList" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preparePersonnelList" style="oblique">
-   <position>{(200,190)(360,190)}</position>
+   <position>{(260,190)(400,190)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doPersonnelList" linkstyle="Direct" name="" sourceName="/Pages/WebPage/personnelList" style="oblique">
-   <position>{(360,190)(520,190)}</position>
+   <position>{(400,190)(510,190)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnelList" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1" style="oblique">
-   <position>{(80,190)(200,190)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/personnelEdit" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preparePersonnelEdit" style="oblique">
+   <position>{(260,300)(390,300)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPersonnelList" style="oblique">
-   <position>{(520,190)(540,310)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doPersonnelEdit" linkstyle="Direct" name="" sourceName="/Pages/WebPage/personnelEdit" style="oblique">
+   <position>{(390,300)(510,300)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnelEdit" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(540,310)(370,310)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnel" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1" style="oblique">
+   <position>{(-50,260)(40,260)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/personnelEdit" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preparePersonnelEdit" style="rectanular">
-   <position>{(370,310)(250,310)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPersonnelList" style="oblique">
+   <position>{(510,190)(640,250)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doPersonnelEdit" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/personnelEdit" style="rectanular">
-   <position>{(250,310)(120,310)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPersonnelEdit" style="oblique">
+   <position>{(510,300)(640,250)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/jump" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doPersonnelEdit" style="rectanular">
-   <position>{(120,310)(140,420)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareAckPage" style="oblique">
+   <position>{(260,430)(430,430)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/jump" style="rectanular">
-   <position>{(140,420)(140,510)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preparePersonnel" style="oblique">
+   <position>{(40,260)(190,260)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
-   <position>{(140,510)(140,600)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnelList" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(190,260)(260,190)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnelEdit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(190,260)(260,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareAckPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(190,260)(260,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnel" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(720,430)(73,601)(40,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ControlSwitch" style="oblique">
+   <position>{(640,250)(720,430)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_form" name="Switch1" x="520" y="290">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_form" name="Switch2" x="170" y="240">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/preparePersonnelEdit" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/preparePersonnelList" value="&quot;prePersonnelList&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preparePersonnelEdit" value="&quot;preparePersonnelEdit&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/prepareAckPage" value="&quot;preAck&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="" name="Switch2" x="120" y="490">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="switch" name="Switch1" x="700" y="410">
    <Description/>
-   <SwitchCase component="/Pages/WebPage/ack" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/preparePersonnel" value="&quot;loading&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
