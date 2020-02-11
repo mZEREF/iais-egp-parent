@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -110,5 +111,20 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         String messageContent = entity.getMessageContent();
         //String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
         
+    }
+
+    @Override
+    public List<PersonnelListQueryDto> getLicencePersonnelListQueryDto(String licenseeId) {
+        return licenceClient.getPersonnel(licenseeId).getEntity();
+    }
+
+    @Override
+    public List<AppSubmissionDto> getAppSubmissionDtoByLicenceIds(List<String> licenceIds) {
+        return licenceClient.getAppSubmissionDtos(licenceIds).getEntity();
+    }
+
+    @Override
+    public List<AppSubmissionDto> saveAppsBySubmissionDtos(List<AppSubmissionDto> appSubmissionDtos) {
+        return applicationClient.saveAppsForRequestForChangeByList(appSubmissionDtos).getEntity();
     }
 }

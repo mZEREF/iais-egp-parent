@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.ecquaria.sz.commons.util.FileUtil;
@@ -98,6 +99,9 @@ public class NewApplicationDelegator {
 
     @Autowired
     private AppSubmissionService appSubmissionService;
+
+    @Autowired
+    private RequestForChangeService requestForChangeService;
 
     /**
      * StartStep: Start
@@ -759,7 +763,8 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the appGroupNo is -->:") + appGroupNo);
         appSubmissionDto.setAppGrpNo(appGroupNo);
         AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(appSubmissionDto, oldAppSubmissionDto);
-        Double amount = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
+        FeeDto  feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
+        double amount = feeDto.getTotal();
         log.debug(StringUtil.changeForLog("the amount is -->:") + amount);
         appSubmissionDto.setAmount(amount);
         //judge is the preInspection
@@ -773,6 +778,12 @@ public class NewApplicationDelegator {
         }
         //set Risk Score
         appSubmissionService.setRiskToDto(appSubmissionDto);
+
+        //update status
+        /*LicenceDto licenceDto = new LicenceDto();
+        licenceDto.setId(appSubmissionDto.getLicenceId());
+        licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_REQUEST_FOR_CHANGE);
+        requestForChangeService.upDateLicStatus(licenceDto);*/
 
         appSubmissionDto = appSubmissionService.submitRequestChange(appSubmissionDto, bpc.process);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -1681,6 +1692,7 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do requestForChangeLoading start ...."));
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         //String licenceId = "B99F41F3-5D1E-EA11-BE7D-000C29F371DC";
+
         String [] amendLicenceType = ParamUtil.getStrings(bpc.request, "amend-licence-type");
         //amendLicenceType = new String[]{"RFCATYPE01","RFCATYPE03","RFCATYPE04","RFCATYPE05","RFCATYPE06"};
         if(!StringUtil.isEmpty(licenceId) && amendLicenceType != null && amendLicenceType.length>0 ){

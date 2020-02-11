@@ -130,12 +130,12 @@ public class RequestForChangeDelegator {
     public void prepareAmend(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do prepareAmend start ...."));
         //String licenceId = "B99F41F3-5D1E-EA11-BE7D-000C29F371DC";
-        String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
+         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         LicenceDto licenceDto = new LicenceDto();
         licenceDto.setId(licenceId);
         licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_REQUEST_FOR_CHANGE);
         //update lic status
-        requestForChangeService.upDateLicStatus(licenceDto);
+        //requestForChangeService.upDateLicStatus(licenceDto);
         
         log.debug(StringUtil.changeForLog("the do prepareAmend end ...."));
     }

@@ -35,6 +35,7 @@ public class PaymentRequestDelegator {
         HttpServletRequest request = bpc.request;
         PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
         String amo = request.getParameter("amount");
+        String backUrl = request.getParameter("backUrl");
         String payMethod =request.getParameter("payMethod");
         String reqNo = request.getParameter("reqNo");
         if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(payMethod)&&!StringUtil.isEmpty(reqNo)) {
@@ -49,6 +50,7 @@ public class PaymentRequestDelegator {
             ParamUtil.setSessionAttr(bpc.request, "amount", amount);
             ParamUtil.setSessionAttr(bpc.request, "result", "success");
             ParamUtil.setSessionAttr(bpc.request, "invoiceNo", "852963");
+            ParamUtil.setSessionAttr(bpc.request,  "backUrl", backUrl);
         }
 
 

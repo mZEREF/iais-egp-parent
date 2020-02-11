@@ -26,7 +26,7 @@ public interface AppSubmissionService {
     public void setRiskToDto(AppSubmissionDto appSubmissionDto);
     public AppSubmissionDto getAppSubmissionDtoByAppNo(String appNo);
     public AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId);
-    public Double getGroupAmendAmount(AmendmentFeeDto amendmentFeeDto);
+    public FeeDto getGroupAmendAmount(AmendmentFeeDto amendmentFeeDto);
     
     public AppSubmissionDto submitRequestChange(AppSubmissionDto appSubmissionDto, Process process);
 }

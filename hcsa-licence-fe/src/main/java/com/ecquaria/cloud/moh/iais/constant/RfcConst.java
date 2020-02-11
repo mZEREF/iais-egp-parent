@@ -24,6 +24,9 @@ public class RfcConst {
 
     public static final String APPSUBMISSIONDTO =  "AppSubmissionDto";
 
+    public static final String PERSONNELLISTMAP = "PersonnelListMap";
+    public static final String PERSONNELEDITLIST = "PersonnelEditList";
+
     //reload-premises
     public static final String RELOADPREMISES = "ReloadPremises";
 
