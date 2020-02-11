@@ -384,7 +384,9 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocation = applicationListDto.getAppSvcPremisesScopeAllocation();
 
         List<ApplicationListFileDto> applicationListFileDtoList=new ArrayList<>();
-        for(ApplicationGroupDto every :applicationGroup){
+        Set<ApplicationGroupDto> set =new HashSet<>();
+        set.addAll(applicationGroup);
+        for(ApplicationGroupDto every :set){
 
             Set<String > appGrpIds=new HashSet<>();
             Set<String> appGrpPersonIds=new HashSet<>();
