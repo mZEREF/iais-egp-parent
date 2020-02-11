@@ -9,7 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -53,8 +53,8 @@ public class AppealApproveBatchjob {
                   List<LicenceDto> rollBackLicence = new ArrayList<>();
                   List<AppSvcKeyPersonnelDto> appealPersonnel = new ArrayList<>();
                   List<AppSvcKeyPersonnelDto> rollBackPersonnel = new ArrayList<>();
-                  List<AppGrpPremisesDto> appealAppGrpPremisesDto = new ArrayList<>();
-                  List<AppGrpPremisesDto> rollBackAppGrpPremisesDto = new ArrayList<>();
+                  List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto = new ArrayList<>();
+                  List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto = new ArrayList<>();
                   for (AppealApproveDto appealApproveDto: appealApproveDtos){
                       ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
                       AppealDto appealDto = appealApproveDto.getAppealDto();
@@ -86,6 +86,7 @@ public class AppealApproveBatchjob {
                   appealLicenceDto.setAppealLicence(appealLicence);
                   appealLicenceDto.setRollBackLicence(rollBackLicence);
                   appealLicenceDto.setAuditTrailDto(auditTrailDto);
+                  appealService.createAppealLicenceDto(appealLicenceDto);
                   //application
                   AppealApplicationDto appealApplicationDto = new  AppealApplicationDto();
                   appealApplicationDto.setEventRefNo(eventRefNo);
@@ -98,6 +99,7 @@ public class AppealApproveBatchjob {
                   appealApplicationDto.setRollBackPersonnel(rollBackPersonnel);
                   appealApplicationDto.setAppealAppGrpPremisesDto(appealAppGrpPremisesDto);
                   appealApplicationDto.setRollBackAppGrpPremisesDto(rollBackAppGrpPremisesDto);
+                  appealService.createAppealApplicationDto(appealApplicationDto);
 
               }
           }
@@ -108,8 +110,8 @@ public class AppealApproveBatchjob {
                                    List<ApplicationDto> rollBackApplication,
                                    List<AppSvcKeyPersonnelDto> appealPersonnel,
                                    List<AppSvcKeyPersonnelDto> rollBackPersonnel,
-                                   List<AppGrpPremisesDto> appealAppGrpPremisesDto,
-                                   List<AppGrpPremisesDto> rollBackAppGrpPremisesDto,
+                                   List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,
+                                   List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,
                                    AppealApproveDto appealApproveDto) throws Exception {
         ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
         AppealDto appealDto = appealApproveDto.getAppealDto();
@@ -165,16 +167,16 @@ public class AppealApproveBatchjob {
             }
         }
     }
-    private void applicationChangeHciName(List<AppGrpPremisesDto> appealAppGrpPremisesDto,
-                                          List<AppGrpPremisesDto> rollBackAppGrpPremisesDto,
+    private void applicationChangeHciName(List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,
+                                          List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,
                                           AppealApproveDto appealApproveDto) throws Exception {
         AppealDto appealDto = appealApproveDto.getAppealDto();
-        AppGrpPremisesDto appGrpPremisesDto = appealApproveDto.getAppGrpPremisesDto();
+        AppGrpPremisesEntityDto appGrpPremisesDto = appealApproveDto.getAppGrpPremisesEntityDto();
         if(appealDto!=null&&appGrpPremisesDto!=null){
             rollBackAppGrpPremisesDto.add(appGrpPremisesDto);
            String hciName = appealDto.getNewHciName();
            if(!StringUtil.isEmpty(hciName)){
-               AppGrpPremisesDto appGrpPremisesDto1 = (AppGrpPremisesDto)
+               AppGrpPremisesEntityDto appGrpPremisesDto1 = (AppGrpPremisesEntityDto)
                        CopyUtil.copyMutableObject(appGrpPremisesDto);
                appGrpPremisesDto1.setHciName(hciName);
                appealAppGrpPremisesDto.add(appGrpPremisesDto1);
