@@ -742,14 +742,14 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
         AuditTrailDto auditTrailDto =IaisEGPHelper.getCurrentAuditTrailDto();
         Map<String, String> map = doPreviewAndSumbit(bpc);
-        //check status
+        /*//check status
 
         if(!map.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"Msg",map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
             return;
-        }
+        }*/
 
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
