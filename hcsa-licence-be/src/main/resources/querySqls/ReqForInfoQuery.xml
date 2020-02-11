@@ -56,11 +56,42 @@
             <#if expiry_start_date??> AND lic.expiry_date >= :expiry_start_date</#if>
             <#if licence_no??> AND lic.licence_no = :licence_no</#if>
             <#if app_id??> AND licApp.APPLICATION_ID = :app_id</#if>
-            <#if org_id??> AND lic.ORGANIZATION_ID = :org_id</#if>
+            <#if org_ids??> AND lic.ORGANIZATION_ID in( :org_ids)</#if>
             <#if hciCode??> AND Prem.HCI_CODE = :hciCode</#if>
             <#if hciName??> AND Prem.HCI_NAME = :hciName</#if>
             <#if hciStreetName??> AND Prem.STREET_NAME = :hciStreetName</#if>
             <#if hciPostalCode??> AND Prem.POSTAL_NAME = :hciPostalCode</#if>
+            <#if svc_names??> AND lic.SVC_NAME in( :svc_names)</#if>
+            <#if licenseeIds??> AND lic.LICENSEE_ID in( :licenseeIds)</#if>
         ]]>
     </sql>
+
+    <sql key = "licenseeQuery" remarks = "Query Licensee Data by condition">
+        <![CDATA[
+            SELECT
+                lic.id as licensee_id
+            FROM LICENSEE AS lic
+            WHERE 1=1
+            <#if id??> AND lic.id = :id</#if>
+            <#if name??> AND lic.NAME = :name</#if>
+            <#if postalCode??> AND lic.POSTAL_CODE = :postalCode</#if>
+
+        ]]>
+    </sql>
+
+    <sql key = "serviceQuery" remarks = "Query Service Data by condition">
+        <![CDATA[
+            SELECT
+                svc.SVC_NAME as SVC_NAME
+            FROM hcsa_service AS svc
+            LEFT JOIN hcsa_service_specific_routing_stage svcRout ON svcRout.SERVICE_ID = svc.ID
+            LEFT JOIN hcsa_service_routing_stage svcStage ON svcRout.STAGE_ID = svcStage.ID
+            WHERE 1=1
+            <#if id??> AND svc.id = :id</#if>
+            <#if svcName??> AND svc.SVC_NAME = :svcName</#if>
+            <#if roleName??> AND svcStage.STAGE_NAME like '%:roleName%'</#if>
+            <#if svc_code??> AND svc.SVC_CODE = :svc_code</#if>
+        ]]>
+    </sql>
+
 </sqls>

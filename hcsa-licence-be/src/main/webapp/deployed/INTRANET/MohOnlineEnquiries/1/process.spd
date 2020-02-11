@@ -16,7 +16,7 @@
     <JavaCode defClass="" executor="" methodName="preBasicSearch_OnStepProcess_0" name="preBasicSearch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doBasicSearch" x="400" y="230">
+  <AutomaticStep defClass="" executor="" icon="" name="doBasicSearch" x="240" y="350">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -53,7 +53,7 @@
   </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="BasicSearchPage" stageIndicator="" x="250" y="230">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="BasicSearchPage" stageIndicator="" x="400" y="220">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -84,13 +84,13 @@
    <position>{(120,120)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/BasicSearchPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preBasicSearch" style="oblique">
-   <position>{(270,120)(270,250)}</position>
+   <position>{(270,120)(420,240)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doBasicSearch" linkstyle="Direct" name="" sourceName="/Pages/WebPage/BasicSearchPage" style="oblique">
-   <position>{(270,250)(420,250)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doBasicSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(305,280)(260,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/searchLicencePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doBasicSearch" style="oblique">
-   <position>{(420,250)(400,370)}</position>
+   <position>{(260,370)(400,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preSearchLicence" linkstyle="Direct" name="" sourceName="/Pages/WebPage/searchLicencePage" style="oblique">
    <position>{(400,370)(540,370)}</position>
@@ -128,6 +128,15 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/preBasicSearch" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
    <position>{(560,120)(270,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Direct" name="" sourceName="/Pages/WebPage/BasicSearchPage" style="oblique">
+   <position>{(420,240)(305,280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preBasicSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(305,280)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicenceAfter" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(305,280)(880,380)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
@@ -138,8 +147,14 @@
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preLicDetails" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="900" y="230">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/preLicDetails" value="&quot;search&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preLicDetails" value="&quot;details&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;back&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preBasicSearch" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="260" y="230">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/doBasicSearch" value="&quot;advSearch&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preBasicSearch" value="&quot;basicSearch&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doSearchLicenceAfter" value="&quot;details&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

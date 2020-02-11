@@ -36,8 +36,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
-import java.util.Map;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
@@ -49,6 +47,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Wenkang
@@ -247,5 +248,7 @@ public interface HcsaConfigClient {
     @GetMapping(path = "/iais-hcsa-service/service-by-name/{svcName}")
     FeignResponseEntity<String> getServiceCodeByName(@PathVariable(name= "svcName") String svcName);
 
+    @GetMapping(value = "/iais-hcsa-service/search-svcNames-param")
+    FeignResponseEntity<SearchResult<String>> searchSvcNamesParam(@RequestBody SearchParam searchParam);
 
-}
+    }

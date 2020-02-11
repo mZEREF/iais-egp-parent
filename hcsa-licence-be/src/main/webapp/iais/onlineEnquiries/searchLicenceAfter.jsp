@@ -159,6 +159,6 @@
         SOP.Crud.cfxSubmit("mainForm", "reqForInfo",licPremId);
     }
     function doAppInfo(licenseeId) {
-        SOP.Crud.cfxSubmit("mainForm", "appInfo",licenseeId);
+        SOP.Crud.cfxSubmit("mainForm", "details",licenseeId);
     }
 </script>
