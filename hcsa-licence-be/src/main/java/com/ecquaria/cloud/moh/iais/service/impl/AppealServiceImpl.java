@@ -14,8 +14,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.client.AppealClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -38,16 +41,27 @@ import org.springframework.stereotype.Service;
 public class AppealServiceImpl implements AppealService {
     @Autowired
     private AppealClient appealClient;
-
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
     private GenerateIdClient generateIdClient;
     @Autowired
     private SubmissionClient client;
-
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
     @Autowired
     private SystemParamConfig systemParamConfig;
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
+
     @Override
     public List<AppealApproveGroupDto> getAppealApproveDtos() {
         List<AppealApproveGroupDto> result = appealClient.getApproveAppeal().getEntity();
@@ -125,6 +139,16 @@ public class AppealServiceImpl implements AppealService {
         SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
         return null;
     }
+
+    @Override
+    public AppealLicenceDto updateFEAppealLicenceDto(AppealLicenceDto appealLicenceDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return beEicGatewayClient.updateAppealLicence(appealLicenceDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
+    }
+
+
 
     private  LicenceDto getLicenceDto(List<LicenceDto> licenceDtos,String licenceId){
         LicenceDto result = null;

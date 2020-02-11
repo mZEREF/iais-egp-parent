@@ -40,7 +40,7 @@ public class AppealApproveBatchjob {
     @Autowired
     private AppealService appealService;
     public void doBatchJob(BaseProcessClass bpc) throws Exception {
-        log.debug(StringUtil.changeForLog("The AppealApproveBatchjob is end ..."));
+        log.debug(StringUtil.changeForLog("The AppealApproveBatchjob is start ..."));
         List<AppealApproveGroupDto> appealApproveGroupDtos = appealService.getAppealApproveDtos();
         if(!IaisCommonUtils.isEmpty(appealApproveGroupDtos)){
           for (AppealApproveGroupDto appealApproveGroupDto :appealApproveGroupDtos ){
@@ -104,7 +104,7 @@ public class AppealApproveBatchjob {
               }
           }
         }
-        log.debug(StringUtil.changeForLog("The AppealApproveBatchjob is start ..."));
+        log.debug(StringUtil.changeForLog("The AppealApproveBatchjob is end ..."));
     }
     private void appealApplicaiton(List<ApplicationDto> appealApplicaiton,
                                    List<ApplicationDto> rollBackApplication,
@@ -137,7 +137,7 @@ public class AppealApproveBatchjob {
                                       List<ApplicationDto> rollBackApplication,
                                       AppealApproveDto appealApproveDto) throws Exception {
         ApplicationDto applicationDto = appealApproveDto.getAppealApplicationDto();
-        //todo:change the group
+        //todo:if LIcence had generate  need  to Generate himself else only  need  change this aoolication to approve.
         if(applicationDto!=null){
             rollBackApplication.add(applicationDto);
             ApplicationDto appealApplicaitonDto = (ApplicationDto) CopyUtil.copyMutableObject(applicationDto);
