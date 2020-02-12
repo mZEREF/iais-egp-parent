@@ -231,7 +231,7 @@ public class HcsaApplicationDelegator {
             appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
             appPremisesRecommendationDto.setRecomInNumber(0);
             appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
-            insRepService.saveRecommendation(appPremisesRecommendationDto);
+            insRepService.updateRecommendation(appPremisesRecommendationDto);
         }else{
             AppPremisesRecommendationDto appPremisesRecommendationDto=new AppPremisesRecommendationDto();
             String[] strs=recommendationStr.split("\\s+");
@@ -239,7 +239,7 @@ public class HcsaApplicationDelegator {
             appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
             appPremisesRecommendationDto.setRecomInNumber( Integer.valueOf(strs[0]));
             appPremisesRecommendationDto.setChronoUnit(strs[1]);
-            insRepService.saveRecommendation(appPremisesRecommendationDto);
+            insRepService.updateRecommendation(appPremisesRecommendationDto);
         }
         String verified = ParamUtil.getString(bpc.request,"verified");
         String rollBack=ParamUtil.getString(bpc.request,"rollBack");
