@@ -430,9 +430,9 @@
                     </tr>
                     <tr>
                         <td class="col-xs-4">
-                            <p>Recommendation:</p>value="${recomDecision}
+                            <p>Recommendation:</p>
                         </td>
-                        <c:if test="${appPremisesRecommendationDto.recommendation==null && recomDecision!=null}">
+                        <c:if test="${appPremisesRecommendationDto.recommendation==null}">
                             <td class="col-xs-4">
                                 <iais:select name="recommendation" value="${recomDecision}" options="recommendationOption" firstOption="Please select" onchange="javascirpt:changeRecommendation(this.value);"/>
                             </td>

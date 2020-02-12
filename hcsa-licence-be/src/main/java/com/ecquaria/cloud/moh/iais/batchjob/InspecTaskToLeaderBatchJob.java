@@ -71,17 +71,12 @@ public class InspecTaskToLeaderBatchJob {
      */
     public void inspTaskToLeaderJob(BaseProcessClass bpc){
         logAbout("inspTaskToLeaderJob");
-        List<String> processUrl = new ArrayList<>();
-        List<String> corrIds = new ArrayList<>();
-        processUrl.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_NCEMAIL);
-        processUrl.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
-        List<TaskDto> taskDtoList = organizationClient.getTaskByProcessUrl(processUrl).getEntity();
-        if(!IaisCommonUtils.isEmpty(taskDtoList)){
-            for(TaskDto tDto : taskDtoList){
-                corrIds.add(tDto.getRefNo());
-            }
+        List<TaskDto> taskDtoList = organizationClient.getTaskForCompLeader().getEntity();
+        if (IaisCommonUtils.isEmpty(taskDtoList)) {
+            return;
         }
-        Map<String, List<AppInspectionStatusDto>> map = appInspectionStatusClient.getPremisesAndApplicationCorr(corrIds).getEntity();
+
+        Map<String, List<AppInspectionStatusDto>> map = appInspectionStatusClient.getPremisesAndApplicationCorr(taskDtoList).getEntity();
         if(map != null){
             createTaskByMap(map);
         } else {
@@ -97,11 +92,14 @@ public class InspecTaskToLeaderBatchJob {
                 int leadTask = 0;
                 int allApp = appInspectionStatusDtos.size();
                 for(AppInspectionStatusDto appInsStatusDto : appInspectionStatusDtos){
-                    if(appInsStatusDto.getStatus().equals(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER)){
+                    if (appInsStatusDto == null) {
+                        continue;
+                    }
+                    if(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER.equals(appInsStatusDto.getStatus())){
                         leadTask = leadTask + 1;
-                    } else if(appInsStatusDto.getStatus().equals(InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT) ||
-                              appInsStatusDto.getStatus().equals(InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT) ||
-                              appInsStatusDto.getStatus().equals(InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT)) {
+                    } else if(InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT.equals(appInsStatusDto.getStatus()) ||
+                              InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT.equals(appInsStatusDto.getStatus()) ||
+                              InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(appInsStatusDto.getStatus())) {
                         report = report + 1;
                     }
                 }
@@ -116,7 +114,10 @@ public class InspecTaskToLeaderBatchJob {
         if(all == allApp){
             AppInspectionStatusDto appInsStatusDto = null;
             for(AppInspectionStatusDto appInspStatusDto : appInspectionStatusDtos){
-                if(appInsStatusDto.getStatus().equals(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER)){
+                if (appInspStatusDto == null) {
+                    continue;
+                }
+                if(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER.equals(appInspStatusDto.getStatus())){
                     appInsStatusDto = appInspStatusDto;
                     appInspStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_REVIEW_CHECKLIST_EMAIL);
                     appInspStatusDto.setAuditTrailDto(intranet);
