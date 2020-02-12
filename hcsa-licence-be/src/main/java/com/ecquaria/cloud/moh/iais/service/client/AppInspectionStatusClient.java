@@ -43,6 +43,7 @@ public interface AppInspectionStatusClient {
     @PostMapping(path = "/iais-inspecstatus/inspectionstatus", consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppInspectionStatusDto> createAppInspectionStatusByAppDto(@RequestBody ApplicationDto applicationDto);
 
-    @PostMapping(value = "/premises-corrids-task", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/premises-corrids-task", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String, List<AppInspectionStatusDto>>> getPremisesAndApplicationCorr(@RequestBody List<String> corrIds);
 }
