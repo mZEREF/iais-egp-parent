@@ -86,6 +86,13 @@
     <JavaCode defClass="" executor="" methodName="back_OnStepProcess_0" name="back_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="toBank" x="830" y="340">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="bank_OnStepProcess_0" name="bank_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="premisesList" stageIndicator="" x="460" y="140">
@@ -107,6 +114,12 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="payment" stageIndicator="" x="460" y="380">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="830" y="510">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -172,8 +185,14 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/back" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(860,200)(720,70)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/toBank" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(860,200)(850,360)}</position>
+  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/jumpBank" style="oblique">
    <position>{(580,400)(730,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/toBank" style="rectanular">
+   <position>{(850,360)(850,530)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -183,6 +202,7 @@
    <SwitchCase component="/Steps/AutomaticStep/prepare" value="&quot;loading&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareAckPage" value="&quot;ack&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/back" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/toBank" value="&quot;bank&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_form" name="Switch3" x="190" y="230">
    <Description/>
