@@ -14,16 +14,8 @@
 <form method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type_form_value" value="">
-    <input type="hidden" name="crud_action_type_value" value="">
 
     <%@include file="dashboard.jsp" %>
-    <%--Validation fields Start--%>
-    <input type="hidden" name="paramController" id="paramController"
-           value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
-    <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
-    <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
-    <%--Validation fields End--%>
-
     <div class="main-content">
         <div class="container">
             <div class="row">

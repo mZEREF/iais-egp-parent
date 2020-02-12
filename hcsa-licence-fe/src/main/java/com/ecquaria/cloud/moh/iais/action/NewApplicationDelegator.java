@@ -1616,12 +1616,12 @@ public class NewApplicationDelegator {
         String conAddrTypeSelectStr = generateDropDownHtml(conAddrTypesAttr, conAddrTypes, FIRESTOPTION);
 
         //Vehicle Salutation
-        List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
+       /* List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
         Map<String,String> salutationAttr = new HashMap<>();
         salutationAttr.put("name", "conveyanceSalutation");
         salutationAttr.put("style", "display: none;");
         String salutationSelectStr = NewApplicationDelegator.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
-
+*/
 
 
         sql = sql.replace("(0)", currentLength);
@@ -1630,7 +1630,7 @@ public class NewApplicationDelegator {
         sql = sql.replace("(3)", premConvSelectStr);
         sql = sql.replace("(4)", addrTypeSelectStr);
         sql = sql.replace("(5)", conAddrTypeSelectStr);
-        sql = sql.replace("(6)", salutationSelectStr);
+        //sql = sql.replace("(6)", salutationSelectStr);
 
         log.debug(StringUtil.changeForLog("the add premises html end ...."));
         return sql;
@@ -2447,8 +2447,8 @@ public class NewApplicationDelegator {
         String [] conStartMM = ParamUtil.getStrings(request, "conveyanceStartMM");
         String [] conEndHHS = ParamUtil.getStrings(request, "conveyanceEndHH");
         String [] conEndMMS = ParamUtil.getStrings(request, "conveyanceEndMM");
-        String [] conSalutation = ParamUtil.getStrings(request,"conveyanceSalutation");
-        String [] conVehicleOwnerName = ParamUtil.getStrings(request,"conveyanceVehicleOwnerName");
+        /*String [] conSalutation = ParamUtil.getStrings(request,"conveyanceSalutation");
+        String [] conVehicleOwnerName = ParamUtil.getStrings(request,"conveyanceVehicleOwnerName");*/
         //every prem's ph length
         String [] phLength = ParamUtil.getStrings(request,"phLength");
         String [] premValue = ParamUtil.getStrings(request, "premValue");
@@ -2525,8 +2525,8 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setConveyanceUnitNo(conUnitNo[i]);
                 appGrpPremisesDto.setConveyanceBuildingName(conBuildingName[i]);
                 appGrpPremisesDto.setConveyanceAddressType(conSiteAddressType[i]);
-                appGrpPremisesDto.setConveyanceSalutation(conSalutation[i]);
-                appGrpPremisesDto.setConveyanceVehicleOwnerName(conVehicleOwnerName[i]);
+                /*appGrpPremisesDto.setConveyanceSalutation(conSalutation[i]);
+                appGrpPremisesDto.setConveyanceVehicleOwnerName(conVehicleOwnerName[i]);*/
                 for(int j =0; j<length; j++){
                     AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();
                     String convPubHolidayName = premValue[i]+"conveyancePubHoliday"+j;

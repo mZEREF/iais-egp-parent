@@ -29,31 +29,65 @@
                         <div class="tab-content">
                             <div class="tab-pane active" id="premisesTab" role="tabpanel">
                                 <c:set value="${errorMap_premises}" var="errMsg"/>
+                                <c:set var="onePersonnel" value="${PersonnelEditList.get(0)}"/>
                                 <input type="hidden" id="premTypeVal" value="${appGrpPremisesDto.premisesType}"/>
                                 <div class="row" id="mainPrem">
                                     <div class="col-xs-12">
                                         <div>
                                             <h1 style="margin-top: 10px;">Personnel Amendment</h1>
+                                            <br/>
+                                            <br/>
                                         </div>
+                                        <div class="form-horizontal">
+                                            <h3><c:out value="${onePersonnel.psnName}"/>,<c:out value="${onePersonnel.hiddenIdNo}"/>()</h3>
+                                            <h4>Changes made will be applied to all licences associated with this personnel. Please note that payment is required for each affected licence.</h4>
+                                        </div>
+                                        <div class="form-horizontal">
+                                            <table>
+                                                <thead>
+                                                <tr>
+                                                    <th>Licence</th>
+                                                    <th>Licence No.</th>
+                                                    <th>Roles</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <c:forEach var="personnel" items="${PersonnelEditList}">
+                                                    <tr>
+                                                        <td>
+                                                            <p><c:out value="${personnel.}"/></p>
+                                                        </td>
+                                                        <td>
+
+                                                        </td>
+                                                        <td>
+
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
+                                                </tbody>
+
+                                            </table>
+                                        </div>
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_licenceStatus"></span>
                                         <div>
                                             <h2></h2>
                                         </div>
-                                        <c:set var="onePersonnel" value="${PersonnelEditList.get(0)}"/>
                                         <div class="">
                                             <div class="form-horizontal">
                                                 <iais:row>
                                                     <iais:field value="Email " width="12" mandatory="true"/>
                                                     <iais:value cssClass="col-xs-11 col-sm-7 col-md-6 input-with-label">
                                                         <iais:input maxLength="66" type="text" name="emailAddress" value="${onePersonnel.emailAddr}"></iais:input>
-                                                        <span class="error-msg" name="iaisErrorMsg" id="error_mobileNo"></span>
                                                     </iais:value>
+                                                    <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr"></span>
                                                 </iais:row>
                                                 <iais:row>
                                                     <iais:field value="Mobile " width="12" mandatory="true"/>
                                                     <iais:value cssClass="col-xs-11 col-sm-7 col-md-6 input-with-label">
                                                         <iais:input maxLength="8" type="text" name="mobileNo" value="${onePersonnel.mobileNo}"></iais:input>
-                                                        <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr"></span>
                                                     </iais:value>
+                                                    <span class="error-msg" name="iaisErrorMsg" id="error_mobileNo"></span>
                                                 </iais:row>
                                             </div>
                                         </div>

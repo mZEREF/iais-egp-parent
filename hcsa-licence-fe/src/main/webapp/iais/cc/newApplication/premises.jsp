@@ -401,7 +401,7 @@
                             </iais:value>
                           </iais:row>
 
-                          <iais:row>
+                          <%--<iais:row>
                             <iais:field value="Vehicle Owner's Name. " mandatory="true" width="12"/>
                             <iais:value width="3">
                               <iais:select  name="conveyanceSalutation" codeCategory="CATE_ID_SALUTATION" value="${appGrpPremisesDto.conveyanceSalutation}" firstOption="Please Select"></iais:select>
@@ -409,7 +409,7 @@
                             <iais:value width="5">
                               <iais:input maxLength="10" type="text" name="conveyanceVehicleOwnerName"  value="${appGrpPremisesDto.conveyanceVehicleOwnerName}"></iais:input>
                             </iais:value>
-                          </iais:row>
+                          </iais:row>--%>
 
                           <iais:row cssClass="postalCodeDiv">
                             <iais:field value="Postal Code " mandatory="true" width="12"/>
