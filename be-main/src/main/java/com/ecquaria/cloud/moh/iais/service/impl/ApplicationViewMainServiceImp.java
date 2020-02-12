@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
@@ -75,5 +76,9 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
         return applicationClient.getLastAppPremisesCorrelationDtoByCorreId(id).getEntity();
     }
 
+    @Override
+    public ApplicationGroupDto getApplicationGroupDtoById(String appGroupId) {
+        return applicationClient.getAppById(appGroupId).getEntity();
+    }
 
 }

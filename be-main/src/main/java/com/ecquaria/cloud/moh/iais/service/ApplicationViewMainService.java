@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 
 import java.util.List;
 
@@ -15,5 +16,6 @@ public interface ApplicationViewMainService {
     public AppPremisesCorrelationDto getLastAppPremisesCorrelationDtoById(String id);
 
     public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto);
+    public ApplicationGroupDto getApplicationGroupDtoById(String appGroupId);
 
 }
