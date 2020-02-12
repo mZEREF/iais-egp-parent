@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="4" minorVersion="0" name="MohSystemParameter" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="6" minorVersion="0" name="MohSystemParameter" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
  <WebServices/>
  <RestServices/>
  <Steps>
@@ -52,7 +52,7 @@
     <JavaCode defClass="" executor="" methodName="disableStatus_OnStepProcess_0" name="disableStatus_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doEdit" x="1500" y="560">
+  <AutomaticStep defClass="" executor="" icon="" name="doEdit" x="1460" y="490">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -109,6 +109,11 @@
    <SwitchCase component="/Steps/AutomaticStep/changePage" value="&quot;changePage&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/disableStatus" value="&quot;disableStatus&quot;"/>
   </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="1510" y="400">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/doEdit" value="&quot;doEdit&quot;"/>
+   <SwitchCase component="/Merges/Merge/Merge0" value="&quot;doCancel&quot;"/>
+  </Switch>
  </Switches>
  <Branches/>
  <Merges>
@@ -159,11 +164,8 @@
   <SynchronousLink destinationName="/Pages/WebPage/editPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareEdit" style="oblique">
    <position>{(1500,120)(1510,310)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doEdit" linkstyle="Direct" name="" sourceName="/Pages/WebPage/editPage" style="oblique">
-   <position>{(1510,310)(1520,580)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doEdit" style="rectanular">
-   <position>{(1520,580)(1320,580)}</position>
+   <position>{(1480,510)(1320,580)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareSwitch" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/displaylist" style="rectanular">
    <position>{(476,124)(730,140)}</position>
@@ -182,6 +184,15 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge0" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ack" style="rectanular">
    <position>{(1160,580)(993,586)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/editPage" style="rectanular">
+   <position>{(1510,310)(1530,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doEdit" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(1530,420)(1480,510)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge0" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(1530,420)(993,586)}</position>
   </SynchronousLink>
  </Links>
  <BatFlowsSelected batFlowsName="" batFlowsSelected="false" conditions="" mandatoryConditions=""/>

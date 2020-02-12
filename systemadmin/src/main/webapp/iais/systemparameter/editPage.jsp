@@ -99,13 +99,13 @@
 
 
     function doEdit(id){
-        if(confirm('are sure you want to edit ? ')){
+        if(confirm('Are sure you want to edit ? ')){
             SOP.Crud.cfxSubmit("mainForm", "doEdit", id);
         }
     }
 
     function doCancel(){
-        SOP.Crud.cfxSubmit("mainForm","cancel");
+        SOP.Crud.cfxSubmit("mainForm","doCancel");
     }
 
 </script>

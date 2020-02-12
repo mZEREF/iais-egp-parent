@@ -18,7 +18,7 @@
                 <div class="form-group">
                     <label class="col-xs-4 col-md-2 control-label" >Type</label>
                     <div class="col-xs-5 col-md-3">
-                        <iais:select name="domainType" options="domainTypeSelect" firstOption="Please select" value="${msgRequestDto.domainType}" ></iais:select>
+                        <iais:select name="domainType" disabled="true" options="domainTypeSelect" firstOption="Please select" value="${msgRequestDto.domainType}" ></iais:select>
                         <span id="error_domainType" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </div>
@@ -26,7 +26,7 @@
                 <div class="form-group">
                     <label class="col-xs-4 col-md-2 control-label" >Message Type</label>
                     <div class="col-xs-5 col-md-3">
-                        <iais:select name="msgType" options="msgTypeSelect" firstOption="Please select" value="${msgRequestDto.msgType}" ></iais:select>
+                        <iais:select name="msgType" disabled="true" options="msgTypeSelect" firstOption="Please select" value="${msgRequestDto.msgType}" ></iais:select>
                         <span id="error_msgType" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </div>
@@ -34,7 +34,7 @@
                 <div class="form-group">
                     <label class="col-xs-4 col-md-2 control-label" >Module</label>
                     <div class="col-xs-5 col-md-3">
-                        <iais:select name="module" options="moduleTypeSelect" firstOption="Please select" value="${msgRequestDto.module}"></iais:select>
+                        <iais:select name="module" disabled="true" options="moduleTypeSelect" firstOption="Please select" value="${msgRequestDto.module}"></iais:select>
                         <span id="error_module" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </div>

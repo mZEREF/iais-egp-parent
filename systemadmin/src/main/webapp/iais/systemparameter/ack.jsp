@@ -33,8 +33,7 @@
     <input type="hidden" name="currentValidateId" value="">
     <div class="bg-title"><h2>Acknowledgement</h2></div>
 
-    <p>Please note that you will not be able to pay for this application if you have
-      not provided the mandatory information and documents.</p>
+    <p><c:out value="${ackMsg}"></c:out></p>
 
     <div class="text-right text-center-mobile">
       <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doCancel();">Cancel</a>

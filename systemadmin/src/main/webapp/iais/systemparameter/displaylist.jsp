@@ -45,9 +45,9 @@
                 </label>
                 <div class="col-md-3">
                     <iais:select name="module" id="module"  codeCategory = "CATE_ID_SYSTEM_PARAMETER_MODULE" firstOption="Please select" value="${module}"></iais:select>
-
+                    <span id="error_module" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
-                <span id="error_module" name="iaisErrorMsg" class="error-msg"></span>
+
             </div>
 
             <div class="form-group">
@@ -55,8 +55,8 @@
                 </label>
                 <div class="col-md-3">
                     <input id="description" name="description" type="text" value="${description}">
+                    <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
-                <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
             </div>
 
             <div class="form-group">
@@ -165,7 +165,7 @@
     }
 
     function disable(id){
-        if(confirm('are sure you want to disable ? ')){
+        if(confirm('Are sure you want to disable ? ')){
             SOP.Crud.cfxSubmit("mainForm", "disableStatus", id);
         }
     }
