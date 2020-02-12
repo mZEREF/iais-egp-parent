@@ -127,4 +127,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     public List<AppSubmissionDto> saveAppsBySubmissionDtos(List<AppSubmissionDto> appSubmissionDtos) {
         return applicationClient.saveAppsForRequestForChangeByList(appSubmissionDtos).getEntity();
     }
+
+    @Override
+    public LicenceDto getLicenceDtoByLicenceId(String licenceId) {
+        return licenceClient.getLicBylicId(licenceId).getEntity();
+    }
 }

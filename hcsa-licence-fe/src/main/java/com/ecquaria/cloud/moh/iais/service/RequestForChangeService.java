@@ -41,4 +41,6 @@ public interface RequestForChangeService {
     List<AppSubmissionDto> getAppSubmissionDtoByLicenceIds(List<String> licenceIds);
 
     List<AppSubmissionDto> saveAppsBySubmissionDtos(List<AppSubmissionDto> appSubmissionDtos);
+
+    LicenceDto getLicenceDtoByLicenceId(String licenceId);
 }
