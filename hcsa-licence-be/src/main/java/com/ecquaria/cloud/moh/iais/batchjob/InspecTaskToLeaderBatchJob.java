@@ -92,6 +92,9 @@ public class InspecTaskToLeaderBatchJob {
                 int leadTask = 0;
                 int allApp = appInspectionStatusDtos.size();
                 for(AppInspectionStatusDto appInsStatusDto : appInspectionStatusDtos){
+                    if (appInsStatusDto == null) {
+                        continue;
+                    }
                     if(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER.equals(appInsStatusDto.getStatus())){
                         leadTask = leadTask + 1;
                     } else if(InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT.equals(appInsStatusDto.getStatus()) ||
