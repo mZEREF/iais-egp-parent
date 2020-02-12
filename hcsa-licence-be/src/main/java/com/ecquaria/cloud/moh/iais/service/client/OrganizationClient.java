@@ -108,7 +108,7 @@ public interface OrganizationClient {
     FeignResponseEntity<List<TaskDto>> getTasksByUserIdAndRole(@PathVariable(value = "userId") String userId,@PathVariable(value = "roleId") String roleId);
 
     @GetMapping(value = "/iais-task/task-email-comp",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<TaskDto>> getTaskByProcessUrl();
+    FeignResponseEntity<List<TaskDto>> getTaskForCompLeader();
 
     @PostMapping(value = "/iais-licensee-be/search-licenseeIds-param" ,consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<String>> searchLicenseeIdsParam(@RequestBody SearchParam searchParam);

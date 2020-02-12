@@ -72,7 +72,7 @@ public class InspecTaskToLeaderBatchJob {
     public void inspTaskToLeaderJob(BaseProcessClass bpc){
         logAbout("inspTaskToLeaderJob");
         List<String> corrIds = new ArrayList<>();
-        List<TaskDto> taskDtoList = organizationClient.getTaskByProcessUrl().getEntity();
+        List<TaskDto> taskDtoList = organizationClient.getTaskForCompLeader().getEntity();
         if(!IaisCommonUtils.isEmpty(taskDtoList)){
             for(TaskDto tDto : taskDtoList){
                 corrIds.add(tDto.getRefNo());

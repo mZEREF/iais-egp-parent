@@ -200,7 +200,7 @@ public class OrganizationClientFallback implements OrganizationClient {
     }
 
     @Override
-    public FeignResponseEntity<List<TaskDto>> getTaskByProcessUrl() {
+    public FeignResponseEntity<List<TaskDto>> getTaskForCompLeader() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
