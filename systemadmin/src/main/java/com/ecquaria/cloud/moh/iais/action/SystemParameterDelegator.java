@@ -186,7 +186,10 @@ public class SystemParameterDelegator {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
 
             String msg = MessageUtil.getMessageDesc(MessageCodeKey.ACKSPM001);
-            ParamUtil.setRequestAttr(request,"ackMsg", msg.replace("<Date>", new Date().toString()));
+            if (!StringUtil.isEmpty(msg)){
+                ParamUtil.setRequestAttr(request,"ackMsg", msg.replace("<Date>", new Date().toString()));
+            }
+
         }
 
     }
