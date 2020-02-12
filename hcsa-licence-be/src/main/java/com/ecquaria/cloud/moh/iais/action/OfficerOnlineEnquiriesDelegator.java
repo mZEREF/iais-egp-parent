@@ -30,6 +30,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,12 +94,14 @@ public class OfficerOnlineEnquiriesDelegator {
     }
 
 
-    public void preBasicSearch(BaseProcessClass bpc) throws ParseException {
+    public void preBasicSearch(BaseProcessClass bpc)  {
         log.info("=======>>>>>preBasicSearch>>>>>>>>>>>>>>>>requestForInformation");
 
         HttpServletRequest request = bpc.request;
         String searchNo= (String) ParamUtil.getSessionAttr(request,SEARCH_NO);
-
+        if(ParamUtil.getString(request,SEARCH_NO)!=null){
+            searchNo=ParamUtil.getString(request,SEARCH_NO);
+        }
         int count=0;
         if(ParamUtil.getString(request,"hci")!=null){
             count=1;
@@ -118,19 +121,19 @@ public class OfficerOnlineEnquiriesDelegator {
         Map<String,Object> filter=new HashMap<>();
         if(searchNo!=null) {
             switch (count) {
-                case 1:
+                case 2:
                     filter.put("appNo", searchNo);
                     break;
-                case 2:
+                case 3:
                     filter.put("licence_no", searchNo);
                     break;
-                case 3:
+                case 1:
                     filter.put("hciName", searchNo);
                     break;
-                case 4:
+                case 5:
                     filter.put("svcName", searchNo);
                     break;
-                case 5:
+                case 4:
                     filter.put("name", searchNo);
                     break;
                 default:
@@ -207,6 +210,28 @@ public class OfficerOnlineEnquiriesDelegator {
     public void doBasicSearch(BaseProcessClass bpc) {
         log.info("=======>>>>>doBasicSearch>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
+
+
+        int[] count={0,0,0,0,0};
+        if(ParamUtil.getString(request,"hci")!=null){
+            count[0]=1;
+        }
+        if(ParamUtil.getString(request,"application")!=null){
+            count[1]=2;
+        }
+        if(ParamUtil.getString(request,"licence")!=null){
+            count[2]=3;
+        }
+        if(ParamUtil.getString(request,"licensee")!=null){
+            count[3]=4;
+        }
+        if(ParamUtil.getString(request,"servicePersonnel")!=null){
+            count[4]=5;
+        }
+        if (Arrays.equals(count, new int[]{0, 0, 0, 0, 0})) {
+            count= new int[]{1, 2, 3, 4, 5};
+        }
+        request.setAttribute("choose",count);
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         String searchNo=ParamUtil.getString(request,"search_no");
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
@@ -220,9 +245,12 @@ public class OfficerOnlineEnquiriesDelegator {
         HttpServletRequest request = bpc.request;
         List<SelectOption> licSvcTypeOption =requestForInformationService.getLicSvcTypeOption();
         List<SelectOption> licStatusOption = requestForInformationService.getLicStatusOption();
-
+        List<SelectOption> appTypeOption = requestForInformationService.getAppTypeOption();
+        List<SelectOption> appStatusOption =requestForInformationService.getAppStatusOption();
         ParamUtil.setRequestAttr(request,"licSvcTypeOption", licSvcTypeOption);
         ParamUtil.setRequestAttr(request,"licStatusOption", licStatusOption);
+        ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
+        ParamUtil.setRequestAttr(request,"appStatusOption", appStatusOption);
         // 		preSearchLicence->OnStepProcess
     }
 
@@ -232,23 +260,31 @@ public class OfficerOnlineEnquiriesDelegator {
         HttpServletRequest request = bpc.request;
         List<SelectOption> appTypeOption = requestForInformationService.getAppTypeOption();
         List<SelectOption> appStatusOption =requestForInformationService.getAppStatusOption();
-
-
-        String searchNo= (String) ParamUtil.getSessionAttr(request,SEARCH_NO);
+        List<SelectOption> licSvcTypeOption =requestForInformationService.getLicSvcTypeOption();
+        List<SelectOption> licStatusOption = requestForInformationService.getLicStatusOption();
 
 
         String applicationNo = ParamUtil.getString(bpc.request, "application_no");
-        if(StringUtil.isEmpty(applicationNo)){
-            applicationNo = searchNo;
-        }
         String applicationType = ParamUtil.getString(bpc.request, "application_type");
         String status = ParamUtil.getString(bpc.request, "application_status");
-        String subDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
+        String licence_no = ParamUtil.getString(bpc.request, "licence_no");
+        String serviceLicenceType = ParamUtil.getString(bpc.request, "service_licence_type");
+        String licenceStatus = ParamUtil.getString(bpc.request, "licence_status");
+        String appSubDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
-        String toDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
+        String appSubToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
 
-        Map<String,Object> filters=new HashMap<>();
+        String licStaDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
+                SystemAdminBaseConstants.DATE_FORMAT);
+        String licStaToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
+                SystemAdminBaseConstants.DATE_FORMAT);
+        String licExpDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
+                SystemAdminBaseConstants.DATE_FORMAT);
+        String licExpToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
+                SystemAdminBaseConstants.DATE_FORMAT);
+
+        Map<String,Object> filters=new HashMap<>(10);
 
         if(!StringUtil.isEmpty(applicationNo)){
             filters.put("appNo", applicationNo);
@@ -259,12 +295,31 @@ public class OfficerOnlineEnquiriesDelegator {
         if(!StringUtil.isEmpty(status)){
             filters.put("appStatus", status);
         }
-        if(!StringUtil.isEmpty(subDate)){
-            filters.put("subDate", subDate);
+        if(!StringUtil.isEmpty(appSubDate)){
+            filters.put("subDate", appSubDate);
         }
-        if(!StringUtil.isEmpty(toDate)){
-            filters.put("toDate",toDate);
+        if(!StringUtil.isEmpty(appSubToDate)){
+            filters.put("toDate",appSubToDate);
         }
+        if(!StringUtil.isEmpty(licStaDate)){
+            filters.put("start_date", licStaDate);
+        }
+        if(!StringUtil.isEmpty(licStaToDate)){
+            filters.put("start_to_date",licStaToDate);
+        }
+        if(!StringUtil.isEmpty(licExpDate)){
+            filters.put("expiry_start_date", licExpDate);
+        }
+        if(!StringUtil.isEmpty(licExpToDate)){
+            filters.put("expiry_date",licExpToDate);
+        }
+        if(!StringUtil.isEmpty(licence_no)){
+            filters.put("licence_no", licence_no);
+        }
+        if(!StringUtil.isEmpty(licenceStatus)){
+            filters.put("licence_status", licenceStatus);
+        }
+
         applicationParameter.setFilters(filters);
         SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
         QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
@@ -277,11 +332,11 @@ public class OfficerOnlineEnquiriesDelegator {
                 List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=new ArrayList<>();
                 for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
                 ) {
-                    Map<String,Object> filter=new HashMap<>();
+
                     if(!StringUtil.isEmpty(rfiApplicationQueryDto.getId())){
-                        filter.put("app_id", rfiApplicationQueryDto.getId());
+                        filters.put("app_id", rfiApplicationQueryDto.getId());
                     }
-                    licenceParameter.setFilters(filter);
+                    licenceParameter.setFilters(filters);
                     SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
                     QueryHelp.setMainSql(RFI_QUERY,"licenceQuery",licParam);
                     SearchResult<RfiLicenceQueryDto> licResult =requestForInformationService.licenceDoQuery(licParam);
@@ -298,7 +353,22 @@ public class OfficerOnlineEnquiriesDelegator {
                             reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
                             reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
 //                            reqForInfoSearchListDto.setCurrentRiskTagging(lic.getRiskLevel());
-                            reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
+                            if(!StringUtil.isEmpty(serviceLicenceType)){
+                                boolean isAdd=false;
+                                List<String> svcNames=requestForInformationService.getSvcNamesByType(serviceLicenceType);
+                                for (String svcName:svcNames
+                                ) {
+                                    if(svcName.equals(reqForInfoSearchListDto.getServiceName())){
+                                        isAdd=true;
+                                    }
+                                }
+                                if(isAdd){
+                                    reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
+                                }
+                            }
+                            else {
+                                reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
+                            }
                         }
                     }
                     else {
@@ -313,6 +383,8 @@ public class OfficerOnlineEnquiriesDelegator {
         }
 
         ParamUtil.setRequestAttr(request,"SearchParam", appParam);
+        ParamUtil.setRequestAttr(request,"licSvcTypeOption", licSvcTypeOption);
+        ParamUtil.setRequestAttr(request,"licStatusOption", licStatusOption);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setRequestAttr(request,"appStatusOption", appStatusOption);
         // 		doSearchLicence->OnStepProcess
@@ -331,9 +403,12 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setUnitNo(rfiApplicationQueryDto.getUnitNo());
         reqForInfoSearchListDto.setStreetName(rfiApplicationQueryDto.getStreetName());
         reqForInfoSearchListDto.setFloorNo(rfiApplicationQueryDto.getFloorNo());
-        reqForInfoSearchListDto.setLicenseeId(rfiApplicationQueryDto.getLicenseeId());
-        LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiApplicationQueryDto.getLicenseeId());
-        reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
+        log.debug(StringUtil.changeForLog("licenseeId start ...."+rfiApplicationQueryDto.getLicenseeId()));
+        if(rfiApplicationQueryDto.getLicenseeId()!=null){
+            reqForInfoSearchListDto.setLicenseeId(rfiApplicationQueryDto.getLicenseeId());
+            LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiApplicationQueryDto.getLicenseeId());
+            reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
+        }
     }
 
 
