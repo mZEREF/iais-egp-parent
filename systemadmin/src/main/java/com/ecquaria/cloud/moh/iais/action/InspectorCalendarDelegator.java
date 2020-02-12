@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -24,7 +25,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +63,28 @@ public class InspectorCalendarDelegator {
 		log.info("Step 1 ==============>" + bpc.request.getSession().getId());
 		request.getSession().removeAttribute("userName");
 		request.getSession().removeAttribute(AppointmentConstants.INSPECTOR_CALENDAR_QUERY_ATTR);
+		request.getSession().removeAttribute("actionValue");
+
 		AuditTrailHelper.auditFunction("InspectorCalendar", "View function");
+	}
+
+
+	/**
+	 * StartStep: switchAction
+	 * @param bpc
+	 * @throws IllegalAccessException
+	 */
+	public void switchAction(BaseProcessClass bpc){
+		HttpServletRequest request = bpc.request;
+		String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+		//Go InspSupAddAvailabilityDelegator.inspSupAddAvailabilityPre()
+		if ("edit".equals(currentAction)){
+			ParamUtil.setSessionAttr(request, "actionValue", InspectionConstants.SWITCH_ACTION_EDIT);
+		}else if ("delete".equals(currentAction)){
+			ParamUtil.setSessionAttr(request, "actionValue", InspectionConstants.SWITCH_ACTION_DELETE);
+		}else if ("add".equals(currentAction)){
+			ParamUtil.setSessionAttr(request, "actionValue", InspectionConstants.SWITCH_ACTION_ADD);
+		}
 	}
 
 	private void preSelectOpt(HttpServletRequest request){
@@ -95,7 +116,7 @@ public class InspectorCalendarDelegator {
 				appointmentService.queryInspectorCalendar(searchParam);
 
 		ParamUtil.setSessionAttr(request, AppointmentConstants.INSPECTOR_CALENDAR_QUERY_ATTR, searchParam);
-		ParamUtil.setRequestAttr(request, AppointmentConstants.INSPECTOR_CALENDAR_RESULT_ATTR, searchResult);
+		ParamUtil.setSessionAttr(request, AppointmentConstants.INSPECTOR_CALENDAR_RESULT_ATTR, searchResult);
 	}
 
 	/**

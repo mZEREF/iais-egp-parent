@@ -87,7 +87,11 @@
                                                             <div class="field col-sm-4 control-label formtext"><label>Docment for Premise:</label></div>
                                                             <span class="fileType" style="display:none">Docment1</span><span class="fileFilter" style="display:none">png</span><span class="fileMandatory" style="display:none">Yes</span>
                                                             <div class="control col-sm-5">
-                                                                <div class="fileList "><span class="filename server-site" id="130"><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo1&fileRo1=<iais:mask name="fileRo1" value="${licPreReqForInfoDto.fileRepoId}"/>&fileRepoName=${licPreReqForInfoDto.docName}" title="Download" class="downloadFile">${licPreReqForInfoDto.docName}</a> (${licPreReqForInfoDto.docSize} KB)</span></div>
+                                                                <div class="fileList ">
+                                                                    <span class="filename server-site" id="130">
+                                                                        <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo1&fileRo1=<iais:mask name="fileRo1" value="${licPreReqForInfoDto.fileRepoId}"/>&fileRepoName=${licPreReqForInfoDto.docName}" title="Download" class="downloadFile">${licPreReqForInfoDto.docName}(${licPreReqForInfoDto.docSize} KB)</a>
+                                                                    </span>
+                                                                </div>
                                                             </div>
 
                                                         </div>

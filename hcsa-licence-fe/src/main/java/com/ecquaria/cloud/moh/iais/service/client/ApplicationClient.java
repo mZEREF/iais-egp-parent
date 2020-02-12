@@ -1,34 +1,16 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealPageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
-import java.util.Map;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Wenkang
@@ -174,8 +156,14 @@ public interface ApplicationClient  {
     @GetMapping(value = "/appeal/application-last-version",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationDtoByVersion( @RequestParam(name = "applicationNo") String applicationNo);
     @PostMapping(value = "/appeal/application-appeal",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppealDto> submitAppeal(@RequestBody AppealDto appealDto);
+    FeignResponseEntity<AppealPageDto> submitAppeal(@RequestBody AppealPageDto appealDto);
 
-    @GetMapping(value = "/list-hci-name-address",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/appeal/list-hci-name-address",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppInsRepDto> getHciNameAndAddress(@RequestParam("appId") String appId);
+
+    @PostMapping(value = "/iais-submission/application-rfc-licences",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppSubmissionDto>> saveAppsForRequestForChangeByList(@RequestBody List<AppSubmissionDto> appSubmissionDtos);
+
+    @GetMapping(value = "/appeal/list-application-by-licene-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationDto> getApplicationsByLicenceId(@RequestParam("licenceId") String licenceId);
 }

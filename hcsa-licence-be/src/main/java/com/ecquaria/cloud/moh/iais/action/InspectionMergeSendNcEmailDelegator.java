@@ -101,9 +101,12 @@ public class InspectionMergeSendNcEmailDelegator {
 //        if(StringUtil.isEmpty(taskId)){
 //            taskId= "6E5A002D-9437-EA11-BE7E-000C29F371DC";
 //        }
-        TaskDto taskDto = taskService.getTaskById(taskId);
-        if(StringUtil.isEmpty(taskDto)){
+        TaskDto taskDto ;
+        if(StringUtil.isEmpty(taskId)){
             taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
+        }
+        else {
+            taskDto= taskService.getTaskById(taskId);
         }
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);
@@ -112,8 +115,8 @@ public class InspectionMergeSendNcEmailDelegator {
         StringBuilder mesContext=new StringBuilder();
         String oneEmail="";
         for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
-             ) {
-             oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
+        ) {
+            oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
             if(oneEmail.contains("Below are the review outcome")){
                 mesContext.append(oneEmail.substring(0,oneEmail.indexOf("Below are the review outcome")));
                 break;
@@ -124,7 +127,7 @@ public class InspectionMergeSendNcEmailDelegator {
         List<String> svcNames=new ArrayList<>();
 
         for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
-                ) {
+        ) {
             String ncEmail= inspEmailService.getInsertEmail(appPremisesCorrelationDto.getId()).getMessageContent();
             appPremCorrIds.add(appPremisesCorrelationDto.getId());
             ApplicationViewDto appViewDto = inspEmailService.getAppViewByCorrelationId(appPremisesCorrelationDto.getId());
@@ -137,7 +140,7 @@ public class InspectionMergeSendNcEmailDelegator {
             }
         }
         for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
-             ) {
+        ) {
             oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
             if(oneEmail.contains("<p>Thank you</p>")){
                 mesContext.append(oneEmail.substring(oneEmail.indexOf("<p>Thank you</p>")));
@@ -325,7 +328,7 @@ public class InspectionMergeSendNcEmailDelegator {
             emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
             emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
 
-            String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
+            //String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
         }
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
 
@@ -362,7 +365,7 @@ public class InspectionMergeSendNcEmailDelegator {
         taskDto.setSlaAlertInDays(2);
         taskDto.setPriority(0);
         taskDto.setSlaInDays(5);
-       // taskDto.setTaskType(schemeType);
+        // taskDto.setTaskType(schemeType);
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         list.add(taskDto);

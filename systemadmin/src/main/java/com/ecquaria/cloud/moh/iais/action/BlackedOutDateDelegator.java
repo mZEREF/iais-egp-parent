@@ -80,7 +80,7 @@ public class BlackedOutDateDelegator {
         ParamUtil.setSessionAttr(request, "isNewViewData", "true");
         ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_QUERY, null);
         ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_RESULT, null);
-        ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_ATTR, null);
+
     }
 
     /**
@@ -90,10 +90,8 @@ public class BlackedOutDateDelegator {
      */
     public void preLoad(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-
+        ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_ATTR, null);
         //userid -->> current user group , find it lead to group
-
-        String userId = "64F8BB01-F70C-EA11-BE7D-000C29F371DC";
 
         SearchParam workingGroupQuery = new SearchParam(WorkingGroupQueryDto.class.getName());
         QueryHelp.setMainSql("systemAdmin", "getWorkingGroupByUserId", workingGroupQuery);
@@ -166,8 +164,9 @@ public class BlackedOutDateDelegator {
         ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_SWITCH_ACTION, "update");
         String blackDateId = ParamUtil.getMaskedString(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_ID);
         if (blackDateId != null){
-            List<ApptBlackoutDateQueryDto> blackoutDateQueryList = (List<ApptBlackoutDateQueryDto>) ParamUtil.getSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_RESULT);
-            if (!IaisCommonUtils.isEmpty(blackoutDateQueryList)){
+            SearchResult<ApptBlackoutDateQueryDto> dtoSearchResult = (SearchResult<ApptBlackoutDateQueryDto>) ParamUtil.getSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_RESULT);
+            if (dtoSearchResult != null && !IaisCommonUtils.isEmpty(dtoSearchResult.getRows())){
+                List<ApptBlackoutDateQueryDto> blackoutDateQueryList = dtoSearchResult.getRows();
                 ApptBlackoutDateQueryDto blackoutDateQueryDto = blackoutDateQueryList.stream()
                         .filter(item -> item.getId().equals(blackDateId)).findFirst().orElse(null);
                 if (Optional.of(blackoutDateQueryDto).isPresent()){
@@ -231,28 +230,31 @@ public class BlackedOutDateDelegator {
         int ans = bit & 1;
 
         String propertName = "";
+        String groupName = ParamUtil.getString(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT);
         String ldate = ParamUtil.getString(request, "startDate");
         String rdate = ParamUtil.getString(request, "endDate");
         String desc = ParamUtil.getString(request, "desc");
 
+        ParamUtil.setRequestAttr(request, "shortName", groupName);
+        ParamUtil.setRequestAttr(request, "startDate", ldate);
+        ParamUtil.setRequestAttr(request, "endDate", rdate);
+        ParamUtil.setRequestAttr(request, "desc", desc);
+
         ApptBlackoutDateDto blackoutDateDto = new ApptBlackoutDateDto();
         if (ans == CREATE_ACTION) {
             propertName = "insert";
-            String groupName = ParamUtil.getString(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT);
-            String status = ParamUtil.getString(request, "status");
             blackoutDateDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_SRC_ID);
             blackoutDateDto.setShortName(groupName);
-            blackoutDateDto.setStatus(status);
+            blackoutDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
         }else if ((ans == UPDATE_ACTION)){
             propertName = "update";
             ApptBlackoutDateQueryDto blackoutDateQueryDto = (ApptBlackoutDateQueryDto) ParamUtil.getSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_ATTR);
             Objects.requireNonNull(blackoutDateQueryDto);
-
             blackoutDateDto.setId(blackoutDateQueryDto.getId());
             blackoutDateDto.setShortName(blackoutDateQueryDto.getShortName());
             blackoutDateDto.setSrcSystemId(blackoutDateQueryDto.getSrcSystemId());
-            blackoutDateDto.setStatus(blackoutDateQueryDto.getStatus());
+            blackoutDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         }
 
         if (!StringUtils.isEmpty(ldate)){
@@ -260,7 +262,7 @@ public class BlackedOutDateDelegator {
         }
 
         if (!StringUtils.isEmpty(rdate)){
-            blackoutDateDto.setEndDate(IaisEGPHelper.parseToDate(ldate, "dd/MM/yyyy"));
+            blackoutDateDto.setEndDate(IaisEGPHelper.parseToDate(rdate, "dd/MM/yyyy"));
         }
 
         blackoutDateDto.setDesc(desc);
@@ -276,13 +278,25 @@ public class BlackedOutDateDelegator {
             return;
         }
 
-       /* boolean canFlushBlackDate = canFlushBlackDate(blackoutDateDto.getShortName(), blackoutDateDto.getStartDate(), blackoutDateDto.getEndDate());
-        if (!canFlushBlackDate){
-            errorMap.put(CUSTOM_VALIDATEION_ATTR, "Inspection task is on that day. Black out date cannot be created.");
+        boolean isAfterDate = IaisEGPHelper.isAfterDate(IaisEGPHelper.parseToDate(ldate, "dd/MM/yyyy"),
+                IaisEGPHelper.parseToDate(rdate, "dd/MM/yyyy"));
+
+        if (!isAfterDate){
+            errorMap.put(CUSTOM_VALIDATEION_ATTR, "USER_ERR007");
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             return ;
-        }*/
+        }
+
+
+        //ERR004	There is an inspection scheduled on that date. This appointment must be rescheduled before this action may be performed.
+       boolean canBloack = canBlock(blackoutDateDto.getShortName(), blackoutDateDto.getStartDate(), blackoutDateDto.getEndDate());
+        if (!canBloack){
+            errorMap.put(CUSTOM_VALIDATEION_ATTR, "There is an inspection scheduled on that date. This appointment must be rescheduled before this action may be performed.");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            return ;
+        }
 
         errorMap = null;
 
@@ -313,17 +327,28 @@ public class BlackedOutDateDelegator {
         doCreateOrUpdate(request, UPDATE_ACTION);
     }
 
-    private Boolean canFlushBlackDate(String groupName, Date startDate, Date endDate){
-        List<String> taskRefNumList = taskService.getDistincTaskRefNumByCurrentGroup(groupName);
+    private Boolean canBlock(String groupName, Date startDate, Date endDate){
+        log.info(startDate + "===" + endDate);
+        List<Date> currentInspDate = appointmentService.getCurrentWorkingGroupInspectionDate(groupName);
+        if (IaisCommonUtils.isEmpty(currentInspDate)){
+            return true;
+        }
 
-        Date testDate = IaisEGPHelper.parseToDate("2020-01-04 16:19:42", "yyyy-MM-DD");
-        List<Date> recomDay = new ArrayList<>();
-        recomDay.add(testDate);
+        long reduceDay = (endDate.getTime() - startDate.getTime())/(1000*3600*24);
+        log.info("reduceDay : " + reduceDay);
 
-        for (Date date : recomDay){
-            if (date.compareTo(startDate) > 0 || date.compareTo(endDate) < 0){
-                return false;
-            }
+        Calendar calendar = Calendar.getInstance();
+
+        List<Date> includeDayList = new ArrayList<>();
+        for (int i = 0; i < reduceDay; i++) {
+            calendar.setTime(startDate);
+            calendar.add(Calendar.DAY_OF_MONTH, i);
+            Date date = calendar.getTime();
+            includeDayList.add(date);
+        }
+
+        for (Date inspDate : currentInspDate){
+            if (includeDayList.contains(inspDate)){return false;}
         }
 
         return true;

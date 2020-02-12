@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
@@ -20,13 +22,24 @@ import java.util.List;
  * @author Wenkang
  * @date 2019/12/4 15:13
  */
-public class OrganizationClientFallback {
+public class OrganizationClientFallback implements OrganizationClient {
+    @Override
     public FeignResponseEntity<List<OrgUserDto>> retrieveOrgUserAccount(List<String> ids) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<OrgUserDto> retrieveOrgUserAccountById(String id) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<TaskDto>> getSupervisorPoolByGroupWordId(String workGroupId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -34,6 +47,7 @@ public class OrganizationClientFallback {
         return entity;
     }
 
+    @Override
     public FeignResponseEntity<List<OrgUserDto>> getUsersByWorkGroupName(String workGroupId, String status) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -41,6 +55,7 @@ public class OrganizationClientFallback {
         return entity;
     }
 
+    @Override
     public FeignResponseEntity<TaskDto> getTaskById(String taskId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -48,6 +63,7 @@ public class OrganizationClientFallback {
         return entity;
     }
 
+    @Override
     public FeignResponseEntity<WorkingGroupDto> createWorkGroup(WorkingGroupDto workingGroupDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -55,6 +71,7 @@ public class OrganizationClientFallback {
         return entity;
     }
 
+    @Override
     public FeignResponseEntity<BroadcastOrganizationDto> createBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -62,6 +79,7 @@ public class OrganizationClientFallback {
         return entity;
     }
 
+    @Override
     public FeignResponseEntity<List<UserGroupCorrelationDto>> getUserGroupCorreByUserId(String userId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -69,6 +87,7 @@ public class OrganizationClientFallback {
         return entity;
     }
 
+    @Override
     public FeignResponseEntity<List<TaskDto>> getTasksByUserId(String userId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -76,12 +95,15 @@ public class OrganizationClientFallback {
         return entity;
     }
 
+    @Override
     public FeignResponseEntity<OrgUserDto> retrieveOneOrgUserAccount(String userId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
     public FeignResponseEntity<BroadcastOrganizationDto> getBroadcastOrganizationDto(String groupName,String groupDomain){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -89,6 +111,7 @@ public class OrganizationClientFallback {
         return entity;
     }
 
+    @Override
     public FeignResponseEntity<InspecTaskCreAndAssDto> assignCommonPool(InspecTaskCreAndAssDto inspecTaskCreAndAssDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -96,6 +119,7 @@ public class OrganizationClientFallback {
         return entity;
     }
 
+    @Override
     public FeignResponseEntity<InspectionTaskPoolListDto> assignSupTasks(InspectionTaskPoolListDto inspectionTaskPoolListDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -103,13 +127,15 @@ public class OrganizationClientFallback {
         return entity;
     }
 
-    public FeignResponseEntity<InspectionTaskPoolListDto> getReassignTaskByWkId(String workGroupId){
+    @Override
+    public FeignResponseEntity<List<TaskDto>> getReassignTaskByWkId(String workGroupId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
+    @Override
     public FeignResponseEntity<InspectionTaskPoolListDto> filterInspectorOption(InspectionTaskPoolListDto inspectionTaskPoolListDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -117,6 +143,7 @@ public class OrganizationClientFallback {
         return entity;
     }
 
+    @Override
     public FeignResponseEntity<List<String>> getInspectionLead(String workGroupId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -124,6 +151,7 @@ public class OrganizationClientFallback {
         return entity;
     }
 
+    @Override
     public FeignResponseEntity<List<TaskDto>> getTaskByAppNo(String appNo){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -131,20 +159,31 @@ public class OrganizationClientFallback {
         return entity;
     }
 
-    FeignResponseEntity<OrganizationDto> getOrganizationById( String id){
+    @Override
+    public FeignResponseEntity<WorkingGroupDto> getWrkGrpById(String workGroupId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity< List<OrgUserRoleDto>> getSendEmailUser(@RequestParam("organizationId") String organizationId){
+    @Override
+    public FeignResponseEntity<OrganizationDto> getOrganizationById(String id){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity< List<OrgUserRoleDto>> getSendEmailUser(@RequestParam("organizationId") String organizationId){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<LicenseeDto> getLicenseeDtoById(String id) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -152,7 +191,23 @@ public class OrganizationClientFallback {
         return entity;
     }
 
-    public FeignResponseEntity<LicenseeDto> getTasksByUserIdAndRole(String id, String role) {
+    @Override
+    public FeignResponseEntity<List<TaskDto>> getTasksByUserIdAndRole(String id, String role) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<TaskDto>> getTaskByProcessUrl(List<String> processUrl) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+    @Override
+    public FeignResponseEntity<SearchResult <String>> searchLicenseeIdsParam(SearchParam searchParam){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

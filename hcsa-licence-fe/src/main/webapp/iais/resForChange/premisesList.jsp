@@ -31,6 +31,7 @@
   <div class="row col-xs-11 ">
     <div class="col-xs-12">
       <div class="table-gp">
+        <span class="error-msg"><c:out value="${Error_Status}"/></span>
         <table class="table">
           <thead>
             <tr>
@@ -81,7 +82,7 @@
     
     var index =  $premAddrEle.find('.statusIndex').val();
     $('#hiddenIndex').val(index);
-    doSubmitForm('prepareEdit','', '');
+    doSubmitForm('prePremisesEdit','', '');
   
   });
   

@@ -23,10 +23,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author: Hc
@@ -66,6 +63,7 @@ public class InterInboxDelegator {
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
         IaisEGPHelper.clearSessionAttr(bpc.request,InboxConst.class);
+        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("main-web", "main web");
     }
 
@@ -77,7 +75,6 @@ public class InterInboxDelegator {
      */
     public void toMsgPage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("Step ---> toMsgPage"));
-
     }
 
     public void msgDoPage(BaseProcessClass bpc){
@@ -151,6 +148,7 @@ public class InterInboxDelegator {
         SearchParam licParam = SearchResultHelper.getSearchParam(request,licenceParameter,true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.LICENCE_QUERY_KEY,licParam);
         SearchResult licResult = inboxService.licenceDoQuery(licParam);
+        List<InboxLicenceQueryDto> inboxLicenceQueryDtoList = licResult.getRows();
         if(!StringUtil.isEmpty(licResult)){
             ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, licParam);
             ParamUtil.setRequestAttr(request,InboxConst.LIC_RESULT, licResult);
@@ -255,6 +253,7 @@ public class InterInboxDelegator {
     }
 
     public void appDoSearch(BaseProcessClass bpc) throws ParseException {
+        log.debug(StringUtil.changeForLog("Step ---> appDoSearch"));
         HttpServletRequest request = bpc.request;
         String applicationType = ParamUtil.getString(request,"appTypeSelect");
         String serviceType = ParamUtil.getString(request,"appServiceType");
@@ -272,6 +271,9 @@ public class InterInboxDelegator {
             appSearchMap.put("appStatus",applicationStatus);
         }
         if(applicationNo != null && !applicationNo.equals(InboxConst.SEARCH_ALL)){
+            if(applicationNo.indexOf("%") != -1){
+                applicationNo = applicationNo.replaceAll("%","//%");
+            }
             appSearchMap.put("appNo","%"+applicationNo+"%");
         }
         if(serviceType != null && !serviceType.equals(InboxConst.SEARCH_ALL)){

@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import sop.webflow.rt.api.Process;
 
@@ -33,6 +34,13 @@ public interface RequestForChangeService {
     LicenceDto getByLicNo(String licNo);
 
     List<LicenseeKeyApptPersonDto> getLicenseeKeyApptPersonDtoListByLicenseeId(String licenseeId);
-    
+
+    List<PersonnelListQueryDto> getLicencePersonnelListQueryDto(String licenseeId);
     void sendEmail();
+
+    List<AppSubmissionDto> getAppSubmissionDtoByLicenceIds(List<String> licenceIds);
+
+    List<AppSubmissionDto> saveAppsBySubmissionDtos(List<AppSubmissionDto> appSubmissionDtos);
+
+    LicenceDto getLicenceDtoByLicenceId(String licenceId);
 }

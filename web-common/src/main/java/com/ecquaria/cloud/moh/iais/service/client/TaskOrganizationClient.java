@@ -6,8 +6,11 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,5 +52,6 @@ public interface TaskOrganizationClient {
     @GetMapping(path = "/iais-task/inspector-task/{appCorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getInspectorByAppCorrId(@PathVariable(name = "appCorrId") String appCorrId);
 
-
+    @GetMapping(value = "/iais-task/corrid-inspectors/{corrId}/{status}/{roleId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Set<String>> getInspectors(@PathVariable(name = "corrId") String corrId, @PathVariable(name = "status") String status, @PathVariable(name = "roleId") String roleId);
 }

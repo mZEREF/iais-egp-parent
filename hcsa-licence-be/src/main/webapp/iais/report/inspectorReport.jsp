@@ -118,7 +118,9 @@
                             <p>Time of Inspection:</p>
                         </td>
                         <td class="col-xs-8">
-                            <fmt:formatDate value="${insRepDto.inspectionTime}"
+                            <fmt:formatDate value="${insRepDto.inspectionStartTime}"
+                                            pattern="dd/MM/yyyy"></fmt:formatDate>-
+                            <fmt:formatDate value="${insRepDto.inspectionEndTime}"
                                             pattern="dd/MM/yyyy"></fmt:formatDate>
                         </td>
                     </tr>
@@ -365,7 +367,7 @@
                         </td>
                         <div>
                             <td class="col-xs-4">
-                                <p><textarea name="remarks" cols="90" rows="6" title="content">
+                                <p><textarea name="remarks" cols="90" rows="6" title="content" maxlength="8000">
                                     <c:if test="${appPremisesRecommendationDto.remarks ==null}">${reportRemarks}</c:if>
                                 <c:if test="${appPremisesRecommendationDto.remarks !=null}">${appPremisesRecommendationDto.remarks}</c:if>
                                     </textarea></p>
@@ -381,7 +383,7 @@
                             <p>Rectified Within KPI?</p>
                         </td>
                         <td class="col-xs-4">
-                            <p>YES</p>
+                            <p>Yes</p>
                         </td>
                         <td class="col-xs-4"></td>
                     </tr>
@@ -403,7 +405,7 @@
                             <p>TCU needed:</p>
                         </td>
                         <td class="col-xs-4">
-                            <input type="checkbox" id="tcuNeeded" name="tcuNeed" onchange="javascirpt:changeTcu();"
+                            <input type="checkbox" id="tcuNeeded" name="tcuNeeded" onchange="javascirpt:changeTcu();"
                                    <c:if test="${appPremisesRecommendationDto.tcuNeeded =='on'}">checked</c:if>
                                    <c:if test="${tcuNeed =='on'}">checked</c:if>
                             >
@@ -428,14 +430,11 @@
                     </tr>
                     <tr>
                         <td class="col-xs-4">
-                            <p>Recommendation:</p>
+                            <p>Recommendation:</p>value="${recomDecision}
                         </td>
-                        <c:if test="${appPremisesRecommendationDto.recommendation==null}">
+                        <c:if test="${appPremisesRecommendationDto.recommendation==null && recomDecision!=null}">
                             <td class="col-xs-4">
-                                <iais:select name="recommendation" options="recommendationOption"
-                                             firstOption="Please select"
-                                             value="Approval"
-                                             onchange="javascirpt:changeRecommendation(this.value);"/>
+                                <iais:select name="recommendation" value="${recomDecision}" options="recommendationOption" firstOption="Please select" onchange="javascirpt:changeRecommendation(this.value);"/>
                             </td>
                         </c:if>
                         <c:if test="${appPremisesRecommendationDto.recommendation !=null}">
@@ -450,7 +449,7 @@
                     </tr>
                     <tr id="period" hidden>
                         <td class="col-xs-4">
-                            <p>Period:</p>period${option}
+                            <p>Period:</p>
                         </td>
                     <c:if test="${appPremisesRecommendationDto.period !=null}">
                         <td class="col-xs-4">
@@ -461,10 +460,8 @@
                         </td>
                     </c:if>
                         <c:if test="${appPremisesRecommendationDto.period ==null}">
-                            <td class="col-xs-4">option
-                                <iais:select name="periods" options="riskOption" firstOption="Please select"
-                                             onchange="javascirpt:changePeriod(this.value);"
-                                             value="${option}"/>
+                            <td class="col-xs-4">
+                                <iais:select name="periods" value="${option}" options="riskOption" firstOption="Please select" onchange="javascirpt:changePeriod(this.value);"/>
                                 <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                         </c:if>
@@ -475,10 +472,19 @@
                             <p>Other Period:</p>
                         </td>
                         <td class="col-xs-4">
-                            <input id=recomInNumber type="text" name="number" value="${number}">
+                            <input id=recomInNumber type="text" name="number" <c:if test="${number ==null}">value="${recnumber}"</c:if>
+                                   <c:if test="${number !=null}">value="${number}"</c:if>>
                             <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
-                            <iais:select id="chronoUnit" name="chrono" options="chronoOption"
-                                         firstOption="Please select" value="${chrono}"/>
+                            <c:if test="${chrono ==null}">
+                                <iais:select id="chronoUnit" name="chrono" options="chronoOption"
+                                             firstOption="Please select" value="${recchrono}"/>
+
+                            </c:if>
+                            <c:if test="${chrono !=null}">
+                                <iais:select id="chronoUnit" name="chrono" options="chronoOption"
+                                             firstOption="Please select" value="${chrono}"/>
+                            </c:if>
+
                             <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
                         </td>
                         <td class="col-xs-4"></td>
@@ -501,7 +507,7 @@
                             <p>Follow up Action:</p>
                         </td>
                         <td class="col-xs-4">
-                            <p><textarea name="followUpAction" cols="90" rows="6" title="content">
+                            <p><textarea name="followUpAction" cols="90" rows="6" title="content" maxlength="8000">
                             <c:if test="${appPremisesRecommendationDto.followUpAction == null}">${followRemarks}</c:if>
                                 <c:if test="${appPremisesRecommendationDto.followUpAction != null}">${appPremisesRecommendationDto.followUpAction}</c:if>
                             </textarea></p>
@@ -545,9 +551,7 @@
 <script type="text/javascript">
 
     function insRepsubmit() {
-        if ($("#processingDecision").val() == "submit") {
             $("#mainForm").submit();
-        }
     }
 
     function changePeriod(obj) {
@@ -560,7 +564,7 @@
     }
 
     function changeRecommendation(obj) {
-        if (obj == "Approval") {
+        if (obj == "Approved") {
             document.getElementById("period").style.display = "";
             $("#period").show();
         } else {
@@ -588,8 +592,8 @@
 
 
     $(document).ready(function () {
-        if ($("#recommendation").val() == "Approval") {
-            changeRecommendation("Approval");
+        if ($("#recommendation").val() == "Approved") {
+            changeRecommendation("Approved");
         }
         if ($("#periods").val() == "Others") {
             changePeriod("Others");

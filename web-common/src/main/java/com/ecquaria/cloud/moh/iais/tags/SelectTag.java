@@ -30,6 +30,7 @@ public class SelectTag extends DivTagSupport {
     private String otherOptionValue = "00";
     private String hidden;
     private boolean needErrorSpan;
+    private boolean disabled;
     private boolean needMask;
 
     public SelectTag() {
@@ -53,6 +54,7 @@ public class SelectTag extends DivTagSupport {
         otherOption = null;
         hidden = "";
         needErrorSpan = true;
+        needMask = false;
         needMask = false;
     }
 
@@ -95,6 +97,10 @@ public class SelectTag extends DivTagSupport {
             }
             if (!StringUtil.isEmpty(onchange)) {
                 html.append(" onchange=\"").append(onchange).append("\"");
+            }
+
+            if (disabled){
+                html.append(" disabled=\"").append("disabled").append("\"");
             }
 
             if (!StringUtil.isEmpty(hidden)){
@@ -218,5 +224,13 @@ public class SelectTag extends DivTagSupport {
 
     public void setFilterValue(String filterValue) {
         this.filterValue = filterValue;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 }

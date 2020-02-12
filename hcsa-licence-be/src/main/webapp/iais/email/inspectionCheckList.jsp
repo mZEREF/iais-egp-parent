@@ -10,11 +10,7 @@
 <webui:setLayout name="iais-intranet"/>
 
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
+
     <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.FillupChklistDelegator"/>
     <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto"/>
     <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
@@ -188,11 +184,7 @@
 
                             </div>
                             <div class="tab-pane active" id="tabCheckList" role="tabpanel">
-                                <div class="alert alert-info" role="alert">
-                                    <strong>
-                                        <h4>Processing Status Update</h4>
-                                    </strong>
-                                </div>
+
                                 <div class="row">
                                     <div class="col-xs-12">
 

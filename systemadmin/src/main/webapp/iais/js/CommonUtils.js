@@ -24,10 +24,25 @@ $(".btn-login-search").click(function () {
     SOP.Crud.cfxSubmit("mainForm", 'doQuery', val);
 })
 
+
+$(".btn-login-cancel").click(function () {
+    var val = $(".btn-login-cancel").value;
+    SOP.Crud.cfxSubmit("mainForm", 'doCancel', val);
+})
+
+$(".btn btn-primary cencel").click(function () {
+    var val = $(".btn-login-cancel").value;
+    SOP.Crud.cfxSubmit("mainForm", 'doCancel', val);
+})
+
 $(".btn-login-export").click(function () {
     var val = $(".btn-login-export").value;
+    showWaiting();
     SOP.Crud.cfxSubmit("mainForm", 'doExport', val);
+    dismissWaiting();
 })
+
+
 
 function jumpToPagechangePage(){
     SOP.Crud.cfxSubmit("mainForm", "changePage");

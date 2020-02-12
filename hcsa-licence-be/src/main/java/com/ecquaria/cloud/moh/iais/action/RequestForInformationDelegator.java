@@ -252,9 +252,13 @@ public class RequestForInformationDelegator {
         reqForInfoSearchListDto.setUnitNo(rfiApplicationQueryDto.getUnitNo());
         reqForInfoSearchListDto.setStreetName(rfiApplicationQueryDto.getStreetName());
         reqForInfoSearchListDto.setFloorNo(rfiApplicationQueryDto.getFloorNo());
-        reqForInfoSearchListDto.setLicenseeId(rfiApplicationQueryDto.getLicenseeId());
-        LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiApplicationQueryDto.getLicenseeId());
-        reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
+        log.debug(StringUtil.changeForLog("licenseeId start ...."+rfiApplicationQueryDto.getLicenseeId()));
+        if(rfiApplicationQueryDto.getLicenseeId()!=null){
+            reqForInfoSearchListDto.setLicenseeId(rfiApplicationQueryDto.getLicenseeId());
+            LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiApplicationQueryDto.getLicenseeId());
+            reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
+        }
+
     }
 
     public void doSearchLicence(BaseProcessClass bpc) throws ParseException {

@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,12 @@ public class PaymentDelegator {
         ParamUtil.getSessionAttr(bpc.request, "amount");
         String reqRefNo = (String)ParamUtil.getSessionAttr(bpc.request, "reqRefNo");
         String invoiceNo = (String)ParamUtil.getSessionAttr(bpc.request, "invoiceNo");
+        String backUrl = (String) ParamUtil.getSessionAttr(bpc.request,"backUrl");
         String showUrl = "https://" + request.getServerName();
         String s = showUrl+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment?result=success&reqRefNo="+reqRefNo;
+        if(!StringUtil.isEmpty(backUrl)){
+             s = showUrl +"/" +backUrl+"?result=success&reqRefNo="+reqRefNo;
+        }
         String url = RedirectUtil.changeUrlToCsrfGuardUrlUrl(s, request);
         bpc.response.sendRedirect(url);
         paymentDto.setAmount(amount);

@@ -36,6 +36,7 @@
                 <div class="col-md-3">
                     <iais:select name="domainType" id="domainType"
                                  firstOption="Please select" codeCategory="CATE_ID_SYSTEM_PARAMETER_TYPE" value="${domainType}"></iais:select>
+                    <span id="error_domainType" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
 
@@ -44,25 +45,29 @@
                 </label>
                 <div class="col-md-3">
                     <iais:select name="module" id="module"  codeCategory = "CATE_ID_SYSTEM_PARAMETER_MODULE" firstOption="Please select" value="${module}"></iais:select>
+                    <span id="error_module" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
+
             </div>
 
             <div class="form-group">
                 <label class="col-md-1">Description:
                 </label>
                 <div class="col-md-3">
-                    <input id="description" type="text" value="${description}">
+                    <input id="description" name="description" type="text" value="${description}">
+                    <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
 
-            <%--<div class="form-group">
+            <div class="form-group">
                 <label class="col-md-1">Status:
                 </label>
                 <div class="col-md-3">
                     <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
                                  firstOption="Select Status" filterValue="CMSTAT002" value="${status}"></iais:select>
                 </div>
-            </div>--%>
+                <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
+            </div>
 
             <div class="tab-pane active" id="tabInbox" role="tabpanel">
                 <div class="tab-content">
@@ -102,11 +107,12 @@
                                                         <td><iais:code code="${resultRow.module}"></iais:code></td>
                                                         <td>${resultRow.description}</td>
                                                             <td><iais:code code="${resultRow.paramType}"></iais:code></td>
-                                                        <td>${resultRow.units}</td>
+                                                        <td>${resultRow.value}</td>
                                                         <td><iais:code code="${resultRow.status}"></iais:code></td>
                                                         <td>
-                                                            <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${resultRow.id}');"/>
-                                                            <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${resultRow.id}');"/>
+                                                            <c:if test="${resultRow.update == true }">
+                                                                <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${resultRow.id}');"/>
+                                                            </c:if>
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
@@ -116,33 +122,8 @@
                                         </c:choose>
                                         </tbody>
                                     </table>
-                                    <div class="table-footnote">
-                                        <div class="row">
-                                            <div class="col-xs-6 col-md-4">
-                                                <td class="row_no">${(status.index + 1) + (systemParamSearchParam.pageNo - 1) * systemParamSearchParam.pageSize}</td>
-                                            </div>
-                                            <div class="col-xs-6 col-md-8 text-right">
-                                                <div class="nav">
-                                                    <ul class="pagination">
-                                                        <li class="hidden"><a href="#" aria-label="Previous"><span aria-hidden="true"><em class="fa fa-chevron-left"></em></span></a></li>
-                                                        <li class="active"><a href="#">1</a></li>
-                                                        <li><a href="#">2</a></li>
-                                                        <li><a href="#">3</a></li>
-                                                        <li><a href="#" aria-label="Next"><span aria-hidden="true"><em class="fa fa-chevron-right"></em></span></a></li>
-
-                                                    </ul>
-
-
-                                                </div>
-                                                <br><br>
-
-
-
-                                                <div class="text-right text-center-mobile">
-                                                    <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doQuery();">Search</a>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="text-right text-center-mobile">
+                                        <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doQuery();">Search</a>
                                     </div>
 
 
@@ -163,7 +144,7 @@
 
 
 
-
+<%@include file="/include/validation.jsp"%>
 <script type="text/javascript">
     function doQuery(){
         SOP.Crud.cfxSubmit("mainForm", "doQuery");
@@ -184,7 +165,7 @@
     }
 
     function disable(id){
-        if(confirm('are sure you want to disable ? ')){
+        if(confirm('Are sure you want to disable ? ')){
             SOP.Crud.cfxSubmit("mainForm", "disableStatus", id);
         }
     }

@@ -279,20 +279,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public Double getGroupAmendAmount(AmendmentFeeDto amendmentFeeDto) {
-        Double amount = 0.0;
-        FeeDto feeDto = appConfigClient.amendmentFee(amendmentFeeDto).getEntity();
-        if(feeDto != null){
-            amount = feeDto.getTotal();
-        }
-        return amount;
+    public FeeDto getGroupAmendAmount(AmendmentFeeDto amendmentFeeDto) {
+        return appConfigClient.amendmentFee(amendmentFeeDto).getEntity();
     }
 
     @Override
     public AppSubmissionDto submitRequestChange(AppSubmissionDto appSubmissionDto, Process process) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appSubmissionDto = applicationClient.saveAppsForRequestForChange(appSubmissionDto).getEntity();
-        eventBus(appSubmissionDto, process);
+        //eventBus(appSubmissionDto, process);
         return appSubmissionDto;
     }
     

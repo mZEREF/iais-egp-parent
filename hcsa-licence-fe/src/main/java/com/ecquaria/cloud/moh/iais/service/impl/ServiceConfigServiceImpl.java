@@ -261,4 +261,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     public List<HcsaServiceStepSchemeDto> getHcsaServiceStepSchemesByServiceId(List<String> svcIds) {
         return appConfigClient.getServiceStepsByServiceIds(svcIds).getEntity();
     }
+
+    @Override
+    public List<HcsaServiceDto> getHcsaServiceByNames(List<String> names) {
+        return appConfigClient.getHcsaServiceByNames(names).getEntity();
+    }
 }

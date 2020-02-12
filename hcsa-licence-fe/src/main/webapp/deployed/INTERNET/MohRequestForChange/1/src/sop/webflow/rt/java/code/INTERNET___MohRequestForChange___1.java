@@ -37,4 +37,8 @@ public class INTERNET___MohRequestForChange___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doStart", this);
 	}
 
+	public void step2_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "compareChangePercentage", this);
+	}
+
 }

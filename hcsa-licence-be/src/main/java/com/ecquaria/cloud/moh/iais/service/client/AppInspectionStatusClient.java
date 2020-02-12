@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +13,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -40,4 +42,7 @@ public interface AppInspectionStatusClient {
 
     @PostMapping(path = "/iais-inspecstatus/inspectionstatus", consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppInspectionStatusDto> createAppInspectionStatusByAppDto(@RequestBody ApplicationDto applicationDto);
+
+    @PostMapping(value = "/premises-corrids-task", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Map<String, List<AppInspectionStatusDto>>> getPremisesAndApplicationCorr(@RequestBody List<String> corrIds);
 }

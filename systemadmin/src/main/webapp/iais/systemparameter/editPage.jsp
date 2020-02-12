@@ -53,11 +53,11 @@
             </div>
 
             <div class="form-group">
-                <label class="col-md-1">Units:
+                <label class="col-md-1">Value:
                 </label>
                 <div class="col-md-3">
-                    <input name="units" type="text" value="${parameterRequestDto.units}">
-                    <span id="error_units" name="iaisErrorMsg" class="error-msg"></span>
+                    <input name="value" type="text" value="${parameterRequestDto.value}">
+                    <span id="error_value" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
 
@@ -70,7 +70,7 @@
                 </div>
             </div>
 
-            <%--<div class="form-group">
+            <div class="form-group">
                 <label class="col-md-1">Status:
                 </label>
                 <div class="col-md-3">
@@ -78,19 +78,15 @@
                                  firstOption="Select Status" filterValue="CMSTAT002" value="${parameterRequestDto.status}"></iais:select>
                     <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
-            </div>--%>
+            </div>
         </div>
-        <div class="application-tab-footer">
-            <td>
-                <div class="text-right text-center-mobile">
-                    <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doCancel();">Cancel</a>
-                    <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doEdit('${parameterRequestDto.id}');">Edit</a>
+        <td>
+            <div class="text-right text-center-mobile">
+                <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doCancel();">Cancel</a>
+                <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doEdit('${parameterRequestDto.id}');">Edit</a>
+            </div>
 
-                </div>
-
-            </td>
-        </div>
-
+        </td>
 
 
 
@@ -103,13 +99,13 @@
 
 
     function doEdit(id){
-        if(confirm('are sure you want to edit ? ')){
+        if(confirm('Are sure you want to edit ? ')){
             SOP.Crud.cfxSubmit("mainForm", "doEdit", id);
         }
     }
 
     function doCancel(){
-        SOP.Crud.cfxSubmit("mainForm","cancel");
+        SOP.Crud.cfxSubmit("mainForm","doCancel");
     }
 
 </script>

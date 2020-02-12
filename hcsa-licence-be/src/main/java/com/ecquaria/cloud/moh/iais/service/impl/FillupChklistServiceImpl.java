@@ -771,7 +771,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         List<TaskDto> dtos = organizationClient.getTaskByAppNo(taskDto.getRefNo()).getEntity();
         removeOtherTask(dtos,taskDto.getId());
-        ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT);
+        ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION);
         updateInspectionStatus(applicationDto,InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
         completedTask(taskDto);
         //create createAppPremisesRoutingHistory

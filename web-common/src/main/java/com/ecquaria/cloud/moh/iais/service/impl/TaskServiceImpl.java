@@ -21,10 +21,8 @@ import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
@@ -299,6 +297,13 @@ public class TaskServiceImpl implements TaskService {
         log.debug(StringUtil.changeForLog("the do getUserIdForWorkGroup end ...."));
         return result;
     }
+
+    @Override
+    public Set<String> getInspectiors(String corrId, String status, String roleId) {
+        Set<String> entity = taskOrganizationClient.getInspectors(corrId, status, roleId).getEntity();
+        return entity;
+    }
+
     private boolean isExist(List<TaskDto> taskScoreDtos,String userId){
         boolean result = false;
         for (TaskDto taskScoreDto : taskScoreDtos){

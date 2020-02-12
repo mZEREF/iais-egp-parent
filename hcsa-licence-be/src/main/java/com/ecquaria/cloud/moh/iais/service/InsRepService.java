@@ -38,5 +38,5 @@ public interface InsRepService {
 
 
     InspectionReportDto getInspectorUser(TaskDto taskDto,LoginContext loginContext);
-    InspectionReportDto getInspectorAo(ApplicationViewDto applicationViewDto);
+    InspectionReportDto getInspectorAo(TaskDto taskDto,ApplicationViewDto applicationViewDto);
 }

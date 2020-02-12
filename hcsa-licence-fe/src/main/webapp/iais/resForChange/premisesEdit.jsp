@@ -11,6 +11,8 @@
 <form method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
   <input type="hidden" name="crud_action_type_form_value" value="">
+  <input type="hidden" name="crud_action_type_value" value="">
+
   <%@include file="dashboard.jsp" %>
   <%--Validation fields Start--%>
   <input type="hidden" name="paramController" id="paramController"
@@ -255,11 +257,11 @@
     });
 
     $('#previewAndSub').click(function () {
-        doSubmitForm('', 'premisesList', 'prepareEdit');
+        doSubmitForm('prePayment','', '');
     });
 
     $('#back').click(function () {
-        menuListForBack('premisesList', 'prepareSwitch');
+        doBack('prePremisesList');
     });
 
 

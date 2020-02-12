@@ -291,26 +291,26 @@
     function doSend(){
         if($('#decision_merge_email option:selected').val()=="Select"){
             ;
-        }
-
-        if($('#decision_merge_email option:selected').val()=="REDECI005"){
-            var checkOne = false;
-            var checkBox = $('input[type = checkbox]');
-            for (var i = 0; i < checkBox.length; i++) {
-                if (checkBox[i].checked) {
-                    checkOne = true;
+        }else {
+            if($('#decision_merge_email option:selected').val()=="REDECI005"){
+                var checkOne = false;
+                var checkBox = $('input[type = checkbox]');
+                for (var i = 0; i < checkBox.length; i++) {
+                    if (checkBox[i].checked) {
+                        checkOne = true;
+                    };
                 };
-            };
 
-            if (checkOne) {
+                if (checkOne) {
+                    SOP.Crud.cfxSubmit("mainForm", "send");
+                } else {
+                    alert("Sorry: at least choose one.");
+                };
+
+            }
+            else {
                 SOP.Crud.cfxSubmit("mainForm", "send");
-            } else {
-                alert("Sorry: at least choose one.");
-            };
-
-        }
-        else {
-            SOP.Crud.cfxSubmit("mainForm", "send");
+            }
         }
 
     }

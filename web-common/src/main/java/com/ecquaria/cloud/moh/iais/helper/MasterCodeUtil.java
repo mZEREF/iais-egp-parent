@@ -195,7 +195,7 @@ public final class MasterCodeUtil {
      */
     public static String getCodeDesc(String code) {
         String desc = RedisCacheHelper.getInstance().get(CACHE_NAME_CODE, code);
-        if (StringUtil.isEmpty(desc)) {
+        if (StringUtil.isEmpty(desc) && !StringUtil.isEmpty(code)) {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.addFilter("codeFilter", code, true);
             QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);

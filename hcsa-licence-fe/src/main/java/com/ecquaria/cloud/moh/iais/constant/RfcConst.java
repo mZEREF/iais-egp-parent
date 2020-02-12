@@ -24,12 +24,18 @@ public class RfcConst {
 
     public static final String APPSUBMISSIONDTO =  "AppSubmissionDto";
 
+    public static final String PERSONNELLISTMAP = "PersonnelListMap";
+    public static final String PERSONNELEDITLIST = "PersonnelEditList";
+
     //reload-premises
     public static final String RELOADPREMISES = "ReloadPremises";
 
     //error_msg
     public static final String ERRORMAP_PREMISES = "errorMap_premises";
 
+
+
+    public static final String SWITCH_VALUE = "switch_value";
 
 
     //rfc amendType text

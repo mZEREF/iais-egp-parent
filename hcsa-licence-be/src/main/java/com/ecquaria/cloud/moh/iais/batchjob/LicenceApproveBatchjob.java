@@ -50,20 +50,19 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
+import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * LicenceApproveBatchjob
@@ -146,8 +145,8 @@ public class LicenceApproveBatchjob {
                eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
                applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
                //step2 save licence to Fe DB
-               EventBusLicenceGroupDtos eventBusLicenceGroupDtos1 =  licenceService.getEventBusLicenceGroupDtosByRefNo(eventRefNo);
-               licenceService.createFESuperLicDto(eventBusLicenceGroupDtos1);
+//               EventBusLicenceGroupDtos eventBusLicenceGroupDtos1 =  licenceService.getEventBusLicenceGroupDtosByRefNo(eventRefNo);
+//               licenceService.createFESuperLicDto(eventBusLicenceGroupDtos1);
            }
         //todo:send the email to admin for fail Data.
         //else{ rollback step1}
@@ -289,7 +288,7 @@ public class LicenceApproveBatchjob {
                 }
                 List<ApplicationDto> applicationDtos =  getApplicationDtos(applicationListDtos);
                 LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),applicationGroupDto,yearLength,
-                        applicationDtos.get(0).getOriginLicenceId(),organizationId,null,applicationDtos);
+                        applicationDtos.get(0).getOriginLicenceId(),null,applicationDtos);
                 superLicDto.setLicenceDto(licenceDto);
                 //
                 List<PremisesGroupDto> premisesGroupDtos = new ArrayList<>();
@@ -463,7 +462,7 @@ public class LicenceApproveBatchjob {
                     }
                 }
                 LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),applicationGroupDto,yearLength,
-                        applicationDto.getOriginLicenceId(),organizationId,applicationDto,null);
+                        applicationDto.getOriginLicenceId(),applicationDto,null);
                 superLicDto.setLicenceDto(licenceDto);
                 //create the lic_app_correlation
                 List<LicAppCorrelationDto> licAppCorrelationDtos = new ArrayList<>();
@@ -841,7 +840,7 @@ public class LicenceApproveBatchjob {
     }
 
     private LicenceDto getLicenceDto(String licenceNo,String svcName,ApplicationGroupDto applicationGroupDto,
-                                     int yearLength,String originLicenceId,String organizationId,
+                                     int yearLength,String originLicenceId,
                                      ApplicationDto applicationDto,
                                      List<ApplicationDto> applicationDtos){
         LicenceDto licenceDto = new LicenceDto();
@@ -853,8 +852,8 @@ public class LicenceApproveBatchjob {
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())&&licenceDto1!=null){
             licenceDto.setStartDate(licenceDto1.getStartDate());
             licenceDto.setExpiryDate(licenceDto1.getExpiryDate());
+            licenceDto.setEndDate(licenceDto1.getEndDate());
             licenceDto.setGrpLic(licenceDto1.isGrpLic());
-            licenceDto.setOrganizationId(licenceDto1.getOrganizationId());
             licenceDto.setOriginLicenceId(originLicenceId);
             licenceDto.setMigrated(licenceDto1.isMigrated());
             licenceDto.setLicenceNo(licenceDto1.getLicenceNo());
@@ -873,11 +872,12 @@ public class LicenceApproveBatchjob {
                     startDate = new Date();
                 }
                 licenceDto.setStartDate(startDate);
-                licenceDto.setExpiryDate(getExpiryDate(licenceDto.getStartDate(),yearLength));
+                licenceDto.setExpiryDate(LicenceUtil.getExpiryDate(licenceDto.getStartDate(),yearLength));
+                licenceDto.setEndDate(licenceDto.getExpiryDate());
                 licenceDto.setGrpLic(applicationGroupDto.getIsGrpLic() == 1);
                 licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
             }
-            licenceDto.setOrganizationId(organizationId);
+
             licenceDto.setOriginLicenceId(originLicenceId);
 
             int version = 1;
@@ -909,12 +909,6 @@ public class LicenceApproveBatchjob {
        return "29ABCF6D-770B-EA11-BE7D-000C29F371DC";
     }
 
-    public static Date getExpiryDate(Date startDate, int yearLength){
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(startDate);
-        calendar.add(Calendar.YEAR,yearLength);
-        return  calendar.getTime();
-    }
 
     private Integer getVersionByHciCode(String hciCode){
         Integer result = 1;
@@ -983,4 +977,5 @@ public class LicenceApproveBatchjob {
         private String errorMessage;
         private LicenceGroupDto licenceGroupDto;
     }
+
 }

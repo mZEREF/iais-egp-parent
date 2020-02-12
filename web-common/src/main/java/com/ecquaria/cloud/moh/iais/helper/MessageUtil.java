@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MapFormat;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -54,6 +55,14 @@ public class MessageUtil {
     public static String getMessageDesc(String pattern, Map arguments) {
         MapFormat temp = new MapFormat(arguments);
         return temp.format(pattern);
+    }
+
+    public static String formatMessage(String msg, String paramVal){
+        if (StringUtils.isEmpty(msg)){
+            return null;
+        }
+
+        return  msg.replace("%d", paramVal);
     }
 
 }

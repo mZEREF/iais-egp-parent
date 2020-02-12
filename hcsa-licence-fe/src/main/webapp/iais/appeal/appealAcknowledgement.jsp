@@ -30,14 +30,14 @@
     <div class="table-gp">
       <table class="table" border="1px">
       <tr>
-        <td style="text-align: center">Licence No.</td>
+        <td style="text-align: center">Application No.</td>
         <td style="text-align: center">Service Name</td>
         <td style="text-align: center">HCI Name</td>
         <td style="text-align: center">HCI Address</td>
       </tr>
         <tr>
-          <td style="text-align: center">${licenceNo}</td>
-          <td style="text-align: center">${svcName}</td>
+          <td style="text-align: center">${applicationNo}</td>
+          <td style="text-align: center">${serviceName}</td>
           <td style="text-align: center">${hciName}</td>
           <td style="text-align: center">${hciAddress}</td>
         </tr>

@@ -85,20 +85,31 @@ public class RequestForChangeDelegator {
         log.debug(StringUtil.changeForLog("the do start doChoose ...."));
         String amendType = ParamUtil.getString(bpc.request, "amendType");
         boolean flag = true;
-        if(AppConsts.NO.equals(amendType)){
-            //....
-            flag = false;
-        }else if(AppConsts.YES.equals(amendType)){
-            String [] amendLicenceType = ParamUtil.getStrings(bpc.request, "amend-licence-type");
-            if(amendLicenceType != null && amendLicenceType.length > 0){
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "doAmend");
-            }else{
+        String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
+        LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
+        if(licenceDto != null){
+            String status = licenceDto.getStatus();
+            if(!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)){
+                ParamUtil.setRequestAttr(bpc.request, "ErrorMsg", "licence status is not active");
                 flag = false;
+            }
+        }
+        if(flag){
+            if(AppConsts.NO.equals(amendType)){
+                //....
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "doTranfer");
+                flag = true;
+            }else if(AppConsts.YES.equals(amendType)){
+                String [] amendLicenceType = ParamUtil.getStrings(bpc.request, "amend-licence-type");
+                if(amendLicenceType != null && amendLicenceType.length > 0){
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "doAmend");
+                }else{
+                    flag = false;
+                }
             }
         }
         if(!flag){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prepare");
-            ParamUtil.setRequestAttr(bpc.request, "ErrorMsg", "error 1!!");
             ParamUtil.setRequestAttr(bpc.request, "AmendType", amendType);
         }
 
@@ -129,13 +140,13 @@ public class RequestForChangeDelegator {
      */
     public void prepareAmend(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do prepareAmend start ...."));
-        //String licenceId = "B99F41F3-5D1E-EA11-BE7D-000C29F371DC";
-        String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
+        /*//String licenceId = "B99F41F3-5D1E-EA11-BE7D-000C29F371DC";
+         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         LicenceDto licenceDto = new LicenceDto();
         licenceDto.setId(licenceId);
         licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_REQUEST_FOR_CHANGE);
         //update lic status
-        requestForChangeService.upDateLicStatus(licenceDto);
+        //requestForChangeService.upDateLicStatus(licenceDto);*/
         
         log.debug(StringUtil.changeForLog("the do prepareAmend end ...."));
     }

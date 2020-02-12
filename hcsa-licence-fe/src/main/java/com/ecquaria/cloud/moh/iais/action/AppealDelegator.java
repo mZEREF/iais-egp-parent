@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import lombok.extern.slf4j.Slf4j;
@@ -42,14 +43,21 @@ public class AppealDelegator {
     public void preparetionData(BaseProcessClass bpc){
         log.info("start**************preparetionData************");
 
-
+        appealService.getMessage(bpc.request);
         log.info("end**************preparetionData************");
     }
 
 
     public void switchProcess(BaseProcessClass bpc ){
         log.info("start**************switchProcess************");
+        Map<String, String> validate = appealService.validate(bpc.request);
+        if(!validate.isEmpty()){
+            bpc. request.setAttribute("crud_action_type","save");
+            bpc. request.setAttribute("errorMsg", WebValidationHelper.generateJsonStr(validate));
+            return;
+        }
 
+        bpc. request.setAttribute("crud_action_type","submit");
         log.info("end**************switchProcess************");
     }
 
@@ -57,13 +65,15 @@ public class AppealDelegator {
     public void submit(BaseProcessClass bpc){
         log.info("start**************submit************");
         String s = appealService.submitData(bpc.request);
+
         bpc.request.setAttribute("newApplicationNo",s);
         log.info("end**************submit************");
     }
 
     public void start(BaseProcessClass bpc){
         log.info("start**************start************");
-
+        bpc.getSession().removeAttribute("serviceName");
+        bpc.getSession().removeAttribute("applicationNo");
         log.info("end**************start************");
     }
 
@@ -134,12 +144,15 @@ public class AppealDelegator {
 
         //Specialty
 
-
         Map<String,String> specialtyAttr = new HashMap<>();
         specialtyAttr.put("name", "specialty");
         specialtyAttr.put("class", "specialty");
         specialtyAttr.put("style", "display: none;");
-      /*  String specialtySelectStr = getHtml(specialtyAttr, specialtySelectList, null);*/
+
+        specialtySelectList= genSpecialtySelectList("CLB");
+        ParamUtil.setSessionAttr(request, "SpecialtySelectList",(Serializable)  specialtySelectList);
+
+        String specialtySelectStr = getHtml(specialtyAttr, specialtySelectList, null);
 
 
 
@@ -148,8 +161,7 @@ public class AppealDelegator {
         sql = sql.replace("(3)", idTypeSelectStr);
         sql = sql.replace("(4)", designationSelectStr);
         sql = sql.replace("(5)", proRegnTypeSelectStr);
-      /*  sql = sql.replace("(6)", specialtySelectStr);
-*/
+        sql = sql.replace("(6)", specialtySelectStr);
 
 
         log.debug(StringUtil.changeForLog("gen governance officer html end ...."));

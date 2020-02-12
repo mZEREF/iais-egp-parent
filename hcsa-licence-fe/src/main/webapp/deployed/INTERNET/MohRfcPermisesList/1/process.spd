@@ -2,74 +2,124 @@
 <Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohRfcPermisesList" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Step1" x="60" y="230">
+  <StartStep defClass="" executor="" icon="" name="Step1" x="-20" y="230">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preparePremisesList" x="160" y="230">
+  <AutomaticStep defClass="" executor="" icon="" name="preparePremisesList" x="290" y="140">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="preparePremisesList_OnStepProcess_0" name="preparePremisesList_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doPremisesList" x="440" y="230">
+  <AutomaticStep defClass="" executor="" icon="" name="doPremisesList" x="600" y="140">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doPremisesList_OnStepProcess_0" name="doPremisesList_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doPremisesEdit" x="350" y="360">
+  <AutomaticStep defClass="" executor="" icon="" name="doPremisesEdit" x="610" y="250">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doPremisesEdit_OnStepProcess_0" name="doPremisesEdit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preparePremisesEdit" x="580" y="360">
+  <AutomaticStep defClass="" executor="" icon="" name="preparePremisesEdit" x="310" y="250">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="preparePremisesEdit_OnStepProcess_0" name="preparePremisesEdit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="Step2" x="470" y="60">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-  </ReturnInvokeProcessStep>
-  <AutomaticStep defClass="" executor="" icon="" name="jump" x="260" y="360">
+  <AutomaticStep defClass="" executor="" icon="" name="prepare" x="80" y="230">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="jump_OnStepProcess_0" name="jump_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ControlSwitch" x="710" y="220">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="controlSwitch_OnStepProcess_0" name="controlSwitch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preparePayment" x="310" y="380">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preparePayment_OnStepProcess_0" name="preparePayment_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepareAckPage" x="800" y="70">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareAckPage_OnStepProcess_0" name="prepareAckPage_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="jumpBank" x="560" y="380">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="jumpBlank_OnStepProcess_0" name="jumpBlank_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doPayment" x="520" y="490">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doPayment_OnStepProcess_0" name="doPayment_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="back" x="700" y="50">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="back_OnStepProcess_0" name="back_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="toBank" x="830" y="340">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="bank_OnStepProcess_0" name="bank_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="premisesList" stageIndicator="" x="310" y="230">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="premisesList" stageIndicator="" x="460" y="140">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="premisesEdit" stageIndicator="" x="460" y="360">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="premisesEdit" stageIndicator="" x="470" y="250">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ack" stageIndicator="" x="10" y="350">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ack" stageIndicator="" x="830" y="-20">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="430" y="160">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="payment" stageIndicator="" x="460" y="380">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="830" y="510">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -79,76 +129,90 @@
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Pages/WebPage/premisesList" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preparePremisesList" style="oblique">
-   <position>{(180,250)(330,250)}</position>
+   <position>{(310,160)(480,160)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doPremisesList" linkstyle="Direct" name="" sourceName="/Pages/WebPage/premisesList" style="oblique">
-   <position>{(330,250)(460,250)}</position>
+   <position>{(480,160)(620,160)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePremisesList" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Step1" style="rectanular">
-   <position>{(80,250)(180,250)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doPremisesEdit" linkstyle="Direct" name="" sourceName="/Pages/WebPage/premisesEdit" style="oblique">
+   <position>{(490,270)(630,270)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doPremisesList" style="rectanular">
-   <position>{(460,250)(630,250)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/premisesEdit" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preparePremisesEdit" style="oblique">
+   <position>{(330,270)(490,270)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doPremisesEdit" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/premisesEdit" style="rectanular">
-   <position>{(480,380)(370,380)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1" style="oblique">
+   <position>{(0,250)(100,250)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
-   <position>{(150,370)(30,370)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepare" style="oblique">
+   <position>{(100,250)(210,250)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePremisesEdit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(630,250)(600,380)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePremisesList" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(210,250)(310,160)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/premisesEdit" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preparePremisesEdit" style="rectanular">
-   <position>{(600,380)(480,380)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPremisesList" style="oblique">
+   <position>{(620,160)(730,240)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Step2" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
-   <position>{(720,80)(490,80)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ControlSwitch" style="oblique">
+   <position>{(730,240)(860,200)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(630,250)(720,80)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePremisesEdit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(210,250)(330,270)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePremisesList" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(150,370)(180,250)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPremisesEdit" style="oblique">
+   <position>{(630,270)(730,240)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
-   <position>{(150,370)(722,479)(720,80)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/payment" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preparePayment" style="oblique">
+   <position>{(330,400)(480,400)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(630,250)(450,180)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/jumpBank" linkstyle="Direct" name="" sourceName="/Pages/WebPage/payment" style="oblique">
+   <position>{(480,400)(580,400)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/premisesEdit" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
-   <position>{(150,370)(492,311)(480,380)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPayment" style="oblique">
+   <position>{(540,510)(716,433)(730,240)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/jump" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doPremisesEdit" style="rectanular">
-   <position>{(370,380)(280,380)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePayment" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(210,250)(330,400)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/jump" style="rectanular">
-   <position>{(280,380)(150,370)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(860,200)(102,614)(100,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareAckPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(860,200)(820,90)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareAckPage" style="oblique">
+   <position>{(820,90)(850,0)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/back" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(860,200)(720,70)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/toBank" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(860,200)(850,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/jumpBank" style="oblique">
+   <position>{(580,400)(730,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/toBank" style="rectanular">
+   <position>{(850,360)(850,530)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_form" name="Switch1" x="610" y="230">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="switch" name="Switch1" x="840" y="180">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/preparePremisesEdit" value="&quot;prepareEdit&quot;"/>
-   <SwitchCase component="/Merges/Merge/Merge1" value="&quot;back&quot;"/>
-   <SwitchCase component="/Pages/WebPage/Page1" value="&quot;test&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/prepare" value="&quot;loading&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/prepareAckPage" value="&quot;ack&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/back" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/toBank" value="&quot;bank&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="form_tab" name="Switch2" x="130" y="350">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_form" name="Switch3" x="190" y="230">
    <Description/>
-   <SwitchCase component="/Pages/WebPage/ack" value="&quot;ack&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/preparePremisesList" value="&quot;prepareList&quot;"/>
-   <SwitchCase component="/Merges/Merge/Merge1" value="&quot;back&quot;"/>
-   <SwitchCase component="/Pages/WebPage/premisesEdit" value="&quot;prepareEdit&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preparePremisesList" value="&quot;prePremisesList&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preparePremisesEdit" value="&quot;prePremisesEdit&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preparePayment" value="&quot;prePayment&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
- <Merges>
-  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="700" y="60">
-   <Description/>
-  </Merge>
- </Merges>
+ <Merges/>
  <StudioLabels/>
  <StageIndicator/>
  <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>

@@ -48,7 +48,6 @@ public class InsRepRecValidate implements CustomizeValidator {
                 errorMap.put("remarks", "remarks must be less than 4000");
             }
         }
-
         if(!StringUtil.isEmpty(tcuNeeded)&&StringUtil.isEmpty(tcuDate)){
             errorMap.put("tcuDate", "ERR0009");
         }

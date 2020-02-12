@@ -1,1 +1,1 @@
-<%@include file="/iais/inbox/menu/chooseAmend.jsp"%>
+<%@include file="/iais/resForChange/chooseAmend.jsp"%>

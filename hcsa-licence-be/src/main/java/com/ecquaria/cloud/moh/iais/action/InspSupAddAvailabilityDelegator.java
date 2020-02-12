@@ -9,10 +9,14 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonAvailabilityDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.InspectorCalendarQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -61,6 +65,7 @@ public class InspSupAddAvailabilityDelegator {
      */
     public void inspSupAddAvailabilityStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityStart start ...."));
+        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("Inspection Sup Add Availability", "Inspection Sup Add Availability");
     }
 
@@ -72,7 +77,10 @@ public class InspSupAddAvailabilityDelegator {
      */
     public void inspSupAddAvailabilityInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityInit start ...."));
-        AccessUtil.initLoginUserInfo(bpc.request);
+        SearchParam searchParam = (SearchParam)ParamUtil.getSessionAttr(bpc.request, AppointmentConstants.INSPECTOR_CALENDAR_QUERY_ATTR);
+        SearchResult<InspectorCalendarQueryDto> searchResult = (SearchResult<InspectorCalendarQueryDto>)ParamUtil.getSessionAttr(bpc.request, AppointmentConstants.INSPECTOR_CALENDAR_RESULT_ATTR);
+        ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.INSPECTOR_CALENDAR_QUERY_ATTR, searchParam);
+        ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.INSPECTOR_CALENDAR_RESULT_ATTR, searchResult);
         ParamUtil.setSessionAttr(bpc.request, "curRole", null);
         ParamUtil.setSessionAttr(bpc.request, "inspSupAddAvailabilityType", null);
         ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", null);
@@ -87,20 +95,20 @@ public class InspSupAddAvailabilityDelegator {
      */
     public void inspSupAddAvailabilityPre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityPre start ...."));
-        String actionValue = (String)ParamUtil.getRequestAttr(bpc.request, "actionValue");
+        String actionValue = (String)ParamUtil.getSessionAttr(bpc.request, "actionValue");
         if(InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue)) {
             ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = new ApptNonAvailabilityDateDto();
             ParamUtil.setSessionAttr(bpc.request, "inspSupAddAvailabilityType", actionValue);
             ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", apptNonAvailabilityDateDto);
 
         } else if(InspectionConstants.SWITCH_ACTION_EDIT.equals(actionValue)) {
-            String nonAvaId = ParamUtil.getRequestString(bpc.request, "nonAvaId");
+            String nonAvaId = ParamUtil.getMaskedString(bpc.request, "nonAvailId");
             ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = inspSupAddAvailabilityService.getApptNonAvailabilityDateDtoById(nonAvaId);
             ParamUtil.setSessionAttr(bpc.request, "inspSupAddAvailabilityType", actionValue);
             ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", apptNonAvailabilityDateDto);
 
         } else if(InspectionConstants.SWITCH_ACTION_DELETE.equals(actionValue)) {
-            String nonAvaId = ParamUtil.getRequestString(bpc.request, "nonAvaId");
+            String nonAvaId = ParamUtil.getMaskedString(bpc.request, "nonAvailId");
             ParamUtil.setSessionAttr(bpc.request, "inspSupAddAvailabilityType", actionValue);
             ParamUtil.setRequestAttr(bpc.request, "removeId", nonAvaId);
         } else {
@@ -117,6 +125,10 @@ public class InspSupAddAvailabilityDelegator {
      */
     public void inspSupAddAvailabilityStep(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityStep start ...."));
+        SearchParam searchParam = (SearchParam)ParamUtil.getSessionAttr(bpc.request, AppointmentConstants.INSPECTOR_CALENDAR_QUERY_ATTR);
+        SearchResult<InspectorCalendarQueryDto> searchResult = (SearchResult<InspectorCalendarQueryDto>)ParamUtil.getSessionAttr(bpc.request, AppointmentConstants.INSPECTOR_CALENDAR_RESULT_ATTR);
+        ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.INSPECTOR_CALENDAR_QUERY_ATTR, searchParam);
+        ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.INSPECTOR_CALENDAR_RESULT_ATTR, searchResult);
     }
 
     /**

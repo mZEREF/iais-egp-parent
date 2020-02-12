@@ -6,48 +6,63 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
  * @date 2019/12/10 16:52
  **/
-public class AppInspectionStatusClientFallback {
-    FeignResponseEntity<List<AppInspectionStatusDto>> getAppInspectionStatusByStatus(String status){
+public class AppInspectionStatusClientFallback implements AppInspectionStatusClient {
+    @Override
+    public FeignResponseEntity<List<AppInspectionStatusDto>> getAppInspectionStatusByStatus(String status){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<AppInspectionStatusDto>> getAppInspecStatusByIds(String ids){
+    @Override
+    public FeignResponseEntity<List<AppInspectionStatusDto>> getAppInspecStatusByIds(String ids){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<AppInspectionStatusDto> getAppInspectionStatusByPremId(String appPremCorreId){
+    @Override
+    public FeignResponseEntity<AppInspectionStatusDto> getAppInspectionStatusByPremId(String appPremCorreId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<AppInspectionStatusDto>> create(List<AppInspectionStatusDto> appInspecStatusDtos){
+    @Override
+    public FeignResponseEntity<List<AppInspectionStatusDto>> create(List<AppInspectionStatusDto> appInspecStatusDtos){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<AppInspectionStatusDto>> update(AppInspectionStatusDto appInspecStatusDto){
+    @Override
+    public FeignResponseEntity<AppInspectionStatusDto> update(AppInspectionStatusDto appInspecStatusDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<AppInspectionStatusDto> createAppInspectionStatusByAppDto(ApplicationDto applicationDto){
+    @Override
+    public FeignResponseEntity<AppInspectionStatusDto> createAppInspectionStatusByAppDto(ApplicationDto applicationDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Map<String, List<AppInspectionStatusDto>>> getPremisesAndApplicationCorr(List<String> corrIds) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
