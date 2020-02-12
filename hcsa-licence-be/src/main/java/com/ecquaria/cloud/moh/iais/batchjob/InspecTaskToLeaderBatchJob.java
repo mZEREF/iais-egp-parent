@@ -71,14 +71,12 @@ public class InspecTaskToLeaderBatchJob {
      */
     public void inspTaskToLeaderJob(BaseProcessClass bpc){
         logAbout("inspTaskToLeaderJob");
-        List<String> corrIds = new ArrayList<>();
         List<TaskDto> taskDtoList = organizationClient.getTaskForCompLeader().getEntity();
-        if(!IaisCommonUtils.isEmpty(taskDtoList)){
-            for(TaskDto tDto : taskDtoList){
-                corrIds.add(tDto.getRefNo());
-            }
+        if (IaisCommonUtils.isEmpty(taskDtoList)) {
+            return;
         }
-        Map<String, List<AppInspectionStatusDto>> map = appInspectionStatusClient.getPremisesAndApplicationCorr(corrIds).getEntity();
+
+        Map<String, List<AppInspectionStatusDto>> map = appInspectionStatusClient.getPremisesAndApplicationCorr(taskDtoList).getEntity();
         if(map != null){
             createTaskByMap(map);
         } else {
@@ -94,11 +92,11 @@ public class InspecTaskToLeaderBatchJob {
                 int leadTask = 0;
                 int allApp = appInspectionStatusDtos.size();
                 for(AppInspectionStatusDto appInsStatusDto : appInspectionStatusDtos){
-                    if(appInsStatusDto.getStatus().equals(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER)){
+                    if(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER.equals(appInsStatusDto.getStatus())){
                         leadTask = leadTask + 1;
-                    } else if(appInsStatusDto.getStatus().equals(InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT) ||
-                              appInsStatusDto.getStatus().equals(InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT) ||
-                              appInsStatusDto.getStatus().equals(InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT)) {
+                    } else if(InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT.equals(appInsStatusDto.getStatus()) ||
+                              InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT.equals(appInsStatusDto.getStatus()) ||
+                              InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(appInsStatusDto.getStatus())) {
                         report = report + 1;
                     }
                 }
