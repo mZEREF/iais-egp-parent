@@ -117,7 +117,7 @@ public class InspecTaskToLeaderBatchJob {
                 if (appInspStatusDto == null) {
                     continue;
                 }
-                if(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER.equals(appInsStatusDto.getStatus())){
+                if(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER.equals(appInspStatusDto.getStatus())){
                     appInsStatusDto = appInspStatusDto;
                     appInspStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_REVIEW_CHECKLIST_EMAIL);
                     appInspStatusDto.setAuditTrailDto(intranet);
