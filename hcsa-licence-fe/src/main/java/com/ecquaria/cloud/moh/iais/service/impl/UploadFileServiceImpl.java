@@ -370,7 +370,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     }
 
 
-    public static   List<ApplicationListFileDto> parse(String str){
+    public static List<ApplicationListFileDto> parse(String str){
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = applicationListDto.getAppPremPhOpenPeriods();
         List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
@@ -442,109 +442,105 @@ public class UploadFileServiceImpl implements UploadFileService {
             String groupId = every.getId();
             for(AppGrpPremisesEntityDto appliGrpPremisesDto:appGrpPremises){
                 String grpPremisesDtoAppGrpId = appliGrpPremisesDto.getAppGrpId();
-                String appliGrpPremisesDtoId = appliGrpPremisesDto.getId();
                 if(groupId.equals(grpPremisesDtoAppGrpId)){
                     appliGrpPremisesDtoSet.add(appliGrpPremisesDto);
                     appGrpIds.add(appliGrpPremisesDto.getId());
-                }
-                for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto :appPremPhOpenPeriodDtos){
-                    String premId = appPremPhOpenPeriodDto.getPremId();
-                    if(appliGrpPremisesDtoId.equals(premId)){
-                        appPremPhOpenPeriodDtoSet.add(appPremPhOpenPeriodDto);
-                    }
+                    String appliGrpPremisesDtoId = appliGrpPremisesDto.getId();
+                    for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto :appPremPhOpenPeriodDtos){
+                        String premId = appPremPhOpenPeriodDto.getPremId();
+                        if(appliGrpPremisesDtoId.equals(premId)){
+                            appPremPhOpenPeriodDtoSet.add(appPremPhOpenPeriodDto);
+                        }
 
+                    }
                 }
             }
             for (AppGrpPersonnelDto appGrpPersonnelDto:appGrpPersonnel){
                 String appGrpId = appGrpPersonnelDto.getAppGrpId();
-                String appGrpPersonnelDtoId = appGrpPersonnelDto.getId();
                 if(groupId.equals(appGrpId)){
                     appGrpPersonnelDtoSet.add(appGrpPersonnelDto);
+                    String appGrpPersonnelDtoId = appGrpPersonnelDto.getId();
                     appGrpPersonIds.add(appGrpPersonnelDtoId);
+                    for(AppGrpPersonnelExtDto appGrpPersonnelExtDto: appGrpPersonnelExt){
+                        String appGrpPsnId = appGrpPersonnelExtDto.getAppGrpPsnId();
+                        if(appGrpPersonnelDtoId.equals(appGrpPsnId)){
+                            appGrpPersonnelExtDtoSet.add(appGrpPersonnelExtDto);
+                            appGrpPersonExtIds.add(appGrpPersonnelExtDto.getId());
+                        }
 
-                }
-                for(AppGrpPersonnelExtDto appGrpPersonnelExtDto: appGrpPersonnelExt){
-                    String appGrpPsnId = appGrpPersonnelExtDto.getAppGrpPsnId();
-                    if(appGrpPersonnelDtoId.equals(appGrpPsnId)){
-                        appGrpPersonnelExtDtoSet.add(appGrpPersonnelExtDto);
-                        appGrpPersonExtIds.add(appGrpPersonnelExtDto.getId());
                     }
-
                 }
+
             }
             for(ApplicationDto applicationDto:application){
                 String applicationDtoId = applicationDto.getId();
                 String appGrpId = applicationDto.getAppGrpId();
                 if(groupId.equals(appGrpId)){
                     applicationDtoSet.add(applicationDto);
+                    for(AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelation){
+                        String applicationId = appPremisesCorrelationDto.getApplicationId();
+                        String appGrpPremId = appPremisesCorrelationDto.getAppGrpPremId();
+                        String premisesCorrelationDtoId = appPremisesCorrelationDto.getId();
 
-                }
-                for(AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelation){
-                    String applicationId = appPremisesCorrelationDto.getApplicationId();
-                    String appGrpPremId = appPremisesCorrelationDto.getAppGrpPremId();
-                    String premisesCorrelationDtoId = appPremisesCorrelationDto.getId();
+                        if(applicationDtoId.equals(applicationId) && appGrpIds.contains(appGrpPremId)){
+                            appPremisesCorrelationDtoSet.add(appPremisesCorrelationDto);
+                            for (AppSvcPremisesScopeDto appSvcPremisesScopeDto:appSvcPremisesScope){
+                                String appPremCorreId = appSvcPremisesScopeDto.getAppPremCorreId();
 
-                    if(applicationDtoId.equals(applicationId)&& appGrpIds.contains(appGrpPremId)){
-                        appPremisesCorrelationDtoSet.add(appPremisesCorrelationDto);
+                                if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                    appSvcPremisesScopeDtoSet.add(appSvcPremisesScopeDto);
+                                    appSvcPremisesScopeIds.add(appSvcPremisesScopeDto.getId());
+                                }
+
+                            }
+
+                            for (AppPremisesSelfDeclChklDto appPremisesSelfDeclChklDto :appPremisesSelfDeclChklEntity){
+                                String appPremCorreId = appPremisesSelfDeclChklDto.getAppPremCorreId();
+                                if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                    appPremisesSelfDeclChklDtoSet.add(appPremisesSelfDeclChklDto);
+
+                                }
+                            }
+
+                            for(AppSvcDocDto appSvcDocDto:appSvcDoc){
+                                String appPremCorreId = appSvcDocDto.getAppPremCorreId();
+                                if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                    appSvcDocDtoSet.add(appSvcDocDto);
+                                }
+
+                            }
+                        }
                     }
 
-                    for (AppSvcPremisesScopeDto appSvcPremisesScopeDto:appSvcPremisesScope){
-                        String appPremCorreId = appSvcPremisesScopeDto.getAppPremCorreId();
-
-                        if(premisesCorrelationDtoId.equals(appPremCorreId)){
-                            appSvcPremisesScopeDtoSet.add(appSvcPremisesScopeDto);
-                            appSvcPremisesScopeIds.add(appSvcPremisesScopeDto.getId());
+                    for(AppSvcKeyPersonnelDto appSvcKeyPersonnelDto:appSvcKeyPersonnel){
+                        String applicationId = appSvcKeyPersonnelDto.getApplicationId();
+                        String appGrpPsnId = appSvcKeyPersonnelDto.getAppGrpPsnId();
+                        if(applicationDtoId.equals(applicationId) &&appGrpPersonIds.contains(appGrpPsnId)){
+                            appSvcKeyPersonnelDtoSet.add(appSvcKeyPersonnelDto);
+                            appSvcKeyPersonIds.add(appSvcKeyPersonnelDto.getId());
                         }
 
                     }
-
-                    for (AppPremisesSelfDeclChklDto appPremisesSelfDeclChklDto :appPremisesSelfDeclChklEntity){
-                        String appPremCorreId = appPremisesSelfDeclChklDto.getAppPremCorreId();
-                        if(premisesCorrelationDtoId.equals(appPremCorreId)){
-                            appPremisesSelfDeclChklDtoSet.add(appPremisesSelfDeclChklDto);
+                    for(AppSvcPremisesScopeAllocationDto appSvcPremisesScopeAllocationDto:appSvcPremisesScopeAllocation){
+                        String applicationId = appSvcPremisesScopeAllocationDto.getApplicationId();
+                        String appSvcKeyPsnId = appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId();
+                        String appSvcPremScopeId = appSvcPremisesScopeAllocationDto.getAppSvcPremScopeId();
+                        if(applicationDtoId.equals(applicationId)&&appSvcKeyPersonIds.contains(appSvcKeyPsnId)
+                                &&appSvcPremisesScopeIds.contains(appSvcPremScopeId)){
+                            appSvcPremisesScopeAllocationDtoSet.add(appSvcPremisesScopeAllocationDto);
 
                         }
                     }
+                    for(AppSvcPersonnelDto appSvcPersonnelDto:appSvcPersonnel){
+                        String applicationId = appSvcPersonnelDto.getApplicationId();
+                        if(applicationDtoId.equals(applicationId)){
+                            appSvcPersonnelDtoSet.add(appSvcPersonnelDto);
 
-                    for(AppSvcDocDto appSvcDocDto:appSvcDoc){
-                        String appPremCorreId = appSvcDocDto.getAppPremCorreId();
-                        if(premisesCorrelationDtoId.equals(appPremCorreId)){
-                            appSvcDocDtoSet.add(appSvcDocDto);
                         }
-
-                    }
-                }
-
-                for(AppSvcKeyPersonnelDto appSvcKeyPersonnelDto:appSvcKeyPersonnel){
-                    String applicationId = appSvcKeyPersonnelDto.getApplicationId();
-                    String appGrpPsnId = appSvcKeyPersonnelDto.getAppGrpPsnId();
-                    if(applicationDtoId.equals(applicationId) &&appGrpPersonIds.contains(appGrpPsnId)){
-                        appSvcKeyPersonnelDtoSet.add(appSvcKeyPersonnelDto);
-                        appSvcKeyPersonIds.add(appSvcKeyPersonnelDto.getId());
-                    }
-
-                }
-                for(AppSvcPremisesScopeAllocationDto appSvcPremisesScopeAllocationDto:appSvcPremisesScopeAllocation){
-                    String applicationId = appSvcPremisesScopeAllocationDto.getApplicationId();
-                    String appSvcKeyPsnId = appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId();
-                    String appSvcPremScopeId = appSvcPremisesScopeAllocationDto.getAppSvcPremScopeId();
-                    if(applicationDtoId.equals(applicationId)&&appSvcKeyPersonIds.contains(appSvcKeyPsnId)
-                            &&appSvcPremisesScopeIds.contains(appSvcPremScopeId)){
-                        appSvcPremisesScopeAllocationDtoSet.add(appSvcPremisesScopeAllocationDto);
-
-                    }
-                }
-                for(AppSvcPersonnelDto appSvcPersonnelDto:appSvcPersonnel){
-                    String applicationId = appSvcPersonnelDto.getApplicationId();
-                    if(applicationDtoId.equals(applicationId)){
-                        appSvcPersonnelDtoSet.add(appSvcPersonnelDto);
-
                     }
                 }
 
             }
-
-
 
             for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDoc){
                 String appGrpId = appGrpPrimaryDocDto.getAppGrpId();
@@ -588,6 +584,10 @@ public class UploadFileServiceImpl implements UploadFileService {
             applicationListFileDtoList.add(applicationListFileDto);
         }
         return applicationListFileDtoList;
+
+    }
+
+    private static void parseApplication() {
 
     }
 }
