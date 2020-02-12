@@ -71,11 +71,8 @@ public class InspecTaskToLeaderBatchJob {
      */
     public void inspTaskToLeaderJob(BaseProcessClass bpc){
         logAbout("inspTaskToLeaderJob");
-        List<String> processUrl = new ArrayList<>();
         List<String> corrIds = new ArrayList<>();
-        processUrl.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_NCEMAIL);
-        processUrl.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
-        List<TaskDto> taskDtoList = organizationClient.getTaskByProcessUrl(processUrl).getEntity();
+        List<TaskDto> taskDtoList = organizationClient.getTaskByProcessUrl().getEntity();
         if(!IaisCommonUtils.isEmpty(taskDtoList)){
             for(TaskDto tDto : taskDtoList){
                 corrIds.add(tDto.getRefNo());
