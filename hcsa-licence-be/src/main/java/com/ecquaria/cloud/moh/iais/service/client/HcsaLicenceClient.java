@@ -1,7 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
@@ -77,7 +75,5 @@ public interface HcsaLicenceClient {
     @RequestMapping(path = "/lic-eic-request-tracking",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicEicRequestTrackingDto> updateLicEicRequestTracking(@RequestBody LicEicRequestTrackingDto licEicRequestTrackingDto);
 
-    @GetMapping(value = "/search-licenseeIds-param")
-    FeignResponseEntity<SearchResult<String>> searchLicenseeIdsParam(@RequestBody SearchParam searchParam);
 
     }

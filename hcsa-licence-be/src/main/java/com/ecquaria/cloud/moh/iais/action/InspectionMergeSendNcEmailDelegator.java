@@ -101,9 +101,12 @@ public class InspectionMergeSendNcEmailDelegator {
 //        if(StringUtil.isEmpty(taskId)){
 //            taskId= "6E5A002D-9437-EA11-BE7E-000C29F371DC";
 //        }
-        TaskDto taskDto = taskService.getTaskById(taskId);
-        if(StringUtil.isEmpty(taskDto)){
+        TaskDto taskDto ;
+        if(StringUtil.isEmpty(taskId)){
             taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
+        }
+        else {
+            taskDto= taskService.getTaskById(taskId);
         }
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);

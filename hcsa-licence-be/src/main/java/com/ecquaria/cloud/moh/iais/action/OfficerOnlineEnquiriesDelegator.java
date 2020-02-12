@@ -73,7 +73,7 @@ public class OfficerOnlineEnquiriesDelegator {
             .clz(String.class)
             .searchAttr("licenseeParam")
             .resultAttr("licenseeResult")
-            .sortField("id").sortType(SearchParam.ASCENDING).pageNo(0).pageSize(10).build();
+            .sortType(SearchParam.ASCENDING).pageNo(0).pageSize(10).build();
 
     FilterParameter serviceParameter = new FilterParameter.Builder()
             .clz(String.class)
@@ -116,27 +116,39 @@ public class OfficerOnlineEnquiriesDelegator {
             count=5;
         }
         Map<String,Object> filter=new HashMap<>();
-        switch (count){
-            case 1:filter.put("appNo", searchNo);break;
-            case 2:filter.put("licence_no", searchNo);break;
-            case 3:filter.put("hciName", searchNo);break;
-            case 4:filter.put("svcName", searchNo);break;
-            case 5:filter.put("name", searchNo);break;
-            default:break;
+        if(searchNo!=null) {
+            switch (count) {
+                case 1:
+                    filter.put("appNo", searchNo);
+                    break;
+                case 2:
+                    filter.put("licence_no", searchNo);
+                    break;
+                case 3:
+                    filter.put("hciName", searchNo);
+                    break;
+                case 4:
+                    filter.put("svcName", searchNo);
+                    break;
+                case 5:
+                    filter.put("name", searchNo);
+                    break;
+                default:
+                    break;
+            }
         }
-
         licenseeParameter.setFilters(filter);
         SearchParam licenseeParam = SearchResultHelper.getSearchParam(request, licenseeParameter,true);
         QueryHelp.setMainSql(RFI_QUERY,"licenseeQuery",licenseeParam);
-        if (licenseeParam != null) {
+        if (!licenseeParam.getFilters().isEmpty()) {
             SearchResult<String> licenseeParamResult = onlineEnquiriesService.searchLicenseeIdsParam(licenseeParam);
             filter.put("licenseeIds",licenseeParamResult.getRows());
         }
 
-        licenseeParameter.setFilters(filter);
+        serviceParameter.setFilters(filter);
         SearchParam serviceParam = SearchResultHelper.getSearchParam(request, serviceParameter,true);
         QueryHelp.setMainSql(RFI_QUERY,"serviceQuery",serviceParam);
-        if (serviceParam != null) {
+        if (!serviceParam.getFilters().isEmpty()) {
             SearchResult<String> serviceParamResult = onlineEnquiriesService.searchSvcNamesParam(serviceParam);
             filter.put("svc_names",serviceParamResult);
         }

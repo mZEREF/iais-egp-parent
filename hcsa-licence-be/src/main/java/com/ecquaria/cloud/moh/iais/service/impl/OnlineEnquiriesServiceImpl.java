@@ -4,7 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,11 +21,11 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
-    private HcsaLicenceClient hcsaLicenceClient;
+    private OrganizationClient organizationClient;
 
     @Override
     public SearchResult<String> searchLicenseeIdsParam(SearchParam searchParam) {
-        return hcsaLicenceClient.searchLicenseeIdsParam(searchParam).getEntity();
+        return organizationClient.searchLicenseeIdsParam(searchParam).getEntity();
     }
 
     @Override
