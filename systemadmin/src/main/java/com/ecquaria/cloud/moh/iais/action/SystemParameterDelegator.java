@@ -17,7 +17,6 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SystemParamCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.SystemParameterService;
 import lombok.extern.slf4j.Slf4j;
@@ -129,7 +128,7 @@ public class SystemParameterDelegator {
         ValidationResult validationResult = WebValidationHelper.validateProperty(queryDto, "search");
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMAP, errorMap);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
         }else {
             searchParam.addFilter(SystemParameterConstants.PARAM_DOMAIN_TYPE, domainType, true);
@@ -163,6 +162,8 @@ public class SystemParameterDelegator {
         String module = ParamUtil.getString(request, SystemParameterConstants.PARAM_MODULE);
         String value = ParamUtil.getString(request, SystemParameterConstants.PARAM_VALUE);
         String description = ParamUtil.getString(request, SystemParameterConstants.PARAM_DESCRIPTION);
+        String status = ParamUtil.getString(request, SystemParameterConstants.PARAM_STATUS);
+
 
         SystemParameterDto editDto = (SystemParameterDto) ParamUtil.getSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO);
         editDto.setDomainType(domainType);
@@ -170,6 +171,7 @@ public class SystemParameterDelegator {
         editDto.setModule(module);
         editDto.setValue(value);
         editDto.setDescription(description);
+        editDto.setStatus(status);
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(editDto, "edit");
         if(validationResult != null && validationResult.isHasErrors()){
@@ -182,6 +184,16 @@ public class SystemParameterDelegator {
         }
 
     }
+
+    /**
+     * AutoStep: back
+     * @param bpc
+     */
+    public void back(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+
+    }
+
 
     /**
      * AutoStep: disableStatus

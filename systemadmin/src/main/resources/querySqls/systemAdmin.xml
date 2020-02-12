@@ -63,7 +63,7 @@
                      FROM
                         cm_master_code_category AS cmcc
                      WHERE 1=1
-                        <#if categoryDescription??> AND cmcc.category_description = :categoryDescription</#if>
+                        <#if categoryDescription??> AND cmcc.catequeryMessagegory_description = :categoryDescription</#if>
                 )
             <#if master_code_id??> AND CHARINDEX(:master_code_id, mc.master_code_id) >0</#if>
         ]]>
@@ -73,7 +73,7 @@
         <![CDATA[
             SELECT msg_id, code_key, domain_type, msg_type, module, description, message, status
             FROM CM_MESSAGE
-            WHERE 1=1 AND status != 'N'
+            WHERE 1=1 AND status != 'CMSTAT002'
             <#if domainType??> AND domain_type = :domainType</#if>
             <#if msgType??> AND msg_type = :msgType</#if>
             <#if module??> AND module = :module</#if>

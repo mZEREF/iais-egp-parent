@@ -10,16 +10,13 @@
 %>
 <form id = "messageForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
 
     <br><br>
     <div class="main-content">
         <div class="container">
             <div class="form-horizontal">
                 <div class="form-group">
-                    <label class="col-xs-4 col-md-2 control-label" >Domain Type</label>
+                    <label class="col-xs-4 col-md-2 control-label" >Type</label>
                     <div class="col-xs-5 col-md-3">
                         <iais:select name="domainType" options="domainTypeSelect" firstOption="Please select" value="${msgRequestDto.domainType}" ></iais:select>
                         <span id="error_domainType" name="iaisErrorMsg" class="error-msg"></span>
@@ -27,7 +24,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-xs-4 col-md-2 control-label" >Msg Type</label>
+                    <label class="col-xs-4 col-md-2 control-label" >Message Type</label>
                     <div class="col-xs-5 col-md-3">
                         <iais:select name="msgType" options="msgTypeSelect" firstOption="Please select" value="${msgRequestDto.msgType}" ></iais:select>
                         <span id="error_msgType" name="iaisErrorMsg" class="error-msg"></span>
@@ -58,6 +55,15 @@
                         <span id="error_message" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label class="col-xs-4 col-md-2 control-label" >Status</label>
+                    <div class="col-xs-5 col-md-3">
+                        <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
+                                     firstOption="Select Status" value="${msgRequestDto.status}" filterValue="CMSTAT002"></iais:select>
+                        <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -80,13 +86,13 @@
 <%@include file="/include/validation.jsp"%>
 <script type="text/javascript">
     function doEdit(id){
-        if(confirm('are sure you want to edit ? ')){
+        if(confirm('Are sure you want to edit ? ')){
             SOP.Crud.cfxSubmit("mainForm", "doEdit", id);
         }
     }
 
     function doCancel(){
-        SOP.Crud.cfxSubmit("mainForm","doEdit");
+        SOP.Crud.cfxSubmit("mainForm","doCancel");
     }
 
 </script>
