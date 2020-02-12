@@ -516,7 +516,12 @@ public class BackendInboxDelegator {
                 Date date = new Date(lt);
                 String newdate = newformat.format(date);
                 item.setSubmitDate(newdate);
-                item.setPaymentstatus(MasterCodeUtil.getCodeDesc(item.getPaymentstatus()));
+                if(item.getPaymentstatus() == null || item.getPaymentstatus().isEmpty()){
+                    item.setPaymentstatus("N/A");
+                }else{
+                    item.setPaymentstatus(MasterCodeUtil.getCodeDesc(item.getPaymentstatus()));
+                }
+
                 item.setApplicationType(MasterCodeUtil.getCodeDesc(item.getApplicationType()));
             }
 

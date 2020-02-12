@@ -162,7 +162,7 @@
                                                         <td>
                                                             <p class="visible-xs visible-sm table-row-title">Payment
                                                                 Status</p>
-                                                            <p><c:out value="${pool.paymentstatus}"/>Status</p>
+                                                            <p><c:out value="${pool.paymentstatus}"/></p>
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
