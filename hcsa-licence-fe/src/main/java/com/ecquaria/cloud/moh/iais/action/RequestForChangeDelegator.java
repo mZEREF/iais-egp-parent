@@ -97,7 +97,8 @@ public class RequestForChangeDelegator {
         if(flag){
             if(AppConsts.NO.equals(amendType)){
                 //....
-                flag = false;
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "doTranfer");
+                flag = true;
             }else if(AppConsts.YES.equals(amendType)){
                 String [] amendLicenceType = ParamUtil.getStrings(bpc.request, "amend-licence-type");
                 if(amendLicenceType != null && amendLicenceType.length > 0){
