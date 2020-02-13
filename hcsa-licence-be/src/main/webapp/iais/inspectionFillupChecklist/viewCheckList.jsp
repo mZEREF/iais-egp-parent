@@ -52,7 +52,7 @@
                                     <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.generalNc}"/>
                                     <h3>General</h3>
                                     <div class="table-gp">
-                                        <c:forEach var ="section" items ="${commonDto.sectionDtoList}">
+                                        <c:forEach var ="section" items ="${commonDto.sectionDtoList}" varStatus="one">
                                             <br/>
                                             <h4><c:out value="${section.sectionName}"></c:out></h4>
                                             <table class="table">
@@ -66,10 +66,11 @@
                                                     <th>N/A</th>
                                                     <th>Remark</th>
                                                     <th>Rectified</th>
+                                                    <th></th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
+                                                <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="two">
                                                     <tr>
                                                         <td class="row_no">${(status.index + 1) }</td>
                                                         <td>${item.incqDto.regClauseNo}</td>
@@ -88,6 +89,15 @@
                                                             <c:set value = "error_${item.incqDto.sectionNameSub}${item.incqDto.itemId}com" var = "err"/>
                                                             <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                         </td>
+                                                        <td>
+                                                        <c:set var="fir" value="${one.index}"></c:set>
+                                                        <c:set var="sec" value="${two.index}"></c:set>
+                                                            <c:forEach var="oldcom" items="${allComChkDtoList}">
+                                                                <wrms:value width="7">
+                                                                    <span class="oldVal compareTdStyle" attr="${oldcom.sectionDtoList[fir].itemDtoList[sec].incqDto.chkanswer}"><label><c:out value="${oldcom.sectionDtoList[fir].itemDtoList[sec].incqDto.chkanswer}"/></label></span>
+                                                                </wrms:value>
+                                                            </c:forEach>
+                                                        </td>
                                                     </tr>
                                                 </c:forEach>
                                                 </tbody>
@@ -98,10 +108,10 @@
                                 <div class="tab-pane" id="ServiceInfo" role="tabpanel">
                                     <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.serviceDo}"/>/<c:out value="${serListDto.serviceTotal}"/><br>
                                     <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.serviceNc}"/>
-                                    <c:forEach var ="cdto" items ="${serListDto.fdtoList}" varStatus="status">
+                                    <c:forEach var ="cdto" items ="${serListDto.fdtoList}" varStatus="one">
                                         <h3>${cdto.subType}</h3>
                                         <div class="table-gp">
-                                            <c:forEach var ="section" items ="${cdto.sectionDtoList}">
+                                            <c:forEach var ="section" items ="${cdto.sectionDtoList}" varStatus="two">
                                                 <br/>
                                                 <h4><c:out value="${section.sectionName}"></c:out></h4>
                                                 <table class="table">
@@ -115,6 +125,7 @@
                                                         <th>N/A</th>
                                                         <th>Remark</th>
                                                         <th>Rectified</th>
+                                                        <th></th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -136,6 +147,17 @@
                                                                 </div>
                                                                 <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameSub}${item.incqDto.itemId}" var = "err"/>
                                                                 <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+                                                            </td>
+                                                            <td>
+                                                                <c:set var="fir" value="${one.index}"></c:set>
+                                                                <c:set var="sec" value="${two.index}"></c:set>
+                                                                <c:set var="thr" value="${status.index}"></c:set>
+                                                                <c:forEach var="oldser" items="${otherVersionfdtos}">
+                                                                    <wrms:value width="7">
+                                                                        <span class="oldVal compareTdStyle" attr="${oldser.fdtoList[fir].sectionDtoList[sec].itemDtoList[thr].incqDto.chkanswer}"><label><c:out value="${oldser.fdtoList[fir].sectionDtoList[sec].itemDtoList[thr].incqDto.chkanswer}"/></label></span>
+                                                                    </wrms:value>
+                                                                </c:forEach>
+
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
@@ -162,6 +184,7 @@
                                                 <th>N/A</th>
                                                 <th>Remark</th>
                                                 <th>Rectified</th>
+                                                <th></th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -184,6 +207,14 @@
                                                         </div>
                                                         <c:set value = "error_${item.id}adhoc" var = "err"/>
                                                         <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+                                                    </td>
+                                                    <td>
+                                                        <c:set var="fir" value="${status.index}"></c:set>
+                                                        <c:forEach var="adhocdraft" items="${otherVersionAdhocDraftList}">
+                                                            <wrms:value width="7">
+                                                                <span class="oldVal compareTdStyle" attr="${adhocdraft.adItemList[fir].adAnswer}"><label><c:out value="${adhocdraft.adItemList[fir].adAnswer}"/></label></span>
+                                                            </wrms:value>
+                                                        </c:forEach>
                                                     </td>
                                                 </tr>
                                             </c:forEach>

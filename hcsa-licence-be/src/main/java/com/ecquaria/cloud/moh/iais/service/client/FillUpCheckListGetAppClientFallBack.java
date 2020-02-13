@@ -201,4 +201,20 @@ public class FillUpCheckListGetAppClientFallBack implements  FillUpCheckListGetA
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<AppPremisesPreInspectChklDto>> getPremInsChklforDraftList(String appPremId, String configId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppPremisesPreInspectChklDto>> getPremInsChklListByPremIdAndVersion(String appPremId, String version) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

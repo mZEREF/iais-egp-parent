@@ -69,6 +69,11 @@ public interface FillUpCheckListGetAppClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppPremisesPreInspectChklDto> getAppPremInspeChlkByAppCorrIdAndConfigId(@PathVariable(value ="appPremId" ) String appPremId,@PathVariable(value ="configId" ) String configId);
 
+    @GetMapping(path = "/iais-apppreinschkl-be/AppPremisslistforDraftChklId/{appPremId}/{configId}",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<AppPremisesPreInspectChklDto>> getPremInsChklforDraftList(@PathVariable(value ="appPremId" ) String appPremId,@PathVariable(value ="configId" ) String configId);
+
+
     @GetMapping(path = "/iais-apppreinsnc-be/AppPremNcByAppCorrId{appCorrId}",produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppPremPreInspectionNcDto> getAppNcByAppCorrId(@PathVariable(value ="appCorrId" ) String appCorrId);
@@ -114,6 +119,9 @@ public interface FillUpCheckListGetAppClient {
 
     @GetMapping(path = "iais-apppreinschkl-be/AppPremissChklByapppremid/{appPremId}",produces = { MediaType.APPLICATION_JSON_VALUE })
     FeignResponseEntity<List<AppPremisesPreInspectChklDto>> getPremInsChklList(@PathVariable("appPremId") String appPremId);
+
+    @GetMapping(path = "iais-apppreinschkl-be/AppPremissChklByapppremidandversion/{appPremId}/{version}",produces = { MediaType.APPLICATION_JSON_VALUE })
+    FeignResponseEntity<List<AppPremisesPreInspectChklDto>> getPremInsChklListByPremIdAndVersion(@PathVariable("appPremId") String appPremId,@PathVariable("version") String version);
 
     @GetMapping(path = "iais-apppreinschkl-be/AppPremissChklfordraftByapppremid/{appPremId}",produces = { MediaType.APPLICATION_JSON_VALUE })
     FeignResponseEntity<List<AppPremisesPreInspectChklDto>> getPremInsChklListFOrDraft(@PathVariable("appPremId") String appPremId);

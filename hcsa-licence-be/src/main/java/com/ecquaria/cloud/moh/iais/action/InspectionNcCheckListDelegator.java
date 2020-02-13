@@ -34,6 +34,7 @@ import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -100,8 +101,22 @@ public class InspectionNcCheckListDelegator {
         String serviceType = "Inspection";
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appPremCorrId = taskDto.getRefNo();
-        CheckListDraftDto checkListDraftDto = fillupChklistService.getDraftByTaskId(taskId,serviceType);
+        //fillupChklistService.getDraftByTaskId(taskId,serviceType);
+        //fillupChklistService.getAllAppChklDraftList(appPremCorrId);
+        CheckListDraftDto checkListDraftDto = null;
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
+        //draft start
+        InspectionFillCheckListDto maxComChkDto = fillupChklistService.getMaxVersionComAppChklDraft(appPremCorrId);
+        List<InspectionFillCheckListDto> allComChkDtoList = fillupChklistService.getAllVersionComAppChklDraft(appPremCorrId);
+        List<InspectionFDtosDto> fdtosdraft= fillupChklistService.geAllVersionServiceDraftList(appPremCorrId);
+        InspectionFDtosDto maxVersionfdtos = fillupChklistService.getMaxVersionServiceDraft(fdtosdraft);
+        List<InspectionFDtosDto> otherVersionfdtos = fillupChklistService.getOtherVersionfdtos(fdtosdraft);
+        List<AdCheckListShowDto> otherVersionAdhocDraftList = fillupChklistService.getOtherAdhocList(appPremCorrId);
+        ParamUtil.setSessionAttr(request,"otherVersionAdhocDraftList",(Serializable) otherVersionAdhocDraftList);
+        ParamUtil.setSessionAttr(request,"otherVersionfdtos",(Serializable) otherVersionfdtos);
+        ParamUtil.setSessionAttr(request,"allComChkDtoList",(Serializable)allComChkDtoList);
+        ParamUtil.setSessionAttr(request,"maxComChkDto", maxComChkDto);
+        //draft end
         InspectionFillCheckListDto commonDto = null;
         List<InspectionFillCheckListDto> cDtoList = null;
         InspectionFDtosDto serListDto = new InspectionFDtosDto();
@@ -134,7 +149,17 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setSessionAttr(request,TASKDTO,taskDto);
         ParamUtil.setSessionAttr(request,APPLICATIONVIEWDTO,appViewDto);
         ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
+        if(maxComChkDto!=null){
+            List<InspectionFillCheckListDto> coms = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
+            if(!IaisCommonUtils.isEmpty(coms)){
+                commonDto = coms.get(0);
+            }
+        }
         ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
+        if(!IaisCommonUtils.isEmpty(maxVersionfdtos.getFdtoList())){
+            List<InspectionFillCheckListDto> ftos = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
+            serListDto.setFdtoList(ftos);
+        }
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
 
     }
@@ -204,7 +229,7 @@ public class InspectionNcCheckListDelegator {
                 }
                 ParamUtil.setSessionAttr(request,"adchklDto",showPageDto);
                 LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-                fillupChklistService.routingTask(taskDto,null,loginContext,flag);
+                //fillupChklistService.routingTask(taskDto,null,loginContext,flag);
             }
        }
 

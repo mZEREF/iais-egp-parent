@@ -58,6 +58,7 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.esotericsoftware.minlog.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -1075,5 +1076,217 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         serListDto.setServiceDo(doNum);
         serListDto.setServiceTotal(totalNum);
         serListDto.setServiceNc(ncNum);
+    }
+
+    @Override
+    public InspectionFillCheckListDto getMaxVersionComAppChklDraft(String appPremCorrId) {
+        List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklListFOrDraft(appPremCorrId).getEntity();
+        InspectionFillCheckListDto maxVersionAppDto = getComAppChklDraft(appPremCorrId);
+        InspectionFillCheckListDto comDto = null;
+        AppPremInsDraftDto draftDto = null;
+        if(!IaisCommonUtils.isEmpty(chkList)){
+            for(AppPremisesPreInspectChklDto temp:chkList){
+                if(temp.getChkLstConfId().equals(maxVersionAppDto.getConfigId())){
+                    draftDto = fillUpCheckListGetAppClient.getAppInsDraftByChkId(temp.getId()).getEntity();
+                    if(draftDto!=null){
+                        comDto = JsonUtil.parseToObject(draftDto.getAnswer(),InspectionFillCheckListDto.class);
+                    }
+                }
+            }
+        }
+        return comDto;
+    }
+
+    @Override
+    public List<InspectionFillCheckListDto> getAllVersionComAppChklDraft(String appPremCorrId) {
+        List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklList(appPremCorrId).getEntity();
+        List<InspectionFillCheckListDto> fillChkDtoList = getServiceChkDtoListByAppPremId(chkList,appPremCorrId,"common");
+        List<InspectionFillCheckListDto> otherVersionCommList = new ArrayList<>();
+        if(!IaisCommonUtils.isEmpty(fillChkDtoList)){
+            InspectionFillCheckListDto maxVersionChklList = fillChkDtoList.get(0);
+            otherVersionCommList = getOtherVersionCommList(chkList,maxVersionChklList,appPremCorrId);
+
+        }
+        return otherVersionCommList;
+    }
+
+    private List<InspectionFillCheckListDto> getOtherVersionCommList(List<AppPremisesPreInspectChklDto> chkList,InspectionFillCheckListDto maxVersionChkl, String appPremCorrId) {
+        List<InspectionFillCheckListDto> otherVersionChkList = new ArrayList<>();
+
+        if(!IaisCommonUtils.isEmpty(chkList)){
+            String maxVersion = chkList.get(0).getVersion();
+            String comFigId = maxVersionChkl.getConfigId();
+            try {
+                int versionNum = Integer.parseInt(maxVersion);
+                for(int i = versionNum-2;i>0;i--){
+                    List<AppPremisesPreInspectChklDto> versionCkList =  fillUpCheckListGetAppClient.getPremInsChklListByPremIdAndVersion(appPremCorrId,versionNum+"").getEntity();
+                    List<InspectionFillCheckListDto> otherverList = getOtherVersionChkList(versionCkList,comFigId);
+                    if(!IaisCommonUtils.isEmpty(otherverList)){
+                        otherVersionChkList.add(otherverList.get(0));
+                    }
+                }
+            }catch (Exception e){
+                log.info("Integer formatter error");
+            }
+        }
+        return otherVersionChkList;
+    }
+
+    private List<InspectionFillCheckListDto> getOtherVersionChkList(List<AppPremisesPreInspectChklDto> versionCkList, String comConfigId) {
+        InspectionFDtosDto fDtosDto = new InspectionFDtosDto();
+        InspectionFillCheckListDto comDto = null;
+        AppPremInsDraftDto draftDto = null;
+        List<InspectionFillCheckListDto> comDtoList = new ArrayList<>();
+        if(!IaisCommonUtils.isEmpty(versionCkList)){
+            for(AppPremisesPreInspectChklDto temp:versionCkList){
+                if(temp.getChkLstConfId().equals(comConfigId)){
+                    draftDto = fillUpCheckListGetAppClient.getAppInsDraftByChkId(temp.getId()).getEntity();
+                    if(draftDto!=null){
+                        comDto = JsonUtil.parseToObject(draftDto.getAnswer(),InspectionFillCheckListDto.class);
+                        comDtoList.add(comDto);
+                    }
+                }
+            }
+        }
+        return comDtoList;
+    }
+
+    private List<InspectionFillCheckListDto> getAllVersionDraftList(String configId, List<AppPremisesPreInspectChklDto> chkList) {
+        InspectionFillCheckListDto comDto = null;
+        AppPremInsDraftDto draftDto = null;
+        List<InspectionFillCheckListDto> comDtoList = new ArrayList<>();
+        for(AppPremisesPreInspectChklDto temp: chkList){
+            if(temp.getChkLstConfId().equals(configId)){
+                draftDto = fillUpCheckListGetAppClient.getAppInsDraftByChkId(temp.getId()).getEntity();
+                if(draftDto!=null){
+                    comDto = JsonUtil.parseToObject(draftDto.getAnswer(),InspectionFillCheckListDto.class);
+                    comDtoList.add(comDto);
+                }
+            }
+        }
+        return comDtoList;
+    }
+
+    public InspectionFillCheckListDto getComAppChklDraft(String appPremCorrId){
+        List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklList(appPremCorrId).getEntity();
+        if(chkList!=null && !chkList.isEmpty()){
+            List<InspectionFillCheckListDto> fillChkDtoList = getServiceChkDtoListByAppPremId(chkList,appPremCorrId,"common");
+            if(!IaisCommonUtils.isEmpty(fillChkDtoList)){
+               return  fillChkDtoList.get(0);
+            }
+        }
+        return null;
+    }
+
+    public InspectionFDtosDto getMaxVersionServiceList(String appPremCorrId){
+        InspectionFDtosDto fdto = null;
+        List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklList(appPremCorrId).getEntity();
+        List<InspectionFillCheckListDto> fillChkDtoList = null;
+        if(chkList!=null && !chkList.isEmpty()){
+            fillChkDtoList = getServiceChkDtoListByAppPremId(chkList,appPremCorrId,"service");
+            if(!IaisCommonUtils.isEmpty(fillChkDtoList)){
+                fdto = getFdtoDraft(fillChkDtoList,chkList,appPremCorrId);
+            }
+        }
+        return fdto;
+    }
+
+    private InspectionFDtosDto getFdtoDraft(List<InspectionFillCheckListDto> fillChkDtoList, List<AppPremisesPreInspectChklDto> chkList,String appPremCorrId) {
+        InspectionFDtosDto fdto = new InspectionFDtosDto();
+        InspectionFillCheckListDto comDto = null;
+        List<InspectionFillCheckListDto> comDtoList = new ArrayList<>();
+        AppPremInsDraftDto draftDto = null;
+        for(InspectionFillCheckListDto temp:fillChkDtoList){
+            AppPremisesPreInspectChklDto appchklDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(temp.getConfigId(),appPremCorrId).getEntity();
+            draftDto = fillUpCheckListGetAppClient.getAppInsDraftByChkId(appchklDto.getId()).getEntity();
+            if(draftDto!=null){
+                comDto = JsonUtil.parseToObject(draftDto.getAnswer(),InspectionFillCheckListDto.class);
+                comDtoList.add(comDto);
+            }
+        }
+        fdto.setFdtoList(comDtoList);
+        return fdto;
+    }
+
+    @Override
+    public List<InspectionFDtosDto> geAllVersionServiceDraftList(String appPremCorrId){
+        List<InspectionFDtosDto> fdtoList = new ArrayList<>();
+        List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklList(appPremCorrId).getEntity();
+        List<InspectionFillCheckListDto> fillChkDtoList = null;
+        if(chkList!=null && !chkList.isEmpty()){
+            fillChkDtoList = getServiceChkDtoListByAppPremId(chkList,appPremCorrId,"service");
+            if(!IaisCommonUtils.isEmpty(fillChkDtoList)){
+                fdtoList = getAllVersionfdtoList(fillChkDtoList,chkList,appPremCorrId);
+            }
+        }
+        return fdtoList;
+    }
+
+    private List<InspectionFDtosDto> getAllVersionfdtoList(List<InspectionFillCheckListDto> fillChkDtoList, List<AppPremisesPreInspectChklDto> chkList,String appPremCorrId) {
+        String version = chkList.get(0).getVersion();
+        List<InspectionFDtosDto> fdtoList = new ArrayList<>();
+        InspectionFDtosDto fdto= null;
+        List<InspectionFillCheckListDto> comList = getServiceChkDtoListByAppPremId(chkList,appPremCorrId,"common");
+        String comfigId = null;
+        if(!IaisCommonUtils.isEmpty(fillChkDtoList)){
+            comfigId = comList.get(0).getConfigId();
+        }
+        try {
+            int versionNum = Integer.parseInt(version);
+            if(versionNum>0){
+                for(int i=versionNum;i>0;i--){
+                    List<AppPremisesPreInspectChklDto> versionCkList =  fillUpCheckListGetAppClient.getPremInsChklListByPremIdAndVersion(appPremCorrId,versionNum+"").getEntity();
+                    fdto = getadhocByVersionCkList(versionCkList,comfigId);
+                    fdtoList.add(fdto);
+                }
+            }
+        }catch (Exception e){
+            Log.debug(e.toString());
+        }
+        return fdtoList;
+    }
+
+    private InspectionFDtosDto getadhocByVersionCkList(List<AppPremisesPreInspectChklDto> versionCkList,String comConfigId) {
+        InspectionFDtosDto fDtosDto = new InspectionFDtosDto();
+        InspectionFillCheckListDto comDto = null;
+        AppPremInsDraftDto draftDto = null;
+        List<InspectionFillCheckListDto> comDtoList = new ArrayList<>();
+        if(!IaisCommonUtils.isEmpty(versionCkList)){
+            for(AppPremisesPreInspectChklDto temp:versionCkList){
+                if(!temp.getChkLstConfId().equals(comConfigId)){
+                    draftDto = fillUpCheckListGetAppClient.getAppInsDraftByChkId(temp.getId()).getEntity();
+                    if(draftDto!=null){
+                        comDto = JsonUtil.parseToObject(draftDto.getAnswer(),InspectionFillCheckListDto.class);
+                        comDtoList.add(comDto);
+                    }
+                }
+            }
+        }
+        fDtosDto.setFdtoList(comDtoList);
+        return fDtosDto;
+    }
+
+    @Override
+    public InspectionFDtosDto getMaxVersionServiceDraft(List<InspectionFDtosDto> fdtosdraftList) {
+        if(!IaisCommonUtils.isEmpty(fdtosdraftList)){
+           return fdtosdraftList.get(0);
+        }
+        return null;
+    }
+
+    @Override
+    public List<InspectionFDtosDto> getOtherVersionfdtos(List<InspectionFDtosDto> fdtosdraft) {
+        List<InspectionFDtosDto> otherVersionList = new ArrayList<>();
+        if(!IaisCommonUtils.isEmpty(fdtosdraft)){
+            for(int i = fdtosdraft.size()-2;i>0;i--){
+                otherVersionList.add(fdtosdraft.get(i));
+            }
+        }
+        return otherVersionList;
+    }
+
+    @Override
+    public List<AdCheckListShowDto> getOtherAdhocList(String appPremCorrId) {
+        return applicationClient.getAllVersionAdhocList(appPremCorrId).getEntity();
     }
 }

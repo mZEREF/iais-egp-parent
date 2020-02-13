@@ -61,4 +61,19 @@
         ]]>
 
     </sql>
+
+    <sql key="aduitSystemList"  remarks="query system aduitList">
+        <![CDATA[
+            select t1.id as id, t2.id as licId,t3.HCI_CODE as hclcode,t3.HCI_NAME hclName,
+            t3.HCI_NAME+' '+t3.STREET_NAME+' '+t3.UNIT_NO+' '+t3.BLK_NO+',#'+t3.FLOOR_NO+'Singapore '+t3.POSTAL_CODE as address,t3.POSTAL_CODE as postalCode,
+            t2.SVC_NAME as serviceName from lic_premises t1,licence t2,premises t3 where t1.LICENCE_ID = t2.id and t1.PREMISES_ID = t3.id and t2.STATUS= 'LICEST001'
+            <#if serviceNameList??> and t2.SVC_NAME IN ${serviceNameList} </#if>
+            <#if postalCode??> and charindex(:postalCode,t3.POSTAL_CODE)</#if>
+            <#if hclCode??> and charindex(:hclCode,t3.HCI_CODE) </#if>
+            <#if premType??> and charindex(:premType,t3.PREMISES_TYPE) </#if>
+        ]]>
+    </sql>
+
+
+
 </sqls>
