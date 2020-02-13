@@ -16,7 +16,7 @@
             <div class="col-md-6">
                 <iais:value>
                     <label class="col-xs-6 col-md-6" for="appServiceType">Service Type:</label>
-                    <div class="col-xs-6 col-md-appServiceType">
+                    <div class="col-xs-6 col-md-6">
                         <iais:select name="appServiceType" id="appServiceType" options="appServiceType"
                                      firstOption="All"></iais:select>
                     </div>

@@ -62,6 +62,7 @@
             FROM LICENCE AS lic
             JOIN lic_premises AS licpre ON lic.ID = licpre.LICENCE_ID
             JOIN premises AS pre ON licpre.PREMISES_ID = pre.ID
+            WHERE lic.status != 'LICEST002'
             <#if id??> AND CHARINDEX(:id, lic.id) >0</#if>
             <#if serviceType??> AND lic.svc_name = :serviceType</#if>
             <#if licStatus??> AND lic.status = :licStatus</#if>
