@@ -5,11 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -72,7 +68,7 @@ public class AppealServiceImpl implements AppealService {
                    List<String> licenceIds = new ArrayList<>();
                    //get all licenceIds
                    for (AppealApproveDto appealApproveDto : appealApproveDtos){
-                       AppealDto appealDto = appealApproveDto.getAppealDto();
+                       AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
                        if(ApplicationConsts.APPEAL_TYPE_LICENCE.equals(appealDto.getAppealType())){
                            licenceIds.add(appealDto.getRelateRecId());
                        }
@@ -82,7 +78,7 @@ public class AppealServiceImpl implements AppealService {
                        List<LicenceDto> licenceDtos = hcsaLicenceClient.retrieveLicenceDtos(licenceIds).getEntity();
                        if(!IaisCommonUtils.isEmpty(licenceDtos)){
                            for (AppealApproveDto appealApproveDto : appealApproveDtos){
-                               AppealDto appealDto = appealApproveDto.getAppealDto();
+                               AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
                                if(ApplicationConsts.APPEAL_TYPE_LICENCE.equals(appealDto.getAppealType())){
                                    String licenceId = appealDto.getRelateRecId();
                                    LicenceDto licenceDto = getLicenceDto(licenceDtos,licenceId);

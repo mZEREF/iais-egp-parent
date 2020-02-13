@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppCessDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 
 import java.util.List;
 
@@ -11,5 +11,5 @@ import java.util.List;
  */
 public interface CessationService {
 
-    List<AppCessDto> getAppCessDtosByLicIds(List<String> licIds);
+    List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds);
 }

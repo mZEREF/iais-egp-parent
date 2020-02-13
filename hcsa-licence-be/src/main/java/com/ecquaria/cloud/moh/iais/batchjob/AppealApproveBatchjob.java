@@ -7,7 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
@@ -57,7 +57,7 @@ public class AppealApproveBatchjob {
                   List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto = new ArrayList<>();
                   for (AppealApproveDto appealApproveDto: appealApproveDtos){
                       ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
-                      AppealDto appealDto = appealApproveDto.getAppealDto();
+                      AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
                       if(applicationDto!= null && appealDto != null){
                           String  appealType = appealDto.getAppealType();
                           switch(appealType){
@@ -114,9 +114,9 @@ public class AppealApproveBatchjob {
                                    List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,
                                    AppealApproveDto appealApproveDto) throws Exception {
         ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
-        AppealDto appealDto = appealApproveDto.getAppealDto();
+        AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
         if(applicationDto!= null && appealDto != null){
-            String appealReason = appealDto.getAppealReason();
+            String appealReason = appealDto.getReason();
             switch(appealReason){
                 case ApplicationConsts.APPEAL_REASON_APPLICATION_REJECTION :
                     applicationRejection(appealApplicaiton,rollBackApplication,appealApproveDto);
@@ -152,7 +152,7 @@ public class AppealApproveBatchjob {
     private void applicationAddCGO(List<AppSvcKeyPersonnelDto> appealPersonnel,
                                    List<AppSvcKeyPersonnelDto> rollBackPersonnel,
                                    AppealApproveDto appealApproveDto) throws Exception {
-        AppealDto appealDto = appealApproveDto.getAppealDto();
+        AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
         ApplicationDto appealApplication = appealApproveDto.getAppealApplicationDto();
         if(appealDto!=null&&appealApplication!=null){
             String  appealApplicaitonId = appealApplication.getId();
@@ -170,7 +170,7 @@ public class AppealApproveBatchjob {
     private void applicationChangeHciName(List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,
                                           List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,
                                           AppealApproveDto appealApproveDto) throws Exception {
-        AppealDto appealDto = appealApproveDto.getAppealDto();
+        AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
         AppGrpPremisesEntityDto appGrpPremisesDto = appealApproveDto.getAppGrpPremisesEntityDto();
         if(appealDto!=null&&appGrpPremisesDto!=null){
             rollBackAppGrpPremisesDto.add(appGrpPremisesDto);

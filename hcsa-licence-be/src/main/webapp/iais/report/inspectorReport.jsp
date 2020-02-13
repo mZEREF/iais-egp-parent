@@ -434,7 +434,7 @@
                         </td>
                         <c:if test="${appPremisesRecommendationDto.recommendation==null}">
                             <td class="col-xs-4">
-                                <iais:select name="recommendation" value="${recomDecision}" options="recommendationOption" firstOption="Please select" onchange="javascirpt:changeRecommendation(this.value);"/>
+                                <iais:select name="recommendation" options="recommendationOption" firstOption="Please select" onchange="javascirpt:changeRecommendation(this.value);"/>
                             </td>
                         </c:if>
                         <c:if test="${appPremisesRecommendationDto.recommendation !=null}">
@@ -445,6 +445,15 @@
                                              onchange="javascirpt:changeRecommendation(this.value);"/>
                             </td>
                         </c:if>
+                        <c:if test="${appPremisesRecommendationDto.recommendation ==null}">
+                            <td>
+                                <iais:select name="recommendation" options="recommendationOption"
+                                             firstOption="Please select"
+                                             value="${appPremisesRecommendationDto.recommendation}"
+                                             onchange="javascirpt:changeRecommendation(this.value);"/>
+                            </td>
+                        </c:if>
+
                         <td class="col-xs-4"></td>
                     </tr>
                     <tr id="period" hidden>

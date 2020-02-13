@@ -349,7 +349,6 @@ public class InsRepServiceImpl implements InsRepService {
         if(oldAppPremisesRecommendationDto!=null){
             oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
-
             if(APPROVAL.equals(recommendation)){
                 oldAppPremisesRecommendationDto.setId(null);
                 oldAppPremisesRecommendationDto.setRecomDecision(appPremisesRecommendationDto.getRecomDecision());
