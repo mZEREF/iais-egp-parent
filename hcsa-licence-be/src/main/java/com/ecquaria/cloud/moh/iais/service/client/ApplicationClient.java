@@ -23,6 +23,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -141,4 +142,13 @@ public interface ApplicationClient {
 
     @GetMapping(value = "/iais-application-be/app-reject",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>>getAppDtosReject();
+
+    @GetMapping(value = "/iais-application-be/cessation/date-type/{type}/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremisesCorrelationDto>> getAppPreCorrDtosByCorrIds(@PathVariable(name = "type") String type, @PathVariable(name = "date") String date);
+
+    @PutMapping(value = "/iais-application-be/cessation-application",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> updateCessationApplications(@RequestBody List<ApplicationDto> applicationDtos);
+
+    @PostMapping(value = "/iais-application-be/cessation-applicationDtos-ids",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getApplicationDtosByIds(@RequestBody List<String> ids);
 }

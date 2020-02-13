@@ -115,5 +115,12 @@ public class HcsaLicenceClientFallback {
         return entity;
     }
 
+    FeignResponseEntity<List<LicenceDto>> updateLicences(List<LicenceDto> licenceDtos){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 
 }

@@ -249,4 +249,25 @@ public class ApplicationClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
+
+    FeignResponseEntity<List<AppPremisesCorrelationDto>>getAppPreCorrDtosByCorrIds(String type,String date){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    FeignResponseEntity<List<AppPremisesCorrelationDto>>updateCessationApplications(List<ApplicationDto> applicationDtos){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    FeignResponseEntity<List<ApplicationDto>>getApplicationDtosByIds(List<String> ids){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
