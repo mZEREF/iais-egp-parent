@@ -52,10 +52,12 @@
             <div class="application-tab-footer">
               <div class="row">
                 <div class="col-xs-12 col-sm-6">
-                  <p><a class="back" href="#" onclick="javascript:doBack();" ><em class="fa fa-angle-left"></em> Back</a></p>
                 </div>
                 <div class="col-xs-12 col-sm-6">
-                  <div class="text-right text-center-mobile"><a class="btn btn-primary next" onclick="javascript:addSectionItem();">Add Section Item</a></div>
+                  <div class="text-right text-center-mobile">
+                    <a class="btn btn-primary next" onclick="javascript:doBack();">Cancel</a>
+                    <a class="btn btn-primary next" onclick="javascript:addSectionItem();">Add Section Item</a>
+                  </div>
                 </div>
               </div>
             </div>

@@ -9,6 +9,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -27,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
@@ -98,7 +100,6 @@ public class HcsaChklConfigDelegator {
     public void prepare(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, "h2TitleAttr", null);
 
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_COMMON, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE, null);
@@ -358,6 +359,7 @@ public class HcsaChklConfigDelegator {
                 }
 
 
+
             }else {
                 configDto = new ChecklistConfigDto();
                 if (common != null){
@@ -372,11 +374,14 @@ public class HcsaChklConfigDelegator {
                     configDto.setModule(MasterCodeUtil.getCodeDesc(module));
                 }
 
-                configDto.setHciCode(hciCode);
+
                 configDto.setSvcName(svcName);
                 configDto.setSvcSubType(svcSubType);
             }
 
+            configDto.setHciCode(hciCode);
+            configDto.setEftStartDate(starteDate);
+            configDto.setEftEndDate(endDate);
 
             //field validate
             ValidationResult validationResult = WebValidationHelper.validateProperty(configDto, "create");
@@ -385,14 +390,13 @@ public class HcsaChklConfigDelegator {
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             }else {
-                configDto.setEftStartDate(starteDate);
-                configDto.setEftEndDate(endDate);
+
                 ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, configDto);
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
             }
 
             //record validate
-            Boolean existsRecord = hcsaChklService.isExistsRecord(configDto);
+            boolean existsRecord = hcsaChklService.isExistsRecord(configDto);
             if (existsRecord){
                 Map<String,String> errorMap = new HashMap<>(1);
                 errorMap.put("configCustomValidation", "Do not create the same configuration,Unless you disable it");
@@ -521,7 +525,8 @@ public class HcsaChklConfigDelegator {
             configDto.setModule(MasterCodeUtil.getCodeDesc(module));
             generateOrderIndex(request, configDto.getSectionDtos());
 
-            ParamUtil.setSessionAttr(request, "h2TitleAttr", "Checklist Config Acknowledgement Page");
+            ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage(MessageCodeKey.CHKL_ACK004, "yyyy-MM-dd"));
+
             ChecklistConfigDto checklistConfigDto = hcsaChklService.submitConfig(configDto);
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, checklistConfigDto);
 
@@ -741,8 +746,9 @@ public class HcsaChklConfigDelegator {
                     configDto.setId(null);
                 }
 
-                ParamUtil.setSessionAttr(request, "h2TitleAttr", "Checklist Config Acknowledgement Page");
                 ChecklistConfigDto checklistConfigDto = hcsaChklService.submitConfig(configDto);
+
+                ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage(MessageCodeKey.CHKL_ACK002, "yyyy-MM-dd"));
                 ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, checklistConfigDto);
             }
 
@@ -752,7 +758,4 @@ public class HcsaChklConfigDelegator {
             throw new IaisRuntimeException(e);
         }
     }
-
-
-
 }

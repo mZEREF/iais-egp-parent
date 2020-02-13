@@ -78,6 +78,11 @@
           </div>
         </div>
 
+        <iais:action style="text-align:center;">
+          <button class="btn btn-lg btn-login-search" type="button" style="background:#2199E8; color: white" value="doSearch">Search</button>
+          <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" >Clear</button>
+        </iais:action>
+
       </div>
 
 
@@ -105,55 +110,67 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <c:forEach var = "config" items = "${checklistConfigResult.rows}" varStatus="status">
-            <tr>
-              <td class="row_no">${(status.index + 1) + (checklistConfigSearch.pageNo - 1) * checklistConfigSearch.pageSize}</td>
-              <td></td>
-              <c:if test="${config.common == false}">
-                <td>No</td>
-              </c:if>
-              <c:if test="${config.common  == true }">
-                <td>Yes</td>
-              </c:if>
-              <td>${config.type}</td>
-              <td>${config.module}</td>
-              <td>${config.svcName}</td>
-              <td>${config.svcSubType}</td>
-              <td>${config.hciCode}</td>
-              <td><fmt:formatDate value="${config.eftStartDate}" pattern="MM/dd/yyyy"/></td>
-              <td><fmt:formatDate value="${config.eftEndDate}" pattern = "MM/dd/yyyy"/></td>
+            <c:choose>
+              <c:when test="${empty checklistConfigResult.rows}">
+                <tr>
+                  <td colspan="6">
+                    No Record!!
+                  </td>
+                </tr>
+              </c:when>
+              <c:otherwise>
+                <tr>
+                <c:forEach var = "config" items = "${checklistConfigResult.rows}" varStatus="status">
+                  <tr>
+                    <td class="row_no">${(status.index + 1) + (checklistConfigSearch.pageNo - 1) * checklistConfigSearch.pageSize}</td>
+                    <td></td>
+                    <c:if test="${config.common == false}">
+                      <td>No</td>
+                    </c:if>
+                    <c:if test="${config.common  == true }">
+                      <td>Yes</td>
+                    </c:if>
+                    <td>${config.type}</td>
+                    <td>${config.module}</td>
+                    <td>${config.svcName}</td>
+                    <td>${config.svcSubType}</td>
+                    <td>${config.hciCode}</td>
+                    <td><fmt:formatDate value="${config.eftStartDate}" pattern="MM/dd/yyyy"/></td>
+                    <td><fmt:formatDate value="${config.eftEndDate}" pattern = "MM/dd/yyyy"/></td>
 
-              <div class="modal fade" id="DeleteTemplateModal" tabindex="-1" role="dialog" aria-labelledby="DeleteTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                      <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
-                    </div>
-                    <div class="modal-body">
-                      <div class="row">
-                        <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the disable ?</span></div>
+                    <div class="modal fade" id="DeleteTemplateModal" tabindex="-1" role="dialog" aria-labelledby="DeleteTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
+                          </div>
+                          <div class="modal-body">
+                            <div class="row">
+                              <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the disable ?</span></div>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="javascript:deleteRecord('${config.id}')" >Confirm</button>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary" onclick="javascript:deleteRecord('${config.id}')" >Confirm</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
 
-              <td>
-                <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="javascript:loadEditData('${config.id}')" >Edit</button>
-                <button type="button" onclick="javascript:cloneConfig('${config.id}')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >Clone</button>
-                <button type="button" onclick="javascript:doView('${config.id}')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >View</button>
-                <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" data-target="#DeleteTemplateModal" >Disable</button>
-              </td>
-            </tr>
-            </c:forEach>
-            </tr>
+                    <td>
+                      <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="javascript:loadEditData('${config.id}')" >Edit</button>
+                      <button type="button" onclick="javascript:cloneConfig('${config.id}')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >Clone</button>
+                      <button type="button" onclick="javascript:doView('${config.id}')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >View</button>
+                      <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" data-target="#DeleteTemplateModal" >Disable</button>
+                    </td>
+                  </tr>
+                </c:forEach>
+                </tr>
+
+              </c:otherwise>
+            </c:choose>
             </tbody>
           </table>
 
@@ -163,8 +180,6 @@
         <div class="application-tab-footer">
               <td>
                 <div class="text-right text-center-mobile">
-                  <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>
-                  <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSearch();">Search</a>
                   <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: prepareAddConfig();">Add Configuration</a>
 
                 </div>

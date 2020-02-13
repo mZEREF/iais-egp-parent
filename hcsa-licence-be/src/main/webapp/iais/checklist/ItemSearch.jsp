@@ -81,6 +81,12 @@
                            firstOption="Select Status" filterValue="CMSTAT002" value="${status}"></iais:select>
             </div>
           </div>
+
+          <iais:action style="text-align:center;">
+            <button class="btn btn-lg btn-login-search" type="button" style="background:#2199E8; color: white" value="doSearch">Search</button>
+            <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" >Clear</button>
+          </iais:action>
+
         </div>
         <div class="tab-content">
           <div class="row">
@@ -152,8 +158,6 @@
                                     </div>
                                   </div>
 
-
-
                                 </c:if>
 
 
@@ -185,16 +189,12 @@
 
                             <c:choose>
                               <c:when test="${!empty sessionScope.currentValidateId}">
-                                <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus(); ">Clear</a>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: configToChecklist();">Add to Config</a>
-                                <a class="btn btn-primary next" href="javascript:void(0);"
-                                   onclick="javascript: doSearch();">Search</a>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: cancelConfig();">Cancel</a>
                               </c:when>
                               <c:otherwise>
-                                <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus(); ">Clear</a>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: prepareAddItem();">Add ChecklistItem</a>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
@@ -204,14 +204,12 @@
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: doUploadFile('checklistItem');">Upload Checklist Item</a>
 
-                                <a class="btn btn-primary next" href="${pageContext.request.contextPath}/checklist-item-file?action=checklistItem">
+                                <a class="btn btn-primary next" onclick="Utils.doExport('${pageContext.request.contextPath}/checklist-item-file?action=checklistItem')">
                                   Export Checklist Item</a>
 
-                                <a class="btn btn-primary next" href="${pageContext.request.contextPath}/checklist-item-file?action=regulation"
+                                <a class="btn btn-primary next" onclick="Utils.doExport('${pageContext.request.contextPath}/checklist-item-file?action=regulation')"
                                    >Export Regulation</a>
 
-                                <a class="btn btn-primary next" href="javascript:void(0);"
-                                   onclick="javascript: doSearch();">Search</a>
                               </c:otherwise>
                             </c:choose>
 
@@ -244,32 +242,8 @@
         SOP.Crud.cfxSubmit("mainForm", "cancelConfig");
     }
 
-    function doSearch() {
-        SOP.Crud.cfxSubmit("mainForm", "doSearch");
-    }
-
     function doUploadFile(value) {
         SOP.Crud.cfxSubmit("mainForm", "preUploadData", value);
-    }
-
-    function doExportFile(action){
-        $.ajax({
-            url: "${pageContext.request.contextPath}" + "/checklist-item-file",
-            type: "GET",
-            datatype: "applicatoin/octet-stream",
-            data: {action: action},
-            timeout : 3000,
-            success: function (result){
-                if (result.type == "applicatoin/octet-stream") {
-                    alert(result)
-                    var a = document.createElement("a");
-                    a.download = fileName;
-                    a.href = window.URL.createObjectURL(data);
-                    a.click();
-                    return;
-                }
-            }
-        });
     }
 
     function disable(itemId) {

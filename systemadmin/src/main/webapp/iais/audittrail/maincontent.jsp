@@ -45,9 +45,9 @@
   </iais:row>
 
   <iais:action style="text-align:center;">
-    <button class="btn btn-lg btn-login-search" type="button" style="background:#2199E8; color: white" >Search</button>
-    <a class="btn btn-lg btn-login-export" type="button" href="${pageContext.request.contextPath}/audit-trail-file" style="background:#2199E8; color: white" >Export</a>
-    <button class="btn btn-lg btn-login-clear" type="button"  style="background:#2199E8; color: white" onclick="javascript:doClear() ">Clear</button>
+    <button class="btn btn-lg btn-login-search" type="button" value="doQuery" style="background:#2199E8; color: white" >Search</button>
+    <a class="btn btn-lg btn-login-export" type="button" onclick="Utils.doExport('${pageContext.request.contextPath}/audit-trail-file')" style="background:#2199E8; color: white" >Export</a>
+    <button class="btn btn-lg btn-login-clear" type="button"  style="background:#2199E8; color: white" >Clear</button>
   </iais:action>
 
 </iais:section>
@@ -154,18 +154,3 @@
 </div>
 <%@include file="/include/validation.jsp"%>
 <script src="/system-admin-web/iais/js/CommonUtils.js"></script>
-
-<script>
-    function doClear() {
-        $('input[name="user"]').val("");
-        $('input[name="startDate"]').val("");
-        $('input[name="endDate"]').val("");
-
-        $("#operationType option[text = 'Please select']").val("selected", "selected");
-        $("#operation option[text = 'Please select']").val("selected", "selected");
-        $(".current").text("Please select");
-        $("#operationType").val("");
-        $("#operation").val("");
-    }
-
-</script>

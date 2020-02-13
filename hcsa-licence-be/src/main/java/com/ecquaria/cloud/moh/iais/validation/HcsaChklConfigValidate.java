@@ -7,8 +7,10 @@ package com.ecquaria.cloud.moh.iais.validation;
  */
 
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,12 +61,12 @@ public class HcsaChklConfigValidate implements CustomizeValidator {
 
 
         if (StringUtils.isEmpty(eftStartDate)){
-            errMap.put("configCustomValidation", "Please select effective date.");
+            errMap.put("eftStartDate", MessageUtil.getMessageDesc(MessageCodeKey.CHKL_ERR014));
             return errMap;
         }
 
         if (StringUtils.isEmpty(eftEndDate)){
-            errMap.put("configCustomValidation", "Please select effective end date.");
+            errMap.put("eftEndDate", MessageUtil.getMessageDesc(MessageCodeKey.CHKL_ERR014));
             return errMap;
         }
 
@@ -86,7 +88,7 @@ public class HcsaChklConfigValidate implements CustomizeValidator {
 
         int comparatorValue = endDate.compareTo(startDate);
         if (comparatorValue < 0){
-            errMap.put("configCustomValidation", "Effective End Date must be after Effective Start Date.");
+            errMap.put("configCustomValidation", MessageUtil.getMessageDesc(MessageCodeKey.CHKL_ERR013));
             return errMap;
         }
 

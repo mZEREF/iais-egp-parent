@@ -2,10 +2,12 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.utils.MapFormat;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Date;
+import java.util.Map;
 
 /**
  * MessageUtil
@@ -65,4 +67,15 @@ public class MessageUtil {
         return  msg.replace("%d", paramVal);
     }
 
+
+    public static String dateIntoMessage(String codeKey, String pattern){
+        if (StringUtils.isEmpty(codeKey) || StringUtils.isEmpty(pattern)){
+            return null;
+        }
+
+        String msg = MessageUtil.getMessageDesc(codeKey);
+        return msg.replace("<Date>", IaisEGPHelper.parseToString(new Date(),
+                pattern)).replace("<Time>", IaisEGPHelper.parseToString(new Date(),
+                "hh:mm"));
+    }
 }

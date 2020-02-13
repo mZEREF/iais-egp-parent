@@ -87,8 +87,7 @@
             <label class="col-md-2">HCI Code</label>
             <div class="col-md-3">
               <input type="text" name="hciCode" value="${hciCode}"/>
-
-            <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
+            <span id="error_hciCode" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
 
@@ -96,7 +95,7 @@
             <label class="col-md-2">Effective Start Date</label>
             <div class="col-md-3">
                <iais:datePicker name = "eftStartDate" value="${eftStartDate}"></iais:datePicker>
-              <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
+              <span id="error_eftStartDate" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
 
@@ -104,7 +103,7 @@
             <label class="col-md-2">Effective End Date</label>
             <div class="col-md-3">
               <iais:datePicker name = "eftEndDate" value="${eftEndDate}"></iais:datePicker>
-              <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
+              <span id="error_eftEndDate" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
 
@@ -115,10 +114,10 @@
       <div class="application-tab-footer">
         <div class="row">
           <div class="col-xs-12 col-sm-6">
-            <p><a class="back" href="#" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a></p>
           </div>
           <div class="col-xs-12 col-sm-6">
             <div class="text-right text-center-mobile">
+              <a class="btn btn-primary next" href="javascript:void(0);" onclick="doBack()">Cancel</a>
               <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>
               <a class="btn btn-primary next"  onclick="javascript: doNext();">Next</a>
             </div>
