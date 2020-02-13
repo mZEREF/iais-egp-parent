@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -91,16 +92,19 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
             setRelationCorreId(correId);
             List<AppSvcPremisesScopeDto> premScope = applicationClient.getAppSvcPremisesScopeListByCorreId(correId).getEntity();
 
-            premScope.stream().filter(scope -> scope.isSubsumedType() == false)
-                    .forEach(scope -> {
-                        String subTypeId = scope.getScopeName();
-                        HcsaServiceSubTypeDto subType = hcsaConfigClient.getHcsaServiceSubTypeById(subTypeId).getEntity();
-                        String subTypeName = subType.getSubtypeName();
-                        ChecklistConfigDto subTypeConfig = hcsaChklClient.getMaxVersionConfigByParams(svcCode, type, chklModule, subTypeName).getEntity();
-                        if (subTypeConfig != null){
-                            inspChecklist.add(subTypeConfig);
-                        }
-                    });
+            if(!IaisCommonUtils.isEmpty(premScope)){
+                premScope.stream().filter(scope -> scope.isSubsumedType() == false)
+                        .forEach(scope -> {
+                            String subTypeId = scope.getScopeName();
+                            HcsaServiceSubTypeDto subType = hcsaConfigClient.getHcsaServiceSubTypeById(subTypeId).getEntity();
+                            String subTypeName = subType.getSubtypeName();
+                            ChecklistConfigDto subTypeConfig = hcsaChklClient.getMaxVersionConfigByParams(svcCode, type, chklModule, subTypeName).getEntity();
+                            if (subTypeConfig != null){
+                                inspChecklist.add(subTypeConfig);
+                            }
+                        });
+            }
+
         });
         return inspChecklist;
     }
