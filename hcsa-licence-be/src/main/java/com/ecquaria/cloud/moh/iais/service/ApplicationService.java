@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface ApplicationService {
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId);
-    public boolean isOtherApplicaitonSubmit(List<ApplicationDto> applicationDtoList,String appId,String status);
+    public boolean isOtherApplicaitonSubmit(List<ApplicationDto> applicationDtoList,String appNo,String status);
     //
     public List<AppPremisesCorrelationDto> getAppPremisesCorrelationByAppGroupId(String appGroupId);
 

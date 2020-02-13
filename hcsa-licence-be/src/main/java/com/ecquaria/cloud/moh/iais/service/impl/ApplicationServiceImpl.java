@@ -3,13 +3,17 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,18 +52,53 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public boolean isOtherApplicaitonSubmit(List<ApplicationDto> applicationDtoList,String appId,String status) {
-        if(applicationDtoList == null || applicationDtoList.size() == 0 || StringUtil.isEmpty(appId) || StringUtil.isEmpty(status)){
+    public boolean isOtherApplicaitonSubmit(List<ApplicationDto> applicationDtoList,String appNo,String status) {
+        if(applicationDtoList == null || applicationDtoList.size() == 0 || StringUtil.isEmpty(appNo) || StringUtil.isEmpty(status)){
             return  false;
         }
         boolean result = true;
-        for(ApplicationDto applicationDto : applicationDtoList){
-           if(appId.equals(applicationDto.getId())){
-               continue;
-           }else if(!status.equals(applicationDto.getStatus())){
-                result = false;
-                break;
-           }
+        Map<String,List<ApplicationDto>> applicationMap = tidyApplicationDto(applicationDtoList);
+        if(applicationMap!=null && applicationMap.size()>0){
+          for (Map.Entry<String,List<ApplicationDto>> entry : applicationMap.entrySet()){
+              String key = entry.getKey();
+              List<ApplicationDto> value = entry.getValue();
+              if(appNo.equals(key)){
+                  continue;
+              }else if(!containStatus(value,status)){
+                  result = false;
+                  break;
+              }
+
+          }
+        }
+        return result;
+    }
+    private boolean containStatus(List<ApplicationDto> applicationDtos,String status){
+        boolean result = false;
+        if(!IaisCommonUtils.isEmpty(applicationDtos) && !StringUtil.isEmpty(status)){
+            for(ApplicationDto applicationDto : applicationDtos){
+                if(status.equals(applicationDto.getStatus())){
+                    result = true;
+                    break;
+                }
+            }
+        }
+        return  result;
+    }
+
+    private Map<String,List<ApplicationDto>> tidyApplicationDto(List<ApplicationDto> applicationDtoList){
+        Map<String,List<ApplicationDto>> result = null;
+        if(!IaisCommonUtils.isEmpty(applicationDtoList)){
+            result = new HashMap<>();
+            for(ApplicationDto applicationDto : applicationDtoList){
+               String appNo = applicationDto.getApplicationNo();
+                List<ApplicationDto> applicationDtos = result.get(appNo);
+                if(applicationDtos ==null){
+                    applicationDtos = new ArrayList<>();
+                }
+                applicationDtos.add(applicationDto);
+                result.put(appNo,applicationDtos);
+            }
         }
         return result;
     }
