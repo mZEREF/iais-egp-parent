@@ -2,11 +2,20 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,10 +29,45 @@ import java.util.List;
 @Slf4j
 public class ApptInspectionDateServiceImpl implements ApptInspectionDateService {
 
-    @Override
-    public List<String> getInspectionDate(String taskId, ApptInspectionDateDto apptInspectionDateDto) {
+    @Autowired
+    private OrganizationClient organizationClient;
 
-        return null;
+    @Autowired
+    private AppointmentClient appointmentClient;
+
+    @Autowired
+    private InspectionTaskClient inspectionTaskClient;
+
+    @Autowired
+    private TaskService taskService;
+
+    @Override
+    public ApptInspectionDateDto getInspectionDate(String taskId, ApptInspectionDateDto apptInspectionDateDto) {
+        TaskDto taskDto = taskService.getTaskById(taskId);
+        AppointmentDto appointmentDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(taskDto.getRefNo()).getEntity();
+        List<TaskDto> taskDtoList = organizationClient.getTaskByAppNo(taskDto.getRefNo()).getEntity();
+        List<String> systemCorrIds = new ArrayList<>();
+        if(!IaisCommonUtils.isEmpty(taskDtoList)){
+            for(TaskDto tDto : taskDtoList){
+                systemCorrIds = getSystemCorrIdByUserId(tDto.getUserId(), systemCorrIds);
+            }
+        }
+        appointmentDto.setUserId(systemCorrIds);
+        if(appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null){
+
+        }
+        List<List<ApptUserCalendarDto>> apptUserCalendarDtoList = appointmentClient.getUserCalendarByUserId(appointmentDto).getEntity();
+        return apptInspectionDateDto;
+    }
+
+    private List<String> getSystemCorrIdByUserId(String userId, List<String> systemCorrIds) {
+        List<String> systemCorrIdList = appointmentClient.getIdByAgencyUserId(userId).getEntity();
+        if(!IaisCommonUtils.isEmpty(systemCorrIdList)){
+            for(String sId : systemCorrIdList){
+                systemCorrIds.add(sId);
+            }
+        }
+        return systemCorrIds;
     }
 
     @Override

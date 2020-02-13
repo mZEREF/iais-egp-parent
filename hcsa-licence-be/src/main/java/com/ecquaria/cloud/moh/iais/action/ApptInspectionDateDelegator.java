@@ -80,8 +80,7 @@ public class ApptInspectionDateDelegator {
         if(apptInspectionDateDto == null){
             String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
             apptInspectionDateDto = new ApptInspectionDateDto();
-            List<String> apptInspDate = apptInspectionDateService.getInspectionDate(taskId, apptInspectionDateDto);
-            apptInspectionDateDto.setInspectionDate(apptInspDate);
+            apptInspectionDateDto  = apptInspectionDateService.getInspectionDate(taskId, apptInspectionDateDto);
         }
         List<SelectOption> processDecList = apptInspectionDateService.getProcessDecList();
         List<SelectOption> hours = apptInspectionDateService.getInspectionDateHours();

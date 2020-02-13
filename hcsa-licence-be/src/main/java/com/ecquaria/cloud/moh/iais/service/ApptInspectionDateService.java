@@ -15,10 +15,10 @@ public interface ApptInspectionDateService {
       * @author: shicheng
       * @Date 2020/2/11
       * @Param: taskId, apptInspectionDateDto
-      * @return: List<String>
+      * @return: ApptInspectionDateDto
       * @Descripation: get Inspection Date
       */
-    List<String> getInspectionDate(String taskId, ApptInspectionDateDto apptInspectionDateDto);
+    ApptInspectionDateDto getInspectionDate(String taskId, ApptInspectionDateDto apptInspectionDateDto);
 
     /**
       * @author: shicheng

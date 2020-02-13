@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
@@ -251,4 +252,6 @@ public interface HcsaConfigClient {
     @GetMapping(value = "/iais-hcsa-service/search-svcNames-param")
     FeignResponseEntity<SearchResult<String>> searchSvcNamesParam(@RequestBody SearchParam searchParam);
 
+    @PostMapping(value = "/appt-date-service",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppointmentDto> getApptStartEndDateByService(@RequestBody AppointmentDto appointmentDto);
     }
