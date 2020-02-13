@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     @Override
     public List<String> getInspectionDate(String taskId, ApptInspectionDateDto apptInspectionDateDto) {
+
         return null;
     }
 
@@ -39,8 +41,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     @Override
     public List<SelectOption> getAmPmOption() {
         List<SelectOption> amPmOption = new ArrayList<>();
-        SelectOption so1 = new SelectOption("am", "am");
-        SelectOption so2 = new SelectOption("pm", "pm");
+        SelectOption so1 = new SelectOption(Formatter.DAY_AM, "am");
+        SelectOption so2 = new SelectOption(Formatter.DAY_PM, "pm");
         amPmOption.add(so1);
         amPmOption.add(so2);
         return amPmOption;

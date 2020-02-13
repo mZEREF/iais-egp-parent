@@ -5,6 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -126,8 +128,44 @@ public class ApptInspectionDateDelegator {
 
     private ApptInspectionDateDto getValidateValue(ApptInspectionDateDto apptInspectionDateDto, BaseProcessClass bpc) {
         String specificDate1 = ParamUtil.getDate(bpc.request, "specificDate");
-        String hours = ParamUtil.getRequestString(bpc.request, "hours");
+        String strHours = ParamUtil.getRequestString(bpc.request, "hours");
         String amPm = ParamUtil.getRequestString(bpc.request, "amPm");
+        List<SelectOption> hoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "hours");
+        List<SelectOption> amPmOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "amPm");
+        boolean flagContain = containValueInList(amPm, amPmOption);
+        if(flagContain){
+            apptInspectionDateDto.setAmPm(amPm);
+        } else {
+            apptInspectionDateDto.setAmPm(null);
+        }
+        if(containValueInList(strHours, hoursOption)){
+            try {
+                int hours = Integer.parseInt(strHours);
+                if(Formatter.DAY_PM.equals(amPm)){
+                    hours = hours + 12;
+                }
+                if(hours < 10) {
+                    apptInspectionDateDto.setHours("0" + hours);
+                } else {
+                    apptInspectionDateDto.setHours(hours + "");
+                }
+
+            } catch (Exception e){
+                e.printStackTrace();
+                apptInspectionDateDto.setHours(null);
+            }
+        } else {
+            apptInspectionDateDto.setHours(null);
+        }
+        Date specificDate = getSpecificDate(specificDate1, apptInspectionDateDto);
+        if(specificDate != null){
+            apptInspectionDateDto.setSpecificDate(specificDate);
+        }
+        return apptInspectionDateDto;
+    }
+
+    private Date getSpecificDate(String specificDate1, ApptInspectionDateDto apptInspectionDateDto) {
+        Date specificDate = null;
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Date sub_date1 = null;
         try {
@@ -136,17 +174,26 @@ public class ApptInspectionDateDelegator {
             e.printStackTrace();
         }
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String sub_date = sdf2.format(sub_date1);
-        Date specificDate = null;
+        sub_date = sub_date + " " + apptInspectionDateDto.getHours() + ":00:00";
         try {
-            specificDate = sdf2.parse(sub_date);
+            specificDate = sdf3.parse(sub_date);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        apptInspectionDateDto.setSpecificDate(specificDate);
-        apptInspectionDateDto.setHours(hours);
-        apptInspectionDateDto.setAmPm(amPm);
-        return apptInspectionDateDto;
+        return specificDate;
+    }
+
+    private boolean containValueInList(String str, List<SelectOption> optionList) {
+        if(!StringUtil.isEmpty(str) && !IaisCommonUtils.isEmpty(optionList)){
+            for(SelectOption so : optionList){
+                if(str.equals(so.getValue())){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
