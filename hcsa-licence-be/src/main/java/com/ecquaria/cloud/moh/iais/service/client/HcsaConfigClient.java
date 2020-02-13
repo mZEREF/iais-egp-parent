@@ -252,6 +252,6 @@ public interface HcsaConfigClient {
     @GetMapping(value = "/iais-hcsa-service/search-svcNames-param")
     FeignResponseEntity<SearchResult<String>> searchSvcNamesParam(@RequestBody SearchParam searchParam);
 
-    @PostMapping(value = "/appt-date-service",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-hcsa-service/appt-date-service",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppointmentDto> getApptStartEndDateByService(@RequestBody AppointmentDto appointmentDto);
     }
