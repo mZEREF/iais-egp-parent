@@ -6,8 +6,10 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<span id="error_actionTime" name="iaisErrorMsg" class="error-msg"></span>
+
 <br><br>
+
+<div class="form-horizontal">
 
 <iais:section title="" id="atmList">
   <iais:row>
@@ -34,12 +36,14 @@
     <iais:field value="Operation Start Date Time" required="false"></iais:field>
     <iais:value width="7">
       <iais:datePicker id = "startDate" name = "startDate"  value="${startDate}"></iais:datePicker>
-      <span id="error_startDate" name="iaisErrorMsg" class="error-msg"></span>
+     <%--// <span id="error_startDate" name="iaisErrorMsg" class="error-msg"></span>--%>
+      <span id="error_actionTime" name="iaisErrorMsg" class="error-msg"></span>
     </iais:value>
+
     <iais:field value="Operation End Date Time" required="false"></iais:field>
     <iais:value width="7">
       <iais:datePicker id = "endDate" name = "endDate"  value="${endDate}"></iais:datePicker>
-      <span id="error_endDate" name="iaisErrorMsg" class="error-msg"></span>
+     <%-- <span id="error_endDate" name="iaisErrorMsg" class="error-msg"></span>--%>
     </iais:value>
 
   </iais:row>
@@ -52,6 +56,7 @@
 
 </iais:section>
 
+</div>
 <br><br><br>
 <div>
   <div class="tab-pane active" id="tabInbox" role="tabpanel">

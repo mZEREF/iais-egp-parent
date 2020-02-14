@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+
 import java.util.List;
 
 /**
@@ -36,5 +37,7 @@ public interface LicenceService {
     public LicEicRequestTrackingDto updateLicEicRequestTrackingDto(LicEicRequestTrackingDto licEicRequestTrackingDto);
 
     public LicEicRequestTrackingDto getLicEicRequestTrackingDtoByRefNo(String refNo);
+
+
 
 }

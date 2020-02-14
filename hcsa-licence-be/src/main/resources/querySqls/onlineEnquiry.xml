@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="onlineEnquiry">
+    <sql key = "searchByProfessionalInfo" remarks="search by professional information">
+        <![CDATA[
+            select a.id, a.name, a.prof_reg_no, b.practive_location, b.licence_no, b.service_name, a.designation
+            from
+            (
+            select
+            t2.id,
+            t1.licence_id as licence_id,
+            t2.name as name,
+            t3.prof_reg_no as prof_reg_no,
+            t2.designation as designation,
+            t1.psn_type as psn_type
+            from lic_key_personnel t1
+            join  key_personnel t2 on t1.person_id = t2.id
+            join key_personnel_ext t3 on t1.psn_ext_id = t3.id and t3.person_id = t2.id
+            join licence t4 on t1.licence_id = t4.id) a,
+            (
+            select
+            t3.id,
+            t3.licence_no,
+            t3.svc_name as service_name,
+            t2.hci_code as hci_code,
+            t2.postal_code as postal_code,
+            t2.hci_name as hci_name,
+            t2.blk_no + '/' + t2.street_name + ',' + t2.building_name + '-' + t2.floor_no as practive_location
+            from lic_premises t1
+            join premises t2 on t1.premises_id = t2.id
+            join licence t3 on t1.licence_id = t3.id) b
+            where a.licence_id = b.id
+            <#if id??> AND a.id = :id >0 </#if>
+            <#if filterIdList??> and ${filterIdList} </#if>
+            <#if name??> AND charindex(:name, a.name) >0 </#if>
+            <#if profRegNo??> AND charindex(:profRegNo, a.prof_reg_no) >0</#if>
+            <#if postalCode??> AND charindex(:postalCode, b.postal_code) >0</#if>
+            <#if address??> AND  charindex(:address, b.practive_location) >0</#if>
+            <#if hciName??> AND charindex(:hciName, b.hci_name) >0 </#if>
+            <#if hciCode??> AND charindex(:hciCode, b.hci_code) >0</#if>
+            <#if hciPostalode??> AND charindex(:hciPostalode, b.postal_code)  >0 </#if>
+            <#if practiceLocation??> AND charindex(:practiceLocation, b.practive_location ) >0 </#if>
+            <#if serviceName??> AND b.service_name = :serviceName</#if>
+            <#if designation??> AND charindex(:designation, a.designation) >0 </#if>
+            <#if role??> AND a.psn_type = :role</#if>
+        ]]>
+    </sql>
+
+</sqls>

@@ -738,10 +738,7 @@ public class HcsaChklItemDelegator {
                 }
                 break;
             case CHECKLIST_ITEM:
-                SearchParam  searchParam = new SearchParam(CheckItemQueryDto.class.getName());
-                searchParam.setPageSize(Integer.MAX_VALUE);
-                searchParam.setPageNo(Integer.MIN_VALUE);
-                searchParam.setSort("item_id", SearchParam.ASCENDING);
+                SearchParam  searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
                 QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
                 SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
                 if (searchResult != null){
@@ -767,6 +764,6 @@ public class HcsaChklItemDelegator {
         } catch (IOException e) {
            log.debug(e.getMessage());
         }
-        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
     }
 }

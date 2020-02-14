@@ -55,7 +55,7 @@ public class AppInitializer implements ServletContextListener {
             initMessages();
             MasterCodeUtil.refreshCache();
             HcsaServiceCacheHelper.receiveServiceMapping();
-            //SystemParamCacheHelper.receiveAllSystemParam();
+            SystemParamCacheHelper.receiveAllSystemParam();
         } catch (Exception ex) {
             log.error("Failed to initialize the application.", ex);
         }

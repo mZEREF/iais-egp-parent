@@ -137,7 +137,7 @@ public interface HcsaConfigClient {
     @RequestMapping(value = "/iais-hcsa-risk/legislativeshow",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<RiskLegislativeShowDto> getLegislativeShow(@RequestBody List<HcsaServiceDto> svcList);
 
-    @PostMapping(value = "/iais-hcsa-service/pref-period/reuslts",
+    @PostMapping(value = "/iais-hcsa-service/pref-period/results",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<HcsaServicePrefInspPeriodQueryDto>> getHcsaServicePrefInspPeriodList(@RequestBody SearchParam searchParam);
 

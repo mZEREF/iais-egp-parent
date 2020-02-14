@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -36,6 +38,16 @@ import java.util.Map;
 @Delegator(value = "prefDateRangePeriodDelegator")
 @Slf4j
 public class PrefDateRangePeriodDelegator {
+
+    private static final String PERIOD_AFTER_APP_ATTR = "periodAfterApp";
+    private static final String PERIOD_BEFORE_APP_ATTR = "periodBeforeExp";
+    private static final String NON_REPLY_WINDOW_ATTR = "nonReplyWindow";
+    private static final String SERVICE_NAME_ATTR = "svcName";
+    private static final String PREF_PERIOD_SEARCH = "prefPeriodSearch";
+    private static final String PREF_PERIOD_RESULT = "prefPeriodResult";
+    private static final String REQUEST_PERIOD_ATTR = "requestPeriodAttr";
+
+
     @Autowired
     private HcsaChklService hcsaChklService;
 
@@ -43,7 +55,7 @@ public class PrefDateRangePeriodDelegator {
     private PrefDateRangePeriodService periodService;
 
     private FilterParameter filterParameter = new FilterParameter.Builder()
-            .clz(HcsaServicePrefInspPeriodQueryDto.class).searchAttr("prefPeriodSearch").resultAttr("prefPeriodResult").
+            .clz(HcsaServicePrefInspPeriodQueryDto.class).searchAttr(PREF_PERIOD_SEARCH).resultAttr(PREF_PERIOD_RESULT).
                     sortField("id").sortType(SearchParam.ASCENDING).build();
 
     /**
@@ -64,8 +76,8 @@ public class PrefDateRangePeriodDelegator {
         QueryHelp.setMainSql("hcsaconfig", "getPrefInspPeriodList",searchParam);
 
         SearchResult<HcsaServicePrefInspPeriodQueryDto> hcsaServicePrefInspPeriodList = periodService.getHcsaServicePrefInspPeriodList(searchParam);
-        ParamUtil.setSessionAttr(request, "prefPeriodSearch", searchParam);
-        ParamUtil.setSessionAttr(request, "prefPeriodResult", hcsaServicePrefInspPeriodList);
+        ParamUtil.setSessionAttr(request, PREF_PERIOD_SEARCH, searchParam);
+        ParamUtil.setSessionAttr(request, PREF_PERIOD_RESULT, hcsaServicePrefInspPeriodList);
     }
 
     /**
@@ -102,7 +114,7 @@ public class PrefDateRangePeriodDelegator {
      */
     public void preUpdateData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String id = ParamUtil.getRequestString(request, "crud_action_value");
+        String id = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
         if (StringUtil.isEmpty(id)){
             return;
         }
@@ -120,7 +132,7 @@ public class PrefDateRangePeriodDelegator {
                     periodDto.setVersion(periodQuery.getVersion());
                     periodDto.setNonReplyWindow(periodQuery.getNonReplyWindow());
                     periodDto.setStatus(periodQuery.getStatus());
-                    ParamUtil.setSessionAttr(request, "requestPperiodAttr", periodDto);
+                    ParamUtil.setSessionAttr(request, REQUEST_PERIOD_ATTR, periodDto);
                     return;
                 }
             }
@@ -150,18 +162,23 @@ public class PrefDateRangePeriodDelegator {
     public void submitPrefDate(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
 
-        String periodAfterApp = ParamUtil.getString(request, "periodAfterApp");
-        String periodBeforeExp = ParamUtil.getString(request, "periodBeforeExp");
-        String nonReplyWindow = ParamUtil.getString(request, "nonReplyWindow");
+        String periodAfterApp = ParamUtil.getString(request, PERIOD_AFTER_APP_ATTR );
+        String periodBeforeExp = ParamUtil.getString(request, PERIOD_BEFORE_APP_ATTR );
+        String nonReplyWindow = ParamUtil.getString(request, NON_REPLY_WINDOW_ATTR );
 
-        HcsaServicePrefInspPeriodDto period = (HcsaServicePrefInspPeriodDto) ParamUtil.getSessionAttr(request, "requestPperiodAttr");
+        ParamUtil.setRequestAttr(request, PERIOD_AFTER_APP_ATTR , periodAfterApp);
+        ParamUtil.setRequestAttr(request, PERIOD_BEFORE_APP_ATTR , periodBeforeExp);
+        ParamUtil.setRequestAttr(request, NON_REPLY_WINDOW_ATTR , nonReplyWindow);
+
+
+        HcsaServicePrefInspPeriodDto period = (HcsaServicePrefInspPeriodDto) ParamUtil.getSessionAttr(request, "requestPeriodAttr");
         try {
             period.setPeriodAfterApp(transformToDay(Integer.parseInt(periodAfterApp)));
             period.setPeriodBeforeExp(transformToDay(Integer.parseInt(periodBeforeExp)));
             period.setNonReplyWindow(Integer.parseInt(nonReplyWindow));
         }catch (NumberFormatException e){
             HashMap<String, String> errorMap = new HashMap<>(1);
-            errorMap.put("numberError", "GENERAL_ERR0002");
+            errorMap.put("numberError", MessageCodeKey.GENERAL_ERR0002);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             return;
@@ -177,11 +194,12 @@ public class PrefDateRangePeriodDelegator {
 
         Boolean result = periodService.savePrefInspPeriod(period);
         if (result){
+	        ParamUtil.setRequestAttr(request,"ackMsg", "You have successfully update a block-out period.");
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             return;
         }else {
             HashMap<String, String> errorMap = new HashMap<>(1);
-            errorMap.put("dataError", "GENERAL_ERR0001");
+            errorMap.put("dataError", MessageCodeKey.GENERAL_ERR0001);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             return;
@@ -198,32 +216,37 @@ public class PrefDateRangePeriodDelegator {
 
     private HashMap<String, String> validateResult(HttpServletRequest request, SearchParam searchParam){
         HashMap<String, String> errorMap = new HashMap<>(1);
-        String svcName = ParamUtil.getString(request, "svcName");
-        String periodAfterApp = ParamUtil.getString(request, "periodAfterApp");
-        String periodBeforeExp = ParamUtil.getString(request, "periodBeforeExp");
-        String nonReplyWindow = ParamUtil.getString(request, "nonReplyWindow");
+        String svcName = ParamUtil.getString(request, SERVICE_NAME_ATTR );
+        String periodAfterApp = ParamUtil.getString(request, PERIOD_AFTER_APP_ATTR );
+        String periodBeforeExp = ParamUtil.getString(request, PERIOD_BEFORE_APP_ATTR );
+        String nonReplyWindow = ParamUtil.getString(request, NON_REPLY_WINDOW_ATTR );
+
+        ParamUtil.setRequestAttr(request, SERVICE_NAME_ATTR , svcName);
+        ParamUtil.setRequestAttr(request, PERIOD_AFTER_APP_ATTR , periodAfterApp);
+        ParamUtil.setRequestAttr(request, PERIOD_BEFORE_APP_ATTR , periodBeforeExp);
+        ParamUtil.setRequestAttr(request, NON_REPLY_WINDOW_ATTR , nonReplyWindow);
 
         if (!StringUtil.isEmpty(svcName)){
-            searchParam.addFilter("svcName", svcName, true);
+            searchParam.addFilter(SERVICE_NAME_ATTR, svcName, true);
         }
 
         try {
             if (!StringUtil.isEmpty(periodAfterApp)){
                 int afterApp = Integer.parseInt(periodAfterApp);
-                searchParam.addFilter("periodAfterApp", afterApp, true);
+                searchParam.addFilter(PERIOD_AFTER_APP_ATTR, afterApp, true);
             }
 
             if (!StringUtil.isEmpty(periodBeforeExp)){
                 int beforeExp = Integer.parseInt(periodBeforeExp);
-                searchParam.addFilter("periodBeforeExp", beforeExp, true);
+                searchParam.addFilter(PERIOD_BEFORE_APP_ATTR, beforeExp, true);
             }
 
             if (!StringUtil.isEmpty(nonReplyWindow)){
                 int nonRepyWindow = Integer.parseInt(nonReplyWindow);
-                searchParam.addFilter("nonReplyWindow", nonRepyWindow, true);
+                searchParam.addFilter(NON_REPLY_WINDOW_ATTR, nonRepyWindow, true);
             }
         }catch (NumberFormatException e){
-            errorMap.put("numberError", "GENERAL_ERR0002");
+            errorMap.put("numberError", MessageCodeKey.GENERAL_ERR0002);
             return errorMap;
         }
 
@@ -258,8 +281,36 @@ public class PrefDateRangePeriodDelegator {
      * @throws
      */
     public void startStep(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        log.debug(StringUtil.changeForLog("Pref Date Range Period start ...."));
+        AuditTrailHelper.auditFunction("hcsa-licence-be", "Pref Date Range Period");
 
+        ParamUtil.setSessionAttr(request, PREF_PERIOD_SEARCH , null);
+        ParamUtil.setSessionAttr(request, PREF_PERIOD_RESULT , null);
     }
 
+    /**
+     * AutoStep: sortRecords
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void sortRecords(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        CrudHelper.doSorting(searchParam,bpc.request);
+    }
+
+    /**
+     * AutoStep: changePage
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void changePage(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        CrudHelper.doPaging(searchParam,bpc.request);
+    }
 
 }

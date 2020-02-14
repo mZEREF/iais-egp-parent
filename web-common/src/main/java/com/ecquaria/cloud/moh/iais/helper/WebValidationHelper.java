@@ -111,10 +111,26 @@ public class WebValidationHelper {
             for (Map.Entry<String, String> ent : errorMsg.entrySet()) {
                 sb.append("{\"");
                 sb.append(ent.getKey()).append("\" : \"");
-                String value = MessageUtil.getMessageDesc(ent.getValue());
-                value = value.replaceAll("\"", "&quot;");
-                value = value.replaceAll("'", "&apos;");
-                sb.append(value).append("\"},");
+
+                String value = ent.getValue();
+                String msg = "";
+                if (value.contains("/")){
+                    int indx = value.indexOf("/");
+                    try {
+                        String num = value.substring(indx + 1);
+                        Integer.parseInt(num);
+                        msg = MessageUtil.getMessageDesc(value.substring(0, indx));
+                        msg = msg.replace("%d", num);
+                    }catch (NumberFormatException e){
+                        log.debug(e.getMessage());
+                    }
+                }else {
+                    msg  = MessageUtil.getMessageDesc(ent.getValue());
+                }
+
+                msg = msg.replaceAll("\"", "&quot;");
+                msg = msg.replaceAll("'", "&apos;");
+                sb.append(msg).append("\"},");
             }
             return sb.substring(0, sb.length() - 1) + "]";
         } else {

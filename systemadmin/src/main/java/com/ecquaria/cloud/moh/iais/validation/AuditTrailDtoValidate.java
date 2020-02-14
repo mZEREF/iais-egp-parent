@@ -38,6 +38,8 @@ public class AuditTrailDtoValidate implements CustomizeValidator {
 							IaisEGPHelper.parseToDate(endDate, "dd/MM/yyyy"));
 
 					String paramVal = SystemParamCacheHelper
+							.getParamValueById(SystemParamCacheHelper.AUDIT_TRAIL_TIME_LIMIT) == null ? "3" :
+								SystemParamCacheHelper
 							.getParamValueById(SystemParamCacheHelper.AUDIT_TRAIL_TIME_LIMIT);
 
 					String msg = MessageUtil.getMessageDesc("GENERAL_ERR0010");

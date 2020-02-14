@@ -11,11 +11,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -77,4 +84,12 @@ public interface HcsaLicenceClient {
     FeignResponseEntity<SearchResult<AuditTaskDataDto>> searchSysAduit(SearchParam searchParam);
     @PostMapping(value = "/hcsa-licence/cessation-licences-ids",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> updateLicences(@RequestBody List<LicenceDto> licenceDtos);
-    }
+
+
+    @PostMapping(value = "/hcsa-key-personnel/professional-information/results"
+            , produces = MediaType.APPLICATION_JSON_VALUE
+            , consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<SearchResult<ProfessionalInformationQueryDto>> searchProfessionalInformation
+            (@RequestBody SearchParam searchParam);
+
+}

@@ -278,7 +278,7 @@ public class AdhocChecklistDelegator {
             if (!IaisCommonUtils.isEmpty(allAdhocItem)){
                 log.debug("indicates that a record has been selected ");
                 String statusStr = SqlHelper.constructNotInCondition("item.id", allAdhocItem.size());
-                // <#if adhocItemId??> and ${adhocItemId} = :status</#if>
+                // <#if adhocItemId??> and ${adhocItemId} </#if>
                 searchParam.addParam("adhocItemId", statusStr);
                 int indx = 0;
                 for (AdhocChecklistItemDto adhocChecklistItemDto : allAdhocItem){

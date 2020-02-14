@@ -27,12 +27,13 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * LicenceServiceImpl
@@ -174,4 +175,6 @@ public class LicenceServiceImpl implements LicenceService {
     public LicEicRequestTrackingDto getLicEicRequestTrackingDtoByRefNo(String refNo) {
         return hcsaLicenceClient.getLicEicRequestTrackingDto(refNo).getEntity();
     }
+
+
 }

@@ -153,7 +153,6 @@ public class AuditTrailDelegator {
         log.debug(StringUtil.changeForLog("fileHandler start ...."));
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        searchParam.setPageSize(Integer.MAX_VALUE);
 
         SearchResult<AuditTrailQueryDto> searchResult = auditTrailService.listAuditTrailDto(searchParam);
         if (searchResult == null && searchResult.getRows().isEmpty()){
@@ -167,7 +166,7 @@ public class AuditTrailDelegator {
             } catch (IOException e) {
                 log.debug(e.getMessage());
             }
-            log.debug(StringUtil.changeForLog("fileHandler start ...."));
+            log.debug(StringUtil.changeForLog("fileHandler end ...."));
         }
     }
 

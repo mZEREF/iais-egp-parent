@@ -33,7 +33,7 @@ public final class ExcelWriter {
     private static String generationFileName(final String clzName){
         long currentTimeMillis = System.currentTimeMillis();
         String jointText = currentTimeMillis + "." + EXCEL_TYPE_XSSF;
-        return clzName + jointText;
+        return clzName + "-" + jointText;
     }
 
     private static String getSheetName(final Class<?> clz){

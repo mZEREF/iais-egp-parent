@@ -159,7 +159,7 @@
     }
 
     function prepareEdit(id){
-        if(confirm('are sure you want to edit ? ')){
+        if(confirm('Are sure you want to edit ? ')){
             SOP.Crud.cfxSubmit("mainForm", "prepareEdit", id);
         }
     }

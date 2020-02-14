@@ -51,4 +51,14 @@ public class INTRANET___MohPreferredDateRangePeriod___1 extends BaseProcessClass
 		EngineHelper.delegate(DELEGATOR, "doSearch", this);
 	}
 
+
+	public void sortRecords_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "sortRecords", this);
+	}
+
+
+	public void changePage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "changePage", this);
+	}
+
 }

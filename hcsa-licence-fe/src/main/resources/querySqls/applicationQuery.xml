@@ -71,7 +71,7 @@
                 T1.NON_REPLY_WINDOW AS NON_REPLY_WINDOW,
                 T1.STATUS,
                 T1.VERSION
-                from hcsa_service_pref_insp_period T1, hcsa_service T2
+                from hcsa_service_specific_inspect_period T1, hcsa_service T2
                 WHERE T1.STATUS = 'CMSTAT001' AND T2.STATUS = 'CMSTAT001' AND T1.SERVICE_CODE = T2.SVC_CODE
                 <#if id??> AND T1.ID = :id</#if>
                 <#if svcName??> AND T2.SVC_NAME = :svcName</#if>

@@ -13,14 +13,16 @@ var Utils = {
         $(".form-horizontal input[type='checkbox']").removeAttr('checked');
         $(".form-horizontal input[type='radio']").removeAttr('checked');
         $(".form-horizontal option[text = 'Please select']").val("selected", "selected");
-        $(".current").text("Please select");
+        $(".current").text("Please Select");
         $(".form-horizontal option").val("");
     },
 
     doExport: function(url){
         showWaiting();
+        //window.open(url, "down");
         window.location.href = url;
         dismissWaiting();
+
     }
 }
 

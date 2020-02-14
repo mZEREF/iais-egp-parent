@@ -7,8 +7,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: yichen
@@ -60,6 +62,16 @@ public final class HcsaServiceCacheHelper {
 				});
 			}
 		}
+	}
+
+	public static List<HcsaServiceDto> receiveAllHcsaService(){
+		List<HcsaServiceDto> list = new ArrayList<>();
+
+		for(Map.Entry<String, HcsaServiceDto> entries : svcHashMap.entrySet()){
+			list.add(entries.getValue());
+		}
+
+		return list;
 	}
 
 }
