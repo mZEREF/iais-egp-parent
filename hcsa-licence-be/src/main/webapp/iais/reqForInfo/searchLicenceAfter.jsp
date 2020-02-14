@@ -142,10 +142,10 @@
 </form>
 <script type="text/javascript">
     function doLicSearch(){
-        SOP.Crud.cfxSubmit("mainForm", "searchLic");
+        showWaiting();SOP.Crud.cfxSubmit("mainForm", "searchLic");
     }
     function doLicBack(){
-        SOP.Crud.cfxSubmit("mainForm", "back");
+        showWaiting();SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doLicClear(){
         $('input[name="licence_no"]').val("");
@@ -157,10 +157,10 @@
         $('input[name="sub_date"]').val("");
     }
     function doReqForInfo(licPremId) {
-
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "reqForInfo",licPremId);
     }
     function doAppInfo(licenseeId) {
-        SOP.Crud.cfxSubmit("mainForm", "appInfo",licenseeId);
+        showWaiting();SOP.Crud.cfxSubmit("mainForm", "appInfo",licenseeId);
     }
 </script>

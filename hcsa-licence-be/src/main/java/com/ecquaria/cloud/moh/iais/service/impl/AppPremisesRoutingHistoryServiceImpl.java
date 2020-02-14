@@ -31,13 +31,13 @@ public class AppPremisesRoutingHistoryServiceImpl implements AppPremisesRoutingH
     }
 
     @Override
-    public List<AppPremisesRoutingHistoryDto> getAppPremisesRoutingHistoryDtosByAppId(String appId) {
-        return appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppId(appId).getEntity();
+    public List<AppPremisesRoutingHistoryDto> getAppPremisesRoutingHistoryDtosByAppNo(String appNo) {
+        return appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNo(appNo).getEntity();
     }
 
     @Override
-    public AppPremisesRoutingHistoryDto getAppPremisesRoutingHistoryForCurrentStage(String appId, String stageId) {
-        return appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppIdAndStageId(appId,stageId).getEntity();
+    public AppPremisesRoutingHistoryDto getAppPremisesRoutingHistoryForCurrentStage(String appNo, String stageId) {
+        return appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNoAndStageId(appNo,stageId).getEntity();
     }
 
     @Override

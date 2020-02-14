@@ -106,6 +106,9 @@ public class LicenceApproveBatchjob {
             if(applicationLicenceDto != null){
                 ApplicationGroupDto applicationGroupDto = applicationLicenceDto.getApplicationGroupDto();
                 if(applicationGroupDto != null){
+                    // delete the reject applicaiton
+                    List<ApplicationListDto> applicationListDtoList = applicationLicenceDto.getApplicationListDtoList();
+                    deleteRejectApplication(applicationListDtoList);
                     int isGrpLic = applicationGroupDto.getIsGrpLic();
                     log.debug(StringUtil.changeForLog("The application group no is -->;"+applicationGroupDto.getGroupNo()) );
                     log.debug(StringUtil.changeForLog("The isGrpLic is -->;"+isGrpLic));
@@ -156,6 +159,20 @@ public class LicenceApproveBatchjob {
 
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is end ..."));
     }
+    private void deleteRejectApplication(List<ApplicationListDto> applicationListDtoList){
+        if(!IaisCommonUtils.isEmpty(applicationListDtoList)){
+            for (ApplicationListDto applicationListDto : applicationListDtoList){
+                if(applicationListDto!=null){
+                    AppPremisesRecommendationDto appPremisesRecommendationDto = applicationListDto.getAppPremisesRecommendationDto();
+                    boolean isReject =  isApplicaitonReject(appPremisesRecommendationDto);
+                    if(isReject){
+                        applicationListDtoList.remove(applicationListDto);
+                    }
+                }
+            }
+        }
+    }
+
    private List<ApplicationDto> getApplications(List<LicenceGroupDto> licenceGroupDtos){
        List<ApplicationDto> result = new ArrayList<>();
        if(!IaisCommonUtils.isEmpty(licenceGroupDtos)){
@@ -266,6 +283,8 @@ public class LicenceApproveBatchjob {
                 if(IaisCommonUtils.isEmpty(applicationListDtos)){
                     continue;
                 }
+                //to check this applicaiton is approve
+                AppPremisesRecommendationDto appPremisesRecommendationDto = applicationListDtos.get(0).getAppPremisesRecommendationDto();
                 //get service code
                 log.debug(StringUtil.changeForLog("The serviceId is -->:" + key));
                 HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(hcsaServiceDtos,key);
@@ -276,7 +295,7 @@ public class LicenceApproveBatchjob {
                 //create licence
                 //todo:get the yearLenth.
                 String licenceNo = null;
-                int yearLength = 1;
+                int yearLength = getYearLength(appPremisesRecommendationDto);
                 //create licence
                 if(!applicationGroupDto.isAutoRfc()) {
                     licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(), yearLength);
@@ -290,7 +309,7 @@ public class LicenceApproveBatchjob {
                 String originLicenceId = applicationDtos.get(0).getOriginLicenceId();
                 LicenceDto originLicenceDto = deleteOriginLicenceDto(organizationId);
                 superLicDto.setOriginLicenceDto(originLicenceDto);
-                LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),applicationGroupDto,yearLength,
+                LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),applicationGroupDto,yearLength,appPremisesRecommendationDto,
                         originLicenceDto,null,applicationDtos);
                 superLicDto.setLicenceDto(licenceDto);
                 //
@@ -426,12 +445,16 @@ public class LicenceApproveBatchjob {
             String errorMessage = null;
             for(ApplicationListDto applicationListDto : applicationListDtoList){
                 SuperLicDto superLicDto = new SuperLicDto();
+
                 //get service code
                 ApplicationDto applicationDto = applicationListDto.getApplicationDto();
                 if(applicationDto == null){
                     errorMessage = "There is a ApplicationDto is null";
                     break;
                 }
+
+                //to check this applicaiton is approve
+                AppPremisesRecommendationDto appPremisesRecommendationDto = applicationListDto.getAppPremisesRecommendationDto();
                 String serviceId = applicationDto.getServiceId();
                 log.debug(StringUtil.changeForLog("The serviceId is -->:" + serviceId));
                 HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(hcsaServiceDtos,serviceId);
@@ -456,7 +479,7 @@ public class LicenceApproveBatchjob {
                         appSvcPremisesScopeAllocationDtos, hcsaServiceDto,organizationId,isPostInspNeeded);
                 String licenceNo = null;
                 //todo:get the yearLenth.
-                int yearLength = 1;
+                int yearLength = getYearLength(appPremisesRecommendationDto);
                 if(!IaisCommonUtils.isEmpty(premisesGroupDtos)){
                     PremisesGroupDto premisesGroupDto =premisesGroupDtos.get(0);
                     if(premisesGroupDto.isHasError()){
@@ -478,7 +501,7 @@ public class LicenceApproveBatchjob {
                 String originLicenceId = applicationDto.getOriginLicenceId();
                 LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId);
                 superLicDto.setOriginLicenceDto(originLicenceDto);
-                LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),applicationGroupDto,yearLength,
+                LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),applicationGroupDto,yearLength,appPremisesRecommendationDto,
                         originLicenceDto,applicationDto,null);
                 superLicDto.setLicenceDto(licenceDto);
                 //create the lic_app_correlation
@@ -534,6 +557,30 @@ public class LicenceApproveBatchjob {
             }
         }
         log.debug(StringUtil.changeForLog("The generateLIcence is end ..."));
+        return result;
+    }
+
+
+    private  int getYearLength(AppPremisesRecommendationDto appPremisesRecommendationDto){
+        int yearLength = 1;
+        if(appPremisesRecommendationDto!=null){
+            String chrono = appPremisesRecommendationDto.getChronoUnit();
+            if(AppConsts.LICENCE_PERIOD_YEAR.equals(chrono)){
+                yearLength = appPremisesRecommendationDto.getRecomInNumber();
+            }
+        }
+        return yearLength;
+    }
+    private boolean isApplicaitonReject(AppPremisesRecommendationDto appPremisesRecommendationDto){
+        boolean result = false;
+        if(appPremisesRecommendationDto!=null){
+            Integer number = appPremisesRecommendationDto.getRecomInNumber();
+            if(number != null){
+                if(number == 0){
+                    result = true;
+                }
+            }
+        }
         return result;
     }
 
@@ -857,7 +904,8 @@ public class LicenceApproveBatchjob {
     }
 
     private LicenceDto getLicenceDto(String licenceNo,String svcName,ApplicationGroupDto applicationGroupDto,
-                                     int yearLength,LicenceDto originLicenceDto,
+                                     int yearLength,AppPremisesRecommendationDto appPremisesRecommendationDto,
+                                     LicenceDto originLicenceDto,
                                      ApplicationDto applicationDto,
                                      List<ApplicationDto> applicationDtos){
         LicenceDto licenceDto = new LicenceDto();
@@ -881,6 +929,12 @@ public class LicenceApproveBatchjob {
             //todo:The latest choose from Giro pay Date, Approved Date,Aso set Date,
             if(applicationGroupDto!=null){
                 Date startDate = applicationGroupDto.getModifiedAt();
+                if(appPremisesRecommendationDto != null){
+                    Date date= appPremisesRecommendationDto.getRecomInDate();
+                    if(date !=null){
+                        startDate = date;
+                    }
+                }
                 log.debug(StringUtil.changeForLog("The startDate is -->:"+startDate));
                 if(startDate == null){
                     startDate = new Date();

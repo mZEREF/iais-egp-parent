@@ -242,6 +242,14 @@ public class OfficerOnlineEnquiriesDelegator {
             count= new int[]{1, 2, 3, 4, 5};
         }
         ParamUtil.setSessionAttr(request,"choose",count);
+        List<SelectOption> licSvcTypeOption =requestForInformationService.getLicSvcTypeOption();
+        List<SelectOption> licStatusOption = requestForInformationService.getLicStatusOption();
+        List<SelectOption> appTypeOption = requestForInformationService.getAppTypeOption();
+        List<SelectOption> appStatusOption =requestForInformationService.getAppStatusOption();
+        ParamUtil.setRequestAttr(request,"licSvcTypeOption", licSvcTypeOption);
+        ParamUtil.setRequestAttr(request,"licStatusOption", licStatusOption);
+        ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
+        ParamUtil.setRequestAttr(request,"appStatusOption", appStatusOption);
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         String searchNo=ParamUtil.getString(request,"search_no");
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);

@@ -237,7 +237,7 @@
 
                                             <tr>
                                                 <td class="col-xs-4">
-                                                    <p><b style="color:#ff0000;">*</b>Processing Decision:</p>
+                                                    <p>Processing Decision:<b style="color:#ff0000;">*</b></p>
                                                 </td>
                                                 <td class="col-xs-4">
                                                     <iais:select name="processingDecision" options="processingDe" firstOption="Please select" value="${appPremisesRecommendationDto.processingDecision}"/>

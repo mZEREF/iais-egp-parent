@@ -74,12 +74,15 @@
 </form>
 <script type="text/javascript">
     function doNew(){
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "new");
     }
     function doBack(){
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doView(reqInfoId) {
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "view",reqInfoId);
     }
 

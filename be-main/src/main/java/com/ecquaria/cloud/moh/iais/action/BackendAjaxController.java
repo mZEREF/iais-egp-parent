@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentBeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.BelicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
@@ -62,6 +63,9 @@ public class BackendAjaxController {
 
     @Autowired
     private InspectionMainAssignTaskService inspectionAssignTaskService;
+
+    @Autowired
+    private ApplicationMainClient applicationMainClient;
 
     @Autowired
     private AppInspectionStatusMainClient appInspectionStatusClient;
@@ -203,11 +207,13 @@ public class BackendAjaxController {
         if(StringUtil.isEmpty(subStage)){
             return null;
         }
+        ApplicationViewDto applicationViewDto = applicationMainClient.getAppViewByCorrelationId(taskDto.getRefNo()).getEntity();
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setSubStage(subStage);
         appPremisesRoutingHistoryDto.setWrkGrpId(taskDto.getWkGrpId());
         appPremisesRoutingHistoryDto.setRoleId(taskDto.getRoleId());
-        appPremisesRoutingHistoryDto.setAppPremCorreId(taskDto.getRefNo());
+        appPremisesRoutingHistoryDto.setApplicationNo(applicationDto.getApplicationNo());
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = inspectionTaskMainClient.getHistoryForKpi(appPremisesRoutingHistoryDto).getEntity();
         List<String> roleIds = getRoleIdsByHistory(appPremisesRoutingHistoryDtos);
         List<TaskDto> taskDtoList = new ArrayList<>();
@@ -330,7 +336,11 @@ public class BackendAjaxController {
         String subStage = "";
         if(appInspectionStatusDto != null) {
             String status = appInspectionStatusDto.getStatus();
-            if (status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_PRE)) {
+            if (status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_PRE) ||
+                status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_APPOINTMENT_INSPECTION_DATE )||
+                status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_RE_APPOINTMENT_INSPECTION_DATE) ||
+                status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_INSPECTION_DATE) ||
+                status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_SPECIFIC_INSP_DATE)) {
                 subStage = HcsaConsts.ROUTING_STAGE_PRE;
             } else if (status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY)) {
                 subStage = HcsaConsts.ROUTING_STAGE_INP;

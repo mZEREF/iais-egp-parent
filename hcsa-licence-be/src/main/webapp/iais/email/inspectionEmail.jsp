@@ -312,6 +312,7 @@
 
 <script type="text/javascript">
     function doPreview(){
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "preview");
     }
 
@@ -321,6 +322,7 @@
             ;
         }
         else {
+            showWaiting();
             SOP.Crud.cfxSubmit("mainForm", "send");
         }
     }

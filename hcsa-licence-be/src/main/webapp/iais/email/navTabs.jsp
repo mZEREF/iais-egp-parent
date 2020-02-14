@@ -45,12 +45,15 @@
         var controlLi = $('#controlLi').val();
         $('#'+controlLi+'li').addClass('active');
         $('#checkList').click(function(){
+            showWaiting();
             submit('checkList',null,null);
         });
         $('#letter').click(function(){
+            showWaiting();
             submit('emailView',null,null);
         });
         $('#processing').click(function(){
+            showWaiting();
             submit('processing',null,null);
         });
     });
@@ -61,6 +64,7 @@
         $("[name='crud_action_value']").val(value);
         $("[name='crud_action_additional']").val(additional);
         var mainForm = document.getElementById('mainForm');
+        showWaiting();
         mainForm.submit();
     }
 

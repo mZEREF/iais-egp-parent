@@ -76,9 +76,11 @@
 </form>
 <script type="text/javascript">
     function doAppSearch(){
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "search");
     }
     function doAppBack(){
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doAppClear(){

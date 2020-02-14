@@ -119,18 +119,20 @@
 </form>
 <script type="text/javascript">
     function doBack(){
-        SOP.Crud.cfxSubmit("mainForm", "back");
+        showWaiting();SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doAccept(reqInfoId) {
-        SOP.Crud.cfxSubmit("mainForm", "accept",reqInfoId);
+        showWaiting();SOP.Crud.cfxSubmit("mainForm", "accept",reqInfoId);
     }
     function doExtends(reqInfoId) {
-        SOP.Crud.cfxSubmit("mainForm", "update",reqInfoId);
+        showWaiting();SOP.Crud.cfxSubmit("mainForm", "update",reqInfoId);
     }
     function doCancel(reqInfoId) {
         var user=document.getElementById("userReply");
-        if(user.value!=null)
-        SOP.Crud.cfxSubmit("mainForm", "cancel",reqInfoId);
+        if(user.value!=null){
+            showWaiting();SOP.Crud.cfxSubmit("mainForm", "cancel",reqInfoId);
+        }
+
     }
 
 
