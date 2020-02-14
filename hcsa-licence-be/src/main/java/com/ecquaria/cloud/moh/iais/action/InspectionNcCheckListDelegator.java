@@ -229,7 +229,7 @@ public class InspectionNcCheckListDelegator {
                 }
                 ParamUtil.setSessionAttr(request,"adchklDto",showPageDto);
                 LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-                //fillupChklistService.routingTask(taskDto,null,loginContext,flag);
+                fillupChklistService.routingTask(taskDto,null,loginContext,flag);
             }
        }
 
