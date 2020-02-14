@@ -30,11 +30,14 @@
                 app.app_type,
                 app.status,
                 app.service_id,
-                app.created_dt
+                app.created_dt，
+                app.version
             FROM APPLICATION AS app
-             union
+            join (select application_no,MAX(version) as version from application GROUP BY application_no) as app2
+            on app.APPLICATION_NO = app2.application_no and app.version = app2.version
+            union
             select
-                A.ID,A.DRAFT_NO AS application_no,A.APP_TYPE,'APST008' as status,NULL as service_id, A.CREATED_DT
+                A.ID,A.DRAFT_NO AS application_no,A.APP_TYPE,'APST008' as status,NULL as service_id, A.CREATED_DT,1
             from
                 app_grp_submission_draft AS A
             where  A.status = 'CMSTAT001') AS B
