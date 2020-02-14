@@ -165,6 +165,7 @@ public class PublicHolidayDelegate {
         String yearSwitch = ParamUtil.getRequestString(bpc.request,"yearSwitch");
         holidaySearchParam.getParams().clear();
         holidaySearchParam.getFilters().clear();
+        holidaySearchParam.setPageNo(1);
         if(!StringUtil.isEmpty(descriptionSwitch)){
             holidaySearchParam.addFilter("description", "%" + descriptionSwitch + "%",true);
         }
