@@ -29,7 +29,7 @@
         <p class="text-right"><a id="edit"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
       </c:when>
       <c:otherwise>
-        <p class="text-right" style="color: gray"><i class="fa fa-pencil-square-o"></i>Edit</p>
+
       </c:otherwise>
     </c:choose>
     </div>

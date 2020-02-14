@@ -47,7 +47,7 @@
                           <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                         </c:when>
                         <c:otherwise>
-                          <p class="text-right" style="color: gray"><em class="fa fa-pencil-square-o"></em>Edit</p>
+
                         </c:otherwise>
                       </c:choose>
                     </div>
@@ -88,7 +88,7 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4" id="salutation${suffix}">
-                        <iais:select  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${principalOfficer.salutation}" firstOption="Please Select"></iais:select>
+                        <iais:select cssClass="salutation"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${principalOfficer.salutation}" firstOption="Please Select"></iais:select>
                       </div>
                       <div class="col-sm-4">
                         <input name="name" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.name}" >
@@ -107,7 +107,7 @@
                       </div>
                       <div class="col-sm-4">
                         <div class="" id="idType${suffix}">
-                          <iais:select  name="idType"  value="${principalOfficer.idType}" options="IdTypeSelect"></iais:select>
+                          <iais:select cssClass="idType"  name="idType"  value="${principalOfficer.idType}" options="IdTypeSelect"></iais:select>
                           <span class="error-msg" name="iaisErrorMsg" id="error_idType${status.index}"></span>
                         </div>
                       </div>
@@ -126,7 +126,7 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-5" id="designation${suffix}">
-                        <iais:select name="designation" codeCategory="CATE_ID_DESIGNATION" value="${principalOfficer.designation}" firstOption="Please Select"></iais:select>
+                        <iais:select cssClass="designation" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${principalOfficer.designation}" firstOption="Please Select"></iais:select>
                       </div>
 
                     </div>
@@ -229,7 +229,7 @@
                       <c:set var="showPreview" value="true"/>
                       <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
                         <c:if test="${amendType =='RFCATYPE04'}">
-                          <c:set var="canEditDpo" value="1"/>
+                          <c:set var="cancanEditDpoEdit" value="1"/>
                         </c:if>
                       </c:forEach>
                       <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
@@ -238,7 +238,7 @@
                             <p class="text-right"><a id="edit-dpo"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                           </c:when>
                           <c:otherwise>
-                            <p class="text-right" style="color: gray"><em class="fa fa-pencil-square-o"></em>Edit</p>
+
                           </c:otherwise>
                         </c:choose>
                       </div>
@@ -278,7 +278,7 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4" id="deputySalutation${suffix}">
-                        <iais:select  name="deputySalutation" codeCategory="CATE_ID_SALUTATION" value="${deputy.salutation}" firstOption="Select Salution"></iais:select>
+                        <iais:select cssClass="deputySalutation"  name="deputySalutation" codeCategory="CATE_ID_SALUTATION" value="${deputy.salutation}" firstOption="Select Salution"></iais:select>
                       </div>
                       <div class="col-sm-4">
                         <input name="deputyName"  type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.name}"  size="30">
@@ -298,7 +298,7 @@
                       </div>
                       <div class="col-sm-4" id="deputyIdType${suffix}">
                         <div class="">
-                          <iais:select  name="deputyIdType" value="${deputy.idType}" options="IdTypeSelect"></iais:select>
+                          <iais:select cssClass="deputyIdType"  name="deputyIdType" value="${deputy.idType}" options="IdTypeSelect"></iais:select>
                           <span name="iaisErrorMsg" class="error-msg" id="error_deputyIdType${status.index}"></span>
                         </div>
                       </div>
@@ -317,7 +317,7 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-5" id="deputyDesignation${suffix}">
-                        <iais:select name="deputyDesignation" codeCategory="CATE_ID_DESIGNATION" value="${deputy.designation}" firstOption="Select Designation"></iais:select>
+                        <iais:select cssClass="deputyDesignation" name="deputyDesignation" codeCategory="CATE_ID_DESIGNATION" value="${deputy.designation}" firstOption="Select Designation"></iais:select>
                         <span class="error-msg" id="error_deputyDesignation${status.index}" name="iaisErrorMsg"></span>
                       </div>
                     </div>
@@ -359,7 +359,7 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
-                        <iais:select  name="modeOfMedAlert" value="${deputy.modeOfMedAlert}" options="MedAlertSelect"></iais:select>
+                        <iais:select cssClass="modeOfMedAlert"  name="modeOfMedAlert" value="${deputy.modeOfMedAlert}" options="MedAlertSelect"></iais:select>
                         <span class="error-msg" name="iaisErrorMsg" id="error_modeOfMedAlert${status.index}" ></span>
                       </div>
                     </div>

@@ -1843,6 +1843,7 @@ public class ClinicalLaboratoryDelegator {
         //salutation
         List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
         Map<String,String> salutationAttr = new HashMap<>();
+        salutationAttr.put("class", "salutation");
         salutationAttr.put("name", "salutation");
         salutationAttr.put("style", "display: none;");
         String salutationSelectStr = NewApplicationDelegator.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
@@ -1850,6 +1851,7 @@ public class ClinicalLaboratoryDelegator {
         //ID Type
         List<SelectOption> idTypeList = getIdTypeSelOp();
         Map<String,String>  idTypeAttr = new HashMap<>();
+        idTypeAttr.put("class", "idType");
         idTypeAttr.put("name", "idType");
         idTypeAttr.put("style", "display: none;");
         String idTypeSelectStr = NewApplicationDelegator.generateDropDownHtml(idTypeAttr, idTypeList, null);
@@ -1857,6 +1859,7 @@ public class ClinicalLaboratoryDelegator {
         //Designation
         List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
         Map<String,String> designationAttr = new HashMap<>();
+        designationAttr.put("class", "designation");
         designationAttr.put("name", "designation");
         designationAttr.put("style", "display: none;");
         String designationSelectStr = NewApplicationDelegator.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
@@ -1879,6 +1882,7 @@ public class ClinicalLaboratoryDelegator {
         //salutation
         List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
         Map<String,String> salutationAttr = new HashMap<>();
+        salutationAttr.put("class", "deputySalutation");
         salutationAttr.put("name", "deputySalutation");
         salutationAttr.put("style", "display: none;");
         String salutationSelectStr = NewApplicationDelegator.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
@@ -1886,6 +1890,7 @@ public class ClinicalLaboratoryDelegator {
         //ID Type
         List<SelectOption> idTypeList = getIdTypeSelOp();
         Map<String,String>  idTypeAttr = new HashMap<>();
+        idTypeAttr.put("class", "deputyIdType");
         idTypeAttr.put("name", "deputyIdType");
         idTypeAttr.put("style", "display: none;");
         String idTypeSelectStr = NewApplicationDelegator.generateDropDownHtml(idTypeAttr, idTypeList, null);
@@ -1893,6 +1898,7 @@ public class ClinicalLaboratoryDelegator {
         //Designation
         List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
         Map<String,String> designationAttr = new HashMap<>();
+        designationAttr.put("class", "deputyDesignation");
         designationAttr.put("name", "deputyDesignation");
         designationAttr.put("style", "display: none;");
         String designationSelectStr = NewApplicationDelegator.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
@@ -1900,6 +1906,7 @@ public class ClinicalLaboratoryDelegator {
         //MedAlert
         List<SelectOption> medAlertSelectList = getMedAlertSelectList(false);
         Map<String,String> medAlertSelectAttr = new HashMap<>();
+        medAlertSelectAttr.put("class", "modeOfMedAlert");
         medAlertSelectAttr.put("name", "modeOfMedAlert");
         medAlertSelectAttr.put("style", "display: none;");
         String medAlertSelectStr = NewApplicationDelegator.generateDropDownHtml(medAlertSelectAttr, medAlertSelectList, NewApplicationDelegator.FIRESTOPTION);
@@ -1928,7 +1935,7 @@ public class ClinicalLaboratoryDelegator {
         return  assignSelectList;
     }
 
-    private List<SelectOption> getIdTypeSelOp(){
+    public static  List<SelectOption> getIdTypeSelOp(){
         List<SelectOption> idTypeSelectList = new ArrayList<>();
         SelectOption idType0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
         idTypeSelectList.add(idType0);

@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
@@ -262,20 +263,21 @@ public class RequestForChangeMenuDelegator {
         List<AppGrpPremisesDto> appGrpPremisesDtoList = new ArrayList<>();
         appGrpPremisesDtoList.add(newPremisesDto);
         ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, appGrpPremisesDtoList);
-        String appStatus = premisesListQueryDto.getLicenceStatus();
-        Map<String, String> errorMap = new HashMap<>();
-        if(ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(premisesListQueryDto.getStatus())){
-            errorMap.put("Globle", "licence must be active");
+        String licenceId = appSubmissionDto.getLicenceId();
+        if(!StringUtil.isEmpty(licenceId)){
+            ApplicationDto applicationDto = requestForChangeService.getApplicationByLicenceId(licenceId);
+            if(applicationDto!= null){
+                ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
+                ParamUtil.setRequestAttr(bpc.request, NewApplicationDelegator.ACKMESSAGE, "There is  ongoing application for the licence");
+                return;
+            }
         }
-        //wait constats
-        else if(!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(appStatus)){
-            errorMap.put("Globle", "had ongoing application for licence");
-        }else{
-            errorMap = doValidatePremiss(bpc.request, newPremisesDto);
-        }
+
+        Map<String, String>  errorMap = doValidatePremiss(bpc.request, newPremisesDto);
+
         if(errorMap.size() >0){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg",WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.FORM_TAB, "prepareEdit");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, "prePremisesEdit");
             return;
         }
 
@@ -381,6 +383,8 @@ public class RequestForChangeMenuDelegator {
             String hiddenIdNo = "xxxx"+idNo.substring(4);
             personnelListQueryDto.setHiddenIdNo(hiddenIdNo);
         }
+        List<SelectOption> idTypeSelectList = ClinicalLaboratoryDelegator.getIdTypeSelOp();
+        ParamUtil.setRequestAttr(bpc.request, ClinicalLaboratoryDelegator.DROPWOWN_IDTYPESELECT, idTypeSelectList);
         ParamUtil.setSessionAttr(bpc.request,RfcConst.PERSONNELEDITLIST, (Serializable) personnelEditList);
         log.debug(StringUtil.changeForLog("the do preparePersonnelEdit end ...."));
     }
@@ -396,12 +400,30 @@ public class RequestForChangeMenuDelegator {
         List<PersonnelListQueryDto> personnelEditList = (List<PersonnelListQueryDto>) ParamUtil.getSessionAttr(bpc.request,RfcConst.PERSONNELEDITLIST);
         String email = ParamUtil.getString(bpc.request ,"emailAddress" ) ;
         String mobile = ParamUtil.getString(bpc .request, "mobileNo");
+        String designation = ParamUtil.getString(bpc .request, "designation");
+        String professionType = ParamUtil.getString(bpc .request, "professionType");
+        String professionRegnNo = ParamUtil.getString(bpc .request, "professionRegnNo");
         PersonnelListQueryDto personnelListQueryDto = personnelEditList.get(0);
         personnelListQueryDto.setEmailAddr(email);
         personnelListQueryDto.setMobileNo(mobile);
-        /*personnelListQueryDto.setDesignation();
-        personnelListQueryDto.setProfessionType();
-        personnelListQueryDto.setProfessionRegnNo();*/
+        personnelListQueryDto.setDesignation(designation);
+        personnelListQueryDto.setProfessionType(professionType);
+        personnelListQueryDto.setProfessionRegnNo(professionRegnNo);
+
+
+        for(PersonnelListQueryDto item:personnelEditList){
+            String licenceId = item.getLicenceId();
+            if(!StringUtil.isEmpty(licenceId)){
+                ApplicationDto applicationDto = requestForChangeService.getApplicationByLicenceId(licenceId);
+                if(applicationDto!= null){
+                    ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"preAck");
+                    ParamUtil.setRequestAttr(bpc.request, NewApplicationDelegator.ACKMESSAGE, "There is  ongoing application for the licence");
+                    return;
+                }
+            }
+        }
+
 
         Map<String,String> errMap = new HashMap<>();
         if(StringUtil.isEmpty(email)){
@@ -419,16 +441,17 @@ public class RequestForChangeMenuDelegator {
                 errMap.put("mobileNo", "CHKLMD001_ERR004");
             }
         }
+        if(StringUtil.isEmpty(professionType)){
+            errMap.put("professionType","UC_CHKLMD001_ERR002");
+        }
+        if(StringUtil.isEmpty(designation)){
+            errMap.put("designation","UC_CHKLMD001_ERR001");
+        }
+        if(StringUtil.isEmpty(professionRegnNo)){
+            errMap.put("professionRegnNo","UC_CHKLMD001_ERR001");
+        }
 
-        boolean active = true;
-        for(PersonnelListQueryDto item:personnelEditList){
-            if(!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(item.getLicenceStatus())){
-                active = false;
-            }
-        }
-        if(!active){
-            errMap.put("licenceStatus","licence status is not active");
-        }
+
         if(!errMap.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,RfcConst.SWITCH_VALUE,"loading");
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"preparePersonnelEdit");
@@ -478,15 +501,6 @@ public class RequestForChangeMenuDelegator {
             appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             appSubmissionDto = setPersonnelDate(appSubmissionDto,personnelListQueryDto);
         }
-        //update status wait change api
-        for(AppSubmissionDto appSubmissionDto:appSubmissionDtos){
-            LicenceDto licenceDto = new LicenceDto();
-            licenceDto.setId(appSubmissionDto.getLicenceId());
-            licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_REQUEST_FOR_CHANGE);
-            requestForChangeService.upDateLicStatus(licenceDto);
-        }
-
-
 
 
         requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos);

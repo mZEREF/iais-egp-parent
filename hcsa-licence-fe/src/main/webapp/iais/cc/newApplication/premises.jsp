@@ -672,9 +672,9 @@
         disabledPage();
         </c:if>
 
-        <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
+        <%--<c:if test="${'APTY005' ==AppSubmissionDto.appType}">
           $('input[name="onSiteHciName"]').prop('disabled',true);
-        </c:if>
+        </c:if>--%>
     });
 
 

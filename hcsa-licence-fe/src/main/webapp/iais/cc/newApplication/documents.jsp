@@ -67,7 +67,7 @@
                               </span>
                             </c:when>
                             <c:otherwise>
-                              <span class="delBtn">
+                              <span class="delBtn <c:if test="${'1' != canEdit}">hidden</c:if>">
                                 &nbsp;&nbsp;<button type="button" class="">Delete</button>
                               </span>
                             </c:otherwise>

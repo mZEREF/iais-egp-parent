@@ -17,7 +17,15 @@
     <div class="main-content">
         <div class="container">
             <div class="row">
-                Amend Success
+
+                <c:choose>
+                    <c:when test="${AckMessage != null}">
+                        ${AckMessage}
+                    </c:when>
+                    <c:otherwise>
+                        Amend Success
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </div>
