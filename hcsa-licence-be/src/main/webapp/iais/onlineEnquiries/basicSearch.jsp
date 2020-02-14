@@ -25,28 +25,28 @@
                                 <div class="panel-main-content">
                                     <iais:section title="" id = "supPoolList">
                                         <iais:row>
-                                            <iais:field value="search no"/>
+                                            <iais:field value="Search No:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" name="search_no"  />
+                                                    <input type="text" name="searchNo"  />
                                                 </label>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:value width="18">
-                                                <input type="radio" name="hci" />HCI Name
+                                                <input type="checkbox" name="hci" />HCI Name
                                             </iais:value>
                                             <iais:value width="18">
-                                                <input type="radio" name="application"  />Application No
+                                                <input type="checkbox" name="application"  />Application No
                                             </iais:value>
                                             <iais:value width="18">
-                                                <input type="radio" name="licence" />Licence No
+                                                <input type="checkbox" name="licence" />Licence No
                                             </iais:value>
                                             <iais:value width="18">
-                                                <input type="radio" name="licensee"  />Licensee Name
+                                                <input type="checkbox" name="licensee"  />Licensee Name
                                             </iais:value>
                                             <iais:value width="18">
-                                                <input type="radio" name="servicePersonnel"  />Service Personnel Name
+                                                <input type="checkbox" name="servicePersonnel"  />Service Personnel Name
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">

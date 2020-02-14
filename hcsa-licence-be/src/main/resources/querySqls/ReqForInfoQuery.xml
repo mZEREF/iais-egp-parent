@@ -24,6 +24,24 @@
             <#if hciName??> AND T3.HCI_NAME = :hciName</#if>
             <#if hciStreetName??> AND T3.STREET_NAME = :hciStreetName</#if>
             <#if hciPostalCode??> AND T3.POSTAL_NAME = :hciPostalCode</#if>
+            
+            <#if licence_status??>AND :licence_status = :licence_status</#if>
+            <#if start_date??>AND :start_date = :start_date</#if>
+            <#if start_to_date??>AND :start_to_date = :start_to_date</#if>
+            <#if expiry_date??>AND :expiry_date = :expiry_date</#if>
+            <#if expiry_start_date??>AND :expiry_start_date = :expiry_start_date</#if>
+            <#if licence_no??>AND :licence_no = :licence_no</#if>
+            <#if app_id??>AND :app_id = :app_id</#if>
+            <#if org_ids??>AND :org_ids = :org_ids</#if>
+            <#if svc_names??>AND :svc_names = :svc_names</#if>
+            <#if licenseeIds??>AND :licenseeIds = :licenseeIds</#if>
+            <#if licenseeId??>AND :licenseeId = :licenseeId</#if>
+            <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
+            <#if licenseeRegnNo??>AND :licenseeRegnNo = :licenseeRegnNo</#if>
+            <#if serviceId??>AND :serviceId = :serviceId</#if>
+            <#if serviceName??>AND :serviceName = :serviceName</#if>
+            <#if serviceRole??>AND :serviceRole = :serviceRole</#if>
+            <#if serviceRegnNo??>AND :serviceRegnNo = :serviceRegnNo</#if>
         ]]>
     </sql>
 
@@ -64,6 +82,20 @@
             <#if hciPostalCode??> AND Prem.POSTAL_NAME = :hciPostalCode</#if>
             <#if svc_names??> AND lic.SVC_NAME in( :svc_names)</#if>
             <#if licenseeIds??> AND lic.LICENSEE_ID in( :licenseeIds)</#if>
+
+            <#if licenseeId??>AND :licenseeId = :licenseeId</#if>
+            <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
+            <#if licenseeRegnNo??>AND :licenseeRegnNo = :licenseeRegnNo</#if>
+            <#if serviceId??>AND :serviceId = :serviceId</#if>
+            <#if serviceName??>AND :serviceName = :serviceName</#if>
+            <#if serviceRole??>AND :serviceRole = :serviceRole</#if>
+            <#if serviceRegnNo??>AND :serviceRegnNo = :serviceRegnNo</#if>
+            <#if id??>AND :id = :id</#if>
+            <#if appType??>AND :appType = :appType</#if>
+            <#if appNo??>AND :appNo = :appNo</#if>
+            <#if appStatus??>AND :appStatus = :appStatus</#if>
+            <#if subDate??>AND :subDate = :subDate</#if>
+            <#if toDate??>AND :toDate = :toDate</#if>
         ]]>
     </sql>
 
@@ -73,10 +105,34 @@
                 lic.id as licensee_id
             FROM LICENSEE AS lic
             WHERE 1=1
-            <#if id??> AND lic.id = :id</#if>
-            <#if name??> AND lic.NAME = :name</#if>
-            <#if postalCode??> AND lic.POSTAL_CODE = :postalCode</#if>
-
+            <#if licenseeId??> AND lic.id = :licenseeId</#if>
+            <#if licenseeName??> AND lic.NAME = :licenseeName</#if>
+            <#if licenseeRegnNo??> AND lic.POSTAL_CODE = :licenseeRegnNo</#if>
+            
+            <#if id??>AND :id = :id</#if>
+            <#if appType??>AND :appType = :appType</#if>
+            <#if appNo??>AND :appNo = :appNo</#if>
+            <#if appStatus??>AND :appStatus = :appStatus</#if>
+            <#if subDate??>AND :subDate = :subDate</#if>
+            <#if toDate??>AND :toDate = :toDate</#if>
+            <#if licence_status??>AND :licence_status = :licence_status</#if>
+            <#if start_date??>AND :start_date = :start_date</#if>
+            <#if start_to_date??>AND :start_to_date = :start_to_date</#if>
+            <#if expiry_date??>AND :expiry_date = :expiry_date</#if>
+            <#if expiry_start_date??>AND :expiry_start_date = :expiry_start_date</#if>
+            <#if licence_no??>AND :licence_no = :licence_no</#if>
+            <#if app_id??>AND :app_id = :app_id</#if>
+            <#if org_ids??>AND :org_ids = :org_ids</#if>
+            <#if hciCode??>AND :hciCode = :hciCode</#if>
+            <#if hciName??>AND :hciName = :hciName</#if>
+            <#if hciStreetName??>AND :hciStreetName = :hciStreetName</#if>
+            <#if hciPostalCode??>AND :hciPostalCode = :hciPostalCode</#if>
+            <#if svc_names??>AND :svc_names = :svc_names</#if>
+            <#if licenseeIds??>AND :licenseeIds = :licenseeIds</#if>
+            <#if serviceId??>AND :serviceId = :serviceId</#if>
+            <#if serviceName??>AND :serviceName = :serviceName</#if>
+            <#if serviceRole??>AND :serviceRole = :serviceRole</#if>
+            <#if serviceRegnNo??>AND :serviceRegnNo = :serviceRegnNo</#if>
         ]]>
     </sql>
 
@@ -88,10 +144,34 @@
             LEFT JOIN hcsa_service_specific_routing_stage svcRout ON svcRout.SERVICE_ID = svc.ID
             LEFT JOIN hcsa_service_routing_stage svcStage ON svcRout.STAGE_ID = svcStage.ID
             WHERE 1=1
-            <#if id??> AND svc.id = :id</#if>
-            <#if svcName??> AND svc.SVC_NAME = :svcName</#if>
-            <#if roleName??> AND svcStage.STAGE_NAME like '%:roleName%'</#if>
-            <#if svc_code??> AND svc.SVC_CODE = :svc_code</#if>
+            <#if serviceId??> AND svc.id = :serviceId</#if>
+            <#if serviceName??> AND svc.SVC_NAME = :serviceName</#if>
+            <#if serviceRole??> AND svcStage.STAGE_NAME like '%:serviceRole%'</#if>
+            <#if serviceRegnNo??> AND svc.SVC_CODE = :serviceRegnNo</#if>
+            
+            <#if id??>AND :id = :id</#if>
+            <#if appType??>AND :appType = :appType</#if>
+            <#if appNo??>AND :appNo = :appNo</#if>
+            <#if appStatus??>AND :appStatus = :appStatus</#if>
+            <#if subDate??>AND :subDate = :subDate</#if>
+            <#if toDate??>AND :toDate = :toDate</#if>
+            <#if licence_status??>AND :licence_status = :licence_status</#if>
+            <#if start_date??>AND :start_date = :start_date</#if>
+            <#if start_to_date??>AND :start_to_date = :start_to_date</#if>
+            <#if expiry_date??>AND :expiry_date = :expiry_date</#if>
+            <#if expiry_start_date??>AND :expiry_start_date = :expiry_start_date</#if>
+            <#if licence_no??>AND :licence_no = :licence_no</#if>
+            <#if app_id??>AND :app_id = :app_id</#if>
+            <#if org_ids??>AND :org_ids = :org_ids</#if>
+            <#if hciCode??>AND :hciCode = :hciCode</#if>
+            <#if hciName??>AND :hciName = :hciName</#if>
+            <#if hciStreetName??>AND :hciStreetName = :hciStreetName</#if>
+            <#if hciPostalCode??>AND :hciPostalCode = :hciPostalCode</#if>
+            <#if svc_names??>AND :svc_names = :svc_names</#if>
+            <#if licenseeIds??>AND :licenseeIds = :licenseeIds</#if>
+            <#if licenseeId??>AND :licenseeId = :licenseeId</#if>
+            <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
+            <#if licenseeRegnNo??>AND :licenseeRegnNo = :licenseeRegnNo</#if>
         ]]>
     </sql>
 

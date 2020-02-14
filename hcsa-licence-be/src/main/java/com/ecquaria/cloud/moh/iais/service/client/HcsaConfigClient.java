@@ -37,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecific
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
@@ -252,7 +253,7 @@ public interface HcsaConfigClient {
     FeignResponseEntity<String> getServiceCodeByName(@PathVariable(name= "svcName") String svcName);
 
     @GetMapping(value = "/iais-hcsa-service/search-svcNames-param")
-    FeignResponseEntity<SearchResult<String>> searchSvcNamesParam(@RequestBody SearchParam searchParam);
+    FeignResponseEntity<SearchResult<RfiLicenceQueryDto>> searchSvcNamesParam(@RequestBody SearchParam searchParam);
 
     @PostMapping(value = "/iais-hcsa-service/appt-date-service",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppointmentDto> getApptStartEndDateByService(@RequestBody AppointmentDto appointmentDto);

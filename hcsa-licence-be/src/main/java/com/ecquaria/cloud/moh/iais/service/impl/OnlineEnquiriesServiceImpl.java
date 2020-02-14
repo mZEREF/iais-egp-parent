@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -24,12 +25,12 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     private OrganizationClient organizationClient;
 
     @Override
-    public SearchResult<String> searchLicenseeIdsParam(SearchParam searchParam) {
+    public SearchResult<RfiLicenceQueryDto> searchLicenseeIdsParam(SearchParam searchParam) {
         return organizationClient.searchLicenseeIdsParam(searchParam).getEntity();
     }
 
     @Override
-    public SearchResult<String> searchSvcNamesParam(SearchParam searchParam) {
+    public SearchResult<RfiLicenceQueryDto> searchSvcNamesParam(SearchParam searchParam) {
         return hcsaConfigClient.searchSvcNamesParam(searchParam).getEntity();
     }
 }
