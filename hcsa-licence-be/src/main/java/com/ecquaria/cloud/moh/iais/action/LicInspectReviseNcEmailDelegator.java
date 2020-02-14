@@ -399,7 +399,7 @@ public class LicInspectReviseNcEmailDelegator {
         return showDto;
     }
 
-    @GetMapping(value = "/reload-rev-email")
+    @GetMapping(value = "/reload-lic-rev-email")
     public @ResponseBody
     String reloadRevEmail(HttpServletRequest request) throws IOException, TemplateException {
         String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";

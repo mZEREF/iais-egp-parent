@@ -25,9 +25,18 @@
                         <h4>
                             <span>
                                 Search By Application
-                                <label>
-                                    <input type="checkbox"   name="application" />
-                                </label>
+                                <c:choose >
+                                    <c:when test="${choose[2]==3||choose[1]==2}">
+                                    <label>
+                                        <input type="checkbox" checked name="application" />
+                                    </label>
+                                    </c:when>
+                                    <c:otherwise>
+                                    <label>
+                                        <input type="checkbox" name="application" />
+                                    </label>
+                                    </c:otherwise>
+                                </c:choose>
                             </span>
 
                         </h4>
@@ -130,9 +139,19 @@
                     <c:if test="${choose[0]==1}">
                     <h4>
                         <span>Search By HCI
-                        <label>
-                            <input type="checkbox" name="hci" />
-                        </label></span>
+                            <c:choose >
+                                <c:when test="${choose[0]==1}">
+                                    <label>
+                                        <input type="checkbox" checked name="hci" />
+                                    </label>
+                                </c:when>
+                                <c:otherwise>
+                                    <label>
+                                        <input type="checkbox" name="hci" />
+                                    </label>
+                                </c:otherwise>
+                            </c:choose>
+                        </span>
                     </h4>
                     <div class="panel panel-default">
                         <div class="panel-collapse collapse in" id="collapseTwo" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
@@ -181,9 +200,19 @@
                     <c:if test="${choose[3]==4}">
                     <h4>
                         <span>Search By Licensee
-                        <label>
-                            <input type="checkbox" name="licensee" />
-                        </label></span>
+                            <c:choose >
+                                <c:when test="${choose[3]==4}">
+                                    <label>
+                                        <input type="checkbox" checked name="licensee" />
+                                    </label>
+                                </c:when>
+                                <c:otherwise>
+                                    <label>
+                                        <input type="checkbox" name="licensee" />
+                                    </label>
+                                </c:otherwise>
+                            </c:choose>
+                        </span>
                     </h4>
                     <div class="panel panel-default">
                         <div class="panel-collapse collapse in" id="collapseThree" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
@@ -223,9 +252,20 @@
                     <c:if test="${choose[4]==5}">
                     <h4>
                         <span>Search By Service Personnel Details (CGO, PO, DPO & MedAlert)
-                        <label>
-                            <input type="checkbox" name="servicePersonnel" />
-                        </label></span>
+                            <c:choose >
+                                <c:when test="${choose[4]==5}">
+                                    <label>
+                                        <input type="checkbox" checked name="servicePersonnel" />
+                                    </label>
+                                </c:when>
+                                <c:otherwise>
+                                    <label>
+                                        <input type="checkbox" name="servicePersonnel" />
+                                    </label>
+                                </c:otherwise>
+                            </c:choose>
+
+                        </span>
                     </h4>
                     <div class="panel panel-default">
                         <div class="panel-collapse collapse in" id="collapseFour" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
