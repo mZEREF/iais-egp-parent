@@ -30,7 +30,7 @@
                 app.app_type,
                 app.status,
                 app.service_id,
-                app.created_dt，
+                app.created_dt,
                 app.version
             FROM APPLICATION AS app
             join (select application_no,MAX(version) as version from application GROUP BY application_no) as app2
