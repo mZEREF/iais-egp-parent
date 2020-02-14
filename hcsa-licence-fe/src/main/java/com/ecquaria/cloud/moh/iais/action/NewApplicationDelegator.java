@@ -939,7 +939,7 @@ public class NewApplicationDelegator {
                            oldCheckListIds.add(checBox.getChkLstConfId());
                        }
                        for(AppSvcChckListDto checBox:newCheckList){
-                           if(!oldCheckListIds.contains(checBox)){
+                           if(!oldCheckListIds.contains(checBox.getChkLstConfId())){
                                isAuto = false;
                                break;
                            }
