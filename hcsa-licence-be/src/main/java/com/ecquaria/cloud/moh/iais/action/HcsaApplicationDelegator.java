@@ -434,7 +434,7 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
           List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = appPremisesRoutingHistoryService.
-                  getAppPremisesRoutingHistoryDtosByAppId(applicationDto.getId());
+                  getAppPremisesRoutingHistoryDtosByAppNo(applicationDto.getId());
         List<String> userIds = getUserIds(appPremisesRoutingHistoryDtos);
         if(userIds != null && userIds.size() > 0){
             BroadcastOrganizationDto broadcastOrganizationDto = broadcastService.getBroadcastOrganizationDto(
