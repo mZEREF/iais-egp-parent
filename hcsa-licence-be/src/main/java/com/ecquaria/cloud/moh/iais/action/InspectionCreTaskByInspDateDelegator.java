@@ -149,7 +149,8 @@ public class InspectionCreTaskByInspDateDelegator {
             taskDto.setScore(score);
             taskDtoList.add(taskDto);
             ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(appPremCorrId).getEntity();
-            createAppPremisesRoutingHistory(intranet, applicationViewDto.getAppPremisesCorrelationId(),applicationViewDto.getApplicationDto().getStatus(),taskDto.getTaskKey(),null, InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION, RoleConsts.USER_ROLE_INSPECTIOR, HcsaConsts.ROUTING_STAGE_INP, taskDto.getWkGrpId());
+            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+            createAppPremisesRoutingHistory(intranet, applicationDto.getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),null, InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION, RoleConsts.USER_ROLE_INSPECTIOR, HcsaConsts.ROUTING_STAGE_INP, taskDto.getWkGrpId());
         }
         taskService.createTasks(taskDtoList);
     }
@@ -168,10 +169,10 @@ public class InspectionCreTaskByInspDateDelegator {
         return taskDtoList;
     }
 
-    public AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(AuditTrailDto intranet, String appPremisesCorrelationId, String status, String stageId, String internalRemarks,
+    public AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(AuditTrailDto intranet, String appNo, String status, String stageId, String internalRemarks,
                                                                         String processDec, String roleId, String subStage, String workGroupId) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
+        appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(status);
