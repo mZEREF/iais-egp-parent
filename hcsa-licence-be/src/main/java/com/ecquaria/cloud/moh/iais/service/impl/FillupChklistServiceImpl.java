@@ -742,7 +742,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(dto).getEntity();
         String workGrp = dto.getGroupId();
         String subStage = HcsaConsts.ROUTING_STAGE_POT;
-        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.PROCESS_DECI_PENDING_MYSELF_FOR_CHECKLIST_VERIFY, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
+        createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.PROCESS_DECI_PENDING_MYSELF_FOR_CHECKLIST_VERIFY, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
         taskDto.setSlaDateCompleted(new Date());
         taskDto.setSlaRemainInDays(taskService.remainDays(taskDto));
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
@@ -857,10 +857,10 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         }
         return hcsaSvcStageWorkingGroupDtos;
     }
-    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus,
                                                                          String stageId, String internalRemarks, String processDec,String role,String wrkGroupId,String subStageId){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
+        appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setRoleId(role);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
