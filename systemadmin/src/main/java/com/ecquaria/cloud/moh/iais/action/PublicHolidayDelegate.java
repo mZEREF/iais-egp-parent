@@ -163,7 +163,8 @@ public class PublicHolidayDelegate {
     public void doSearch(BaseProcessClass bpc){
         String descriptionSwitch = ParamUtil.getRequestString(bpc.request,"descriptionSwitch");
         String yearSwitch = ParamUtil.getRequestString(bpc.request,"yearSwitch");
-        holidaySearchParam = new SearchParam(PublicHolidayDto.class.getName());
+        holidaySearchParam.getParams().clear();
+        holidaySearchParam.getFilters().clear();
         if(!StringUtil.isEmpty(descriptionSwitch)){
             holidaySearchParam.addFilter("description", "%" + descriptionSwitch + "%",true);
         }
