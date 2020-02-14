@@ -27,7 +27,7 @@
                             <span>
                                 Search By Application
                                 <label>
-                                    <input ttype="checkbox"  checked name="application" />
+                                    <input type="checkbox" name="application" />
                                 </label>
                             </span>
 
@@ -132,7 +132,7 @@
                         <h4>
                         <span>Search By HCI
                         <label>
-                            <input ttype="checkbox"  checked name="hci" />
+                            <input type="checkbox" name="hci" />
                         </label></span>
                         </h4>
                         <div class="panel panel-default">
@@ -183,7 +183,7 @@
                         <h4>
                         <span>Search By Licensee
                         <label>
-                            <input ttype="checkbox"  checked name="licensee" />
+                            <input type="checkbox" name="licensee" />
                         </label></span>
                         </h4>
                         <div class="panel panel-default">
@@ -225,7 +225,7 @@
                         <h4>
                         <span>Search By Service Personnel Details (CGO, PO, DPO & MedAlert)
                         <label>
-                            <input ttype="checkbox"  checked name="servicePersonnel" />
+                            <input type="checkbox" name="servicePersonnel" />
                         </label></span>
                         </h4>
                         <div class="panel panel-default">
@@ -347,10 +347,10 @@
 </form>
 <script type="text/javascript">
     function doLicSearch(){
-        SOP.Crud.cfxSubmit("mainForm", "search");
+        showWaiting();SOP.Crud.cfxSubmit("mainForm", "search");
     }
     function doLicBack(){
-        SOP.Crud.cfxSubmit("mainForm", "back");
+        showWaiting();SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doLicClear(){
         $('input[name="licence_no"]').val("");
@@ -361,11 +361,8 @@
         $('input[name="to_date"]').val("");
         $('input[name="sub_date"]').val("");
     }
-    function doReqForInfo(licPremId) {
 
-        SOP.Crud.cfxSubmit("mainForm", "reqForInfo",licPremId);
-    }
     function doAppInfo(licenseeId) {
-        SOP.Crud.cfxSubmit("mainForm", "details",licenseeId);
+        showWaiting();SOP.Crud.cfxSubmit("mainForm", "details",licenseeId);
     }
 </script>

@@ -69,6 +69,7 @@
         var radios=document.getElementsByName("select_search");
         for (var i = 0, length = radios.length; i < length; i++) {
             if (radios[i].checked) {
+                showWaiting();
                 SOP.Crud.cfxSubmit("mainForm", radios[i].value);
                 break;
             }
@@ -78,6 +79,7 @@
         var radios=document.getElementsByName("select_search");
         for (var i = 0, length = radios.length; i < length; i++) {
             if (radios[i].checked) {
+                showWaiting();
                 SOP.Crud.cfxSubmit("mainForm", radios[i].value+"Adv");
                 break;
             }

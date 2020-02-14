@@ -77,9 +77,11 @@
 </form>
 <script type="text/javascript">
     function doLicSearch(){
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "search");
     }
     function doLicBack(){
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doLicClear(){

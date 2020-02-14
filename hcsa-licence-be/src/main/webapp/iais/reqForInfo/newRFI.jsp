@@ -80,9 +80,11 @@
 </form>
 <script type="text/javascript">
     function doBack(){
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doSubmit() {
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "submit");
     }
 

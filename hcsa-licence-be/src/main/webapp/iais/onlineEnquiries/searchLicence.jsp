@@ -26,7 +26,7 @@
                             <span>
                                 Search By Application
                                 <label>
-                                    <input type="checkbox"  checked name="application" />
+                                    <input type="checkbox"   name="application" />
                                 </label>
                             </span>
 
@@ -131,7 +131,7 @@
                     <h4>
                         <span>Search By HCI
                         <label>
-                            <input type="checkbox"  checked checkedname="hci" />
+                            <input type="checkbox" name="hci" />
                         </label></span>
                     </h4>
                     <div class="panel panel-default">
@@ -182,7 +182,7 @@
                     <h4>
                         <span>Search By Licensee
                         <label>
-                            <input type="checkbox"  checked checkedname="licensee" />
+                            <input type="checkbox" name="licensee" />
                         </label></span>
                     </h4>
                     <div class="panel panel-default">
@@ -224,7 +224,7 @@
                     <h4>
                         <span>Search By Service Personnel Details (CGO, PO, DPO & MedAlert)
                         <label>
-                            <input type="checkbox"  checked checkedname="servicePersonnel" />
+                            <input type="checkbox" name="servicePersonnel" />
                         </label></span>
                     </h4>
                     <div class="panel panel-default">
@@ -285,10 +285,10 @@
 </form>
 <script type="text/javascript">
     function doLicSearch(){
-        SOP.Crud.cfxSubmit("mainForm", "search");
+        showWaiting(); SOP.Crud.cfxSubmit("mainForm", "search");
     }
     function doLicBack(){
-        SOP.Crud.cfxSubmit("mainForm", "back");
+        showWaiting(); SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doLicClear(){
         $('input[name="licence_no"]').val("");

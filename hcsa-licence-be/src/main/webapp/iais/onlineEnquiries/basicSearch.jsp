@@ -137,6 +137,7 @@
     }
 
     function doAdvancedSearch(){
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "advSearch");
     }
 
@@ -149,10 +150,10 @@
             };
         };
         if(chkNum==0||chkNum==1){
-            SOP.Crud.cfxSubmit("mainForm", "basicSearch");
+            showWaiting();SOP.Crud.cfxSubmit("mainForm", "basicSearch");
         }
         else {
-            SOP.Crud.cfxSubmit("mainForm", "advSearch");
+            showWaiting();SOP.Crud.cfxSubmit("mainForm", "advSearch");
         }
     }
 
@@ -162,6 +163,6 @@
         submit('licSort');
     }
     function doAppInfo(licenseeId) {
-        SOP.Crud.cfxSubmit("mainForm", "details",licenseeId);
+        showWaiting();SOP.Crud.cfxSubmit("mainForm", "details",licenseeId);
     }
 </script>

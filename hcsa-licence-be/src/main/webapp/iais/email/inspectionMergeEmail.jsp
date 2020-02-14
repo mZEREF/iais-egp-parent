@@ -302,6 +302,7 @@
                 };
 
                 if (checkOne) {
+                    showWaiting();
                     SOP.Crud.cfxSubmit("mainForm", "send");
                 } else {
                     alert("Sorry: at least choose one.");
@@ -309,6 +310,7 @@
 
             }
             else {
+                showWaiting();
                 SOP.Crud.cfxSubmit("mainForm", "send");
             }
         }

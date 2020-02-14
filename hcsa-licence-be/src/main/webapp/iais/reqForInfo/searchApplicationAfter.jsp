@@ -145,9 +145,11 @@
 </form>
 <script type="text/javascript">
     function doAppSearch(){
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "searchApp");
     }
     function doAppBack(){
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doAppClear(){
@@ -160,9 +162,11 @@
         $('input[name="sub_date"]').val("");
     }
     function doReqForInfo(licPremId) {
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "reqForInfo",licPremId);
     }
     function doAppInfo(licenseeId) {
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "appInfo",licenseeId);
     }
 </script>
