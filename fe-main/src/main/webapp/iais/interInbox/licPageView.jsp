@@ -68,6 +68,10 @@
     function doLicAmend() {
         submit('licDoAmend');
     }
+
+    function doLicRenew() {
+        submit('licDoRenew');
+    }
     
     function sortRecords(sortFieldName,sortType){
         $("[name='crud_action_value']").val(sortFieldName);

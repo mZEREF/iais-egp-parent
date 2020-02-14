@@ -79,7 +79,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="col-xs-2 col-md-2">
-                    <button type="button" class="btn btn-primary" >Renew</button>
+                    <button type="button" class="btn btn-primary" id="lic-renew" >Renew</button>
                 </div>
                 <div class="col-xs-2 col-md-2">
                     <button type="button" class="btn btn btn-secondary" id="lic-amend" >Amend</button>
@@ -163,6 +163,10 @@
 <script>
     $('#lic-amend').click(function () {
         doLicAmend();
+    });
+
+    $('#lic-renew').click(function () {
+        doLicRenew();
     });
     
 </script>

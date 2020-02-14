@@ -173,11 +173,17 @@
     <JavaCode defClass="" executor="" methodName="licDoAmend_OnStepProcess_0" name="licDoAmend_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="licDoRenew" x="1130" y="910">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="licDoRenew_OnStepProcess_0" name="licDoRenew_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" icon="" name="msgPageView" stageIndicator="" x="400" y="100">
    <Description/>
-
    <probepoint type="none"/>
    <OnPageLoad/>
    <OnPageSubmit/>
@@ -229,6 +235,7 @@
    <SwitchCase component="/Steps/AutomaticStep/licDoPage" value="&quot;licPage&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/toAppPage" value="&quot;licToApp&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/licDoCease" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/licDoRenew" value="&quot;licDoRenew&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
@@ -402,6 +409,12 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/toLicencePage" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge3" style="oblique">
    <position>{(680,830)(687,987)(1116,986)(1116,717)(660,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/licDoRenew" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(680,630)(1150,930)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/licDoRenew" style="oblique">
+   <position>{(1150,930)(680,830)}</position>
   </SynchronousLink>
  </Links>
  <RestServices/>

@@ -89,6 +89,9 @@ public class INTERNET___MohInternetInbox___1 extends BaseProcessClass {
 	public void licDoAmend_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "licDoAmend", this);
 	}
+	public void licDoRenew_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "licDoRenew", this);
+	}
 	/**
 	 * 
 	 * @throws Exception
@@ -122,5 +125,7 @@ public class INTERNET___MohInternetInbox___1 extends BaseProcessClass {
 	public void appDoDraft_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "appDoDraft", this);
 	}
+
+	
 
 }
