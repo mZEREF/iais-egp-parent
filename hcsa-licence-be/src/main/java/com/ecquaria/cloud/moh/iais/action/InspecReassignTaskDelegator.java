@@ -421,18 +421,18 @@ public class InspecReassignTaskDelegator {
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appNo);
-        String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
+        String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
         String appStatus = applicationViewDto.getApplicationDto().getStatus();
         String stageId = taskDto.getTaskKey();
         //remove this task and create the history
         removeTask(taskDto);
-        createAppPremisesRoutingHistory(appPremisesCorrelationId,appStatus,stageId,reassignRemarks,InspectionConstants.PROCESS_DECI_SUPER_USER_POOL_REASSIGN, RoleConsts.USER_ROLE_INSPECTIOR);
+        createAppPremisesRoutingHistory(applicationNo,appStatus,stageId,reassignRemarks,InspectionConstants.PROCESS_DECI_SUPER_USER_POOL_REASSIGN, RoleConsts.USER_ROLE_INSPECTIOR);
         // send the task
         if(!StringUtil.isEmpty(stageId)) {
             String inspectorCheck = ParamUtil.getRequestString(bpc.request, "inspectorCheck");
             //add history for next stage start
             createTask(taskDto,userId);
-            createAppPremisesRoutingHistory(appPremisesCorrelationId,appStatus,stageId,reassignRemarks,InspectionConstants.PROCESS_DECI_SUPER_USER_POOL_REASSIGN, RoleConsts.USER_ROLE_INSPECTIOR);
+            createAppPremisesRoutingHistory(applicationNo,appStatus,stageId,reassignRemarks,InspectionConstants.PROCESS_DECI_SUPER_USER_POOL_REASSIGN, RoleConsts.USER_ROLE_INSPECTIOR);
         }
     }
 
@@ -460,10 +460,10 @@ public class InspecReassignTaskDelegator {
 //        taskService.updateTask(taskDto);
 //    }
 
-    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus,
                                                                          String stageId, String internalRemarks, String processDec,String roleId) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
+        appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
         appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
