@@ -221,6 +221,7 @@
 
     function doInspectorSearchTaskAssign(taskId) {
         $("#taskId").val(taskId);
+        showWaiting();
         submit('assign');
     }
 
@@ -236,12 +237,14 @@
     }
 
     function submit(action) {
+        showWaiting();
         $("[name='SearchSwitchType']").val(action);
         var mainPoolForm = document.getElementById('mainSupForm');
         mainPoolForm.submit();
     }
 
     function doInspectorSearchTaskSearch() {
+        showWaiting();
         submit('search');
     }
 
@@ -337,12 +340,14 @@
     }
 
     function jumpToPagechangePage() {
+        showWaiting();
         submit('search');
     }
 
     function approve() {
         if($("input:checkbox:checked").length > 0){
             $('#action').val('approve');
+            showWaiting();
             submit('approve');
         }else{
             alert('No checked');
@@ -352,6 +357,7 @@
     function trigger() {
         if($("input:checkbox:checked").length > 0){
             $('#action').val('trigger');
+            showWaiting();
             submit('approve');
         }else{
             alert('No checked');
@@ -368,6 +374,7 @@
     }
 
     function chooseCurRole() {
+        showWaiting();
         submit('page');
     }
 
