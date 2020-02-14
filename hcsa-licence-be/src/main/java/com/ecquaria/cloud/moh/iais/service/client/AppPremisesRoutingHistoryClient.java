@@ -28,8 +28,8 @@ public interface AppPremisesRoutingHistoryClient {
     @RequestMapping(path = "/iais-application-history/appPremisesRoutingHistorys/{appId}" ,method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getAppPremisesRoutingHistorysByAppId(@PathVariable("appId") String appId);
 
-    @RequestMapping(path = "/iais-application-history/appPremisesRoutingHistory/{appId}/{stageId}" ,method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppPremisesRoutingHistoryDto> getAppPremisesRoutingHistorysByAppIdAndStageId(@PathVariable("appId") String appId,
+    @RequestMapping(path = "/iais-application-history/appPremisesRoutingHistory/{appNo}/{stageId}" ,method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremisesRoutingHistoryDto> getAppPremisesRoutingHistorysByAppNoAndStageId(@PathVariable("appNo") String appNo,
                                                                                                      @PathVariable("stageId") String stageId);
 
     @RequestMapping(value = "/iais-application-history/historys",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)

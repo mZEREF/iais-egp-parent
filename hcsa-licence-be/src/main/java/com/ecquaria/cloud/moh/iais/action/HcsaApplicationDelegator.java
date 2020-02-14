@@ -651,7 +651,7 @@ public class HcsaApplicationDelegator {
             //For the BROADCAST Rely
             if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(oldStatus)){
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1 = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(
-                        applicationDto.getId(),stageId
+                        applicationDto.getApplicationNo(),stageId
                 );
                 log.debug(StringUtil.changeForLog("The appId is-->;"+ applicationDto.getId()));
                 log.debug(StringUtil.changeForLog("The stageId is-->;"+ stageId));
