@@ -202,11 +202,11 @@ public class OfficerOnlineEnquiriesDelegator {
                             reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
-                    else {
-                        ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
-                        rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
-                        reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
-                    }
+//                    else {
+//                        ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
+//                        rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
+//                        reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
+//                    }
                 }
                 searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
                 ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
@@ -452,11 +452,11 @@ public class OfficerOnlineEnquiriesDelegator {
                             }
                         }
                     }
-                    else {
-                        ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
-                        rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
-                        reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
-                    }
+//                    else {
+//                        ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
+//                        rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
+//                        reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
+//                    }
                 }
                 searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
                 ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
