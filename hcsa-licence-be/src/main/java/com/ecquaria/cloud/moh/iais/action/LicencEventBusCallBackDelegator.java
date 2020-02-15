@@ -129,13 +129,13 @@ public class LicencEventBusCallBackDelegator {
                     }else{
                         log.error(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
                     }
-                }else if(EventBusConsts.OPERATION_LICENCE_SAVE_APPEAL.equals(operation)){
+                }else if(EventBusConsts.OPERATION_APPLICATION_UPDATE_APPEAL.equals(operation)){
                     AppEicRequestTrackingDto appEicRequestTrackingDto = appealApplicaionService.getAppEicRequestTrackingDtoByRefNo(eventRefNum);
                     AppealApplicationDto appealApplicationDto = getObjectApp(appEicRequestTrackingDto,AppealApplicationDto.class);
                     if(appealApplicationDto!=null){
                         appealApplicaionService.updateFEAppealApplicationDto(appealApplicationDto);
                     }else{
-                        log.error(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
+                        log.error(StringUtil.changeForLog("This eventReo can not get the AppEicRequestTrackingDto -->:"+eventRefNum));
                     }
                 }
             }

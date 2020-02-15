@@ -4,12 +4,13 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -55,6 +56,10 @@ public class AppealApproveBatchjob {
                   List<AppSvcKeyPersonnelDto> rollBackPersonnel = new ArrayList<>();
                   List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto = new ArrayList<>();
                   List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto = new ArrayList<>();
+                  List<AppPremisesRecommendationDto> appealAppPremisesRecommendationDtos = new ArrayList<>();
+                  List<AppPremisesRecommendationDto> rollBackAppPremisesRecommendationDtos = new ArrayList<>();
+                  List<ApplicationGroupDto> appealApplicationGroupDtos = new ArrayList<>();
+                  List<ApplicationGroupDto> rollBackApplicationGroupDtos = new ArrayList<>();
                   for (AppealApproveDto appealApproveDto: appealApproveDtos){
                       ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
                       AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
@@ -63,7 +68,9 @@ public class AppealApproveBatchjob {
                           switch(appealType){
                               case ApplicationConsts.APPEAL_TYPE_APPLICAITON :
                                   appealApplicaiton(appealApplicaiton,rollBackApplication,appealPersonnel,rollBackPersonnel,
-                                          appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,appealApproveDto);
+                                          appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,
+                                          appealAppPremisesRecommendationDtos,rollBackAppPremisesRecommendationDtos,appealApplicationGroupDtos,rollBackApplicationGroupDtos,
+                                          appealApproveDto);
                                   appealOther(appealApplicaiton,rollBackApplication,applicationDto);
                                   break;
                               case ApplicationConsts.APPEAL_TYPE_LICENCE :
@@ -92,6 +99,7 @@ public class AppealApproveBatchjob {
                   appealApplicationDto.setEventRefNo(eventRefNo);
                   appealApplicationDto.setRollBackApplicationGroupDto(applicationGroupDto);
                   ApplicationGroupDto appealApplicationGroupDto = (ApplicationGroupDto) CopyUtil.copyMutableObject(applicationGroupDto);
+                  appealApplicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_LICENCE_GENERATED);
                   appealApplicationDto.setAppealApplicationGroupDto(appealApplicationGroupDto);
                   appealApplicationDto.setAppealApplicationDto(appealApplicaiton);
                   appealApplicationDto.setRollBackApplicationDto(rollBackApplication);
@@ -100,7 +108,6 @@ public class AppealApproveBatchjob {
                   appealApplicationDto.setAppealAppGrpPremisesDto(appealAppGrpPremisesDto);
                   appealApplicationDto.setRollBackAppGrpPremisesDto(rollBackAppGrpPremisesDto);
                   appealService.createAppealApplicationDto(appealApplicationDto);
-
               }
           }
         }
@@ -112,6 +119,10 @@ public class AppealApproveBatchjob {
                                    List<AppSvcKeyPersonnelDto> rollBackPersonnel,
                                    List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,
                                    List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,
+                                   List<AppPremisesRecommendationDto> appealAppPremisesRecommendationDtos,
+                                   List<AppPremisesRecommendationDto> rollBackAppPremisesRecommendationDtos,
+                                   List<ApplicationGroupDto> appealApplicationGroupDtos,
+                                   List<ApplicationGroupDto> rollBackApplicationGroupDtos,
                                    AppealApproveDto appealApproveDto) throws Exception {
         ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
         AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
@@ -119,7 +130,9 @@ public class AppealApproveBatchjob {
             String appealReason = appealDto.getReason();
             switch(appealReason){
                 case ApplicationConsts.APPEAL_REASON_APPLICATION_REJECTION :
-                    applicationRejection(appealApplicaiton,rollBackApplication,appealApproveDto);
+                    applicationRejection(appealApplicaiton,rollBackApplication,
+                            appealAppPremisesRecommendationDtos,rollBackAppPremisesRecommendationDtos,appealApplicationGroupDtos,rollBackApplicationGroupDtos,
+                            appealApproveDto);
                     break;
                 case ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE:
                     applicationLateRenewFee();
@@ -135,15 +148,39 @@ public class AppealApproveBatchjob {
     }
     private void applicationRejection(List<ApplicationDto> appealApplicaiton,
                                       List<ApplicationDto> rollBackApplication,
+                                      List<AppPremisesRecommendationDto> appealAppPremisesRecommendationDtos,
+                                      List<AppPremisesRecommendationDto> rollBackAppPremisesRecommendationDtos,
+                                      List<ApplicationGroupDto> appealApplicationGroupDtos,
+                                      List<ApplicationGroupDto> rollBackApplicationGroupDtos,
                                       AppealApproveDto appealApproveDto) throws Exception {
-        ApplicationDto applicationDto = appealApproveDto.getAppealApplicationDto();
-        //todo:if LIcence had generate  need  to Generate himself else only  need  change this aoolication to approve.
-        if(applicationDto!=null){
-            rollBackApplication.add(applicationDto);
-            ApplicationDto appealApplicaitonDto = (ApplicationDto) CopyUtil.copyMutableObject(applicationDto);
-            appealApplicaitonDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-            appealApplicaiton.add(appealApplicaitonDto);
+        ApplicationGroupDto applicationGroupDto = appealApproveDto.getAppealApplicationGroupDto();
+        ApplicationDto appealApplicationDto = appealApproveDto.getAppealApplicationDto();
+        AppPremisesRecommendationDto appPremisesRecommendationDto = appealApproveDto.getAppPremisesRecommendationDto();
+        AppPremisesRecommendationDto newAppPremisesRecommendationDto = appealApproveDto.getNewAppPremisesRecommendationDto();
+        if(applicationGroupDto!=null && appPremisesRecommendationDto !=null && newAppPremisesRecommendationDto!=null && appealApplicationDto!=null){
+            Integer recomInNumber = newAppPremisesRecommendationDto.getRecomInNumber();
+            if(recomInNumber == 1){
+                if(ApplicationConsts.APPLICATION_GROUP_STATUS_LICENCE_GENERATED.equals(applicationGroupDto.getStatus())){
+                    rollBackApplication.add(appealApplicationDto);
+                    ApplicationDto newAppealApplicaitonDto = (ApplicationDto) CopyUtil.copyMutableObject(appealApplicationDto);
+                    newAppealApplicaitonDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPEAL_APPROVE);
+                    appealApplicaiton.add(newAppealApplicaitonDto);
+
+                    rollBackApplicationGroupDtos.add(applicationGroupDto);
+                    ApplicationGroupDto newAppealApplicationGroupDto = (ApplicationGroupDto) CopyUtil.copyMutableObject(applicationGroupDto);
+                    newAppealApplicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_APPEAL_APPROVE);
+                }
+                rollBackAppPremisesRecommendationDtos.add(appPremisesRecommendationDto);
+                AppPremisesRecommendationDto appwalAppPremisesRecommendationDto = (AppPremisesRecommendationDto) CopyUtil.copyMutableObject(appPremisesRecommendationDto);
+                appwalAppPremisesRecommendationDto.setRecomInNumber(newAppPremisesRecommendationDto.getRecomInNumber());
+                appwalAppPremisesRecommendationDto.setChronoUnit(newAppPremisesRecommendationDto.getChronoUnit());
+                appealAppPremisesRecommendationDtos.add(appwalAppPremisesRecommendationDto);
+            }
+
+        }else{
+           log.error(StringUtil.changeForLog("This Applicaiton  can not get the ApplicationGroupDto "+ appealApproveDto.getApplicationDto().getApplicationNo()));
         }
+
 
     }
     private void applicationLateRenewFee(){
