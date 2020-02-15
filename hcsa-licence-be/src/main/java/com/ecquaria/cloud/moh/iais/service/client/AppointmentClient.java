@@ -49,4 +49,7 @@ public interface AppointmentClient {
 
     @PostMapping(value = "/iais-appointment/user-calendar",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<List<ApptUserCalendarDto>>> getUserCalendarByUserId(@RequestBody AppointmentDto appointmentDto);
+
+    @GetMapping(value = "/iais-appointment/ava-appt-date/{strSpecDate}")
+    FeignResponseEntity<String> isAvailableAppointmentDates(@PathVariable("strSpecDate") String strSpecDate);
 }
