@@ -39,6 +39,7 @@ public class CessationApplicationDelegator {
     public void init(BaseProcessClass bpc){
         List<String> licIds = new ArrayList<>();
         licIds.add("7ECAE165-534A-EA11-BE7F-000C29F371DC");
+        licIds.add("CFCAC193-6F4D-EA11-BE7F-000C29F371DC");
         List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
         List<SelectOption> reasonOption = getReasonOption();
         List<SelectOption> patientsOption = getPatientsOption();
@@ -58,15 +59,22 @@ public class CessationApplicationDelegator {
     }
 
     public void valiant(BaseProcessClass bpc){
-        AppCessationDto appCessationDto = prepareDataForValiant(bpc);
-        ParamUtil.setSessionAttr(bpc.request, "appCessationDto", appCessationDto);
-        Map<String, String> errorMap = new HashMap<>(34);
-        ValidationResult validationResult = WebValidationHelper.validateProperty(appCessationDto, "save");
-        if (validationResult.isHasErrors()) {
-            errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-            return;
+        List<AppCessationDto> appCessationDtos = prepareDataForValiant(bpc);
+        ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable)appCessationDtos);
+        for(AppCessationDto appCessationDto :appCessationDtos){
+            if("on".equals(appCessationDto.getWhichTodo())){
+                Map<String, String> errorMap = new HashMap<>(34);
+                ValidationResult validationResult = WebValidationHelper.validateProperty(appCessationDto, "save");
+                if (validationResult.isHasErrors()) {
+                    errorMap = validationResult.retrieveAll();
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+                    return;
+                }
+            }else{
+                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+                return;
+            }
         }
         AppCessationDto appCessationConfirmDto = prepareDataForConfirm(bpc);
         ParamUtil.setSessionAttr(bpc.request, "appCessationConfirmDto", appCessationConfirmDto);
@@ -94,34 +102,37 @@ public class CessationApplicationDelegator {
 
      */
 
-    private AppCessationDto prepareDataForValiant(BaseProcessClass bpc){
-        AppCessationDto appCessationDto = new AppCessationDto();
-        String effectiveDateStr = ParamUtil.getRequestString(bpc.request, "effectiveDate");
-        Date effectiveDate = DateUtil.parseDate(effectiveDateStr, "dd/MM/yyyy");
-        String cessationReason = ParamUtil.getRequestString(bpc.request, "cessationReason");
-        String otherReason = ParamUtil.getRequestString(bpc.request, "otherReason");
-        String patRadio = ParamUtil.getRequestString(bpc.request, "patRadio");
-        String patientSelect = ParamUtil.getRequestString(bpc.request, "patientSelect");
-        String patNoRemarks = ParamUtil.getRequestString(bpc.request, "patNoRemarks");
-        String patHciName = ParamUtil.getRequestString(bpc.request, "patHciName");
-        String patRegNo = ParamUtil.getRequestString(bpc.request, "patRegNo");
-        String patOthers = ParamUtil.getRequestString(bpc.request, "patOthers");
-        String whichTodo = ParamUtil.getRequestString(bpc.request, "whichTodo");
-        String readInfo = ParamUtil.getRequestString(bpc.request, "readInfo");
+    private List<AppCessationDto> prepareDataForValiant(BaseProcessClass bpc){
+        List<AppCessationDto> appCessationDtos = new ArrayList<>();
+        for (int i = 1; i <3 ; i++) {
+                AppCessationDto appCessationDto = new AppCessationDto();
+                String effectiveDateStr = ParamUtil.getRequestString(bpc.request, i+"effectiveDate");
+                Date effectiveDate = DateUtil.parseDate(effectiveDateStr, "dd/MM/yyyy");
+                String cessationReason = ParamUtil.getRequestString(bpc.request, i+"cessationReason");
+                String otherReason = ParamUtil.getRequestString(bpc.request, i+"otherReason");
+                String patRadio = ParamUtil.getRequestString(bpc.request, i+"patRadio");
+                String patientSelect = ParamUtil.getRequestString(bpc.request, i+"patientSelect");
+                String patNoRemarks = ParamUtil.getRequestString(bpc.request, i+"patNoRemarks");
+                String patHciName = ParamUtil.getRequestString(bpc.request, i+"patHciName");
+                String patRegNo = ParamUtil.getRequestString(bpc.request, i+"patRegNo");
+                String patOthers = ParamUtil.getRequestString(bpc.request, i+"patOthers");
+                String whichTodo = ParamUtil.getRequestString(bpc.request, i+"whichTodo");
+                String readInfo = ParamUtil.getRequestString(bpc.request, i+"readInfo");
 
-        appCessationDto.setEffectiveDate(effectiveDate);
-        appCessationDto.setCessationReason(cessationReason);
-        appCessationDto.setOtherReason(otherReason);
-        appCessationDto.setPatRadio(patRadio);
-        appCessationDto.setPatientSelect(patientSelect);
-        appCessationDto.setPatNoRemarks(patNoRemarks);
-        appCessationDto.setPatHciName(patHciName);
-        appCessationDto.setPatRegNo(patRegNo);
-        appCessationDto.setPatOthers(patOthers);
-        appCessationDto.setWhichTodo(whichTodo);
-        appCessationDto.setReadInfo(readInfo);
-        return appCessationDto;
-
+                appCessationDto.setEffectiveDate(effectiveDate);
+                appCessationDto.setCessationReason(cessationReason);
+                appCessationDto.setOtherReason(otherReason);
+                appCessationDto.setPatRadio(patRadio);
+                appCessationDto.setPatientSelect(patientSelect);
+                appCessationDto.setPatNoRemarks(patNoRemarks);
+                appCessationDto.setPatHciName(patHciName);
+                appCessationDto.setPatRegNo(patRegNo);
+                appCessationDto.setPatOthers(patOthers);
+                appCessationDto.setWhichTodo(whichTodo);
+                appCessationDto.setReadInfo(readInfo);
+                appCessationDtos.add(appCessationDto);
+            }
+        return appCessationDtos;
     }
 
     private AppCessationDto prepareDataForConfirm(BaseProcessClass bpc){
@@ -156,7 +167,7 @@ public class CessationApplicationDelegator {
         List<SelectOption> riskLevelResult = new ArrayList<>();
         SelectOption so1 = new SelectOption("Low", "Not Profitable");
         SelectOption so2 = new SelectOption("Moderate", "Reduce Workloa");
-        SelectOption so3 = new SelectOption("Others", "Others");
+        SelectOption so3 = new SelectOption("OtherReasons", "Others");
         riskLevelResult.add(so1);
         riskLevelResult.add(so2);
         riskLevelResult.add(so3);

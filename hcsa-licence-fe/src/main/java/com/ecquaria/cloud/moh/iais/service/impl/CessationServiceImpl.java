@@ -46,15 +46,6 @@ public class CessationServiceImpl implements CessationService {
                         appCessHciDto.setHciAddress(hciAddress);
                         appCessHciDtos.add(appCessHciDto);
                     }
-                    for(PremisesDto premisesDto :premisesDtos){
-                        AppCessHciDto appCessHciDto = new AppCessHciDto();
-                        String hciName = premisesDto.getHciName();
-                        String hciAddress=premisesDto.getHciName()+"/"+premisesDto.getStreetName()+" "+premisesDto.getUnitNo()+","+premisesDto.getBuildingName()+
-                                " "+premisesDto.getBlkNo()+",#"+premisesDto.getFloorNo()+"Singapore "+premisesDto.getPostalCode();
-                        appCessHciDto.setHciName(hciName);
-                        appCessHciDto.setHciAddress(hciAddress);
-                        appCessHciDtos.add(appCessHciDto);
-                    }
                 }
                 appCessDto.setAppCessHciDtos(appCessHciDtos);
                 appCessDtos.add(appCessDto);

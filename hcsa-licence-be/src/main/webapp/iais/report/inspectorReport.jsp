@@ -409,6 +409,7 @@
                                    <c:if test="${appPremisesRecommendationDto.tcuNeeded =='on'}">checked</c:if>
                                    <c:if test="${tcuNeed =='on'}">checked</c:if>
                             >
+                            <span id="error_tcuNeeded" name="iaisErrorMsg" class="error-msg"></span>
                         </td>
                         <td class="col-xs-4"></td>
                     </tr>
