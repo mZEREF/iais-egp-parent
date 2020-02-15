@@ -15,18 +15,17 @@
 %>
 
 <webui:setLayout name="iais-intranet"/>
-
-<style>
-  .nice-select{
-    width: 30%;
-  }
-</style>
-
 <div class="main-content">
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="currentValidateId" value="">
-    <div class="bg-title"><h2>Blacked Out Dates</h2></div>
+    <div class="bg-title"><h2>Blacked Out Dates Management</h2></div>
+<c:choose>
+  <c:when test="${empty wrlGrpNameOpt}">
+    Your current group cannot be found or you are not an inspection lead !
+  </c:when>
+  <c:otherwise>
+
 
     <iais:section title="" id = "demoList">
       <iais:row>
@@ -44,6 +43,32 @@
         </iais:value>
       </iais:row>
 
+      <iais:row>
+        <iais:field value="Blacked Out Date Start"/>
+        <iais:value width="18">
+          <iais:datePicker id = "startDate" name = "startDate"  value="${startDate}"></iais:datePicker>
+        </iais:value>
+      </iais:row>
+
+      <iais:row>
+        <iais:field value="Blacked Out Date End"/>
+        <iais:value width="18">
+          <iais:datePicker id = "endDate" name = "endDate"  value="${endDate}"></iais:datePicker>
+        </iais:value>
+      </iais:row>
+
+      <iais:row>
+        <iais:field value="Status"/>
+        <iais:value width="18">
+          <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
+                       firstOption="Select Status" filterValue="CMSTAT002" value="${status}"></iais:select>
+        </iais:value>
+      </iais:row>
+
+      <iais:action style="text-align:center;">
+        <button class="btn btn-lg btn-login-search" type="button" value="doSearch" style="background:#2199E8; color: white ">Search</button>
+        <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white">Clear</button>
+      </iais:action>
     </iais:section>
 
 
@@ -51,82 +76,82 @@
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
         <div class="tab-content">
           <div class="row">
-              <br><br>
-              <div class="col-xs-12">
-                <div class="components">
-                  <iais:pagination  param="blackedOutDateQueryAttr" result="blackedOutDateResultAttr"/>
-                  <div class="table-gp">
-                    <table class="table">
-                      <thead>
-                      <tr>
-                        <iais:sortableHeader needSort="false"   field="index" value="No."></iais:sortableHeader>
-                        <iais:sortableHeader needSort="false"   field="year" value="Year"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true"   field="START_DATE" value="Blacked Out Date Start"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true"   field="END_DATE" value="Blacked Out Date End"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="false"   field="desc" value="Blacked Out Date Description"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="false"   field="status" value="Status"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <c:choose>
-                        <c:when test="${empty blackedOutDateResultAttr.rows}">
+            <br><br>
+            <div class="col-xs-12">
+              <div class="components">
+                <iais:pagination  param="blackedOutDateQueryAttr" result="blackedOutDateResultAttr"/>
+                <div class="table-gp">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <iais:sortableHeader needSort="false"   field="index" value="No."></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"   field="year" value="Year"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="START_DATE" value="Blacked Out Date Start"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="END_DATE" value="Blacked Out Date End"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"   field="desc" value="Blacked Out Date Description"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"   field="status" value="Status"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:choose>
+                      <c:when test="${empty blackedOutDateResultAttr.rows}">
+                        <tr>
+                          <td colspan="6">
+                            No Record!!
+                          </td>
+                        </tr>
+                      </c:when>
+                      <c:otherwise>
+                        <c:forEach var="blackDateAttr" items="${blackedOutDateResultAttr.rows}" varStatus="status">
                           <tr>
-                            <td colspan="6">
-                              No Record!!
+                            <td>${status.index + 1}</td>
+                            <td>
+                              <fmt:formatDate value="${blackDateAttr.startDate}" pattern="yyyy"></fmt:formatDate>
+                            </td>
+
+                            <td><fmt:formatDate value="${blackDateAttr.startDate}" pattern="MM/dd/yyyy"/></td>
+                            <td><fmt:formatDate value="${blackDateAttr.endDate}" pattern="MM/dd/yyyy"/></td>
+
+                            <td>${blackDateAttr.desc}</td>
+                            <td><iais:code code="${blackDateAttr.status}"></iais:code></td>
+                            <td>
+                              <input type="hidden" id="blackDateId" name="blackDateId" value="">
+                              <button type="button"  id="deleteBtnId" name="blackDateId"  onclick="doDelete('<iais:mask name="blackDateId" value="${blackDateAttr.id}"/>')"  class="btn btn-default btn-sm" >Delete</button>
+                              <button type="button" id="updateBtnId" name="blackDateId"  onclick="doUpdate('<iais:mask name="blackDateId" value="${blackDateAttr.id}"/>')" class="btn btn-default btn-sm" >Update</button>
                             </td>
                           </tr>
-                        </c:when>
-                        <c:otherwise>
-                          <c:forEach var="blackDateAttr" items="${blackedOutDateResultAttr.rows}" varStatus="status">
-                            <tr>
-                              <td>${status.index + 1}</td>
-                              <td>
-                                <fmt:formatDate value="${blackDateAttr.startDate}" pattern="yyyy"></fmt:formatDate>
-                              </td>
-
-                              <td><fmt:formatDate value="${blackDateAttr.startDate}" pattern="MM/dd/yyyy"/></td>
-                              <td><fmt:formatDate value="${blackDateAttr.endDate}" pattern="MM/dd/yyyy"/></td>
-
-                              <td>${blackDateAttr.desc}</td>
-                              <td><iais:code code="${blackDateAttr.status}"></iais:code></td>
-                              <td>
-                                <input type="hidden" id="blackDateId" name="blackDateId" value="">
-                                <button type="button"  id="deleteBtnId" name="blackDateId"  onclick="doDelete('<iais:mask name="blackDateId" value="${blackDateAttr.id}"/>')"  class="btn btn-default btn-sm" >Delete</button>
-                                <button type="button" id="updateBtnId" name="blackDateId"  onclick="doUpdate('<iais:mask name="blackDateId" value="${blackDateAttr.id}"/>')" class="btn btn-default btn-sm" >Update</button>
-                              </td>
-                            </tr>
-                          </c:forEach>
+                        </c:forEach>
 
 
-                        </c:otherwise>
-                      </c:choose>
-                      </tbody>
-                    </table>
-                    <div class="table-footnote">
-                      <div class="row">
-                        <div class="col-xs-6 col-md-4">
+                      </c:otherwise>
+                    </c:choose>
+                    </tbody>
+                  </table>
+                  <div class="table-footnote">
+                    <div class="row">
+                      <div class="col-xs-6 col-md-4">
+
+                      </div>
+                      <div class="col-xs-6 col-md-8 text-right">
+                        <div class="nav">
 
                         </div>
-                        <div class="col-xs-6 col-md-8 text-right">
-                          <div class="nav">
-
-                          </div>
-                          <br><br>
+                        <br><br>
 
 
 
-                          <div class="text-right text-center-mobile">
-                            <a class="btn btn-primary next" id="addBtnId" >Create</a>
-                          </div>
+                        <div class="text-right text-center-mobile">
+                          <a class="btn btn-primary next" id="addBtnId" >Create</a>
                         </div>
                       </div>
                     </div>
-
-
                   </div>
+
+
                 </div>
               </div>
+            </div>
           </div>
         </div>
       </div>
@@ -134,10 +159,14 @@
 
     </div>
 
+  </c:otherwise>
+</c:choose>
+
   </form>
 </div>
 
 <%@include file="/include/validation.jsp"%>
+<%@include file="/include/utils.jsp"%>
 <script>
   addBtnId.onclick = function(){
       SOP.Crud.cfxSubmit("mainForm", "preCreate");
@@ -175,9 +204,6 @@
     }
   }
   */
-  function doSearch() {
-      SOP.Crud.cfxSubmit("mainForm", "doSearch");
-  }
 
 
   function jumpToPagechangePage(){

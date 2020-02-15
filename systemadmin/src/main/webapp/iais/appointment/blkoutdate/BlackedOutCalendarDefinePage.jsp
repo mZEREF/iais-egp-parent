@@ -44,10 +44,9 @@
       <c:if test="${switchPageAction == 'create'}">
         <div class="form-group">
           <div class="col-md-12">
-            <label class="col-md-2">Group Name
+            <label class="col-md-2">Blacked Out Date: From
             </label>
-
-            <div class="col-md-7">
+            <div class="col-md-5">
               <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt" options="wrlGrpNameOpt"
                            firstOption="Please Select" value="${shortName}"></iais:select>
               <span id="error_shortName" name="iaisErrorMsg" class="error-msg"></span>
@@ -55,6 +54,7 @@
           </div>
         </div>
       </c:if>
+
 
 
 
@@ -89,23 +89,23 @@
             <label class="col-md-2">Blacked Out Date Description:
             </label>
             <div class="col-md-5">
-              <input type="text" name="desc" maxlength="255"
+              <input type="text" name="desc"
                      value="${blackedOutDateAttr.desc}">
               <span id="error_desc" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
       </div>
 
-      <%--<div class="form-group">
+      <div class="form-group">
           <div class="col-md-12">
             <label class="col-md-2">Status:
             </label>
             <div class="col-md-5">
               <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
-                           firstOption="Select Status" value="${itemRequestAttr.status}"></iais:select>
+                           firstOption="Select Status" filterValue="CMSTAT002" value="${blackedOutDateAttr.status}"></iais:select>
             </div>
         </div>
-      </div>--%>
+      </div>
 
       <div class="col-xs-12 col-sm-6">
         <p><a class="back" onclick="doCancel();"><i class="fa fa-angle-left"></i> Back</a></p>

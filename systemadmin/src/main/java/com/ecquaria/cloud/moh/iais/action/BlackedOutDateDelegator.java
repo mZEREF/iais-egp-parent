@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -14,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -21,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppointmentService;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,9 +56,6 @@ public class BlackedOutDateDelegator {
     private AppointmentService appointmentService;
 
     @Autowired
-    private TaskService taskService;
-
-    @Autowired
     private IntranetUserService intranetUserService;
 
     private  final FilterParameter filterParameter = new FilterParameter.Builder()
@@ -78,6 +76,7 @@ public class BlackedOutDateDelegator {
                 "Blacked out date ");
 
         ParamUtil.setSessionAttr(request, "isNewViewData", "true");
+        ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT, null);
         ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_QUERY, null);
         ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_RESULT, null);
 
@@ -92,9 +91,18 @@ public class BlackedOutDateDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_ATTR, null);
         //userid -->> current user group , find it lead to group
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+
+        if (!Optional.ofNullable(loginContext).isPresent()){
+            log.info("can not find current user");
+            return;
+        }
+
+        String userId = loginContext.getUserId();
 
         SearchParam workingGroupQuery = new SearchParam(WorkingGroupQueryDto.class.getName());
         QueryHelp.setMainSql("systemAdmin", "getWorkingGroupByUserId", workingGroupQuery);
+        workingGroupQuery.addFilter("userId", userId, true);
 
         List<WorkingGroupQueryDto> workingGroupQueryList = intranetUserService.getWorkingGroupBySearchParam(workingGroupQuery)
                 .getRows();
@@ -195,18 +203,38 @@ public class BlackedOutDateDelegator {
 
         String groupName = ParamUtil.getString(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT);
         String dropYear = ParamUtil.getString(request, AppointmentConstants.APPOINTMENT_DROP_YEAR_OPT);
+        String startDate = ParamUtil.getString(request, "startDate");
+        String endDate = ParamUtil.getString(request, "endDate");
+        String status = ParamUtil.getString(request, "status");
+
+
         SearchParam blackQuery = IaisEGPHelper.getSearchParam(request, true, filterParameter);
+
 
         if (!StringUtils.isEmpty(groupName)){
             blackQuery.addFilter("shortName", groupName, true);
             ParamUtil.setRequestAttr(request, "shortName", groupName);
-
         }
 
         if (!StringUtils.isEmpty(dropYear)){
             ParamUtil.setRequestAttr(request, "dropYear", dropYear);
             blackQuery.addFilter("startDate", dropYear + "-01-01", true);
             blackQuery.addFilter("endDate", dropYear + "-12-31", true);
+        }
+
+        if (!StringUtils.isEmpty(startDate)){
+            ParamUtil.setRequestAttr(request, "startDate", startDate);
+            blackQuery.addFilter("bkStartDate", startDate, true);
+        }
+
+        if (!StringUtils.isEmpty(endDate)){
+            ParamUtil.setRequestAttr(request, "endDate", endDate);
+            blackQuery.addFilter("bkEndDate", endDate, true);
+        }
+
+        if (!StringUtils.isEmpty(status)){
+            ParamUtil.setRequestAttr(request, "status", status);
+            blackQuery.addFilter("status", status, true);
         }
     }
 
@@ -234,11 +262,13 @@ public class BlackedOutDateDelegator {
         String ldate = ParamUtil.getString(request, "startDate");
         String rdate = ParamUtil.getString(request, "endDate");
         String desc = ParamUtil.getString(request, "desc");
+        String status = ParamUtil.getString(request, "status");
 
         ParamUtil.setRequestAttr(request, "shortName", groupName);
         ParamUtil.setRequestAttr(request, "startDate", ldate);
         ParamUtil.setRequestAttr(request, "endDate", rdate);
         ParamUtil.setRequestAttr(request, "desc", desc);
+        ParamUtil.setRequestAttr(request, "status", status);
 
         ApptBlackoutDateDto blackoutDateDto = new ApptBlackoutDateDto();
         if (ans == CREATE_ACTION) {
@@ -254,7 +284,7 @@ public class BlackedOutDateDelegator {
             blackoutDateDto.setId(blackoutDateQueryDto.getId());
             blackoutDateDto.setShortName(blackoutDateQueryDto.getShortName());
             blackoutDateDto.setSrcSystemId(blackoutDateQueryDto.getSrcSystemId());
-            blackoutDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            blackoutDateDto.setStatus(status);
         }
 
         if (!StringUtils.isEmpty(ldate)){
@@ -267,7 +297,7 @@ public class BlackedOutDateDelegator {
 
         blackoutDateDto.setDesc(desc);
 
-         //blackoutDateDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        blackoutDateDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(blackoutDateDto, propertName);
         Map<String, String> errorMap = new HashMap<>();
@@ -282,7 +312,7 @@ public class BlackedOutDateDelegator {
                 IaisEGPHelper.parseToDate(rdate, "dd/MM/yyyy"));
 
         if (!isAfterDate){
-            errorMap.put(CUSTOM_VALIDATEION_ATTR, "USER_ERR007");
+            errorMap.put(CUSTOM_VALIDATEION_ATTR, MessageCodeKey.USER_ERR007);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             return ;
@@ -304,9 +334,11 @@ public class BlackedOutDateDelegator {
             case 0:
                 boolean isCreate = appointmentService.createBlackedOutCalendar(blackoutDateDto);
                 log.debug("createBlackedOutCalendar ===>>> " + blackoutDateDto.getShortName() + " result ==>>> "+ isCreate);
+                ParamUtil.setRequestAttr(request,"ackMsg", "You have successfully create a block-out date.");
                 break;
             case 1:
                 appointmentService.updateBlackedOutCalendar(blackoutDateDto);
+                ParamUtil.setRequestAttr(request,"ackMsg", "You have successfully update a block-out date.");
                 break;
             default:
         }

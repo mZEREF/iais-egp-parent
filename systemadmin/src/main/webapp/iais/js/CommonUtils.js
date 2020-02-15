@@ -1,4 +1,3 @@
-
 var Utils = {
     getFileName: function(o){
         var pos = o.lastIndexOf("\\");
@@ -6,42 +5,54 @@ var Utils = {
     },
 
     submit: function (form, action, value) {
-       SOP.Crud.cfxSubmit(form, action, value);
+        SOP.Crud.cfxSubmit(form, action, value);
     },
 
     clearClickStatus: function () {
+        $(".form-horizontal input").val("");
+        $(".form-horizontal input[type='checkbox']").removeAttr('checked');
+        $(".form-horizontal input[type='radio']").removeAttr('checked');
+        $(".form-horizontal option[text = 'Please select']").val("selected", "selected");
+        $(".current").text("Please Select");
+        $(".form-horizontal option").val("");
+    },
 
-        $("input[type='radio']").removeAttr('checked')
-        $("input[type='checkbox']").removeAttr('checked')
-        $("input[type='text']").val("");
-        $(".current").text("Please select");
+    doExport: function(url){
+        showWaiting();
+        //window.open(url, "down");
+        window.location.href = url;
+        dismissWaiting();
 
     }
 }
 
 $(".btn-login-search").click(function () {
-    var val = $(".btn-login-submit").value;
-    SOP.Crud.cfxSubmit("mainForm", 'doQuery', val);
+    var val = $(".btn-login-search").attr("value");
+    if (val != null && val != ''){
+        SOP.Crud.cfxSubmit("mainForm", val);
+    }
 })
 
-
 $(".btn-login-cancel").click(function () {
-    var val = $(".btn-login-cancel").value;
-    SOP.Crud.cfxSubmit("mainForm", 'doCancel', val);
+    var val = $(".btn-login-cancel").attr("value");
+    if (val != null && val != '') {
+        SOP.Crud.cfxSubmit("mainForm", val);
+    }
+})
+
+$(".btn-login-clear").click(function () {
+    $(".form-horizontal input").val("");
+    $(".form-horizontal input[type='checkbox']").removeAttr('checked');
+    $(".form-horizontal input[type='radio']").removeAttr('checked');
+    $(".form-horizontal option[text = 'Please select']").val("selected", "selected");
+    $(".current").text("Please select");
+    $(".form-horizontal option").val("");
 })
 
 $(".btn btn-primary cencel").click(function () {
     var val = $(".btn-login-cancel").value;
     SOP.Crud.cfxSubmit("mainForm", 'doCancel', val);
 })
-
-$(".btn-login-export").click(function () {
-    var val = $(".btn-login-export").value;
-    showWaiting();
-    SOP.Crud.cfxSubmit("mainForm", 'doExport', val);
-    dismissWaiting();
-})
-
 
 
 function jumpToPagechangePage(){
