@@ -175,7 +175,7 @@
                 if($("#"+i+"radioYes"+j).is(':checked')) {
                     $("#"+i+"patYes"+j).show();
                     $("#"+j+"atNo"+j).hide();
-                }else if($('#radioNo'+j).is(':checked')){
+                }else if($('#'+i+'radioNo'+j).is(':checked')){
                     $("#"+i+"patNo"+j).show();
                     $("#"+i+"patYes"+j).hide();
                     $("#"+i+"patHciName"+j).hide();
