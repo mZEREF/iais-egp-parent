@@ -71,19 +71,22 @@ public class AppealApproveBatchjob {
                                           appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,
                                           appealAppPremisesRecommendationDtos,rollBackAppPremisesRecommendationDtos,appealApplicationGroupDtos,rollBackApplicationGroupDtos,
                                           appealApproveDto);
-                                  appealOther(appealApplicaiton,rollBackApplication,applicationDto);
                                   break;
                               case ApplicationConsts.APPEAL_TYPE_LICENCE :
                                   appealLicence(appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),
                                           appealDto.getNewLicYears());
-                                  appealOther(appealApplicaiton,rollBackApplication,applicationDto);
                                   break;
 //                        case ApplicationConsts.APPEAL_TYPE_OTHER :
 //                            appealOther(appealApplicaiton,rollBackApplication,applicationDto);
 //                            break;
                           }
+                          appealOther(appealApplicaiton,rollBackApplication,applicationDto);
                       }
                   }
+                  rollBackApplicationGroupDtos.add(applicationGroupDto);
+                  ApplicationGroupDto appealApplicationGroupDto = (ApplicationGroupDto) CopyUtil.copyMutableObject(applicationGroupDto);
+                  appealApplicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_LICENCE_GENERATED);
+                  appealApplicationGroupDtos.add(appealApplicationGroupDto);
                   //event bus
                   AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
                   String eventRefNo = EventBusHelper.getEventRefNo();
@@ -97,16 +100,16 @@ public class AppealApproveBatchjob {
                   //application
                   AppealApplicationDto appealApplicationDto = new  AppealApplicationDto();
                   appealApplicationDto.setEventRefNo(eventRefNo);
-                  appealApplicationDto.setRollBackApplicationGroupDto(applicationGroupDto);
-                  ApplicationGroupDto appealApplicationGroupDto = (ApplicationGroupDto) CopyUtil.copyMutableObject(applicationGroupDto);
-                  appealApplicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_LICENCE_GENERATED);
-                  appealApplicationDto.setAppealApplicationGroupDto(appealApplicationGroupDto);
                   appealApplicationDto.setAppealApplicationDto(appealApplicaiton);
                   appealApplicationDto.setRollBackApplicationDto(rollBackApplication);
                   appealApplicationDto.setAppealPersonnel(appealPersonnel);
                   appealApplicationDto.setRollBackPersonnel(rollBackPersonnel);
                   appealApplicationDto.setAppealAppGrpPremisesDto(appealAppGrpPremisesDto);
                   appealApplicationDto.setRollBackAppGrpPremisesDto(rollBackAppGrpPremisesDto);
+                  appealApplicationDto.setAppealApplicationGroupDtos(appealApplicationGroupDtos);
+                  appealApplicationDto.setRollBackApplicationGroupDtos(rollBackApplicationGroupDtos);
+                  appealApplicationDto.setAppealAppPremisesRecommendationDtos(appealAppPremisesRecommendationDtos);
+                  appealApplicationDto.setRollBackAppPremisesRecommendationDtos(rollBackAppPremisesRecommendationDtos);
                   appealService.createAppealApplicationDto(appealApplicationDto);
               }
           }
