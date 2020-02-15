@@ -44,8 +44,8 @@
                       <%--<iais:sortableHeader needSort="false"   field="year" value="Year"></iais:sortableHeader>--%>
                       <iais:sortableHeader needSort="false"   field="day" value="Day"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false"   field="wrkingDay" value="Working Day"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false"   field="amTime" value="Time From"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false"   field="pmTime" value="Time to"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"   field="amTime" value="Time Form"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"   field="pmTime" value="Time To"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
                     </tr>
                     </thead>

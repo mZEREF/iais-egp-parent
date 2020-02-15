@@ -207,7 +207,7 @@
 
     <sql key="getWorkingGroupByUserId">
         <![CDATA[
-            select T3.ID AS id,
+            select DISTINCT T3.ID AS id,
             T3.group_name as group_name,
             T3.group_domain AS group_domain,
             T3.STATUS AS STATUS

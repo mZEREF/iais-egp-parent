@@ -28,7 +28,7 @@ public interface ApplicationBeClient {
 			consumes = {MediaType.APPLICATION_JSON_VALUE})
 	FeignResponseEntity<AppPremisesRecommendationDto> getAppPremRecordByIdAndType(@PathVariable(value ="appPremId" ) String appPremId, @PathVariable(value ="recomType" ) String recomType);
 
-	@PostMapping(value = "/application-be/insp-date-corrids")
+	@PostMapping(value = "/application-be/insp-date-corrids", consumes = MediaType.APPLICATION_JSON_VALUE)
 	FeignResponseEntity<List<AppPremisesRecommendationDto>> getInspectionDateByCorrIds(@RequestBody List<String> corrIds);
 
 }
