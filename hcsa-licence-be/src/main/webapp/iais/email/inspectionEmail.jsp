@@ -232,7 +232,7 @@
                                         </td>
                                         <td>
                                             <div class="col-sm-9">
-                                                <p><textarea name="remarks" cols="90" rows="6"  title="content"  >${insEmailDto.remarks}</textarea></p>
+                                                <p><textarea name="remarks" cols="90" rows="6" maxlength="300" title="content"  >${insEmailDto.remarks}</textarea></p>
                                             </div>
                                         </td>
                                     </tr>
@@ -271,7 +271,7 @@
                                         <iais:sortableHeader needSort="false" field="USERNAME" value="Username"></iais:sortableHeader>
                                         <iais:sortableHeader needSort="false"  field="WORKING GROUP" value="Working Group"></iais:sortableHeader>
                                         <iais:sortableHeader needSort="false"  field="APP_STATUS" value="Status Update"></iais:sortableHeader>
-                                        <iais:sortableHeader needSort="false"  field="REMARKS" value="remarks"></iais:sortableHeader>
+                                        <iais:sortableHeader needSort="false"  field="REMARKS" value="Remarks"></iais:sortableHeader>
                                         <iais:sortableHeader needSort="false" field="UPDATED_DT" value="Last Updated"></iais:sortableHeader>
                                     </tr>
                                     </thead>
@@ -319,8 +319,8 @@
     function doSend(){
 
         if($('#decision_email option:selected').val()=="Select"){
-            ;
-        }
+            alert("The field is mandatory.");
+    }
         else {
             showWaiting();
             SOP.Crud.cfxSubmit("mainForm", "send");

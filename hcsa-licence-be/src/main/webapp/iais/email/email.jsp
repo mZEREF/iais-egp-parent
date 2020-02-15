@@ -7,7 +7,7 @@
     <tr height="1">
         <td class="col-xs-2" >
             <p >
-                subject:
+                Subject:
             </p>
         </td>
         <td>
@@ -20,7 +20,7 @@
     <tr height="1">
         <td class="col-xs-2" >
             <p >
-                content:
+                Content:
             </p>
         </td>
         <td>

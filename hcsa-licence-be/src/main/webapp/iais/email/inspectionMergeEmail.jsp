@@ -207,7 +207,7 @@
                                     <tr height="1">
                                         <td class="col-xs-2" >
                                             <p >
-                                                subject:
+                                                Subject:
                                             </p>
                                         </td>
                                         <td>
@@ -220,7 +220,7 @@
                                     <tr height="1">
                                         <td class="col-xs-2" >
                                             <p >
-                                                content:
+                                                Content:
                                             </p>
                                         </td>
                                         <td>
@@ -290,7 +290,7 @@
 
     function doSend(){
         if($('#decision_merge_email option:selected').val()=="Select"){
-            ;
+            alert("The field is mandatory.");
         }else {
             if($('#decision_merge_email option:selected').val()=="REDECI005"){
                 var checkOne = false;
@@ -305,7 +305,7 @@
                     showWaiting();
                     SOP.Crud.cfxSubmit("mainForm", "send");
                 } else {
-                    alert("Sorry: at least choose one.");
+                    alert("Need Revise.");
                 };
 
             }
