@@ -165,7 +165,7 @@ public class TaskServiceImpl implements TaskService {
                             //create history
                             log.debug(StringUtil.changeForLog("the appPremisesCorrelationId is -->;"+appPremisesCorrelationDto.getId()));
                             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
-                                    createAppPremisesRoutingHistory(appPremisesCorrelationDto.getId(),applicationDto.getStatus(),
+                                    createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),
                                             stageId,null,roleId,auditTrailDto);
                             appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
                         }
@@ -342,11 +342,11 @@ public class TaskServiceImpl implements TaskService {
     private List<AppPremisesCorrelationDto> getAppPremisesCorrelationId(String appId){
        return  taskApplicationClient.getAppPremisesCorrelationsByAppId(appId).getEntity();
     }
-    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus,
                                                                          String stageId, String internalRemarks,String roleId,
                                                                          AuditTrailDto auditTrailDto){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
+        appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
