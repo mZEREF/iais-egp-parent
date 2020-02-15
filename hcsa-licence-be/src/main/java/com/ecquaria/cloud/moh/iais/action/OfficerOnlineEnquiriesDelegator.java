@@ -74,13 +74,13 @@ public class OfficerOnlineEnquiriesDelegator {
             .clz(String.class)
             .searchAttr("licenseeParam")
             .resultAttr("licenseeResult")
-            .sortField("id").sortType(SearchParam.ASCENDING).pageNo(0).pageSize(10).build();
+            .sortField("licensee_id").sortType(SearchParam.ASCENDING).pageNo(0).pageSize(10).build();
 
     FilterParameter serviceParameter = new FilterParameter.Builder()
             .clz(String.class)
             .searchAttr("svcParam")
             .resultAttr("svcResult")
-            .sortField("id").pageNo(0).pageSize(10).sortType(SearchParam.ASCENDING).build();
+            .sortField("SVC_NAME").pageNo(0).pageSize(10).sortType(SearchParam.ASCENDING).build();
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>requestForInformation");
@@ -131,7 +131,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     filter.put("hciName", searchNo);
                     break;
                 case 5:
-                    filter.put("svcName", searchNo);
+                    filter.put("serviceName", searchNo);
                     serviceParameter.setFilters(filter);
                     SearchParam serviceParam = SearchResultHelper.getSearchParam(request, serviceParameter,true);
                     QueryHelp.setMainSql(RFI_QUERY,"serviceQuery",serviceParam);
@@ -146,7 +146,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     }
                     break;
                 case 4:
-                    filter.put("name", searchNo);
+                    filter.put("licenseeName", searchNo);
                     licenseeParameter.setFilters(filter);
                     SearchParam licenseeParam = SearchResultHelper.getSearchParam(request, licenseeParameter,true);
                     QueryHelp.setMainSql(RFI_QUERY,"licenseeQuery",licenseeParam);

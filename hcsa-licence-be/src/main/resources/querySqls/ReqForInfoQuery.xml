@@ -102,7 +102,7 @@
     <sql key = "licenseeQuery" remarks = "Query Licensee Data by condition">
         <![CDATA[
             SELECT
-                lic.id as licensee_id
+                lic.id as LICENSEE_ID
             FROM LICENSEE AS lic
             WHERE 1=1
             <#if licenseeId??> AND lic.id = :licenseeId</#if>

@@ -254,7 +254,7 @@ public interface HcsaConfigClient {
     @GetMapping(path = "/iais-hcsa-service/service-by-name/{svcName}")
     FeignResponseEntity<String> getServiceCodeByName(@PathVariable(name= "svcName") String svcName);
 
-    @GetMapping(value = "/iais-hcsa-service/search-svcNames-param")
+    @PostMapping(value = "/iais-hcsa-service/search-svcNames-param",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<RfiLicenceQueryDto>> searchSvcNamesParam(@RequestBody SearchParam searchParam);
 
 
