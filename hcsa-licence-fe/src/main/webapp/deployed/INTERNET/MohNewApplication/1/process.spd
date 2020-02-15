@@ -148,6 +148,13 @@
     <JavaCode defClass="" executor="" methodName="doRequestForChange_OnStepProcess_0" name="doRequestForChange_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doRenew" x="1200" y="190">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doRenew_OnStepProcess_0" name="doRenew_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Premises" stageIndicator="" x="600" y="20">
@@ -303,6 +310,12 @@
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doRequestForChange" style="oblique">
    <position>{(1090,100)(1270,70)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doRenew" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(990,170)(1220,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doRenew" style="oblique">
+   <position>{(1220,210)(1270,70)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Merges/Merge/Merge1" componentIfTrue="/Steps/AutomaticStep/PrepareAckPage" defClass="" executor="" icon="" leftOperand="isrfiSuccess" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="1250" y="50">
@@ -327,6 +340,7 @@
    <SwitchCase component="/Steps/AutomaticStep/doSubmit" value="&quot;doSubmit&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doRequestInformationSubmit" value="&quot;information&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doRequestForChange" value="&quot;requstChange&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doRenew" value="&quot;renew&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
