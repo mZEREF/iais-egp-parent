@@ -274,7 +274,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     private void inspectionDateSendEmail(Date submitDt) {
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate("DD00433B-924F-EA11-BE7F-000C29F371DC");
         if(inspectionEmailTemplateDto != null) {
-            SimpleDateFormat format = new SimpleDateFormat("dd MMM YYYY");
+            SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy");
             String strSubmitDt = format.format(submitDt);
             Map<String, Object> map = new HashMap<>();
             map.put("submitDt", StringUtil.viewHtml(strSubmitDt));
