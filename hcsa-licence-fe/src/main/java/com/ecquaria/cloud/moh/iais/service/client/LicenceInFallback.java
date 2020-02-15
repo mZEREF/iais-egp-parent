@@ -53,6 +53,11 @@ public class LicenceInFallback implements LicenceClient {
     }
 
     @Override
+    public FeignResponseEntity<String> doSave(LicenceDto licenceDto) {
+        return null;
+    }
+
+    @Override
     public FeignResponseEntity<LicenceDto> getLicBylicNo(String licenceNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
