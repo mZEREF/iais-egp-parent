@@ -99,13 +99,15 @@ public class LicenceApproveBatchjob {
             log.error(StringUtil.changeForLog("This serviceIds can not get the HcsaServiceDto -->:"+serviceIds));
             return;
         }
-        List<LicenceGroupDto> licenceGroupDtos = new ArrayList<>();
-        List<ApplicationGroupDto> success = new ArrayList<>();
-        List<Map<String,String>> fail = new ArrayList<>();
+
         for(ApplicationLicenceDto applicationLicenceDto : applicationLicenceDtos ){
             if(applicationLicenceDto != null){
                 ApplicationGroupDto applicationGroupDto = applicationLicenceDto.getApplicationGroupDto();
                 if(applicationGroupDto != null){
+
+                    List<LicenceGroupDto> licenceGroupDtos = new ArrayList<>();
+                    List<ApplicationGroupDto> success = new ArrayList<>();
+                    List<Map<String,String>> fail = new ArrayList<>();
                     // delete the reject applicaiton
                     List<ApplicationListDto> applicationListDtoList = applicationLicenceDto.getApplicationListDtoList();
                     deleteRejectApplication(applicationListDtoList);
@@ -121,36 +123,40 @@ public class LicenceApproveBatchjob {
                         generateResult = generateLIcence(applicationLicenceDto,hcsaServiceDtos);
                     }
                     toDoResult(licenceGroupDtos,generateResult,success,fail,applicationGroupDto);
-                }
-            }
-        }
-        //
-        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
-        String eventRefNo = EventBusHelper.getEventRefNo();
-        EventBusLicenceGroupDtos eventBusLicenceGroupDtos = new EventBusLicenceGroupDtos();
-        eventBusLicenceGroupDtos.setEventRefNo(eventRefNo);
-        eventBusLicenceGroupDtos.setLicenceGroupDtos(licenceGroupDtos);
-        eventBusLicenceGroupDtos.setAuditTrailDto(auditTrailDto);
-        //step1 create Licence to BE DB
-         licenceService.createSuperLicDto(eventBusLicenceGroupDtos);
 
-        //if create licence success
-        //todo:update the success application group.
-           if(success.size() > 0){
-               //get the application
-               List<ApplicationDto> applicationDtos =getApplications(licenceGroupDtos);
-               //
-               EventApplicationGroupDto eventApplicationGroupDto = new EventApplicationGroupDto();
-               eventApplicationGroupDto.setEventRefNo(eventRefNo);
-               eventApplicationGroupDto.setRollBackApplicationGroupDtos(success);
-               success = updateStatusToGenerated(success);
-               eventApplicationGroupDto.setApplicationGroupDtos(success);
-               eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
-               applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
-               //step2 save licence to Fe DB
+                    if(success.size() > 0){
+                    //
+                    AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+                    String eventRefNo = EventBusHelper.getEventRefNo();
+                    EventBusLicenceGroupDtos eventBusLicenceGroupDtos = new EventBusLicenceGroupDtos();
+                    eventBusLicenceGroupDtos.setEventRefNo(eventRefNo);
+                    eventBusLicenceGroupDtos.setLicenceGroupDtos(licenceGroupDtos);
+                    eventBusLicenceGroupDtos.setAuditTrailDto(auditTrailDto);
+                    //step1 create Licence to BE DB
+                    licenceService.createSuperLicDto(eventBusLicenceGroupDtos);
+
+                    //if create licence success
+                    //todo:update the success application group.
+                    //get the application
+                    List<ApplicationDto> applicationDtos =getApplications(licenceGroupDtos);
+                    //
+                    EventApplicationGroupDto eventApplicationGroupDto = new EventApplicationGroupDto();
+                    eventApplicationGroupDto.setEventRefNo(eventRefNo);
+                    eventApplicationGroupDto.setRollBackApplicationGroupDtos(success);
+                    success = updateStatusToGenerated(success);
+                    eventApplicationGroupDto.setApplicationGroupDtos(success);
+                    eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
+                    applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
+                        //step2 save licence to Fe DB
 //               EventBusLicenceGroupDtos eventBusLicenceGroupDtos1 =  licenceService.getEventBusLicenceGroupDtosByRefNo(eventRefNo);
 //               licenceService.createFESuperLicDto(eventBusLicenceGroupDtos1);
-           }
+                   }
+
+                }
+
+            }
+        }
+
         //todo:send the email to admin for fail Data.
         //else{ rollback step1}
         //step2 save licence to Fe DB
