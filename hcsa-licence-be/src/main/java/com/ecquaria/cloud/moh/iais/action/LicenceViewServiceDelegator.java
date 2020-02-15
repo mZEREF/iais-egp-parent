@@ -24,17 +24,17 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * LicenceViewServiceDelegator
@@ -376,7 +376,7 @@ public class LicenceViewServiceDelegator {
             appEditSelectDto.setPremisesEdit(true);
         }
         if(selectsList.contains("primary")){
-            appEditSelectDto.setPrimaryEdit(true);
+            appEditSelectDto.setDocEdit(true);
         }
         if(selectsList.contains("service")){
             appEditSelectDto.setServiceEdit(true);
