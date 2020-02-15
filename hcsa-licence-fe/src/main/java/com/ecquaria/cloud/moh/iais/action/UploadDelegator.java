@@ -50,8 +50,8 @@ public class UploadDelegator {
             log.info("------------------- compressFile  end --------------");
             try {
                 if(b){
-                    ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(s, ApplicationListFileDto.class);
-                    uploadFileService.changeStatus(applicationListDto);
+
+                    uploadFileService.changeStatus(applicationListFileDto);
                 }
             }catch (Exception e){
                 log.error(e.getMessage(),e);

@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskFinancialShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLeaderShipShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLegislativeShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodQueryDto;
@@ -43,6 +44,8 @@ import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 
 /**
  * @author Wenkang
@@ -544,8 +547,9 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
         return entity;
     }
 
+
     @Override
-    public FeignResponseEntity<AppointmentDto> getApptStartEndDateByService(AppointmentDto appointmentDto) {
+    public FeignResponseEntity<List<AuditSystemResultDto>> getAuditSystemRiskResult(List<AuditSystemRiskAccpetDto> acceptDtoList) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -553,7 +557,31 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
     }
 
     @Override
-    public FeignResponseEntity<List<AuditSystemResultDto>> getAuditSystemRiskResult(List<AuditSystemRiskAccpetDto> acceptDtoList) {
+    public FeignResponseEntity<List<HcsaServiceDto>> allHcsaService() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<HcsaServiceDto>> getHcsaServiceDtoByCode(List<String> code) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Set<String>> getAppGrpPremisesTypeBySvcId(List<String> serviceId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity saveHcsaServiceConfig(HcsaServiceConfigDto hcsaServiceConfigDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

@@ -27,8 +27,9 @@
       </div>
     <div>
     <br>
+
     <svg width="500" height="500" onclick="add()" style="background-color: #E2E2E2" version="1.1" xmlns="http://www.w3.org/2000/svg">
-      Add a new HCSA Module
+     Add a new HCSA Module
 
     </svg>
     <svg width="500" height="500" onclick="list()" style="background-color: #E2E2E2" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -45,7 +46,7 @@
 <script type="text/javascript">
 
     function add() {
-
+        SOP.Crud.cfxSubmit("mainForm","addNewService");
     }
     function list() {
     SOP.Crud.cfxSubmit("mainForm","list");

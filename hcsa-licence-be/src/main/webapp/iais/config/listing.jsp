@@ -23,7 +23,7 @@
     </div>
     </div>
     <div class="components">
-      <a class="btn btn-secondary">Back</a>
+      <a class="btn btn-secondary" > Back</a>
     </div>
     <div>
 <br>
@@ -36,14 +36,18 @@
           <td style="width: 20%;text-align: center">Effective End Date</td>
           <td style="width: 25%;text-align: center">Actions</td>
         </tr>
+        <c:forEach items="${hcsaServiceDtos}"  var="hcsaServiceDto">
       <tr>
-        <td  style="text-align: center">Medical Clinic</td>
-        <td  style="text-align: center">Active</td>
-        <td  style="text-align: center">1 Jan 2018</td>
-        <td  style="text-align: center">1 Jan 2020</td>
-        <td  style="text-align: center"><button onclick="edit()">edit</button><button onclick="del()">delete</button></td>
+        <td  style="text-align: center">${hcsaServiceDto.svcName}</td>
+        <td  style="text-align: center"><c:if test="${hcsaServiceDto.status=='CMSTAT001'}">Active</c:if>
+          <c:if test="${hcsaServiceDto.status=='CMSTAT003'}">NonActive</c:if></td>
+
+        <td  style="text-align: center">${hcsaServiceDto.effectiveDate}</td>
+        <td  style="text-align: center">${hcsaServiceDto.endDate}</td>
+        <td  style="text-align: center"><button onclick="edit(this)" value="${hcsaServiceDto.svcCode}">edit</button><button onclick="del()">delete</button></td>
 
       </tr>
+        </c:forEach>
       </table>
 
     </div>
@@ -53,12 +57,16 @@
 </div>
 
 <script type="text/javascript">
-   function edit() {
-       SOP.Crud.cfxSubmit("mainForm","edit");
+   function edit(obj) {
+
+       SOP.Crud.cfxSubmit("mainForm","edit",$(obj).val(),"");
    }
    function del() {
        SOP.Crud.cfxSubmit("mainForm","delete");
    }
 
+   function  back() {
+       SOP.Crud.cfxSubmit("mainForm","back");
+   }
 </script>
 </>

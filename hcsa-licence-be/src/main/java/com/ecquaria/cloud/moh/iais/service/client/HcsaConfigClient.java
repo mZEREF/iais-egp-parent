@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskFinancialShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLeaderShipShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLegislativeShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodQueryDto;
@@ -54,6 +55,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Wenkang
@@ -255,9 +257,15 @@ public interface HcsaConfigClient {
     @GetMapping(value = "/iais-hcsa-service/search-svcNames-param")
     FeignResponseEntity<SearchResult<RfiLicenceQueryDto>> searchSvcNamesParam(@RequestBody SearchParam searchParam);
 
-    @PostMapping(value = "/iais-hcsa-service/appt-date-service",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppointmentDto> getApptStartEndDateByService(@RequestBody AppointmentDto appointmentDto);
 
     @PostMapping(value = "/iais-hcsa-risk/aduitsystemrsik", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AuditSystemResultDto>> getAuditSystemRiskResult(@RequestBody List<AuditSystemRiskAccpetDto> acceptDtoList);
+    @GetMapping(value = "/iais-hcsa-service/all-service",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaServiceDto>>  allHcsaService();
+    @PostMapping(value = "/iais-hcsa-service/hcsa-service-code",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaServiceDto>> getHcsaServiceDtoByCode(@RequestBody List<String> code);
+    @PostMapping(value = "/iais-hcsa-service/application-type-by-ids",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Set<String>> getAppGrpPremisesTypeBySvcId(@RequestBody List<String> serviceId);
+    @PostMapping(value = "/hcsa-config/hcsa-service-config-dto",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity saveHcsaServiceConfig(@RequestBody HcsaServiceConfigDto hcsaServiceConfigDto);
     }

@@ -185,9 +185,6 @@
   <SynchronousLink destinationName="/Pages/WebPage/delete" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/delete" style="rectanular">
    <position>{(1030,-50)(880,-60)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/listing" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/save" style="rectanular">
-   <position>{(760,260)(810,40)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/saveOrUpdate" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/configService" style="rectanular">
    <position>{(610,500)(610,380)}</position>
   </SynchronousLink>
@@ -202,9 +199,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch4" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step8" style="rectanular">
    <position>{(760,-60)(630,-60)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/listing" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch4" style="rectanular">
-   <position>{(630,-60)(810,40)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/Step9" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch4" style="rectanular">
    <position>{(630,-60)(430,-50)}</position>
@@ -230,8 +224,17 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/save" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch6" style="rectanular">
    <position>{(1400,300)(1415,374)(945,371)(760,260)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/save" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Page2" style="rectanular">
-   <position>{(920,520)(760,260)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/saveOrUpdate" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Page2" style="rectanular">
+   <position>{(920,520)(610,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/list" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch4" style="rectanular">
+   <position>{(630,-60)(546,17)(600,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/list" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/save" style="rectanular">
+   <position>{(760,260)(600,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/start" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(600,190)(304,44)(260,190)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -240,6 +243,7 @@
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/addNewService" value="&quot;addNewService&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/list" value="&quot;list&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/start" value="&quot;back&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="1000" y="110">
    <Description/>
@@ -251,10 +255,10 @@
    <SwitchCase component="/Steps/AutomaticStep/save" value="&quot;save&quot;"/>
    <SwitchCase component="/Steps/InvokeStep/cancel" value="&quot;cancel&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="/Steps/InvokeStep/Step9" executor="" icon="" leftOperand="crud_action_type" name="Switch4" x="610" y="-80">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch4" x="610" y="-80">
    <Description/>
-   <SwitchCase component="/Pages/WebPage/listing" value="&quot;cancel&quot;"/>
-   <SwitchCase component="/Steps/InvokeStep/Step9" value="&quot;delete&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/Step9" value="&quot;cancel&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/list" value="\u201cdelete\u201d"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch6" x="1380" y="280">
    <Description/>

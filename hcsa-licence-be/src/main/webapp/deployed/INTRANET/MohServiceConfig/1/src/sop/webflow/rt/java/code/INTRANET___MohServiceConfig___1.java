@@ -22,7 +22,6 @@ public class INTRANET___MohServiceConfig___1 extends BaseProcessClass {
     }
     public void step3_OnStepProcess_0() throws Exception {
     // 		Step3->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "prepare", this);
     }
     public void step1_OnStepProcess_0() throws Exception {
     // 		Step1->OnStepProcess
