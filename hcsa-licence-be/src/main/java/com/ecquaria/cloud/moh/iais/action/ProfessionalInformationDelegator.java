@@ -214,7 +214,7 @@ public class ProfessionalInformationDelegator {
 		dto.setHciName(hciName);
 		dto.setHciPostalode(hciPostalode);
 		dto.setPostalode(postalCode);
-		dto.setAdress(address);
+		dto.setAddress(address);
 		dto.setRole(role);
 
 		ValidationResult validationResult = WebValidationHelper.validateProperty(dto, "search");
