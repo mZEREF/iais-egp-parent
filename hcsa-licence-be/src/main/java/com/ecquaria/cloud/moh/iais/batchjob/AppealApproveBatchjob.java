@@ -169,6 +169,7 @@ public class AppealApproveBatchjob {
                     rollBackApplicationGroupDtos.add(applicationGroupDto);
                     ApplicationGroupDto newAppealApplicationGroupDto = (ApplicationGroupDto) CopyUtil.copyMutableObject(applicationGroupDto);
                     newAppealApplicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_APPEAL_APPROVE);
+                    appealApplicationGroupDtos.add(newAppealApplicationGroupDto);
                 }
                 rollBackAppPremisesRecommendationDtos.add(appPremisesRecommendationDto);
                 AppPremisesRecommendationDto appwalAppPremisesRecommendationDto = (AppPremisesRecommendationDto) CopyUtil.copyMutableObject(appPremisesRecommendationDto);
