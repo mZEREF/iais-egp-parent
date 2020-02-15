@@ -23,7 +23,7 @@
             
             <div class="tab-content">
               <div class="tab-pane active" id="documentsTab" role="tabpanel">
-                <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
+                <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType}">
                   <c:set var="showPreview" value="true"/>
                   <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
                     <c:if test="${amendType =='RFCATYPE06'}">

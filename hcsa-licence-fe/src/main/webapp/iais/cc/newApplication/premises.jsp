@@ -25,7 +25,7 @@
             
             <div class="tab-content  ">
               <div class="tab-pane active" id="premisesTab" role="tabpanel">
-                <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
+                <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' == AppSubmissionDto.appType}">
                   <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
                     <c:if test="${'APPPN01' == clickEditPage}">
                       <c:set var="isClickEdit" value="true"/>
@@ -105,7 +105,7 @@
                     <c:set var="premValue" value="${status.index}"/>
                     <div class="col-xs-12">
                       <div class="form-horizontal">
-                        <div class="form-group premisesTypeDiv" id="premisesType" <c:if test="${'APTY005' ==AppSubmissionDto.appType}">hidden</c:if> >
+                        <div class="form-group premisesTypeDiv" id="premisesType" <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType}">hidden</c:if> >
                           <label class="col-xs-12 col-md-4 control-label error-msg-type" for="premisesType">What is your premises type ? <span class="mandatory">*</span></label><br>
                           <span class="error-msg"></span>
                           <input class="premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>

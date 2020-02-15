@@ -161,7 +161,7 @@
         });
 
         $('.doSvcEdit').click(function () {
-            submitForms
+            showWaiting();
             var svcCode = $(this).next().val();
             submitForms('preview',null,null,svcCode);
         });

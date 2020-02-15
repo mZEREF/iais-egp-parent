@@ -20,7 +20,7 @@
                 <div class="row"></div>
               </div>
               <div class="po-content">
-                <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
+                <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType}">
                   <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
                     <c:if test="${'APPSPN03' == clickEditPage}">
                       <c:set var="isClickEdit" value="true"/>
@@ -211,7 +211,7 @@
                   <br/>
                   <br/>
                 </div>
-                  <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
+                  <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType}">
                     <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
                       <c:if test="${'APPSPN04' == clickEditPage}">
                         <c:set var="isClickEditDpo" value="true"/>
@@ -405,13 +405,13 @@
       $('.deputySelect').trigger('change');
 
       //disabled
-      if('APTY005' == '${AppSubmissionDto.appType}' && 'true' != '${isClickEdit}'){
+      if(('APTY005' == '${AppSubmissionDto.appType}' ||'APTY004' == '${AppSubmissionDto.appType}') && 'true' != '${isClickEdit}'){
           $('.po-content input[type="text"]').prop('disabled',true);
           $('.po-content div.nice-select').addClass('disabled');
           $('#addPoBtn').addClass('hidden');
           $('#addPoBtn').unbind('click');
       }
-      if('APTY005' == '${AppSubmissionDto.appType}' && 'true' != '${isClickEditDpo}'){
+      if(('APTY005' == '${AppSubmissionDto.appType}' ||'APTY004' == '${AppSubmissionDto.appType}') && 'true' != '${isClickEditDpo}'){
           $('.deputySelect').addClass('disabled');
           $('.deputy-content input[type="text"]').prop('disabled',true);
           $('.deputy-content div.nice-select').addClass('disabled');
