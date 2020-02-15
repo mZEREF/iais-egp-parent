@@ -27,6 +27,6 @@ public interface AppSubmissionService {
     public AppSubmissionDto getAppSubmissionDtoByAppNo(String appNo);
     public AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId);
     public FeeDto getGroupAmendAmount(AmendmentFeeDto amendmentFeeDto);
-    
     public AppSubmissionDto submitRequestChange(AppSubmissionDto appSubmissionDto, Process process);
+    public AppSubmissionDto submitRenew(AppSubmissionDto appSubmissionDto);
 }

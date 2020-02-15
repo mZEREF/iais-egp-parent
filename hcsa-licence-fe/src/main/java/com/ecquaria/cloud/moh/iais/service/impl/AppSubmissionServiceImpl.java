@@ -161,7 +161,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             linenceFeeQuaryDtos.add(licenceFeeDto);
         }
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl linenceFeeQuaryDtos.size() is -->:"+linenceFeeQuaryDtos.size()));
-        FeeDto entity = appConfigClient.newFee(linenceFeeQuaryDtos).getEntity();
+        String appTYpe = appSubmissionDto.getAppType();
+        FeeDto entity ;
+        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appTYpe)){
+            entity = appConfigClient.renewFee(linenceFeeQuaryDtos).getEntity();
+        }else{
+            entity = appConfigClient.newFee(linenceFeeQuaryDtos).getEntity();
+        }
         //Double amount = entity.getTotal();
         //log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl amount is -->:"+amount));
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount end ...."));
@@ -290,7 +296,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         //eventBus(appSubmissionDto, process);
         return appSubmissionDto;
     }
-    
 
-    
+    @Override
+    public AppSubmissionDto submitRenew(AppSubmissionDto appSubmissionDto) {
+        appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appSubmissionDto = applicationClient.saveAppsForRequestForChange(appSubmissionDto).getEntity();
+        return appSubmissionDto;
+    }
 }

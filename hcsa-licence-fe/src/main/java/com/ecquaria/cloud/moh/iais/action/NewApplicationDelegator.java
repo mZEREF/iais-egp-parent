@@ -394,7 +394,8 @@ public class NewApplicationDelegator {
         if(isGetDataFromPage && canEdit){
             List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) ||
+                    ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null? new HashSet<>() :appSubmissionDto.getClickEditPage();
                 clickEditPages.add(APPLICATION_PAGE_NAME_PREMISES);
                 appSubmissionDto.setClickEditPage(clickEditPages);
@@ -707,8 +708,69 @@ public class NewApplicationDelegator {
 
 
     public void doRenewSubmit(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doRenewSubmit start ...."));
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        ApplicationDto applicationDto = requestForChangeService.getApplicationByLicenceId(appSubmissionDto.getLicenceId());
+        if(applicationDto != null){
+            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
+            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "There is  ongoing application for the licence");
+            return ;
+        }
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
 
+        boolean isAutoRfc = compareAndSendEmail(appSubmissionDto, oldAppSubmissionDto);
+        appSubmissionDto.setAutoRfc(isAutoRfc);
+        /*Map<String, String> map = doPreviewAndSumbit(bpc);
+        if(!map.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request,"Msg",map);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
+            return;
+        }*/
 
+        String draftNo = appSubmissionDto.getDraftNo();
+        if(StringUtil.isEmpty(draftNo)){
+            draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
+            appSubmissionDto.setDraftNo(draftNo);
+        }
+        //get appGroupNo
+        String appGroupNo = appSubmissionService.getGroupNo(appSubmissionDto.getAppType());
+        log.debug(StringUtil.changeForLog("the appGroupNo is -->:") + appGroupNo);
+        appSubmissionDto.setAppGrpNo(appGroupNo);
+        //get Amount
+        FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto);
+        appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
+        Double amount = feeDto.getTotal();
+        log.debug(StringUtil.changeForLog("the amount is -->:") + amount);
+        appSubmissionDto.setAmount(amount);
+        //judge is the preInspection
+        PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
+        if (preOrPostInspectionResultDto == null) {
+            appSubmissionDto.setPreInspection(true);
+            appSubmissionDto.setRequirement(true);
+        } else {
+            appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
+            appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
+        }
+
+        //set Risk Score
+        appSubmissionService.setRiskToDto(appSubmissionDto);
+
+        appSubmissionDto = appSubmissionService.submit(appSubmissionDto, bpc.process);
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        String isrfiSuccess = "N";
+        if(isAutoRfc){
+            //change pmt status for carry file
+            String appGrpId = appSubmissionDto.getAppGrpId();
+            ApplicationGroupDto appGrp = new ApplicationGroupDto();
+            appGrp.setId(appGrpId);
+            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+            serviceConfigService.updatePaymentStatus(appGrp);
+            isrfiSuccess = "Y";
+            ParamUtil.setRequestAttr(bpc.request,"AckMessage"," renew save success");
+        }
+        ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess",isrfiSuccess);
+
+        log.debug(StringUtil.changeForLog("the do doRenewSubmit end ...."));
     }
 
     private Map<String,String> doComChange( AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto){
@@ -841,7 +903,8 @@ public class NewApplicationDelegator {
                 }
             }
         }
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
+                ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
             AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
             ParamUtil.setSessionAttr(request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
         }
@@ -1508,6 +1571,8 @@ public class NewApplicationDelegator {
             }
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
                 switch2 = "requstChange";
+            }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+                switch2 = "renew";
             }
         }
         ParamUtil.setRequestAttr(bpc.request, "Switch2", switch2);
@@ -1821,6 +1886,14 @@ public class NewApplicationDelegator {
         String type = ParamUtil.getString(bpc.request, "type");
         if(!StringUtil.isEmpty(licenceId) && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
+            List<String> amendType = new ArrayList<>();
+            amendType.add("RFCATYPE01");
+            amendType.add("RFCATYPE02");
+            amendType.add("RFCATYPE03");
+            amendType.add("RFCATYPE04");
+            amendType.add("RFCATYPE05");
+            amendType.add("RFCATYPE06");
+            appSubmissionDto.setAmendTypes(amendType);
 
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -2840,13 +2913,16 @@ public class NewApplicationDelegator {
         if(appSubmissionDto == null){
             return true;
         }
-        boolean otherType = !ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(appSubmissionDto.getAppType());
+        boolean isNewApp = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
         boolean rfcType = false;
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(appSubmissionDto.getAppType())){
+
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
+                ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
+                ||ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(appSubmissionDto.getStatus())){
             boolean canEdit = checkCanEdit(appSubmissionDto.getAmendTypes(), currentType);
             rfcType = canEdit && AppConsts.YES.equals(isEdit);
         }
-        return otherType || rfcType;
+        return isNewApp || rfcType;
     }
 
 }
