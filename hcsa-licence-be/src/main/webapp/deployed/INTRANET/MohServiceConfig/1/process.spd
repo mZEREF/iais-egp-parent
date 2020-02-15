@@ -233,8 +233,11 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/list" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/save" style="rectanular">
    <position>{(760,260)(600,80)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/start" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(600,190)(304,44)(260,190)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/start" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(1020,130)(303,565)(260,190)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/addNewService" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(640,270)(440,380)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -243,17 +246,18 @@
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/addNewService" value="&quot;addNewService&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/list" value="&quot;list&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/start" value="&quot;back&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="1000" y="110">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/edit" value="&quot;edit&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/delete" value="&quot;delete&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/start" value="&quot;back&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/save" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="620" y="250">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/save" value="&quot;save&quot;"/>
    <SwitchCase component="/Steps/InvokeStep/cancel" value="&quot;cancel&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/addNewService" value="&quot;dovalidate&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch4" x="610" y="-80">
    <Description/>

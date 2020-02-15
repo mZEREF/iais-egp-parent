@@ -13,7 +13,7 @@
 <div class="main-content">
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <input type="hidden" name="crud_action_type" value="">
+
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <div class="col-lg-12 col-xs-10">
@@ -30,6 +30,7 @@
           <label class="col-xs-12 col-md-8 control-label" for="serviceName">Service Name<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="serviceName" type="text" name="serviceName">
+            <span name="iaisErrorMsg" class="error-msg" id="error_svcName"></span>
           </div>
         </div>
       </div>
@@ -38,6 +39,7 @@
           <label class="col-xs-12 col-md-8 control-label" for="description">Service Description<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="description" type="text" name="description">
+            <span class="error-msg" name="iaisErrorMsg" id="error_svcDesc"></span>
           </div>
         </div>
       </div>
@@ -46,6 +48,7 @@
           <label class="col-xs-12 col-md-8 control-label" for="displayDescription">Service Display Description<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="displayDescription" type="text" name="displayDescription">
+            <span class="error-msg" name="iaisErrorMsg" id="error_svcDisplayDesc"></span>
           </div>
         </div>
       </div>
@@ -55,6 +58,7 @@
           <label class="col-xs-12 col-md-8 control-label" for="serviceCode">Service Code<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="serviceCode" type="text" name="serviceCode" maxlength="3">
+            <span class="error-msg" name="iaisErrorMsg" id="error_svcCode"></span>
           </div>
         </div>
       </div>
@@ -70,6 +74,7 @@
               <option value="SVTP002">Subsumed</option>
               <option value="SVTP003">Specified</option>
             </select>
+            <span class="error-msg" name="iaisErrorMsg" id="error_svcType"></span>
           </div>
         </div>
       </div>
@@ -77,6 +82,7 @@
       <div class="form-group">
         <div class="col-xs-12 col-md-10">
           <label class="col-xs-12 col-md-10 control-label" >Premises Type<span class="mandatory">*</span></label>
+          <span class="error-msg" name="iaisErrorMsg" id="error_premieseType"></span>
         </div>
       </div>
 
@@ -118,6 +124,7 @@
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
           </div>
+          <span class="error-msg" name="iaisErrorMsg" id="error_psnType1"></span>
         </div>
       </div>
 
@@ -135,6 +142,7 @@
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
           </div>
+          <span class="error-msg" name="iaisErrorMsg" id="error_psnType2"></span>
         </div>
       </div>
 
@@ -151,6 +159,7 @@
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
           </div>
+          <span class="error-msg" name="iaisErrorMsg" id="error_psnType3"></span>
         </div>
       </div>
 
@@ -291,11 +300,16 @@
         <td >${routingStage.stageName}</td>
         <td>
           <div class="col-xs-12 col-md-12">
-            <select  name="RoutingScheme${routingStage.stageCode}" >
+            <select  name="RoutingScheme${routingStage.stageCode}" <c:if test="${routingStage.stageCode!='INS'}">disabled="disabled" </c:if> > >
               <option value="">Select one</option>
-              <option value="common">Common Pool</option>
+              <option value="common"
+                      <c:if test="${routingStage.stageCode=='PSO'}">selected="selected" </c:if>
+
+              >Common Pool</option>
               <option value="assign">Supervisor Assign</option>
-              <option value="round">Round Robin</option>
+              <option value="round"
+                      <c:if test="${routingStage.stageCode=='ASO'||routingStage.stageCode=='AO1'||routingStage.stageCode=='AO2'||routingStage.stageCode=='AO3'}">selected="selected"  </c:if>
+              >Round Robin</option>
            </select>
           </div>
         </td>
@@ -303,6 +317,7 @@
           <div class="col-xs-12 col-md-12">
             <input  type="text" name="WorkloadManhours${routingStage.stageCode}">
           </div>
+          <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount"${status.index}></span>
         </td>
       </tr>
         </c:forEach>
@@ -461,6 +476,7 @@
         </div>
       </div>
     </div>
+    <%@ include file="/include/validation.jsp" %>
   </form>
 </div>
 <style>

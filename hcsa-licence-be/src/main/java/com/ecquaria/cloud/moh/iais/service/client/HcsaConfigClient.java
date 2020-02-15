@@ -257,7 +257,8 @@ public interface HcsaConfigClient {
     @PostMapping(value = "/iais-hcsa-service/search-svcNames-param",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<RfiLicenceQueryDto>> searchSvcNamesParam(@RequestBody SearchParam searchParam);
 
-
+    @PostMapping(value = "/iais-hcsa-service/appt-date-service",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppointmentDto> getApptStartEndDateByService(@RequestBody AppointmentDto appointmentDto);
     @PostMapping(value = "/iais-hcsa-risk/aduitsystemrsik", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AuditSystemResultDto>> getAuditSystemRiskResult(@RequestBody List<AuditSystemRiskAccpetDto> acceptDtoList);
     @GetMapping(value = "/iais-hcsa-service/all-service",produces = MediaType.APPLICATION_JSON_VALUE)

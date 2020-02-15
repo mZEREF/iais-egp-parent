@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -9,9 +10,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingS
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpeRoutingSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +38,8 @@ import java.util.Set;
 public class ConfigServiceImpl implements ConfigService {
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
+    @Autowired
+    private OrganizationClient organizationClient;
     @Override
     public List<HcsaServiceDto> getAllHcsaServices(HttpServletRequest request) {
         List<HcsaServiceDto> entity = hcsaConfigClient.allHcsaService().getEntity();
@@ -68,12 +75,19 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public void saveOrUpdate(HttpServletRequest request) {
-
+        Map<String,String> errorMap=new HashMap<>();
 
     try {
         HcsaServiceConfigDto hcsaServiceConfigDto = getDateOfHcsaService(request);
-        hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto);
+        doValidate(hcsaServiceConfigDto,errorMap);
+        if(!errorMap.isEmpty()){
+            request.setAttribute("crud_action_type","dovalidate");
+            request.setAttribute("errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            return;
+        }
 
+        hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto);
+        request.setAttribute("crud_action_type","save");
     }catch (Exception e){
 
     }
@@ -88,6 +102,24 @@ public class ConfigServiceImpl implements ConfigService {
         list.add("renew");
 
         List<HcsaSvcRoutingStageDto> entity = hcsaConfigClient.stagelist().getEntity();
+
+        for(int i=0;i<entity.size();i++ ){
+            String stageOrder = entity.get(i).getStageOrder();
+            try {
+                if(Integer.valueOf(stageOrder)%100!=0){
+                    entity.remove(i);
+                    i--;
+                }
+            }catch (Exception e){
+
+            }
+        }
+
+        /*List<WorkingGroupDto> hcsa = organizationClient.getWorkingGroup("hcsa").getEntity();
+        for(WorkingGroupDto every:hcsa){
+
+        }*/
+
         request.setAttribute("routingStages",entity);
         request.setAttribute("applicationType",list);
     }
@@ -104,11 +136,13 @@ public class ConfigServiceImpl implements ConfigService {
         String serviceType = request.getParameter("ServiceType");
         String[] premisesTypes = request.getParameterValues("PremisesType");
         List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos=new ArrayList<>();
-        for(String str:premisesTypes){
-            HcsaSvcSpePremisesTypeDto hcsaSvcSpePremisesTypeDto=new HcsaSvcSpePremisesTypeDto();
-            hcsaSvcSpePremisesTypeDto.setPremisesType(str);
-            hcsaSvcSpePremisesTypeDto.setStatus("CMSTAT003");
-            hcsaSvcSpePremisesTypeDtos.add(hcsaSvcSpePremisesTypeDto);
+        if(premisesTypes!=null){
+            for(String str:premisesTypes){
+                HcsaSvcSpePremisesTypeDto hcsaSvcSpePremisesTypeDto=new HcsaSvcSpePremisesTypeDto();
+                hcsaSvcSpePremisesTypeDto.setPremisesType(str);
+                hcsaSvcSpePremisesTypeDto.setStatus("CMSTAT003");
+                hcsaSvcSpePremisesTypeDtos.add(hcsaSvcSpePremisesTypeDto);
+            }
         }
 
         String manprincipalOfficer = request.getParameter("man-principalOfficer");
@@ -233,33 +267,40 @@ public class ConfigServiceImpl implements ConfigService {
         String svcCode = hcsaServiceDto.getSvcCode();
         String svcName = hcsaServiceDto.getSvcName();
         String svcDesc = hcsaServiceDto.getSvcDesc();
+        String svcDisplayDesc = hcsaServiceDto.getSvcDisplayDesc();
         String svcType = hcsaServiceDto.getSvcType();
         if(StringUtil.isEmpty(svcCode)){
-            errorMap.put("svcCode","error");
+            errorMap.put("svcCode","UC_CHKLMD001_ERR001");
         }
         if(StringUtil.isEmpty(svcName)){
-            errorMap.put("svcName","error");
+            errorMap.put("svcName","UC_CHKLMD001_ERR001");
+        }
+        if(StringUtil.isEmpty(svcDisplayDesc)){
+            errorMap.put("svcDisplayDesc","UC_CHKLMD001_ERR001");
         }
         if(StringUtil.isEmpty(svcDesc)){
-            errorMap.put("svcDesc","error");
+            errorMap.put("svcDesc","UC_CHKLMD001_ERR001");
         }
         if (StringUtil.isEmpty(svcType)) {
-            errorMap.put("svcType","error");
+            errorMap.put("svcType","UC_CHKLMD001_ERR001");
         }
-
+        List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = hcsaServiceConfigDto.getHcsaSvcSpePremisesTypeDtos();
+        if(hcsaSvcSpePremisesTypeDtos.isEmpty()){
+            errorMap.put("premieseType","UC_CHKLMD001_ERR001");
+        }
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
         for(int i=0;i<hcsaSvcPersonnelDtos.size();i++ ){
             String psnType = hcsaSvcPersonnelDtos.get(i).getPsnType();
             int mandatoryCount = hcsaSvcPersonnelDtos.get(i).getMandatoryCount();
             int maximumCount = hcsaSvcPersonnelDtos.get(i).getMaximumCount();
             if(StringUtil.isEmpty(psnType)){
-                errorMap.put("psnType"+i,"error");
+                errorMap.put("psnType"+i,"UC_CHKLMD001_ERR001");
             }
             if(StringUtil.isEmpty(mandatoryCount)){
-                errorMap.put("mandatoryCount"+i,"error");
+                errorMap.put("mandatoryCount"+i,"UC_CHKLMD001_ERR001");
             }
             if(StringUtil.isEmpty(maximumCount)){
-                errorMap.put("maximumCount"+i,"error");
+                errorMap.put("maximumCount"+i,"UC_CHKLMD001_ERR001");
             }
         }
 
@@ -268,14 +309,14 @@ public class ConfigServiceImpl implements ConfigService {
 
             String schemeType = hcsaSvcSpeRoutingSchemeDtos.get(i).getSchemeType();
             if(StringUtil.isEmpty(schemeType)){
-                errorMap.put("schemeType"+i,"error");
+                errorMap.put("schemeType"+i,"UC_CHKLMD001_ERR001");
             }
         }
         List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtos = hcsaServiceConfigDto.getHcsaSvcSpecificStageWorkloadDtos();
         for(int i=0;i<hcsaSvcSpecificStageWorkloadDtos.size();i++ ){
             Integer manhourCount = hcsaSvcSpecificStageWorkloadDtos.get(i).getManhourCount();
             if (StringUtil.isEmpty(manhourCount)){
-                errorMap.put("manhourCount"+i,"error");
+                errorMap.put("manhourCount"+i,"UC_CHKLMD001_ERR001");
             }
         }
 
