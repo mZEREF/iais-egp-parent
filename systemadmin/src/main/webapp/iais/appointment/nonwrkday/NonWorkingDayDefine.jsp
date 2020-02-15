@@ -35,57 +35,44 @@
         <div class="col-md-12">
           <label class="col-md-1">Day:
           </label>
-          <div class="col-md-3">
-            ${nonWorkingDayAttr.recursivceDate}
+          <div class="col-md-2">
+            &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;<c:out value="${nonWorkingDayAttr.recursivceDate}"></c:out>
           </div>
         </div>
       </div>
 
       <div class="form-group">
         <div class="col-md-12">
-          <label class="col-md-1">AM Availability
+          <label class="col-md-2">AM Availability:
           </label>
-          <div class="col-md-3">
-            <select name="amAvailability" value="">
-              <option value=>Please select</option>
-              <option value="Y"  <c:if test="${nonWorkingDayAttr.am == true}">
-                selected
-              </c:if>>Y
-              </option>
-              <option value="N"
-                      <c:if test="${nonWorkingDayAttr.am == false}">
-                        selected
-                      </c:if>
-              >N
-              </option>
-            </select>
-            <span id="error_startAt" name="iaisErrorMsg" class="error-msg"></span>
-          </div>
+          <c:if test="${nonWorkingDayAttr.am == true}">
+            Yes<input type="radio" name="amAvailability" value="N" >
+            No<input type="radio" name="amAvailability" value="Y" checked>
+          </c:if>
+          <c:if test="${nonWorkingDayAttr.am == false}">
+            Yes<input type="radio" name="amAvailability" value="N" checked>
+            No<input type="radio" name="amAvailability" value="Y" >
+          </c:if>
+
+          <span id="error_startAt" name="iaisErrorMsg" class="error-msg"></span>
         </div>
       </div>
 
 
       <div class="form-group">
         <div class="col-md-12">
-          <label class="col-md-1">PM Availability
+          <label class="col-md-2">PM Availability:
           </label>
-          <div class="col-md-3">
-            <select name="pmAvailability" value="">
-              <option value=>Please select</option>
-              <option value="Y"  <c:if test="${nonWorkingDayAttr.pm == true}">
-                selected
-              </c:if>>Y
-              </option>
-              <option value="N"
-                      <c:if test="${nonWorkingDayAttr.pm == false}">
-                        selected
-                      </c:if>
-              >N
-              </option>
-            </select>
-            <span id="error_endAt" name="iaisErrorMsg" class="error-msg"></span>
-          </div>
-        </div>
+          <c:if test="${nonWorkingDayAttr.pm == true}">
+            Yes<input type="radio" name="pmAvailability" value="N" >
+            No<input type="radio" name="pmAvailability" value="Y" checked>
+          </c:if>
+          <c:if test="${nonWorkingDayAttr.pm == false}">
+            Yes<input type="radio" name="pmAvailability" value="N" checked>
+            No<input type="radio" name="pmAvailability" value="Y" >
+          </c:if>
+
+          <span id="error_endAt" name="iaisErrorMsg" class="error-msg"></span>
       </div>
 
 
@@ -109,6 +96,7 @@
       <p><a class="back" onclick="doCancel();"><em class="fa fa-angle-left"></em> Back</a></p>
     </div>
     <div class="text-right text-center-mobile">
+      <a class="btn btn-primary next" id="clearBtn">Clear</a>
       <a class="btn btn-primary next" id="submitBtn">Submit</a>
     </div>
 
@@ -120,6 +108,10 @@
 <script>
     function doCancel() {
         SOP.Crud.cfxSubmit("mainForm", "doBack");
+    }
+
+    clearBtn.onclick = function () {
+        $(".form-group input[type='radio']").removeAttr('checked');
     }
 
     submitBtn.onclick = function () {

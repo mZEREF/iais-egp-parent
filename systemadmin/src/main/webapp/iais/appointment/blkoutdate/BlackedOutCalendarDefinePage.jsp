@@ -31,10 +31,10 @@
     <br><br>
 
     <c:if test="${switchPageAction == 'create'}">
-      <div class="bg-title"><h2>Create Blacked Out Dates Form</h2></div>
+      <div class="bg-title"><h2>Create Blacked Out Dates </h2></div>
     </c:if>
     <c:if test="${switchPageAction == 'update'}">
-      <div class="bg-title"><h2>Update Blacked Out Dates Form</h2></div>
+      <div class="bg-title"><h2>Update Blacked Out Dates </h2></div>
     </c:if>
 
     <span id="error_customValidation" name="iaisErrorMsg" class="error-msg"></span>
@@ -49,7 +49,7 @@
             <div class="col-md-5">
               <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt" options="wrlGrpNameOpt"
                            firstOption="Please Select" value="${shortName}"></iais:select>
-              <span id="error_shortName" name="iaisErrorMsg" class="error-msg"></span>
+              <br><br>  <br><br><span id="error_shortName" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
         </div>
@@ -60,7 +60,7 @@
 
       <div class="form-group">
           <div class="col-md-12">
-            <label class="col-md-2">Blacked Out Date: From
+            <label class="col-md-2">Blacked Out Date Start :
             </label>
             <div class="col-md-5">
               <iais:datePicker name="startDate"
@@ -73,7 +73,7 @@
 
       <div class="form-group">
           <div class="col-md-12">
-            <label class="col-md-2">Blacked Out Date: To
+            <label class="col-md-2">Blacked Out Date End:
             </label>
             <div class="col-md-5">
               <iais:datePicker name="endDate"

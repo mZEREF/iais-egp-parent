@@ -70,13 +70,13 @@
                       <iais:sortableHeader needSort="true"   field="YEAR" value="Year"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="BLOCK_OUT_START" value="User Block Date Start"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="BLOCK_OUT_END" value="User Block Date End"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false"   field="REMARKS" value="User Block Date Description"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="REMARKS" value="User Block Date Description"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
                     </tr>
                     </thead>
                     <tbody>
                     <c:choose>
-                      <c:when test="${empty inspectorCalenDarResultAttr}">
+                      <c:when test="${empty inspectorCalenDarResultAttr.rows}">
                         <tr>
                           <td colspan="6">
                             No Record!!
