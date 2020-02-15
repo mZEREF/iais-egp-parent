@@ -41,14 +41,10 @@
                     </c:choose>
                     <c:if test="${'true' != isClickEdit}">
                       <c:set var="locking" value="true"/>
-                      <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
-                        <c:if test="${amendType =='RFCATYPE05'}">
-                          <c:set var="canEdit" value="1"/>
-                        </c:if>
-                      </c:forEach>
+                      <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
                       <div id="edit-content">
                         <c:choose>
-                          <c:when test="${'1' == canEdit}">
+                          <c:when test="${'true' == canEdit}">
                             <p class="text-right"><a id="edit"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
                           </c:when>
                           <c:otherwise>

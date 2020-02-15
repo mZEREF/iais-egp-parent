@@ -442,7 +442,7 @@ public class NewApplicationDelegator {
         boolean canEdit = true;
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
         if(appEditSelectDto!=null){
-            if(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI.equals(appEditSelectDto.getEditType())&&!appEditSelectDto.isPrimaryEdit()){
+            if(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI.equals(appEditSelectDto.getEditType())&&!appEditSelectDto.isDocEdit()){
                canEdit = false;
             }
         }
@@ -783,7 +783,7 @@ public class NewApplicationDelegator {
                     result.put("premiss","UC_CHKLMD001_ERR001");
                 }
             }
-            if(!appEditSelectDto.isPrimaryEdit()){
+            if(!appEditSelectDto.isDocEdit()){
                 if(!appSubmissionDto.getAppSvcRelatedInfoDtoList().equals(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList())){
                     result.put("document","UC_CHKLMD001_ERR001");
                 }
@@ -1566,14 +1566,15 @@ public class NewApplicationDelegator {
         }else if("doSubmit".equals(crudActionValue)){
             if(requestInformationConfig == null){
                 switch2 = crudActionValue;
+                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+                    switch2 = "requstChange";
+                }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+                    switch2 = "renew";
+                }
             }else{
                 switch2 = "information";
             }
-            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-                switch2 = "requstChange";
-            }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
-                switch2 = "renew";
-            }
+
         }
         ParamUtil.setRequestAttr(bpc.request, "Switch2", switch2);
         log.debug(StringUtil.changeForLog("the do controlSwitch end ...."));

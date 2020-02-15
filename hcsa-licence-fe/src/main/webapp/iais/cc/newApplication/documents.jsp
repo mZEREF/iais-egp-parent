@@ -164,7 +164,7 @@
         // if($('#isPramayEdit').val() == 'true'){
         //     disabledPage();
         // }
-        <c:if test="${AppSubmissionDto.appEditSelectDto!=null && !AppSubmissionDto.appEditSelectDto.primaryEdit}">
+        <c:if test="${AppSubmissionDto.appEditSelectDto!=null && !AppSubmissionDto.appEditSelectDto.docEdit}">
         disabledPage();
         </c:if>
     });

@@ -36,14 +36,10 @@
                   </c:choose>
                   <c:if test="${'true' != isClickEdit}">
                     <c:set var="showPreview" value="true"/>
-                    <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
-                      <c:if test="${amendType =='RFCATYPE03'}">
-                        <c:set var="canEdit" value="1"/>
-                      </c:if>
-                    </c:forEach>
+                    <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.poEdit}"/>
                     <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
                       <c:choose>
-                        <c:when test="${'1' == canEdit}">
+                        <c:when test="${'true' == canEdit}">
                           <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                         </c:when>
                         <c:otherwise>
@@ -227,14 +223,10 @@
                     </c:choose>
                     <c:if test="${'true' != isClickEditDpo}">
                       <c:set var="showPreview" value="true"/>
-                      <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
-                        <c:if test="${amendType =='RFCATYPE04'}">
-                          <c:set var="cancanEditDpoEdit" value="1"/>
-                        </c:if>
-                      </c:forEach>
+                      <c:set var="cancanEditDpoEdit" value="${AppSubmissionDto.appEditSelectDto.dpoEdit}"/>
                       <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
                         <c:choose>
-                          <c:when test="${'1' == cancanEditDpoEdit}">
+                          <c:when test="${'true' == cancanEditDpoEdit}">
                             <p class="text-right"><a id="edit-dpo"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                           </c:when>
                           <c:otherwise>

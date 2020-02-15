@@ -31,6 +31,7 @@
                       <c:set var="isClickEdit" value="true"/>
                     </c:if>
                   </c:forEach>
+
                   <c:choose>
                     <c:when test="${'true' != isClickEdit}">
                       <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
@@ -41,14 +42,15 @@
                   </c:choose>
                   <c:if test="${'true' != isClickEdit}">
                     <c:set var="showPreview" value="true"/>
-                    <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
+                    <%--<c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
                       <c:if test="${amendType =='RFCATYPE01'}">
                         <c:set var="canEdit" value="1"/>
                       </c:if>
-                    </c:forEach>
+                    </c:forEach>--%>
+                    <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.premisesEdit}"/>
                     <div class="premises-summary-preview <c:if test="${'true' != showPreview}">hidden</c:if>">
                       <c:choose>
-                        <c:when test="${'1' == canEdit}">
+                        <c:when test="${'true' == canEdit}">
                           <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                         </c:when>
                         <c:otherwise>

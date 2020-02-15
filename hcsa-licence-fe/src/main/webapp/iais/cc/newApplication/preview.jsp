@@ -59,7 +59,7 @@
                                                     </div>
                                                     <div class="panel-collapse collapse " id="collapseOne" role="tabpanel" aria-labelledby="headingOne">
                                                         <div class="panel-body">
-                                                           <c:if test="${AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.primaryEdit}">
+                                                           <c:if test="${AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.docEdit}">
                                                             <p class="text-right mb-0"><a href="#" id="docEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                                                            </c:if>
                                                             <div class="elemClass-1561088919456">
