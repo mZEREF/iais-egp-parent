@@ -285,6 +285,7 @@ public class LicenceApproveBatchjob {
             }
             for (String key : applications.keySet()){
                 SuperLicDto superLicDto = new SuperLicDto();
+                superLicDto.setAppType(applicationGroupDto.getAppType());
                 List<ApplicationListDto> applicationListDtos = applications.get(key);
                 if(IaisCommonUtils.isEmpty(applicationListDtos)){
                     continue;
@@ -451,7 +452,7 @@ public class LicenceApproveBatchjob {
             String errorMessage = null;
             for(ApplicationListDto applicationListDto : applicationListDtoList){
                 SuperLicDto superLicDto = new SuperLicDto();
-
+                superLicDto.setAppType(applicationGroupDto.getAppType());
                 //get service code
                 ApplicationDto applicationDto = applicationListDto.getApplicationDto();
                 if(applicationDto == null){
