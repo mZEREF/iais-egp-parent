@@ -47,17 +47,28 @@ public class AppInitializer implements ServletContextListener {
     }
 
     @Override
+    /**
+    * @description: The initialization function under different modules
+     * needs to ensure that it is not in a try catch block to avoid subsequent code not executing.
+    */
     public void contextInitialized(ServletContextEvent sce) {
         log.info("---------- Application is initializing... ----------");
         try {
             SqlMapLoader sqlMapLoader = new SqlMapLoader();
             sqlMapLoader.loadSqlMap();
+            //system admin
             initMessages();
             MasterCodeUtil.refreshCache();
-            HcsaServiceCacheHelper.receiveServiceMapping();
             SystemParamCacheHelper.receiveAllSystemParam();
         } catch (Exception ex) {
-            log.error("Failed to initialize the application.", ex);
+            log.error("Failed to initialize the application by system admin.", ex);
+        }
+
+        try {
+            // hcsa service
+            HcsaServiceCacheHelper.receiveServiceMapping();
+        }catch (Exception ex){
+            log.error("Failed to initialize the application by hcsa service", ex);
         }
         log.info("---------- Initialization done. ----------");
     }

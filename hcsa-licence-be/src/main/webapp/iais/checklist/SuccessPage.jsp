@@ -46,15 +46,12 @@
               <c:forEach var="result" items="${messageContent}" varStatus="status">
                 <tr>
                   <td>
-                    <p class="visible-xs visible-sm table-row-title">No.</p>
                     <p>${status.index + 1}</p>
                   </td>
                   <td>
-                    <p class="visible-xs visible-sm table-row-title">Question</p>
-                    <p>${result.subject}</p>
+                    <p style="width: 300px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">${result.subject}</p>
                   </td>
                   <td>
-                    <p class="visible-xs visible-sm table-row-title">Ref. No.</p>
                     <p>${result.result}</p>
                   </td>
                 </tr>

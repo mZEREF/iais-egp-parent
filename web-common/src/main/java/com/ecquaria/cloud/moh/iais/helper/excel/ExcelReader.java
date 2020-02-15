@@ -11,10 +11,10 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -79,7 +79,14 @@ public final class ExcelReader {
         int cellCount = sheet.getRow(0).getPhysicalNumberOfCells();
 
         List<List<String>> result = new ArrayList<>();
+        //Exclude column names
         for (int i = 1; i < rowCount; i++) {
+            //remove blank lines;
+            Row row = sheet.getRow(i);
+            if (row == null){
+                continue;
+            }
+
             List<String> cellResult = new ArrayList<>();
             for (int j = 0; j < cellCount; j++) {
                 cellResult.add(getCellValue(sheet, i, j));

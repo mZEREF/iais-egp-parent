@@ -7,10 +7,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author: yichen
@@ -20,28 +18,33 @@ import java.util.Map;
 
 @Slf4j
 public final class HcsaServiceCacheHelper {
+	private static final String CACHE_NAME_HCSA_SERVICE                = "iaisHcsaServiceCache";
+	private static final String KEY_NAME_HCSA_SERVICE_LIST                = "serviceList";
+
 	private HcsaServiceCacheHelper(){throw new IllegalStateException("Util class");}
 
 	// the key is hcsa service key(pk id)
 	private static final HashMap<String, HcsaServiceDto> svcHashMap = new HashMap<>();
 
-	public static HashMap<String, HcsaServiceDto> getServiceMapping() {
-		return svcHashMap;
-	}
-
 	public static String getServiceNameById(String id){
-		if (svcHashMap.containsKey(id)){
-			return svcHashMap.get(id).getSvcName();
-		}else {
+		RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
+		HcsaServiceDto hcsaServiceDto = redisCacheHelper.get(CACHE_NAME_HCSA_SERVICE, id);
+
+		if (hcsaServiceDto == null){
 			return null;
+		}else {
+			return hcsaServiceDto.getSvcName();
 		}
 	}
 
 	public static String getServiceTypeById(String id){
-		if (svcHashMap.containsKey(id)){
-			return svcHashMap.get(id).getSvcType();
-		}else {
+		RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
+		HcsaServiceDto hcsaServiceDto = redisCacheHelper.get(CACHE_NAME_HCSA_SERVICE, id);
+
+		if (hcsaServiceDto == null){
 			return null;
+		}else {
+			return hcsaServiceDto.getSvcType();
 		}
 	}
 
@@ -53,25 +56,19 @@ public final class HcsaServiceCacheHelper {
 		}
 
 		int status = serviceClient.getActiveServices().getStatusCode();
-
 		if (status == HttpStatus.SC_OK){
-			List<HcsaServiceDto> serviceDtos = serviceClient.getActiveServices().getEntity();
-			if (!IaisCommonUtils.isEmpty(serviceDtos)){
-				serviceDtos.stream().forEach(i -> {
-					svcHashMap.put(i.getId(), i);
-				});
+			List<HcsaServiceDto> serviceList = serviceClient.getActiveServices().getEntity();
+			RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
+			redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, KEY_NAME_HCSA_SERVICE_LIST, serviceList);
+			if (!IaisCommonUtils.isEmpty(serviceList)){
+				serviceList.stream().forEach(i -> redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, i.getId(), i));
 			}
 		}
 	}
 
 	public static List<HcsaServiceDto> receiveAllHcsaService(){
-		List<HcsaServiceDto> list = new ArrayList<>();
-
-		for(Map.Entry<String, HcsaServiceDto> entries : svcHashMap.entrySet()){
-			list.add(entries.getValue());
-		}
-
-		return list;
+		RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
+		return redisCacheHelper.get(CACHE_NAME_HCSA_SERVICE, KEY_NAME_HCSA_SERVICE_LIST);
 	}
 
 }

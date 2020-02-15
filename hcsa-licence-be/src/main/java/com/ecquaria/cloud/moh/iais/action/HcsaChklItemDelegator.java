@@ -9,6 +9,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -200,12 +201,9 @@ public class HcsaChklItemDelegator {
             switch (value){
                 case REGULATION:
                     List<HcsaChklSvcRegulationDto> regulationDtoList = FileUtils.transformToJavaBean(toFile, HcsaChklSvcRegulationDto.class);
-                    regulationDtoList = regulationDtoList.stream().filter(i -> !StringUtil.isEmpty(i.getClauseNo())).collect(Collectors.toList());
                     json = hcsaChklService.submitUploadRegulation(regulationDtoList);
-
                     break;
                 case CHECKLIST_ITEM:
-
                     List<ChecklistItemDto> checklistItemDtoList = FileUtils.transformToJavaBean(toFile, ChecklistItemDto.class);
                     checklistItemDtoList = checklistItemDtoList.stream().filter(i -> !StringUtil.isEmpty(i.getChecklistItem())).collect(Collectors.toList());
                     json  = hcsaChklService.submitUploadItem(checklistItemDtoList);
@@ -213,9 +211,10 @@ public class HcsaChklItemDelegator {
                 default:
             }
         }catch (Exception e){
-            errorMap.put(FILE_UPLOAD_ERROR, "CHKL_ERR011");
+            errorMap.put(FILE_UPLOAD_ERROR, MessageCodeKey.CHKL_ERR011);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            log.info(e.getMessage());
             return;
         }
 
