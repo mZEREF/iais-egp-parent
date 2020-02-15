@@ -34,15 +34,16 @@ import com.ecquaria.cloud.moh.iais.service.client.BePremisesRoutingHistoryClient
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Shicheng
@@ -243,26 +244,26 @@ public class InspectionMainServiceImpl implements InspectionMainService {
                         td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                         updateTask(td);
                         inspectorCheckList.remove(0);
-                        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
+                        createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
                         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
                         applicationViewDto.setApplicationDto(applicationDto1);
-                        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null);
+                        createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null);
                         beInspectionStatusClient.createAppInspectionStatusByAppDto(applicationDto);
                         if(inspectorCheckList != null && inspectorCheckList.size() > 0){
                             inspectionTaskPoolListDto(inspectorCheckList, commPools, inspectionTaskPoolListDto);
                             for(int i = 0; i < inspectorCheckList.size(); i++){
-                                createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null);
+                                createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null);
                             }
                         }
                     } else {
                         td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
                         td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                         updateTask(td);
-                        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
+                        createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
                         if(inspectorCheckList != null && inspectorCheckList.size() > 0){
                             inspectionTaskPoolListDto(inspectorCheckList, commPools, inspectionTaskPoolListDto);
                             for(int i = 0; i < inspectorCheckList.size(); i++){
-                                createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
+                                createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
                             }
                         }
                     }
@@ -290,10 +291,10 @@ public class InspectionMainServiceImpl implements InspectionMainService {
         return belicationViewService.updateApplicaiton(applicationDto);
     }
 
-    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus,
                                                                          String stageId, String internalRemarks){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
+        appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
