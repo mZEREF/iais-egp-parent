@@ -113,7 +113,7 @@ public class WebValidationHelper {
                 sb.append(ent.getKey()).append("\" : \"");
 
                 String value = ent.getValue();
-                String msg = "";
+                String msg;
                 if (value.contains("/")){
                     int indx = value.indexOf("/");
                     try {
@@ -122,6 +122,7 @@ public class WebValidationHelper {
                         msg = MessageUtil.getMessageDesc(value.substring(0, indx));
                         msg = msg.replace("%d", num);
                     }catch (NumberFormatException e){
+                        msg  = MessageUtil.getMessageDesc(value);
                         log.debug(e.getMessage());
                     }
                 }else {
