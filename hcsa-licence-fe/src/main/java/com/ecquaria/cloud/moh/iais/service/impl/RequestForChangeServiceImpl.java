@@ -4,10 +4,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
@@ -89,6 +86,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
+    public void saveLicence(LicenceDto licenceDto) {
+        licenceClient.doSave(licenceDto);
+    }
+
+    @Override
     public List<LicenseeKeyApptPersonDto> getLicenseeKeyApptPersonDtoListByUen(String uenNo) {
         return organizationLienceseeClient.getLicenseeKeyApptPersonDtoListByUen(uenNo).getEntity();
     }
@@ -131,5 +133,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     public LicenceDto getLicenceDtoByLicenceId(String licenceId) {
         return licenceClient.getLicBylicId(licenceId).getEntity();
+    }
+
+    @Override
+    public LicenseeIndividualDto getLicIndByNRIC(String nric) {
+        return organizationLienceseeClient.getlicIndByNric(nric).getEntity();
     }
 }

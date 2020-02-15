@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -158,7 +159,9 @@ public class RequestForChangeDelegator {
     public void compareChangePercentage(BaseProcessClass bpc) {
         String pageType = (String) ParamUtil.getSessionAttr(bpc.request, "keyType");
         String licenseNo= (String) ParamUtil.getSessionAttr(bpc.request, "licenseNo");
+        LicenceDto licenceDto=requestForChangeService.getByLicNo(licenseNo);
         String UNID=(String) ParamUtil.getSessionAttr(bpc.request, "UNID");
+        String newLicenseeId=null;
         List<String> uenMemberIds=new ArrayList<>();
         if(("UEN").equals(pageType)){
             List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoList=requestForChangeService.getLicenseeKeyApptPersonDtoListByUen(UNID);
@@ -166,34 +169,42 @@ public class RequestForChangeDelegator {
                 for (LicenseeKeyApptPersonDto e:licenseeKeyApptPersonDtoList
                         ) {
                     uenMemberIds.add(e.getId());
-                }
-            }
-        }
-        LicenceDto licenceDto=requestForChangeService.getByLicNo(licenseNo);
-        List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoListFromLicenseeId=requestForChangeService.getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
-        List<String> oldMemberIds=new ArrayList<>();
-        if(licenseeKeyApptPersonDtoListFromLicenseeId!=null&&licenseeKeyApptPersonDtoListFromLicenseeId.size()>0) {
-            for (LicenseeKeyApptPersonDto e:licenseeKeyApptPersonDtoListFromLicenseeId
-                    ) {
-                oldMemberIds.add(e.getId());
-            }
-        }
-        int count = 0;
-        for(int i=0;i<=oldMemberIds.size();i++){
-            for(int j=0;j<=uenMemberIds.size();j++){
-                if(oldMemberIds.get(i).equals(uenMemberIds.get(j))){
-                    count++;
-                }
-            }
-        }
-        boolean result=false;
-        if(count/oldMemberIds.size()<0.5){
-            result=true;
-        }
+                    newLicenseeId=e.getLicenseeId();
 
+                }
+            }
+            //uen
+
+            List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoListFromLicenseeId=requestForChangeService.getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
+            List<String> oldMemberIds=new ArrayList<>();
+            if(licenseeKeyApptPersonDtoListFromLicenseeId!=null&&licenseeKeyApptPersonDtoListFromLicenseeId.size()>0) {
+                for (LicenseeKeyApptPersonDto e:licenseeKeyApptPersonDtoListFromLicenseeId
+                ) {
+                    oldMemberIds.add(e.getId());
+                }
+            }
+            int count = 0;
+            for(int i=0;i<=oldMemberIds.size();i++){
+                for(int j=0;j<=uenMemberIds.size();j++){
+                    if(oldMemberIds.get(i).equals(uenMemberIds.get(j))){
+                        count++;
+                    }
+                }
+            }
+            boolean result=false;
+            if(count/oldMemberIds.size()<0.5){
+                result=true;
+            }
+            if(result){
+                licenceDto.setLicenseeId(newLicenseeId);
+                requestForChangeService.saveLicence(licenceDto);
+            }
+        }else {
+            String nric=UNID;
+            LicenseeIndividualDto licenseeIndividualDt=requestForChangeService.getLicIndByNRIC(nric);
+            licenceDto.setLicenseeId(licenseeIndividualDt.getId());
+            requestForChangeService.saveLicence(licenceDto);
+        }
 
     }
-
-
-
 }

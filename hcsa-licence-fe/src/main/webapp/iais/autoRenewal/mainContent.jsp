@@ -48,13 +48,22 @@
                                             <div class="col-xs-12">
                                                 <div class="table-gp">
                                                     <table class="table table-bordered">
+                                                        <thead>
+                                                        <tr>
+                                                            <td class="col-xs-2"><b>Licence No.</b></td>
+                                                            <td class="col-xs-2"><b>Type</b></td>
+                                                            <td class="col-xs-4"><b>Premises</b></td>
+                                                            <td class="col-xs-2"><b>Start date</b></td>
+                                                            <td class="col-xs-2"><b>Expires on</b></td>
+                                                        </tr>
+                                                        </thead>
                                                         <tbody>
                                                         <tr>
-                                                            <td class="col-xs-2"><b>Licence No.</b>></td>
-                                                            <td class="col-xs-2"><b>Type</b>></td>
-                                                            <td class="col-xs-4"><b>Premises</b>></td>
-                                                            <td class="col-xs-2"><b>Start date</b>></td>
-                                                            <td class="col-xs-2"><b>Expires on</b>></td>
+                                                            <td>${appSubmissionDtoList}</td>
+                                                            <td>${appSubmissionDtoList.appType}</td>
+                                                            <td></td>
+                                                            <td>${appSubmissionDtoList.licStartDate}</td>
+                                                            <td>${appSubmissionDtoList.licExpiryDate}</td>
                                                         </tr>
                                                         </tbody>
                                                     </table>
@@ -64,121 +73,89 @@
                                         <div>
                                             <span><a>&lt Back</a></span>
                                             <input class="button" value="Proceed" align="center">
-                                        </div>>
+                                        </div>
                                     </div>
                                 </div>
 
-                                              <div class="tab-pane" id="tabPay" role="tabpanel">
+                                <div class="tab-pane active" id="tabLicRe" role="tabpanel">
 
-                                <div class="tab-pane" id="tabAck" role="tabpanel">
-                                    <div class="alert alert-info" role="alert">
-                                        <strong>
-                                            <h3>Submission successful</h3>
-                                        </strong>
-                                    </div>
-                                    <form method="post" action=<%=process.runtime.continueURL()%>>
-                                        <input type="hidden" name="sopEngineTabRef"
-                                               value="<%=process.rtStatus.getTabRef()%>">
-                                        <div class="row">
-                                            <div class="col-xs-12">
-                                                <div class="table-gp">
-                                                    <table class="table">
-                                                        <tr>
-                                                            <td class="col-xs-4"><p>Current Status:</p></td>
-                                                            <td class="col-xs-8"><p>${applicationViewDto.currentStatus}</p>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><span>Internal Remarks(</span><span
-                                                                    style="color: red">*</span><span>):</span></td>
-                                                            <td>
-                                                                <div class="input-group">
-                                                                    <div class="ax_default text_area">
-                                                                    <textarea id="internalRemarksId"
-                                                                              name="internalRemarks" cols="70"
-                                                                              rows="7"></textarea>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>
-                                                                <span>Processing Decision(</span><span
-                                                                    style="color: red">*</span><span>):</span></span>
-                                                            </td>
-                                                            <td>
-                                                                <select name="nextStage" class="table-select">
-                                                                    <option>---select---</option>
-                                                                    <option value="VERIFIED">Verified</option>
-                                                                    <option value="ROLLBACK">Roll back</option>
-                                                                </select>
-                                                            </td>
-                                                        </tr>
-                                                        <tr id="verifiedDropdown" class="hidden">
-                                                            <td>
-                                                                <span>Verified</span>
-                                                            </td>
-                                                            <td>
-                                                                <select name="verified" class="table-select">
-                                                                    <option>---select---</option>
+                                </div>
 
-                                                                </select>
-                                                            </td>
-                                                        </tr>
-                                                        <tr id="lienceStartDate" class="hidden">
-                                                            <td>
-                                                                <span>Lience Start Date</span>
-                                                            </td>
-                                                            <td>
-                                                                <iais:datePicker id = "lienceStartDate" name = "tuc" value=""></iais:datePicker>
-                                                            </td>
-                                                        </tr>
-                                                        <tr id="rollBackDropdown" class="hidden">
-                                                            <td>
-                                                                <span>Roll Back:</span>
-                                                            </td>
-                                                            <td>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                    <div align="center">
-                                                        <button id="submitButton" type="submit" class="btn btn-primary">
-                                                            Submit
-                                                        </button>
+                                <div class="tab-pane" id="tabPay" role="tabpanel">
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="tab-gp steps-tab">
+                                                <div class="tab-content">
+
+                                                    <div class="tab-pane active" id="paymentTab" role="tabpanel">
+                                                        <br/>
+                                                        <h2>Payment Summary</h2>
+                                                        <p >
+                                                            Total amount due:
+                                                            <c:out value="${AppSubmissionDto.amountStr}"></c:out>
+                                                        </p>
+                                                        <table class="table">
+                                                            <thead>
+                                                            <tr>
+                                                                <th>Service</th>
+                                                                <th>Application Type</th>
+                                                                <th>Application No.</th>
+                                                                <th>Amount</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <c:forEach var="svc" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}">
+                                                                <tr>
+                                                                    <td>
+                                                                        <p><c:out value="${svc.serviceName}"></c:out></p>
+                                                                    </td>
+                                                                    <td>
+                                                                        <p>Amendment</p>
+                                                                    </td>
+                                                                    <td>
+                                                                        <p><c:out value="${AppSubmissionDto.appGrpNo}"></c:out></p>
+                                                                    </td>
+                                                                    <td>
+                                                                        <p><c:out value="${AppSubmissionDto.amountStr}"></c:out></p>
+                                                                    </td>
+                                                                </tr>
+                                                            </c:forEach>
+
+                                                            </tbody>
+                                                        </table>
+                                                        <h2>Payment Method</h2>
+                                                        <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="Credit">
+                                                        <label class="form-check-label" ><span class="check-circle"></span>Credit/Debit Card</label>&nbsp&nbsp&nbsp&nbsp
+                                                        <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="GIRO">
+                                                        <label class="form-check-label" ><span class="check-circle"></span>GIRO</label>
+                                                        <span name="iaisErrorMsg" id="error_pay" class="error-msg"></span>
+                                                        <br>
+
+                                                        &nbsp&nbsp&nbsp&nbsp<img src="<%=webroot1%>img/mastercard.png" width="40" height="25" alt="mastercard">&nbsp
+                                                        <img src="<%=webroot1%>img/paymentVISA.png" width="66" height="25" alt="VISA">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                                                        <img src="<%=webroot1%>img/payments.png" width="36" height="30" alt="GIRO">
+                                                        <p class="visible-xs visible-sm table-row-title">Proceed</p>
+                                                        <p id="previewAndSub" class="text-right text-center-mobile"><iais:input type="button" id="proceed" cssClass="proceed btn btn-primary" value="Proceed"></iais:input></p>
                                                     </div>
-                                                    <div>&nbsp;</div>
+
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
-                                    <div class="alert alert-info" role="alert">
-                                        <strong>
-                                            <h4>Processing History</h4>
-                                        </strong>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div class="table-gp">
-                                                <table class="table">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Username</th>
-                                                        <th>Working Group</th>
-                                                        <th>Status Update</th>
-                                                        <th>Remarks</th>
-                                                        <th>Last Updated</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
-                            </div>
+
+                                <div class="tab-pane" id="tabAck" role="tabpanel">
+                                    <h2><b>Submission successful</b></h2>
+                                    <h3><b>-Clinical Laboratory</b>(Renewal+Amendment)</h3>
+                                    <h3><b>-Clinical Laboratory</b>(Amendment)</h3>
+                                    <br>
+                                    <h4>A confirmation email will be sent to xxxxx</h4>
+                                    <br>
+                                    <h4>We will review your application and notify you if any changes are required.</h4>
+                                    <h4>An inspection date will be arranged if necessary.</h4>
+                                </div>
+                                </div>
+
                         </div>
                     </div>
                 </div>

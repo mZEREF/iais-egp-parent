@@ -2,10 +2,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
 import sop.webflow.rt.api.Process;
 
 import java.util.List;
@@ -28,6 +25,7 @@ public interface RequestForChangeService {
     
     void upDateLicStatus(LicenceDto licenceDto);
 
+    void saveLicence(LicenceDto licenceDto);
 
     List<LicenseeKeyApptPersonDto> getLicenseeKeyApptPersonDtoListByUen(String uenNo);
 
@@ -43,4 +41,6 @@ public interface RequestForChangeService {
     List<AppSubmissionDto> saveAppsBySubmissionDtos(List<AppSubmissionDto> appSubmissionDtos);
 
     LicenceDto getLicenceDtoByLicenceId(String licenceId);
+
+    LicenseeIndividualDto getLicIndByNRIC(String nric);
 }
