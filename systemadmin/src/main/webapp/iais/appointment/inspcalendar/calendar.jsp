@@ -68,7 +68,7 @@
                     <thead>
                     <tr>
                       <iais:sortableHeader needSort="false"   field="index" value="No."></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"   field="NAME" value="User Name"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="NAME" value="Inspector ID"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="YEAR" value="Year"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="BLOCK_OUT_START" value="User Block Date Start"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="BLOCK_OUT_END" value="User Block Date End"></iais:sortableHeader>
