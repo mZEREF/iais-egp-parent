@@ -23,13 +23,13 @@
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
-    <div class="bg-title"><h2>Inspector Calendar Function</h2></div>
+    <div class="bg-title"><h2>Non-Availability Page</h2></div>
 
 
 
           <iais:section title="" id = "demoList">
             <iais:row>
-              <iais:field value="Name."/>
+              <iais:field value="Inspector ID."/>
               <iais:value width="18">
                 <input type="text" name="userName" value=""${userName}" />
               </iais:value>
@@ -132,7 +132,7 @@
     </div>
 
     <div class="text-right text-center-mobile">
-      <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doAdd();">Add</a>
+      <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doAdd();">Create</a>
     </div>
 
   </form>
