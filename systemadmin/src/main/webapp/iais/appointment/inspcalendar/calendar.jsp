@@ -32,6 +32,7 @@
               <iais:field value="Inspector ID."/>
               <iais:value width="18">
                 <input type="text" name="userName" value=""${userName}" />
+                <span id="error_userName" name="iaisErrorMsg" class="error-msg"></span>
               </iais:value>
             </iais:row>
 
@@ -41,6 +42,7 @@
               <iais:value width="18">
                 <iais:select name="dropYearOpt" id="dropYearOpt"
                              onchange="doSearch()" options = "dropYearOpt" firstOption="Please Select" value="${dropYear}" ></iais:select>
+                <span id="error_year" name="iaisErrorMsg" class="error-msg"></span>
               </iais:value>
             </iais:row>
 
