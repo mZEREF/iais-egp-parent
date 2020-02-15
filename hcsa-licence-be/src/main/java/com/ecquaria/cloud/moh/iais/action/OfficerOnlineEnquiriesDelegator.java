@@ -132,39 +132,39 @@ public class OfficerOnlineEnquiriesDelegator {
                     break;
                 case 5:
                     filter.put("svcName", searchNo);
+                    serviceParameter.setFilters(filter);
+                    SearchParam serviceParam = SearchResultHelper.getSearchParam(request, serviceParameter,true);
+                    QueryHelp.setMainSql(RFI_QUERY,"serviceQuery",serviceParam);
+                    if (!serviceParam.getFilters().isEmpty()) {
+                        SearchResult<RfiLicenceQueryDto> serviceParamResult = onlineEnquiriesService.searchSvcNamesParam(serviceParam);
+                        List<String> svcNames=new ArrayList<>();
+                        for (RfiLicenceQueryDto r:serviceParamResult.getRows()
+                        ) {
+                            svcNames.add(r.getServiceName());
+                        }
+                        filter.put("svc_names",svcNames);
+                    }
                     break;
                 case 4:
                     filter.put("name", searchNo);
+                    licenseeParameter.setFilters(filter);
+                    SearchParam licenseeParam = SearchResultHelper.getSearchParam(request, licenseeParameter,true);
+                    QueryHelp.setMainSql(RFI_QUERY,"licenseeQuery",licenseeParam);
+                    if (!licenseeParam.getFilters().isEmpty()) {
+                        SearchResult<RfiLicenceQueryDto> licenseeParamResult = onlineEnquiriesService.searchLicenseeIdsParam(licenseeParam);
+                        List<String> licenseeIds=new ArrayList<>();
+                        for (RfiLicenceQueryDto r:licenseeParamResult.getRows()
+                        ) {
+                            licenseeIds.add(r.getLicenseeId());
+                        }
+                        filter.put("licenseeIds",licenseeIds);
+                    }
                     break;
                 default:
                     break;
             }
         }
-        licenseeParameter.setFilters(filter);
-        SearchParam licenseeParam = SearchResultHelper.getSearchParam(request, licenseeParameter,true);
-        QueryHelp.setMainSql(RFI_QUERY,"licenseeQuery",licenseeParam);
-        if (!licenseeParam.getFilters().isEmpty()) {
-            SearchResult<RfiLicenceQueryDto> licenseeParamResult = onlineEnquiriesService.searchLicenseeIdsParam(licenseeParam);
-            List<String> licenseeIds=new ArrayList<>();
-            for (RfiLicenceQueryDto r:licenseeParamResult.getRows()
-                 ) {
-                licenseeIds.add(r.getLicenseeId());
-            }
-            filter.put("licenseeIds",licenseeIds);
-        }
 
-        serviceParameter.setFilters(filter);
-        SearchParam serviceParam = SearchResultHelper.getSearchParam(request, serviceParameter,true);
-        QueryHelp.setMainSql(RFI_QUERY,"serviceQuery",serviceParam);
-        if (!serviceParam.getFilters().isEmpty()) {
-            SearchResult<RfiLicenceQueryDto> serviceParamResult = onlineEnquiriesService.searchSvcNamesParam(serviceParam);
-            List<String> svcNames=new ArrayList<>();
-            for (RfiLicenceQueryDto r:serviceParamResult.getRows()
-            ) {
-                svcNames.add(r.getServiceName());
-            }
-            filter.put("svc_names",svcNames);
-        }
 
         applicationParameter.setFilters(filter);
         SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
@@ -202,11 +202,11 @@ public class OfficerOnlineEnquiriesDelegator {
                             reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
-//                    else {
-//                        ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
-//                        rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
-//                        reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
-//                    }
+                    else if(count==2){
+                        ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
+                        rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
+                        reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
+                    }
                 }
                 searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
                 ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
@@ -331,22 +331,21 @@ public class OfficerOnlineEnquiriesDelegator {
             }
         }
         if(ParamUtil.getString(request,"application")!=null||ParamUtil.getString(request,"licence")!=null){
-            count[1]=2;
             count[2]=3;
             if(!StringUtil.isEmpty(applicationNo)){
-                filters.put("appNo", applicationNo);
+                filters.put("appNo", applicationNo);count[1]=2;
             }
             if(!StringUtil.isEmpty(applicationType)){
-                filters.put("appType", applicationType);
+                filters.put("appType", applicationType);count[1]=2;
             }
             if(!StringUtil.isEmpty(status)){
-                filters.put("appStatus", status);
+                filters.put("appStatus", status);count[1]=2;
             }
             if(!StringUtil.isEmpty(appSubDate)){
-                filters.put("subDate", appSubDate);
+                filters.put("subDate", appSubDate);count[1]=2;
             }
             if(!StringUtil.isEmpty(appSubToDate)){
-                filters.put("toDate",appSubToDate);
+                filters.put("toDate",appSubToDate);count[1]=2;
             }
             if(!StringUtil.isEmpty(licStaDate)){
                 filters.put("start_date", licStaDate);
@@ -379,6 +378,18 @@ public class OfficerOnlineEnquiriesDelegator {
             if(!StringUtil.isEmpty(licenseeRegnNo)){
                 filters.put("licenseeRegnNo",licenseeRegnNo);
             }
+            licenseeParameter.setFilters(filters);
+            SearchParam licenseeParam = SearchResultHelper.getSearchParam(request, licenseeParameter,true);
+            QueryHelp.setMainSql(RFI_QUERY,"licenseeQuery",licenseeParam);
+            if (!licenseeParam.getFilters().isEmpty()) {
+                SearchResult<RfiLicenceQueryDto> licenseeParamResult = onlineEnquiriesService.searchLicenseeIdsParam(licenseeParam);
+                List<String> licenseeIds=new ArrayList<>();
+                for (RfiLicenceQueryDto r:licenseeParamResult.getRows()
+                ) {
+                    licenseeIds.add(r.getLicenseeId());
+                }
+                filters.put("licenseeIds",licenseeIds);
+            }
         }
         if(ParamUtil.getString(request,"servicePersonnel")!=null){
             count[4]=5;
@@ -393,6 +404,18 @@ public class OfficerOnlineEnquiriesDelegator {
             }
             if(!StringUtil.isEmpty(serviceRole)){
                 filters.put("serviceRole", serviceRole);
+            }
+            serviceParameter.setFilters(filters);
+            SearchParam serviceParam = SearchResultHelper.getSearchParam(request, serviceParameter,true);
+            QueryHelp.setMainSql(RFI_QUERY,"serviceQuery",serviceParam);
+            if (!serviceParam.getFilters().isEmpty()) {
+                SearchResult<RfiLicenceQueryDto> serviceParamResult = onlineEnquiriesService.searchSvcNamesParam(serviceParam);
+                List<String> svcNames=new ArrayList<>();
+                for (RfiLicenceQueryDto r:serviceParamResult.getRows()
+                ) {
+                    svcNames.add(r.getServiceName());
+                }
+                filters.put("svc_names",svcNames);
             }
         }
         if (Arrays.equals(count, new int[]{0, 0, 0, 0, 0})) {
@@ -452,11 +475,11 @@ public class OfficerOnlineEnquiriesDelegator {
                             }
                         }
                     }
-//                    else {
-//                        ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
-//                        rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
-//                        reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
-//                    }
+                    else if(count[1]!=2){
+                        ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
+                        rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
+                        reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
+                    }
                 }
                 searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
                 ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
