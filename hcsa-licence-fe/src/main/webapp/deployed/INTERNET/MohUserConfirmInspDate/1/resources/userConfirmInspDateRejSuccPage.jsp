@@ -1,0 +1,1 @@
+<%@include file = "/iais/apptInspectionDate/apptRejectSuccess.jsp"%>
