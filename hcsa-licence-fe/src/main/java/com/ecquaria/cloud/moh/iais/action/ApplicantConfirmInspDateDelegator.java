@@ -79,6 +79,16 @@ public class ApplicantConfirmInspDateDelegator {
     }
 
     /**
+     * StartStep: userConfirmInspDateConDo
+     *
+     * @param bpc
+     * @throws
+     */
+    public void userConfirmInspDateConDo(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the userConfirmInspDateConDo start ...."));
+    }
+
+    /**
      * StartStep: userConfirmInspDateRe
      *
      * @param bpc
