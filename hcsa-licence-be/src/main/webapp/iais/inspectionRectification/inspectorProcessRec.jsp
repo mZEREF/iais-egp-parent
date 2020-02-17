@@ -230,101 +230,19 @@
               </div>
 
               <div class="tab-pane" id="tabInspection" role="tabpanel">
-                <div class="row">
-                  <div class="col-xs-12">
-                    <div class="center-content">
-                      <c:forEach var = "item" items="${inspectionChecklistAttr}" varStatus="status">
-                        <c:if test="${item.common eq true}">
-                          <div class="bg-panel-heading">
-                            <h2>General Regulation</h2>
-                          </div>
-                        </c:if>
-                        <c:if test="${item.common eq false}">
-                          <c:choose>
-                            <c:when test="${empty item.svcSubType}">
-                              <h2>${item.svcName}</h2>
-                            </c:when>
-                            <c:otherwise>
-                              <h2>${item.svcName} | ${item.svcSubType}</h2>
-                            </c:otherwise>
-                          </c:choose>
-                        </c:if>
-                        <c:forEach var = "sec" items="${item.sectionDtos}">
-                          <div class="panel panel-default">
-                            <div class="panel-heading" id="headingPremise" role="tab">
-                              <h4 class="panel-title">${sec.section}</h4>
-                            </div>
-                            <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
-                              <div class="panel-body">
-                                <table class="table">
-                                  <thead>
-                                  <tr>
-                                    <th>Regulation Clause Number</th>
-                                    <th>Regulations</th>
-                                    <th>Checklist Item</th>
-                                    <th>Risk Level</th>
-                                  </tr>
-                                  </thead>
-                                  <tbody>
-                                  <c:forEach var = "chklitem" items = "${sec.checklistItemDtos}" varStatus="status">
-                                    <tr>
-                                      <td>
-                                        <p>${chklitem.regulationClauseNo}</p>
-                                      </td>
-                                      <td>
-                                        <p>${chklitem.regulationClause}</p>
-                                      </td>
-                                      <td>
-                                        <p>${chklitem.checklistItem}</p>
-                                      </td>
-                                      <td>
-                                        <p><iais:code code="${chklitem.riskLevel}"></iais:code></p>
-                                      </td>
-                                    </tr>
-                                  </c:forEach>
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                          </div>
-                        </c:forEach>
-                      </c:forEach>
-                      <c:if test="${!empty adhocCheckListAttr}">
-                        <div class="panel panel-default">
-                          <div class="panel-heading"  role="tab">
-                            <h4 class="panel-title">Adhoc Item</h4>
-                          </div>
-                          <div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPremise">
-                            <div class="panel-body">
-                              <table class="table">
-                                <thead>
-                                <tr>
-                                  <th>Checklist Item</th>
-                                  <th>Answer Type</th>
-                                  <th>Risk Level</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <c:forEach var = "adhocItem" items = "${adhocCheckListAttr.allAdhocItem}" varStatus="status">
-                                  <tr>
-                                    <td>
-                                      <p>${adhocItem.question}</p>
-                                    </td>
-                                    <td>
-                                      <p><iais:code code="${adhocItem.answerType}"></iais:code></p>
-                                    </td>
-                                    <td>
-                                      <p><iais:code code="${adhocItem.riskLvl}"></iais:code></p>
-                                    </td>
-                                  </tr>
-                                </c:forEach>
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
+                <div class="panel-group" id="accordion2" role="tablist" aria-multiselectable="true">
+                  <h3>
+                    <span>View & Mark Submitted Rectifications</span>
+                  </h3>
+                  <div class="panel panel-default">
+                    <div class="panel-collapse collapse in" id="collapseTwo" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                      <div class="panel-body">
+                        <div class="panel-main-content">
+                          <iais:section title="" id = "retificationView">
+
+                          </iais:section>
                         </div>
-                      </c:if>
-                      <button class="btn btn-lg btn-login-edit" style="float:right" type="button" onclick="javascript:doInspectionPreTaskEdit();">Edit</button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -372,6 +290,9 @@
                                 <br><span class="error-msg" name="iaisErrorMsg" id="error_accCondMarks"></span>
                               </iais:value>
                             </iais:row>
+                            <iais:action style="text-align:center;">
+                              <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doInspectorProRecSubmit()">Submit</button>
+                            </iais:action>
                             <div class="alert alert-info" role="alert">
                               <strong>
                                 <h4>Processing History</h4>
@@ -460,10 +381,6 @@
         $("[name='InspectorProRectificationType']").val(action);
         var mainPoolForm = document.getElementById('mainReviewForm');
         mainPoolForm.submit();
-    }
-
-    function doInspectorProRecBack() {
-        $("#actionValue").val('back');
     }
 
     function doInspectorProRecChange(value) {
