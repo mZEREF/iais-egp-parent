@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
@@ -8,8 +9,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryD
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.InspectorCalendarQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.AppointmentService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.IntranetUserClient;
@@ -18,9 +22,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -76,6 +84,49 @@ public class AppointmentServiceImpl implements AppointmentService {
 	@Override
 	public ApptNonWorkingDateDto updateNonWorkingDate(ApptNonWorkingDateDto nonWorkingDateDto) {
 		return onlineApptClient.updateNonWorkingDate(nonWorkingDateDto).getEntity();
+	}
+
+	@Override
+	public OrgUserDto getOrgUserDtoById(String userId) {
+		return intranetUserClient.findIntranetUserById(userId).getEntity();
+	}
+
+	@Override
+	public List<String> getCurrentUserWorkingGroupId(LoginContext loginContext) {
+		if (!Optional.ofNullable(loginContext).isPresent()){
+			return null;
+		}
+
+		List<UserGroupCorrelationDto> userGroupCorrelationDtos = intranetUserClient
+				.getUserGroupCorreByUserId(loginContext.getUserId())
+				.getEntity();
+
+		if (!userGroupCorrelationDtos.isEmpty()){
+			return Collections.emptyList();
+		}
+
+		return userGroupCorrelationDtos.stream().filter(Objects::nonNull).map(UserGroupCorrelationDto::getGroupId)
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<String> getInspectorGroupLeadByLoginUser(LoginContext loginContext) {
+		List<String> leadGroupList = new ArrayList<>();
+		if (!Optional.ofNullable(loginContext).isPresent()){
+			return leadGroupList;
+		}
+
+		List<String> roleList = new ArrayList<>(loginContext.getRoleIds());
+		if(roleList.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)){
+			List<UserGroupCorrelationDto> userGroupCorrelationList = intranetUserClient
+					.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
+
+			leadGroupList = userGroupCorrelationList.stream()
+					.filter(ugc -> ugc.getIsLeadForGroup() == 1).map(UserGroupCorrelationDto::getGroupId).collect(Collectors.toList());
+
+		}
+
+		return leadGroupList;
 	}
 
 	@Override
