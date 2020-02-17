@@ -48,11 +48,11 @@
                                                     <tbody>
                                                     <tr>
                                                         <td class="col-xs-6" align="right">Licensee Type</td>
-                                                        <td class="col-xs-6">${licenseeDto.licenseeType}</td>
+                                                        <td class="col-xs-6">${organizationLicDto.licenseeType}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">UEN</td>
-                                                        <td>${organizationDto.uenno}</td>
+                                                        <td>${organizationLicDto.uenNo}</td>
                                                     </tr>
 
                                                     </tbody>
@@ -71,85 +71,83 @@
                                                 <table class="table table-bordered">
                                                     <tbody>
                                                     <tr>
-                                                        <td class="col-xs-6" align="right">Name of ${licenseeDto.licenseeType}</td>
-                                                        <td class="col-xs-6">${licenseeDto.name}</td>
+                                                        <td class="col-xs-6" align="right">Company Name</td>
+                                                        <td class="col-xs-6">${organizationLicDto.licenseeDto.name}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Postal code</td>
-                                                        <td>${licenseeDto.postalCode}</td>
+                                                        <td>${organizationLicDto.licenseeDto.postalCode}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Block No</td>
-                                                        <td>${licenseeDto.blkNo}</td>
+                                                        <td>${organizationLicDto.licenseeDto.blkNo}</td>
                                                     </tr>
-                                                    <tr>
-                                                        <td align="right">Floor No</td>
-                                                        <td>${licenseeDto.floorNo}</td>
-                                                    </tr>
+
                                                     <tr>
                                                         <td align="right">Unit No</td>
-                                                        <td>${licenseeDto.unitNo}</td>
+                                                        <td>${organizationLicDto.licenseeDto.unitNo}</td>
                                                     </tr><tr>
                                                         <td align="right">Street Name</td>
-                                                        <td>${licenseeDto.streetName}</td>
+                                                        <td>${organizationLicDto.licenseeDto.streetName}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Building Name</td>
-                                                        <td>${licenseeDto.buildingName}</td>
+                                                        <td>${organizationLicDto.licenseeDto.buildingName}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Office Number</td>
-                                                        <td>6581111234</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Fax Number</td>
-                                                        <td>6587651234</td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>&nbsp</div>
-                                <div class="panel panel-default">
-                                    <div class="panel-heading"><b>Board Members</b></div>
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div class="table-gp">
-                                                <table class="table table-bordered">
-                                                    <tbody>
-                                                    <tr>
-                                                        <td class="col-xs-6" align="right">Name</td>
-                                                        <td class="col-xs-6">Tan Ah Kow</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Salutation</td>
-                                                        <td>DR</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">ID Type</td>
-                                                        <td>NRIC</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">ID No</td>
-                                                        <td>S123456789I</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Designation</td>
-                                                        <td>Director</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Designation Appointment Date</td>
-                                                        <td>01/01/2015</td>
+                                                        <td>${organizationLicDto.licenseeEntityDto.officeTelNo}</td>
                                                     </tr>
 
                                                     </tbody>
                                                 </table>
+                                </div>
+                            </div>
+                        </div>
+                                </div>
+
+                                <c:forEach var="member" items="${organizationLicDto.licenseeKeyApptPersonDtos}" varStatus="status">
+                                    <div>&nbsp</div>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading"><b>Board Members</b></div>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="table-gp">
+                                                    <table class="table table-bordered">
+                                                        <tbody>
+                                                        <tr>
+                                                            <td class="col-xs-6" align="right">Name</td>
+                                                            <td class="col-xs-6">${member.name}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">Salutation</td>
+                                                            <td>${member.salutation}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">ID Type</td>
+                                                            <td>${member.idType}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">ID No</td>
+                                                            <td>${member.idNo}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">Designation</td>
+                                                            <td>${member.designation}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">Designation Appointment Date</td>
+                                                            <td>${member.apptDt}</td>
+                                                        </tr>
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </c:forEach>
+
                                 <div>&nbsp</div>
                                 <div class="panel panel-default">
                                     <div class="panel-heading"><b>Sole Proprietor - Licensee</b></div>
@@ -160,78 +158,58 @@
                                                     <tbody>
                                                     <tr>
                                                         <td class="col-xs-6" align="right">Name</td>
-                                                        <td class="col-xs-6">Tan Ah Kow</td>
+                                                        <td class="col-xs-6">${organizationLicDto.licenseeIndividualDto.name}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Salutation</td>
-                                                        <td>DR</td>
+                                                        <td>${organizationLicDto.licenseeIndividualDto.salutation}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">ID Type</td>
-                                                        <td>NRIC</td>
+                                                        <td>${organizationLicDto.licenseeIndividualDto.idType}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">ID No</td>
-                                                        <td>S123456789I</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Designation</td>
-                                                        <td>Director</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Profession Type</td>
-                                                        <td>-</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Professional Regn No</td>
-                                                        <td>-</td>
+                                                        <td>${organizationLicDto.licenseeIndividualDto.idNo}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Postal code</td>
-                                                        <td>319579</td>
+                                                        <td>${organizationLicDto.licenseeIndividualDto.idNo}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Address Type</td>
+                                                        <td>${organizationLicDto.licenseeIndividualDto.idNo}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Block No</td>
-                                                        <td>Mapex</td>
+                                                        <td>${organizationLicDto.licenseeIndividualDto.idNo}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Floor No</td>
-                                                        <td>04</td>
+                                                        <td>${organizationLicDto.licenseeIndividualDto.idNo}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Unit No</td>
-                                                        <td>13</td>
+                                                        <td>${organizationLicDto.licenseeIndividualDto.idNo}</td>
                                                     </tr><tr>
                                                         <td align="right">Street Name</td>
-                                                        <td>Jalan Permimpin</td>
+                                                        <td>${organizationLicDto.licenseeIndividualDto.idNo}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Building Name</td>
-                                                        <td>-</td>
+                                                        <td>${organizationLicDto.licenseeIndividualDto.idNo}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Mobile No</td>
-                                                        <td>-</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Home Telephone No</td>
-                                                        <td>-</td>
+                                                        <td>${organizationLicDto.licenseeIndividualDto.idNo}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Office Telephone No</td>
-                                                        <td>-</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Fax No</td>
-                                                        <td>-</td>
+                                                        <td>${organizationLicDto.licenseeIndividualDto.idNo}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Email Address</td>
-                                                        <td>-</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Add Another Licensee</td>
-                                                        <td>-</td>
+                                                        <td>${organizationLicDto.licenseeIndividualDto.idNo}</td>
                                                     </tr>
                                                     </tbody>
                                                 </table>

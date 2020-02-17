@@ -10,9 +10,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganization
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -121,5 +121,8 @@ public interface OrganizationClient {
 
     @PostMapping(value = "/iais-workgroup/work-group-by-group-domain", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<WorkingGroupDto>> getWorkingGroup(@RequestParam("uerDomain") String uerDomain);
+
+    @GetMapping(value = "/iais-licensee-be/OrganizationLicDto/{licenseeId}")
+    FeignResponseEntity<OrganizationLicDto> getOrganizationLicDtoByLicenseeId(@PathVariable(name = "licenseeId") String licenseeId);
 
 }
