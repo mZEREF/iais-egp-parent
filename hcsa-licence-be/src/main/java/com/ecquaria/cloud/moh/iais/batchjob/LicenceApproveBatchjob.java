@@ -114,14 +114,19 @@ public class LicenceApproveBatchjob {
                     int isGrpLic = applicationGroupDto.getIsGrpLic();
                     log.debug(StringUtil.changeForLog("The application group no is -->;"+applicationGroupDto.getGroupNo()) );
                     log.debug(StringUtil.changeForLog("The isGrpLic is -->;"+isGrpLic));
-                    GenerateResult generateResult;
-                    if(AppConsts.YES.equals(String.valueOf(isGrpLic))){
-                        //generate the Group licence
-                        generateResult = generateGroupLicence(applicationLicenceDto,hcsaServiceDtos);
-                    }else{
-                        //generate licence
-                        generateResult = generateLIcence(applicationLicenceDto,hcsaServiceDtos);
+                    GenerateResult generateResult =null;
+                    try{
+                        if(AppConsts.YES.equals(String.valueOf(isGrpLic))){
+                            //generate the Group licence
+                            generateResult = generateGroupLicence(applicationLicenceDto,hcsaServiceDtos);
+                        }else{
+                            //generate licence
+                            generateResult = generateLIcence(applicationLicenceDto,hcsaServiceDtos);
+                        }
+                    }catch (Exception exception){
+                        log.error(StringUtil.changeForLog("This  applicaiton group  have error -- >"+applicationGroupDto.getGroupNo()));
                     }
+
                     toDoResult(licenceGroupDtos,generateResult,success,fail,applicationGroupDto);
 
                     if(success.size() > 0){
@@ -569,13 +574,19 @@ public class LicenceApproveBatchjob {
 
 
     private  int getYearLength(AppPremisesRecommendationDto appPremisesRecommendationDto){
+        log.debug(StringUtil.changeForLog("The getYearLength is start ..."));
         int yearLength = 1;
         if(appPremisesRecommendationDto!=null){
             String chrono = appPremisesRecommendationDto.getChronoUnit();
             if(AppConsts.LICENCE_PERIOD_YEAR.equals(chrono)){
                 yearLength = appPremisesRecommendationDto.getRecomInNumber();
+            }else{
+                log.debug(StringUtil.changeForLog("The getYearLength chrono is not Year ..."));
             }
+        }else{
+            log.error(StringUtil.changeForLog("The getYearLength appPremisesRecommendationDto is null ..."));
         }
+        log.debug(StringUtil.changeForLog("The getYearLength is end ..."));
         return yearLength;
     }
     private boolean isApplicaitonReject(AppPremisesRecommendationDto appPremisesRecommendationDto){
