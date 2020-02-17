@@ -443,11 +443,11 @@
         $("#indicateCondRemarks").hidden;
         var actionValue = $("#actionValue").val();
         if(actionValue == "view"){
-            inspectionPreTaskJump();
+            inspectorProRecJump();
         }
     })
 
-    function inspectionPreTaskJump(){
+    function inspectorProRecJump(){
         $("#inspRectification").click();
         $("#recInspTabInfo").removeClass('active');
         $("#recInspTabDocuments").removeClass('active');
