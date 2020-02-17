@@ -47,6 +47,7 @@ public class ConfigServiceDelegator {
     }
     public void editOrDelete(BaseProcessClass bpc){
         log.info("*********editOrDelete  start***********");
+
     }
 
     public void edit(BaseProcessClass bpc){
@@ -57,11 +58,19 @@ public class ConfigServiceDelegator {
 
     public void editOrSave(BaseProcessClass bpc){
         log.info("*********editOrSave  start***********");
+        String crud_action_value = bpc.request.getParameter("crud_action_type");
+        if("save".equals(crud_action_value)){
+            bpc.request.setAttribute("crud_action_type","save");
+        }
+        if("edit".equals(crud_action_value)){
+            bpc.request.setAttribute("crud_action_type","edit");
+        }
+
 
     }
     public void editView(BaseProcessClass bpc){
         log.info("*********editView  start***********");
-
+        configService.viewPageInfo(bpc.request);
     }
 
     public void delete(BaseProcessClass bpc){

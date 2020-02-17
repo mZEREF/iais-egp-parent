@@ -32,8 +32,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePref
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpeRoutingSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkloadDto;
@@ -269,4 +271,12 @@ public interface HcsaConfigClient {
     FeignResponseEntity<Set<String>> getAppGrpPremisesTypeBySvcId(@RequestBody List<String> serviceId);
     @PostMapping(value = "/hcsa-config/hcsa-service-config-dto",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity saveHcsaServiceConfig(@RequestBody HcsaServiceConfigDto hcsaServiceConfigDto);
+    @GetMapping(value = "/iais-hcsa-service/svc-personnel-by-service-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaSvcPersonnelDto>> getSvcPersonnelByServiceId(@RequestParam("serviceId") String serviceId);
+    @PostMapping(value = "/hcsa-config/existence-of-hcsa-service",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Boolean> isExistHcsaService(@RequestBody HcsaServiceDto hcsaServiceDto );
+    @GetMapping(value = "/hcsa-config/hcsa-routing-scheme-of-service-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaSvcStageWorkloadDto>> getHcsaSvcSpeRoutingSchemeByServiceId(@RequestParam("serviceId") String serviceId);
+    @GetMapping(value = "/hcsa-config/hcsa-working-group-service-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaSvcStageWorkingGroupDto>>  getHcsaStageWorkingGroup(@RequestParam("serviceId") String serivceId);
     }
