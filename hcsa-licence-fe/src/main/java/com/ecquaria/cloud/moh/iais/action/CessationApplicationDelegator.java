@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -37,6 +38,8 @@ public class CessationApplicationDelegator {
     }
 
     public void init(BaseProcessClass bpc){
+        ParamUtil.setSessionAttr(bpc.request, "appCessationDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "appCessationConfirmDto", null);
         List<String> licIds = new ArrayList<>();
         licIds.add("7ECAE165-534A-EA11-BE7F-000C29F371DC");
         licIds.add("CFCAC193-6F4D-EA11-BE7F-000C29F371DC");
@@ -61,6 +64,19 @@ public class CessationApplicationDelegator {
     public void valiant(BaseProcessClass bpc){
         List<AppCessationDto> appCessationDtos = prepareDataForValiant(bpc);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable)appCessationDtos);
+        String whichTodo = null;
+        for(AppCessationDto appCessationDto :appCessationDtos){
+            String todo = appCessationDto.getWhichTodo();
+            if(!StringUtil.isEmpty(todo)){
+                whichTodo =todo;
+            }
+
+
+        }
+        if(StringUtil.isEmpty(whichTodo)){
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+            return;
+        }
         for(AppCessationDto appCessationDto :appCessationDtos){
             if("on".equals(appCessationDto.getWhichTodo())){
                 Map<String, String> errorMap = new HashMap<>(34);
@@ -71,11 +87,9 @@ public class CessationApplicationDelegator {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
                     return;
                 }
-            }else{
-                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                return;
             }
         }
+
         AppCessationDto appCessationConfirmDto = prepareDataForConfirm(bpc);
         ParamUtil.setSessionAttr(bpc.request, "appCessationConfirmDto", appCessationConfirmDto);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
@@ -117,7 +131,7 @@ public class CessationApplicationDelegator {
                 String patRegNo = ParamUtil.getRequestString(bpc.request, i+"patRegNo");
                 String patOthers = ParamUtil.getRequestString(bpc.request, i+"patOthers");
                 String whichTodo = ParamUtil.getRequestString(bpc.request, i+"whichTodo");
-                String readInfo = ParamUtil.getRequestString(bpc.request, i+"readInfo");
+                String readInfo = ParamUtil.getRequestString(bpc.request, "readInfo");
 
                 appCessationDto.setEffectiveDate(effectiveDate);
                 appCessationDto.setCessationReason(cessationReason);

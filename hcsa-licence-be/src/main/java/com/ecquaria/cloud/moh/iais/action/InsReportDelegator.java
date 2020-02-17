@@ -9,6 +9,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -20,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
@@ -50,6 +53,8 @@ public class InsReportDelegator {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     private ApplicationViewService applicationViewService;
+    @Autowired
+    FillupChklistService fillupChklistService;
 
     private final String RECOMMENDATION_DTO = "appPremisesRecommendationDto";
     private final String RECOMMENDATION = "recommendation";
@@ -71,10 +76,21 @@ public class InsReportDelegator {
         if (StringUtil.isEmpty(taskId)) {
             taskId = "F2733132-A137-EA11-BE7E-000C29F371DC";
         }
+        //checkList
+        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview("B3A5C76D-9C3A-EA11-BE7E-000C29F371DC","service");
+        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview("B3A5C76D-9C3A-EA11-BE7E-000C29F371DC","common");
+        InspectionFillCheckListDto commonDto = null;
+        if(commonList!=null && !commonList.isEmpty()){
+            commonDto = commonList.get(0);
+        }
+        InspectionFDtosDto serListDto = new InspectionFDtosDto();
+        serListDto.setFdtoList(cDtoList);
+        ParamUtil.setSessionAttr(bpc.request,"commonDto",commonDto);
+        ParamUtil.setSessionAttr(bpc.request,"serListDto",serListDto);
+
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(correlationId);
-       // ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(correlationId);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");
@@ -123,7 +139,8 @@ public class InsReportDelegator {
         List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = prepareForSave(bpc, appPremisesCorrelationId);
         saveRecommendations(appPremisesRecommendationDtoList);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        insRepService.routingTaskToAo1(taskDto, applicationDto, appPremisesCorrelationId);
+        AppPremisesRecommendationDto appPremisesRecDto = appPremisesRecommendationDtoList.get(0);
+        insRepService.routingTaskToAo1(taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecDto);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
 
     }
@@ -131,6 +148,7 @@ public class InsReportDelegator {
     private AppPremisesRecommendationDto prepareRecommendation(BaseProcessClass bpc) {
         String riskLevel = ParamUtil.getRequestString(bpc.request, "riskLevel");
         String processingDecision = ParamUtil.getRequestString(bpc.request, "processingDecision");
+        String processRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
         String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
         String periods = ParamUtil.getRequestString(bpc.request, "periods");
@@ -155,6 +173,7 @@ public class InsReportDelegator {
         appPremisesRecommendationDto.setRiskLevel(riskLevel);
         appPremisesRecommendationDto.setFollowUpAction(followUpAction);
         appPremisesRecommendationDto.setProcessingDecision(processingDecision);
+        appPremisesRecommendationDto.setProcessRemarks(processRemarks);
         return appPremisesRecommendationDto;
     }
 
