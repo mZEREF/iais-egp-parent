@@ -51,11 +51,20 @@
     <JavaCode defClass="" executor="" methodName="inspectorProRectificationAccCond_OnStepProcess_0" name="inspectorProRectificationAccCond_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="Step1" x="1320" y="-10">
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorProRectificationView" x="800" y="230">
    <Description/>
    <probepoint type="none"/>
-   <OnStepProcess/>
-  </ReturnInvokeProcessStep>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectorProRectificationView_OnStepProcess_0" name="inspectorProRectificationView_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorProRectificationStep" x="800" y="580">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectorProRectificationStep_OnStepProcess_0" name="inspectorProRectificationStep_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectorProRectificationDoPage" stageIndicator="" x="610" y="100">
@@ -70,11 +79,17 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectorProRectificationViewPage" stageIndicator="" x="790" y="400">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorProRectificationPre" linkstyle="Direct" name="" sourceName="/Conditions/Condition/InspectorProRectificationCond" style="oblique">
-   <position>{(1060,120)(1128,40)(491,40)(430,120)}</position>
+   <position>{(1060,120)(1128,187)(492,187)(430,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorProRectificationInit" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/InspectorProRectificationStart" style="rectanular">
    <position>{(30,120)(240,120)}</position>
@@ -115,8 +130,20 @@
   <SynchronousLink destinationName="/Pages/WebPage/InspectorProRectificationSuccessPage" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
    <position>{(1340,420)(1020,420)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Step1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/InspectorProRectificationSwitch" style="rectanular">
-   <position>{(1270,120)(1340,10)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorProRectificationPre" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectorProRectificationSwitch" style="oblique">
+   <position>{(1270,120)(1340,38)(491,38)(430,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorProRectificationView" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectorProRectificationSwitch" style="oblique">
+   <position>{(1270,120)(820,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspectorProRectificationViewPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectorProRectificationView" style="rectanular">
+   <position>{(820,250)(810,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorProRectificationStep" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspectorProRectificationViewPage" style="rectanular">
+   <position>{(810,420)(820,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/InspectorProRectificationSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectorProRectificationStep" style="oblique">
+   <position>{(820,600)(1691,600)(1691,119)(1270,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -130,7 +157,8 @@
    <SwitchCase component="/Steps/AutomaticStep/InspectorProRectificationAcc" value="&quot;accept&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspectorProRectificationReq" value="&quot;request&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspectorProRectificationAccCond" value="&quot;acccond&quot;"/>
-   <SwitchCase component="/Steps/ReturnInvokeProcessStep/Step1" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectorProRectificationPre" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectorProRectificationView" value="&quot;view&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
