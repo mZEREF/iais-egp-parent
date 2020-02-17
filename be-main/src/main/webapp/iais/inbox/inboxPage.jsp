@@ -77,11 +77,11 @@
                         </iais:value>
                     </iais:row>
                     <iais:action style="text-align:center;">
-                        <button class="btn btn-lg" type="button"
+                        <button class="btn btn-lg" id="searchbtn" type="button"
                                 style="background:#2199E8; color: white"
                                 onclick="javascript:doInspectorSearchTaskSearch()">Search
                         </button>
-                        <button class="btn btn-lg" type="button"
+                        <button class="btn btn-lg" id="clearbtn" type="button"
                                 style="background:#2199E8; color: white"
                                 onclick="javascript:doInspectorSearchTaskClear()">Clear
                         </button>
