@@ -359,6 +359,9 @@
                                 <iais:select name="selectValue" options="processDecOption" firstOption="Please select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectionPreTaskChange(this.value)"></iais:select>
                               </iais:value>
                             </iais:row>
+                            <iais:action style="text-align:center;">
+                              <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doInspectionPreTaskSubmit()">Submit</button>
+                            </iais:action>
                             <div class="alert alert-info" role="alert">
                               <strong>
                                 <h4>Processing History</h4>
@@ -409,10 +412,6 @@
                                 </div>
                               </div>
                             </div>
-                            <iais:action >
-                              <button class="btn btn-lg btn-login-back" style="float:left" type="button" onclick="javascript:doInspectionPreTaskBack()"><a style="color: black;" href = "${inboxUrl}">Back</a></button>
-                              <button class="btn btn-lg btn-login-submit" style="float:right" type="button" onclick="javascript:doInspectionPreTaskSubmit()">Submit</button>
-                            </iais:action>
                           </iais:section>
                         </div>
                       </div>
