@@ -94,7 +94,8 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
                     }
                 }
             }
-            //last and second last Inspection
+            //get liceence history
+            getFromLicenceHistory(inspInfoList,licId,svcCode);
             lstInpDto = getLastAndSecLastInpection(inspInfoList);
             //callApi
             if(lstInpDto!=null){
@@ -114,6 +115,11 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
         }
         return lstInpDto;
 
+    }
+
+    private void getFromLicenceHistory(List<InspectionInfoDto> inspInfoList, String licId, String svcCode) {
+        /*LicenceDto licDto =hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
+        List<LicPremisesDto> licPremDto =*/
     }
 
     @Override
