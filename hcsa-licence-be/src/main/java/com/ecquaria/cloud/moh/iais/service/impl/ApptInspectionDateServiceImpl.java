@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
@@ -130,9 +131,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         if(!IaisCommonUtils.isEmpty(apptUserCalendarDtoList)){
             List<ApptUserCalendarDto> apptUserCalendarDtoListAll = new ArrayList<>();
             for(List<ApptUserCalendarDto> apptUserCalendarDtos : apptUserCalendarDtoList){
-                for(ApptUserCalendarDto  aDto : apptUserCalendarDtos){
-                    apptUserCalendarDtoListAll.add(aDto);
-                }
+                apptUserCalendarDtoListAll.add(apptUserCalendarDtos.get(0));
                 if(!IaisCommonUtils.isEmpty(apptUserCalendarDtos)){
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(apptUserCalendarDtos.get(0).getTimeSlot());
@@ -256,10 +255,13 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     private void updateStatusAndCreateHistory(TaskDto taskDto, String inspecStatus, String processDec) {
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        //TODO APPLICATION STATUS
-        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
+        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING);
         applicationService.updateFEApplicaiton(applicationDto1);
         updateInspectionStatus(taskDto.getRefNo(), inspecStatus);
+        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+        taskDto.setSlaDateCompleted(new Date());
+        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        taskService.updateTask(taskDto);
         inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, processDec, taskDto.getRoleId(), HcsaConsts.ROUTING_STAGE_PRE, taskDto.getWkGrpId());
         inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, processDec, null, null, taskDto.getWkGrpId());
     }
