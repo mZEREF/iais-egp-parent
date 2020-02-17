@@ -209,12 +209,12 @@
                                                             <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                         </td>
                                                         <td>
-                                                            <c:set var="fir" value="${status.index}"></c:set>
+                                                            <%--<c:set var="fir" value="${status.index}"></c:set>
                                                             <c:forEach var="adhocdraft" items="${otherVersionAdhocDraftList}">
                                                                 <wrms:value width="7">
                                                                     <span class="oldVal compareTdStyle" attr="${adhocdraft.adItemList[fir].adAnswer}"><label><c:out value="${adhocdraft.adItemList[fir].adAnswer}"/></label></span>
                                                                 </wrms:value>
-                                                            </c:forEach>
+                                                            </c:forEach>--%>
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
