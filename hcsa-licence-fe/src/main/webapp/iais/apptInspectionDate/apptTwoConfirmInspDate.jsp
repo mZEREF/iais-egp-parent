@@ -77,8 +77,8 @@
     }
 
     function apptTwoConfirmInspDateCon() {
-        $("#actionValue").val('confirm');
-        apptTwoConfirmInspDateSubmit('confirm');
+        $("#actionValue").val('success');
+        apptTwoConfirmInspDateSubmit('success');
     }
 
     function apptTwoConfirmInspDateBack() {
