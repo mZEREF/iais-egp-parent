@@ -10,7 +10,7 @@ public interface ApplicantConfirmInspDateService {
     /**
      * System Date
      */
-
+    ApptFeConfirmDateDto getApptSystemDate(String appPremCorrId);
 
     /**
      * Specific Date

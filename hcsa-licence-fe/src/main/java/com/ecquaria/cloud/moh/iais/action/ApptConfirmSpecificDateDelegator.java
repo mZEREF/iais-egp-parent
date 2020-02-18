@@ -80,6 +80,8 @@ public class ApptConfirmSpecificDateDelegator {
      */
     public void userConfirmSpecificDateAcc(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmSpecificDateAcc start ...."));
+        ApptFeConfirmDateDto apptFeConfirmDateDto = (ApptFeConfirmDateDto) ParamUtil.getSessionAttr(bpc.request, "apptFeConfirmDateDto");
+        ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
     }
 
     /**
@@ -90,5 +92,7 @@ public class ApptConfirmSpecificDateDelegator {
      */
     public void userConfirmSpecificDateReject(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmSpecificDateReject start ...."));
+        ApptFeConfirmDateDto apptFeConfirmDateDto = (ApptFeConfirmDateDto) ParamUtil.getSessionAttr(bpc.request, "apptFeConfirmDateDto");
+        ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
     }
 }
