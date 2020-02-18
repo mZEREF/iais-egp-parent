@@ -45,9 +45,9 @@
                           <iais:value width="7">
                             <c:if test="${apptFeConfirmDateDto.inspectionNewDate != null}">
                               <c:forEach items="${apptFeConfirmDateDto.inspectionNewDate}" var="newDate">
-                                <input class="form-check-input" type="radio" name="inspectionDate" aria-invalid="true" value="${newDate.value}" <c:if test="${newDate.value eq apptFeConfirmDateDto.checkNewDate}">checked</c:if>>
+                                <input class="form-check-input" type="radio" name="apptCheckNewDate" aria-invalid="true" value="${newDate.value}" <c:if test="${newDate.value eq apptFeConfirmDateDto.checkNewDate}">checked</c:if>>
                                 <label><c:out value = "${newDate.text}"/></label>
-                                <br><span class="error-msg" name="iaisErrorMsg" id="error_inspectorCheck"></span>
+                                <br><span class="error-msg" name="iaisErrorMsg" id="error_checkNewDate"></span>
                               </c:forEach>
                             </c:if>
                           </iais:value>
