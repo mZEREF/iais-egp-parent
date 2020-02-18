@@ -68,7 +68,7 @@
                 <iais:value>
                     <div class="col-xs-3 col-md-3">
                         <%Date eExpiryDate = Formatter.parseDate(request.getParameter("eExpiryDate"));%>
-                        <iais:datePicker id="eExpiryDate" name="fExpiryDate" dateVal="<%=eExpiryDate%>"/>
+                        <iais:datePicker id="eExpiryDate" name="eExpiryDate" dateVal="<%=eExpiryDate%>"/>
                     </div>
                 </iais:value>
                 <div class="col-xs-2 col-md-2">

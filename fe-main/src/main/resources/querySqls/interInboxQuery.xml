@@ -69,10 +69,10 @@
             <#if id??> AND CHARINDEX(:id, lic.id) >0</#if>
             <#if serviceType??> AND lic.svc_name = :serviceType</#if>
             <#if licStatus??> AND lic.status = :licStatus</#if>
-            <#if fStartDate??> AND lic.start_date > :fStartDate</#if>
-            <#if eStartDate??> AND lic.start_date < :eStartDate</#if>
-            <#if fExpiryDate??> AND lic.expiry_date > :fExpiryDate</#if>
-            <#if eExpiryDate??> AND lic.expiry_date < :eExpiryDate</#if>
+            <#if fStartDate??> AND lic.start_date >= :fStartDate</#if>
+            <#if eStartDate??> AND lic.start_date <= :eStartDate</#if>
+            <#if fExpiryDate??> AND lic.expiry_date >= :fExpiryDate</#if>
+            <#if eExpiryDate??> AND lic.expiry_date <= :eExpiryDate</#if>
             <#if licNo??> AND lic.licence_no like :licNo</#if>
         ]]>
     </sql>
