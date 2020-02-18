@@ -23,6 +23,7 @@ public class LicenceViewServiceImpl implements LicenceViewService {
     @Autowired
     private LicenceClient licenceClient;
 
+    @Autowired
     private OrganizationLienceseeClient organizationLienceseeClient;
 
     @Override

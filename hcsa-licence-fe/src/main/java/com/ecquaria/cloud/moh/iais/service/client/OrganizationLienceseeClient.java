@@ -18,6 +18,7 @@ import java.util.List;
  * @author caijing
  * @date 2020/1/15
  */
+
 @FeignClient(name = "iais-organization", configuration = FeignConfiguration.class,
         fallback = OrganizationLienceseeClientFallback.class)
 public interface OrganizationLienceseeClient {
@@ -30,7 +31,7 @@ public interface OrganizationLienceseeClient {
     @GetMapping(value = "/iais-licensee/licenseeIndividual/{nric}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenseeIndividualDto> getlicIndByNric(@PathVariable("nric") String nric);
 
-    @GetMapping(value = "/iais-licensee/licensee/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/iais-licensee/licensee/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenseeDto> getLicenseeById(@PathVariable(name = "id") String id);
 
 }

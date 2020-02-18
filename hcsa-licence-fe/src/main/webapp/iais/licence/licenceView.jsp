@@ -31,7 +31,7 @@
                 <p>Service Licence: ${licenceViewDto.licenceDto.svcName}</p>
               </li>
               <li>
-              <p>Licence Start and End Date: ${licenceViewDto.licenceDto.startDate} to ${licenceViewDto.licenceDto.endDate} </p>
+              <p>Licence Start and End Date: ${licenceViewDto.startDate} to ${licenceViewDto.endDate} </p>
               </li>
               <li>
                 <p>Licensed Premises: ${licenceViewDto.hciName} </p>
