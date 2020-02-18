@@ -39,7 +39,7 @@
                 <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                   <div class="panel-body">
                     <div class="panel-main-content">
-                      <iais:section title="" id = "ava_apptnew_date">
+                      <iais:section title="" id = "ava_apptrej_date">
                         <iais:row>
                           <iais:field value="Available Appointment Dates" required="true"/>
                           <iais:value width="7">
@@ -52,9 +52,16 @@
                             </c:if>
                           </iais:value>
                         </iais:row>
+                        <iais:row>
+                          <iais:field value="Enter Reason" required="true"/>
+                          <iais:value width="7">
+                            <textarea maxlength="300" id="apptRejectReason" name="apptRejectReason" cols="70" rows="7" ><c:out value="${apptFeConfirmDateDto.reason}"></c:out></textarea>
+                            <br><span class="error-msg" name="iaisErrorMsg" id="error_reason"></span>
+                          </iais:value>
+                        </iais:row>
                         <iais:action >
-                          <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:apptTwoConfirmInspDateCon()">Confirm</button>
-                          <button class="btn btn-lg btn-login-next" style="float:left" type="button" onclick="javascript:apptTwoConfirmInspDateBack()">back</button>
+                          <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:apptRejectInspDateCon()">Confirm</button>
+                          <button class="btn btn-lg btn-login-next" style="float:left" type="button" onclick="javascript:apptRejectInspDateBack()">back</button>
                         </iais:action>
                       </iais:section>
                     </div>
@@ -70,19 +77,19 @@
 </div>
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
-    function apptTwoConfirmInspDateSubmit(action){
+    function apptRejectInspDateSubmit(action){
         $("[name='userComfireInspDateType']").val(action);
         var mainPoolForm = document.getElementById('mainReConfirmForm');
         mainPoolForm.submit();
     }
 
-    function apptTwoConfirmInspDateCon() {
-        $("#actionValue").val('confirm');
-        apptTwoConfirmInspDateSubmit('confirm');
+    function apptRejectInspDateCon() {
+        $("#actionValue").val('ack');
+        apptRejectInspDateSubmit('ack');
     }
 
-    function apptTwoConfirmInspDateBack() {
+    function apptRejectInspDateBack() {
         $("#actionValue").val('back');
-        apptTwoConfirmInspDateSubmit('back');
+        apptRejectInspDateSubmit('back');
     }
 </script>
