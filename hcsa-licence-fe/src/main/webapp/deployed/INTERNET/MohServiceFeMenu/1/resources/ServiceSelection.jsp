@@ -1,1 +1,1 @@
-<%@include file="/iais/cc/serviceMenu/serviceMenu.jsp"%>
+<%@include file="/iais/serviceMenu/serviceMenu.jsp"%>

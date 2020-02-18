@@ -16,6 +16,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditAdhocCheckShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditAdhocNcCehckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckListAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
@@ -399,10 +401,13 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         List<AdhocChecklistItemDto> saveItemDtoList = new ArrayList<>();
         AdhocCheckListConifgDto dto = applicationClient.getAdhocConfigByAppPremCorrId(appPremId).getEntity();
         if(dto!=null){
+            dto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             if(itemDtoList!=null && !itemDtoList.isEmpty()){
+                applicationClient.updateAppAdhocConfig(dto);
                 dto.setVersion(dto.getVersion()+1);
                 dto.setId(null);
+                dto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 dto = applicationClient.saveAppAdhocConfig(dto).getEntity();
                 for(AdhocNcCheckItemDto temp:itemDtoList){
                     temp.setAdhocConfId(dto.getId());
@@ -774,5 +779,77 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void getRateOfCheckList(InspectionFDtosDto serListDto, AuditAdhocCheckShowDto adchklDto, InspectionFillCheckListDto commonDto) {
+        if(serListDto.getFdtoList()!=null){
+            getServiceTotalAndNc(serListDto);
+        }
+        if(commonDto!=null){
+            getGeneralTotalAndNc(commonDto,serListDto);
+        }
+        if(adchklDto!=null&&!IaisCommonUtils.isEmpty(adchklDto.getAdItemList())){
+            getAdhocTotalAndNc(adchklDto,serListDto);
+        }
+    }
+
+    private void getServiceTotalAndNc(InspectionFDtosDto serListDto) {
+        List<InspectionFillCheckListDto> dtoList = serListDto.getFdtoList();
+        int totalNum = 0;
+        int doNum = 0;
+        int ncNum = 0;
+        for(InspectionFillCheckListDto temp:dtoList){
+            if(!IaisCommonUtils.isEmpty(temp.getCheckList())){
+                for(InspectionCheckQuestionDto cqDto : temp.getCheckList()){
+                    totalNum++;
+                    if(!StringUtil.isEmpty(cqDto.getChkanswer())){
+                        doNum++;
+                        if("No".equals(cqDto.getChkanswer())){
+                            ncNum++;
+                        }
+                    }
+                }
+            }
+        }
+        serListDto.setServiceDo(doNum);
+        serListDto.setServiceTotal(totalNum);
+        serListDto.setServiceNc(ncNum);
+    }
+
+    private void getGeneralTotalAndNc(InspectionFillCheckListDto commonDto, InspectionFDtosDto serListDto) {
+        int totalNum = 0;
+        int ncNum = 0;
+        int doNum = 0;
+        for(InspectionCheckQuestionDto cqDto : commonDto.getCheckList()){
+            totalNum++;
+            if(!StringUtil.isEmpty(cqDto.getChkanswer())){
+                doNum++;
+            }
+            if("No".equals(cqDto.getChkanswer())){
+                ncNum++;
+            }
+        }
+        serListDto.setGeneralTotal(totalNum);
+        serListDto.setGeneralDo(doNum);
+        serListDto.setGeneralNc(ncNum);
+    }
+
+    private void getAdhocTotalAndNc(AuditAdhocCheckShowDto adchklDto, InspectionFDtosDto serListDto) {
+        int totalNum = 0;
+        int ncNum = 0;
+        int doNum = 0;
+        for(AuditAdhocNcCehckItemDto aditem : adchklDto.getAdItemList()){
+            totalNum++;
+            if(!StringUtil.isEmpty(aditem)){
+                doNum++;
+                if("No".equals(aditem.getAdAnswer())){
+                    ncNum++;
+                }
+            }
+        }
+        serListDto.setAdhocTotal(totalNum);
+        serListDto.setAdhocNc(ncNum);
+        serListDto.setAdhocDo(doNum);
     }
 }

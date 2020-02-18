@@ -9,7 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -529,14 +529,19 @@ public class OfficerOnlineEnquiriesDelegator {
         log.info("=======>>>>>preAppInfo>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String licenseeId = (String) ParamUtil.getSessionAttr(request, "id");
-        LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
-        OrganizationDto organizationDto= organizationClient.getOrganizationById(licenseeDto.getOrganizationId()).getEntity();
-        ParamUtil.setRequestAttr(request,"licenseeDto",licenseeDto);
-        ParamUtil.setRequestAttr(request,"organizationDto",organizationDto);
+        OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licenseeId).getEntity();
+        ParamUtil.setRequestAttr(request,"organizationLicDto",organizationLicDto);
         // 		preAppInfo->OnStepProcess
     }
 
-
+    public void preAppDetails(BaseProcessClass bpc) {
+        log.info("=======>>>>>preAppInfo>>>>>>>>>>>>>>>>requestForInformation");
+        HttpServletRequest request=bpc.request;
+        String appId = (String) ParamUtil.getSessionAttr(request, "id");
+        OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(appId).getEntity();
+        ParamUtil.setRequestAttr(request,"organizationLicDto",organizationLicDto);
+        // 		preAppInfo->OnStepProcess
+    }
 
 
 

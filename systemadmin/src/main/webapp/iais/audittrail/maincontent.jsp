@@ -1,4 +1,4 @@
-<%--
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %><%--
   Created by IntelliJ IDEA.
   User: yichen
   Date: 2/6/2020
@@ -6,7 +6,10 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-
+<%
+  String webroot= IaisEGPConstant.CSS_ROOT+ IaisEGPConstant.FE_CSS_ROOT;
+  String webRootCommon = IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
+%>
 <br><br>
 
 <div class="form-horizontal">
@@ -158,4 +161,4 @@
 
 </div>
 <%@include file="/include/validation.jsp"%>
-<script src="/system-admin-web/iais/js/CommonUtils.js"></script>
+<script src="<%=webRootCommon%>js/iaisUtils.js"></script>

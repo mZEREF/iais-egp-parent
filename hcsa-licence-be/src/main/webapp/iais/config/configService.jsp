@@ -29,7 +29,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="serviceName">Service Name<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceName" type="text" name="serviceName">
+            <input id="serviceName" type="text" name="serviceName" value="${hcsaServiceDto.svcName}">
             <span name="iaisErrorMsg" class="error-msg" id="error_svcName"></span>
           </div>
         </div>
@@ -38,7 +38,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="description">Service Description<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="description" type="text" name="description">
+            <input id="description" type="text" name="description" value="${hcsaServiceDto.svcDesc}">
             <span class="error-msg" name="iaisErrorMsg" id="error_svcDesc"></span>
           </div>
         </div>
@@ -47,7 +47,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="displayDescription">Service Display Description<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="displayDescription" type="text" name="displayDescription">
+            <input id="displayDescription" type="text" name="displayDescription" value="${hcsaServiceDto.svcDisplayDesc}">
             <span class="error-msg" name="iaisErrorMsg" id="error_svcDisplayDesc"></span>
           </div>
         </div>
@@ -57,7 +57,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="serviceCode">Service Code<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceCode" type="text" name="serviceCode" maxlength="3">
+            <input id="serviceCode" type="text" name="serviceCode" maxlength="3" value="${hcsaServiceDto.svcCode}">
             <span class="error-msg" name="iaisErrorMsg" id="error_svcCode"></span>
           </div>
         </div>
@@ -116,10 +116,10 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label">Principal Officer (PO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input type="text" name="man-principalOfficer" placeholder="mandatory count">
+            <input type="text" name="man-principalOfficer" placeholder="mandatory count" value="${PO.mandatoryCount}">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input type="text" name="mix-principalOfficer" placeholder="maximum count">
+            <input type="text" name="mix-principalOfficer" placeholder="maximum count" value="${PO.maximumCount}">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
@@ -133,10 +133,10 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Deputy Principal Officer (DPO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-DeputyPrincipalOfficer" placeholder="mandatory count">
+            <input  type="text" name="man-DeputyPrincipalOfficer" placeholder="mandatory count" value="${DPO.mandatoryCount}">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-DeputyPrincipalOfficer"  placeholder="maximum count">
+            <input  type="text" name="mix-DeputyPrincipalOfficer"  placeholder="maximum count" value="${DPO.maximumCount}">
           </div>
 
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
@@ -151,10 +151,10 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Clinical Governance Officer (CGO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-ClinicalGovernanceOfficer" placeholder="mandatory count">
+            <input  type="text" name="man-ClinicalGovernanceOfficer" placeholder="mandatory count" value="${CGO.mandatoryCount}">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ClinicalGovernanceOfficer"  placeholder="maximum count">
+            <input  type="text" name="mix-ClinicalGovernanceOfficer"  placeholder="maximum count" value="${CGO.maximumCount}">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
@@ -168,10 +168,10 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Service Personnel<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-ServicePersonnel" placeholder="mandatory count">
+            <input  type="text" name="man-ServicePersonnel" placeholder="mandatory count" value="${SVCPSN.mandatoryCount}">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ServicePersonnel"  placeholder="maximum count">
+            <input  type="text" name="mix-ServicePersonnel"  placeholder="maximum count" value="${SVCPSN.maximumCount}">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
@@ -284,7 +284,9 @@
           </div>
         </div>
       </div>
-      <br>
+
+
+
       <div class="form-group" >
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
       <table border="1px" style="text-align: center" >
@@ -300,8 +302,8 @@
         <td >${routingStage.stageName}</td>
         <td>
           <div class="col-xs-12 col-md-12">
-            <select  name="RoutingScheme${routingStage.stageCode}" <c:if test="${routingStage.stageCode!='INS'}">disabled="disabled" </c:if> > >
-              <option value="">Select one</option>
+            <select  name="RoutingScheme${routingStage.stageCode}" > > >
+              <option >Select one</option>
               <option value="common"
                       <c:if test="${routingStage.stageCode=='PSO'}">selected="selected" </c:if>
 
@@ -315,9 +317,10 @@
         </td>
         <td>
           <div class="col-xs-12 col-md-12">
-            <input  type="text" name="WorkloadManhours${routingStage.stageCode}">
+            <input  type="text" name="WorkloadManhours${routingStage.stageCode}" >
+            <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${status.index}"></span>
           </div>
-          <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount"${status.index}></span>
+
         </td>
       </tr>
         </c:forEach>
@@ -338,7 +341,7 @@
             <div class="col-xs-12 col-md-2" >
               <div >
                 <select  name="step" >
-                  <option value="">Select one</option>
+                  <option >Select one</option>
                   <option value="SVST001">laboratorydisciplines</option>
                   <option value="SVST002">governanceofficers</option>
                   <option value="SVST003">disciplineallocation</option>
@@ -351,7 +354,7 @@
             <div class="col-xs-12 col-md-2">
               <div  >
                 <select  name="step" >
-                  <option value="">Select one</option>
+                  <option>Select one</option>
                   <option value="SVST001">laboratorydisciplines</option>
                   <option value="SVST002">governanceofficers</option>
                   <option value="SVST003">disciplineallocation</option>
@@ -364,7 +367,7 @@
             <div class="col-xs-12 col-md-2">
               <div  >
                 <select  name="step" >
-                  <option value="">Select one</option>
+                  <option >Select one</option>
                   <option value="SVST001">laboratorydisciplines</option>
                   <option value="SVST002">governanceofficers</option>
                   <option value="SVST003">disciplineallocation</option>
@@ -378,7 +381,7 @@
             <div class="col-xs-12 col-md-2">
               <div  >
                 <select  name="step" >
-                  <option value="">Select one</option>
+                  <option >Select one</option>
                   <option value="SVST001">laboratorydisciplines</option>
                   <option value="SVST002">governanceofficers</option>
                   <option value="SVST003">disciplineallocation</option>
@@ -391,7 +394,7 @@
             <div class="col-xs-12 col-md-2">
               <div  >
                 <select  name="step" >
-                  <option value="">Select one</option>
+                  <option >Select one</option>
                   <option value="SVST001">laboratorydisciplines</option>
                   <option value="SVST002">governanceofficers</option>
                   <option value="SVST003">disciplineallocation</option>
@@ -404,7 +407,7 @@
             <div class="col-xs-12 col-md-2">
               <div  >
                 <select  name="step" >
-                  <option value="">Select one</option>
+                  <option>Select one</option>
                   <option value="SVST001">laboratorydisciplines</option>
                   <option value="SVST002">governanceofficers</option>
                   <option value="SVST003">disciplineallocation</option>
@@ -433,15 +436,16 @@
         <div class="form-group">
           <label class="col-xs-12 col-md-8 control-label">Effective Start Date<span class="mandatory">*</span></label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
-            <input type="text" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
+            <input type="text" value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg" ></span>
           </div>
+          <span class="error-msg" name="iaisErrorMsg" id="error_effectiveDate"></span>
           <div class="clear"></div></div>
       </div>
 
 
     <div class="col-xs-12 col-md-8">
       <div class="form-group">
-        <label class="col-xs-12 col-md-8 control-label">Effective End Date<span class="mandatory">*</span></label>
+        <label class="col-xs-12 col-md-8 control-label">Effective End Date</label>
         <div class=" col-xs-7 col-sm-4 col-md-3">
           <input type="text" autocomplete="off" class="date_picker form-control form_datetime" name="EndDate" id="-20247433206800" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_EndDate" name="iaisErrorMsg" class="error-msg"></span>
         </div>

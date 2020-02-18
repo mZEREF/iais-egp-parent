@@ -1,1 +1,1 @@
-<%@include file = "/iais/apptInspectionDate/apptRecjectInspDate.jsp"%>
+<%@include file = "/iais/apptInspectionDate/apptRejectInspDate.jsp"%>

@@ -149,7 +149,13 @@ public class InterInboxDelegator {
         SearchParam licParam = SearchResultHelper.getSearchParam(request,licenceParameter,true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.LICENCE_QUERY_KEY,licParam);
         SearchResult licResult = inboxService.licenceDoQuery(licParam);
+        log.debug(licParam.getMainSql());
         List<InboxLicenceQueryDto> inboxLicenceQueryDtoList = licResult.getRows();
+        for (InboxLicenceQueryDto inboxLicenceQueryDto:inboxLicenceQueryDtoList){
+            if ("LICEST001".equals(inboxLicenceQueryDto.getStatus())){
+                inboxLicenceQueryDto.setStatus("Active");
+            }
+        }
         if(!StringUtil.isEmpty(licResult)){
             ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, licParam);
             ParamUtil.setRequestAttr(request,InboxConst.LIC_RESULT, licResult);
@@ -190,6 +196,7 @@ public class InterInboxDelegator {
             licSearchMap.put("licStatus",licStatus);
         }
         if(!StringUtil.isEmpty(fStartDate)){
+            licSearchMap.put("fStartDate",fStartDate);
         }
         if(!StringUtil.isEmpty(eStartDate)){
             licSearchMap.put("eStartDate",eStartDate);

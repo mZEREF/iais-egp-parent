@@ -14,7 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplate
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -372,10 +372,8 @@ public class RequestForInformationDelegator {
         log.info("=======>>>>>preAppInfo>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String licenseeId = (String) ParamUtil.getSessionAttr(request, "id");
-        LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
-        OrganizationDto organizationDto= organizationClient.getOrganizationById(licenseeDto.getOrganizationId()).getEntity();
-        ParamUtil.setRequestAttr(request,"licenseeDto",licenseeDto);
-        ParamUtil.setRequestAttr(request,"organizationDto",organizationDto);
+        OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licenseeId).getEntity();
+        ParamUtil.setRequestAttr(request,"organizationLicDto",organizationLicDto);
         // 		preAppInfo->OnStepProcess
     }
 
@@ -457,17 +455,18 @@ public class RequestForInformationDelegator {
         map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
         String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);
 
-        EmailDto emailDto=new EmailDto();
-        emailDto.setContent(mesContext);
-        emailDto.setSubject(rfiEmailTemplateDto.getSubject());
-        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
 
-        String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         licPremisesReqForInfoDto1.setAction("create");
         gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1,
                 signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
+        EmailDto emailDto=new EmailDto();
+        emailDto.setContent(mesContext);
+        emailDto.setSubject(rfiEmailTemplateDto.getSubject());
+        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+
+        //String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
         // 		doCreateRequest->OnStepProcess
     }
 

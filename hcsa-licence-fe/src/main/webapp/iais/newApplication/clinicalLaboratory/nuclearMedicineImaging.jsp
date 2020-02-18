@@ -24,7 +24,7 @@
               <div class="personnel-content ">
                 <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
                   <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
-                    <c:if test="${'APPSPN06' == clickEditPage}">
+                    <c:if test="${'APPSPN07' == clickEditPage}">
                       <c:set var="isClickEdit" value="true"/>
                     </c:if>
                   </c:forEach>

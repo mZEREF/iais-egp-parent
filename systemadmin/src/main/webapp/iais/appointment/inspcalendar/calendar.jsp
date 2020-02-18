@@ -20,29 +20,68 @@
 <div class="main-content">
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
     <div class="bg-title"><h2>Non-Availability Page</h2></div>
 
+    <form class="form-horizontal">
 
 
           <iais:section title="" id = "demoList">
-            <iais:row>
-              <iais:field value="Inspector ID."/>
-              <iais:value width="18">
-                <input type="text" name="userName" value=""${userName}" />
-                <span id="error_userName" name="iaisErrorMsg" class="error-msg"></span>
-              </iais:value>
-            </iais:row>
 
+             <iais:row>
+                <iais:field value="Working Group"/>
+                <iais:value width="18">
+                  <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  options = "wrlGrpNameOpt" firstOption="Please Select" value="${shortName}" ></iais:select>
+                  <span id="error_groupName" name="iaisErrorMsg" class="error-msg"></span>
+                </iais:value>
+              </iais:row>
+
+              <iais:row>
+                <iais:field value="Inspector ID."/>
+                <iais:value width="18">
+                  <input type="text" name="userName" value="${userName}" />
+                  <span id="error_userName" name="iaisErrorMsg" class="error-msg"></span>
+                </iais:value>
+              </iais:row>
 
             <iais:row>
               <iais:field value="Year."/>
               <iais:value width="18">
                 <iais:select name="dropYearOpt" id="dropYearOpt"
-                             onchange="doSearch()" options = "dropYearOpt" firstOption="Please Select" value="${dropYear}" ></iais:select>
+                             options = "dropYearOpt" firstOption="Please Select" value="${dropYear}" ></iais:select>
                 <span id="error_year" name="iaisErrorMsg" class="error-msg"></span>
+              </iais:value>
+            </iais:row>
+
+            <iais:row>
+              <iais:field value="Non-Available Date Start:"/>
+              <iais:value width="18">
+                <iais:datePicker id = "userBlockDateStart" name = "userBlockDateStart"  value="${userBlockDateStart}"></iais:datePicker>
+                <span id="error_userBlockDateStart" name="iaisErrorMsg" class="error-msg"></span>
+              </iais:value>
+            </iais:row>
+
+            <iais:row>
+              <iais:field value="Non-Available Date End:"/>
+              <iais:value width="18">
+                <iais:datePicker id = "userBlockDateEnd" name = "userBlockDateEnd"  value="${userBlockDateEnd}"></iais:datePicker>
+                <span id="error_userBlockDateEnd" name="iaisErrorMsg" class="error-msg"></span>
+              </iais:value>
+            </iais:row>
+
+            <iais:row>
+              <iais:field value="Non-Available Date Description:"/>
+              <iais:value width="18">
+                <input type="text" name="userBlockDateDescription" value="${userBlockDateDescription}" />
+                <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
+              </iais:value>
+            </iais:row>
+
+            <iais:row>
+              <iais:field value="Recurrence:"/>
+              <iais:value width="18">
+                <iais:select name="recurrence" id="recurrence"
+                             options = "recurrenceOpt" firstOption="Please Select" value="${recurrence}" ></iais:select>
+                <%--<span id="error_year" name="iaisErrorMsg" class="error-msg"></span>--%>
               </iais:value>
             </iais:row>
 
@@ -51,7 +90,7 @@
               <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doClear()">Clear</button>
             </iais:action>
           </iais:section>
-
+    </form>
 
 
     <br><br><br>
@@ -101,8 +140,10 @@
                             <td>${calendar.description}</td>
                             <td>
                               <input type="hidden" id="nonAvailId" name="nonAvailId" value="">
-                              <button type="button"   onclick="doDelete('<iais:mask name="nonAvailId" value="${calendar.id}"/>')"  class="btn btn-default btn-sm" >Delete</button>
-                              <button type="button"  onclick="doEdit('<iais:mask name="nonAvailId" value="${calendar.id}"/>')" class="btn btn-default btn-sm" >Update</button>
+                              <c:if test="${isGroupLead == 'Y'}">
+                                <button type="button"   onclick="doDelete('<iais:mask name="nonAvailId" value="${calendar.id}"/>')"  class="btn btn-default btn-sm" >Delete</button>
+                                <button type="button"  onclick="doEdit('<iais:mask name="nonAvailId" value="${calendar.id}"/>')" class="btn btn-default btn-sm" >Update</button>
+                              </c:if>
                             </td>
                           </tr>
                         </c:forEach>
@@ -134,12 +175,15 @@
     </div>
 
     <div class="text-right text-center-mobile">
-      <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doAdd();">Create</a>
+      <c:if test="${isGroupLead == 'Y'}">
+        <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doAdd();">Create</a>
+      </c:if>
     </div>
 
   </form>
 </div>
-
+<%@include file="/include/validation.jsp"%>
+<%@include file="/include/utils.jsp"%>
 <script>
     function doSearch() {
         SOP.Crud.cfxSubmit("mainForm", "doQuery");
@@ -159,22 +203,4 @@
         SOP.Crud.cfxSubmit("mainForm", "delete", val);
     }
     
-    function doClear() {
-        $('input[name="userName"]').val("");
-
-
-        $("#dropYearOpt option[text = 'Please select']").val("selected", "selected");
-        $(".current").text("Please select");
-        $("#dropYearOpt").val("");
-    }
-
-    function jumpToPagechangePage(){
-        SOP.Crud.cfxSubmit("mainForm", "doPaging");
-    }
-
-    function sortRecords(sortFieldName,sortType){
-        SOP.Crud.cfxSubmit("mainForm","doSorting",sortFieldName,sortType);
-    }
-
-
 </script>

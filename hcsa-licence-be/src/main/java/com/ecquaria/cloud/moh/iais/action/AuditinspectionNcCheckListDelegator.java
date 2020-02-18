@@ -4,8 +4,8 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditAdhocCheckShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditAdhocNcCehckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.CheckListDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
@@ -341,17 +341,6 @@ public class AuditinspectionNcCheckListDelegator {
 
     public InspectionFDtosDto getDataFromPage(HttpServletRequest request){
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
-        /*if(!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
-            for(InspectionFillCheckListDto fdto:serListDto.getFdtoList()){
-                if(fdto!=null&&!IaisCommonUtils.isEmpty(fdto.getCheckList())){
-                    List<InspectionCheckQuestionDto> checkListDtoList = fdto.getCheckList();
-                    for(InspectionCheckQuestionDto temp:checkListDtoList){
-                        getServiceData(temp,fdto,request);
-                    }
-                    fillupChklistService.fillInspectionFillCheckListDto(fdto);
-                }
-            }
-        }*/
         String tcu = ParamUtil.getString(request,"tuc");
         String bestpractice = ParamUtil.getString(request,"bestpractice");
         String tcuremark = ParamUtil.getString(request,"tcuRemark");
@@ -383,11 +372,11 @@ public class AuditinspectionNcCheckListDelegator {
         temp.setRemark(remark);
     }
 
-    public AdCheckListShowDto getAdhocDtoFromPage(HttpServletRequest request){
-        AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
-        List<AdhocNcCheckItemDto> itemDtoList = showDto.getAdItemList();
+    public AuditAdhocCheckShowDto getAdhocDtoFromPage(HttpServletRequest request){
+        AuditAdhocCheckShowDto showDto = (AuditAdhocCheckShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
+        List<AuditAdhocNcCehckItemDto> itemDtoList = showDto.getAdItemList();
         if(itemDtoList!=null && !itemDtoList.isEmpty()){
-            for(AdhocNcCheckItemDto temp:itemDtoList){
+            for(AuditAdhocNcCehckItemDto temp:itemDtoList){
                 String answer = ParamUtil.getString(request,temp.getId()+"adhocrad");
                 String remark = ParamUtil.getString(request,temp.getId()+"adhocremark");
                 String rec = ParamUtil.getString(request,temp.getId()+"adhocrec");
@@ -410,9 +399,9 @@ public class AuditinspectionNcCheckListDelegator {
         InspectionFDtosDto serListDto = null;
         serListDto = getServiceCheckListDataFormViewPage(request);
         InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
-        AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
+        AuditAdhocCheckShowDto adchklDto = getAdhocDtoFromPage(request);
         serListDto.setCheckListTab("chkList");
-        fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
+        insepctionNcCheckListService.getRateOfCheckList(serListDto,adchklDto,commonDto);
         if(serListDto!=null){
             int totalNcNum = serListDto.getGeneralNc()+serListDto.getServiceNc()+serListDto.getAdhocNc();
             serListDto.setTotalNcNum(totalNcNum);

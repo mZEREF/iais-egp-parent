@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -34,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
@@ -42,6 +44,7 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -81,6 +84,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     private HcsaConfigClient hcsaConfigClient;
 
     @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
+
+    @Autowired
     private InspectionTaskClient inspectionTaskClient;
 
     @Autowired
@@ -103,6 +109,16 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     @Autowired
     private ApplicationService applicationService;
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     @Override
     public ApptInspectionDateDto getInspectionDate(String taskId, ApptInspectionDateDto apptInspectionDateDto) {
@@ -218,7 +234,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
+
         applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
+        createFeAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
         String url = systemParamConfig.getInterServerName() +
                 MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE +
                 appPremCorrId;
@@ -242,7 +260,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
         }
+
         applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
+        createFeAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
         String url = systemParamConfig.getInterServerName() +
                 MessageConstants.MESSAGE_INBOX_URL_APPT_SYS_INSP_DATE +
                 appPremCorrId;
@@ -251,6 +271,14 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         inspectionDateSendEmail(submitDt);
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDto(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_INSPECTION_DATE, InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE);
     }
+
+    private void createFeAppPremisesInspecApptDto(List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        beEicGatewayClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
+    }
+
 
     private void updateStatusAndCreateHistory(TaskDto taskDto, String inspecStatus, String processDec) {
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
@@ -263,7 +291,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         taskService.updateTask(taskDto);
         inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, processDec, taskDto.getRoleId(), HcsaConsts.ROUTING_STAGE_PRE, taskDto.getWkGrpId());
-        inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, processDec, null, null, taskDto.getWkGrpId());
+        inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, null, null, taskDto.getWkGrpId());
     }
 
     private void updateInspectionStatus(String appPremCorrId, String status) {

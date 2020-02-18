@@ -246,7 +246,12 @@
             FROM appt_user_system_correlation T1
             JOIN appt_agency_user T2 ON T1.AGENCY_USER_ID = T2.ID
             JOIN appt_user_non_avail T3 ON T1.ID = T3.USER_SYS_CORRE_ID
-            <#if userName??> AND T2.NAME = :userName</#if>
+            <#if wrkGroup??> AND T1.GROUP_SHORT_NAME = :wrkGroup </#if>
+            <#if userId??> AND T2.LOGIN_USER_ID = :userId </#if>
+            <#if userName??> AND charindex(:userName, T2.NAME) >0</#if>
+            <#if userBlockDateStart??> AND T3.BLOCK_OUT_START > CONVERT(datetime, :userBlockDateStart, 103)</#if>
+            <#if userBlockDateEnd??> AND T3.BLOCK_OUT_END < CONVERT(datetime, :userBlockDateEnd, 103)</#if>
+            <#if userBlockDateDescription??> AND charindex(:userBlockDateDescription, T3.REMARKS) >0 </#if>
             <#if year??>
                     AND T3.BLOCK_OUT_START > CONVERT(datetime, :year, 20)
                     AND T3.BLOCK_OUT_END < dateadd(day, 365, CONVERT(datetime, :year, 20))

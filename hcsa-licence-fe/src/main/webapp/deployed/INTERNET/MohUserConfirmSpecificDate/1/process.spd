@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/userConfirmSpecificDateStart" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohUserConfirmSpecificDate" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="userConfirmSpecificDateStart" x="20" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="userConfirmSpecificDateStart_OnStepProcess_0" name="userConfirmSpecificDateStart_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="userConfirmSpecificDateInit" x="200" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="userConfirmSpecificDateInit_OnStepProcess_0" name="userConfirmSpecificDateInit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="userConfirmSpecificDatePre" x="370" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="userConfirmSpecificDatePre_OnStepProcess_0" name="userConfirmSpecificDatePre_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="userConfirmSpecificDateStep" x="730" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="userConfirmSpecificDateStep_OnStepProcess_0" name="userConfirmSpecificDateStep_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="userConfirmSpecificDateAcc" x="790" y="220">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="userConfirmSpecificDateAcc_OnStepProcess_0" name="userConfirmSpecificDateAcc_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="userConfirmSpecificDateReject" x="970" y="220">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="userConfirmSpecificDateReject_OnStepProcess_0" name="userConfirmSpecificDateReject_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="userConfirmSpecificDatePage" stageIndicator="" x="550" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="userConfirmSpecificDateAccPage" stageIndicator="" x="780" y="400">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="userConfirmSpecificDateRejPage" stageIndicator="" x="970" y="400">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/userConfirmSpecificDateInit" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/userConfirmSpecificDateStart" style="rectanular">
+   <position>{(40,120)(220,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/userConfirmSpecificDatePre" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/userConfirmSpecificDateInit" style="rectanular">
+   <position>{(220,120)(390,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/userConfirmSpecificDatePage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/userConfirmSpecificDatePre" style="rectanular">
+   <position>{(390,120)(570,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/userConfirmSpecificDateStep" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/userConfirmSpecificDatePage" style="rectanular">
+   <position>{(570,120)(750,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/userConfirmSpecificDateStep" style="rectanular">
+   <position>{(750,120)(970,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/userConfirmSpecificDateAcc" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(970,120)(810,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/userConfirmSpecificDateAccPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/userConfirmSpecificDateAcc" style="rectanular">
+   <position>{(810,240)(800,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/userConfirmSpecificDateReject" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(970,120)(990,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/userConfirmSpecificDateRejPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/userConfirmSpecificDateReject" style="rectanular">
+   <position>{(990,240)(990,420)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="userConfirmSpecificDateType" name="Switch1" x="950" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/userConfirmSpecificDateAcc" value="&quot;confirm&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/userConfirmSpecificDateReject" value="&quot;reject&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

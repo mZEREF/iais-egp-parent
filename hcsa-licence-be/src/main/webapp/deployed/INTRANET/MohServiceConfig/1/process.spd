@@ -221,9 +221,6 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/editView" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch6" style="rectanular">
    <position>{(1400,300)(1040,520)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/save" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch6" style="rectanular">
-   <position>{(1400,300)(1415,374)(945,371)(760,260)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/saveOrUpdate" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Page2" style="rectanular">
    <position>{(920,520)(610,380)}</position>
   </SynchronousLink>
@@ -238,6 +235,9 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/addNewService" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
    <position>{(640,270)(440,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/saveOrUpdate" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch6" style="rectanular">
+   <position>{(1400,300)(610,380)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -267,7 +267,7 @@
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch6" x="1380" y="280">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/editView" value="&quot;edit&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/save" value="&quot;save&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/saveOrUpdate" value="&quot;save&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

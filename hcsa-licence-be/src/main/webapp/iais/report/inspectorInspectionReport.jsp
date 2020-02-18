@@ -219,7 +219,6 @@
                                                 </td>
                                                 <td class="col-xs-8">
                                                     <p> <iais:code code="${insRepDto.currentStatus}"></iais:code></p>
-
                                                 </td>
                                             </tr>
                                             <tr height="1">
@@ -230,7 +229,7 @@
                                                 </td>
                                                 <td>
                                                     <div class="col-sm-9">
-                                                        <p><textarea name="remarks" cols="90" rows="6"  title="content" MAXLENGTH="8000"></textarea></p>
+                                                        <p><textarea name="processRemarks" cols="50" rows="6"  title="content" MAXLENGTH="8000"></textarea></p>
                                                     </div>
                                                 </td>
                                             </tr>

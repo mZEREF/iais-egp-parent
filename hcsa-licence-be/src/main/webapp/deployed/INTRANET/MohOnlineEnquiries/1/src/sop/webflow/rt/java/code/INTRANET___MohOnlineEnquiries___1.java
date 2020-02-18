@@ -52,4 +52,9 @@ public class INTRANET___MohOnlineEnquiries___1 extends BaseProcessClass {
 		// 		preBasicSearch->OnStepProcess
 	}
 
+	public void preAppDetails_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preAppDetails", this); 
+	// 		preAppDetails->OnStepProcess
+	}
+
 }

@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
@@ -77,7 +78,7 @@ public class NewApplicationDelegator {
     public static final String RELOADAPPGRPPRIMARYDOCMAP = "reloadAppGrpPrimaryDocMap";
     public static final String  APPGRPPRIMARYDOCERRMSGMAP = "appGrpPrimaryDocErrMsgMap";
 
-    private static final String REQUESTINFORMATIONCONFIG  = "requestInformationConfig";
+    public static final String REQUESTINFORMATIONCONFIG  = "requestInformationConfig";
     public static final String ACKMESSAGE = "AckMessage";
     public static final String SERVICEALLPSNCONFIGMAP = "ServiceAllPsnConfigMap";
     public static final String FIRESTOPTION = "Please Select";
@@ -87,11 +88,13 @@ public class NewApplicationDelegator {
     public static final String APPLICATION_PAGE_NAME_PRIMARY                        = "APPPN02";
     public static final String APPLICATION_SVC_PAGE_NAME_LABORATORY                 = "APPSPN01";
     public static final String APPLICATION_SVC_PAGE_NAME_GOVERNANCE_OFFICERS        = "APPSPN02";
-    public static final String APPLICATION_SVC_PAGE_NAME_PRINCIPAL_OFFICERS         = "APPSPN03";
-    public static final String APPLICATION_SVC_PAGE_NAME_DEPUTY_PRINCIPAL_OFFICERS  = "APPSPN04";
-    public static final String APPLICATION_SVC_PAGE_NAME_DOCUMENT                   = "APPSPN05";
-    public static final String APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL          = "APPSPN06";
+    public static final String APPLICATION_SVC_PAGE_NAME_DISCIPLINE_ALLOCATION      = "APPSPN03";
+    public static final String APPLICATION_SVC_PAGE_NAME_PRINCIPAL_OFFICERS         = "APPSPN04";
+    public static final String APPLICATION_SVC_PAGE_NAME_DEPUTY_PRINCIPAL_OFFICERS  = "APPSPN05";
+    public static final String APPLICATION_SVC_PAGE_NAME_DOCUMENT                   = "APPSPN06";
+    public static final String APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL          = "APPSPN07";
 
+    //isClickEdit
     public static final String IS_EDIT = "isEdit";
 
     @Autowired
@@ -112,6 +115,7 @@ public class NewApplicationDelegator {
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do Start start ...."));
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
+        AuditTrailDto auditTrailDto =IaisEGPHelper.getCurrentAuditTrailDto();
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
         List<AppSvcPrincipalOfficersDto> list=new ArrayList<>();
         AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto=new AppSvcPrincipalOfficersDto();
@@ -381,21 +385,17 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
 
         String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
-        boolean isGetDataFromPage = isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION, isEdit);
-        log.debug("isGetDataFromPage:"+isGetDataFromPage);
-        //request for information
-        boolean canEdit = true;
-        AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
-        if(appEditSelectDto!=null){
-            if(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI.equals(appEditSelectDto.getEditType())&&!appEditSelectDto.isPremisesEdit()){
-                canEdit = false;
-            }
+        Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
+        boolean isRfi = false;
+        if(requestInformationConfig != null){
+            isRfi = true;
         }
-        if(isGetDataFromPage && canEdit){
+        boolean isGetDataFromPage = isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION, isEdit, isRfi);
+        log.debug("isGetDataFromPage:"+isGetDataFromPage);
+        if(isGetDataFromPage ){
             List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) ||
-                    ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+            if(appSubmissionDto.isNeedEditController()){
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null? new HashSet<>() :appSubmissionDto.getClickEditPage();
                 clickEditPages.add(APPLICATION_PAGE_NAME_PREMISES);
                 appSubmissionDto.setClickEditPage(clickEditPages);
@@ -439,26 +439,32 @@ public class NewApplicationDelegator {
         AppGrpPrimaryDocDto appGrpPrimaryDocDto = null;
         CommonsMultipartFile file = null;
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        boolean canEdit = true;
-        AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
-        if(appEditSelectDto!=null){
-            if(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI.equals(appEditSelectDto.getEditType())&&!appEditSelectDto.isDocEdit()){
-               canEdit = false;
-            }
+
+        String action = ParamUtil.getRequestString(bpc.request, "crud_action_value");
+        if(!"next".equals(action)) {
+            return;
         }
-        if(canEdit){
-            boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT, AppConsts.YES);
-            if(!isGetDataFromPage){
-                log.info(StringUtil.changeForLog("get data from session ;app type:"+appSubmissionDto.getAppType())+";isEdit:"+AppConsts.YES);
-                log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines return end ...."));
-                return;
-            }
+        Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
+        boolean isRfi = false;
+        if(requestInformationConfig != null){
+            isRfi = true;
+        }
+        String isEdit = ParamUtil.getString(mulReq, IS_EDIT);
+        boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT, isEdit, isRfi);
+
+
+        if(isGetDataFromPage){
             List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO);
             List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO);
             List<AppGrpPremisesDto> appGrpPremisesList = appSubmissionDto.getAppGrpPremisesDtoList();
             List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = new ArrayList<>();
             Map<String,String> errorMap = new HashMap<>();
             Map<String,AppGrpPrimaryDocDto> beforeReloadDocMap = (Map<String, AppGrpPrimaryDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP);
+            if(appSubmissionDto.isNeedEditController()){
+                Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
+                clickEditPages.add(NewApplicationDelegator.APPLICATION_PAGE_NAME_PRIMARY);
+                appSubmissionDto.setClickEditPage(clickEditPages);
+            }
 
             Map<String,CommonsMultipartFile> commonsMultipartFileMap = new HashMap<>();
             for(HcsaSvcDocConfigDto comm:commonHcsaSvcDocConfigList){
@@ -540,7 +546,7 @@ public class NewApplicationDelegator {
             appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtoList);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
-            // do by wenkang
+
             String crud_action_values = ParamUtil.getRequestString(bpc.request, "crud_action_value");
             if("next".equals(crud_action_values)){
                 documentValid(bpc.request, errorMap);
@@ -1870,13 +1876,28 @@ public class NewApplicationDelegator {
         //amendLicenceType = new String[]{"RFCATYPE01","RFCATYPE03","RFCATYPE04","RFCATYPE05","RFCATYPE06"};
         if(!StringUtil.isEmpty(licenceId) && amendLicenceType != null && amendLicenceType.length>0 ){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
-            List<String> amendTypeList = new ArrayList<>();
-            for(String type:amendLicenceType){
-                amendTypeList.add(type);
+            if(appSubmissionDto != null){
+                appSubmissionDto.setNeedEditController(true);
+                AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+                for(String type:amendLicenceType){
+                    if(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION.equals(type)){
+                        appEditSelectDto.setPremisesEdit(true);
+                    } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_MEDALERT_PERSONNEL.equals(type)) {
+                        appEditSelectDto.setMedAlertEdit(true);
+                    } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PRINCIPAL_OFFICER.equals(type)) {
+                        appEditSelectDto.setPoEdit(true);
+                    } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_DEPUTY_PRINCIPAL_OFFICER.equals(type)) {
+                        appEditSelectDto.setDpoEdit(true);
+                    } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION.equals(type)) {
+                        appEditSelectDto.setServiceEdit(true);
+                    } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT.equals(type)) {
+                        appEditSelectDto.setDocEdit(true);
+                    }
+                }
+                appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
+                appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
             }
 
-            appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-            appSubmissionDto.setAmendTypes(amendTypeList);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
         log.debug(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
@@ -1887,16 +1908,18 @@ public class NewApplicationDelegator {
         String type = ParamUtil.getString(bpc.request, "type");
         if(!StringUtil.isEmpty(licenceId) && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
-            List<String> amendType = new ArrayList<>();
-            amendType.add("RFCATYPE01");
-            amendType.add("RFCATYPE02");
-            amendType.add("RFCATYPE03");
-            amendType.add("RFCATYPE04");
-            amendType.add("RFCATYPE05");
-            amendType.add("RFCATYPE06");
-            appSubmissionDto.setAmendTypes(amendType);
-
-            appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+            if(appSubmissionDto != null){
+                appSubmissionDto.setNeedEditController(true);
+                AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+                appEditSelectDto.setPremisesEdit(true);
+                appEditSelectDto.setDocEdit(true);
+                appEditSelectDto.setPoEdit(true);
+                appEditSelectDto.setDocEdit(true);
+                appEditSelectDto.setServiceEdit(true);
+                appEditSelectDto.setMedAlertEdit(true);
+                appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
+                appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+            }
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
         log.debug(StringUtil.changeForLog("the do renewLicence end ...."));
@@ -1907,6 +1930,7 @@ public class NewApplicationDelegator {
         String appNo = ParamUtil.getString(bpc.request,"appNo");
         if(!StringUtil.isEmpty(appNo)){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
+            appSubmissionDto.setNeedEditController(true);
             AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
@@ -2897,33 +2921,39 @@ public class NewApplicationDelegator {
         return svcAllPsnConfig;
     }
 
-    private static boolean checkCanEdit(List<String> amendTypes, String currentType){
-        boolean rfcCanEdit = false;
-        if(amendTypes != null){
-            for(String type:amendTypes){
-                if(currentType.equals(type)){
-                    rfcCanEdit = true;
-                    break;
-                }
+    private static boolean checkCanEdit(AppEditSelectDto appEditSelectDto, String currentType){
+        boolean pageCanEdit = false;
+        if(appEditSelectDto != null){
+            if(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION.equals(currentType)){
+                pageCanEdit = appEditSelectDto.isPremisesEdit();
+            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_MEDALERT_PERSONNEL.equals(currentType)) {
+                pageCanEdit = appEditSelectDto.isMedAlertEdit();
+            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PRINCIPAL_OFFICER.equals(currentType)) {
+                pageCanEdit = appEditSelectDto.isPoEdit();
+            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_DEPUTY_PRINCIPAL_OFFICER.equals(currentType)) {
+                pageCanEdit = appEditSelectDto.isDocEdit();
+            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION.equals(currentType)) {
+                pageCanEdit = appEditSelectDto.isServiceEdit();
+            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT.equals(currentType)) {
+                pageCanEdit = appEditSelectDto.isDocEdit();
             }
         }
-        return rfcCanEdit;
+        return pageCanEdit;
     }
 
-    public static boolean isGetDataFromPage(AppSubmissionDto appSubmissionDto, String currentType, String isEdit){
+    public static boolean isGetDataFromPage(AppSubmissionDto appSubmissionDto, String currentType, String isClickEdit, boolean isRfi){
         if(appSubmissionDto == null){
             return true;
         }
-        boolean isNewApp = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
-        boolean rfcType = false;
+        boolean isNewApp = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
+                && !isRfi;
+        boolean isOther = false;
 
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
-                ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
-                ||ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(appSubmissionDto.getStatus())){
-            boolean canEdit = checkCanEdit(appSubmissionDto.getAmendTypes(), currentType);
-            rfcType = canEdit && AppConsts.YES.equals(isEdit);
+        if(appSubmissionDto.isNeedEditController()){
+            boolean canEdit = checkCanEdit(appSubmissionDto.getAppEditSelectDto(), currentType);
+            isOther = canEdit && AppConsts.YES.equals(isClickEdit);
         }
-        return isNewApp || rfcType;
+        return isNewApp || isOther;
     }
 
 }

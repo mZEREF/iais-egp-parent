@@ -52,7 +52,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td align="right">UEN</td>
-                                                        <td>${organizationDto.uenno}</td>
+                                                        <td>${organizationDto.uenNo}</td>
                                                     </tr>
 
                                                     </tbody>

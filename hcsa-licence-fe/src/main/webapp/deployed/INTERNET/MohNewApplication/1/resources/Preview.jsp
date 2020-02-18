@@ -1,1 +1,1 @@
-<%@include file="/iais/cc/newApplication/preview.jsp"%>
+<%@include file="/iais/newApplication/preview.jsp"%>

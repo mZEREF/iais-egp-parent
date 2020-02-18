@@ -53,4 +53,14 @@ public class INTRANET___MohInspectorProRectification___1 extends BaseProcessClas
 		EngineHelper.delegate(DELEGATOR, "inspectorProRectificationAccCond", this);
 	}
 
+	public void inspectorProRectificationView_OnStepProcess_0() throws Exception {
+	// 		InspectorProRectificationView->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "InspectorProRectificationView", this);
+	}
+
+	public void inspectorProRectificationStep_OnStepProcess_0() throws Exception {
+	// 		InspectorProRectificationStep->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "InspectorProRectificationStep", this);
+	}
+
 }

@@ -89,6 +89,7 @@ public class InsRepServiceImpl implements InsRepService {
         //get all the inspectors by the same groupId
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appId = applicationDto.getId();
+        String applicationNo = applicationDto.getApplicationNo();
         String appGrpId = applicationDto.getAppGrpId();
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         String status = applicationDto.getStatus();
@@ -216,7 +217,7 @@ public class InsRepServiceImpl implements InsRepService {
             bestPractice = NcRecommendationDto.getBestPractice();
             remarks = NcRecommendationDto.getRemarks();
         }
-
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNo(applicationNo).getEntity();
         AdCheckListShowDto adhocCheckListDto = insepctionNcCheckListService.getAdhocCheckListDto(appPremisesCorrelationId);
         if(adhocCheckListDto!=null){
             inspectionReportDto.setOtherCheckList(adhocCheckListDto);
@@ -228,7 +229,6 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setHciName(appInsRepDto.getHciName());
         inspectionReportDto.setHciAddress(appInsRepDto.getHciAddress());
         inspectionReportDto.setReasonForVisit(reasonForVisit);
-        //todo:date
         inspectionReportDto.setInspectionDate(inspectionDate);
         inspectionReportDto.setInspectionStartTime(inspectionStartTime);
         inspectionReportDto.setInspectionEndTime(inspectionEndTime);
@@ -461,7 +461,7 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     @Override
-    public void routingTaskToAo1(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId) throws FeignException {
+    public void routingTaskToAo1(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId,AppPremisesRecommendationDto appPremisesRecommendationDto) throws FeignException {
         String serviceId = applicationDto.getServiceId();
         String status = applicationDto.getStatus();
         String applicationNo = applicationDto.getApplicationNo();
@@ -477,7 +477,7 @@ public class InsRepServiceImpl implements InsRepService {
         List<TaskDto> taskDtos = prepareTaskToAo1(taskDto, applicationDto, hcsaSvcStageWorkingGroupDto2);
         taskService.createTasks(taskDtos);
         String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
-        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO1, groupId2, subStage);
+        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, appPremisesRecommendationDto.getProcessRemarks(), appPremisesRecommendationDto.getProcessingDecision(), RoleConsts.USER_ROLE_AO1, groupId2, subStage);
     }
 
     @Override

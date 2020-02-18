@@ -1,10 +1,32 @@
-<c:if test="${'APTY005' ==AppSubmissionDto.appType ||'APTY004' ==AppSubmissionDto.appType}">
-  <c:set var="showPreview" value="true"/>
-  <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
-    <c:if test="${amendType =='RFCATYPE06'}">
-      <c:set var="canEdit" value="1"/>
+
+<c:if test="${AppSubmissionDto.needEditController}">
+  <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
+    <c:if test="${'APPSPN06' == clickEditPage}">
+      <c:set var="isClickEdit" value="true"/>
     </c:if>
   </c:forEach>
+  <c:choose>
+    <c:when test="${'true' != isClickEdit}">
+      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+    </c:when>
+    <c:otherwise>
+      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
+    </c:otherwise>
+  </c:choose>
+  <c:if test="${'true' != isClickEdit}">
+    <c:set var="locking" value="true"/>
+    <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.docEdit}"/>
+    <div id="edit-content">
+      <c:choose>
+        <c:when test="${'true' == canEdit}">
+          <p class="text-right"><a id="edit"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
+        </c:when>
+        <c:otherwise>
+
+        </c:otherwise>
+      </c:choose>
+    </div>
+  </c:if>
 </c:if>
 <c:forEach var="docConfig" items="${serviceDocConfigDto}" varStatus="status">
   <c:set var="fileIndex" value="${status.index}"></c:set>
@@ -25,7 +47,7 @@
             <div class="fileContent col-xs-12">
               <input class="hidden delFlag" type="hidden" name="${svcDelFlag}" value="N"/>
               <input type="hidden" name="docConfig" value=""/>
-              <span class="fileName"><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}"  >${svcDoc.docName}</a></span>&nbsp;&nbsp;
+              <span class="fileName"><a class="<c:if test="${!isClickEdit}">disabled</c:if>" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}"  >${svcDoc.docName}</a></span>&nbsp;&nbsp;
               <c:choose>
                 <c:when test="${svcDoc.docName == '' || svcDoc.docName == null }">
                                                     <span class="hidden delBtn">
@@ -33,7 +55,7 @@
                                                     </span>
                 </c:when>
                 <c:otherwise>
-                                                      <span class=" delBtn <c:if test="${'1' != canEdit}">hidden</c:if>">
+                                                      <span class="existFile delBtn <c:if test="${!isClickEdit}">hidden</c:if>">
                                                         &nbsp;&nbsp;<button type="button" class="">Delete</button>
                                                     </span>
                 </c:otherwise>
@@ -57,9 +79,11 @@
 </c:forEach>
 <script>
     $(document).ready(function() {
-        if('APTY005' == '${AppSubmissionDto.appType}' &&'1' != '${canEdit}'){
+        if(${AppSubmissionDto.needEditController && AppSubmissionDto.appEditSelectDto.docEdit && !isClickEdit}){
             disabledPage();
         }
+
+        doEdit();
     });
 
     function getFileName(o) {
@@ -82,6 +106,14 @@
         $(this).parent().children('input.delFlag').val('Y');
     });
 
-
+    var doEdit = function () {
+        $('#edit').click(function () {
+            $('#edit-content').addClass('hidden');
+            $('#isEditHiddenVal').val('1');
+            $('input[type="file"]').prop('disabled',false);
+            $('.existFile').removeClass('hidden');
+            $('.existFile').removeClass('existFile');
+        });
+    }
 
 </script>

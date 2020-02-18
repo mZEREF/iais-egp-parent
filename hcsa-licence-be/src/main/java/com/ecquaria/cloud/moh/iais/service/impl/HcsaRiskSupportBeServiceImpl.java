@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.AutoRenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaLastInspectionDto;
@@ -16,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionRes
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskSupportBeService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
@@ -94,8 +96,8 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
                     }
                 }
             }
-            //get liceence history
-            getFromLicenceHistory(inspInfoList,licId,svcCode);
+            //get liceence
+            getFromLicence(inspInfoList,licId,svcCode);
             lstInpDto = getLastAndSecLastInpection(inspInfoList);
             //callApi
             if(lstInpDto!=null){
@@ -117,9 +119,18 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
 
     }
 
-    private void getFromLicenceHistory(List<InspectionInfoDto> inspInfoList, String licId, String svcCode) {
-        /*LicenceDto licDto =hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
-        List<LicPremisesDto> licPremDto =*/
+    private void getFromLicence(List<InspectionInfoDto> inspInfoList, String licId, String svcCode) {
+        LicenceDto licDto =hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
+        List<LicPremisesDto> licPremDtoList = hcsaLicenceClient.getLicPremListByLicId(licId).getEntity();
+        if(IaisCommonUtils.isEmpty(licPremDtoList)){
+            for(LicPremisesDto temp:licPremDtoList){
+                LicPremisesRecommendationDto recDto= hcsaLicenceClient.getLicPremRecordByIdAndType(temp.getId(),InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+                InspectionInfoDto dto = new InspectionInfoDto();
+                dto.setCreateDate(recDto.getRecomInDate());
+                dto.setAppPremId(temp.getId());
+                inspInfoList.add(dto);
+            }
+        }
     }
 
     @Override
