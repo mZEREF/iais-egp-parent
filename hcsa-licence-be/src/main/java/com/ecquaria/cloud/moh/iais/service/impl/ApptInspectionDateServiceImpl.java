@@ -291,7 +291,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         taskService.updateTask(taskDto);
         inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, processDec, taskDto.getRoleId(), HcsaConsts.ROUTING_STAGE_PRE, taskDto.getWkGrpId());
-        inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, processDec, null, null, taskDto.getWkGrpId());
+        inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, null, null, taskDto.getWkGrpId());
     }
 
     private void updateInspectionStatus(String appPremCorrId, String status) {
