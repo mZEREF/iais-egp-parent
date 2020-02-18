@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppointmentService;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author: yichen
@@ -73,7 +75,7 @@ public class InspectorCalendarDelegator {
 		request.getSession().removeAttribute(AppointmentConstants.INSPECTOR_CALENDAR_QUERY_ATTR);
 		request.getSession().removeAttribute(AppointmentConstants.ACTION_VALUE);
 
-		ParamUtil.setSessionAttr(request, AppointmentConstants.IS_NEW_VIEW_DATA, "true");
+		ParamUtil.setSessionAttr(request, AppointmentConstants.IS_NEW_VIEW_DATA, AppConsts.TRUE);
 		AuditTrailHelper.auditFunction("InspectorCalendar", "View function");
 	}
 
@@ -98,11 +100,8 @@ public class InspectorCalendarDelegator {
 
 	private void preSelectOpt(HttpServletRequest request){
 		List<SelectOption> dropYear = new ArrayList<>();
-		List<SelectOption> recurrenceOptList = new ArrayList<>();
-		recurrenceOptList.add(new SelectOption("N/A", "N/A"));
-		recurrenceOptList.add(new SelectOption("Week", "Week"));
-		recurrenceOptList.add(new SelectOption("Month", "Month"));
-		recurrenceOptList.add(new SelectOption("Year", "Year"));
+		List<SelectOption> recurrenceOption = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DATE_TYPE);
+
 
 		Calendar date = Calendar.getInstance();
 		int currentYear = date.get(Calendar.YEAR);
@@ -111,8 +110,8 @@ public class InspectorCalendarDelegator {
 		}
 
 		ParamUtil.setRequestAttr(request, AppointmentConstants.APPOINTMENT_DROP_YEAR_OPT, dropYear);
-		ParamUtil.setRequestAttr(request, AppointmentConstants.RECURRENCE_ATTR, "N/A");
-		ParamUtil.setRequestAttr(request, AppointmentConstants.RECURRENCE_OPTION, recurrenceOptList);
+		ParamUtil.setRequestAttr(request, AppointmentConstants.RECURRENCE_ATTR, AppointmentConstants.RECURRENCE_NA);
+		ParamUtil.setRequestAttr(request, AppointmentConstants.RECURRENCE_OPTION, recurrenceOption);
 	}
 
 	/**
@@ -127,6 +126,13 @@ public class InspectorCalendarDelegator {
 
 		LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request,
 				AppConsts.SESSION_ATTR_LOGIN_USER);
+
+		if (!Optional.ofNullable(loginContext).isPresent()){
+			log.info("===>> don't have loginContext" + loginContext);
+			return;
+		}
+
+		String currentUserId = loginContext.getUserId();
 
 		List<String> leadGroupList = appointmentService.getInspectorGroupLeadByLoginUser(loginContext);
 
@@ -146,24 +152,35 @@ public class InspectorCalendarDelegator {
 
 		SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
 
-		String defualtId = workingGroupQueryList.stream().findFirst().get().getId();
+		String defaultId = workingGroupQueryList.stream().findFirst().get().getId();
 		String afterSelectWrkGroup = ParamUtil.getRequestString(request, AppointmentConstants.SHORT_NAME_ATTR);
-		if (isNew.equals("true")){
-			if (leadGroupList.contains(defualtId)){
-				ParamUtil.setRequestAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, "Y");
-			}else {
-				ParamUtil.setRequestAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, "N");
-			}
 
-			searchParam.addFilter(AppointmentConstants.WRK_GROUP_ATTR, defualtId, true);
-			ParamUtil.setRequestAttr(request, AppointmentConstants.SHORT_NAME_ATTR, defualtId);
-			ParamUtil.setSessionAttr(request, AppointmentConstants.IS_NEW_VIEW_DATA, "false");
-		}else {
-			if (leadGroupList.contains(afterSelectWrkGroup)){
-				ParamUtil.setRequestAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, "Y");
-			}else {
-				ParamUtil.setRequestAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, "N");
-			}
+		boolean isGroupLead = false;
+		switch (isNew){
+			case AppConsts.TRUE:
+				if (leadGroupList.contains(defaultId)){
+					isGroupLead = true;
+					ParamUtil.setRequestAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, IaisEGPConstant.YES);
+				}else {
+					ParamUtil.setRequestAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, IaisEGPConstant.NO);
+				}
+
+				searchParam.addFilter(AppointmentConstants.WRK_GROUP_ATTR, defaultId, true);
+				ParamUtil.setRequestAttr(request, AppointmentConstants.SHORT_NAME_ATTR, defaultId);
+				ParamUtil.setSessionAttr(request, AppointmentConstants.IS_NEW_VIEW_DATA, "false");
+			break;
+			default:
+				if (leadGroupList.contains(afterSelectWrkGroup)){
+					isGroupLead = true;
+					ParamUtil.setRequestAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, IaisEGPConstant.YES);
+				}else {
+					ParamUtil.setRequestAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, IaisEGPConstant.NO);
+				}
+		}
+
+		//For non-lead Inspectors, they will only be able to see their own non-availability.
+		if (!isGroupLead){
+			searchParam.addFilter("userId", currentUserId, true);
 		}
 
 		QueryHelp.setMainSql("systemAdmin", "queryInspectorCalendar", searchParam);
@@ -210,7 +227,7 @@ public class InspectorCalendarDelegator {
 		if(validationResult != null && validationResult.isHasErrors()) {
 			Map<String, String> errorMap = validationResult.retrieveAll();
 			ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-			ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
+			ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
 		}else {
 			SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 

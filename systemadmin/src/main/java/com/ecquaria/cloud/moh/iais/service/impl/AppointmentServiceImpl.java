@@ -112,9 +112,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 	@Override
 	public List<String> getInspectorGroupLeadByLoginUser(LoginContext loginContext) {
 		List<String> leadGroupList = new ArrayList<>();
-		if (!Optional.ofNullable(loginContext).isPresent()){
-			return leadGroupList;
-		}
 
 		List<String> roleList = new ArrayList<>(loginContext.getRoleIds());
 		if(roleList.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)){
