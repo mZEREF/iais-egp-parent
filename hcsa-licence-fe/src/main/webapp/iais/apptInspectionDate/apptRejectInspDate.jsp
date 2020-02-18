@@ -43,13 +43,12 @@
                         <iais:row>
                           <iais:field value="Available Appointment Dates" required="true"/>
                           <iais:value width="7">
-                            <c:if test="${apptFeConfirmDateDto.inspectionNewDate != null}">
-                              <c:forEach items="${apptFeConfirmDateDto.inspectionNewDate}" var="newDate">
-                                <input class="form-check-input" type="radio" name="apptRejectDate" aria-invalid="true" value="${newDate.value}" <c:if test="${newDate.value eq apptFeConfirmDateDto.checkNewDate}">checked</c:if>>
-                                <label><c:out value = "${newDate.text}"/></label>
-                                <br><span class="error-msg" name="iaisErrorMsg" id="error_rejectDate"></span>
-                              </c:forEach>
-                            </c:if>
+                            <iais:datePicker id = "rejectDate" name = "rejectDate" value="${apptFeConfirmDateDto.rejectDate}"></iais:datePicker>
+                            <iais:select name="apptHours" options="hoursFeOption" firstOption="Please select" value="${apptFeConfirmDateDto.hours}"></iais:select>
+                            <iais:select name="apptAmPm" options="amPmFeOption" firstOption="Please select" value="${apptFeConfirmDateDto.amPm}"></iais:select>
+                            <br><span class="error-msg" name="iaisErrorMsg" id="error_rejectDate"></span>
+                            <br><span class="error-msg" name="iaisErrorMsg" id="error_hours"></span>
+                            <br><span class="error-msg" name="iaisErrorMsg" id="error_amPm"></span>
                           </iais:value>
                         </iais:row>
                         <iais:row>
