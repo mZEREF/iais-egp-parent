@@ -85,14 +85,6 @@
               </iais:value>
             </iais:row>
 
-            <iais:row>
-              <iais:field value="Recurrence End Date:"/>
-              <iais:value width="18">
-                <iais:datePicker id = "recurrenceEndDate" name = "recurrenceEndDate"  value="${recurrenceEndDate}"></iais:datePicker>
-                <%--<span id="error_year" name="iaisErrorMsg" class="error-msg"></span>--%>
-              </iais:value>
-            </iais:row>
-
             <iais:action style="text-align:center;">
               <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doSearch()">Search</button>
               <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doClear()">Clear</button>

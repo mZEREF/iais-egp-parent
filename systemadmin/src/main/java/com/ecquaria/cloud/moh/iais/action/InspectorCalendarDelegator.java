@@ -206,8 +206,8 @@ public class InspectorCalendarDelegator {
 		String userBlockDateStart = ParamUtil.getString(request, AppointmentConstants.USER_BLOCK_DATE_START_ATTR);
 		String userBlockDateEnd = ParamUtil.getString(request, AppointmentConstants.USER_BLOCK_DATE_END_ATTR);
 		String userBlockDateDescription = ParamUtil.getString(request, AppointmentConstants.USER_BLOCK_DATE_DESCRIPTION_ATTR);
-		String recurrence = ParamUtil.getString(request, AppointmentConstants.RECURRENCE_OPTION);
-		String recurrenceEndDate = ParamUtil.getString(request, AppointmentConstants.RECURRENCE_END_DATE_ATTR);
+/*		String recurrence = ParamUtil.getString(request, AppointmentConstants.RECURRENCE_OPTION);
+		String recurrenceEndDate = ParamUtil.getString(request, AppointmentConstants.RECURRENCE_END_DATE_ATTR);*/
 
 		ParamUtil.setRequestAttr(request, AppointmentConstants.SHORT_NAME_ATTR, groupName);
 		ParamUtil.setRequestAttr(request, AppointmentConstants.USER_NAME_ATTR, userName);
@@ -215,8 +215,6 @@ public class InspectorCalendarDelegator {
 		ParamUtil.setRequestAttr(request, AppointmentConstants.USER_BLOCK_DATE_START_ATTR, userBlockDateStart);
 		ParamUtil.setRequestAttr(request, AppointmentConstants.USER_BLOCK_DATE_END_ATTR, userBlockDateEnd);
 		ParamUtil.setRequestAttr(request, AppointmentConstants.USER_BLOCK_DATE_DESCRIPTION_ATTR, userBlockDateDescription);
-		ParamUtil.setRequestAttr(request, AppointmentConstants.RECURRENCE_ATTR, recurrence);
-		ParamUtil.setRequestAttr(request, AppointmentConstants.RECURRENCE_END_DATE_ATTR, recurrenceEndDate);
 
 		InspectorCalendarQueryDto queryDto = new InspectorCalendarQueryDto();
 		queryDto.setGroupName(groupName);
@@ -254,7 +252,6 @@ public class InspectorCalendarDelegator {
 			if(!StringUtil.isEmpty(userBlockDateDescription)){
 				searchParam.addFilter(AppointmentConstants.USER_BLOCK_DATE_DESCRIPTION_ATTR, userBlockDateDescription, true);
 			}
-
 
 		}
 
