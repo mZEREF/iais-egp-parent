@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicantConfirmInspDateService;
@@ -53,6 +55,41 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             }
         }
         return null;
+    }
+
+    @Override
+    public void confirmInspectionDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
+
+    }
+
+    @Override
+    public ApptFeConfirmDateDto getApptNewSystemDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
+        return null;
+    }
+
+    @Override
+    public List<SelectOption> getInspectionDateHours() {
+        List<SelectOption> hourOption = new ArrayList<>();
+        for(int i = 1; i < 13; i++){
+            SelectOption so = new SelectOption(i + "", i + "");
+            hourOption.add(so);
+        }
+        return hourOption;
+    }
+
+    @Override
+    public List<SelectOption> getAmPmOption() {
+        List<SelectOption> amPmOption = new ArrayList<>();
+        SelectOption so1 = new SelectOption(Formatter.DAY_AM, "am");
+        SelectOption so2 = new SelectOption(Formatter.DAY_PM, "pm");
+        amPmOption.add(so1);
+        amPmOption.add(so2);
+        return amPmOption;
+    }
+
+    @Override
+    public void rejectSystemDateAndCreateTask(ApptFeConfirmDateDto apptFeConfirmDateDto) {
+
     }
 
     /**
