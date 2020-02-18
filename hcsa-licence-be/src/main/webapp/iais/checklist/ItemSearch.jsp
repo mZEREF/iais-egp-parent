@@ -1,4 +1,4 @@
-<%--
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %><%--
   Created by IntelliJ IDEA.
   User: yichen
   Date: 10/6/2019
@@ -14,6 +14,10 @@
 <%
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
+%>
+<%
+  String webroot= IaisEGPConstant.CSS_ROOT+ IaisEGPConstant.FE_CSS_ROOT;
+  String webRootCommon = IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
 <style>
   .col-md-10 {
@@ -233,7 +237,7 @@
 </div>
 
 <%@include file="/include/validation.jsp" %>
-<script src="/hcsa-licence-web/iais/js/CommonUtils.js"></script>
+<script src="<%=webRootCommon%>js/iaisUtils.js"></script>
 <script type="text/javascript">
 
     function cancelConfig() {

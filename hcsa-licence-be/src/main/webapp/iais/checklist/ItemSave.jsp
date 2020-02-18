@@ -1,4 +1,4 @@
-<%--
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %><%--
   Created by IntelliJ IDEA.
   User: yichen
   Date: 10/14/2019
@@ -12,7 +12,10 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <webui:setLayout name="iais-intranet"/>
 
-
+<%
+    String webroot= IaisEGPConstant.CSS_ROOT+ IaisEGPConstant.FE_CSS_ROOT;
+    String webRootCommon = IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
+%>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
@@ -122,7 +125,7 @@
 
 
 </>
-<script src="/hcsa-licence-web/iais/js/CommonUtils.js"></script>
+<script src="<%=webRootCommon%>js/iaisUtils.js"></script>
 <%@include file="/include/validation.jsp"%>
 <script>
     function doSubmit(itemId){
