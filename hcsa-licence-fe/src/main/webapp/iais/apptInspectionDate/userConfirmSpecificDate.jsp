@@ -43,25 +43,25 @@
                         <iais:row>
                           <iais:field value="Application No"/>
                           <iais:value width="7">
-                            <label><c:out value = "${date.text}"/></label>
+                            <label><c:out value = "${apptFeConfirmDateDto.applicationNo}"/></label>
                           </iais:value>
                         </iais:row>
                         <iais:row>
                           <iais:field value="Application Type"/>
                           <iais:value width="7">
-                            <label><c:out value = "${date.text}"/></label>
+                            <label><c:out value = "${apptFeConfirmDateDto.applicationType}"/></label>
                           </iais:value>
                         </iais:row>
                         <iais:row>
                           <iais:field value="Licence Period"/>
                           <iais:value width="7">
-                            <label><c:out value = "${date.text}"/></label>
+                            <label><c:out value = "${apptFeConfirmDateDto.licencePeriod}"/></label>
                           </iais:value>
                         </iais:row>
                         <iais:row>
                           <iais:field value="Date"/>
                           <iais:value width="7">
-                            <label><c:out value = "${date.text}"/></label>
+                            <label><c:out value = "${apptFeConfirmDateDto.specificDateShow}"/></label>
                           </iais:value>
                         </iais:row>
                         <iais:action >
