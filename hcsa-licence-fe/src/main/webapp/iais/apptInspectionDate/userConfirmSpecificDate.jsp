@@ -90,6 +90,7 @@
 
     function userConfirmSpecificDateReject() {
         $("#actionValue").val('reject');
+        alert("We note that the date assigned for inspection is unsuitable. Please contact an MOH officer @ <Tel. No.>* to arrange a suitable appointment date.");
         userConfirmSpecificDateSubmit('reject');
     }
 

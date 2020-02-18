@@ -43,11 +43,11 @@
                         <iais:row>
                           <iais:field value="Available Appointment Dates"/>
                           <iais:value width="7">
-                            <c:if test="">
-                              <c:forEach items="${dto.list}" var="date">
-                                <input class="form-check-input" type="radio" name="inspectionDate" aria-invalid="true" value="${date.value}">
+                            <c:if test="${apptFeConfirmDateDto.inspectionDate != null}">
+                              <c:forEach items="${apptFeConfirmDateDto.inspectionDate}" var="date">
+                                <input class="form-check-input" type="radio" name="inspectionDate" aria-invalid="true" value="${date.value}" <c:if test="${date.value eq apptFeConfirmDateDto.checkDate}">checked</c:if>>
                                 <label><c:out value = "${date.text}"/></label>
-                                <br><span class="error-msg" name="iaisErrorMsg" id="error_inspectorCheck"></span>
+                                <br><span class="error-msg" name="iaisErrorMsg" id="error_checkDate"></span>
                               </c:forEach>
                             </c:if>
                           </iais:value>
