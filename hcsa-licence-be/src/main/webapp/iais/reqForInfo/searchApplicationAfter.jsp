@@ -114,7 +114,7 @@
                                             <td class="row_no"><c:out value="${status.index + 1}"/></td>
                                             <td><a onclick="doAppInfo('${pool.licenseeId}')">${pool.applicationNo}</a></td>
                                             <td><c:out value="${pool.applicationType}"/></td>
-                                            <td><c:out value="${pool.licenceNo}"/></td>
+                                            <td><a onclick="doLicInfo('${pool.licenceId}')">${pool.licenceNo}</a></td>
                                             <td><c:out value="${pool.hciCode}"/></td>
                                             <td><c:out value="${pool.hciName}"/></td>
                                             <td><c:out value="${pool.blkNo}-${pool.floorNo}-${pool.unitNo}-${pool.streetName}-${pool.buildingName}"/></td>
@@ -165,8 +165,12 @@
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "reqForInfo",licPremId);
     }
-    function doAppInfo(licenseeId) {
+    function doAppInfo(appNo) {
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "appInfo",licenseeId);
+        SOP.Crud.cfxSubmit("mainForm", "appInfo",appNo);
+    }
+    function doLicInfo(licenceId) {
+        showWaiting();
+        SOP.Crud.cfxSubmit("mainForm", "licInfo",licenceId);
     }
 </script>

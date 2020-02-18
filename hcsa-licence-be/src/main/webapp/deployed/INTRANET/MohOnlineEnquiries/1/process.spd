@@ -154,13 +154,13 @@
    <position>{(920,250)(730,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preAppDetails" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(920,250)(1075,400)}</position>
+   <position>{(920,250)(1050,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/appDetailsPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preAppDetails" style="oblique">
-   <position>{(1075,400)(1195,400)}</position>
+   <position>{(1050,370)(1170,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/appDetailsPage" style="rectanular">
-   <position>{(1195,400)(560,120)}</position>
+   <position>{(1170,370)(560,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -175,7 +175,7 @@
    <SwitchCase component="/Steps/AutomaticStep/preLicDetails" value="&quot;details&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSearchLicence" value="&quot;search&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/preAppDetails" value="&quot;appDetils&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preAppDetails" value="&quot;appDetails&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preBasicSearch" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="260" y="230">
    <Description/>

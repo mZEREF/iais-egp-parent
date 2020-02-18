@@ -377,6 +377,15 @@ public class RequestForInformationDelegator {
         // 		preAppInfo->OnStepProcess
     }
 
+    public void preLicInfo(BaseProcessClass bpc) {
+        log.info("=======>>>>>preAppInfo>>>>>>>>>>>>>>>>requestForInformation");
+        HttpServletRequest request=bpc.request;
+        String licenseeId = (String) ParamUtil.getSessionAttr(request, "id");
+        OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licenseeId).getEntity();
+        ParamUtil.setRequestAttr(request,"organizationLicDto",organizationLicDto);
+        // 		preAppInfo->OnStepProcess
+    }
+
     public void preReqForInfo(BaseProcessClass bpc) {
         log.info("=======>>>>>preReqForInfo>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;

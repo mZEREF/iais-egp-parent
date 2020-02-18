@@ -360,7 +360,7 @@
                                             <td class="row_no"><c:out value="${status.index + 1}"/></td>
                                             <td><a onclick="doAppInfo('${pool.applicationNo}')">${pool.applicationNo}</a></td>
                                             <td><c:out value="${pool.applicationType}"/></td>
-                                            < <td><a onclick="doLicInfo('${pool.licenseeId}')">${pool.licenceNo}</a></td>
+                                            < <td><a onclick="doLicInfo('${pool.licenceId}')">${pool.licenceNo}</a></td>
                                             <td><c:out value="${pool.hciCode}"/></td>
                                             <td><c:out value="${pool.hciName}"/></td>
                                             <td><c:out value="${pool.blkNo}-${pool.floorNo}-${pool.unitNo}-${pool.streetName}-${pool.buildingName}"/></td>
@@ -402,8 +402,8 @@
         $('input[name="sub_date"]').val("");
     }
 
-    function doLicInfo(licenseeId) {
-        showWaiting();SOP.Crud.cfxSubmit("mainForm", "details",licenseeId);
+    function doLicInfo(licenceId) {
+        showWaiting();SOP.Crud.cfxSubmit("mainForm", "details",licenceId);
     }
     function doAppInfo(appNo) {
         showWaiting();SOP.Crud.cfxSubmit("mainForm", "appDetails",appNo);

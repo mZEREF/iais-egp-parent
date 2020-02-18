@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicEicRequestTracking
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditAdhocItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
@@ -161,6 +162,9 @@ public interface HcsaLicenceClient {
     @GetMapping(path = "/LicPrembylicId{LicId}",produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<LicPremisesDto>> getLicPremListByLicId(@PathVariable(value ="LicId" ) String LicId);
+
+    @GetMapping(value = "/hcsa-licence/hcsa-key-personnel/getPersonnelDtoByLicId/{licId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PersonnelsDto> getPersonnelDtoByLicId(@PathVariable(name = "licId") String licId);
 
 
 }

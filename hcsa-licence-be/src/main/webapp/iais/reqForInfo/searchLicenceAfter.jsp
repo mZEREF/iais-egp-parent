@@ -109,7 +109,7 @@
                                     <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
                                         <tr>
                                             <td class="row_no"><c:out value="${status.index + 1}"/></td>
-                                            <td><a onclick="doAppInfo('${pool.licenseeId}')">${pool.licenceNo}</a></td>
+                                            <td><a onclick="doLicInfo('${pool.licenceId}')">${pool.licenceNo}</a></td>
                                             <td><c:out value="${pool.hciCode}"/></td>
                                             <td><c:out value="${pool.hciName}"/></td>
                                             <td><c:out value="${pool.blkNo}-${pool.floorNo}-${pool.unitNo}-${pool.streetName}-${pool.buildingName}"/></td>
@@ -160,7 +160,8 @@
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "reqForInfo",licPremId);
     }
-    function doAppInfo(licenseeId) {
-        showWaiting();SOP.Crud.cfxSubmit("mainForm", "appInfo",licenseeId);
+    function doLicInfo(licenceId) {
+        showWaiting();
+        SOP.Crud.cfxSubmit("mainForm", "licInfo",licenceId);
     }
 </script>

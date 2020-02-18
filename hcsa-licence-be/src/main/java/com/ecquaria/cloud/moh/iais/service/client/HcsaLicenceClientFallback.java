@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicEicRequestTracking
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditAdhocItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
@@ -29,32 +30,35 @@ import java.util.List;
  * @date 2019/12/4 16:02
  */
 public class HcsaLicenceClientFallback {
-    FeignResponseEntity<List<LicenceDto>> retrieveLicenceDtos(List<String> licenceIds){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    FeignResponseEntity<Integer> licenceNumber( String hciCode){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    FeignResponseEntity<String > groupLicenceNumber( String groupLicence){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    FeignResponseEntity<List<LicenceGroupDto>> createLicence( List<LicenceGroupDto> licenceGroupDtoList){
+    FeignResponseEntity<List<LicenceDto>> retrieveLicenceDtos(List<String> licenceIds) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<PremisesDto> getLatestVersionPremisesByHciCode(String hciCode){
+    FeignResponseEntity<Integer> licenceNumber(String hciCode) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    FeignResponseEntity<String> groupLicenceNumber(String groupLicence) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    FeignResponseEntity<List<LicenceGroupDto>> createLicence(List<LicenceGroupDto> licenceGroupDtoList) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    FeignResponseEntity<PremisesDto> getLatestVersionPremisesByHciCode(String hciCode) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -62,38 +66,42 @@ public class HcsaLicenceClientFallback {
     }
 
     FeignResponseEntity<KeyPersonnelDto> getLatestVersionKeyPersonnelByidNoAndOrgId(@PathVariable(name = "idNo") String idNo,
-                                                                           @PathVariable(name = "orgId") String orgId){
+                                                                                    @PathVariable(name = "orgId") String orgId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<PremisesDto>> getPremisess(@RequestParam("licenceId") String licenceId){
+    FeignResponseEntity<List<PremisesDto>> getPremisess(@RequestParam("licenceId") String licenceId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
-    FeignResponseEntity<LicenceDto> getLicenceDtoById(String licenceId){
+
+    FeignResponseEntity<LicenceDto> getLicenceDtoById(String licenceId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
-    FeignResponseEntity<List<LicAppCorrelationDto>> getLicCorrBylicId(String licenceId){
+
+    FeignResponseEntity<List<LicAppCorrelationDto>> getLicCorrBylicId(String licenceId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
-    FeignResponseEntity<List<LicenceDto>> getLicDtosByLicNos(@RequestBody List<String> licenceNos){
+
+    FeignResponseEntity<List<LicenceDto>> getLicDtosByLicNos(@RequestBody List<String> licenceNos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
-    FeignResponseEntity<EventBusLicenceGroupDtos> getEventBusLicenceGroupDtosByRefNo(String refNo){
+
+    FeignResponseEntity<EventBusLicenceGroupDtos> getEventBusLicenceGroupDtosByRefNo(String refNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -101,135 +109,143 @@ public class HcsaLicenceClientFallback {
     }
 
 
-    FeignResponseEntity<LicEicRequestTrackingDto> getLicEicRequestTrackingDto(String eventRefNo){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    FeignResponseEntity<LicEicRequestTrackingDto> updateLicEicRequestTracking(@RequestBody LicEicRequestTrackingDto licEicRequestTrackingDto){
+    FeignResponseEntity<LicEicRequestTrackingDto> getLicEicRequestTrackingDto(String eventRefNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<SearchResult<InspectionSubPoolQueryDto>> searchSysAduit(SearchParam searchParam){
+    FeignResponseEntity<LicEicRequestTrackingDto> updateLicEicRequestTracking(@RequestBody LicEicRequestTrackingDto licEicRequestTrackingDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<LicenceDto>> updateLicences(List<LicenceDto> licenceDtos){
+    FeignResponseEntity<SearchResult<InspectionSubPoolQueryDto>> searchSysAduit(SearchParam searchParam) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<LicPremisemPreInspectChklDto>> getPremInsChklList(String licPremId){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    FeignResponseEntity<List<AuditAdhocItemDto>> getAdhocByPremId(String licpremId){
+    FeignResponseEntity<List<LicenceDto>> updateLicences(List<LicenceDto> licenceDtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<LicPremisesRecommendationDto> getLicPremRecordByIdAndType(String licPremId, String recomType){
+    FeignResponseEntity<List<LicPremisemPreInspectChklDto>> getPremInsChklList(String licPremId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<LicPremisemPreInspectChklDto> saveLicPreInspChkl( LicPremisemPreInspectChklDto dto){
+    FeignResponseEntity<List<AuditAdhocItemDto>> getAdhocByPremId(String licpremId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<LicPremisemPreInspectChklDto> updateLicPreInspChkl(LicPremisemPreInspectChklDto dto){
+    FeignResponseEntity<LicPremisesRecommendationDto> getLicPremRecordByIdAndType(String licPremId, String recomType) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<LicPremisemPreInspectChklDto> getLicPremInspeChlkByAppCorrIdAndConfigId( String premId, String configId){
+    FeignResponseEntity<LicPremisemPreInspectChklDto> saveLicPreInspChkl(LicPremisemPreInspectChklDto dto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<LicPremisesAdhocChklConfigDto> getAdhocConfigByPremCorrId(String appremId){
+    FeignResponseEntity<LicPremisemPreInspectChklDto> updateLicPreInspChkl(LicPremisemPreInspectChklDto dto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<LicPremisesAdhocChklConfigDto> saveAuditAdhocConfig( LicPremisesAdhocChklConfigDto adhocCheckListConifgDto){
+    FeignResponseEntity<LicPremisemPreInspectChklDto> getLicPremInspeChlkByAppCorrIdAndConfigId(String premId, String configId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<AuditAdhocItemDto>> saveAdhocItems(List<AuditAdhocItemDto> itemDtoList){
+    FeignResponseEntity<LicPremisesAdhocChklConfigDto> getAdhocConfigByPremCorrId(String appremId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<LicPremisesRecommendationDto> saveAppRecom( LicPremisesRecommendationDto appPremisesRecommendationDto){
+    FeignResponseEntity<LicPremisesAdhocChklConfigDto> saveAuditAdhocConfig(LicPremisesAdhocChklConfigDto adhocCheckListConifgDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<LicPremisesRecommendationDto> updateAppRecom(LicPremisesRecommendationDto appPremisesRecommendationDto){
+    FeignResponseEntity<List<AuditAdhocItemDto>> saveAdhocItems(List<AuditAdhocItemDto> itemDtoList) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<LicPremInspectiNcDto> getAppNcByAppCorrId(String premId){
+    FeignResponseEntity<LicPremisesRecommendationDto> saveAppRecom(LicPremisesRecommendationDto appPremisesRecommendationDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<LicPremInspectiNcDto> saveAppPreNc(@RequestBody LicPremInspectiNcDto dto){
+    FeignResponseEntity<LicPremisesRecommendationDto> updateAppRecom(LicPremisesRecommendationDto appPremisesRecommendationDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<LicPremInspectiNcDto> updateAppPreNc(@RequestBody LicPremInspectiNcDto dto){
+    FeignResponseEntity<LicPremInspectiNcDto> getAppNcByAppCorrId(String premId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<LicPremisesDto>> getLicPremListByLicId(@PathVariable(value ="LicId" ) String LicId){
+    FeignResponseEntity<LicPremInspectiNcDto> saveAppPreNc(@RequestBody LicPremInspectiNcDto dto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
+    FeignResponseEntity<LicPremInspectiNcDto> updateAppPreNc(@RequestBody LicPremInspectiNcDto dto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    FeignResponseEntity<List<LicPremisesDto>> getLicPremListByLicId(@PathVariable(value = "LicId") String LicId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    FeignResponseEntity<PersonnelsDto> getPersonnelDtoByLicId(String licId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

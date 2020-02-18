@@ -5,7 +5,11 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
@@ -20,8 +24,11 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,11 +58,17 @@ public class OfficerOnlineEnquiriesDelegator {
     InspEmailService inspEmailService;
     @Autowired
     ApplicationViewService applicationViewService;
-
+    @Autowired
+    HcsaConfigClient hcsaConfigClient;
     @Autowired
     OrganizationClient organizationClient;
     @Autowired
+    HcsaLicenceClient hcsaLicenceClient;
+    @Autowired
     OnlineEnquiriesService onlineEnquiriesService;
+    @Autowired
+    LicenceService licenceService;
+
 
     private final String SEARCH_NO="searchNo";
     private final String RFI_QUERY="ReqForInfoQuery";
@@ -450,6 +464,7 @@ public class OfficerOnlineEnquiriesDelegator {
                             ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
                             rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
                             String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
+                            reqForInfoSearchListDto.setLicenceId(lic.getId());
                             reqForInfoSearchListDto.setLicenceStatus(licStatus);
                             reqForInfoSearchListDto.setLicenceNo(lic.getLicenceNo());
                             reqForInfoSearchListDto.setServiceName(lic.getServiceName());
@@ -528,9 +543,12 @@ public class OfficerOnlineEnquiriesDelegator {
     public void preLicDetails(BaseProcessClass bpc) {
         log.info("=======>>>>>preAppInfo>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String licenseeId = (String) ParamUtil.getSessionAttr(request, "id");
-        OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licenseeId).getEntity();
+        String licenceId = (String) ParamUtil.getSessionAttr(request, "id");
+        LicenceDto licenceDto=licenceService.getLicenceDto(licenceId);
+        OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licenceDto.getLicenseeId()).getEntity();
+        PersonnelsDto personnelsDto= hcsaLicenceClient.getPersonnelDtoByLicId(licenceId).getEntity();
         ParamUtil.setRequestAttr(request,"organizationLicDto",organizationLicDto);
+        ParamUtil.setRequestAttr(request,"personnelsDto",personnelsDto);
         // 		preAppInfo->OnStepProcess
     }
 
@@ -538,8 +556,10 @@ public class OfficerOnlineEnquiriesDelegator {
         log.info("=======>>>>>preAppInfo>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, "id");
-        OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(appId).getEntity();
-        ParamUtil.setRequestAttr(request,"organizationLicDto",organizationLicDto);
+        ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(appId);
+        List<HcsaServiceDto> hcsaServiceDto=hcsaConfigClient.getHcsaService(new ArrayList<>(Collections.singleton(applicationViewDto.getApplicationDto().getServiceId()))).getEntity();
+        ParamUtil.setRequestAttr(request,"applicationViewDto",applicationViewDto);
+        ParamUtil.setRequestAttr(request,"hcsaServiceDto",hcsaServiceDto.get(0));
         // 		preAppInfo->OnStepProcess
     }
 
