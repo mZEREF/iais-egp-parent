@@ -7,7 +7,7 @@
     <div class="container">
         <div class="navigation-gp">
             <div class="row">
-                <%@ include file="../cc/common/dashboardDropDown.jsp" %>
+                <%@ include file="../common/dashboardDropDown.jsp" %>
             </div>
         </div>
     </div>
