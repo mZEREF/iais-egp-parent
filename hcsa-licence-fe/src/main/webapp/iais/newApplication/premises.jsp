@@ -25,7 +25,7 @@
             
             <div class="tab-content  ">
               <div class="tab-pane active" id="premisesTab" role="tabpanel">
-                <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' == AppSubmissionDto.appType}">
+                <c:if test="${AppSubmissionDto.needEditController}">
                   <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
                     <c:if test="${'APPPN01' == clickEditPage}">
                       <c:set var="isClickEdit" value="true"/>
@@ -42,11 +42,6 @@
                   </c:choose>
                   <c:if test="${'true' != isClickEdit}">
                     <c:set var="showPreview" value="true"/>
-                    <%--<c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
-                      <c:if test="${amendType =='RFCATYPE01'}">
-                        <c:set var="canEdit" value="1"/>
-                      </c:if>
-                    </c:forEach>--%>
                     <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.premisesEdit}"/>
                     <div class="premises-summary-preview <c:if test="${'true' != showPreview}">hidden</c:if>">
                       <c:choose>
@@ -54,7 +49,7 @@
                           <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                         </c:when>
                         <c:otherwise>
-                          <p class="text-right" style="color: gray"><em class="fa fa-pencil-square-o"></em>Edit</p>
+
                         </c:otherwise>
                       </c:choose>
                       <c:forEach var="appGrpPremDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="stat">

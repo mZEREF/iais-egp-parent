@@ -22,24 +22,24 @@
               <div class="po-content">
                 <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType}">
                   <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
-                    <c:if test="${'APPSPN03' == clickEditPage}">
+                    <c:if test="${'APPSPN04' == clickEditPage}">
                       <c:set var="isClickEdit" value="true"/>
                     </c:if>
                   </c:forEach>
                   <c:choose>
-                    <c:when test="${'true' != isClickEdit}">
+                    <c:when test="${!isClickEdit}">
                       <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
                     </c:when>
                     <c:otherwise>
                       <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
                     </c:otherwise>
                   </c:choose>
-                  <c:if test="${'true' != isClickEdit}">
+                  <c:if test="${!isClickEdit}">
                     <c:set var="showPreview" value="true"/>
-                    <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.poEdit}"/>
+                    <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.poEdit || AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
                     <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
                       <c:choose>
-                        <c:when test="${'true' == canEdit}">
+                        <c:when test="${canEdit}">
                           <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                         </c:when>
                         <c:otherwise>
@@ -209,24 +209,24 @@
                 </div>
                   <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType}">
                     <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
-                      <c:if test="${'APPSPN04' == clickEditPage}">
+                      <c:if test="${'APPSPN05' == clickEditPage}">
                         <c:set var="isClickEditDpo" value="true"/>
                       </c:if>
                     </c:forEach>
                     <c:choose>
-                      <c:when test="${'true' != isClickEditDpo}">
+                      <c:when test="${!isClickEditDpo}">
                         <input id="isEditDpoHiddenVal" type="hidden" name="isEditDpo" value="0"/>
                       </c:when>
                       <c:otherwise>
                         <input id="isEditDpoHiddenVal" type="hidden" name="isEditDpo" value="1"/>
                       </c:otherwise>
                     </c:choose>
-                    <c:if test="${'true' != isClickEditDpo}">
+                    <c:if test="${!isClickEditDpo}">
                       <c:set var="showPreview" value="true"/>
-                      <c:set var="cancanEditDpoEdit" value="${AppSubmissionDto.appEditSelectDto.dpoEdit}"/>
+                      <c:set var="cancanEditDpoEdit" value="${AppSubmissionDto.appEditSelectDto.dpoEdit || AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
                       <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
                         <c:choose>
-                          <c:when test="${'true' == cancanEditDpoEdit}">
+                          <c:when test="${cancanEditDpoEdit}">
                             <p class="text-right"><a id="edit-dpo"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                           </c:when>
                           <c:otherwise>
@@ -397,13 +397,13 @@
       $('.deputySelect').trigger('change');
 
       //disabled
-      if(('APTY005' == '${AppSubmissionDto.appType}' ||'APTY004' == '${AppSubmissionDto.appType}') && 'true' != '${isClickEdit}'){
+      if(${AppSubmissionDto.needEditController && (AppSubmissionDto.appEditSelectDto.serviceEdit || AppSubmissionDto.appEditSelectDto.poEdit) && !isClickEdit}){
           $('.po-content input[type="text"]').prop('disabled',true);
           $('.po-content div.nice-select').addClass('disabled');
           $('#addPoBtn').addClass('hidden');
           $('#addPoBtn').unbind('click');
       }
-      if(('APTY005' == '${AppSubmissionDto.appType}' ||'APTY004' == '${AppSubmissionDto.appType}') && 'true' != '${isClickEditDpo}'){
+      if(${AppSubmissionDto.needEditController && (AppSubmissionDto.appEditSelectDto.serviceEdit || AppSubmissionDto.appEditSelectDto.dpoEdit) && !isClickEditDpo}){
           $('.deputySelect').addClass('disabled');
           $('.deputy-content input[type="text"]').prop('disabled',true);
           $('.deputy-content div.nice-select').addClass('disabled');

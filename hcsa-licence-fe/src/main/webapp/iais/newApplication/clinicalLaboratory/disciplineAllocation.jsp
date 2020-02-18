@@ -32,6 +32,34 @@
                             <h2>Discipline Allocation</h2>
                             <p>Please ensure that each laboratory discipline is assigned to a clinical governance officer.</p>
                             <div class="table-gp">
+                              <c:if test="${AppSubmissionDto.needEditController}">
+                                <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
+                                  <c:if test="${'APPSPN03' == clickEditPage}">
+                                    <c:set var="isClickEdit" value="true"/>
+                                  </c:if>
+                                </c:forEach>
+                                <c:choose>
+                                  <c:when test="${'true' != isClickEdit}">
+                                    <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+                                  </c:when>
+                                  <c:otherwise>
+                                    <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
+                                  </c:otherwise>
+                                </c:choose>
+                                <c:if test="${'true' != isClickEdit}">
+                                  <c:set var="locking" value="true"/>
+                                  <div id="edit-content">
+                                    <c:choose>
+                                      <c:when test="${AppSubmissionDto.appEditSelectDto.serviceEdit}">
+                                        <p class="text-right"><a id="edit"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
+                                      </c:when>
+                                      <c:otherwise>
+
+                                      </c:otherwise>
+                                    </c:choose>
+                                  </div>
+                                </c:if>
+                              </c:if>
                               <table class="table discipline-table">
                                 <thead>
                                 <tr>
@@ -93,14 +121,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
-          <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
-            <c:if test="${amendType =='RFCATYPE05'}">
-            <c:set var="canEdit" value="1"/>
-            </c:if>
-          </c:forEach>
-        </c:if>
-        if('APTY005' == '${AppSubmissionDto.appType}' && '1' != '${canEdit}'){
+        if(${AppSubmissionDto.needEditController && AppSubmissionDto.appEditSelectDto.serviceEdit && !isClickEdit}){
             $('div.nice-select').addClass('disabled');
         }
 
@@ -117,8 +138,15 @@
             submitForms('principalOfficers',null,'next',controlFormLi);
         });
 
-       /* $('select.cgo').next().addClass('Test');*/
+        doEdit();
 
     });
 
+    var doEdit = function () {
+        $('#edit').click(function () {
+            $('#edit-content').addClass('hidden');
+            $('#isEditHiddenVal').val('1');
+            $('div.nice-select').removeClass('disabled');
+        });
+    }
 </script>

@@ -23,14 +23,6 @@
             
             <div class="tab-content">
               <div class="tab-pane active" id="documentsTab" role="tabpanel">
-                <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType}">
-                  <c:set var="showPreview" value="true"/>
-                  <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
-                    <c:if test="${amendType =='RFCATYPE06'}">
-                      <c:set var="canEdit" value="1"/>
-                    </c:if>
-                  </c:forEach>
-                </c:if>
               </div>
                 <div class="document-content ">
                   <div class="document-info-list">
@@ -48,7 +40,40 @@
                   </div>
                   <div class="document-upload-gp">
                     <h2>PRIMARY DOCUMENTS</h2>
-                    
+                    <c:if test="${AppSubmissionDto.needEditController}">
+                      <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
+                        <c:if test="${'APPPN02' == clickEditPage}">
+                          <c:set var="isClickEdit" value="true"/>
+                        </c:if>
+                      </c:forEach>
+                      <c:choose>
+                        <c:when test="${'true' != isClickEdit}">
+                          <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+                        </c:when>
+                        <c:otherwise>
+                          <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
+                        </c:otherwise>
+                      </c:choose>
+                      <c:if test="${'true' != isClickEdit}">
+                        <c:set var="locking" value="true"/>
+                        <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.docEdit}"/>
+                        <div id="edit-content">
+                          <c:choose>
+                            <c:when test="${canEdit}">
+                              <p class="text-right"><a id="edit"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
+                            </c:when>
+                            <c:otherwise>
+
+                            </c:otherwise>
+                          </c:choose>
+                        </div>
+                      </c:if>
+                    </c:if>
+
+
+
+
+
                     <c:set value="${reloadAppGrpPrimaryDocMap}" var="docMap"/>
                     <!--common -->
                     <c:forEach var="commonDoc" items="${commonHcsaSvcDocConfigDto}" varStatus="v">
@@ -67,7 +92,7 @@
                               </span>
                             </c:when>
                             <c:otherwise>
-                              <span class="delBtn <c:if test="${'1' != canEdit}">hidden</c:if>">
+                              <span class="delBtn <c:if test="${!canEdit}">hidden</c:if>">
                                 &nbsp;&nbsp;<button type="button" class="">Delete</button>
                               </span>
                             </c:otherwise>
@@ -142,8 +167,8 @@
 
 
 <script type="text/javascript">
-    $(document).ready(function() { 
-        if('APTY005' == '${AppSubmissionDto.appType}' &&'1' != '${canEdit}'){
+    $(document).ready(function() {
+        if(${AppSubmissionDto.needEditController && AppSubmissionDto.appEditSelectDto.docEdit && !isClickEdit}){
             disabledPage();
         }
         
@@ -157,16 +182,10 @@
         $('#Next').click(function(){
             submit('serviceForms',"next",null);
         });
-        /*$('#selectedFile').change(function(){
-            var file = $('#selectedFile').val();
-            $('#showFile').html(getFileName(file))
-        });*/
-        // if($('#isPramayEdit').val() == 'true'){
-        //     disabledPage();
-        // }
-        <c:if test="${AppSubmissionDto.appEditSelectDto!=null && !AppSubmissionDto.appEditSelectDto.docEdit}">
-        disabledPage();
-        </c:if>
+
+
+
+        doEdit();
     });
     function getFileName(o) {
         var pos = o.lastIndexOf("\\");
@@ -188,7 +207,13 @@
 
     });
 
-
+    var doEdit = function () {
+        $('#edit').click(function () {
+            $('#edit-content').addClass('hidden');
+            $('#isEditHiddenVal').val('1');
+            $('input[type="file"]').prop('disabled',false);
+        });
+    }
 
 
 
