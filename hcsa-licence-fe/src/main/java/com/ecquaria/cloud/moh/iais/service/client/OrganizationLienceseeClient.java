@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -28,5 +29,8 @@ public interface OrganizationLienceseeClient {
 
     @GetMapping(value = "/iais-licensee/licenseeIndividual/{nric}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenseeIndividualDto> getlicIndByNric(@PathVariable("nric") String nric);
+
+    @GetMapping(value = "/iais-licensee/licensee/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicenseeDto> getLicenseeById(@PathVariable(name = "id") String id);
 
 }

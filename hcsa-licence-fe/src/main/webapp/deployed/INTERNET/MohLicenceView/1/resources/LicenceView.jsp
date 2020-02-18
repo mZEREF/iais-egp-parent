@@ -1,0 +1,1 @@
+<%@include file="/iais/licence/licenceView.jsp"%>
