@@ -49,7 +49,7 @@
                         <iais:row>
                           <iais:field value="Application Type"/>
                           <iais:value width="7">
-                            <label><c:out value = "${apptFeConfirmDateDto.applicationType}"/></label>
+                            <label><iais:code code = "${apptFeConfirmDateDto.applicationType}"/></label>
                           </iais:value>
                         </iais:row>
                         <iais:row>
