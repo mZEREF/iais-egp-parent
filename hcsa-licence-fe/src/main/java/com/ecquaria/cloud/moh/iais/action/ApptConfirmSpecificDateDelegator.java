@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicantConfirmInspDateService;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +43,7 @@ public class ApptConfirmSpecificDateDelegator {
      */
     public void userConfirmSpecificDateInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmSpecificDateInit start ...."));
+        ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", null);
     }
 
     /**
@@ -51,6 +54,12 @@ public class ApptConfirmSpecificDateDelegator {
      */
     public void userConfirmSpecificDatePre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmSpecificDatePre start ...."));
+        ApptFeConfirmDateDto apptFeConfirmDateDto = (ApptFeConfirmDateDto) ParamUtil.getSessionAttr(bpc.request, "apptFeConfirmDateDto");
+        if(apptFeConfirmDateDto == null){
+            String appPremCorrId = ParamUtil.getRequestString(bpc.request, "appPremCorrId");
+            apptFeConfirmDateDto = applicantConfirmInspDateService.getSpecificDateDto(appPremCorrId);
+        }
+        ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
     }
 
     /**
