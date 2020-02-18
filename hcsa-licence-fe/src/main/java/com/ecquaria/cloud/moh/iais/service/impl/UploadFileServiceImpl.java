@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
@@ -386,6 +387,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppSvcPersonnelDto> appSvcPersonnel = applicationListDto.getAppSvcPersonnel();
         List<AppSvcPremisesScopeDto> appSvcPremisesScope = applicationListDto.getAppSvcPremisesScope();
         List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocation = applicationListDto.getAppSvcPremisesScopeAllocation();
+        List<AppPremiseMiscDto> appPremiseMiscEntities = applicationListDto.getAppPremiseMiscEntities();
 
         List<ApplicationListFileDto> applicationListFileDtoList=new ArrayList<>();
         Set<ApplicationGroupDto> applicationGroupDtoSet=new HashSet<>();
@@ -438,6 +440,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtoList=new ArrayList<>();
             Set<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtoSet=new HashSet<>();
+
+            List<AppPremiseMiscDto> appPremiseMiscDtoList=new ArrayList<>();
+            Set<AppPremiseMiscDto> appPremiseMiscDtoSet=new HashSet<>();
 
             groupDtos.add(every);
             String groupId = every.getId();
@@ -510,6 +515,14 @@ public class UploadFileServiceImpl implements UploadFileService {
                                 }
 
                             }
+
+                            for(AppPremiseMiscDto appPremiseMiscDto:appPremiseMiscEntities){
+                                String appPremCorreId = appPremiseMiscDto.getAppPremCorreId();
+                                if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                    appPremiseMiscDtoSet.add(appPremiseMiscDto);
+                                }
+                            }
+
                         }
                     }
 
@@ -565,6 +578,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             appPremisesSelfDeclChklDtos.addAll(appPremisesSelfDeclChklDtoSet);
             appSvcDocDtos.addAll(appSvcDocDtoSet);
             appPremPhOpenPeriodDtoList.addAll(appPremPhOpenPeriodDtoSet);
+            appPremiseMiscDtoList.addAll(appPremiseMiscDtoSet);
 
             applicationListFileDto.setApplicationGroup(groupDtos);
             applicationListFileDto.setApplication( applicationDtos);
@@ -582,6 +596,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             applicationListFileDto.setAppSvcPersonnel (appSvcPersonnelDtos);
             applicationListFileDto.setAppPremisesSelfDeclChklEntity(appPremisesSelfDeclChklDtos);
             applicationListFileDto.setAppSvcDoc(appSvcDocDtos);
+            applicationListFileDto.setAppPremiseMiscEntities(appPremiseMiscDtoList);
             applicationListFileDtoList.add(applicationListFileDto);
         }
         return applicationListFileDtoList;

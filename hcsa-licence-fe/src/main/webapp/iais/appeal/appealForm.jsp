@@ -20,60 +20,67 @@
     </div>
   <div class="form-group">
     <div class="col-xs-12 col-md-10">
-      <h2>You are appealing for:</h2>
+      <label style="font-size: 25px">You are appealing for:</label>
     </div>
 
     <div class="col-xs-12 col-md-5">
-      <input type="text" name="appealingFor" >${appealingFor}</input>
+      <input type="text" name="appealingFor"  >
     </div>
   </div>
-  <div class="col-xs-12 col-md-8" >
-    <h2>Reason for Appeal</h2>
-    <select id="reasonSelect" name="reasonSelect">
-      <option value="">please select an appeal reason</option>
-      <option value="MS001" <c:if test="${reasonSelect=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option>
-      <option value="MS002" <c:if test="${reasonSelect=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option>
-      <option value="MS003" <c:if test="${reasonSelect=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option>
-      <option value="MS004" <c:if test="${reasonSelect=='MS004'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option>
-      <option value="MS005" <c:if test="${reasonSelect=='MS005'}">selected="selected"</c:if>>Appeal for change of licence period</option>
 
-    </select>
-    <span class="error-msg" name="iaisErrorMsg" id="error_reason"></span>
+    <div class="form-group">
+      <div class="col-xs-12 col-md-8" >
+      <label style="font-size: 25px">Reason for Appeal<span class="mandatory">*</span></label>
+      <select id="reasonSelect" name="reasonSelect">
+        <option value="">please select an appeal reason</option>
+        <option value="MS001" <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option>
+        <option value="MS002" <c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option>
+        <option value="MS003" <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option>
+        <option value="MS004" <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option>
+        <option value="MS005" <c:if test="${appPremiseMiscDto.reason=='MS005'}">selected="selected"</c:if>>Appeal for change of licence period</option>
+      </select>
+      <span class="error-msg" name="iaisErrorMsg" id="error_reason"></span>
       <div class="col-xs-12 col-md-10" id="licenceYear"  style="display: none">
-        <label>Licence year</label>
-        <input type="number" name="licenceYear">${licenceYear}
+        <label style="font-size: 20px;">Licence year</label>
+        <input type="number" name="licenceYear" value="${appPremiseMiscDto.newLicYears}">
 
       </div>
-      <div style="display: none" id="cgo">
+      <div style="display: none;margin-top: 10px" id="cgo" >
 
         <%@include file="cgo.jsp"%>
 
       </div>
 
       <div class="form-check-gp" id="selectHciNameAppeal" style="display: none">
-        <h2>Select HCI Name To Appeal</h2>
+        <label style="font-size: 20px">Select HCI Name To Appeal</label>
         <div class="form-check" >
           <input class="form-check-input"  onclick="isCheck(this)" type="checkbox" name="selectHciName" aria-invalid="false" value="${hciName}">
           <label class="form-check-label"><span class="check-square"></span>${hciName}</label>
         </div>
 
         <div class="col-xs-12 col-md-10" id="proposedHciName" style="display: none" >
-          <h2>Proposed  HCI Name</h2>
-          <input type="text" maxlength="100" name="proposedHciName">${proposedHciName}</input>
-          <span ></span>
+            <label style="font-size: 20px">Proposed  HCI Name</label>
+            <input type="text" maxlength="100" name="proposedHciName" value="${appPremiseMiscDto.newHciName}">
+            <span ></span>
         </div>
 
-      </div>
+        </div>
 
-  </div>
+     </div>
 
-<div class="col-xs-12 col-md-10">
+    </div>
 
-  <h2>Any supporting remarks</h2>
-  <textarea cols="50" rows="10" name="remarks" maxlength="300" >${remark}</textarea>
-  <span class="error-msg" id="error_remarks" name="iaisErrorMsg"></span>
+      <div class="col-xs-12 col-md-10">
 
-</div >
+        <label style="font-size: 25px">Any supporting remarks<span class="mandatory">*</span></label>
+
+      </div >
+    <div  class="col-xs-12 col-md-10">
+
+      <textarea cols="50" style="font-size: 20px" rows="10" name="remarks" maxlength="300" >${appPremiseMiscDto.remarks}</textarea>
+      <span class="error-msg" id="error_remarks" name="iaisErrorMsg"></span>
+    </div>
+
   <div class="col-xs-12 col-md-10">
     <div>
       <label>File Upload for Appeal Reasons</label><br>
@@ -93,7 +100,7 @@
   </div>
     <br>
     <br> <br> <br>
-    <div class="application-tab-footer">
+    <div >
       <div class="row">
         <div class="col-xs-12 col-sm-10">
           <div class="text-right text-center-mobile">
@@ -107,25 +114,31 @@
     <%@ include file="/include/validation.jsp" %>
   </form>
 </div>
+<style>
+  .mandatory{
+    color: red;
+  }
+
+</style>
 <script  type="text/javascript">
 
   $(document).ready(function () {
       var reason= $('#reasonSelect option:selected').val();
       if("MS003"==reason){
-          $('#cgo').attr("style" ,"display: block");
+          $('#cgo').attr("style" ,"display: block;margin-top: 20px");
 
       }else  {
           $('#cgo').attr("style" ,"display: none");
 
       }
       if("MS004"==reason){
-          $('#selectHciNameAppeal').attr("style","display: block");
+          $('#selectHciNameAppeal').attr("style","display: block;margin-top: 20px");
 
       }else {
           $('#selectHciNameAppeal').attr("style","display: none");
       }
       if("MS005"==reason){
-          $('#licenceYear').attr("style","display: block");
+          $('#licenceYear').attr("style","display: block;margin-top: 20px");
       }else {
           $('#licenceYear').attr("style","display: none");
       }

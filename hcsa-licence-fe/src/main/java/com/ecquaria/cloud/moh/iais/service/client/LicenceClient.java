@@ -31,7 +31,7 @@ public interface LicenceClient {
     @PutMapping(value = "/hcsa-licence-rfc/licence-save", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> doSave(@RequestBody LicenceDto licenceDto);
 
-    @GetMapping(value= "/hcsa-licence-rfc/licence-bylicence-byNo/{licenceNo}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value= "/hcsa-licence-rfc/licence-bylicence-byNo",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto> getLicBylicNo(@RequestParam("licenceNo")String licenceNo);
 
     @RequestMapping(path = "/hcsa-licence/licence-by-licno",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
