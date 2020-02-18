@@ -7,6 +7,7 @@ package com.ecquaria.cloud.moh.iais.action;
  */
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.audit.AuditTrailConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -18,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
@@ -40,6 +42,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Delegator(value = "auditTrailDelegator")
 @Slf4j
@@ -74,6 +77,7 @@ public class AuditTrailDelegator {
         HttpServletRequest request = bpc.request;
 
         ParamUtil.setSessionAttr(request, "isFullMode", null);
+        ParamUtil.setSessionAttr(request, AuditTrailConstants.PARAM_SEARCH, null);
         //AccessUtil.initLoginUserInfo(request);
     }
 
@@ -94,11 +98,18 @@ public class AuditTrailDelegator {
     /**
     * @AutoStep: prepareData
     * @param: bpc
-    * @return: 
-    * @author: yichen 
+    * @return:
+    * @author: yichen
     */
     public void prepareData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request,
+                AppConsts.SESSION_ATTR_LOGIN_USER);
+
+        if (!Optional.ofNullable(loginContext).isPresent()){
+            log.info("===>> don't have loginContext" + loginContext);
+        }
 
         boolean isAdmin = AccessUtil.isAdministrator();
         preSelectOption(request);
@@ -107,7 +118,6 @@ public class AuditTrailDelegator {
         }else {
             ParamUtil.setSessionAttr(request, "isFullMode", "N");
         }
-
     }
 
     public void prepareFullMode(BaseProcessClass bpc){
@@ -154,20 +164,26 @@ public class AuditTrailDelegator {
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
 
+        if (searchParam.getFilters().isEmpty()){
+            log.info("don't have filter params");
+            return;
+        }
+
         SearchResult<AuditTrailQueryDto> searchResult = auditTrailService.listAuditTrailDto(searchParam);
-        if (searchResult == null && searchResult.getRows().isEmpty()){
+        if (searchResult == null || searchResult.getRows().isEmpty()){
             log.info("==export audit trail log , the record is empty>>>>");
             return;
-        }else {
-            File file = ExcelWriter.exportExcel(searchResult.getRows(), AuditTrailQueryDto.class, "Audit Trail Logging");
-            try {
-                FileUtils.writeFileResponeContent(response, file);
-                FileUtils.deleteTempFile(file);
-            } catch (IOException e) {
-                log.debug(e.getMessage());
-            }
-            log.debug(StringUtil.changeForLog("fileHandler end ...."));
         }
+
+        File file = ExcelWriter.exportExcel(searchResult.getRows(), AuditTrailQueryDto.class, "Audit Trail Logging");
+        try {
+            FileUtils.writeFileResponeContent(response, file);
+            FileUtils.deleteTempFile(file);
+        } catch (IOException e) {
+            log.debug(e.getMessage());
+        }
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+
     }
 
     /**
@@ -207,7 +223,6 @@ public class AuditTrailDelegator {
 	    }
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
-
         ValidationResult validationResult = WebValidationHelper.validateProperty(queryDto, "query");
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
@@ -231,23 +246,22 @@ public class AuditTrailDelegator {
             }
         }
 
-        SearchParam trailDtoSearchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         SearchResult<AuditTrailQueryDto> trailDtoSearchResult = null;
 
         String isFullMode = (String) ParamUtil.getSessionAttr(request, "isFullMode");
         switch (isFullMode){
             case "Y":
-                QueryHelp.setMainSql("systemAdmin", "queryFullModeAuditTrail", trailDtoSearchParam);
-                trailDtoSearchResult = auditTrailService.listAuditTrailDto(trailDtoSearchParam);
+                QueryHelp.setMainSql("systemAdmin", "queryFullModeAuditTrail", searchParam);
+                trailDtoSearchResult = auditTrailService.listAuditTrailDto(searchParam);
                 break;
             case "N":
-                QueryHelp.setMainSql("systemAdmin", "queryDataMaskModeAuditTrail", trailDtoSearchParam);
-                trailDtoSearchResult = auditTrailService.listAuditTrailDto(trailDtoSearchParam);
+                QueryHelp.setMainSql("systemAdmin", "queryDataMaskModeAuditTrail", searchParam);
+                trailDtoSearchResult = auditTrailService.listAuditTrailDto(searchParam);
                 break;
             default:
         }
 
-        ParamUtil.setSessionAttr(request, AuditTrailConstants.PARAM_SEARCH, trailDtoSearchParam);
+        ParamUtil.setSessionAttr(request, AuditTrailConstants.PARAM_SEARCH, searchParam);
         ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_SEARCHRESULT, trailDtoSearchResult);
     }
 

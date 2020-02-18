@@ -28,10 +28,10 @@
 
         doExport: function(url){
             showWaiting();
-            //window.open(url, "down");
-            window.location.href = url;
+            window.open(url, "Iais Export", "location=no,status=no,scrollvars=no");
+           // window.location.href = url;
             dismissWaiting();
-
+            window.close()
         }
     }
 
