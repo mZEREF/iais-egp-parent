@@ -206,6 +206,7 @@ public class OfficerOnlineEnquiriesDelegator {
                             ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
                             rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
                             String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
+                            reqForInfoSearchListDto.setLicenceId(lic.getId());
                             reqForInfoSearchListDto.setLicenceStatus(licStatus);
                             reqForInfoSearchListDto.setLicenceNo(lic.getLicenceNo());
                             reqForInfoSearchListDto.setServiceName(lic.getServiceName());
@@ -513,6 +514,7 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setAppId(rfiApplicationQueryDto.getId());
         String appType= MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getApplicationType()}).get(0).getText();
         reqForInfoSearchListDto.setApplicationType(appType);
+        reqForInfoSearchListDto.setAppCorrId(rfiApplicationQueryDto.getAppCorrId());
         reqForInfoSearchListDto.setApplicationNo(rfiApplicationQueryDto.getApplicationNo());
         reqForInfoSearchListDto.setApplicationStatus(rfiApplicationQueryDto.getApplicationStatus());
         reqForInfoSearchListDto.setHciCode(rfiApplicationQueryDto.getHciCode());
@@ -555,8 +557,8 @@ public class OfficerOnlineEnquiriesDelegator {
     public void preAppDetails(BaseProcessClass bpc) {
         log.info("=======>>>>>preAppInfo>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String appId = (String) ParamUtil.getSessionAttr(request, "id");
-        ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(appId);
+        String appCorrId = (String) ParamUtil.getSessionAttr(request, "id");
+        ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(appCorrId);
         List<HcsaServiceDto> hcsaServiceDto=hcsaConfigClient.getHcsaService(new ArrayList<>(Collections.singleton(applicationViewDto.getApplicationDto().getServiceId()))).getEntity();
         ParamUtil.setRequestAttr(request,"applicationViewDto",applicationViewDto);
         ParamUtil.setRequestAttr(request,"hcsaServiceDto",hcsaServiceDto.get(0));

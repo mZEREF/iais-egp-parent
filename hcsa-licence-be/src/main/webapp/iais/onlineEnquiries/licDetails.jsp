@@ -30,7 +30,7 @@
                                 <div class="swiper-slide"><a href="#tabLicenseeDetails" aria-controls="tabLicenseeDetails" role="tab" data-toggle="tab">Licensee Details</a></div>
                                 <div class="swiper-slide"><a href="#tabPersonnelDetails" aria-controls="tabPersonnelDetails" role="tab" data-toggle="tab">Personnel Details</a></div>
                                 <div class="swiper-slide"><a href="#tabComplianceHistory" aria-controls="tabComplianceHistory" role="tab" data-toggle="tab">Compliance History</a></div>
-                                </div>
+                            </div>
                             <div class="swiper-button-prev"></div>
                             <div class="swiper-button-next"></div>
                         </div>
@@ -48,7 +48,7 @@
                                                     <tbody>
                                                     <tr>
                                                         <td class="col-xs-6" align="right">Licensee Type</td>
-                                                        <td class="col-xs-6">${organizationLicDto.licenseeType}</td>
+                                                        <td class="col-xs-6">${organizationLicDto.licenseeDto.licenseeType}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">UEN</td>
@@ -101,9 +101,9 @@
 
                                                     </tbody>
                                                 </table>
-                                </div>
-                            </div>
-                        </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <c:forEach var="member" items="${organizationLicDto.licenseeKeyApptPersonDtos}" varStatus="status">
@@ -158,7 +158,7 @@
                                                     <tbody>
                                                     <tr>
                                                         <td class="col-xs-6" align="right">Name</td>
-                                                        <td class="col-xs-6">${organizationLicDto.licenseeIndividualDto.name}</td>
+                                                        <td class="col-xs-6">${organizationLicDto.licenseeDto.name}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Salutation</td>
@@ -230,47 +230,47 @@
                                                     <tbody>
                                                     <tr>
                                                         <td class="col-xs-6" align="right">Name</td>
-                                                        <td class="col-xs-6">${personnelsDto.KeyPersonnelDto.name}</td>
+                                                        <td class="col-xs-6">${personnelsDto.keyPersonnelDto.name}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Salutation</td>
-                                                        <td>${personnelsDto.KeyPersonnelDto.salutation}</td>
+                                                        <td>${personnelsDto.keyPersonnelDto.salutation}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">ID Type</td>
-                                                        <td>${personnelsDto.KeyPersonnelDto.idType}</td>
+                                                        <td>${personnelsDto.keyPersonnelDto.idType}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">ID No</td>
-                                                        <td>${personnelsDto.KeyPersonnelDto.idNo}</td>
+                                                        <td>${personnelsDto.keyPersonnelDto.idNo}</td>
                                                     </tr>
 
                                                     <tr>
                                                         <td align="right">Designation</td>
-                                                        <td>${personnelsDto.KeyPersonnelDto.designation}</td>
+                                                        <td>${personnelsDto.keyPersonnelDto.designation}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Profession Type</td>
-                                                        <td>${personnelsDto.KeyPersonnelExtDto.professionType}</td>
+                                                        <td>${personnelsDto.keyPersonnelExtDto.professionType}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Professional Regn No</td>
-                                                        <td>${personnelsDto.KeyPersonnelExtDto.profRegNo}</td>
+                                                        <td>${personnelsDto.keyPersonnelExtDto.profRegNo}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Specialty</td>
-                                                        <td>${personnelsDto.KeyPersonnelExtDto.speciality}</td>
+                                                        <td>${personnelsDto.keyPersonnelExtDto.speciality}</td>
                                                     </tr><tr>
                                                         <td align="right">SubSpeciality or relevant qualification</td>
-                                                        <td>${personnelsDto.KeyPersonnelExtDto.subSpeciality}</td>
+                                                        <td>${personnelsDto.keyPersonnelExtDto.subSpeciality}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Mobile No</td>
-                                                        <td>${organizationLicDto.keyPersonnelDto.mobileNo}</td>
+                                                        <td>${personnelsDto.keyPersonnelDto.mobileNo}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Email Address</td>
-                                                        <td>${organizationLicDto.keyPersonnelDto.emailAddr}</td>
+                                                        <td>${personnelsDto.keyPersonnelDto.emailAddr}</td>
                                                     </tr>
                                                     </tbody>
                                                 </table>

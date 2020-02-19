@@ -163,7 +163,7 @@ public interface HcsaLicenceClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<LicPremisesDto>> getLicPremListByLicId(@PathVariable(value ="LicId" ) String LicId);
 
-    @GetMapping(value = "/hcsa-licence/hcsa-key-personnel/getPersonnelDtoByLicId/{licId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/hcsa-key-personnel/getPersonnelDtoByLicId/{licId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PersonnelsDto> getPersonnelDtoByLicId(@PathVariable(name = "licId") String licId);
 
 

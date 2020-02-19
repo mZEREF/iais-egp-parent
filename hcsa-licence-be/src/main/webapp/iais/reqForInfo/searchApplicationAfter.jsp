@@ -112,9 +112,12 @@
                                     <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
                                         <tr>
                                             <td class="row_no"><c:out value="${status.index + 1}"/></td>
-                                            <td><a onclick="doAppInfo('${pool.licenseeId}')">${pool.applicationNo}</a></td>
+                                            <td>
+                                                <c:if test="${pool.appCorrId==null}">${pool.applicationNo}</c:if>
+                                                <c:if test="${pool.appCorrId!=null}"><a onclick="javascript:doAppInfo('${pool.appCorrId}')">${pool.applicationNo}</a></c:if>
+                                            </td>
                                             <td><c:out value="${pool.applicationType}"/></td>
-                                            <td><a onclick="doLicInfo('${pool.licenceId}')">${pool.licenceNo}</a></td>
+                                            <td><a onclick="javascript:doLicInfo('${pool.licenceId}')">${pool.licenceNo}</a></td>
                                             <td><c:out value="${pool.hciCode}"/></td>
                                             <td><c:out value="${pool.hciName}"/></td>
                                             <td><c:out value="${pool.blkNo}-${pool.floorNo}-${pool.unitNo}-${pool.streetName}-${pool.buildingName}"/></td>
@@ -165,9 +168,9 @@
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "reqForInfo",licPremId);
     }
-    function doAppInfo(appNo) {
+    function doAppInfo(appCorrId) {
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "appInfo",appNo);
+        SOP.Crud.cfxSubmit("mainForm", "appInfo",appCorrId);
     }
     function doLicInfo(licenceId) {
         showWaiting();
