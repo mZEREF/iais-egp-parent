@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <webui:setLayout name="iais-intranet"/>
 
 <%
@@ -36,8 +37,8 @@
         <option value="MS001" <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option>
         <option value="MS002" <c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option>
         <option value="MS003" <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option>
-        <option value="MS004" <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option>
-        <option value="MS005" <c:if test="${appPremiseMiscDto.reason=='MS005'}">selected="selected"</c:if>>Appeal for change of licence period</option>
+        <option value="MS008" <c:if test="${appPremiseMiscDto.reason=='MS008'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option>
+        <option value="MS004" <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option>
       </select>
       <span class="error-msg" name="iaisErrorMsg" id="error_reason"></span>
       <div class="col-xs-12 col-md-10" id="licenceYear"  style="display: none">
@@ -53,18 +54,23 @@
 
       <div class="form-check-gp" id="selectHciNameAppeal" style="display: none">
         <label style="font-size: 20px">Select HCI Name To Appeal</label>
-        <div class="form-check" >
-          <input class="form-check-input"  onclick="isCheck(this)" type="checkbox" name="selectHciName" aria-invalid="false" value="${hciName}">
-          <label class="form-check-label"><span class="check-square"></span>${hciName}</label>
-        </div>
+        <c:forEach items="${hciNames}" var="hciName" >
 
-        <div class="col-xs-12 col-md-10" id="proposedHciName" style="display: none" >
+        <div >
+          <div class="form-check" >
+            <input class="form-check-input"  onclick="isCheck(this)" type="checkbox" <c:if test="${fn:length(hciNames)==1}">checked="checked" </c:if> name="selectHciName" aria-invalid="false" value="${hciName}">
+            <label class="form-check-label"><span class="check-square"></span>${hciName}</label>
+          </div>
+
+          <div class="col-xs-12 col-md-10" id="proposedHciName" style="display: none" >
             <label style="font-size: 20px">Proposed  HCI Name</label>
             <input type="text" maxlength="100" name="proposedHciName" value="${appPremiseMiscDto.newHciName}">
             <span ></span>
+          </div>
         </div>
 
-        </div>
+        </c:forEach>
+      </div>
 
      </div>
 
@@ -142,7 +148,11 @@
       }else {
           $('#licenceYear').attr("style","display: none");
       }
-
+      if(  $("input[name='selectHciName']").prop("checked")){
+          $('#proposedHciName').attr("style","display: block");
+      }else {
+          $('#proposedHciName').attr("style","display: none");
+      }
 
 
 
@@ -150,13 +160,13 @@
 
 $('#submit').click(function () {
 
-    SOP.Crud.cfxSubmit("mainForm", "submit");
+    SOP.Crud.cfxSubmit("mainForm", "submit","submit","");
 
 });
 
 
 $('#save').click(function () {
-    SOP.Crud.cfxSubmit("mainForm", "save");
+    SOP.Crud.cfxSubmit("mainForm", "save","save","");
 });
 
 $('#reasonSelect').change(function () {
@@ -169,13 +179,13 @@ $('#reasonSelect').change(function () {
       $('#cgo').attr("style" ,"display: none");
 
   }
-  if("MS004"==reason){
+  if("MS008"==reason){
     $('#selectHciNameAppeal').attr("style","display: block");
 
   }else {
       $('#selectHciNameAppeal').attr("style","display: none");
   }
-  if("MS005"==reason){
+  if("MS004"==reason){
       $('#licenceYear').attr("style","display: block");
   }else {
       $('#licenceYear').attr("style","display: none");

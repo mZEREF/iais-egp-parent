@@ -43,6 +43,12 @@ public class AppealDelegator {
 
     public void switchProcess(BaseProcessClass bpc ){
         log.info("start**************switchProcess************");
+
+        String crud_action_value =(String) bpc.request.getParameter("crud_action_value");
+        if ("save".equals(crud_action_value)) {
+            bpc. request.setAttribute("crud_action_type","save");
+            return;
+        }
         Map<String, String> validate = appealService.validate(bpc.request);
         if(!validate.isEmpty()){
             bpc. request.setAttribute("crud_action_type","save");

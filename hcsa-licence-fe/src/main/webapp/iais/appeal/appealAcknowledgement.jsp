@@ -15,7 +15,7 @@
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
-    <div>
+    <div style="margin-top: 15px">
       <h1>Acknowledgement</h1>
       <br><br>
     </div>
@@ -35,13 +35,14 @@
         <td style="text-align: center">HCI Name</td>
         <td style="text-align: center">HCI Address</td>
       </tr>
+        <c:forEach items="${hciNames}" var="hciName">
         <tr>
           <td style="text-align: center">${applicationNo}</td>
           <td style="text-align: center">${serviceName}</td>
           <td style="text-align: center">${hciName}</td>
           <td style="text-align: center">${hciAddress}</td>
         </tr>
-
+        </c:forEach>
       </table>
 
 
