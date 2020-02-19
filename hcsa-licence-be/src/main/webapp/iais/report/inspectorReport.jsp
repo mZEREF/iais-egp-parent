@@ -193,11 +193,11 @@
 
                         <td class="col-xs-8">
                             <p>${insRepDto.serviceName}</p>
-<%--                            <c:if test="${insRepDto.otherCheckList.adItemList != null}">--%>
+                            <c:if test="${insRepDto.commonCheckList != null}">
                                 <div class="tab-pane active" id="General" role="tabpanel">
                                     <h3>General</h3>
                                     <div class="table-gp">
-                                        <c:forEach var ="section" items ="${commonDto.sectionDtoList}">
+                                        <c:forEach var ="section" items ="${insRepDto.commonCheckList.sectionDtoList}">
                                             <br/>
                                             <h4><c:out value="${section.sectionName}"></c:out></h4>
                                             <table class="table">
@@ -231,7 +231,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="ServiceInfo" role="tabpanel">
-                                    <c:forEach var ="cdto" items ="${serListDto.fdtoList}" varStatus="status">
+                                    <c:forEach var ="cdto" items ="${insRepDto.subTypeCheckList.fdtoList}" varStatus="status">
                                         <h3>${cdto.subType}</h3>
                                         <div class="table-gp">
                                             <c:forEach var ="section" items ="${cdto.sectionDtoList}">
@@ -268,7 +268,7 @@
                                         </div>
                                     </c:forEach>
                                 </div>
-<%--                            </c:if>--%>
+                            </c:if>
                         </td>
                     </tr>
                 </table>
@@ -439,7 +439,7 @@
                             <p>Rectified Within KPI?</p>
                         </td>
                         <td class="col-xs-4">
-                            <p>Yes</p>
+                            <p><c:out value="${insRepDto.rectifiedWithinKPI}"></c:out></p>
                         </td>
                         <td class="col-xs-4"></td>
                     </tr>

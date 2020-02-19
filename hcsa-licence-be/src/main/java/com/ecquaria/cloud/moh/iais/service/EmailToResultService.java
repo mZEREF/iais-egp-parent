@@ -12,4 +12,12 @@ public interface EmailToResultService {
     void sendRenewResultEmail() throws IOException, TemplateException;
 
     void sendEfcResultEmail() throws IOException, TemplateException;
+
+    void sendCessationFurtherDateEmail() throws IOException, TemplateException;
+
+    void sendCessationPresentDateEmail() throws IOException, TemplateException;
+
+    void sendCessationEffectiveDateEmail() throws IOException, TemplateException;
+
+    void sendCessationLicenceEndDateEmail() throws IOException, TemplateException;
 }

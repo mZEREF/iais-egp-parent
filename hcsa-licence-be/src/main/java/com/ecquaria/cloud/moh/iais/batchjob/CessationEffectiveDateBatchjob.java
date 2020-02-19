@@ -28,8 +28,11 @@ public class CessationEffectiveDateBatchjob {
     private ApplicationClient applicationClient;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
-    public void doBatchJob(BaseProcessClass bpc){
+
+    public void start(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("The CessationEffectiveDateBatchjob is start ..."));
+    }
+    public void doBatchJob(BaseProcessClass bpc){
         String type = "cessation";
         Date date = new Date();
         String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
@@ -72,7 +75,7 @@ public class CessationEffectiveDateBatchjob {
     private List<LicenceDto> updateLicenceStatus(List<LicenceDto> licenceDtos){
         List<LicenceDto> updateLicenceDtos = new ArrayList<>();
         for(LicenceDto licenceDto :licenceDtos){
-            licenceDto.setStatus("Iactive");
+            licenceDto.setStatus("ceased");
             updateLicenceDtos.add(licenceDto);
         }
         return updateLicenceDtos;

@@ -77,6 +77,8 @@ public class InsRepServiceImpl implements InsRepService {
     private TaskOrganizationClient taskOrganizationClient;
     @Autowired
     ApplicationService applicationService;
+    @Autowired
+    FillupChklistService fillupChklistService;
 
     private final String APPROVAL="Approval";
     private final String REJECT="Reject";
@@ -86,7 +88,7 @@ public class InsRepServiceImpl implements InsRepService {
         InspectionReportDto inspectionReportDto = new InspectionReportDto();
         //inspection report application dto
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
-        //get all the inspectors by the same groupId
+        String taskId = taskDto.getId();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appId = applicationDto.getId();
         String applicationNo = applicationDto.getApplicationNo();
@@ -148,7 +150,7 @@ public class InsRepServiceImpl implements InsRepService {
             subsumedServices.add(subsumedDto.getName());
         }
         inspectionReportDto.setSubsumedServices(subsumedServices);
-
+        //Nc
         List<ChecklistQuestionDto> listChecklistQuestionDtos = hcsaChklClient.getcheckListQuestionDtoList(svcCode, "Inspection").getEntity();
         List<ReportNcRegulationDto> listReportNcRegulationDto = new ArrayList<>();
         List<ReportNcRectifiedDto> listReportNcRectifiedDto = new ArrayList<>();
@@ -195,7 +197,18 @@ public class InsRepServiceImpl implements InsRepService {
         }else if(NcRecommendationDto!=null&&NcRecommendationDto.getRecomInDate()!=null) {
             inspectionReportDto.setMarkedForAudit(true);
         }
-
+        //checkList
+        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview("B3A5C76D-9C3A-EA11-BE7E-000C29F371DC","service");
+        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview("B3A5C76D-9C3A-EA11-BE7E-000C29F371DC","common");
+        InspectionFillCheckListDto commonDto = null;
+        if(commonList!=null && !commonList.isEmpty()){
+            commonDto = commonList.get(0);
+        }
+        InspectionFDtosDto subType = new InspectionFDtosDto();
+        subType.setFdtoList(cDtoList);
+        inspectionReportDto.setCommonCheckList(commonDto);
+        inspectionReportDto.setSubTypeCheckList(subType);
+        inspectionReportDto.setRectifiedWithinKPI("Yes");
         Date inspectionDate = null;
         Date inspectionStartTime = null;
         Date inspectionEndTime = null;
@@ -469,7 +482,7 @@ public class InsRepServiceImpl implements InsRepService {
         ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW);
         updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT);
         completedTask(taskDto);
-        String subStage = getSubStage(taskDto);
+        String subStage = getSubStage(applicationNo,taskKey);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
@@ -491,7 +504,7 @@ public class InsRepServiceImpl implements InsRepService {
         completedTask(taskDto);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
-        String subStage = getSubStage(taskDto);
+        String subStage = getSubStage(applicationNo,taskKey);
         createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId1, subStage);
         List<TaskDto> taskDtos = prepareTaskToAo2(taskDto, serviceId, applicationDto);
         taskService.createTasks(taskDtos);
@@ -507,12 +520,11 @@ public class InsRepServiceImpl implements InsRepService {
         String status = applicationDto.getStatus();
         String applicationNo = applicationDto.getApplicationNo();
         String taskKey = taskDto.getTaskKey();
-        String appId = applicationDto.getId();
         String stageId = taskDto.getTaskKey();
         ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION);
         updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
         completedTask(taskDto);
-        String subStage = getSubStage(taskDto);
+        String subStage = getSubStage(applicationNo,taskKey);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
         createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
@@ -621,8 +633,8 @@ public class InsRepServiceImpl implements InsRepService {
         return taskService.updateTask(taskDto);
     }
 
-    private String getSubStage(TaskDto taskDto) {
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(taskDto.getRefNo(), taskDto.getTaskKey()).getEntity();
+    private String getSubStage(String appNo,String stageId) {
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(appNo, stageId).getEntity();
         String subStage = appPremisesRoutingHistoryDto.getSubStage();
         if (subStage != null) {
             return subStage;

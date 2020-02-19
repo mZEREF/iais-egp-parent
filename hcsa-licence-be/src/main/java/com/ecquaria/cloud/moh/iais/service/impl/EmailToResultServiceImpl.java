@@ -3,22 +3,23 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.service.EmailToResultService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sop.util.DateUtil;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author weilu
@@ -32,12 +33,19 @@ public class EmailToResultServiceImpl implements EmailToResultService {
     private ApplicationClient applicationClient;
     @Autowired
     private SystemBeLicClient systemBeLicClient;
+    @Autowired
+    private HcsaLicenceClient hcsaLicenceClient;
 
 
     private final String SUCCESSMSGKEY = "SUCCESS";
     private final String FAILEDMSGKEY = "REJECT";
     private final String SUCCESSMSGTEMPLATEID = "08B58803-4F38-EA11-BE7E-000C29F371DC";
     private final String GETFAILEDMSGTEMPLATEID = "09B58803-4F38-EA11-BE7E-000C29F371DC";
+    private final String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
+    private final String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
+    private final String EFFECTIVEDATAEQUALDATA = "51AD8B3B-E652-EA11-BE7F-000C29F371DC";
+    private final String LICENCEENDDATE = "52AD8B3B-E652-EA11-BE7F-000C29F371DC";
+
 
     @Override
     public void sendRenewResultEmail() throws IOException, TemplateException {
@@ -105,6 +113,40 @@ public class EmailToResultServiceImpl implements EmailToResultService {
         }
     }
 
+    @Override
+    public void sendCessationFurtherDateEmail() throws IOException, TemplateException {
+
+        String status = "Approved";
+        Date date = new Date();
+        List<LicenceDto> licenceDtos = hcsaLicenceClient.listLicencesByStatus(status).getEntity();
+        if(licenceDtos!=null&&!licenceDtos.isEmpty()){
+            for(LicenceDto licenceDto :licenceDtos){
+                Date endDate = licenceDto.getEndDate();
+                if(endDate.after(date)){
+                    String svcName = licenceDto.getSvcName();
+                    String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
+                    prepareCessation(dateStr,FURTHERDATECESSATION,svcName);
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public void sendCessationPresentDateEmail() throws IOException, TemplateException {
+
+    }
+
+    @Override
+    public void sendCessationEffectiveDateEmail() throws IOException, TemplateException {
+
+    }
+
+    @Override
+    public void sendCessationLicenceEndDateEmail() throws IOException, TemplateException {
+
+    }
+
 
     private void prepareAndSendSuccessEmail(String appNo) throws IOException, TemplateException {
         //check email
@@ -145,6 +187,16 @@ public class EmailToResultServiceImpl implements EmailToResultService {
         Map<String,Object> map = new HashMap<>(34);
         map.put("applicationNo",appNo);
         MsgTemplateDto entity = msgTemplateClient.getMsgTemplate(GETFAILEDMSGTEMPLATEID).getEntity();
+        String messageContent = entity.getMessageContent();
+        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+        String s = templateMessageByContent;
+    }
+
+    private void prepareCessation(String date,String msgId,String serviceName) throws IOException, TemplateException {
+        Map<String,Object> map = new HashMap<>(34);
+        map.put("date",date);
+        map.put("licenceA",serviceName);
+        MsgTemplateDto entity = msgTemplateClient.getMsgTemplate(msgId).getEntity();
         String messageContent = entity.getMessageContent();
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
         String s = templateMessageByContent;

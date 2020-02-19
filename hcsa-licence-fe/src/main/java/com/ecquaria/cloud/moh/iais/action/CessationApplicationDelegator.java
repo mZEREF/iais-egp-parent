@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -64,34 +65,36 @@ public class CessationApplicationDelegator {
     public void valiant(BaseProcessClass bpc){
         List<AppCessationDto> appCessationDtos = prepareDataForValiant(bpc);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable)appCessationDtos);
-        String whichTodo = null;
-        for(AppCessationDto appCessationDto :appCessationDtos){
-            String todo = appCessationDto.getWhichTodo();
-            if(!StringUtil.isEmpty(todo)){
-                whichTodo =todo;
-            }
-
-
-        }
-        if(StringUtil.isEmpty(whichTodo)){
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-            return;
-        }
-        for(AppCessationDto appCessationDto :appCessationDtos){
-            if("on".equals(appCessationDto.getWhichTodo())){
-                Map<String, String> errorMap = new HashMap<>(34);
-                ValidationResult validationResult = WebValidationHelper.validateProperty(appCessationDto, "save");
-                if (validationResult.isHasErrors()) {
-                    errorMap = validationResult.retrieveAll();
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    return;
-                }
-            }
-        }
-
-        AppCessationDto appCessationConfirmDto = prepareDataForConfirm(bpc);
-        ParamUtil.setSessionAttr(bpc.request, "appCessationConfirmDto", appCessationConfirmDto);
+        AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
+        cessationService.saveCessations(appCessMiscDto,"7ECAE165-534A-EA11-BE7F-000C29F371DC");
+//        String whichTodo = null;
+//        for(AppCessationDto appCessationDto :appCessationDtos){
+//            String todo = appCessationDto.getWhichTodo();
+//            if(!StringUtil.isEmpty(todo)){
+//                whichTodo =todo;
+//            }
+//
+//
+//        }
+//        if(StringUtil.isEmpty(whichTodo)){
+//            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+//            return;
+//        }
+//        for(AppCessationDto appCessationDto :appCessationDtos){
+//            if("on".equals(appCessationDto.getWhichTodo())){
+//                Map<String, String> errorMap = new HashMap<>(34);
+//                ValidationResult validationResult = WebValidationHelper.validateProperty(appCessationDto, "save");
+//                if (validationResult.isHasErrors()) {
+//                    errorMap = validationResult.retrieveAll();
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+//                    return;
+//                }
+//            }
+//        }
+//
+//        AppCessationDto appCessationConfirmDto = prepareDataForConfirm(bpc);
+//        ParamUtil.setSessionAttr(bpc.request, "appCessationConfirmDto", appCessationConfirmDto);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
 
 
@@ -109,6 +112,12 @@ public class CessationApplicationDelegator {
 
     public void saveData(BaseProcessClass bpc){
         AppCessationDto appCessationDto = (AppCessationDto)ParamUtil.getSessionAttr(bpc.request, "appCessationConfirmDto");
+        Date effectiveDate = appCessationDto.getEffectiveDate();
+        String cessationReason = appCessationDto.getCessationReason();
+        String otherReason = appCessationDto.getOtherReason();
+        String patientSelect = appCessationDto.getPatientSelect();
+        AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
+        cessationService.saveCessations(appCessMiscDto,"7ECAE165-534A-EA11-BE7F-000C29F371DC");
     }
 
 

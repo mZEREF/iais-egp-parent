@@ -239,7 +239,7 @@
                                                     </td>
                                                     <td>
                                                         <div class="col-sm-9">
-                                                            <p><textarea name="remarks" cols="90" rows="6" maxlength="8000" title="content"></textarea></p>
+                                                            <p><textarea name="remarks" cols="50" rows="6" maxlength="8000" title="content"></textarea></p>
                                                         </div>
                                                     </td>
                                                 </tr>

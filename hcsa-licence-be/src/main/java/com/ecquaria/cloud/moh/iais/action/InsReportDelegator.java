@@ -53,8 +53,7 @@ public class InsReportDelegator {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     private ApplicationViewService applicationViewService;
-    @Autowired
-    FillupChklistService fillupChklistService;
+
 
     private final String RECOMMENDATION_DTO = "appPremisesRecommendationDto";
     private final String RECOMMENDATION = "recommendation";
@@ -76,18 +75,6 @@ public class InsReportDelegator {
         if (StringUtil.isEmpty(taskId)) {
             taskId = "F2733132-A137-EA11-BE7E-000C29F371DC";
         }
-        //checkList
-        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview("B3A5C76D-9C3A-EA11-BE7E-000C29F371DC","service");
-        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview("B3A5C76D-9C3A-EA11-BE7E-000C29F371DC","common");
-        InspectionFillCheckListDto commonDto = null;
-        if(commonList!=null && !commonList.isEmpty()){
-            commonDto = commonList.get(0);
-        }
-        InspectionFDtosDto serListDto = new InspectionFDtosDto();
-        serListDto.setFdtoList(cDtoList);
-        ParamUtil.setSessionAttr(bpc.request,"commonDto",commonDto);
-        ParamUtil.setSessionAttr(bpc.request,"serListDto",serListDto);
-
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(correlationId);
