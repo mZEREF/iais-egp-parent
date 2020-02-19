@@ -41,13 +41,16 @@ public class AppealApproveBatchjob {
     @Autowired
     private AppealService appealService;
     public void doBatchJob(BaseProcessClass bpc) throws Exception {
-        log.debug(StringUtil.changeForLog("The AppealApproveBatchjob is start ..."));
+        log.info(StringUtil.changeForLog("The AppealApproveBatchjob is start ..."));
         List<AppealApproveGroupDto> appealApproveGroupDtos = appealService.getAppealApproveDtos();
         if(!IaisCommonUtils.isEmpty(appealApproveGroupDtos)){
+          log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealApproveGroupDtos length is -->:"+appealApproveGroupDtos.size()));
           for (AppealApproveGroupDto appealApproveGroupDto :appealApproveGroupDtos ){
               ApplicationGroupDto applicationGroupDto = appealApproveGroupDto.getApplicationGroupDto();
               List<AppealApproveDto> appealApproveDtos = appealApproveGroupDto.getAppealApproveDtoList();
               if(!IaisCommonUtils.isEmpty(appealApproveDtos)&&applicationGroupDto!=null){
+                  log.info(StringUtil.changeForLog("The AppealApproveBatchjob group no is -->"+applicationGroupDto.getGroupNo()));
+                  log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealApproveDtos.size() is -->"+appealApproveDtos.size()));
                   List<ApplicationDto> appealApplicaiton = new ArrayList();
                   List<ApplicationDto> rollBackApplication = new ArrayList<>();
                   List<LicenceDto> appealLicence = new ArrayList<>();
@@ -64,7 +67,9 @@ public class AppealApproveBatchjob {
                       ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
                       AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
                       if(applicationDto!= null && appealDto != null){
+                          log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationDto no is -->"+applicationDto.getApplicationNo()));
                           String  appealType = appealDto.getAppealType();
+                          log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealType  is -->"+appealType));
                           switch(appealType){
                               case ApplicationConsts.APPEAL_TYPE_APPLICAITON :
                                   appealApplicaiton(appealApplicaiton,rollBackApplication,appealPersonnel,rollBackPersonnel,
@@ -113,8 +118,10 @@ public class AppealApproveBatchjob {
                   appealService.createAppealApplicationDto(appealApplicationDto);
               }
           }
+        }else{
+            log.info(StringUtil.changeForLog("appealApproveGroupDtos is empty"));
         }
-        log.debug(StringUtil.changeForLog("The AppealApproveBatchjob is end ..."));
+        log.info(StringUtil.changeForLog("The AppealApproveBatchjob is end ..."));
     }
     private void appealApplicaiton(List<ApplicationDto> appealApplicaiton,
                                    List<ApplicationDto> rollBackApplication,
@@ -127,6 +134,7 @@ public class AppealApproveBatchjob {
                                    List<ApplicationGroupDto> appealApplicationGroupDtos,
                                    List<ApplicationGroupDto> rollBackApplicationGroupDtos,
                                    AppealApproveDto appealApproveDto) throws Exception {
+        log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealApplicaiton is start ..."));
         ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
         AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
         if(applicationDto!= null && appealDto != null){
@@ -148,6 +156,7 @@ public class AppealApproveBatchjob {
                     break;
             }
         }
+        log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealApplicaiton is end ..."));
     }
     private void applicationRejection(List<ApplicationDto> appealApplicaiton,
                                       List<ApplicationDto> rollBackApplication,
@@ -156,6 +165,7 @@ public class AppealApproveBatchjob {
                                       List<ApplicationGroupDto> appealApplicationGroupDtos,
                                       List<ApplicationGroupDto> rollBackApplicationGroupDtos,
                                       AppealApproveDto appealApproveDto) throws Exception {
+        log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationRejection is start ..."));
         ApplicationGroupDto applicationGroupDto = appealApproveDto.getAppealApplicationGroupDto();
         ApplicationDto appealApplicationDto = appealApproveDto.getAppealApplicationDto();
         AppPremisesRecommendationDto appPremisesRecommendationDto = appealApproveDto.getAppPremisesRecommendationDto();
@@ -185,7 +195,7 @@ public class AppealApproveBatchjob {
            log.error(StringUtil.changeForLog("This Applicaiton  can not get the ApplicationGroupDto "+ appealApproveDto.getApplicationDto().getApplicationNo()));
         }
 
-
+        log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationRejection is end ..."));
     }
     private void applicationLateRenewFee(){
      // do not need to do.
@@ -193,6 +203,7 @@ public class AppealApproveBatchjob {
     private void applicationAddCGO(List<AppSvcKeyPersonnelDto> appealPersonnel,
                                    List<AppSvcKeyPersonnelDto> rollBackPersonnel,
                                    AppealApproveDto appealApproveDto) throws Exception {
+        log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationAddCGO is start ..."));
         AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
         ApplicationDto appealApplication = appealApproveDto.getAppealApplicationDto();
         if(appealDto!=null&&appealApplication!=null){
@@ -207,10 +218,12 @@ public class AppealApproveBatchjob {
                 }
             }
         }
+        log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationAddCGO is end ..."));
     }
     private void applicationChangeHciName(List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,
                                           List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,
                                           AppealApproveDto appealApproveDto) throws Exception {
+        log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is start ..."));
         AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
         AppGrpPremisesEntityDto appGrpPremisesDto = appealApproveDto.getAppGrpPremisesEntityDto();
         if(appealDto!=null&&appGrpPremisesDto!=null){
@@ -223,11 +236,12 @@ public class AppealApproveBatchjob {
                appealAppGrpPremisesDto.add(appGrpPremisesDto1);
            }
         }
-
+        log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is end ..."));
     }
     private void appealLicence(List<LicenceDto> appealLicence,
                                List<LicenceDto> rollBackLicence,
                                LicenceDto licenceDto,int newLicYears) throws Exception {
+        log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence is start ..."));
         if(licenceDto!=null && newLicYears >0){
             rollBackLicence.add(licenceDto);
             LicenceDto appealLicenceDto = (LicenceDto) CopyUtil.copyMutableObject(licenceDto);
@@ -236,16 +250,18 @@ public class AppealApproveBatchjob {
             appealLicenceDto.setExpiryDate(expiryDate);
             appealLicence.add(appealLicenceDto);
         }
-
+        log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence is end ..."));
     }
     private void appealOther(List<ApplicationDto> appealApplicaiton,
                              List<ApplicationDto> rollBackApplication,
                              ApplicationDto applicationDto) throws Exception {
+        log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealOther is start ..."));
         if(applicationDto!=null){
             rollBackApplication.add(applicationDto);
             ApplicationDto appealApplicaitonDto = (ApplicationDto) CopyUtil.copyMutableObject(applicationDto);
             appealApplicaitonDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPEAL_ACTIVE);
             appealApplicaiton.add(appealApplicaitonDto);
         }
+        log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealOther is end ..."));
     }
 }
