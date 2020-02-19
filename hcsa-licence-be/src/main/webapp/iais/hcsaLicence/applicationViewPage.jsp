@@ -480,7 +480,7 @@
                                                                 style="color: red">*</span><span>):</span></span>
                                                         </td>
                                                         <td>
-                                                            <select name="nextStage" class="table-select">
+                                                            <select name="nextStage" class="table-select processing-Decision">
                                                                 <option>---select---</option>
                                                                 <option value="VERIFIED">Verified</option>
                                                                 <option value="ROLLBACK">Roll back</option>
@@ -493,10 +493,9 @@
                                                                 style="color: red">*</span><span>):</span></span>
                                                         </td>
                                                         <td>
-                                                            <select name="nextStageReply" class="table-select">
+                                                            <select name="nextStageReply" class="table-select processing-Decision">
                                                                 <option>---select---</option>
-                                                                <option value="PROCREP">Reply</option>
-                                                                <option value="PROCREJ">Reject</option>
+                                                                <option value="PROCREP">Give Clarification</option>
                                                             </select>
                                                         </td>
                                                     </tr>
@@ -515,7 +514,7 @@
                                                     </tr>
                                                     <tr id="rollBackDropdown" class="hidden">
                                                         <td>
-                                                            <span>Roll Back:</span>
+                                                            <span>Roll Back</span>
                                                         </td>
                                                         <td>
                                                             <select name="rollBack" class="table-select">
@@ -539,11 +538,11 @@
                                                             <span>Recommendation:</span>
                                                         </td>
                                                         <td>
-                                                            <select name="recomedation" class="table-select">
+                                                            <select name="recomedation" class="table-select recomedation-type">
                                                                 <option>---select---</option>
-                                                                <c:forEach items="${applicationViewDto.recomeDation}" var="recomedation">
-                                                                    <option><c:out value="${recomedation}"></c:out></option>
-                                                                </c:forEach>
+                                                                   <c:forEach items="${applicationViewDto.recomeDation}" var="recomedation">
+                                                                       <option><c:out value="${recomedation}"></c:out></option>
+                                                                   </c:forEach>
                                                                 <option>reject</option>
                                                             </select>
                                                         </td>
@@ -554,7 +553,7 @@
                                                         Submit
                                                     </button>
                                                 </div>
-                                                <div>&nbsp;</div>
+                                                <div>&nbsp</div>
                                             </div>
                                         </div>
                                     </div>
@@ -630,10 +629,11 @@
             $('#recomedationDropdown').addClass('hidden');
             $('#replytr').removeClass('hidden');
             $('#lienceStartDate').addClass('hidden');
-        //    $("[name='nextStageReply']").addClass('required');
         }
-      //  $("[name='nextStage']").addClass('required');
     });
+
+
+
 
     $("#submitButton").click(function () {
         var textarea = $("#internalRemarksId").val();
@@ -642,16 +642,19 @@
             $("#internalRemarksId").after("<span id='notNull' style='color: red;'>*NOT NULL!</span>");
             return false;
         }
+
         if('${applicationViewDto.applicationDto.status}' == 'APST000'){
             var nextStageReply= $("[name='nextStageReply']").val();
             if(nextStageReply == "---select---"){
                 $('#NSRnotNull').remove();
                 $("[name='nextStageReply']").after("<span id='NSRnotNull' style='color: red;'>*PLEASE SELECT!</span>");
                 return false;
+            }else{
+                document.getElementById("mainForm").submit();
             }
         }
-        var selectValue = $("[name='nextStage']").val();
 
+        var selectValue = $("[name='nextStage']").val();
         if(selectValue == "---select---"){
             $('#NSnotNull').remove();
             $("[name='nextStage']").after("<span id='NSnotNull' style='color: red;'>*PLEASE SELECT!</span>");
@@ -672,23 +675,20 @@
                 return false;
             }
         }
-
-
-
         document.getElementById("mainForm").submit();
         $("#submitButton").attr("disabled",true);
     });
+
+
+
+
 
     $("[name='nextStage']").change(function selectChange() {
         var selectValue = $("[name='nextStage']").val();
         if (selectValue == "VERIFIED") {
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
-      //      $("[name='verified']").addClass('required');
-     //       $("[name='rollBack']").removeClass('required');
         }else if(selectValue == "ROLLBACK"){
-     //       $("[name='rollBack']").addClass('required');
-     //       $("[name='verified']").removeClass('required');
             $('#rollBackDropdown').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
         }else{
