@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -199,5 +200,5 @@ public interface ApplicationClient  {
     FeignResponseEntity <AppPremiseMiscDto>getAppPremisesMisc(@RequestParam("correId") String correId);
 
     @GetMapping(value = "/appeal/application-group-peronnel-by-grp-id",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppGrpPersonnelDto>> getAppGrpPersonnelByGrpId(@RequestParam("grpId") String grpId);
+    FeignResponseEntity<List<AppSvcCgoDto>> getAppGrpPersonnelByGrpId(@RequestParam("grpId") String grpId);
 }
