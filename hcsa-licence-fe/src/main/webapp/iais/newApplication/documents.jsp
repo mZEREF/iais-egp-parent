@@ -92,7 +92,7 @@
                               </span>
                             </c:when>
                             <c:otherwise>
-                              <span class="delBtn <c:if test="${!canEdit}">hidden</c:if>">
+                              <span class="existFile delBtn <c:if test="${!isClickEdit}">hidden</c:if>">
                                 &nbsp;&nbsp;<button type="button" class="">Delete</button>
                               </span>
                             </c:otherwise>
@@ -168,7 +168,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        if(${AppSubmissionDto.needEditController && AppSubmissionDto.appEditSelectDto.docEdit && !isClickEdit}){
+        if(${AppSubmissionDto.needEditController && !isClickEdit}){
             disabledPage();
         }
         
@@ -212,6 +212,8 @@
             $('#edit-content').addClass('hidden');
             $('#isEditHiddenVal').val('1');
             $('input[type="file"]').prop('disabled',false);
+            $('.existFile').removeClass('hidden');
+            $('.existFile').removeClass('existFile');
         });
     }
 

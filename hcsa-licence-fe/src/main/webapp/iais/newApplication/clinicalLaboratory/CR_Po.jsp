@@ -20,7 +20,7 @@
                 <div class="row"></div>
               </div>
               <div class="po-content">
-                <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType}">
+                <c:if test="${AppSubmissionDto.needEditController}">
                   <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
                     <c:if test="${'APPSPN04' == clickEditPage}">
                       <c:set var="isClickEdit" value="true"/>
@@ -207,7 +207,7 @@
                   <br/>
                   <br/>
                 </div>
-                  <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType}">
+                  <c:if test="${AppSubmissionDto.needEditController }">
                     <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
                       <c:if test="${'APPSPN05' == clickEditPage}">
                         <c:set var="isClickEditDpo" value="true"/>

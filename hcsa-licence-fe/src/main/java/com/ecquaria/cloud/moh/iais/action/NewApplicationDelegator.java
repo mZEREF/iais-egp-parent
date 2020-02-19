@@ -919,118 +919,120 @@ public class NewApplicationDelegator {
 
     private boolean compareAndSendEmail(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto){
         boolean isAuto = true;
-        List<String> amendType = appSubmissionDto.getAmendTypes();
-        if(amendType.contains(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION)){
-            if(!appSubmissionDto.getAppGrpPremisesDtoList().equals(oldAppSubmissionDto)){
-                isAuto =  compareHciName(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
-                if(isAuto){
-                    isAuto = compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
-                }
-                //send eamil
 
-            }
-        }
+        AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
+        if(appEditSelectDto != null ){
+            if(appEditSelectDto.isPremisesEdit()){
+                if(!appSubmissionDto.getAppGrpPremisesDtoList().equals(oldAppSubmissionDto)){
+                    isAuto =  compareHciName(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
+                    if(isAuto){
+                        isAuto = compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
+                    }
+                    //send eamil
 
-        if(amendType.contains(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_MEDALERT_PERSONNEL)){
-            //todo:
-        }
-        //one svc
-        AppSvcRelatedInfoDto appSvcRelatedInfoDtoList = getAppSvcRelatedInfoDto(appSubmissionDto.getAppSvcRelatedInfoDtoList());
-        AppSvcRelatedInfoDto oldAppSvcRelatedInfoDtoList = getAppSvcRelatedInfoDto(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
-        if(amendType.contains(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PRINCIPAL_OFFICER )||
-                amendType.contains(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_DEPUTY_PRINCIPAL_OFFICER)){
-            //remove
-            List<AppSvcPrincipalOfficersDto> newAppSvcPrincipalOfficersDto  = appSvcRelatedInfoDtoList.getAppSvcPrincipalOfficersDtoList();
-            List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDto = oldAppSvcRelatedInfoDtoList.getAppSvcPrincipalOfficersDtoList();
-            if(newAppSvcPrincipalOfficersDto.size() > oldAppSvcPrincipalOfficersDto.size()){
-                isAuto = false;
-                //send eamil
-            }
-            //change
-            List<String> newPoIdNos = new ArrayList<>();
-            List<String> oldPoIdNos = new ArrayList<>();
-            List<String> newDpoIdNos = new ArrayList<>();
-            List<String> olddDpoIdNos = new ArrayList<>();
-
-            for(AppSvcPrincipalOfficersDto item:newAppSvcPrincipalOfficersDto){
-                if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(item.getPsnType())){
-                    newPoIdNos.add(item.getIdNo());
-                }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(item.getPsnType())){
-                    newDpoIdNos.add(item.getIdNo());
                 }
             }
-            for(AppSvcPrincipalOfficersDto item:oldAppSvcPrincipalOfficersDto){
-                if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(item.getPsnType())){
-                    oldPoIdNos.add(item.getIdNo());
-                }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(item.getPsnType())){
-                    olddDpoIdNos.add(item.getIdNo());
+
+            if(appEditSelectDto.isMedAlertEdit()){
+                //todo:
+            }
+            //one svc
+            AppSvcRelatedInfoDto appSvcRelatedInfoDtoList = getAppSvcRelatedInfoDto(appSubmissionDto.getAppSvcRelatedInfoDtoList());
+            AppSvcRelatedInfoDto oldAppSvcRelatedInfoDtoList = getAppSvcRelatedInfoDto(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
+            if(appEditSelectDto.isPoEdit() || appEditSelectDto.isDpoEdit() || appEditSelectDto.isServiceEdit()){
+                //remove
+                List<AppSvcPrincipalOfficersDto> newAppSvcPrincipalOfficersDto  = appSvcRelatedInfoDtoList.getAppSvcPrincipalOfficersDtoList();
+                List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDto = oldAppSvcRelatedInfoDtoList.getAppSvcPrincipalOfficersDtoList();
+                if(newAppSvcPrincipalOfficersDto.size() > oldAppSvcPrincipalOfficersDto.size()){
+                    isAuto = false;
+                    //send eamil
+                }
+                //change
+                List<String> newPoIdNos = new ArrayList<>();
+                List<String> oldPoIdNos = new ArrayList<>();
+                List<String> newDpoIdNos = new ArrayList<>();
+                List<String> olddDpoIdNos = new ArrayList<>();
+
+                for(AppSvcPrincipalOfficersDto item:newAppSvcPrincipalOfficersDto){
+                    if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(item.getPsnType())){
+                        newPoIdNos.add(item.getIdNo());
+                    }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(item.getPsnType())){
+                        newDpoIdNos.add(item.getIdNo());
+                    }
+                }
+                for(AppSvcPrincipalOfficersDto item:oldAppSvcPrincipalOfficersDto){
+                    if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(item.getPsnType())){
+                        oldPoIdNos.add(item.getIdNo());
+                    }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(item.getPsnType())){
+                        olddDpoIdNos.add(item.getIdNo());
+                    }
+                }
+                if(!newPoIdNos.equals(oldPoIdNos)){
+                    isAuto = false;
+                }
+                if(!newDpoIdNos.equals(olddDpoIdNos)){
+                    isAuto = false;
                 }
             }
-            if(!newPoIdNos.equals(oldPoIdNos)){
-                isAuto = false;
+
+            if(appEditSelectDto.isServiceEdit()){
+                List<AppSvcCgoDto> newAppSvcCgoDto =  appSvcRelatedInfoDtoList.getAppSvcCgoDtoList();
+                List<AppSvcCgoDto> oldAppSvcCgoDto =  oldAppSvcRelatedInfoDtoList.getAppSvcCgoDtoList();
+                List<String> newCgoIdNos = new ArrayList<>();
+                List<String> oldCgoIdNos = new ArrayList<>();
+                if(!IaisCommonUtils.isEmpty(newAppSvcCgoDto) && !IaisCommonUtils.isEmpty(oldAppSvcCgoDto)){
+                    for(AppSvcCgoDto item:newAppSvcCgoDto){
+                        newCgoIdNos.add(item.getIdNo());
+                    }
+                    for(AppSvcCgoDto item:oldAppSvcCgoDto){
+                        oldCgoIdNos.add(item.getIdNo());
+                    }
+                    if(!newCgoIdNos.equals(oldCgoIdNos)){
+                        isAuto = false;
+                    }
+
+                }
+
+                List<AppSvcLaboratoryDisciplinesDto> newDisciplinesDto = appSvcRelatedInfoDtoList.getAppSvcLaboratoryDisciplinesDtoList();
+                List<AppSvcLaboratoryDisciplinesDto> oldDisciplinesDto = oldAppSvcRelatedInfoDtoList.getAppSvcLaboratoryDisciplinesDtoList();
+
+                if(!IaisCommonUtils.isEmpty(newDisciplinesDto) && !IaisCommonUtils.isEmpty(oldDisciplinesDto)){
+                    for(AppSvcLaboratoryDisciplinesDto item:newDisciplinesDto){
+                        String hciName = item.getPremiseVal();
+                        AppSvcLaboratoryDisciplinesDto oldAppSvcLaboratoryDisciplinesDto = getDisciplinesDto(oldDisciplinesDto,hciName);
+                        List<AppSvcChckListDto> newCheckList =  item.getAppSvcChckListDtoList();
+                        List<AppSvcChckListDto> oldCheckList = oldAppSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+                        if(!IaisCommonUtils.isEmpty(newCheckList) && !IaisCommonUtils.isEmpty(oldCheckList)){
+                            List<String> newCheckListIds = new ArrayList<>();
+                            List<String> oldCheckListIds = new ArrayList<>();
+                            for(AppSvcChckListDto checBox:oldCheckList){
+                                oldCheckListIds.add(checBox.getChkLstConfId());
+                            }
+                            for(AppSvcChckListDto checBox:newCheckList){
+                                if(!oldCheckListIds.contains(checBox.getChkLstConfId())){
+                                    isAuto = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if(!newDisciplinesDto.equals(oldDisciplinesDto)){
+
+                    }
+
+                }
+
+
             }
-            if(!newDpoIdNos.equals(olddDpoIdNos)){
-                isAuto = false;
-            }
-        }
 
-        if(amendType.contains(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION)){
-            List<AppSvcCgoDto> newAppSvcCgoDto =  appSvcRelatedInfoDtoList.getAppSvcCgoDtoList();
-            List<AppSvcCgoDto> oldAppSvcCgoDto =  oldAppSvcRelatedInfoDtoList.getAppSvcCgoDtoList();
-            List<String> newCgoIdNos = new ArrayList<>();
-            List<String> oldCgoIdNos = new ArrayList<>();
-           if(!IaisCommonUtils.isEmpty(newAppSvcCgoDto) && !IaisCommonUtils.isEmpty(oldAppSvcCgoDto)){
-               for(AppSvcCgoDto item:newAppSvcCgoDto){
-                   newCgoIdNos.add(item.getIdNo());
-               }
-               for(AppSvcCgoDto item:oldAppSvcCgoDto){
-                   oldCgoIdNos.add(item.getIdNo());
-               }
-               if(!newCgoIdNos.equals(oldCgoIdNos)){
-                   isAuto = false;
-               }
-
-           }
-
-           List<AppSvcLaboratoryDisciplinesDto> newDisciplinesDto = appSvcRelatedInfoDtoList.getAppSvcLaboratoryDisciplinesDtoList();
-           List<AppSvcLaboratoryDisciplinesDto> oldDisciplinesDto = oldAppSvcRelatedInfoDtoList.getAppSvcLaboratoryDisciplinesDtoList();
-
-           if(!IaisCommonUtils.isEmpty(newDisciplinesDto) && !IaisCommonUtils.isEmpty(oldDisciplinesDto)){
-               for(AppSvcLaboratoryDisciplinesDto item:newDisciplinesDto){
-                   String hciName = item.getPremiseVal();
-                   AppSvcLaboratoryDisciplinesDto oldAppSvcLaboratoryDisciplinesDto = getDisciplinesDto(oldDisciplinesDto,hciName);
-                   List<AppSvcChckListDto> newCheckList =  item.getAppSvcChckListDtoList();
-                   List<AppSvcChckListDto> oldCheckList = oldAppSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
-                   if(!IaisCommonUtils.isEmpty(newCheckList) && !IaisCommonUtils.isEmpty(oldCheckList)){
-                       List<String> newCheckListIds = new ArrayList<>();
-                       List<String> oldCheckListIds = new ArrayList<>();
-                       for(AppSvcChckListDto checBox:oldCheckList){
-                           oldCheckListIds.add(checBox.getChkLstConfId());
-                       }
-                       for(AppSvcChckListDto checBox:newCheckList){
-                           if(!oldCheckListIds.contains(checBox.getChkLstConfId())){
-                               isAuto = false;
-                               break;
-                           }
-                       }
-                   }
-               }
-               if(!newDisciplinesDto.equals(oldDisciplinesDto)){
-
-               }
-
-           }
-
-
-        }
-
-        if(amendType.contains(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT)){
+            if(appEditSelectDto.isDocEdit()){
             /*if(!appSubmissionDto.getAppGrpPrimaryDocDtos().equals(oldAppSubmissionDto.getAppGrpPrimaryDocDtos()) ||
                     !appSvcRelatedInfoDtoList.getAppSvcDocDtoLit().equals(oldAppSvcRelatedInfoDtoList.getAppSvcDocDtoLit())){
                 //send eamil
 
             }*/
 
+            }
         }
 
         return isAuto;

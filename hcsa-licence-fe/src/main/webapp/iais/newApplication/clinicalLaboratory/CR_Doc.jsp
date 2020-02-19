@@ -79,7 +79,7 @@
 </c:forEach>
 <script>
     $(document).ready(function() {
-        if(${AppSubmissionDto.needEditController && AppSubmissionDto.appEditSelectDto.docEdit && !isClickEdit}){
+        if(${AppSubmissionDto.needEditController && !isClickEdit}){
             disabledPage();
         }
 

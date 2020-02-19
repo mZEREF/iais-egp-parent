@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,13 +63,17 @@ public class RequestForChangeMenuDelegator {
      * @param bpc
      * @Decription start
      */
-    public void start(BaseProcessClass bpc){
+    public void start(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do start start ...."));
-        ParamUtil.setSessionAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,null);
-        ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
 
-        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+        ParamUtil.setSessionAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,null);
+        ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
+        ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
+        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG,null);
+
+        requestForInformation(bpc);
+
         log.debug(StringUtil.changeForLog("the do start end ...."));
     }
 
@@ -99,6 +104,13 @@ public class RequestForChangeMenuDelegator {
             action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
             if(StringUtil.isEmpty(action)){
                 action = "prePremisesList";
+            }
+        }
+        Object rfi = ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
+        if(rfi != null){
+            action = "prePremisesEdit";
+            if("prePremisesList".equals(action)){
+                action = "prePremisesEdit";
             }
         }
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,action);
@@ -165,19 +177,25 @@ public class RequestForChangeMenuDelegator {
 
         List<AppGrpPremisesDto> reloadPremisesDtoList = new ArrayList<>();
         AppGrpPremisesDto appGrpPremisesDto = null;
+        Object rfi = ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         if(appSubmissionDto != null){
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList) && premisesListQueryDto != null) {
-                String premType = premisesListQueryDto.getPremisesType();
-                String premHciOrConvName = "";
-                if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)) {
-                    premHciOrConvName = premisesListQueryDto.getHciName();
-                } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)) {
-                    premHciOrConvName = premisesListQueryDto.getVehicleNo();
+            if(rfi == null){
+                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+                if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList) && premisesListQueryDto != null) {
+                    String premType = premisesListQueryDto.getPremisesType();
+                    String premHciOrConvName = "";
+                    if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)) {
+                        premHciOrConvName = premisesListQueryDto.getHciName();
+                    } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)) {
+                        premHciOrConvName = premisesListQueryDto.getVehicleNo();
+                    }
+                    appGrpPremisesDto = getAppGrpPremisesDtoFromAppGrpPremisesDtoList(appGrpPremisesDtoList, premType, premHciOrConvName);
+                    reloadPremisesDtoList.add(appGrpPremisesDto);
                 }
-                appGrpPremisesDto = getAppGrpPremisesDtoFromAppGrpPremisesDtoList(appGrpPremisesDtoList, premType, premHciOrConvName);
-                reloadPremisesDtoList.add(appGrpPremisesDto);
+            }else{
+                reloadPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             }
+
         }
         ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, reloadPremisesDtoList);
 
@@ -317,6 +335,9 @@ public class RequestForChangeMenuDelegator {
         licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_REQUEST_FOR_CHANGE);
         requestForChangeService.upDateLicStatus(licenceDto);
 
+        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+        appEditSelectDto.setPremisesListEdit(true);
+        appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         //save data
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
@@ -880,6 +901,20 @@ public class RequestForChangeMenuDelegator {
 
         }
         return appSubmissionDto;
+    }
+
+    private void requestForInformation(BaseProcessClass bpc) throws CloneNotSupportedException {
+        log.debug(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
+        String appNo = ParamUtil.getString(bpc.request,"appNo");
+        if(!StringUtil.isEmpty(appNo)){
+            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
+            appSubmissionDto.setNeedEditController(true);
+            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request,RfcConst.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG,"test");
+        }
+        log.debug(StringUtil.changeForLog("the do requestForInformationLoading end ...."));
     }
 
 }

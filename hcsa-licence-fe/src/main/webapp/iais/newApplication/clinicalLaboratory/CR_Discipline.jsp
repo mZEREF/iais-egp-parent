@@ -1,8 +1,6 @@
 
-<c:if test="${'APTY002' ==AppSubmissionDto.appType}">
-  <c:set var="isClickEdit" value="true"/>
-</c:if>
-<c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType}">
+
+<c:if test="${AppSubmissionDto.needEditController}">
   <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
     <c:if test="${'APPSPN01' == clickEditPage}">
       <c:set var="isClickEdit" value="true"/>
@@ -42,7 +40,7 @@
       <c:set value="${appGrpPremisesDto.conveyanceVehicleNo}" var="premIndexNo"/>
     </c:when>
   </c:choose>
-  <fieldset id="fieldset-content" <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) &&'true' != isClickEdit}">disabled</c:if> >
+  <fieldset id="fieldset-content" <c:if test="${AppSubmissionDto.needEditController && !isClickEdit}">disabled</c:if> >
   <p>Please select the service disciplines you would like to apply at your premises${status.index+1}.</p>
   <span class="error-msg" name="iaisErrorMsg" id="error_checkError"></span>
 <div class="wrapper">

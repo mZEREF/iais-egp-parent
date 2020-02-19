@@ -23,6 +23,8 @@ public class RfcConst {
     public static final String PREMISESLISTQUERYDTO = "PremisesListQueryDto";
 
     public static final String APPSUBMISSIONDTO =  "AppSubmissionDto";
+    public static final String OLDAPPSUBMISSIONDTO =  "OldAppSubmissionDto";
+
 
     public static final String PERSONNELLISTMAP = "PersonnelListMap";
     public static final String PERSONNELEDITLIST = "PersonnelEditList";

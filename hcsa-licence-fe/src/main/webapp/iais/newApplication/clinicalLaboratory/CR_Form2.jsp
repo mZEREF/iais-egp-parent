@@ -25,7 +25,7 @@
             <div id="control--runtime--1" class="section control  container-s-1">
                 <div class="control-set-font control-font-header section-header">
                   
-                  <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType}">
+                  <c:if test="${AppSubmissionDto.needEditController }">
                     <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
                       <c:if test="${'APPSPN02' == clickEditPage}">
                         <c:set var="isClickEdit" value="true"/>
@@ -71,7 +71,7 @@
                   <tr height="1">
                     <td class="first last" style="width: 100%;">
                       <c:choose>
-                        <c:when test="${'APTY005' ==AppSubmissionDto.appType }">
+                        <c:when test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType }">
                           <div id="control--runtime--2" class="control control-caption-horizontal">
                             <c:if test="${currentCgo != null}">
                               <div class=" form-group form-horizontal formgap">
@@ -437,7 +437,7 @@
         showSpecialty();
         
          
-        if(('APTY005' == '${AppSubmissionDto.appType}' || 'APTY004' =='${AppSubmissionDto.appType}') && 'true' != '${isClickEdit}'){
+        if(${AppSubmissionDto.needEditController && !isClickEdit}){
             disabledAll();
             //nice-select
             $('div.nice-select').addClass('disabled');
