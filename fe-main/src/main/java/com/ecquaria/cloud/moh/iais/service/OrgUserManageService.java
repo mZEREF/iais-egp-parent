@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 
 public interface OrgUserManageService {
@@ -17,4 +18,5 @@ public interface OrgUserManageService {
     FeUserDto getUserAccount(String userId);
     FeUserDto editUserAccount(FeUserDto feUserDto);
     String ChangeActiveStatus(String userId, String targetStatus);
+    OrgUserRoleDto addUserRole(OrgUserRoleDto orgUserRoleDto);
 }

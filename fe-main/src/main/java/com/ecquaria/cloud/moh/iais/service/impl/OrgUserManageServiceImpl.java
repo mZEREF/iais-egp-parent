@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.FeAdminClient;
@@ -55,5 +56,10 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public String ChangeActiveStatus(String userId, String targetStatus){
         return feAdminClient.ChangeActiveStatus(userId,targetStatus).getEntity();
+    }
+
+    @Override
+    public OrgUserRoleDto addUserRole(OrgUserRoleDto orgUserRoleDto){
+        return feUserClient.addUserRole(orgUserRoleDto).getEntity();
     }
 }
