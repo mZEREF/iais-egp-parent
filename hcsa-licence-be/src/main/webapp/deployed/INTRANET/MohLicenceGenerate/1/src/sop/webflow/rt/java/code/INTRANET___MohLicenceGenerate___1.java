@@ -14,7 +14,7 @@ import com.ecquaria.cloud.helper.EngineHelper;
 
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTRANET___LicenceGenerate___1 extends BaseProcessClass {
+public class INTRANET___MohLicenceGenerate___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="licenceApproveBatchjob";
 
 	public void doJob_OnStepProcess_0() throws Exception {
