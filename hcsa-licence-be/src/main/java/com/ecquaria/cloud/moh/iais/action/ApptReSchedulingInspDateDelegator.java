@@ -84,7 +84,7 @@ public class ApptReSchedulingInspDateDelegator {
             apptInspectionDateDto = new ApptInspectionDateDto();
             apptInspectionDateDto  = apptInspectionDateService.getApptSpecificDate(taskId, apptInspectionDateDto);
         }
-        List<SelectOption> processDecList = apptInspectionDateService.getReShProcessDecList();
+        List<SelectOption> processDecList = apptInspectionDateService.getReShProcessDecList(apptInspectionDateDto);
         List<SelectOption> hours = apptInspectionDateService.getInspectionDateHours();
         List<SelectOption> amPm = apptInspectionDateService.getAmPmOption();
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
@@ -102,9 +102,10 @@ public class ApptReSchedulingInspDateDelegator {
     public void apptReSchInspDateVali(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptReSchInspDateVali start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
+        List<SelectOption> processDecList = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
         String processDec = ParamUtil.getRequestString(bpc.request, "processDec");
-        if(StringUtil.isEmpty(processDec) ||
-                !(processDec.equals(InspectionConstants.PROCESS_DECI_ACCEPTS_THE_DATE) || processDec.equals(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE))){
+        boolean processFlag = containValueInList(processDec, processDecList);
+        if(StringUtil.isEmpty(processDec) || !processFlag){
             apptInspectionDateDto.setProcessDec(null);
         } else {
             apptInspectionDateDto.setProcessDec(processDec);
