@@ -7,7 +7,7 @@
                         <li class="incomplete" role="presentation" id="inboxTab"><a href="#" aria-controls="tabInbox"
                                                                                     role="tab" data-toggle="tab"
                                                                                     onclick="licToMsgPage()">Inbox
-                            (2)</a></li>
+                            (${unreadAndresponseNum})</a></li>
                         <li class="complete" role="presentation" id="appTab"><a href="#" aria-controls="tabApp"
                                                                                 role="tab" data-toggle="tab"
                                                                                 onclick="licToAppPage()">Applications</a>
@@ -18,7 +18,7 @@
                     <div class="tab-nav-mobile visible-xs visible-sm">
                         <div class="swiper-wrapper" role="tablist">
                             <div class="swiper-slide"><a href="#tabInbox" aria-controls="tabInbox" role="tab"
-                                                         data-toggle="tab">Inbox (2)</a></div>
+                                                         data-toggle="tab">Inbox (${unreadAndresponseNum})</a></div>
                             <div class="swiper-slide"><a href="#tabApp" aria-controls="tabApplication" role="tab"
                                                          data-toggle="tab">Applications</a></div>
                             <div class="swiper-slide"><a href="#tabLic" aria-controls="tabLicence" role="tab"

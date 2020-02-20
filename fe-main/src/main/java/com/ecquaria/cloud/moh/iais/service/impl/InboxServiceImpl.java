@@ -72,4 +72,9 @@ public class InboxServiceImpl implements InboxService {
     public Integer appDraftNum() {
         return appInboxClient.getAppDraftNum().getEntity();
     }
+
+    @Override
+    public Integer unreadAndUnresponseNum() {
+        return inboxClient.searchUnreadAndUnresponseNum().getEntity();
+    }
 }

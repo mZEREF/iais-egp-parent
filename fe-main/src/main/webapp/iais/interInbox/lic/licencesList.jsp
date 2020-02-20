@@ -116,7 +116,9 @@
                                         <input class="form-check-input licenceCheck" id="licence1" type="checkbox"
                                                name="licenceNo" value="licenId${status.index}" aria-invalid="false">
                                         <label class="form-check-label" for="licence1"><span
-                                                class="check-square"></span></label>
+                                                class="check-square"></span><a
+                                                href="#">${licenceQuery.licenceNo}</a></label>
+                                        <input type="hidden" name="licenId${status.index}" value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}" />"/>
                                     </div>
                                 </td>
                                 <td>

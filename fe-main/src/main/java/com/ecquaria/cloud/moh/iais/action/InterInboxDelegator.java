@@ -136,13 +136,7 @@ public class InterInboxDelegator {
             ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, inboxParam);
             ParamUtil.setRequestAttr(request,InboxConst.INBOX_RESULT, inboxResult);
         }
-        Integer licActiveNum = inboxService.licActiveStatusNum();
-        Integer appDraftNum = inboxService.appDraftNum();
-        ParamUtil.setRequestAttr(request,"licActiveNum", licActiveNum);
-        ParamUtil.setRequestAttr(request,"appDraftNum", appDraftNum);
-
-
-
+        setNumInfoToRequest(request);
     }
 
     public void prepareSwitch(BaseProcessClass bpc){
@@ -173,10 +167,7 @@ public class InterInboxDelegator {
             ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, licParam);
             ParamUtil.setRequestAttr(request,InboxConst.LIC_RESULT, licResult);
         }
-        Integer licActiveNum = inboxService.licActiveStatusNum();
-        Integer appDraftNum = inboxService.appDraftNum();
-        ParamUtil.setRequestAttr(request,"licActiveNum", licActiveNum);
-        ParamUtil.setRequestAttr(request,"appDraftNum", appDraftNum);
+        setNumInfoToRequest(request);
     }
 
     public void licSwitch(BaseProcessClass bpc){
@@ -263,10 +254,7 @@ public class InterInboxDelegator {
             ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, appParam);
             ParamUtil.setRequestAttr(request,InboxConst.APP_RESULT, appResult);
         }
-        Integer licActiveNum = inboxService.licActiveStatusNum();
-        Integer appDraftNum = inboxService.appDraftNum();
-        ParamUtil.setRequestAttr(request,"licActiveNum", licActiveNum);
-        ParamUtil.setRequestAttr(request,"appDraftNum", appDraftNum);
+        setNumInfoToRequest(request);
     }
 
     public void appSwitch(BaseProcessClass bpc){
@@ -385,6 +373,15 @@ public class InterInboxDelegator {
                 bpc.response.sendRedirect(tokenUrl);
             }
         }
+    }
+
+    private void setNumInfoToRequest(HttpServletRequest request){
+        Integer licActiveNum = inboxService.licActiveStatusNum();
+        Integer appDraftNum = inboxService.appDraftNum();
+        Integer unreadAndresponseNum = inboxService.unreadAndUnresponseNum();
+        ParamUtil.setRequestAttr(request,"unreadAndresponseNum", unreadAndresponseNum);
+        ParamUtil.setRequestAttr(request,"licActiveNum", licActiveNum);
+        ParamUtil.setRequestAttr(request,"appDraftNum", appDraftNum);
     }
     /**
      *

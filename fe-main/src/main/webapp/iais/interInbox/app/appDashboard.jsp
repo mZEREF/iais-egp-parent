@@ -12,7 +12,7 @@
                         <div class="dashboard-tile-item">
                             <div class="dashboard-tile"><a data-tab="#tabInbox" href="#" onclick="appToMsgPage()">
                                 <p class="dashboard-txt">New Messages</p>
-                                <h1 class="dashboard-count">2</h1>
+                                <h1 class="dashboard-count">${unreadAndresponseNum}</h1>
                             </a></div>
                         </div>
                         <div class="dashboard-tile-item">
