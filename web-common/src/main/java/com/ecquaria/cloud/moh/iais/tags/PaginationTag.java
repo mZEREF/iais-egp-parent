@@ -146,10 +146,13 @@ public class PaginationTag extends DivTagSupport {
             sb.append(jsFunc).append("('").append(pageNo).append(ENDTAG);
             sb.append(pageNo);
             sb.append("</a></li>");
-            if(pageNo+1<=pageCount){
+            if(pageNo + 1 <= pageCount){
                 sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 1).append(ENDTAG);
                 sb.append(pageNo+1);
                 sb.append("</a></li>");
+            }
+            if (pageNo + 1 < pageCount) {
+                sb.append("...");
             }
         } else {
             sb.append("<li><a href=\"javascript:void(0);\" aria-label=\"First\"><span aria-hidden=\"false\"><i class=\"fa fa-angle-double-left\"></i></span></a></li>");
