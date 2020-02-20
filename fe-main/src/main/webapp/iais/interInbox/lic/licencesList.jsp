@@ -6,8 +6,8 @@
         <div class="row">
             <div class="col-md-12">
                 <iais:value>
-                    <label class="col-xs-5 col-md-5" for="licNoPath">Search By Licence No or Part of:</label>
-                    <div class="col-xs-5 col-md-56">
+                    <label class="col-xs-5 col-md-5" for="licNoPath" style="text-align:center;margin-top: 13px">Search By Licence No or Part of:</label>
+                    <div class="col-xs-7 col-md-7">
                         <input id="licNoPath" name="licNoPath" type="text" maxlength="15" value="<%=request.getParameter("licNoPath")==null?"":request.getParameter("licNoPath")%>">
                     </div>
                 </iais:value>
@@ -16,8 +16,8 @@
         <div class="row" style="margin-bottom: 14px">
             <div class="col-md-12">
                 <iais:value>
-                    <label class="col-xs-5 col-md-5" for="licType">Service Type:</label>
-                    <div class="col-xs-5 col-md-5">
+                    <label class="col-xs-5 col-md-5" for="licType" style="text-align:center;margin-top: 13px">Service Type:</label>
+                    <div class="col-xs-7 col-md-7">
                         <iais:select name="licType" id="licType" options="licType" firstOption="All"></iais:select>
                     </div>
                 </iais:value>
@@ -26,8 +26,8 @@
         <div class="row" style="margin-bottom: 14px">
             <div class="col-md-12">
                 <iais:value>
-                    <label class="col-xs-5 col-md-5" for="licStatus">Licence Status:</label>
-                    <div class="col-xs-5 col-md-5">
+                    <label class="col-xs-5 col-md-5" for="licStatus" style="text-align:center;margin-top: 13px">Licence Status:</label>
+                    <div class="col-xs-7 col-md-7">
                         <%String licStatus = request.getParameter("licStatus");%>
                         <iais:select name="licStatus" id="licStatus" options="licStatus"
                                      firstOption="<%=licStatus%>" value="<%=licStatus%>"></iais:select>
@@ -38,7 +38,7 @@
         <div class="row" style="margin-bottom: 14px">
             <div class="col-md-12">
                 <iais:value>
-                    <label class="col-md-3" for="fStartDate">Licence Start Date:</label>
+                    <label class="col-md-5" for="fStartDate" style="text-align:center;margin-top: 13px">Licence Start Date:</label>
                     <div class="col-md-3">
                         <%Date fStartDate = Formatter.parseDate(request.getParameter("fStartDate"));%>
                         <iais:datePicker id="fStartDate" name="fStartDate" dateVal="<%=fStartDate%>"/>
@@ -56,7 +56,7 @@
         <div class="row">
             <div class="col-md-12">
                 <iais:value>
-                    <label class="col-xs-3 col-md-3">Licence Expiry Date:</label>
+                    <label class="col-xs-5 col-md-5" style="text-align:center">Licence Expiry Date:</label>
                     <div class="col-xs-3 col-md-3">
                         <%Date fExpiryDate = Formatter.parseDate(request.getParameter("fExpiryDate"));%>
                         <iais:datePicker id="fExpiryDate" name="fExpiryDate" dateVal="<%=fExpiryDate%>"/>
@@ -71,16 +71,18 @@
                         <iais:datePicker id="eExpiryDate" name="eExpiryDate" dateVal="<%=eExpiryDate%>"/>
                     </div>
                 </iais:value>
-                <div class="col-xs-2 col-md-2">
-                    <button type="button" class="btn btn-primary" onclick="doSearchLic()">Search</button>
-                </div>
             </div>
         </div>
         <div class="row">
-            <div class="licence-btns">
-                <a class="btn btn-primary disabled" href="javascript:;" id="lic-renew">Renew</a>
-                <a class="btn btn-secondary disabled" href="javascript:;">Cease</a>
-                <a class="btn btn-secondary disabled" href="javascript:;" id="lic-amend">Amend</a>
+            <div class="col-md-12">
+                <div class="licence-btns col-md-6">
+                        <a class="btn btn-primary disabled" href="javascript:;" id="lic-renew">Renew</a>
+                        <a class="btn btn-secondary disabled" href="javascript:;">Cease</a>
+                        <a class="btn btn-secondary disabled" href="javascript:;" id="lic-amend">Amend</a>
+                </div>
+                <div class="col-md-2 col-md-offset-3">
+                    <button type="button" class="btn btn-primary" onclick="doSearchLic()">Search</button>
+                </div>
             </div>
         </div>
         <iais:pagination  param="licParam" result="licResult"/>
