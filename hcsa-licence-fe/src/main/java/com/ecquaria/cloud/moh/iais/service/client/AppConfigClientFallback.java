@@ -321,6 +321,14 @@ public class AppConfigClientFallback implements AppConfigClient{
     }
 
     @Override
+    public FeignResponseEntity<String> getServiceNameById(String serviceId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<FeeDto> renewFee(List<LicenceFeeDto> dtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
