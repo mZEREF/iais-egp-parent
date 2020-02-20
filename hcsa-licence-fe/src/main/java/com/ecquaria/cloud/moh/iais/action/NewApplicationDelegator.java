@@ -619,25 +619,30 @@ public class NewApplicationDelegator {
      */
     public void doPayment(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doPayment start ...."));
-
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String switch2 = "loading";
-        String pmtStatus = ParamUtil.getString(bpc.request,"result");
-        if(StringUtil.isEmpty(pmtStatus)){
+        String pmtMethod = appSubmissionDto.getPaymentMethod();
+        if(StringUtil.isEmpty(pmtMethod)){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "payment");
             return;
         }
-        if(!StringUtil.isEmpty(pmtStatus) && "GIRO".equals(pmtStatus)){
+        if(!StringUtil.isEmpty(pmtMethod) && "GIRO".equals(pmtMethod)){
             switch2 = "ack";
+            String txnDt = DateUtil.formatDate(new Date(), "yyyy-MM-dd");
+            ParamUtil.setRequestAttr(bpc.request,"txnDt",txnDt);
         }
         String result = bpc.request.getParameter("result");
-
         if (!StringUtil.isEmpty(result)) {
             log.debug(StringUtil.changeForLog("payment result:" + result));
             String pmtRefNo = bpc.request.getParameter("reqRefNo");
             if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
+                log.info("credit card payment success");
+                String txnDt = ParamUtil.getString(bpc.request,"txnDt");
+                String txnRefNo = ParamUtil.getString(bpc.request,"txnRefNo");
+                ParamUtil.setRequestAttr(bpc.request,"txnDt",txnDt);
+                ParamUtil.setRequestAttr(bpc.request,"txnRefNo",txnRefNo);
                 switch2 = "ack";
                 //update status
-                AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
                 String appGrpId = appSubmissionDto.getAppGrpId();
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
                 appGrp.setId(appGrpId);
@@ -708,7 +713,7 @@ public class NewApplicationDelegator {
         appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
         // ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","Y");
-        ParamUtil.setRequestAttr(bpc.request,"AckMessage","The request for information save success");
+        ParamUtil.setRequestAttr(bpc.request,ACKMESSAGE,"The request for information save success");
         log.debug(StringUtil.changeForLog("the do doRequestInformationSubmit end ...."));
     }
 
@@ -772,7 +777,7 @@ public class NewApplicationDelegator {
             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
             serviceConfigService.updatePaymentStatus(appGrp);
             isrfiSuccess = "Y";
-            ParamUtil.setRequestAttr(bpc.request,"AckMessage"," renew save success");
+            ParamUtil.setRequestAttr(bpc.request,ACKMESSAGE," renew save success");
         }
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess",isrfiSuccess);
 
@@ -872,7 +877,7 @@ public class NewApplicationDelegator {
             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
             serviceConfigService.updatePaymentStatus(appGrp);
             isrfiSuccess = "Y";
-            ParamUtil.setRequestAttr(bpc.request,"AckMessage","The request for change save success");
+            ParamUtil.setRequestAttr(bpc.request,ACKMESSAGE,"The request for change save success");
         }
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess",isrfiSuccess);
 
@@ -1602,6 +1607,8 @@ public class NewApplicationDelegator {
             return;
         }
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        appSubmissionDto.setPaymentMethod(payMethod);
+        ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         if("Credit".equals(payMethod)){
             StringBuffer url = new StringBuffer();
             url.append("https://").append(bpc.request.getServerName())
@@ -1982,7 +1989,7 @@ public class NewApplicationDelegator {
         if((serviceConfigIds == null || serviceConfigIds.isEmpty()) && names.isEmpty()){
             log.debug(StringUtil.changeForLog("service id is empty"));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "errorAck");
-            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "You have encountered some problems, please contact the administrator !!!");
+            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "error");
             return false;
         }
         List<HcsaServiceDto> hcsaServiceDtoList = null;

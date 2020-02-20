@@ -49,7 +49,7 @@ public class PaymentDelegator {
         String txnDt = DateUtil.formatDate(txnDtD, "yyyy-MM-dd");
         String txnRefNo = paymentDtoSave.getTxnRefNo();
         String showUrl = "https://" + request.getServerName();
-        String s = showUrl+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment?result=success&reqRefNo="+reqRefNo;
+        String s = showUrl+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment?result=success&reqRefNo="+reqRefNo+"&txnDt="+txnDt+"&txnRefNo="+txnRefNo;
         if(!StringUtil.isEmpty(backUrl)){
              s = showUrl +"/" +backUrl+"?result=success&reqRefNo="+reqRefNo+"&txnDt="+txnDt+"&txnRefNo="+txnRefNo;
         }
