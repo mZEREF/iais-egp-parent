@@ -121,7 +121,7 @@
                                             <td><c:out value="${pool.currentRiskTagging}"/></td>
 
                                             <td>
-<%--                                                <c:if test="${pool.applicationStatus==''}"></c:if>--%>
+                                                    <%--                                                <c:if test="${pool.applicationStatus==''}"></c:if>--%>
                                                 <iais:action style="text-align:center;">
                                                     <button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo('${pool.licPremId}');" >ReqForInfo</button>
                                                 </iais:action>
