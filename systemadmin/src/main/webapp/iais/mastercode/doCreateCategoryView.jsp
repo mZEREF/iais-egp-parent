@@ -30,7 +30,6 @@
                         </div>
                         <div class="form-group">
                             <label class="col-md-4 control-label">Is Editable <span class="glyphicon glyphicon-star" aria-hidden="true" style="color: rgb(221, 0, 7);"></span></label>
-
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <iais:value>
                                     <div class="col-md-3">

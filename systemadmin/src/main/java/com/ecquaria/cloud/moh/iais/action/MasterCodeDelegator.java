@@ -22,6 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -191,7 +194,14 @@ public class MasterCodeDelegator {
         }
     }
 
+    public void doUpload(BaseProcessClass bpc) throws Exception {
+        HttpServletRequest request = bpc.request;
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        MultipartFile file = mulReq.getFile("selectedFile");
+        File toFile = FileUtils.multipartFileToFile(file);
+        List<MasterCodeToExcelDto> masterCodeToExcelDtoList = FileUtils.transformToJavaBean(toFile, MasterCodeToExcelDto.class);
 
+    }
     /**
      * AutoStep: doPaging
      *

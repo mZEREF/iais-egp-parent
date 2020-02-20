@@ -42,7 +42,7 @@
         submit('changePage');
     }
 
-    $('#docNext').click(function () {
+    $('.selectedFile').change(function () {
         $("[name='crud_action_type']").val('doUpload');
         $("#MasterCodeFileForm").submit();
     });
