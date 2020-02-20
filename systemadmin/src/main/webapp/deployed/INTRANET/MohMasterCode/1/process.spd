@@ -80,7 +80,7 @@
     <JavaCode defClass="" executor="" methodName="doEdit_OnStepProcess_0" name="doEdit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doUpload" x="910" y="160">
+  <AutomaticStep defClass="" executor="" icon="" name="doUpload" x="940" y="170">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -147,7 +147,7 @@
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/doSearch" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="640" y="0">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/PrepareEdit" value="&quot;doEdit&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doSearch" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/doSearch" value="&quot;doSearch&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSorting" value="&quot;sortRecords&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doPaging" value="&quot;changePage&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doDelete" value="&quot;doDelete&quot;"/>
@@ -233,10 +233,10 @@
    <position>{(980,440)(190,674)(200,20)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doUpload" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(660,20)(930,180)}</position>
+   <position>{(660,20)(960,190)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doUpload" style="oblique">
-   <position>{(930,180)(980,440)}</position>
+   <position>{(960,190)(980,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doCreateCode" linkstyle="Direct" name="" sourceName="/Pages/WebPage/doCreateCodePage" style="oblique">
    <position>{(670,500)(780,500)}</position>
