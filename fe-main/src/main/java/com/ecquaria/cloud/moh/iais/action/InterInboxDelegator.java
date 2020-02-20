@@ -113,7 +113,7 @@ public class InterInboxDelegator {
         prepareMsgSelectOption(request);
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(request,AppConsts.SESSION_ATTR_LOGIN_USER);
         SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter,true);
-        inboxParam.addFilter("userId", loginContext.getUserId(),true);
+//        inboxParam.addFilter("userId", loginContext.getUserId(),true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
         SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
         List<InboxQueryDto> inboxQueryDtoList = inboxResult.getRows();
