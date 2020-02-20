@@ -88,9 +88,11 @@ public class RequestForChangeDelegator {
         boolean flag = true;
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
-        if(licenceDto != null){
+        String UNID=ParamUtil.getString(bpc.request, "UNID");
+
+        if(licenceDto != null && UNID==null) {
             String status = licenceDto.getStatus();
-            if(!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)){
+            if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)) {
                 ParamUtil.setRequestAttr(bpc.request, "ErrorMsg", "licence status is not active");
                 flag = false;
             }
@@ -158,8 +160,10 @@ public class RequestForChangeDelegator {
      */
     public void compareChangePercentage(BaseProcessClass bpc) {
         String pageType = (String) ParamUtil.getSessionAttr(bpc.request, "keyType");
-        String licenseNo= (String) ParamUtil.getSessionAttr(bpc.request, "licenseNo");
-        LicenceDto licenceDto=requestForChangeService.getByLicNo(licenseNo);
+        String licenseNo= (String) ParamUtil.getString(bpc.request, "licenceNo");
+        String licenceId= (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
+        //String licenseNo="L/20CLB0156/CLB/001/201";
+        LicenceDto licenceDto=requestForChangeService.getLicenceDtoByLicenceId(licenceId);
         String UNID=(String) ParamUtil.getSessionAttr(bpc.request, "UNID");
         String newLicenseeId=null;
         List<String> uenMemberIds=new ArrayList<>();

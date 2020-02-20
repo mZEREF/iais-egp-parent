@@ -1140,7 +1140,7 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the amount is -->:") + amount);
         appSubmissionDto.setAmount(amount);
         //judge is the preInspection
-        PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
+               PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
         if (preOrPostInspectionResultDto == null) {
             appSubmissionDto.setPreInspection(true);
             appSubmissionDto.setRequirement(true);

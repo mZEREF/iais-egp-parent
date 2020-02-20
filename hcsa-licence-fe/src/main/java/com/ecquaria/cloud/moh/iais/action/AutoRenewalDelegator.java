@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
@@ -42,14 +43,14 @@ public class AutoRenewalDelegator {
      */
     public void prepare(BaseProcessClass bpc)throws Exception{
         log.info("**** the  auto renwal  prepare start  ******");
-//        String  licenceId = ParamUtil.getString(bpc.request,"licNo");
+//      String  licenceId = ParamUtil.getString(bpc.request,"licNo");
         String licenceId="7ECAE165-534A-EA11-BE7F-000C29F371DC";
         AppSubmissionDto appSubmissionDto=appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
         List<AppSubmissionDto> appSubmissionDtoList=new ArrayList<>();
         appSubmissionDtoList.add(appSubmissionDto);
-        ParamUtil.setSessionAttr(bpc.request,"appSubmissionDtoList", appSubmissionDto);
-
-
+        RenewDto renewDto=new RenewDto();
+        renewDto.setAppSubmissionDtos(appSubmissionDtoList);
+        ParamUtil.setSessionAttr(bpc.request,"renewDto", renewDto);
         log.info("**** the  auto renwal  prepare  end ******");
     }
 

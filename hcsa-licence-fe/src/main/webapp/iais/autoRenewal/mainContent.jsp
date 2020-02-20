@@ -58,6 +58,8 @@
                                                         </tr>
                                                         </thead>
                                                         <tbody>
+                                                        <c:forEach items="${renewDto.appSubmissionDtos}"
+                                                                   var="appSubmissionDtos">
                                                         <tr>
                                                             <td>${appSubmissionDtoList}</td>
                                                             <td>${appSubmissionDtoList.appType}</td>
@@ -65,6 +67,7 @@
                                                             <td>${appSubmissionDtoList.licStartDate}</td>
                                                             <td>${appSubmissionDtoList.licExpiryDate}</td>
                                                         </tr>
+                                                        </c:forEach>
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -78,7 +81,10 @@
                                 </div>
 
                                 <div class="tab-pane active" id="tabLicRe" role="tabpanel">
-
+                                    <c:forEach items="${renewDto.appSubmissionDtos}"
+                                               var="appSubmissionDtos">
+                                        <h3>Clinical Laboratory;Licence No${appSubmissionDtos.}</h3>
+                                    </c:forEach>
                                 </div>
 
                                 <div class="tab-pane" id="tabPay" role="tabpanel">
@@ -104,7 +110,8 @@
                                                             </tr>
                                                             </thead>
                                                             <tbody>
-                                                            <c:forEach var="svc" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}">
+                                                            <c:forEach var="appSubmissionDtos" items="${renewDto.appSubmissionDtos}">
+                                                            <c:forEach var="svc" items="${appSubmissionDtos.appSvcRelatedInfoDtoList}">
                                                                 <tr>
                                                                     <td>
                                                                         <p><c:out value="${svc.serviceName}"></c:out></p>
@@ -120,7 +127,7 @@
                                                                     </td>
                                                                 </tr>
                                                             </c:forEach>
-
+                                                            </c:forEach>
                                                             </tbody>
                                                         </table>
                                                         <h2>Payment Method</h2>

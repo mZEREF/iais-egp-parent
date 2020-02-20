@@ -17,7 +17,13 @@
     <div class="main-content">
         <div class="container">
             <div class="row">
-                Tranfer Success
+                <br>
+                <br>
+                <br>
+                <h2>Tranfer Success!</h2>
+                <br>
+                <br>
+                <br>
             </div>
         </div>
     </div>
