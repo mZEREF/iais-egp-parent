@@ -49,7 +49,7 @@
           <div class="form-group">
             <label class="col-xs-4 col-md-2 control-label">Regulation Clause Number</label>
             <div class="col-xs-5 col-md-3">
-              <input type="text" name="regulationClauseNo" value="${regulationClauseNo}"/>
+              <input type="text" name="regulationClauseNo" maxlength="100" value="${regulationClauseNo}"/>
               <span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
@@ -57,7 +57,7 @@
           <div class="form-group">
             <label class="col-xs-4 col-md-2 control-label">Regulation</label>
             <div class="col-xs-5 col-md-3">
-              <input type="text" name="regulationClause" value="${regulationClause}"/>
+              <input type="text" name="regulationClause" maxlength="2000" value="${regulationClause}"/>
               <span id="error_regulationClause" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
@@ -65,7 +65,7 @@
           <div class="form-group">
             <label class="col-xs-4 col-md-2 control-label">Checklist Item</label>
             <div class="col-xs-5 col-md-3">
-              <input type="text" name="checklistItem" value="${checklistItem}"/>
+              <input type="text" name="checklistItem" maxlength="500" value="${checklistItem}"/>
               <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
