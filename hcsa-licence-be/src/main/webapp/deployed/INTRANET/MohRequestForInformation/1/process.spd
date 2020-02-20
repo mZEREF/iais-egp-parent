@@ -142,6 +142,20 @@
     <JavaCode defClass="" executor="" methodName="preLicInfo_OnStepProcess_0" name="preLicInfo_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preSearch" x="260" y="530">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preSearch_OnStepProcess_0" name="preSearch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doSearch" x="120" y="430">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doSearch_OnStepProcess_0" name="doSearch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="RFIPage" stageIndicator="" x="1560" y="280">
@@ -216,6 +230,12 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="searchPage" stageIndicator="" x="120" y="530">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Links>
@@ -284,12 +304,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge3" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(1320,430)(850,120)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicence" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(280,450)(720,380)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchApplication" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(280,450)(700,510)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicence" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(1320,430)(720,380)}</position>
@@ -382,13 +396,25 @@
    <position>{(1820,580)(1560,520)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preLicInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(1320,430)(1235,300)}</position>
+   <position>{(1320,430)(1210,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/licInfoPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preLicInfo" style="oblique">
-   <position>{(1235,300)(1105,220)}</position>
+   <position>{(1210,270)(1080,190)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge3" linkstyle="Direct" name="" sourceName="/Pages/WebPage/licInfoPage" style="oblique">
-   <position>{(1105,220)(850,120)}</position>
+   <position>{(1080,190)(850,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(280,450)(280,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/searchPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preSearch" style="oblique">
+   <position>{(280,550)(140,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSearch" linkstyle="Direct" name="" sourceName="/Pages/WebPage/searchPage" style="oblique">
+   <position>{(140,550)(140,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doSearch" style="rectanular">
+   <position>{(140,450)(280,450)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -397,8 +423,7 @@
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/preSearchLicence" value="&quot;licence&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preSearchApplication" value="&quot;application&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doSearchLicence" value="&quot;licenceAdv&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doSearchApplication" value="&quot;applicationAdv&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preSearch" value="&quot;search&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Merges/Merge/Merge3" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="1300" y="410">
    <Description/>

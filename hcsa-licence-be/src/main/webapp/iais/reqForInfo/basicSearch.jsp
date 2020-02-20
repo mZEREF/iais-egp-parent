@@ -17,7 +17,7 @@
         <div class="container">
             <div class="col-xs-12">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <br><br><br><br>
+                    <br><br><br><br><br><br>
                     <h2>Basic Search Criteria</h2>
                     <div class="panel panel-default">
                         <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
@@ -25,19 +25,19 @@
                                 <div class="panel-main-content">
                                     <iais:section title="" id = "supPoolList">
                                         <iais:row>
-                                            <iais:field value="search no"/>
+                                            <iais:field value="Search No"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" name="search_no"  />
+                                                    <input type="text" style="width:400px; font-weight:normal;" name="search_no"  />
                                                 </label>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:value width="18">
-                                                <input type="radio" name="select_search" value="application" checked />Application No
+                                                <input type="radio" name="select_search" value="application" checked /> Application No
                                             </iais:value>
                                             <iais:value width="18">
-                                                <input type="radio" name="select_search" value="licence" />Licence No
+                                                <input type="radio" name="select_search" value="licence" /> Licence No
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">
@@ -56,6 +56,7 @@
                 </div>
             </div>
         </div>
+
     </iais:body>
 </form>
 <script type="text/javascript">
@@ -80,7 +81,7 @@
         for (var i = 0, length = radios.length; i < length; i++) {
             if (radios[i].checked) {
                 showWaiting();
-                SOP.Crud.cfxSubmit("mainForm", radios[i].value+"Adv");
+                SOP.Crud.cfxSubmit("mainForm", "search");
                 break;
             }
         }

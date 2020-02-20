@@ -147,7 +147,7 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/preBasicSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
    <position>{(280,250)(270,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicenceAfter" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicenceAfter" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
    <position>{(280,250)(880,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicence" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
@@ -161,6 +161,12 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/appDetailsPage" style="rectanular">
    <position>{(1170,370)(560,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Branches/BranchSource/Branch1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(280,250)(225,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicenceAfter" linkstyle="Rectangle" name="" sourceName="/Branches/BranchSource/Branch1" style="rectanular">
+   <position>{(225,390)(880,380)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -182,9 +188,14 @@
    <SwitchCase component="/Steps/AutomaticStep/doBasicSearch" value="&quot;advSearch&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preBasicSearch" value="&quot;basicSearch&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSearchLicenceAfter" value="&quot;details&quot;"/>
+   <SwitchCase component="/Branches/BranchSource/Branch1" value="&quot;appDetails&quot;"/>
   </Switch>
  </Switches>
- <Branches/>
+ <Branches>
+  <BranchSource defClass="" executor="" icon="" name="Branch1" x="180" y="340">
+   <Description/>
+  </BranchSource>
+ </Branches>
  <Merges>
   <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="540" y="100">
    <Description/>

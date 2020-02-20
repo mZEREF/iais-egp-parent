@@ -5,7 +5,7 @@
         <![CDATA[
             SELECT
                 app.id,app.application_no,app.app_type,app.status,
-                T2.id as APP_CORR_ID,
+                T2.id APP_CORR_ID,
                 T3.HCI_CODE,T3.HCI_NAME,
                 T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME,
                 T4.LICENSEE_ID

@@ -28,7 +28,7 @@
                                             <iais:field value="Search No:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" name="searchNo"  />
+                                                    <input type="text"  style="width:400px; font-weight:normal;" name="searchNo"  />
                                                 </label>
                                             </iais:value>
                                         </iais:row>
@@ -69,7 +69,7 @@
             <div class="col-xs-14">
                 <div class="components">
                     <h3>
-                        <span>Search Result</span>
+                        <span>Search Results</span>
                     </h3>
                     <div class="table-gp">
                         <table class="table">
@@ -82,8 +82,8 @@
                                 <iais:sortableHeader needSort="false"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="HCI_NAME" value="HCI Name "></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="ADDRESS" value=" Address"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="LICENSEE_NAME" value="Licensee NAME"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="SERVICE_NAME" value="Service NAME"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="LICENSEE_NAME" value="Licensee Name"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="SERVICE_NAME" value="Service Name"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="Licence_Period" value="Licence Period"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="Licence_Status" value="Licence Status"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="past_compliance_history" value="Past Compliance History"></iais:sortableHeader>

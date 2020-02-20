@@ -35,8 +35,8 @@
                             <div class="swiper-button-next"></div>
                         </div>
 
-                        <div class="tab-content active">
-                            <div class="tab-pane" id="tabApplicationInfo" role="tabpanel">
+                        <div class="tab-content ">
+                            <div class="tab-pane active" id="tabApplicationInfo" role="tabpanel">
 
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->
@@ -52,7 +52,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Application Type</td>
-                                                        <td>${applicationViewDto.applicationDto.applicationType}</td>
+                                                        <td>${applicationViewDto.applicationType}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Service Name</td>

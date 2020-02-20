@@ -113,7 +113,6 @@ public class RequestForInformationDelegator {
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        ParamUtil.setSessionAttr(request,SEARCH_NO,null);
         ParamUtil.setSessionAttr(request,"id",null);
         ParamUtil.setSessionAttr(request, "licenceNo", null);
         ParamUtil.setSessionAttr(request, "reqInfoId", null);
@@ -128,10 +127,87 @@ public class RequestForInformationDelegator {
     }
 
     public void doBasicSearch(BaseProcessClass bpc) {
+        log.info("=======>>>>>doSearch>>>>>>>>>>>>>>>>requestForInformation");
+        HttpServletRequest request=bpc.request;
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
+
+        // 		doBasicSearch->OnStepProcess
+    }
+
+    public void preSearch(BaseProcessClass bpc) {
+        log.info("=======>>>>>preSearch>>>>>>>>>>>>>>>>requestForInformation");
+        // 		preBasicSearch->OnStepProcess
+    }
+
+    public void doSearch(BaseProcessClass bpc) {
         log.info("=======>>>>>doBasicSearch>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         String searchNo=ParamUtil.getString(request,"search_no");
+
+        Map<String,Object> filters=new HashMap<>();
+
+        String selectSearch =ParamUtil.getString(request,"select_search");
+        if("application".equals(selectSearch)) {
+            if (!StringUtil.isEmpty(searchNo)) {
+                filters.put("appNo", searchNo);
+            }
+        }
+        else {
+            if (!StringUtil.isEmpty(searchNo)) {
+                filters.put("licence_no", searchNo);
+            }
+        }
+        applicationParameter.setFilters(filters);
+        SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
+        QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
+        if (appParam != null) {
+            SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
+
+            if(!StringUtil.isEmpty(appResult)){
+                SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
+                searchListDtoSearchResult.setRowCount(appResult.getRowCount());
+                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=new ArrayList<>();
+                for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
+                ) {
+
+                    if(!StringUtil.isEmpty(rfiApplicationQueryDto.getId())){
+                        filters.put("app_id", rfiApplicationQueryDto.getId());
+                    }
+                    licenceParameter.setFilters(filters);
+                    SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
+                    QueryHelp.setMainSql(RFI_QUERY,"licenceQuery",licParam);
+                    SearchResult<RfiLicenceQueryDto> licResult =requestForInformationService.licenceDoQuery(licParam);
+                    if(licResult.getRowCount()!=0) {
+                        for (RfiLicenceQueryDto lic:licResult.getRows()
+                        ) {
+                            ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
+                            rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
+                            String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
+                            reqForInfoSearchListDto.setLicenceStatus(licStatus);
+                            reqForInfoSearchListDto.setLicenceNo(lic.getLicenceNo());
+                            reqForInfoSearchListDto.setServiceName(lic.getServiceName());
+                            reqForInfoSearchListDto.setStartDate(lic.getStartDate());
+                            reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
+                            reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
+//                            reqForInfoSearchListDto.setCurrentRiskTagging(lic.getRiskLevel());
+                            reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
+                        }
+                    }
+                    else if("application".equals(selectSearch)) {
+                        ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
+                        rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
+                        reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
+                    }
+                }
+                searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
+                ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
+            }
+        }
+
+        ParamUtil.setRequestAttr(request,"SearchParam", appParam);
+
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
         ParamUtil.setSessionAttr(request,SEARCH_NO,searchNo);
 
@@ -167,13 +243,8 @@ public class RequestForInformationDelegator {
         List<SelectOption> appStatusOption =requestForInformationService.getAppStatusOption();
 
 
-        String searchNo= (String) ParamUtil.getSessionAttr(request,SEARCH_NO);
-
-
         String applicationNo = ParamUtil.getString(bpc.request, "application_no");
-        if(StringUtil.isEmpty(applicationNo)){
-            applicationNo = searchNo;
-        }
+
         String applicationType = ParamUtil.getString(bpc.request, "application_type");
         String status = ParamUtil.getString(bpc.request, "application_status");
         String subDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
@@ -279,12 +350,10 @@ public class RequestForInformationDelegator {
         HttpServletRequest request = bpc.request;
         List<SelectOption> licSvcTypeOption =requestForInformationService.getLicSvcTypeOption();
         List<SelectOption> licStatusOption = requestForInformationService.getLicStatusOption();
-        String searchNo= (String) ParamUtil.getSessionAttr(request,SEARCH_NO);
 
-        String licence_no = ParamUtil.getString(bpc.request, "licence_no");
-        if(StringUtil.isEmpty(licence_no)){
-            licence_no = searchNo;
-        }
+
+        String licenceNo = ParamUtil.getString(bpc.request, "licence_no");
+
         String serviceLicenceType = ParamUtil.getString(bpc.request, "service_licence_type");
         String licenceStatus = ParamUtil.getString(bpc.request, "licence_status");
         String subDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
@@ -293,8 +362,8 @@ public class RequestForInformationDelegator {
                 SystemAdminBaseConstants.DATE_FORMAT);
         Map<String,Object> filters=new HashMap<>(10);
 
-        if(!StringUtil.isEmpty(licence_no)){
-            filters.put("licence_no", licence_no);
+        if(!StringUtil.isEmpty(licenceNo)){
+            filters.put("licence_no", licenceNo);
         }
         if(!StringUtil.isEmpty(licenceStatus)){
             filters.put("licence_status", licenceStatus);
@@ -387,6 +456,8 @@ public class RequestForInformationDelegator {
         HttpServletRequest request=bpc.request;
         String appCorrId = (String) ParamUtil.getSessionAttr(request, "id");
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(appCorrId);
+        String appType= MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationType()}).get(0).getText();
+        applicationViewDto.setApplicationType(appType);
         List<HcsaServiceDto> hcsaServiceDto=hcsaConfigClient.getHcsaService(new ArrayList<>(Collections.singleton(applicationViewDto.getApplicationDto().getServiceId()))).getEntity();
         ParamUtil.setRequestAttr(request,"applicationViewDto",applicationViewDto);
         ParamUtil.setRequestAttr(request,"hcsaServiceDto",hcsaServiceDto.get(0));

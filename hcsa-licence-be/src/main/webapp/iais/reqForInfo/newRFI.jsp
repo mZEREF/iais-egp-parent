@@ -32,7 +32,7 @@
                                             <iais:field value="Title:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <textarea id="rfiTitle"  name="rfiTitle" >title</textarea>
+                                                    <textarea id="rfiTitle" maxlength="500"  name="rfiTitle" ></textarea>
                                                 </label>
                                             </iais:value>
                                         </iais:row>
@@ -40,14 +40,14 @@
                                             <iais:field value="Licence No:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" name="licenceNo" value="${licenceNo}">
+                                                    <input type="text" style="width:400px; font-weight:normal;" maxlength="30" name="licenceNo" value="${licenceNo}">
                                                 </label>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:field value="Due date:"/>
-                                            <iais:value width="18">
-                                                <iais:datePicker  name = "Due_date" ></iais:datePicker>
+                                            <iais:field value="Due Date:"/>
+                                            <iais:value width="18" style="width:400px; font-weight:normal;">
+                                                <iais:datePicker   name = "Due_date" ></iais:datePicker>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -58,9 +58,7 @@
                                                 <label>
                                                     <input type="checkbox" name="reqType" />Supporting Documents
                                                 </label>
-                                                <label>
-                                                    <input type="checkbox"  />Other
-                                                </label>
+
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">

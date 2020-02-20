@@ -49,7 +49,7 @@
                                                 <iais:field value="Application No:"/>
                                                 <iais:value width="18">
                                                     <label>
-                                                        <input type="text" name="application_no" value="${SearchParam.filters['appNo']}" />
+                                                        <input type="text" style="width:400px; font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
@@ -79,7 +79,7 @@
                                                 <iais:field value="Licence No:"/>
                                                 <iais:value width="18">
                                                     <label>
-                                                        <input type="text" name="licence_no" value="${SearchParam.filters['licence_no']}" />
+                                                        <input type="text" style="width:400px; font-weight:normal;" name="licence_no" value="${SearchParam.filters['licence_no']}" />
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
@@ -87,7 +87,7 @@
                                                 <iais:field value="UEN No:"/>
                                                 <iais:value width="18">
                                                     <label>
-                                                        <input type="text" name="uen_no" value="${SearchParam.filters['uen_no']}" />
+                                                        <input type="text" style="width:400px; font-weight:normal;" name="uen_no" value="${SearchParam.filters['uen_no']}" />
                                                     </label>
                                                 </iais:value>
                                             </iais:row>

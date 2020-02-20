@@ -1,0 +1,1 @@
+<%@include file="/iais/reqForInfo/searchResult.jsp"%>

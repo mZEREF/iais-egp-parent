@@ -35,8 +35,8 @@
                             <div class="swiper-button-next"></div>
                         </div>
 
-                        <div class="tab-content active">
-                            <div class="tab-pane" id="tabLicenseeDetails" role="tabpanel">
+                        <div class="tab-content ">
+                            <div class="tab-pane active" id="tabLicenseeDetails" role="tabpanel">
 
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->

@@ -559,6 +559,8 @@ public class OfficerOnlineEnquiriesDelegator {
         HttpServletRequest request=bpc.request;
         String appCorrId = (String) ParamUtil.getSessionAttr(request, "id");
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(appCorrId);
+        String appType= MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationType()}).get(0).getText();
+        applicationViewDto.setApplicationType(appType);
         List<HcsaServiceDto> hcsaServiceDto=hcsaConfigClient.getHcsaService(new ArrayList<>(Collections.singleton(applicationViewDto.getApplicationDto().getServiceId()))).getEntity();
         ParamUtil.setRequestAttr(request,"applicationViewDto",applicationViewDto);
         ParamUtil.setRequestAttr(request,"hcsaServiceDto",hcsaServiceDto.get(0));
