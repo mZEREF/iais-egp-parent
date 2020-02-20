@@ -1,0 +1,1 @@
+<%@include file="/iais/cc/withdrawal/ackPale.jsp"%>
