@@ -31,10 +31,6 @@ public class INTRANET___MohAuditInspectionReport___1 extends BaseProcessClass {
 	}
 
 	public void valiant_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "valiant", this);
-	}
-
-	public void saveData_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "saveData", this);
 	}
 

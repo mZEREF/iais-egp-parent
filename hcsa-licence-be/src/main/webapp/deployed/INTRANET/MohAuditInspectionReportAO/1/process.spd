@@ -30,7 +30,7 @@
     <JavaCode defClass="" executor="" methodName="action_OnStepProcess_0" name="action_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Valiant" x="500" y="230">
+  <AutomaticStep defClass="" executor="" icon="" name="SaveData" x="500" y="230">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -42,13 +42,6 @@
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="back_OnStepProcess_0" name="back_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="SaveData" x="650" y="360">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="saveData_OnStepProcess_0" name="saveData_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -95,32 +88,29 @@
   <SynchronousLink destinationName="/Pages/WebPage/BackAck" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Back" style="rectanular">
    <position>{(670,130)(800,130)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Valiant" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SaveData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(520,130)(520,250)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Valiant" style="rectanular">
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/SaveData" style="rectanular">
    <position>{(520,250)(520,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ReportPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
    <position>{(520,380)(300,380)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/SaveData" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(520,380)(670,380)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/ApprovalAck" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/SaveData" style="rectanular">
-   <position>{(670,380)(800,380)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/ApprovalAck" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(520,380)(800,380)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Pages/WebPage/ReportPage" componentIfTrue="/Steps/AutomaticStep/SaveData" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="500" y="360">
+  <Condition componentIfFalse="/Pages/WebPage/ReportPage" componentIfTrue="/AutomaticStep/SaveData" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="500" y="360">
    <Description/>
   </Condition>
  </Conditions>
  <Switches>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/Valiant" executor="" icon="" leftOperand="action_type" name="Switch1" x="500" y="110">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/SaveData" executor="" icon="" leftOperand="action_type" name="Switch1" x="500" y="110">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/Back" value="&quot;back&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Valiant" value="&quot;approval&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/SaveData" value="&quot;approval&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

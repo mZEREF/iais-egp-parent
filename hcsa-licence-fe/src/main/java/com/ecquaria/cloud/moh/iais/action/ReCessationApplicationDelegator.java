@@ -22,11 +22,11 @@ import java.util.*;
 
 /**
  * @author weilu
- * @date 2020/2/7 13:12
+ * @date 2020/2/16 13:12
  */
-@Delegator("CessationApplication")
+@Delegator("ReCessationApplication")
 @Slf4j
-public class CessationApplicationDelegator {
+public class ReCessationApplicationDelegator {
 
     @Autowired
     private CessationService cessationService;

@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
@@ -11,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,8 @@ public class CessationServiceImpl implements CessationService {
     private LicenceClient licenceClient;
     @Autowired
     private CessationClient cessationClient;
+    @Autowired
+    private SystemAdminClient systemAdminClient;
 
     @Override
     public List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds) {
@@ -67,8 +71,10 @@ public class CessationServiceImpl implements CessationService {
 
     @Override
     public void saveCessations(AppCessMiscDto appCessMiscDto,String licId) {
-        String appNo = "AN191226000259";
-        ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo);
+        String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT).getEntity();
+        ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo,licId);
+        List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
+        appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);
         ApplicationDto applicationDto =new ApplicationDto();
         applicationDto.setApplicationType("APTY001");
         applicationDto.setApplicationNo(appNo);
@@ -80,18 +86,23 @@ public class CessationServiceImpl implements CessationService {
         applicationDtos.add(applicationDto);
         appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
         appCessMiscDto.setApplicationDto(applicationDtos);
-        AppCessMiscDto entity = cessationClient.saveCessation(appCessMiscDto).getEntity();
+        cessationClient.saveCessation(appCessMiscDto).getEntity();
     }
 
-    private ApplicationGroupDto getApplicationGroupDto(String appNo){
+    @Override
+    public void updateCesation(AppCessMiscDto appCessMiscDto, String licId) {
+
+    }
+
+    private ApplicationGroupDto getApplicationGroupDto(String appNo,String licId){
         ApplicationGroupDto applicationGroupDto=new ApplicationGroupDto();
         applicationGroupDto.setSubmitDt(new Date());
         applicationGroupDto.setGroupNo(appNo);
-        applicationGroupDto.setStatus("AGST006");
+        applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
         applicationGroupDto.setAmount(0.0);
         applicationGroupDto.setIsPreInspection(1);
         applicationGroupDto.setIsInspectionNeeded(1);
-        applicationGroupDto.setLicenseeId("36F8537B-FE17-EA11-BE78-000C29D29DB0");
+        applicationGroupDto.setLicenseeId(licId);
         applicationGroupDto.setIsBundledFee(0);
         applicationGroupDto.setIsCharitable(0);
         applicationGroupDto.setIsByGiro(0);
@@ -101,5 +112,15 @@ public class CessationServiceImpl implements CessationService {
         applicationGroupDto.setAppType(ApplicationConsts.APPLICATION_TYPE_APPEAL);
         return applicationGroupDto;
 
+    }
+    private List<AppGrpPremisesDto> getAppGrpPremisesDto(){
+        List<AppGrpPremisesDto> appGrpPremisesDtos = new ArrayList<>();
+        AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
+        appGrpPremisesDto.setPremisesType(ApplicationConsts.PREMISES_TYPE_ON_SITE);
+        appGrpPremisesDto.setPostalCode("789789");
+        appGrpPremisesDto.setAddrType(ApplicationConsts.ADDRESS_TYPE_APT_BLK);
+        appGrpPremisesDto.setStreetName("Lor 27 Geylang");
+        appGrpPremisesDtos.add(appGrpPremisesDto);
+        return appGrpPremisesDtos;
     }
 }

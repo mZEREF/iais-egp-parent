@@ -9,43 +9,36 @@
     <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Init" x="100" y="200">
+  <AutomaticStep defClass="" executor="" icon="" name="Init" x="100" y="360">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PrepareData" x="250" y="200">
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareData" x="260" y="360">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Valiant" x="400" y="110">
+  <AutomaticStep defClass="" executor="" icon="" name="SaveData" x="530" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="valiant_OnStepProcess_0" name="valiant_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="SaveData" x="550" y="200">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="saveData_OnStepProcess_0" name="saveData_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PeportPage" stageIndicator="" x="250" y="110">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PeportPage" stageIndicator="" x="260" y="100">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AckPage" stageIndicator="" x="540" y="110">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AckPage" stageIndicator="" x="790" y="360">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -55,32 +48,29 @@
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Init" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
-   <position>{(120,120)(120,220)}</position>
+   <position>{(120,120)(120,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Init" style="rectanular">
-   <position>{(120,220)(270,220)}</position>
+   <position>{(120,380)(280,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/PeportPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareData" style="rectanular">
-   <position>{(270,220)(270,130)}</position>
+   <position>{(280,380)(280,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Valiant" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/PeportPage" style="rectanular">
-   <position>{(270,130)(420,130)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SaveData" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/PeportPage" style="rectanular">
+   <position>{(280,120)(550,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Valiant" style="rectanular">
-   <position>{(420,130)(420,220)}</position>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/SaveData" style="rectanular">
+   <position>{(550,120)(550,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(420,220)(270,220)}</position>
+   <position>{(550,380)(280,380)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/SaveData" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(420,220)(570,220)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/AckPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/SaveData" style="rectanular">
-   <position>{(570,220)(560,130)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/AckPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(550,380)(810,380)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/PrepareData" componentIfTrue="/Steps/AutomaticStep/SaveData" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="400" y="200">
+  <Condition componentIfFalse="/Steps/AutomaticStep/PrepareData" componentIfTrue="/AutomaticStep/SaveData" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="530" y="360">
    <Description/>
   </Condition>
  </Conditions>

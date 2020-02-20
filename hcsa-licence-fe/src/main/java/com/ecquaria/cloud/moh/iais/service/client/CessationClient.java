@@ -21,5 +21,5 @@ import org.springframework.web.bind.annotation.*;
     FeignResponseEntity<AppInsRepDto> getAppCessationDto(@PathVariable("appNo") String appNo);
 
     @PostMapping(value = "/appeal/application-cessation",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppCessMiscDto> saveCessation(@RequestBody AppCessMiscDto appCessMiscDto);
+    FeignResponseEntity<Void> saveCessation(@RequestBody AppCessMiscDto appCessMiscDto);
 }

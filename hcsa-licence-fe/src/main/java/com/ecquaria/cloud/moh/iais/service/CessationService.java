@@ -14,4 +14,5 @@ public interface CessationService {
 
     List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds);
     void saveCessations(AppCessMiscDto appCessMiscDto,String licId);
+    void updateCesation(AppCessMiscDto appCessMiscDto,String licId);
 }
