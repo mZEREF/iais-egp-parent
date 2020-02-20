@@ -12,14 +12,14 @@
                                  firstOption="Select a type"></iais:select>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <label class="col-md-3 control-label" for="inboxService">Service</label>
                 <div class="col-md-8">
                     <iais:select name="inboxService" id="inboxService" options="inboxServiceSelect"
                                  firstOption="Select a service"></iais:select>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="search-wrap">
                     <iais:value>
                         <div class="input-group">

@@ -72,6 +72,13 @@
     function doLicRenew() {
         submit('licDoRenew');
     }
+
+    function toLicView(licId){
+        alert("toLicenceView");
+        $("[name='crud_action_value']").val(licId);
+        $("[name='crud_action_additional']").val("toLicView");
+        submit('licDoAmend');
+    }
     
     function sortRecords(sortFieldName,sortType){
         $("[name='crud_action_value']").val(sortFieldName);

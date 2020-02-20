@@ -77,16 +77,10 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12">
-                <div class="col-xs-2 col-md-2">
-                    <button type="button" class="btn btn-primary" id="lic-renew" >Renew</button>
-                </div>
-                <div class="col-xs-2 col-md-2">
-                    <button type="button" class="btn btn btn-secondary" id="lic-amend" >Amend</button>
-                </div>
-                <div class="col-xs-2 col-md-2">
-                    <button type="button" class="btn btn btn-secondary" >Cease</button>
-                </div>
+            <div class="licence-btns">
+                <a class="btn btn-primary disabled" href="javascript:;" id="lic-renew">Renew</a>
+                <a class="btn btn-secondary disabled" href="javascript:;">Cease</a>
+                <a class="btn btn-secondary disabled" href="javascript:;" id="lic-amend">Amend</a>
             </div>
         </div>
         <iais:pagination  param="licParam" result="licResult"/>
@@ -97,6 +91,7 @@
             <table class="table">
                 <thead>
                 <tr>
+                    <iais:sortableHeader needSort="false"  field="" value=" "></iais:sortableHeader>
                     <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No."></iais:sortableHeader>
                     <iais:sortableHeader needSort="true"  field="SVC_NAME" value="Type"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true"  field="STATUS" value="Status"></iais:sortableHeader>
@@ -123,10 +118,12 @@
                                         <input class="form-check-input licenceCheck" id="licence1" type="checkbox"
                                                name="licenceNo" value="licenId${status.index}" aria-invalid="false">
                                         <label class="form-check-label" for="licence1"><span
-                                                class="check-square"></span><a
-                                                href="#">${licenceQuery.licenceNo}</a></label>
-                                        <input type="hidden" name="licenId${status.index}" value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}" />"/>
+                                                class="check-square"></span></label>
                                     </div>
+                                </td>
+                                <td>
+                                    <a href="#" onclick="toLicView('${licenceQuery.id}')">${licenceQuery.licenceNo}</a>
+                                    <input type="hidden" name="licenId${status.index}" value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}" />"/>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Type</p>
@@ -134,7 +131,7 @@
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Status</p>
-                                    <p>${licenceQuery.status}</p>
+                                    <p style="margin-right: 26px;">${licenceQuery.status}</p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Premises</p>

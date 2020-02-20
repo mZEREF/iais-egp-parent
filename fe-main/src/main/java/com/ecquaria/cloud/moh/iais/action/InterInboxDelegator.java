@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -15,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.InboxConst;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import lombok.extern.slf4j.Slf4j;
@@ -109,7 +111,9 @@ public class InterInboxDelegator {
     public void prepareDate(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
+        LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(request,AppConsts.SESSION_ATTR_LOGIN_USER);
         SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter,true);
+        inboxParam.addFilter("userId", loginContext.getUserId(),true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
         SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
         List<InboxQueryDto> inboxQueryDtoList = inboxResult.getRows();
@@ -118,6 +122,15 @@ public class InterInboxDelegator {
             String serviceName = inboxService.getServiceNameById(inboxQueryDto.getServiceId());
             inboxQueryDto.setProcessUrl(RedirectUtil.changeUrlToCsrfGuardUrlUrl(inboxQueryDto.getProcessUrl(), request));
             inboxQueryDto.setServiceId(serviceName);
+            if ("MESTYPE001".equals(inboxQueryDto.getMessageType())){
+                inboxQueryDto.setMessageType("Notification");
+            }
+            if ("MESTYPE002".equals(inboxQueryDto.getMessageType())){
+                inboxQueryDto.setMessageType("Announcement");
+            }
+            if ("MESTYPE003".equals(inboxQueryDto.getMessageType())){
+                inboxQueryDto.setMessageType("Action Required");
+            }
         }
         if(!StringUtil.isEmpty(inboxResult)){
             ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, inboxParam);
@@ -328,16 +341,26 @@ public class InterInboxDelegator {
      *
      */
     public void licDoAmend(BaseProcessClass bpc) throws IOException {
-        String licId = ParamUtil.getString(bpc.request, "licenceNo");
-        String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
-        StringBuilder url = new StringBuilder();
-        url.append("https://").append(bpc.request.getServerName())
-                .append("/hcsa-licence-web/eservice/INTERNET/MohRequestForChange")
-                .append("?licenceId=").append(licIdValue);
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);
-    }
+        if ("toLicView".equals(ParamUtil.getString(bpc.request, "crud_action_additional"))){
+            String licId = ParamUtil.getString(bpc.request, "crud_action_value");
+            StringBuilder url = new StringBuilder();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohLicenceView")
+                    .append("?licenceId=").append(licId);
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }else{
+            String licId = ParamUtil.getString(bpc.request, "licenceNo");
+            String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
+            StringBuilder url = new StringBuilder();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohRequestForChange")
+                    .append("?licenceId=").append(licIdValue);
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }
 
+    }
 
     /**
      *
@@ -361,10 +384,7 @@ public class InterInboxDelegator {
                 String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
                 bpc.response.sendRedirect(tokenUrl);
             }
-
-
         }
-
     }
     /**
      *
@@ -376,13 +396,15 @@ public class InterInboxDelegator {
         inboxServiceSelectList.add(new SelectOption("All", "All"));
         inboxServiceSelectList.add(new SelectOption("34F99D15-820B-EA11-BE7D-000C29F371DC", "Blood Banking"));
         inboxServiceSelectList.add(new SelectOption("35F99D15-820B-EA11-BE7D-000C29F371DC", "Clinical Laboratory"));
+        inboxServiceSelectList.add(new SelectOption("A21ADD49-820B-EA11-BE7D-000C29F371DC", "Nuclear Medicine (Assay)"));
+        inboxServiceSelectList.add(new SelectOption("F27DD5E2-C90C-EA11-BE7D-000C29F371DC", "Nuclear Medicine (Imaging)"));
         ParamUtil.setRequestAttr(request, "inboxServiceSelect", inboxServiceSelectList);
 
         List<SelectOption> inboxTypSelectList = new ArrayList<>();
         inboxTypSelectList.add(new SelectOption("All", "All"));
         inboxTypSelectList.add(new SelectOption("MESTYPE001", "Notification"));
         inboxTypSelectList.add(new SelectOption("MESTYPE002", "Announcement"));
-        inboxTypSelectList.add(new SelectOption("MESTYPE003", "Query"));
+        inboxTypSelectList.add(new SelectOption("MESTYPE003", "Action Required"));
         ParamUtil.setRequestAttr(request, "inboxTypeSelect", inboxTypSelectList);
     }
 
@@ -408,6 +430,8 @@ public class InterInboxDelegator {
         appServiceTypeSelectList.add(new SelectOption("All", "All"));
         appServiceTypeSelectList.add(new SelectOption("34F99D15-820B-EA11-BE7D-000C29F371DC", "Blood Banking"));
         appServiceTypeSelectList.add(new SelectOption("35F99D15-820B-EA11-BE7D-000C29F371DC", "Clinical Laboratory"));
+        appServiceTypeSelectList.add(new SelectOption("A21ADD49-820B-EA11-BE7D-000C29F371DC", "Nuclear Medicine (Assay)"));
+        appServiceTypeSelectList.add(new SelectOption("F27DD5E2-C90C-EA11-BE7D-000C29F371DC", "Nuclear Medicine (Imaging)"));
         ParamUtil.setRequestAttr(request, "appServiceType", appServiceTypeSelectList);
 
         List<SelectOption> selectDraftApplicationSelectList = new ArrayList<>();
@@ -427,6 +451,12 @@ public class InterInboxDelegator {
         List<SelectOption> LicenceStatusList = new ArrayList<>();
         LicenceStatusList.add(new SelectOption("All", "All"));
         LicenceStatusList.add(new SelectOption("LICEST001", "Action"));
+        LicenceStatusList.add(new SelectOption("LICEST002", "Ceased"));
+        LicenceStatusList.add(new SelectOption("LICEST003", "Expired"));
+        LicenceStatusList.add(new SelectOption("LICEST004", "Lapsed "));
+        LicenceStatusList.add(new SelectOption("LICEST005", "Approved  "));
+        LicenceStatusList.add(new SelectOption("LICEST006", "Suspended "));
+        LicenceStatusList.add(new SelectOption("LICEST007", "Revoked "));
         ParamUtil.setRequestAttr(request, "licStatus", LicenceStatusList);
 
         List<SelectOption> LicenceTypeList = new ArrayList<>();
