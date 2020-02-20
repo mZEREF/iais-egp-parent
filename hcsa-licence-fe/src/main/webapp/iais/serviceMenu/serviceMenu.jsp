@@ -82,7 +82,7 @@
                 </div>
                 <div class="col-xs-12 col-md-4">
                     <div class="text-right text-center-mobile">
-                        <a class="btn btn-primary next premiseId" id="submitService">Continue</a>
+                        <a class="btn btn-primary next" id="submitService">Continue</a>
                     </div>
                 </div>
             </div>
