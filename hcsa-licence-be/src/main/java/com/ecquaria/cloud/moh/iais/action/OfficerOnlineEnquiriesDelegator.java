@@ -491,7 +491,7 @@ public class OfficerOnlineEnquiriesDelegator {
                             }
                         }
                     }
-                    else if(count[1]!=2){
+                    else if(count[1]==2){
                         ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
                         rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
                         reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
