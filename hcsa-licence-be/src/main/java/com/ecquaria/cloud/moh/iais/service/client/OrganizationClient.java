@@ -125,4 +125,6 @@ public interface OrganizationClient {
     @GetMapping(value = "/iais-licensee-be/OrganizationLicDto/{licenseeId}")
     FeignResponseEntity<OrganizationLicDto> getOrganizationLicDtoByLicenseeId(@PathVariable(name = "licenseeId") String licenseeId);
 
+    @GetMapping(value = "/iais-task/com-tasks/{refNo}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<TaskDto>> getCompleteTaskByRefNo(@PathVariable(name = "refNo") String refNo);
 }

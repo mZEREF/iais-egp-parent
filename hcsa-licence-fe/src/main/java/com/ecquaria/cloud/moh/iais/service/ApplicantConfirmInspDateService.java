@@ -74,8 +74,17 @@ public interface ApplicantConfirmInspDateService {
       * @author: shicheng
       * @Date 2020/2/18
       * @Param: appPremCorrId
-      * @return:
-      * @Descripation:
+      * @return: ApptFeConfirmDateDto
+      * @Descripation: getSpecificDateDto
       */
     ApptFeConfirmDateDto getSpecificDateDto(String appPremCorrId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/2/19
+      * @Param: apptFeConfirmDateDto
+      * @return: void
+      * @Descripation: reject Specific Date
+      */
+    void rejectSpecificDate(ApptFeConfirmDateDto apptFeConfirmDateDto);
 }

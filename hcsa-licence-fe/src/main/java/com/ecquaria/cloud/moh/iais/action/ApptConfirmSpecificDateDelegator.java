@@ -93,6 +93,7 @@ public class ApptConfirmSpecificDateDelegator {
     public void userConfirmSpecificDateReject(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmSpecificDateReject start ...."));
         ApptFeConfirmDateDto apptFeConfirmDateDto = (ApptFeConfirmDateDto) ParamUtil.getSessionAttr(bpc.request, "apptFeConfirmDateDto");
+        applicantConfirmInspDateService.rejectSpecificDate(apptFeConfirmDateDto);
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
     }
 }

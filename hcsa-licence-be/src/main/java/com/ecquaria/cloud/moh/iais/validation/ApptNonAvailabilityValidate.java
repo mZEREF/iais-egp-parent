@@ -39,7 +39,7 @@ public class ApptNonAvailabilityValidate implements CustomizeValidator {
         List<TaskDto> taskDtoList = organizationClient.getTasksByUserIdAndRole(apptNonAvailabilityDateDto.getUserCorrId(), RoleConsts.USER_ROLE_INSPECTIOR).getEntity();
         List<Date> inspectionDate = new ArrayList<>();
         Map<String, String> errMap = new HashMap<>();
-        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH");
         for(TaskDto tDto : taskDtoList){
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(tDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
             if(appPremisesRecommendationDto.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
