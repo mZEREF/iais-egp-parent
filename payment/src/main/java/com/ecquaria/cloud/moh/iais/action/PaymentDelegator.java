@@ -8,9 +8,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * @author weilu
@@ -38,17 +40,21 @@ public class PaymentDelegator {
         String reqRefNo = (String)ParamUtil.getSessionAttr(bpc.request, "reqRefNo");
         String invoiceNo = (String)ParamUtil.getSessionAttr(bpc.request, "invoiceNo");
         String backUrl = (String) ParamUtil.getSessionAttr(bpc.request,"backUrl");
-        String showUrl = "https://" + request.getServerName();
-        String s = showUrl+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment?result=success&reqRefNo="+reqRefNo;
-        if(!StringUtil.isEmpty(backUrl)){
-             s = showUrl +"/" +backUrl+"?result=success&reqRefNo="+reqRefNo;
-        }
-        String url = RedirectUtil.changeUrlToCsrfGuardUrlUrl(s, request);
-        bpc.response.sendRedirect(url);
         paymentDto.setAmount(amount);
         paymentDto.setReqRefNo(reqRefNo);
         paymentDto.setInvoiceNo(invoiceNo);
         paymentDto.setPmtStatus(result);
-        paymentService.savePayment(paymentDto);
+        PaymentDto paymentDtoSave = paymentService.savePayment(paymentDto);
+        Date txnDtD = paymentDtoSave.getTxnDt();
+        String txnDt = DateUtil.formatDate(txnDtD, "yyyy-MM-dd");
+        String txnRefNo = paymentDtoSave.getTxnRefNo();
+        String showUrl = "https://" + request.getServerName();
+        String s = showUrl+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment?result=success&reqRefNo="+reqRefNo;
+        if(!StringUtil.isEmpty(backUrl)){
+             s = showUrl +"/" +backUrl+"?result=success&reqRefNo="+reqRefNo+"&txnDt="+txnDt+"&txnRefNo="+txnRefNo;
+        }
+        String url = RedirectUtil.changeUrlToCsrfGuardUrlUrl(s, request);
+        bpc.response.sendRedirect(url);
+
     }
 }

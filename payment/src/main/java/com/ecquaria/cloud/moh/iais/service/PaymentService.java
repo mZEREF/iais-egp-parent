@@ -8,5 +8,5 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
  */
 public interface PaymentService {
 
-    void savePayment (PaymentDto paymentDto);
+    PaymentDto savePayment (PaymentDto paymentDto);
 }

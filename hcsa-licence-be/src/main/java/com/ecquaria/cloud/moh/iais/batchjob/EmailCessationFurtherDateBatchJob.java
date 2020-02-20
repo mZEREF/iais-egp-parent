@@ -15,7 +15,7 @@ import java.io.IOException;
  */
 @Delegator("emailToFurtherDate")
 @Log4j
-public class CessationFurtherDateBatchJob {
+public class EmailCessationFurtherDateBatchJob {
 
     @Autowired
     private EmailToResultService emailToResultService;

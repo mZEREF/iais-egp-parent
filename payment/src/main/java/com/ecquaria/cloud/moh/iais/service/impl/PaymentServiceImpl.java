@@ -17,7 +17,8 @@ public class PaymentServiceImpl implements PaymentService {
     private PaymentClient paymentClient;
 
     @Override
-    public void savePayment(PaymentDto paymentDto) {
-        paymentClient.saveHcsaPayment(paymentDto);
+    public PaymentDto savePayment(PaymentDto paymentDto) {
+        PaymentDto paymentDtoSave = paymentClient.saveHcsaPayment(paymentDto).getEntity();
+        return paymentDto;
     }
 }

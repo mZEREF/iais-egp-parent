@@ -115,7 +115,6 @@ public class EmailToResultServiceImpl implements EmailToResultService {
 
     @Override
     public void sendCessationFurtherDateEmail() throws IOException, TemplateException {
-
         String status = "Approved";
         Date date = new Date();
         List<LicenceDto> licenceDtos = hcsaLicenceClient.listLicencesByStatus(status).getEntity();
@@ -134,16 +133,44 @@ public class EmailToResultServiceImpl implements EmailToResultService {
 
     @Override
     public void sendCessationPresentDateEmail() throws IOException, TemplateException {
-
+        String status = "Approved";
+        Date date = new Date();
+        String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
+        List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(status, dateStr).getEntity();
+        if(licenceDtos!=null&&!licenceDtos.isEmpty()){
+            for(LicenceDto licenceDto :licenceDtos){
+                String svcName = licenceDto.getSvcName();
+                prepareCessation(dateStr,PRESENTDATECESSATION,svcName);
+            }
+        }
     }
 
     @Override
     public void sendCessationEffectiveDateEmail() throws IOException, TemplateException {
-
+        String status = "Approved";
+        Date date = new Date();
+        String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
+        List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(status, dateStr).getEntity();
+        if(licenceDtos!=null&&!licenceDtos.isEmpty()){
+            for(LicenceDto licenceDto :licenceDtos){
+                String svcName = licenceDto.getSvcName();
+                prepareCessation(dateStr,EFFECTIVEDATAEQUALDATA,svcName);
+            }
+        }
     }
 
     @Override
     public void sendCessationLicenceEndDateEmail() throws IOException, TemplateException {
+        String status = "Licence01";
+        Date date = new Date();
+        String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
+        List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(status, dateStr).getEntity();
+        if(licenceDtos!=null&&!licenceDtos.isEmpty()){
+            for(LicenceDto licenceDto :licenceDtos){
+                String svcName = licenceDto.getSvcName();
+                prepareCessation(dateStr,LICENCEENDDATE,svcName);
+            }
+        }
 
     }
 
