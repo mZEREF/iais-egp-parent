@@ -49,6 +49,12 @@
                         </iais:value>
                       </iais:row>
                       <iais:row>
+                        <iais:field value="Reason"/>
+                        <iais:value width="7">
+                          <label><c:out value="${apptInspectionDateDto.apptFeReason}"/></label>
+                        </iais:value>
+                      </iais:row>
+                      <iais:row>
                         <iais:field value="Processing Decision" required="true"/>
                         <iais:value width="7">
                           <iais:select name="inspecProcessDec" options="inspecProDec" firstOption="Please select" value="${apptInspectionDateDto.processDec}" onchange="javascript:apptReShInspectionDateChange(this.value)"></iais:select>
