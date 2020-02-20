@@ -247,7 +247,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
 
-        applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
+        appPremisesInspecApptDtoList = applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList).getEntity();
         createFeAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
         String url = systemParamConfig.getInterServerName() +
                 MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE +
@@ -273,7 +273,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
         }
 
-        applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
+        appPremisesInspecApptDtoList = applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList).getEntity();
         createFeAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
         String url = systemParamConfig.getInterServerName() +
                 MessageConstants.MESSAGE_INBOX_URL_APPT_SYS_INSP_DATE +
@@ -285,8 +285,13 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     }
 
     @Override
-    public List<SelectOption> getReShProcessDecList() {
-        String[] processDecArr = new String[]{InspectionConstants.PROCESS_DECI_ACCEPTS_THE_DATE, InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE};
+    public List<SelectOption> getReShProcessDecList(ApptInspectionDateDto apptInspectionDateDto) {
+        String[] processDecArr;
+        if(apptInspectionDateDto.getAppPremisesInspecApptDto() != null){
+            processDecArr = new String[]{InspectionConstants.PROCESS_DECI_ACCEPTS_THE_DATE, InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE};
+        } else {
+            processDecArr = new String[]{InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE};
+        }
         List<SelectOption> processDecOption = MasterCodeUtil.retrieveOptionsByCodes(processDecArr);
         return processDecOption;
     }
@@ -296,9 +301,15 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         TaskDto taskDto = taskService.getTaskById(taskId);
         AppPremisesInspecApptDto appPremisesInspecApptDto = inspectionTaskClient.getSpecificDtoByAppPremCorrId(taskDto.getRefNo()).getEntity();
         List<TaskDto> taskDtoList = organizationClient.getCurrTaskByRefNo(taskDto.getRefNo()).getEntity();
-        String specificDateStr = getApptDateToShow(appPremisesInspecApptDto.getSpecificInspDate());
-        apptInspectionDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDto);
+        String specificDateStr = "-";
+        String apptFeReason = "-";
+        if(appPremisesInspecApptDto != null) {
+            specificDateStr = getApptDateToShow(appPremisesInspecApptDto.getSpecificInspDate());
+            apptInspectionDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDto);
+
+        }
         apptInspectionDateDto.setApptFeSpecificDate(specificDateStr);
+        apptInspectionDateDto.setApptFeReason(apptFeReason);
         apptInspectionDateDto.setTaskDtos(taskDtoList);
         apptInspectionDateDto.setTaskDto(taskDto);
         return apptInspectionDateDto;
@@ -311,17 +322,21 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         List<TaskDto> taskDtoList = apptInspectionDateDto.getTaskDtos();
         updateTaskDtoList(taskDtoList);
         List<TaskDto> taskDtos = new ArrayList<>();
-        TaskDto tDto = createTaskDto(taskDto, loginContext.getUserId());
-        taskDtos.add(tDto);
+        for(TaskDto taskDto2 : taskDtoList){
+            TaskDto tDto = createTaskDto(taskDto2, loginContext.getUserId());
+            taskDtos.add(tDto);
+        }
         taskService.createTasks(taskDtos);
         Date saveDate = null;
         if(apptInspectionDateDto.getProcessDec().equals(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE)){
             List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = new ArrayList<>();
             saveDate = apptInspectionDateDto.getSpecificDate();
-            //update and create
-            appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-            appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            applicationClient.updateAppPremisesInspecApptDto(appPremisesInspecApptDto);
+            if(appPremisesInspecApptDto != null) {
+                //update and create
+                appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                applicationClient.updateAppPremisesInspecApptDto(appPremisesInspecApptDto);
+            }
             AppPremisesInspecApptDto appPremInspApptDto = new AppPremisesInspecApptDto();
             appPremInspApptDto.setAppCorrId(taskDto.getRefNo());
             appPremInspApptDto.setApptRefNo(null);

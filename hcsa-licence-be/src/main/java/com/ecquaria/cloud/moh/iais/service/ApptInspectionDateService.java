@@ -69,11 +69,11 @@ public interface ApptInspectionDateService {
     /**
       * @author: shicheng
       * @Date 2020/2/19
-      * @Param:
+      * @Param: apptInspectionDateDto
       * @return:
       * @Descripation: get Re-Scheduling ProcessDec List
       */
-    List<SelectOption> getReShProcessDecList();
+    List<SelectOption> getReShProcessDecList(ApptInspectionDateDto apptInspectionDateDto);
 
     /**
       * @author: shicheng
