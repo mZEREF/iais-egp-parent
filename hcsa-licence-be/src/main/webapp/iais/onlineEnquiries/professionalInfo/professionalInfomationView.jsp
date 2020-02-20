@@ -23,7 +23,7 @@
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="prRegNo" value="">
   <%@ include file="/include/formHidden.jsp" %>
-  <div class="bg-title"><h2>PROFESSIONAL INFORMATION</h2></div>
+  <div class="bg-title"><h2>Professional information</h2></div>
   <div class="main-content">
 
 
@@ -96,8 +96,8 @@
           <td>
             <iais:field  value="Hci Postalode"/>
             <iais:value width="18">
-              <input type="text" name="hciPostalode" value="${hciPostalode}" />
-              <span id="error_hciPostalode" name="iaisErrorMsg" class="error-msg"></span>
+              <input type="text" name="hciPostalcode" value="${hciPostalcode}" />
+              <span id="error_hciPostalcode" name="iaisErrorMsg" class="error-msg"></span>
             </iais:value>
           </td>
 
@@ -123,7 +123,7 @@
           <td>
             <iais:field value="Designation Name"/>
             <iais:value width="18">
-              <input type="text" name="designation" value="${designation}" />
+              <iais:select name="designation" id="designation" codeCategory="CATE_ID_DESIGNATION" firstOption="Please Select" value="${designation}"></iais:select>
               <span id="error_designation" name="iaisErrorMsg" class="error-msg"></span>
             </iais:value>
           </td>
@@ -134,7 +134,7 @@
           <td>
             <iais:field  value="Service Personnal Role"/>
             <iais:value width="18">
-              <iais:select name="role" id="role" options = "roleSelect" codeCategory="CATE_ID_DESIGNATION" firstOption="Please Select"
+              <iais:select name="role" id="role"  codeCategory="CATE_ID_DESIGNATION" firstOption="Please Select"
                            value="${role}"></iais:select>
               <span id="error_role" name="iaisErrorMsg" class="error-msg"></span>
             </iais:value>
@@ -240,8 +240,7 @@
 
 <script>
   function viewPfDetails(val) {
-      $("#prRegNo").val(val)
-      SOP.Crud.cfxSubmit("mainForm", viewPfDetails);
+      SOP.Crud.cfxSubmit("mainForm", "viewPfDetails");
   }
 
   

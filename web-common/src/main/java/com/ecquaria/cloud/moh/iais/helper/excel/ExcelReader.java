@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.apache.poi.ss.usermodel.CellType.STRING;
@@ -79,11 +81,12 @@ public final class ExcelReader {
         int cellCount = sheet.getRow(0).getPhysicalNumberOfCells();
 
         List<List<String>> result = new ArrayList<>();
-        //Exclude column names
         for (int i = 1; i < rowCount; i++) {
-            //remove blank lines;
             Row row = sheet.getRow(i);
-            if (row == null){
+            if (row == null || row.getCell(0) == null || row.getCell(0).getNumericCellValue() == 0x0){
+                /*In iais excel template , the cell(0) is SN: sequence n + 1
+                Because the number of Excel physical lines uploaded by user may be greater than the actual number of lines.
+                If no line number is found, filter*/
                 continue;
             }
 

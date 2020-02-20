@@ -112,6 +112,7 @@ public class ProfessionalInformationDelegator {
 
 	}
 
+
 	/**
 	 * @author: yichen
 	 * @description: the mehod download excel file by db genereate
@@ -186,7 +187,7 @@ public class ProfessionalInformationDelegator {
 		String address = ParamUtil.getString(request, "address");
 		String hciName = ParamUtil.getString(request, "hciName");
 		String hciCode = ParamUtil.getString(request, "hciCode");
-		String hciPostalode = ParamUtil.getString(request, "hciPostalode");
+		String hciPostalcode = ParamUtil.getString(request, "hciPostalcode");
 		String practiceLocation = ParamUtil.getString(request, "practiceLocation");
 		String serviceName = ParamUtil.getString(request, "serviceName");
 		String designation = ParamUtil.getString(request, "designation");
@@ -198,7 +199,7 @@ public class ProfessionalInformationDelegator {
 		ParamUtil.setRequestAttr(request, "address", address);
 		ParamUtil.setRequestAttr(request, "hciName", hciName);
 		ParamUtil.setRequestAttr(request, "hciCode", hciCode);
-		ParamUtil.setRequestAttr(request, "hciPostalode", hciPostalode);
+		ParamUtil.setRequestAttr(request, "hciPostalcode", hciPostalcode);
 		ParamUtil.setRequestAttr(request, "practiceLocation", practiceLocation);
 		ParamUtil.setRequestAttr(request, "serviceName", serviceName);
 		ParamUtil.setRequestAttr(request, "designation", designation);
@@ -212,7 +213,7 @@ public class ProfessionalInformationDelegator {
 		dto.setDesignation(designation);
 		dto.setHciCode(hciCode);
 		dto.setHciName(hciName);
-		dto.setHciPostalode(hciPostalode);
+		dto.setHciPostalode(hciPostalcode);
 		dto.setPostalode(postalCode);
 		dto.setAddress(address);
 		dto.setRole(role);
@@ -249,8 +250,8 @@ public class ProfessionalInformationDelegator {
 				searchParam.addFilter("hciCode", hciName, true);
 			}
 
-			if(!StringUtil.isEmpty(hciPostalode)){
-				searchParam.addFilter("hciPostalode", hciPostalode, true);
+			if(!StringUtil.isEmpty(hciPostalcode)){
+				searchParam.addFilter("hciPostalcode", hciPostalcode, true);
 			}
 
 			if(!StringUtil.isEmpty(practiceLocation)){

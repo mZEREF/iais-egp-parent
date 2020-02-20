@@ -85,12 +85,12 @@
                 <div class="table-footnote">
                   <div class="row">
                     <div class="col-xs-6 col-md-4">
+                      <p><a onclick="cancelClone()" class="back"><em class="fa fa-angle-left"></em> Back</a></p>
                     </div>
                     <div class="col-xs-6 col-md-8 text-right">
 
                       <br><br>
                       <div class="text-right text-center-mobile">
-                        <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: cancelClone();">Cancel</a>
                         <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: submitCloneItem();">Submit</a>
                       </div>
                     </div>

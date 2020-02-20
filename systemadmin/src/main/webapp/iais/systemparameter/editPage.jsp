@@ -34,7 +34,7 @@
 
         <div class="form-horizontal">
             <div class="form-group">
-                <label class="col-md-1">Domain Type:
+                <label class="col-md-1">System Parameter Type:
                 </label>
                 <div class="col-md-3">
                     <iais:select name="domainType" id="domainType"
@@ -53,6 +53,16 @@
             </div>
 
             <div class="form-group">
+                <label class="col-md-1">Type of Value:
+                </label>
+                <div class="col-md-3">
+                    <iais:select name="paramType" id="paramType"
+                                 firstOption="Please select" codeCategory="CATE_ID_SYSTEM_PARAMETER_TYPE_OF_VALUE" value="${parameterRequestDto.paramType}"></iais:select>
+                    <span id="error_paramType" name="iaisErrorMsg" class="error-msg"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
                 <label class="col-md-1">Value:
                 </label>
                 <div class="col-md-3">
@@ -62,7 +72,7 @@
             </div>
 
             <div class="form-group">
-                <label class="col-md-1">Description:
+                <label class="col-md-1">Parameter Description:
                 </label>
                 <div class="col-md-3">
                     <input name="description" type="text" value="${parameterRequestDto.description}">

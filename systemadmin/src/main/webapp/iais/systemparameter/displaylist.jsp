@@ -31,7 +31,7 @@
 
         <div class="form-horizontal">
             <div class="form-group">
-                <label class="col-md-1">Domain Type:
+                <label class="col-md-1">Type of System Parameter:
                 </label>
                 <div class="col-md-3">
                     <iais:select name="domainType" id="domainType"
@@ -51,7 +51,7 @@
             </div>
 
             <div class="form-group">
-                <label class="col-md-1">Description:
+                <label class="col-md-1">Parameter Description:
                 </label>
                 <div class="col-md-3">
                     <input id="description" name="description" type="text" value="${description}">
@@ -81,10 +81,10 @@
                                         <thead>
                                         <tr>
                                             <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
-                                            <iais:sortableHeader needSort="true"  field="domain_type" value="Domain Type"></iais:sortableHeader>
+                                            <iais:sortableHeader needSort="true"  field="domain_type" value="System Parameter Type"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
-                                            <iais:sortableHeader needSort="true"   field="description" value="Description"></iais:sortableHeader>
-                                            <iais:sortableHeader needSort="true"   field="paramType" value="Param Type"></iais:sortableHeader>
+                                            <iais:sortableHeader needSort="true"   field="description" value="Parameter Description"></iais:sortableHeader>
+                                            <iais:sortableHeader needSort="true"   field="paramType" value="Type of Value"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true"   field="value" value="Value"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true"   field="status" value="Status"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
