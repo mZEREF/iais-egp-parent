@@ -170,6 +170,9 @@ public class PaginationTag extends DivTagSupport {
                 sb.append(pageNo+2);
                 sb.append("</a></li>");
             }
+            if (pageNo + 2 < pageCount) {
+                sb.append("...");
+            }
             //sb.append("<li><a href=\"#\" aria-label=\"Next\"><span aria-hidden=\"true\"><i class=\"fa fa-chevron-right\"></i></span></a></li>");
         }
 //        sb.append("<li><input type=\"text\" name=\"").append(pageNumTextName).append("\" id=\"");
