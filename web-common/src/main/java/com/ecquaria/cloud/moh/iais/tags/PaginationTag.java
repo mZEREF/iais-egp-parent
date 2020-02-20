@@ -96,7 +96,9 @@ public class PaginationTag extends DivTagSupport {
         sb.append("<div class=\"row table-info-display\">");
         sb.append("<div class=\"col-xs-12 col-md-4 text-left\">");
         sb.append("<p class=\"count table-count\">");
-        sb.append((pageNo - 1) * pageSize + 1).append("-").append(pageNo * pageSize);
+        int maxRec = sr.getRowCount() < pageNo * pageSize ? sr.getRowCount() : pageNo * pageSize;
+        int statRec = sr.getRowCount() < ((pageNo - 1) * pageSize + 1) ? sr.getRowCount() : ((pageNo - 1) * pageSize + 1);
+        sb.append(statRec).append("-").append(maxRec);
         sb.append(" out of ");
         sb.append(sr.getRowCount());
         sb.append(" items");
@@ -155,12 +157,12 @@ public class PaginationTag extends DivTagSupport {
             sb.append("<li class=\"active\"><a href=\"#\">");
             sb.append(pageNo);
             sb.append("</a></li>");
-            if(pageNo+1<=pageCount){
+            if(pageNo+1 <= pageCount){
                 sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 1).append(ENDTAG);
                 sb.append(pageNo+1);
                 sb.append("</a></li>");
             }
-            if(pageNo+2<=pageCount){
+            if(pageNo+2 <= pageCount){
                 sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 2).append(ENDTAG);
                 sb.append(pageNo+2);
                 sb.append("</a></li>");
