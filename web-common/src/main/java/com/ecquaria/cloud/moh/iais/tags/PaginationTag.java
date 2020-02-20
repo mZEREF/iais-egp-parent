@@ -96,7 +96,7 @@ public class PaginationTag extends DivTagSupport {
         sb.append("<div class=\"row table-info-display\">");
         sb.append("<div class=\"col-xs-12 col-md-4 text-left\">");
         sb.append("<p class=\"count table-count\">");
-        sb.append(pageNo).append("-").append(pageCount);
+        sb.append((pageNo - 1) * pageSize + 1).append("-").append(pageNo * pageSize);
         sb.append(" out of ");
         sb.append(sr.getRowCount());
         sb.append(" items");
@@ -135,7 +135,8 @@ public class PaginationTag extends DivTagSupport {
         sb.append("<div class=\"nav\">").append("<ul class=\"pagination\">");
         if (pageNo > 1) {
             //sb.append(STARTLI).append(jsFunc).append("('1');\"></a></li>");
-            sb.append(STARTLI).append(jsFunc).append("('").append(pageNo - 1).append("');\"><span aria-hidden=\"true\"><i class=\"fa fa-chevron-left\"></i></span></a></li>");
+            sb.append(STARTLI).append(jsFunc).append("('").append(1).append("');\"><span aria-hidden=\"true\"><i class=\"fa fa-angle-double-left\"></i></span></a></li>");
+            sb.append(STARTLI).append(jsFunc).append("('").append(pageNo - 1).append("');\"><span aria-hidden=\"true\"><i class=\"fa fa-angle-left\"></i></span></a></li>");
             sb.append(STARTLI).append(jsFunc).append("('").append(pageNo - 1).append(ENDTAG);
             sb.append(pageNo-1);
             sb.append("</a></li>");
@@ -149,7 +150,8 @@ public class PaginationTag extends DivTagSupport {
                 sb.append("</a></li>");
             }
         } else {
-            sb.append("<li><a href=\"#\" aria-label=\"Previous\"><span aria-hidden=\"false\"><i class=\"fa fa-chevron-left\"></i></span></a></li>");
+            sb.append("<li><a href=\"javascript:void(0);\" aria-label=\"First\"><span aria-hidden=\"false\"><i class=\"fa fa-angle-double-left\"></i></span></a></li>");
+            sb.append("<li><a href=\"javascript:void(0);\" aria-label=\"Previous\"><span aria-hidden=\"false\"><i class=\"fa fa-angle-left\"></i></span></a></li>");
             sb.append("<li class=\"active\"><a href=\"#\">");
             sb.append(pageNo);
             sb.append("</a></li>");
@@ -170,11 +172,13 @@ public class PaginationTag extends DivTagSupport {
 //        sb.append("<li><input type=\"button\" class=\"btn btn-mini btn-primary\" value=\"Go\" onclick=\"javascript:").append(jumpPageFuncName);
 //        sb.append("();\"/></li>");
         if (pageNo < pageCount) {
-            sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 1).append("');\"><i class=\"fa fa-chevron-right\"></i></a></li>");
+            sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 1).append("');\"><i class=\"fa fa-angle-right\"></i></a></li>");
+            sb.append(STARTLI).append(jsFunc).append("('").append(pageCount).append("');\"><i class=\"fa fa-angle-double-right\"></i></a></li>");
            // sb.append(STARTLI).append(jsFunc).append("('").append(pageCount).append("');\"><i class=\"fa fa-chevron-right\"></i></a></li>");
         } else {
            // sb.append("<li><a href=\"javascript:void(0);\"><i class=\"fa fa-chevron-left\"></i></a></li>");
-            sb.append("<li><a href=\"javascript:void(0);\"><i class=\"fa fa-chevron-right\"></i></a></li>");
+            sb.append("<li><a href=\"javascript:void(0);\"><i class=\"fa fa-angle-right\"></i></a></li>");
+            sb.append("<li><a href=\"javascript:void(0);\"><i class=\"fa fa-angle-double-right\"></i></a></li>");
         }
         sb.append("</ul></div></div></div>");
         sb.append("<script type=\"text/javascript\">");
