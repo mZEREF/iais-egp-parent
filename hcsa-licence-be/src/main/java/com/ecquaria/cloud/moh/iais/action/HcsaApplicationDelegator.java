@@ -561,9 +561,9 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         //update FE Application Status
-        applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
-        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        applicationService.updateFEApplicaiton(applicationDto);
+//        applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
+//        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+//        applicationService.updateFEApplicaiton(applicationDto);
         //send message to FE user.
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_SRC_ID);
