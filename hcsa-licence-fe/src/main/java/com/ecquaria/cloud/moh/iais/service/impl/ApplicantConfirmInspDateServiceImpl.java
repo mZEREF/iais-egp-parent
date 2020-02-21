@@ -74,6 +74,18 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     @Override
     public void confirmInspectionDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
         ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
+        String checkDate = apptFeConfirmDateDto.getCheckDate();
+        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = new ArrayList<>();
+        for(AppPremisesInspecApptDto apptDto : apptFeConfirmDateDto.getAppPremisesInspecApptDtoList()){
+            if(!(apptDto.getId().equals(checkDate))){
+                appPremisesInspecApptDtoList.add(apptDto);
+            }
+        }
+        apptFeConfirmDateDto.setAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList);
+        setApptUpdateList(apptFeConfirmDateDto, apptInspectionDateDto);
+        setUpdateApplicationDto(apptFeConfirmDateDto, apptInspectionDateDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
+        setCreateHistoryDto(apptFeConfirmDateDto, apptInspectionDateDto);
+        setCreateInspectionStatus(apptInspectionDateDto, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
     }
 
     @Override
@@ -87,6 +99,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
         Map<String, Date> newDateMap = apptFeConfirmDateDto.getInspectionNewDateMap();
         Date checkDate = newDateMap.get(apptFeConfirmDateDto.getCheckNewDate());
+        //todo set refNo
         setApptUpdateList(apptFeConfirmDateDto, apptInspectionDateDto);
         apptFeConfirmDateDto.setSaveDate(checkDate);
         setApptCreateList(apptFeConfirmDateDto, apptInspectionDateDto);
@@ -187,7 +200,12 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     @Override
     public void rejectSystemDateAndCreateTask(ApptFeConfirmDateDto apptFeConfirmDateDto) {
-
+        ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
+        setApptUpdateList(apptFeConfirmDateDto, apptInspectionDateDto);
+        setApptCreateList(apptFeConfirmDateDto, apptInspectionDateDto);
+        setUpdateApplicationDto(apptFeConfirmDateDto, apptInspectionDateDto, ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING);
+        setCreateHistoryDto(apptFeConfirmDateDto, apptInspectionDateDto);
+        setCreateInspectionStatus(apptInspectionDateDto, InspectionConstants.INSPECTION_STATUS_PENDING_RE_APPOINTMENT_INSPECTION_DATE);
     }
 
     /**
