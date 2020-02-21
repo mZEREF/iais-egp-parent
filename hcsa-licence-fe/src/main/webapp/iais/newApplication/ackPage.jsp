@@ -21,11 +21,9 @@
                         </div>
 
                         <c:forEach items="${hcsaServiceDtoList}" var="list">
-                            <c:if test ="${list.svcCode==currentSvcCode}">
                             <div class="col-xs-12">
                                 <p class="ack-font-20">-<strong><c:out value="${list.svcName}"/> </strong></p>
                             </div>
-                            </c:if>
                         </c:forEach>
                         <div class="ack-font-16">
                         <div class="col-xs-12">
@@ -79,20 +77,31 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-xs-12">
-                            <a>Print</a>
-                            <button type="button" style="background-color: #1F92FF"><a href="#" style="color:white">Indicate preferred Inspection Date</a></button>
-                            <button type="button" style="background-color: #1F92FF"><a href="#" style="color:white">Submit Self-Assessment</a></button>
-                            <button type="button" style="background-color: #1F92FF"><a href="/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu" style="color:white">Apply for Another Licence</a></button>
-                            <button type="button" style="background-color: #1F92FF"><a href="/main-web/eservice/INTERNET/MohInternetInbox" style="color:white">Go to Dashboard</a></button>
-
-                        </div>
                         </div>
                     </c:when>
                     <c:otherwise>
                         <h3>You have encountered some problems, please contact the administrator !!!</h3>
                     </c:otherwise>
                 </c:choose>
+            </div>
+            <div class="row right align">
+                <%--<a class="btn btn-secondary" href="#">Indicate preferred Inspection Date</a>
+                <a class="btn btn-secondary" href="#">Indicate preferred Inspection Date</a>--%>
+                <div class="col-xs-12 col-md-2">
+                    <a>Print</a>
+                </div>
+                <div class="col-xs-12 col-md-2">
+                    <a class="btn btn-secondary" href="#">Indicate preferred Inspection Date</a>
+                </div>
+                <div class="col-xs-12 col-md-2">
+                    <a class="btn btn-secondary" href="#">Submit Self-Assessment</a>
+                </div>
+                <div class="col-xs-12 col-md-2">
+                    <a class="btn btn-secondary" href="/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu">Apply for Another Licence</a>
+                </div>
+                <div class="col-xs-12 col-md-2">
+                    <a class="btn btn-primary" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to Dashboard</a>
+                </div>
             </div>
         </div>
     </div>
