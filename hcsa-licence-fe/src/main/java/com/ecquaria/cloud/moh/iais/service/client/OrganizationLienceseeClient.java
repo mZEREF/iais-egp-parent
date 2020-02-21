@@ -22,16 +22,16 @@ import java.util.List;
 @FeignClient(name = "iais-organization", configuration = FeignConfiguration.class,
         fallback = OrganizationLienceseeClientFallback.class)
 public interface OrganizationLienceseeClient {
-    @GetMapping(value = "/iais-licensee/licenseeKeyApptPerson/{uenNo}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-licensee/licenseeKeyApptPersonByUenNo/{uenNo}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenseeKeyApptPersonDto>> getLicenseeKeyApptPersonDtoListByUen(@PathVariable("uenNo") String uenNo);
 
-    @GetMapping(value = "/iais-licensee/licenseeKeyApptPerson/{licenseeId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-licensee/licenseeKeyApptPersonByLicId/{licenseeId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenseeKeyApptPersonDto>> getLicenseeKeyApptPersonDtoListByLicenseeId(@PathVariable("licenseeId") String licenseeId);
 
     @GetMapping(value = "/iais-licensee/licenseeIndividual/{nric}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenseeIndividualDto> getlicIndByNric(@PathVariable("nric") String nric);
 
-    @GetMapping(path = "/iais-licensee/licensee/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/iais-licensee/licensee-by-id/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenseeDto> getLicenseeById(@PathVariable(name = "id") String id);
 
 }
