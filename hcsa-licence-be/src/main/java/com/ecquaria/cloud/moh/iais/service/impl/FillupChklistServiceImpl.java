@@ -787,7 +787,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(dto).getEntity();
         String workGrp = dto.getGroupId();
         String subStage = HcsaConsts.ROUTING_STAGE_POT;
-        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
+        createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
         //create task
         TaskDto updatedtaskDto = taskService.updateTask(taskDto);
         updatedtaskDto.setId(null);
