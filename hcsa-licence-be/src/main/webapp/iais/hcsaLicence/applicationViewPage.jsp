@@ -641,6 +641,7 @@
         if (textarea == "") {
             $('#notNull').remove();
             $("#internalRemarksId").after("<span id='notNull' style='color: red;'>*NOT NULL!</span>");
+            dismissWaiting();
             return false;
         }
 
@@ -649,6 +650,7 @@
             if(nextStageReply == "---select---"){
                 $('#NSRnotNull').remove();
                 $("[name='nextStageReply']").after("<span id='NSRnotNull' style='color: red;'>*PLEASE SELECT!</span>");
+                dismissWaiting();
                 return false;
             }else{
                 document.getElementById("mainForm").submit();
@@ -659,6 +661,7 @@
         if(selectValue == "---select---"){
             $('#NSnotNull').remove();
             $("[name='nextStage']").after("<span id='NSnotNull' style='color: red;'>*PLEASE SELECT!</span>");
+            dismissWaiting();
             return false;
         }
         if(selectValue == "VERIFIED"){
@@ -666,6 +669,7 @@
             if(verified == "---select---"){
                 $('#VnotNull').remove();
                 $("[name='verified']").after("<span id='VnotNull' style='color: red;'>*PLEASE SELECT!</span>");
+                dismissWaiting();
                 return false;
             }
         }else if(selectValue == "ROLLBACK"){
@@ -673,6 +677,7 @@
             if(rollBack == "---select---"){
                 $('#BnotNull').remove();
                 $("[name='rollBack']").after("<span id='BnotNull' style='color: red;'>*PLEASE SELECT!</span>");
+                dismissWaiting();
                 return false;
             }
         }
@@ -712,6 +717,9 @@
         $.blockUI({message: '<div style="padding:3px;">We are processing your request now, please do not click the Back or Refresh buttons in the browser.</div>',
             css: {width: '25%', border: '1px solid #aaa'},
             overlayCSS: {opacity: 0.2}});
+    }
+    function dismissWaiting() {
+        $.unblockUI();
     }
 </script>
 
