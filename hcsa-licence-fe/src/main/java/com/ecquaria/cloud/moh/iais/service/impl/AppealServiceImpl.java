@@ -3,7 +3,9 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppliSpecialDocDto;
 
@@ -20,6 +22,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -27,19 +31,28 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
+import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.submission.client.App;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import com.ecquaria.sz.commons.util.FileUtil;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,13 +75,15 @@ public class AppealServiceImpl implements AppealService {
     private LicenceClient licenceClient;
     @Autowired
     private AppConfigClient appConfigClient;
-
+    @Autowired
+    private MsgTemplateClient msgTemplateClient;
+    @Autowired
+    private ServiceConfigService serviceConfigService;
     @Override
     public List<String> reasonAppeal(String applicationNoOrLicenceNo) {
         ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion(applicationNoOrLicenceNo).getEntity();
         if(applicationDto!=null){
             String applicationType = applicationDto.getApplicationType();
-
         }
 
 
@@ -81,24 +96,40 @@ public class AppealServiceImpl implements AppealService {
         String appealingFor = request.getParameter("appealingFor");
 
 
-        return     licencePresmises(request,appealingFor);
-         /* return   applicationPresmies(request ,appealingFor);*/
+      /*  return     licencePresmises(request,appealingFor);*/
+          return   applicationPresmies(request ,appealingFor);
 
     }
 
     @Override
-    public String saveData(HttpServletRequest request) {
-        String saveDraftId =(String) request.getSession().getAttribute("saveDraftNo");
+    public String saveData(HttpServletRequest req) {
+        CommonsMultipartFile file =( CommonsMultipartFile) req.getSession().getAttribute("file");
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String saveDraftId =(String) req.getSession().getAttribute("saveDraftNo");
         String appealingFor =  request.getParameter("appealingFor");
+        String isDelete = request.getParameter("isDelete");
         String reasonSelect = request.getParameter("reasonSelect");
         String[] selectHciNames = request.getParameterValues("selectHciName");
         String proposedHciName = request.getParameter("proposedHciName");
         String remarks = request.getParameter("remarks");
         String licenceYear = request.getParameter("licenceYear");
+        CommonsMultipartFile selectedFile =(CommonsMultipartFile) request.getFile("selectedFile");
+        if(selectedFile!=null&&selectedFile.getSize()>0){
+            String filename = selectedFile.getOriginalFilename();
+            req.getSession().setAttribute("file",selectedFile);
+            req.setAttribute("filename",filename);
+        }
+        else if(file!=null&&file.getSize()>0){
+            if("Y".equals(isDelete)){
+                String filename = file.getOriginalFilename();
+                req.getSession().setAttribute("file",file);
+                req.setAttribute("filename",filename);
+            }
+        }
         List<AppSvcCgoDto> appSvcCgoDtoList = reAppSvcCgo(request);
-        ParamUtil.setRequestAttr(request, "CgoMandatoryCount", appSvcCgoDtoList.size());
+        ParamUtil.setRequestAttr(req, "CgoMandatoryCount", appSvcCgoDtoList.size());
 
-        ParamUtil.setSessionAttr(request, "GovernanceOfficersList", (Serializable) appSvcCgoDtoList);
+        ParamUtil.setSessionAttr(req, "GovernanceOfficersList", (Serializable) appSvcCgoDtoList);
 
         String groupId =(String) request.getAttribute("groupId");
         AppealPageDto appealPageDto = reAppealPage(request);
@@ -109,15 +140,19 @@ public class AppealServiceImpl implements AppealService {
             entity.setAmountStr(s);
             entity.setAppGrpId(groupId);
             applicationClient.saveDraft(entity).getEntity();
-
             appPremiseMiscDto.setRemarks(remarks);
             appPremiseMiscDto.setReason(reasonSelect);
-            if(!StringUtil.isEmpty(licenceYear)){
-                appPremiseMiscDto.setNewLicYears(Integer.valueOf(licenceYear));
+            if ("MS004".equals(reasonSelect)) {
+                if(!StringUtil.isEmpty(licenceYear)){
+                    appPremiseMiscDto.setNewLicYears(Integer.valueOf(licenceYear));
+                }
             }
-            appPremiseMiscDto.setNewHciName(proposedHciName);
-            request.setAttribute("appealingFor",appealingFor);
-            request.setAttribute("appPremiseMiscDto",appPremiseMiscDto);
+            if ("MS008".equals(reasonSelect)) {
+                appPremiseMiscDto.setNewHciName(proposedHciName);
+            }
+
+            req.setAttribute("appealingFor",appealingFor);
+            req.setAttribute("appPremiseMiscDto",appPremiseMiscDto);
             return null;
         }
         AppSubmissionDto appSubmissionDto=new AppSubmissionDto();
@@ -135,16 +170,16 @@ public class AppealServiceImpl implements AppealService {
             appPremiseMiscDto.setNewLicYears(Integer.valueOf(licenceYear));
         }
         appPremiseMiscDto.setNewHciName(proposedHciName);
-        request.setAttribute("appPremiseMiscDto",appPremiseMiscDto);
-        request.setAttribute("appealingFor",appealingFor);
-        request.getSession().setAttribute("saveDraftNo",draftNo);
+        req.setAttribute("appPremiseMiscDto",appPremiseMiscDto);
+        req.setAttribute("appealingFor",appealingFor);
+        req.getSession().setAttribute("saveDraftNo",draftNo);
         return null;
     }
 
     @Override
     public void getMessage(HttpServletRequest request) {
         String appealingFor =  request.getParameter("appealingFor");
-        ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion("AN191226000315-03").getEntity();
+        ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion("AN2001120004032-04").getEntity();
     /*    LicenceDto licenceDto = licenceClient.getLicBylicNo("L/20CLB0156/CLB/001/201").getEntity();
         List<PremisesListQueryDto> premisesListQueryDtos = licenceClient.getPremises(licenceDto.getId()).getEntity();
         for(int i=0;i<premisesListQueryDtos.size();i++){
@@ -178,7 +213,7 @@ public class AppealServiceImpl implements AppealService {
         if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
             requetForInformationGetMessage(request);
         }
-
+        request.getSession().setAttribute("serviceId",applicationDto.getServiceId());
     }
 
     @Override
@@ -189,7 +224,8 @@ public class AppealServiceImpl implements AppealService {
     }
 
 
-    private List<AppSvcCgoDto>  reAppSvcCgo(HttpServletRequest request){
+    private List<AppSvcCgoDto>  reAppSvcCgo(HttpServletRequest req){
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         List<AppSvcCgoDto> appSvcCgoDtoList = new ArrayList<>();
         AppSvcCgoDto appSvcCgoDto = null;
         String[] assignSelect = ParamUtil.getStrings(request, "assignSelect");
@@ -238,7 +274,51 @@ public class AppealServiceImpl implements AppealService {
     }
 
 
-    public void validae(HttpServletRequest request, Map<String,String> map){
+    public void validae(HttpServletRequest req, Map<String,String> map){
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        //CGO mix can add
+        String serviceId = (String)request.getSession().getAttribute("serviceId");
+        if(serviceId!=null){
+            appConfigClient.getServiceType(serviceId,"CGO");
+        }
+        String isDelete = request.getParameter("isDelete");
+        CommonsMultipartFile sessionFile =( CommonsMultipartFile)  req.getSession().getAttribute("file");
+        CommonsMultipartFile file=(CommonsMultipartFile) request.getFile("selectedFile");
+        if(file!=null&&file.getSize()>0){
+            long size = file.getSize()/1024;
+            req.getSession().setAttribute("file",file);
+            if(size>5*1024*1024){
+                map.put("file","File is too large");
+            }
+            String filename = file.getOriginalFilename();
+            String fileType=  filename.substring(filename.lastIndexOf(".")+1);
+            //todo change
+             if(!"PDF".equalsIgnoreCase(fileType)||!"PNG".equalsIgnoreCase(fileType)||
+                !"JPG".equalsIgnoreCase(fileType)||!"DOC".equalsIgnoreCase(fileType)||!"DOCX".equalsIgnoreCase(fileType)){
+            map.put("file","Wrong file type");
+            }
+
+        }
+        else if(sessionFile!=null&sessionFile.getSize()>0){
+            if ("Y".equals(isDelete)) {
+                long size = sessionFile.getSize()/1024;
+                if(size>5*1024*1024){
+                    map.put("file","File is too large");
+                }
+
+                String filename = sessionFile.getOriginalFilename();
+                String fileType=  filename.substring(filename.lastIndexOf(".")+1);
+                //todo change
+                if(!"PDF".equalsIgnoreCase(fileType)||!"PNG".equalsIgnoreCase(fileType)||
+                        !"JPG".equalsIgnoreCase(fileType)||!"DOC".equalsIgnoreCase(fileType)||!"DOCX".equalsIgnoreCase(fileType)){
+                    map.put("file","Wrong file type");
+                }
+
+            }
+
+        }
+
+
         AppealPageDto appealPageDto = reAppealPage(request);
         String remarks = appealPageDto.getRemarks();
         if (StringUtil.isEmpty(remarks)) {
@@ -433,8 +513,13 @@ public class AppealServiceImpl implements AppealService {
                 String status = entity1.getStatus();
                 if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
                     applicationDto.setVersion(entity1.getVersion()+1);
-
+                    //if not need new group
+                    applicationGroupDto.setId(entity1.getAppGrpId());
+                    applicationGroupDto.setGroupNo(entity1.getApplicationNo().substring(0,entity1.getApplicationNo().lastIndexOf("-")));
+                    applicationDto.setApplicationNo(entity1.getApplicationNo());
                     applicationGroupDto.setStatus("AGST007");
+                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
+                    s=entity1.getApplicationNo();
                 }
 
             }
@@ -485,7 +570,7 @@ public class AppealServiceImpl implements AppealService {
         String groupId = applicationGroupDto1.getId();
         request.setAttribute("groupId",groupId);
         saveData(request);
-
+        request.setAttribute("newApplicationNo",s);
         //todo send email
 
         return s;
@@ -514,7 +599,7 @@ public class AppealServiceImpl implements AppealService {
 
     private String applicationPresmies(HttpServletRequest request, String applicationNo){
 
-        ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion("AN191226000315-03").getEntity();
+        ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion("AN2001120004032-04").getEntity();
 
         String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
         StringBuilder stringBuilder =new StringBuilder(appNo);
@@ -560,8 +645,14 @@ public class AppealServiceImpl implements AppealService {
         //if infomation
         if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
             applicationDto1.setVersion(applicationDto.getVersion()+1);
+            //if need new group
+            applicationGroupDto.setId(applicationDto.getId());
+            applicationGroupDto.setGroupNo(applicationDto.getAppGrpId().substring(0,applicationDto.getApplicationNo().lastIndexOf("-")));
+            applicationDto1.setApplicationNo(applicationDto.getApplicationNo());
             appealDto.setAppealType("RFI");
             applicationGroupDto.setStatus("AGST007");
+            applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
+            s=applicationDto.getApplicationNo();
         }
 
         if(appSvcCgoDtos!=null&&!appSvcCgoDtos.isEmpty()){
@@ -590,15 +681,13 @@ public class AppealServiceImpl implements AppealService {
                 String appPremisesCorrelationDtoId = appPremisesCorrelationDto.getId();
                 appPremisCorreIds.add(appPremisesCorrelationDtoId);
             }
-
         }
 
         AppPremiseMiscDto appPremiseMiscDto = applicationClient.getAppPremisesMisc("063C400F-F452-EA11-BE79-000C29D29DB0").getEntity();
         String reason = appPremiseMiscDto.getReason();
+        String appPremCorreId = appPremiseMiscDto.getAppPremCorreId();
         if("MS003".equals(reason)){
-
-            List<AppSvcCgoDto> appSvcCgoDtos = applicationClient.getAppGrpPersonnelByGrpId("C481344E-2652-EA11-BE79-000C29D29DB0").getEntity();
-
+            List<AppSvcCgoDto> appSvcCgoDtos = applicationClient.getAppGrpPersonnelByGrpId("F37777A4-0253-EA11-BE79-000C29D29DB0").getEntity();
             ParamUtil.setRequestAttr(request, "CgoMandatoryCount", appSvcCgoDtos.size());
             List<SelectOption> cgoSelectList = new ArrayList<>();
             SelectOption sp0 = new SelectOption("-1", "Select Personnel");
@@ -607,18 +696,63 @@ public class AppealServiceImpl implements AppealService {
             cgoSelectList.add(sp1);
             ParamUtil.setSessionAttr(request, "CgoSelectList", (Serializable) cgoSelectList);
             ParamUtil.setSessionAttr(request, "GovernanceOfficersList", (Serializable) appSvcCgoDtos);
-
         }
         request.setAttribute("appPremiseMiscDto",appPremiseMiscDto);
     }
 
-    private AppealPageDto getAppealPageDto(HttpServletRequest request){
+    private AppealPageDto getAppealPageDto(HttpServletRequest req){
+        AppealPageDto appealDto=new AppealPageDto();
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String reasonSelect = request.getParameter("reasonSelect");
         String licenceYear = request.getParameter("licenceYear");
         String selectHciNames = request.getParameter("selectHciName");
         String proposedHciName = request.getParameter("proposedHciName");
+        CommonsMultipartFile sessionFile =( CommonsMultipartFile)  req.getSession().getAttribute("file");
+        String isDelete = request.getParameter("isDelete");
         String remarks = request.getParameter("remarks");
-        AppealPageDto appealDto=new AppealPageDto();
+        CommonsMultipartFile selectedFile =(CommonsMultipartFile) request.getFile("selectedFile");
+        if(selectedFile!=null&&selectedFile.getSize()>0){
+            try {
+                String fileToRepo = serviceConfigService.saveFileToRepo(selectedFile);
+                Long size= selectedFile.getSize()/1024;
+                String filename = selectedFile.getOriginalFilename();
+                String s = FileUtil.genMd5FileChecksum(selectedFile.getBytes());
+                AppPremisesSpecialDocDto appPremisesSpecialDocDto=new AppPremisesSpecialDocDto();
+                appPremisesSpecialDocDto.setDocName(filename);
+                appPremisesSpecialDocDto.setMd5Code(s);
+                appPremisesSpecialDocDto.setFileRepoId(fileToRepo);
+                appPremisesSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
+                appPremisesSpecialDocDto.setDocSize(Integer.parseInt(size.toString()));
+                appealDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
+
+            } catch (IOException e) {
+               log.error(e.getMessage(),e);
+            }
+
+        }
+        else if(sessionFile!=null&&sessionFile.getSize()>0){
+            if("Y".equals(isDelete)){
+                try {
+                    String fileToRepo = serviceConfigService.saveFileToRepo(selectedFile);
+                    Long size= selectedFile.getSize()/1024;
+                    String filename = selectedFile.getOriginalFilename();
+                    String s = FileUtil.genMd5FileChecksum(selectedFile.getBytes());
+                    AppPremisesSpecialDocDto appPremisesSpecialDocDto=new AppPremisesSpecialDocDto();
+                    appPremisesSpecialDocDto.setDocName(filename);
+                    appPremisesSpecialDocDto.setMd5Code(s);
+                    appPremisesSpecialDocDto.setFileRepoId(fileToRepo);
+                    appPremisesSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
+                    appPremisesSpecialDocDto.setDocSize(Integer.parseInt(size.toString()));
+                    appealDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
+
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+
+            }
+
+        }
+
         appealDto.setRemarks(remarks);
         appealDto.setAppealReason(reasonSelect);
         if ("MS008".equals(reasonSelect)) {
@@ -631,6 +765,38 @@ public class AppealServiceImpl implements AppealService {
         }
 
         return appealDto;
+    }
+
+
+    private void sendEmail(HttpServletRequest request) throws IOException, TemplateException {
+        String newApplicationNo =(String) request.getAttribute("newApplicationNo");
+        Map<String,Object> map=new HashMap<>();
+        map.put("applicationNo",newApplicationNo);
+        MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("").getEntity();
+        String messageContent = entity.getMessageContent();
+        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+        EmailDto emailDto=new EmailDto();
+        emailDto.setContent(templateMessageByContent);
+        emailDto.setSubject("MOH IAIS –Submission of Appeal - Application Number");
+        emailDto.setSender("MOH");
+        emailDto.setClientQueryCode("sss");
+        //need address form login
+    }
+
+
+    private void isMaxCGOnumber(ApplicationDto applicationDto){
+        String serviceId = applicationDto.getServiceId();
+
+        List<HcsaSvcPersonnelDto> cgo = appConfigClient.getServiceType(serviceId, "CGO").getEntity();
+        String appGrpId = applicationDto.getAppGrpId();
+        String applicationId = applicationDto.getId();
+
+        List<AppGrpPersonnelDto> entity = applicationClient.getAppGrpPersonnelDtosByGrpId(appGrpId).getEntity();
+        List<String> appGrpPersonelIds=new ArrayList<>();
+        for(AppGrpPersonnelDto appGrpPersonnelDto:entity){
+            appGrpPersonelIds.add(appGrpPersonnelDto.getId());
+        }
+
     }
 
 }

@@ -208,4 +208,7 @@ public interface ApplicationClient  {
 
 
 
+
+    @GetMapping(value = "/appeal/list-of-application-group-personnel",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppGrpPersonnelDto>> getAppGrpPersonnelDtosByGrpId(@RequestParam("grpId") String grpId);
 }

@@ -11,7 +11,7 @@
 %>
 
 <div class="main-content">
-  <form id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
+  <form id="mainForm" enctype="multipart/form-data"  class="__egovform" method="post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
 
     <input type="hidden" name="crud_action_value" value="">
@@ -39,8 +39,12 @@
         <option value="MS003" <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option>
         <option value="MS008" <c:if test="${appPremiseMiscDto.reason=='MS008'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option>
         <option value="MS004" <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option>
+        <option value="MS005" <c:if test="${appPremiseMiscDto.reason=='MS005'}">selected="selected"</c:if>>Appeal against suspension</option>
+        <option value="MS006" <c:if test="${appPremiseMiscDto.reason=='MS006'}">selected="selected"</c:if>>Appeal against revocation</option>
       </select>
-      <span class="error-msg" name="iaisErrorMsg" id="error_reason"></span>
+
+        <div> <span  class="error-msg" name="iaisErrorMsg" id="error_reason"></span></div>
+
       <div class="col-xs-12 col-md-10" id="licenceYear"  style="display: none">
         <label style="font-size: 20px;">Licence year</label>
         <input type="number" name="licenceYear" value="${appPremiseMiscDto.newLicYears}">
@@ -84,26 +88,42 @@
     <div  class="col-xs-12 col-md-10">
 
       <textarea cols="50" style="font-size: 20px" rows="10" name="remarks" maxlength="300" >${appPremiseMiscDto.remarks}</textarea>
-      <span class="error-msg" id="error_remarks" name="iaisErrorMsg"></span>
+
+      <div> <span class="error-msg" id="error_remarks" name="iaisErrorMsg"></span></div>
+
     </div>
 
-  <div class="col-xs-12 col-md-10">
+
+    <div class="form-group">
+  <div >
     <div>
-      <label>File Upload for Appeal Reasons</label><br>
-      <div class="text-center col-xs-12">
+      <div class="col-xs-12 col-md-10" >
+        <label style="font-size: 25px;margin-top: 25px">File Upload for Appeal Reasons</label>
+      </div>
+
+      <div class="col-xs-12">
         <div class="document-upload-list">
           <div class="file-upload-gp">
-            <div class="fileContent col-xs-12">
-              <input class="selectedFile" id="selectedFile" name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile1">
+            <div class="fileContent col-xs-2">
+              ${upFile.originalFilename}
+              <input class="selectedFile" id="selectedFile" name = "selectedFile"  type="file" style="display: none;" aria-label="selectedFile1">
               <a class="btn btn-file-upload btn-secondary" >Upload</a>
+
+            </div>
+            <span name="iaisErrorMsg" class="error-msg" id="error_file"></span>
+            <div class="col-xs-12 col-md-4" >
+              <span  name="fileName" style="font-size: 25px;color: #2199E8;text-align: center">${filename}</span>
+              <input type="text" value="Y" style="display: none" name="isDelete" id="isDelete">
+              <input type="text" value="${filename}" style="display: none" id="isFile">
+              <a class="btn  btn-secondary" style="margin-left: 20px;display: none" name="delete" id="delete" >delete</a>
             </div>
           </div>
         </div>
       </div>
-
+    </div>
+  </div>
     </div>
 
-  </div>
     <br>
     <br> <br> <br>
     <div >
@@ -122,7 +142,7 @@
 </div>
 <style>
   .mandatory{
-    color: red;
+    color: #f00;
   }
 
 </style>
@@ -137,13 +157,13 @@
           $('#cgo').attr("style" ,"display: none");
 
       }
-      if("MS004"==reason){
+      if("MS008"==reason){
           $('#selectHciNameAppeal').attr("style","display: block;margin-top: 20px");
 
       }else {
           $('#selectHciNameAppeal').attr("style","display: none");
       }
-      if("MS005"==reason){
+      if("MS004"==reason){
           $('#licenceYear').attr("style","display: block;margin-top: 20px");
       }else {
           $('#licenceYear').attr("style","display: none");
@@ -153,7 +173,10 @@
       }else {
           $('#proposedHciName').attr("style","display: none");
       }
-
+      if(  $('#isFile').val()!=''){
+          $('#delete').attr("style","display: inline-block;margin-left: 20px");
+          $('#isDelete').val('Y');
+      }
 
 
   });
@@ -164,6 +187,14 @@ $('#submit').click(function () {
 
 });
 
+$('#delete').click(function () {
+  $('.selectedFile').val('');
+  $(this).attr("style","display: none");
+  $("span[name='fileName']").html('');
+  $('#isDelete').val('N');
+
+
+});
 
 $('#save').click(function () {
     SOP.Crud.cfxSubmit("mainForm", "save","save","");
@@ -207,11 +238,21 @@ function isCheck(obj) {
 
 $('.selectedFile').change(function () {
     var file = $(this).val();
- /*   $(this).parent().children('div:eq(0)').children('span:eq(0)').html(getFileName(file));
-    $(this).parent().children('div:eq(0)').removeClass('hidden');
-    $fileUploadContentEle = $(this).closest('div.file-upload-gp');
+    file= file.split("\\");
+    $("span[name='fileName']").html(file[file.length-1]);
+
+    if(file!=''){
+        $('#delete').attr("style","display: inline-block;margin-left: 20px");
+        $('#isDelete').val('Y');
+    }
+
+ /*   $fileUploadContentEle = $(this).closest('div.file-upload-gp');
     $fileUploadContentEle.find('.delBtn').removeClass('hidden');*/
 });
+  function getFileName(o) {
+      var pos = o.lastIndexOf("\\");
+      return o.substring(pos + 1);
+  };
 
 </script>
 

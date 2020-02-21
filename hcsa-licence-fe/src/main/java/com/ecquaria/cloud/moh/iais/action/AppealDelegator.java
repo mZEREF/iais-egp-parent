@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,8 +45,8 @@ public class AppealDelegator {
 
     public void switchProcess(BaseProcessClass bpc ){
         log.info("start**************switchProcess************");
-
-        String crud_action_value =(String) bpc.request.getParameter("crud_action_value");
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String crud_action_value =(String) request.getParameter("crud_action_value");
         if ("save".equals(crud_action_value)) {
             bpc. request.setAttribute("crud_action_type","save");
             return;
@@ -73,6 +75,7 @@ public class AppealDelegator {
         log.info("start**************start************");
         bpc.getSession().removeAttribute("serviceName");
         bpc.getSession().removeAttribute("applicationNo");
+        bpc.getSession().removeAttribute("file");
         log.info("end**************start************");
     }
 

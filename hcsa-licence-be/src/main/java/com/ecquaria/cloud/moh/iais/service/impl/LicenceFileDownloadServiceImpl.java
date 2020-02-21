@@ -159,13 +159,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         try {
 
                             this.download(processFileTrackDto,listApplicationDto, requestForInfList,name,refId);
+                            sendTask(listApplicationDto,requestForInfList);
                             //save success
                         }catch (Exception e){
                             //save bad
                             log.error(e.getMessage(),e);
                             continue;
                         }
-                        sendTask(listApplicationDto,requestForInfList);
+
                     }
                  /*   if(fil.exists()&&aBoolean){
                         fil.delete();
