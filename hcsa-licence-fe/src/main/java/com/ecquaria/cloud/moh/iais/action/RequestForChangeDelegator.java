@@ -187,17 +187,23 @@ public class RequestForChangeDelegator {
                 }
             }
             int count = 0;
-            for(int i=0;i<=oldMemberIds.size();i++){
-                for(int j=0;j<=uenMemberIds.size();j++){
-                    if(oldMemberIds.get(i).equals(uenMemberIds.get(j))){
-                        count++;
+            boolean result = false;
+            if(oldMemberIds.size()>0) {
+                for (int i = 0; i <= oldMemberIds.size(); i++) {
+                    for (int j = 0; j <= uenMemberIds.size(); j++) {
+                        if (oldMemberIds.get(i).equals(uenMemberIds.get(j))) {
+                            count++;
+                        }
                     }
                 }
+
+
+                if (count / oldMemberIds.size() < 0.5 && oldMemberIds.size() != 0) {
+                    result = true;
+                }
             }
-            boolean result=false;
-            if(count/oldMemberIds.size()<0.5&&oldMemberIds.size()!=0){
-                result=true;
-            }
+
+
             if(result){
                 licenceDto.setLicenseeId(newLicenseeId);
                 requestForChangeService.saveLicence(licenceDto);
