@@ -16,19 +16,17 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.xpath.operations.Bool;
 
 /**
  * WebValidationHelper
@@ -137,6 +135,39 @@ public class WebValidationHelper {
         } else {
             return "[]";
         }
+    }
+
+
+    public static String generateJsonStr(String fieldName, String errorMsg) {
+        if (StringUtils.isEmpty(errorMsg)){
+            return "[]";
+        }
+        StringBuilder sb = new StringBuilder("[");
+        sb.append("{\"");
+        sb.append(fieldName).append("\" : \"");
+
+        String value = errorMsg;
+        String msg;
+        if (value.contains("/")){
+            int indx = value.indexOf("/");
+            try {
+                String num = value.substring(indx + 1);
+                Integer.parseInt(num);
+                msg = MessageUtil.getMessageDesc(value.substring(0, indx));
+                msg = msg.replace("%d", num);
+            }catch (NumberFormatException e){
+                msg  = MessageUtil.getMessageDesc(value);
+                log.debug(e.getMessage());
+            }
+        }else {
+            msg  = MessageUtil.getMessageDesc(value);
+        }
+
+        msg = msg.replaceAll("\"", "&quot;");
+        msg = msg.replaceAll("'", "&apos;");
+        sb.append(msg).append("\"},");
+
+        return sb.substring(0, sb.length() - 1) + "]";
     }
 
     private static void saveAuditTrail(ValidationResult result) {

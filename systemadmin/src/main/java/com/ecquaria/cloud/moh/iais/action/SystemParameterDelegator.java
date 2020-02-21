@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.IaisResponeContent;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
@@ -28,6 +29,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -161,34 +163,39 @@ public class SystemParameterDelegator {
             return;
         }
 
-        String domainType = ParamUtil.getString(request, SystemParameterConstants.PARAM_DOMAIN_TYPE);
-        String module = ParamUtil.getString(request, SystemParameterConstants.PARAM_MODULE);
+        /*String domainType = ParamUtil.getString(request, SystemParameterConstants.PARAM_DOMAIN_TYPE);
+        String module = ParamUtil.getString(request, SystemParameterConstants.PARAM_MODULE);*/
         String value = ParamUtil.getString(request, SystemParameterConstants.PARAM_VALUE);
-        String paramType = ParamUtil.getString(request, SystemParameterConstants.PARAM_VALUE_TYPE);
+        /*String paramType = ParamUtil.getString(request, SystemParameterConstants.PARAM_VALUE_TYPE);*/
         String description = ParamUtil.getString(request, SystemParameterConstants.PARAM_DESCRIPTION);
-        String status = ParamUtil.getString(request, SystemParameterConstants.PARAM_STATUS);
-
+        /*String status = ParamUtil.getString(request, SystemParameterConstants.PARAM_STATUS);*/
 
         SystemParameterDto editDto = (SystemParameterDto) ParamUtil.getSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO);
-        editDto.setDomainType(domainType);
-        editDto.setModule(module);
         editDto.setValue(value);
         editDto.setDescription(description);
-        editDto.setStatus(status);
-        editDto.setParamType(paramType);
         ValidationResult validationResult = WebValidationHelper.validateProperty(editDto, "edit");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }else {
-            parameterService.saveSystemParameter(editDto);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+            IaisResponeContent<SystemParameterDto> responeContent = parameterService.saveSystemParameter(editDto);
+            if (responeContent.isHasError()){
+                Map<String,String> errorMap = new HashMap<>(1);
+                errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, MessageUtil.getMessageDesc(responeContent.getErrorCode()));
 
-            String msg = MessageUtil.getMessageDesc(MessageCodeKey.ACKSPM001);
-            if (!StringUtil.isEmpty(msg)){
-                ParamUtil.setRequestAttr(request,"ackMsg", msg.replace("<Date>", new Date().toString()));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+
+            }else {
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+                String msg = MessageUtil.getMessageDesc(MessageCodeKey.ACKSPM001);
+                if (!StringUtil.isEmpty(msg)){
+                    ParamUtil.setRequestAttr(request,"ackMsg", msg.replace("<Date>", new Date().toString()));
+                }
             }
+
+            ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO, editDto);
 
         }
 
@@ -200,7 +207,6 @@ public class SystemParameterDelegator {
      */
     public void back(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
     }
 
 

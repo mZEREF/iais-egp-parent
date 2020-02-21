@@ -32,13 +32,17 @@
         <input type="hidden" name="currentValidateId" value="">
         <div class="bg-title"><h2>System Parameters</h2></div>
 
+      <span id="error_customErrorMessage" name="iaisErrorMsg" class="error-msg"></span>
+      <br><br>
+
         <div class="form-horizontal">
-            <div class="form-group">
+            <%--<div class="form-group">
                 <label class="col-md-1">System Parameter Type:
                 </label>
                 <div class="col-md-3">
                     <iais:select name="domainType" id="domainType"
-                                 firstOption="Please select" codeCategory="CATE_ID_SYSTEM_PARAMETER_TYPE" value="${parameterRequestDto.domainType}"></iais:select>
+                                 firstOption="Please select" codeCategory="CATE_ID_SYSTEM_PARAMETER_TYPE"
+                                 value="${parameterRequestDto.domainType}"></iais:select>
                     <span id="error_domainType" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
@@ -50,9 +54,9 @@
                     <iais:select name="module" id="module"  codeCategory = "CATE_ID_SYSTEM_PARAMETER_MODULE" firstOption="Please select" value="${parameterRequestDto.module}"></iais:select>
                     <span id="error_module" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
-            </div>
+            </div>--%>
 
-            <div class="form-group">
+           <%-- <div class="form-group">
                 <label class="col-md-1">Type of Value:
                 </label>
                 <div class="col-md-3">
@@ -60,13 +64,29 @@
                                  firstOption="Please select" codeCategory="CATE_ID_SYSTEM_PARAMETER_TYPE_OF_VALUE" value="${parameterRequestDto.paramType}"></iais:select>
                     <span id="error_paramType" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
-            </div>
+            </div>--%>
 
             <div class="form-group">
                 <label class="col-md-1">Value:
                 </label>
                 <div class="col-md-3">
-                    <input name="value" type="text" value="${parameterRequestDto.value}">
+                    <c:choose>
+                        <c:when test="${parameterRequestDto.paramType == 'TPOF00007' || parameterRequestDto.paramType == 'TPOF00008'}">
+                            <c:if test="${parameterRequestDto.value == '1'}">
+                                Yes <input name="value" type="radio" value="1" checked>
+                                No <input name="value" type="radio" value="0">
+                            </c:if>
+
+                            <c:if test="${parameterRequestDto.value == '0'}">
+                                Yes <input name="value" type="radio" value="1" >
+                                No <input name="value" type="radio" value="0" checked>
+                            </c:if>
+
+                        </c:when>
+                        <c:otherwise>
+                            <input name="value" type="text" value="${parameterRequestDto.value}">
+                        </c:otherwise>
+                    </c:choose>
                     <span id="error_value" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
@@ -80,7 +100,7 @@
                 </div>
             </div>
 
-            <div class="form-group">
+           <%-- <div class="form-group">
                 <label class="col-md-1">Status:
                 </label>
                 <div class="col-md-3">
@@ -88,7 +108,7 @@
                                  firstOption="Select Status" filterValue="CMSTAT002" value="${parameterRequestDto.status}"></iais:select>
                     <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
-            </div>
+            </div>--%>
         </div>
         <td>
             <div class="text-right text-center-mobile">
