@@ -87,4 +87,22 @@ public interface ApplicantConfirmInspDateService {
       * @Descripation: reject Specific Date
       */
     void rejectSpecificDate(ApptFeConfirmDateDto apptFeConfirmDateDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/2/21
+      * @Param: apptFeConfirmDateDto
+      * @return: ApptFeConfirmDateDto
+      * @Descripation: confirm New Date
+      */
+    ApptFeConfirmDateDto confirmNewDate(ApptFeConfirmDateDto apptFeConfirmDateDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/2/21
+      * @Param: apptFeConfirmDateDto
+      * @return: void
+      * @Descripation: saveAccSpecificDate
+      */
+    void saveAccSpecificDate(ApptFeConfirmDateDto apptFeConfirmDateDto);
 }

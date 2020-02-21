@@ -4,6 +4,8 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicantConfirmInspDateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,8 @@ public class ApptConfirmSpecificDateDelegator {
      */
     public void userConfirmSpecificDateStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmSpecificDateStart start ...."));
+        AccessUtil.initLoginUserInfo(bpc.request);
+        AuditTrailHelper.auditFunction("Appointment Confirm Specific Date", "Appointment Confirm Specific Date");
     }
 
     /**
@@ -81,6 +85,7 @@ public class ApptConfirmSpecificDateDelegator {
     public void userConfirmSpecificDateAcc(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmSpecificDateAcc start ...."));
         ApptFeConfirmDateDto apptFeConfirmDateDto = (ApptFeConfirmDateDto) ParamUtil.getSessionAttr(bpc.request, "apptFeConfirmDateDto");
+        applicantConfirmInspDateService.saveAccSpecificDate(apptFeConfirmDateDto);
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
     }
 

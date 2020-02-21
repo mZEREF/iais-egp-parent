@@ -11,6 +11,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicantConfirmInspDateService;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +51,8 @@ public class ApplicantConfirmInspDateDelegator {
      */
     public void userConfirmInspDateStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmInspDateStart start ...."));
+        AccessUtil.initLoginUserInfo(bpc.request);
+        AuditTrailHelper.auditFunction("Appointment Confirm System Date", "Appointment Confirm System Date");
     }
 
     /**
@@ -204,7 +208,7 @@ public class ApplicantConfirmInspDateDelegator {
         ApptFeConfirmDateDto apptFeConfirmDateDto = (ApptFeConfirmDateDto) ParamUtil.getSessionAttr(bpc.request, "apptFeConfirmDateDto");
         String actionValue = apptFeConfirmDateDto.getActionValue();
         if(InspectionConstants.SWITCH_ACTION_RE_CONFIRM.equals(actionValue)){
-            apptFeConfirmDateDto = applicantConfirmInspDateService.getApptNewSystemDate(apptFeConfirmDateDto);
+            apptFeConfirmDateDto = applicantConfirmInspDateService.confirmNewDate(apptFeConfirmDateDto);
         }
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
     }
