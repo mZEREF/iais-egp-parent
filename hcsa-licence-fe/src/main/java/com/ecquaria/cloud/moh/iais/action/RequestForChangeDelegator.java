@@ -195,7 +195,7 @@ public class RequestForChangeDelegator {
                 }
             }
             boolean result=false;
-            if(count/(oldMemberIds.size()+1)<0.5){
+            if(count/oldMemberIds.size()<0.5&&oldMemberIds.size()!=0){
                 result=true;
             }
             if(result){
@@ -204,7 +204,7 @@ public class RequestForChangeDelegator {
             }
         }else {
             String nric=UNID;
-            LicenseeIndividualDto licenseeIndividualDt=requestForChangeService.getLicIndByNRIC(nric);
+            LicenseeIndividualDto licenseeIndividualDt=null;
             if(licenseeIndividualDt!=null){
             licenceDto.setLicenseeId(licenseeIndividualDt.getId());
             requestForChangeService.saveLicence(licenceDto);
