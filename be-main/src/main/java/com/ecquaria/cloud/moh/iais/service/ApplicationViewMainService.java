@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ApplicationViewMainService {
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId);
-    public boolean isOtherApplicaitonSubmit(List<ApplicationDto> applicationDtoList,String appId,String status);
+    public boolean isOtherApplicaitonSubmit(List<ApplicationDto> applicationDtoList,String appNo,String status);
 
     ApplicationViewDto searchByCorrelationIdo(String correlationId);
 

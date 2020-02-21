@@ -53,7 +53,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public boolean isOtherApplicaitonSubmit(List<ApplicationDto> applicationDtoList,String appNo,String status) {
-        if(applicationDtoList == null || applicationDtoList.size() == 0 || StringUtil.isEmpty(appNo) || StringUtil.isEmpty(status)){
+        if(IaisCommonUtils.isEmpty(applicationDtoList)|| StringUtil.isEmpty(appNo) || StringUtil.isEmpty(status)){
             return  false;
         }
         boolean result = true;
