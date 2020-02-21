@@ -91,13 +91,13 @@
                 <div class="col-xs-12 col-md-2">
                     <a>Print</a>
                 </div>
-                <div class="col-xs-12 col-md-2">
+                <div class="col-xs-12 col-md-4">
                     <a class="btn btn-secondary" href="#">Indicate preferred Inspection Date</a>
                 </div>
-                <div class="col-xs-12 col-md-2">
+                <div class="col-xs-12 col-md-3">
                     <a class="btn btn-secondary" id="doSelfAssessment">Submit Self-Assessment</a>
                 </div>
-                <div class="col-xs-12 col-md-2">
+                <div class="col-xs-12 col-md-3">
                     <a class="btn btn-secondary" href="/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu">Apply for Another Licence</a>
                 </div>
                 <div class="col-xs-12 col-md-2">
