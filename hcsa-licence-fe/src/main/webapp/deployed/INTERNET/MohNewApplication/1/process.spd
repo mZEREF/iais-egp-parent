@@ -155,6 +155,19 @@
     <JavaCode defClass="" executor="" methodName="doRenew_OnStepProcess_0" name="doRenew_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preInvoke" x="1320" y="-60">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preInvoke_OnStepProcess_0" name="preInvoke_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="MohAppPremSelfDecl" processname="MohAppPremSelfDecl" project="INTERNET" version="-1" x="1380" y="160">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Premises" stageIndicator="" x="600" y="20">
@@ -181,7 +194,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AckPage" stageIndicator="" x="1150" y="-70">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AckPage" stageIndicator="" x="1150" y="-60">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -191,7 +204,7 @@
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Pages/WebPage/AckPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareAckPage" style="oblique">
-   <position>{(940,-40)(1170,-50)}</position>
+   <position>{(940,-40)(1170,-40)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreparePremises" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(430,160)(510,40)}</position>
@@ -316,6 +329,21 @@
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doRenew" style="oblique">
    <position>{(1220,210)(1270,70)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preInvoke" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AckPage" style="oblique">
+   <position>{(1170,-40)(1340,-40)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preInvoke" style="rectanular">
+   <position>{(1340,-40)(1340,70)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/MohAppPremSelfDecl" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(1340,70)(1400,180)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/MohAppPremSelfDecl" style="oblique">
+   <position>{(1400,180)(1500,280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AckPage" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge2" style="rectanular">
+   <position>{(1500,280)(1169,-86)(1170,-40)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Merges/Merge/Merge1" componentIfTrue="/Steps/AutomaticStep/PrepareAckPage" defClass="" executor="" icon="" leftOperand="isrfiSuccess" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="1250" y="50">
@@ -342,10 +370,17 @@
    <SwitchCase component="/Steps/AutomaticStep/doRequestForChange" value="&quot;requstChange&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doRenew" value="&quot;renew&quot;"/>
   </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_value" name="Switch3" x="1320" y="50">
+   <Description/>
+   <SwitchCase component="/Steps/InvokeStep/MohAppPremSelfDecl" value="&quot;MohAppPremSelfDecl&quot;"/>
+  </Switch>
  </Switches>
  <Branches/>
  <Merges>
   <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="840" y="520">
+   <Description/>
+  </Merge>
+  <Merge defClass="" executor="" icon="" name="Merge2" type="Or" x="1480" y="260">
    <Description/>
   </Merge>
  </Merges>
