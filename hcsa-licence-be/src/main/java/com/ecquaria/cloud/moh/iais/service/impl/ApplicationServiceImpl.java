@@ -109,6 +109,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    public Integer getAppBYGroupIdAndStatus(String appGroupId, String status) {
+        return applicationClient.getAppCountByGroupIdAndStatus(appGroupId,status).getEntity();
+    }
+
+    @Override
     public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);

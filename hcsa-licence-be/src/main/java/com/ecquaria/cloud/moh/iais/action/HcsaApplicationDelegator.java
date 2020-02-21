@@ -169,6 +169,10 @@ public class HcsaApplicationDelegator {
 
      //   routingStage.put(ApplicationConsts.PROCESSING_DECISION_LICENCE_START_DATE, "Licence Start Date");
 
+       Integer rfiCount =  applicationService.getAppBYGroupIdAndStatus(applicationViewDto.getApplicationDto().getAppGrpId(),
+               ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
+       log.info(StringUtil.changeForLog("The rfiCount is -->:"+rfiCount));
+
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_AO3_BROADCAST_QUERY,"Broadcast Query For Internal");
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationViewDto.getApplicationDto().getStatus())){
@@ -182,9 +186,13 @@ public class HcsaApplicationDelegator {
         }else if(HcsaConsts.ROUTING_STAGE_AO2.equals(taskDto.getTaskKey())
                 ||HcsaConsts.ROUTING_STAGE_AO1.equals(taskDto.getTaskKey())){
         }else if(HcsaConsts.ROUTING_STAGE_PSO.equals(taskDto.getTaskKey())){
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
+            if(rfiCount==0){
+                routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
+            }
         }else if(HcsaConsts.ROUTING_STAGE_ASO.equals(taskDto.getTaskKey())) {
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
+            if(rfiCount==0) {
+                routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION, "Request For Information");
+            }
         }
         applicationViewDto.setVerified(routingStage);
 

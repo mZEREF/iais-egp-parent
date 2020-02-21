@@ -16,6 +16,7 @@ public interface ApplicationService {
     public boolean isOtherApplicaitonSubmit(List<ApplicationDto> applicationDtoList,String appNo,String status);
     //
     public List<AppPremisesCorrelationDto> getAppPremisesCorrelationByAppGroupId(String appGroupId);
+    public Integer getAppBYGroupIdAndStatus(String appGroupId,String  status);
 
     public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto);
 

@@ -21,9 +21,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformatio
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
-
 import java.util.List;
+import org.springframework.http.HttpHeaders;
 
 /**
  * ApplicationClientFallback
@@ -289,6 +288,12 @@ public class ApplicationClientFallback {
     }
 
     public FeignResponseEntity<AppPremisesInspecApptDto> createAppPremisesInspecApptDto(AppPremisesInspecApptDto appPremisesInspecApptDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+    public FeignResponseEntity<Integer> getAppCountByGroupIdAndStatus(String groupId,String status){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
