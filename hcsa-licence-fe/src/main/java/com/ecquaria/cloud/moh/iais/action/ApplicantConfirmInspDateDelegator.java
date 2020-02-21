@@ -163,7 +163,12 @@ public class ApplicantConfirmInspDateDelegator {
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
         } else {
             String newDateValue = ParamUtil.getRequestString(bpc.request, "apptCheckNewDate");
-            apptFeConfirmDateDto.setCheckNewDate(newDateValue);
+            boolean dateFlag = checkDateFlag(newDateValue, apptFeConfirmDateDto.getInspectionNewDateMap());
+            if(dateFlag) {
+                apptFeConfirmDateDto.setCheckNewDate(newDateValue);
+            } else {
+                apptFeConfirmDateDto.setCheckNewDate(null);
+            }
             ValidationResult validationResult = WebValidationHelper.validateProperty(apptFeConfirmDateDto,"reconfirm");
             if (validationResult.isHasErrors()) {
                 Map<String, String> errorMap = validationResult.retrieveAll();
@@ -175,6 +180,17 @@ public class ApplicantConfirmInspDateDelegator {
             }
         }
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
+    }
+
+    private boolean checkDateFlag(String newDateValue, Map<String, Date> inspectionNewDateMap) {
+        if(inspectionNewDateMap != null){
+            for(Map.Entry<String, Date> map : inspectionNewDateMap.entrySet()){
+                if(newDateValue.equals(map.getKey())){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
