@@ -19,12 +19,12 @@ public class WithdrawnValidate implements CustomizeValidator {
         Map<String, String> errorMap = new HashMap<>(34);
         String withdrawnReason = ParamUtil.getRequestString(httpServletRequest, "withdrawnReason");
         if(StringUtil.isEmpty(withdrawnReason)){
-            errorMap.put("withdrawnReason", "CHKL_ERR001");
+            errorMap.put("withdrawnReason", "ERR0009");
         }
         if("Others".equals(withdrawnReason)){
             String withdrawnRemarks = ParamUtil.getRequestString(httpServletRequest, "withdrawnRemarks");
             if(StringUtil.isEmpty(withdrawnRemarks)){
-                errorMap.put("withdrawnRemarks", "CHKL_ERR001");
+                errorMap.put("withdrawnRemarks", "ERR0009");
             }
         }
         return errorMap;

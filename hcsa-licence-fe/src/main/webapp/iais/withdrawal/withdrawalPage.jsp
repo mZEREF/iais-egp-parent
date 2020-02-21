@@ -12,6 +12,7 @@
 <div class="main-content">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="crud_action_value" value="">
+        <%@ include file="/include/formHidden.jsp" %>
         <div class="container">
             <div class="row">
                 <div class="center-content">
@@ -34,7 +35,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row" style="padding-top: 120px">
+            <div class="row" style="padding-top: 10%">
                 <div class="col-md-2 col-md-offset-7">
                     <div class="components">
                         <a class="btn btn-primary" onclick="doSubmit()">Submit</a>
@@ -48,6 +49,7 @@
             </div>
         </div>
     </form>
+    <%@include file="/include/validation.jsp"%>
 </div>
 <script type="text/javascript">
     function withdrawalReasons(obj) {

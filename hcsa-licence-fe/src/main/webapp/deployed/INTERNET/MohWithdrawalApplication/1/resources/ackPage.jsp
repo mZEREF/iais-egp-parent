@@ -1,1 +1,1 @@
-<%@include file="/iais/cc/withdrawal/ackPale.jsp"%>
+<%@include file="/iais/withdrawal/ackPale.jsp"%>

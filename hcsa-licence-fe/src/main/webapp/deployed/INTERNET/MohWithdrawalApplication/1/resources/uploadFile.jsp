@@ -1,1 +1,1 @@
-<%@include file="/iais/cc/withdrawal/uploadFile.jsp"%>
+<%@include file="/iais/withdrawal/uploadFile.jsp"%>
