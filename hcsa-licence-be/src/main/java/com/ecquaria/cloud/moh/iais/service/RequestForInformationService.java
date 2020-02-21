@@ -20,6 +20,7 @@ public interface RequestForInformationService {
     List<SelectOption> getAppTypeOption();
     List<SelectOption> getAppStatusOption();
     List<SelectOption> getLicSvcTypeOption();
+    List<SelectOption> getLicSvcSubTypeOption();
     List<SelectOption> getLicStatusOption();
     SearchResult<RfiApplicationQueryDto> appDoQuery(SearchParam searchParam);
     SearchResult<RfiLicenceQueryDto> licenceDoQuery(SearchParam searchParam);

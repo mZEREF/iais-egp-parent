@@ -347,7 +347,7 @@
 
     function doSend(){
         if($('#decision-revise-email option:selected').val()=="Select"){
-            alert("The field is mandatory.");
+
         }
         else {
             showWaiting();

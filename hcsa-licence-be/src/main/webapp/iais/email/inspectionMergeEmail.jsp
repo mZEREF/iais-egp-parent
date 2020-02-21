@@ -290,7 +290,7 @@
 
     function doSend(){
         if($('#decision_merge_email option:selected').val()=="Select"){
-            alert("The field is mandatory.");
+
         }else {
             if($('#decision_merge_email option:selected').val()=="REDECI005"){
                 var checkOne = false;

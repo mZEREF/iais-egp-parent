@@ -62,6 +62,7 @@
                     <h3>
                         <span>Search Results</span>
                     </h3>
+<%--                    <iais:pagination  param="SearchParam" result="SearchResult"/>--%>
                     <div class="table-gp">
                         <table class="table">
                             <thead>

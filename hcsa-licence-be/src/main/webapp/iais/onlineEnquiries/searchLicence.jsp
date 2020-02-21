@@ -100,7 +100,7 @@
                                             <iais:row>
                                                 <iais:field value="Service Sub-Type:"/>
                                                 <iais:value width="18">
-                                                    <iais:select name="service_licence_type" options="licSvcTypeOption" firstOption="Please select" value="${licSvcTypeOption}" ></iais:select>
+                                                    <iais:select name="service_sub_type" options="licSvcSubTypeOption" firstOption="Please select" value="${licSvcSubTypeOption}" ></iais:select>
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>

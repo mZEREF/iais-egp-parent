@@ -5,8 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
@@ -209,7 +209,7 @@ public class OrganizationClientFallback implements OrganizationClient {
         return entity;
     }
     @Override
-    public FeignResponseEntity<SearchResult <RfiLicenceQueryDto>> searchLicenseeIdsParam(SearchParam searchParam){
+    public FeignResponseEntity<SearchResult <LicenseeQueryDto>> searchLicenseeIdsParam(SearchParam searchParam){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

@@ -33,13 +33,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePref
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
@@ -256,7 +256,7 @@ public interface HcsaConfigClient {
     FeignResponseEntity<String> getServiceCodeByName(@PathVariable(name= "svcName") String svcName);
 
     @PostMapping(value = "/iais-hcsa-service/search-svcNames-param",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<SearchResult<RfiLicenceQueryDto>> searchSvcNamesParam(@RequestBody SearchParam searchParam);
+    FeignResponseEntity<SearchResult<HcsaSvcQueryDto>> searchSvcNamesParam(@RequestBody SearchParam searchParam);
 
     @PostMapping(value = "/iais-hcsa-service/appt-date-service",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppointmentDto> getApptStartEndDateByService(@RequestBody AppointmentDto appointmentDto);

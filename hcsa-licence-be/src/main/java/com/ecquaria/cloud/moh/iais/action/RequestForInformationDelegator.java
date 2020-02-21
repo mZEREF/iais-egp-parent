@@ -102,7 +102,7 @@ public class RequestForInformationDelegator {
             .clz(RfiLicenceQueryDto.class)
             .searchAttr("licParam")
             .resultAttr("licResult")
-            .sortField("id").sortType(SearchParam.ASCENDING).pageNo(0).pageSize(10).build();
+            .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(10).build();
 
     FilterParameter applicationParameter = new FilterParameter.Builder()
             .clz(RfiApplicationQueryDto.class)

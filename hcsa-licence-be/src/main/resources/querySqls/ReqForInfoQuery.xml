@@ -34,8 +34,7 @@
             <#if licence_no??>AND :licence_no = :licence_no</#if>
             <#if app_id??>AND :app_id = :app_id</#if>
             <#if org_ids??>AND :org_ids = :org_ids</#if>
-            <#if svc_names??>AND :svc_names = :svc_names</#if>
-            <#if licenseeIds??>AND :licenseeIds = :licenseeIds</#if>
+
             <#if licenseeId??>AND :licenseeId = :licenseeId</#if>
             <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
             <#if licenseeRegnNo??>AND :licenseeRegnNo = :licenseeRegnNo</#if>
@@ -103,9 +102,15 @@
     <sql key = "licenseeQuery" remarks = "Query Licensee Data by condition">
         <![CDATA[
             SELECT
-                lic.id as LICENSEE_ID
+                lic.id,
+                lic.name,
+                lic.organization_id,
+                lic.postal_code
             FROM LICENSEE AS lic
+            LEFT JOIN ORGANIZATION org ON org.ID = lic.ORGANIZATION_ID
+
             WHERE 1=1
+            <#if uenNo??> AND org.UEN_NO = :uenNo</#if>
             <#if licenseeId??> AND lic.id = :licenseeId</#if>
             <#if licenseeName??> AND lic.NAME = :licenseeName</#if>
             <#if licenseeRegnNo??> AND lic.POSTAL_CODE = :licenseeRegnNo</#if>
@@ -128,8 +133,7 @@
             <#if hciName??>AND :hciName = :hciName</#if>
             <#if hciStreetName??>AND :hciStreetName = :hciStreetName</#if>
             <#if hciPostalCode??>AND :hciPostalCode = :hciPostalCode</#if>
-            <#if svc_names??>AND :svc_names = :svc_names</#if>
-            <#if licenseeIds??>AND :licenseeIds = :licenseeIds</#if>
+
             <#if serviceId??>AND :serviceId = :serviceId</#if>
             <#if serviceName??>AND :serviceName = :serviceName</#if>
             <#if serviceRole??>AND :serviceRole = :serviceRole</#if>
@@ -140,15 +144,16 @@
     <sql key = "serviceQuery" remarks = "Query Service Data by condition">
         <![CDATA[
             SELECT
+                svc.id,
                 svc.SVC_NAME as SVC_NAME
             FROM hcsa_service AS svc
-            LEFT JOIN hcsa_service_specific_routing_stage svcRout ON svcRout.SERVICE_ID = svc.ID
-            LEFT JOIN hcsa_service_routing_stage svcStage ON svcRout.STAGE_ID = svcStage.ID
+            LEFT JOIN hcsa_service_specific_personnel svcPersonnel ON svcPersonnel.SERVICE_ID = svc.ID
+
             WHERE 1=1
             <#if serviceId??> AND svc.id = :serviceId</#if>
             <#if serviceName??> AND svc.SVC_NAME = :serviceName</#if>
-            <#if serviceRole??> AND svcStage.STAGE_NAME like '%:serviceRole%'</#if>
-            <#if serviceRegnNo??> AND svc.SVC_CODE = :serviceRegnNo</#if>
+            <#if serviceRole??> AND svcPersonnel.PSN_TYPE = :serviceRole</#if>
+            <#if serviceRegnNo??> AND svcPersonnel.ID = :serviceRegnNo</#if>
             
             <#if id??>AND :id = :id</#if>
             <#if appType??>AND :appType = :appType</#if>
@@ -168,8 +173,7 @@
             <#if hciName??>AND :hciName = :hciName</#if>
             <#if hciStreetName??>AND :hciStreetName = :hciStreetName</#if>
             <#if hciPostalCode??>AND :hciPostalCode = :hciPostalCode</#if>
-            <#if svc_names??>AND :svc_names = :svc_names</#if>
-            <#if licenseeIds??>AND :licenseeIds = :licenseeIds</#if>
+
             <#if licenseeId??>AND :licenseeId = :licenseeId</#if>
             <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
             <#if licenseeRegnNo??>AND :licenseeRegnNo = :licenseeRegnNo</#if>

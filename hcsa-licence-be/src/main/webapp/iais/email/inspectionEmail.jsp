@@ -319,8 +319,8 @@
     function doSend(){
 
         if($('#decision_email option:selected').val()=="Select"){
-            alert("The field is mandatory.");
-    }
+
+        }
         else {
             showWaiting();
             SOP.Crud.cfxSubmit("mainForm", "send");

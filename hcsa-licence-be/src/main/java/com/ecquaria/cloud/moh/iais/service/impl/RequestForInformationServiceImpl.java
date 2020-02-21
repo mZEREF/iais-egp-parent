@@ -128,7 +128,10 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.LICENCE_STATUS_IACTIVE,
             ApplicationConsts.LICENCE_STATUS_EXPIRY
     };
-
+    private final String[] licServiceSubType=new String[]{
+            ApplicationConsts.SUB_TYPE_MODALITY,
+            ApplicationConsts.SUB_TYPE_DISCIPLINE
+    };
     @Override
     public List<SelectOption> getAppTypeOption() {
         return MasterCodeUtil.retrieveOptionsByCodes(appType);
@@ -142,6 +145,11 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     @Override
     public List<SelectOption> getLicSvcTypeOption() {
         return MasterCodeUtil.retrieveOptionsByCodes(licServiceType);
+    }
+
+    @Override
+    public List<SelectOption> getLicSvcSubTypeOption() {
+        return MasterCodeUtil.retrieveOptionsByCodes(licServiceSubType);
     }
 
     @Override
