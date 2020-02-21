@@ -23,6 +23,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -201,4 +202,10 @@ public interface ApplicationClient  {
 
     @GetMapping(value = "/appeal/application-group-peronnel-by-grp-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppSvcCgoDto>> getAppGrpPersonnelByGrpId(@RequestParam("grpId") String grpId);
+
+    @PostMapping(value = "/iais-application/apps-by-licId/{licId}")
+    FeignResponseEntity<List<ApplicationDto>> getApplicationByLicId(@PathVariable(name = "licId") String licId);
+
+
+
 }

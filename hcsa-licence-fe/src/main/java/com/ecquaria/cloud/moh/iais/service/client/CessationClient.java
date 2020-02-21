@@ -14,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @FeignClient(name = "hcsa-application", configuration = {FeignConfiguration.class},
         fallback =CessationClientFallback.class)
         public interface CessationClient {
@@ -22,4 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
     @PostMapping(value = "/appeal/application-cessation",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> saveCessation(@RequestBody AppCessMiscDto appCessMiscDto);
+
+    @PostMapping(value = "/appeal/list-cessation-corrIds",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppCessMiscDto>> getAppCessMiscDtosByCorrIds(@RequestBody List<String> corrIds);
 }

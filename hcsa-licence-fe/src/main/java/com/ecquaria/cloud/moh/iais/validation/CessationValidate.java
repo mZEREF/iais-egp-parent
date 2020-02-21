@@ -49,7 +49,7 @@ public class CessationValidate implements CustomizeValidator {
                         }
                     }
                 }
-            }else {
+            }else if("no".equals(patRadio)) {
                 if(StringUtil.isEmpty(patNoRemarks)){
                     errorMap.put("patNoRemarks", "ERR0009");
                 }

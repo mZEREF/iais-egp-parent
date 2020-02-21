@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
@@ -10,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
@@ -33,6 +35,8 @@ public class CessationServiceImpl implements CessationService {
     private CessationClient cessationClient;
     @Autowired
     private SystemAdminClient systemAdminClient;
+    @Autowired
+    private ApplicationClient applicationClient;
 
     @Override
     public List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds) {
@@ -90,9 +94,18 @@ public class CessationServiceImpl implements CessationService {
     }
 
     @Override
-    public void updateCesation(AppCessMiscDto appCessMiscDto, String licId) {
+    public void updateCesation(AppCessMiscDto appCessMiscDto, List<String> licIds) {
+        List<String> appNos = new ArrayList<>();
+        for(String licId :licIds){
+            List<ApplicationDto> applicationDtos = applicationClient.getApplicationByLicId(licId).getEntity();
+            String applicationNo = applicationDtos.get(0).getApplicationNo();
+            String appId = applicationDtos.get(0).getId();
+            appNos.add(applicationNo);
+            List<AppPremisesCorrelationDto> entity = applicationClient.listAppPremisesCorrelation(appId).getEntity();
+        }
 
     }
+
 
     private ApplicationGroupDto getApplicationGroupDto(String appNo,String licId){
         ApplicationGroupDto applicationGroupDto=new ApplicationGroupDto();
