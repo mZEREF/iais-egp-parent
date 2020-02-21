@@ -52,8 +52,9 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     @Autowired
     HcsaRiskSupportBeServiceImpl hcsaRiskSupportBeServiceImpl;
     @Override
-    public List<AuditTaskDataDto> getSystemPotentailAdultList(AuditSystemPotentialDto dto) {
+    public List<AuditTaskDataFillterDto> getSystemPotentailAdultList(AuditSystemPotentialDto dto) {
         List<AuditTaskDataDto> dtos = null;
+        List<AuditTaskDataFillterDto> rdtoList = null;
         if(dto!=null){
             List<String> svcNameList = getSvcName(dto.getSvcNameList(),dto.getHcsaServiceCodeList());
             if(!IaisCommonUtils.isEmpty(svcNameList)){
@@ -66,23 +67,29 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             String inSql = sb.substring(0, sb.length() - 1) + ")";
             SearchParam searchParam  = getSearchParamFrom(dto,inSql);
             SearchResult<AuditTaskDataDto> searchResult = getAuditSysParam(searchParam);
-            dtos = inspectionFitter(searchResult,dto);
+            rdtoList = inspectionFitter(searchResult,dto);
         }
-        return dtos;
+        return rdtoList;
     }
 
-    private List<AuditTaskDataDto> inspectionFitter(SearchResult<AuditTaskDataDto> searchResult, AuditSystemPotentialDto dto) {
+    private List<AuditTaskDataFillterDto> inspectionFitter(SearchResult<AuditTaskDataDto> searchResult, AuditSystemPotentialDto dto) {
         List<AuditTaskDataDto> auditTaskDtos = new ArrayList<>();
-        for(AuditTaskDataDto temp:searchResult.getRows()){
-               String licId = temp.getLicId();
-               String svcCode = hcsaConfigClient.getServiceCodeByName(temp.getSvcName()).getEntity();
-               Date startDate = getInspectionStartDate(licId,svcCode,true);
-               Date endDate =  getInspectionStartDate(licId,svcCode,false);
-               getAduitTaskDtoByInspecitonDate(endDate,startDate,dto,auditTaskDtos,temp);
+        if(StringUtil.isEmpty(dto.getLastInspectionStart())&&StringUtil.isEmpty(dto.getLastInspectionEnd())) {
+            for (AuditTaskDataDto temp : searchResult.getRows()) {
+                auditTaskDtos.add(temp);
+            }
+        }else{
+            for (AuditTaskDataDto temp : searchResult.getRows()) {
+                String licId = temp.getLicId();
+                String svcCode = hcsaConfigClient.getServiceCodeByName(temp.getSvcName()).getEntity();
+                Date startDate = getInspectionStartDate(licId, svcCode, true);
+                Date endDate = getInspectionStartDate(licId, svcCode, false);
+                getAduitTaskDtoByInspecitonDate(endDate, startDate, dto, auditTaskDtos, temp);
+            }
         }
         List<AuditTaskDataFillterDto> dtoList = getRiskFillter(dto,auditTaskDtos);
-        List<AuditTaskDataDto> dataList  = transferBackToDataDtoList(dtoList);
-        return dataList;
+        //todo:nc fitter
+        return dtoList;
     }
 
     private List<AuditTaskDataDto> transferBackToDataDtoList(List<AuditTaskDataFillterDto> dtoList) {
@@ -121,6 +128,12 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
                 dtoList = sortByOverallRisk(dto,auditTaskDtos);
             }
             dtoList = getNumberList(dto,dtoList);
+        }else{
+            dtoList = new ArrayList<>();
+            for(AuditTaskDataDto temp:auditTaskDtos){
+                AuditTaskDataFillterDto fDto = transferDtoToFiltterDto(temp,0d);
+                dtoList.add(fDto);
+            }
         }
         return dtoList;
     }
@@ -238,6 +251,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         fDto.setPostalCode(dto.getPostalCode());
         fDto.setSvcName(dto.getSvcName());
         fDto.setHclCode(dto.getHclCode());
+        fDto.setHclName(dto.getHclName());
         return fDto;
     }
 

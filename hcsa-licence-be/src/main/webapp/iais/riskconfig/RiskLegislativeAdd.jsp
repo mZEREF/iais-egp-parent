@@ -73,32 +73,32 @@
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" disabled readonly maxlength="5" value="0">
+                                                    <input type="text" disabled readonly maxlength="2" value="0">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inleftmod" name = "<c:out value="${leg.svcCode}"/>inleftmod" maxlength="5"value="${leg.doLeftModCaseCounth}">
+                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inleftmod" name = "<c:out value="${leg.svcCode}"/>inleftmod" maxlength="2"value="${leg.doLeftModCaseCounth}">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inlefthigh" name = "<c:out value="${leg.svcCode}"/>inlefthigh" maxlength="5"value="${leg.doLeftHighCaseCounth}">
+                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inlefthigh" name = "<c:out value="${leg.svcCode}"/>inlefthigh" maxlength="2"value="${leg.doLeftHighCaseCounth}">
                                                 </div>
 
                                                 </div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inrightlow" name = "<c:out value="${leg.svcCode}"/>inrightlow"  maxlength="5" value="${leg.doRightLowCaseCounth}">
+                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inrightlow" name = "<c:out value="${leg.svcCode}"/>inrightlow"  maxlength="3" value="${leg.doRightLowCaseCounth}">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inrightmod" name = "<c:out value="${leg.svcCode}"/>inrightmod"  maxlength="5"value="${leg.doRightModCaseCounth}">
+                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inrightmod" name = "<c:out value="${leg.svcCode}"/>inrightmod"  maxlength="3"value="${leg.doRightModCaseCounth}">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" disabled readonly  maxlength="5" value="999">
+                                                    <input type="text" disabled readonly  maxlength="3" value="999">
                                                 </div></div>
                                             </td>
                                             <td>

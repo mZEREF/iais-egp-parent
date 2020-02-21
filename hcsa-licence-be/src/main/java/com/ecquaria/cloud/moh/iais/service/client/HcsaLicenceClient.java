@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditAdhocItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspectiNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremPreInspNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisemPreInspectChklDto;
@@ -171,4 +172,8 @@ public interface HcsaLicenceClient {
 
     @GetMapping(value = "hcsa-licence/cessation-licences-status/{status}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> listLicencesByStatus(@PathVariable(name = "status") String status);
+
+    @GetMapping(value = "hcsa-licence/audittculist",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AuditTaskDataFillterDto>> getAuditTcuList();
+
 }

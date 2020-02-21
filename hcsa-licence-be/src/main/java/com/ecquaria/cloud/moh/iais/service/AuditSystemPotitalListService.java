@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditSystemPotentialDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
 
 import java.util.List;
 
@@ -10,5 +10,5 @@ import java.util.List;
  * @Date: 2020/2/10 13:00
  */
 public interface AuditSystemPotitalListService {
-    List<AuditTaskDataDto> getSystemPotentailAdultList(AuditSystemPotentialDto dto);
+    List<AuditTaskDataFillterDto> getSystemPotentailAdultList(AuditSystemPotentialDto dto);
 }
