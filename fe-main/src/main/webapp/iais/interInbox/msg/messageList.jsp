@@ -6,14 +6,14 @@
         <input type="hidden" name="crud_action_additional" value="">
         <div class="row">
             <div class="col-md-4">
-                <label class="col-md-3 control-label" for="inboxType">Type</label>
+                <label class="col-md-3 control-label" for="inboxType" style="margin-top:5%;">Type</label>
                 <div class="col-md-8">
                     <iais:select name="inboxType" id="inboxType" options="inboxTypeSelect"
                                  firstOption="Select a type"></iais:select>
                 </div>
             </div>
             <div class="col-md-5">
-                <label class="col-md-3 control-label" for="inboxService">Service</label>
+                <label class="col-md-3 control-label" for="inboxService" style="margin-top:3%;">Service</label>
                 <div class="col-md-8">
                     <iais:select name="inboxService" id="inboxService" options="inboxServiceSelect"
                                  firstOption="Select a service"></iais:select>

@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-md-6">
                 <iais:value>
-                    <label class="col-xs-6 col-md-6" for="appNoPath">Search by Application No or Part of:</label>
+                    <label class="col-xs-6 col-md-6" for="appNoPath" style="margin-top:1%;">Search by Application No or Part of:</label>
                     <div class="col-xs-6 col-md-6">
                         <input id="appNoPath" name="appNoPath" type="text" maxlength="15" value="<%=request.getParameter("appNoPath")==null?"":request.getParameter("appNoPath")%>">
                     </div>
@@ -15,7 +15,7 @@
             </div>
             <div class="col-md-6">
                 <iais:value>
-                    <label class="col-xs-6 col-md-6" for="appServiceType">Service Type:</label>
+                    <label class="col-xs-6 col-md-6" for="appServiceType" style="margin-top:3%;">Service Type:</label>
                     <div class="col-xs-6 col-md-6">
                         <iais:select name="appServiceType" id="appServiceType" options="appServiceType"
                                      firstOption="All"></iais:select>
@@ -26,7 +26,7 @@
         <div class="row" style="margin-bottom: 14px">
             <div class="col-md-6">
                 <iais:value>
-                    <label class="col-xs-6 col-md-6" for="appTypeSelect">Application Type:</label>
+                    <label class="col-xs-6 col-md-6" for="appTypeSelect" style="margin-top:3%;">Application Type:</label>
                     <div class="col-xs-6 col-md-6">
                         <iais:select name="appTypeSelect" id="appTypeSelect" options="appTypeSelect"
                                      firstOption="All"></iais:select>
@@ -35,7 +35,7 @@
             </div>
             <div class="col-md-6">
                 <iais:value>
-                    <label class="col-xs-6 col-md-6" for="appStatusSelect">Application Status:</label>
+                    <label class="col-xs-6 col-md-6" for="appStatusSelect" style="margin-top:3%;">Application Status:</label>
                     <div class="col-xs-6 col-md-6">
                         <iais:select codeCategory="CATE_ID_APP_STATUS" name="appStatusSelect" id="appStatusSelect"
                                      firstOption="All"></iais:select>
@@ -44,26 +44,28 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <iais:value>
-                    <label class="col-xs-3 col-md-3" for="esd">Date Submitted:</label>
-                    <div class="col-xs-3 col-md-3" style="margin-left: -7px">
+                    <label class="col-xs-6 col-md-6" for="esd" style="margin-top:3%;">Date Submitted:</label>
+                    <div class="col-xs-6 col-md-6">
                         <%Date esd = Formatter.parseDate(request.getParameter("esd"));%>
                         <iais:datePicker id="esd" name="esd" dateVal="<%=esd%>"/>
                     </div>
                 </iais:value>
-                <div class="col-xs-1 col-md-1">
-                    <span>To</span>
-                </div>
+            </div>
+            <div class="col-md-6">
                 <iais:value>
-                    <div class="col-xs-3 col-md-3">
+                    <label class="col-xs-6 col-md-6" for="appStatusSelect" style="margin-top:3%;">To</label>
+                    <div class="col-xs-6 col-md-6">
                         <%Date eed = Formatter.parseDate(request.getParameter("eed"));%>
                         <iais:datePicker id="eed" name="eed" dateVal="<%=eed%>"/>
                     </div>
                 </iais:value>
-                <div class="col-xs-2 col-md-2">
-                    <button type="button" class="btn btn-primary" onclick="doSearchApp()">Search</button>
-                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="text-right text-center-mobile" style="margin-right:3%">
+                <button type="button" class="btn btn-primary" onclick="doSearchApp()">Search</button>
             </div>
         </div>
         <iais:pagination param="appParam" result="appResult"/>
