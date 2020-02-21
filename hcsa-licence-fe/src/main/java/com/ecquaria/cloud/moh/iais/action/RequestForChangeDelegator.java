@@ -207,7 +207,8 @@ public class RequestForChangeDelegator {
             LicenseeIndividualDto licenseeIndividualDt=requestForChangeService.getLicIndByNRIC(nric);
             if(licenseeIndividualDt!=null){
             licenceDto.setLicenseeId(licenseeIndividualDt.getId());
-            requestForChangeService.saveLicence(licenceDto);}
+            requestForChangeService.saveLicence(licenceDto);
+            }
         }
 
     }
