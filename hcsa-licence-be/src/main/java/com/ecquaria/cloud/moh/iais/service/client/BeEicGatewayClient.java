@@ -58,7 +58,7 @@ public interface BeEicGatewayClient {
             @RequestHeader("date-Secondary") String dateSec,
             @RequestHeader("authorization-Secondary") String authorizationSec);
 
-    @PostMapping(value = "/v1/app-request-for-info/",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/v1/app-req-for-info/",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppEditSelectDto> createAppEditSelectDto(@RequestBody AppEditSelectDto  appEditSelectDto,
                                                         @RequestHeader("date") String date,
                                                         @RequestHeader("authorization") String authorization,
