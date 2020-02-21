@@ -27,6 +27,9 @@ public interface InspectionFeClient {
     @PutMapping(value = "/iais-appt-inspec-fe", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremisesInspecApptDto> updateAppPremisesInspecApptDto(@RequestBody AppPremisesInspecApptDto appPremisesInspecApptDto);
 
+    @PutMapping(value = "/iais-appt-inspec-fe/appt-others", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremisesInspecApptDto>> updateAppPremisesInspecApptDtoList(@RequestBody List<AppPremisesInspecApptDto> appPremisesInspecApptDtos);
+
     @GetMapping(value = "/iais-appt-inspec-fe/appt-specific-dto/{appPremCorrId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremisesInspecApptDto> getSpecificDtoByAppPremCorrId(@PathVariable(name = "appPremCorrId")String appPremCorrId);
 

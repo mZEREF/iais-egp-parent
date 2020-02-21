@@ -28,6 +28,14 @@ public class InspectionFeClientFallback implements InspectionFeClient {
     }
 
     @Override
+    public FeignResponseEntity<List<AppPremisesInspecApptDto>> updateAppPremisesInspecApptDtoList(List<AppPremisesInspecApptDto> appPremisesInspecApptDtos) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<AppPremisesInspecApptDto> getSpecificDtoByAppPremCorrId(String appPremCorrId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
