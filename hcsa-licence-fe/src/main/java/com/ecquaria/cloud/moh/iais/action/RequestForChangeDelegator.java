@@ -160,7 +160,6 @@ public class RequestForChangeDelegator {
      */
     public void compareChangePercentage(BaseProcessClass bpc) {
         String pageType =ParamUtil.getString(bpc.request, "keyType");
-        String licenseNo=ParamUtil.getString(bpc.request, "licenceNo");
         String licenceId= (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         //String licenseNo="L/20CLB0156/CLB/001/201";
         LicenceDto licenceDto=requestForChangeService.getLicenceDtoByLicenceId(licenceId);
@@ -196,7 +195,7 @@ public class RequestForChangeDelegator {
                 }
             }
             boolean result=false;
-            if(count/oldMemberIds.size()<0.5){
+            if(count/(oldMemberIds.size()+1)<0.5){
                 result=true;
             }
             if(result){
@@ -210,5 +209,10 @@ public class RequestForChangeDelegator {
             requestForChangeService.saveLicence(licenceDto);
         }
 
+    }
+
+
+    private boolean iftranfer(String UNID,String licenceId,String pageType){
+        return true;
     }
 }
