@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -27,6 +26,8 @@ public final class HcsaServiceCacheHelper {
 		RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
 		HcsaServiceDto hcsaServiceDto = redisCacheHelper.get(CACHE_NAME_HCSA_SERVICE, id);
 
+		log.info("HcsaServiceCacheHelper hcsaService  =====>" + hcsaServiceDto);
+
 		if (hcsaServiceDto == null){
 			return null;
 		}else {
@@ -38,6 +39,8 @@ public final class HcsaServiceCacheHelper {
 		RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
 		HcsaServiceDto hcsaServiceDto = redisCacheHelper.get(CACHE_NAME_HCSA_SERVICE, id);
 
+		log.info("HcsaServiceCacheHelper hcsaService  =====>" + hcsaServiceDto);
+
 		if (hcsaServiceDto == null){
 			return null;
 		}else {
@@ -48,6 +51,8 @@ public final class HcsaServiceCacheHelper {
 	public static HcsaServiceDto getServiceById(String id){
 		RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
 		HcsaServiceDto hcsaServiceDto = redisCacheHelper.get(CACHE_NAME_HCSA_SERVICE, id);
+
+		log.info("HcsaServiceCacheHelper hcsaService  =====>" + hcsaServiceDto);
 
 		if (hcsaServiceDto == null){
 			return null;
@@ -65,12 +70,15 @@ public final class HcsaServiceCacheHelper {
 		}
 
 		int status = serviceClient.getActiveServices().getStatusCode();
+
+		log.info("HcsaServiceCacheHelper status  =====>" + status);
+
 		if (status == HttpStatus.SC_OK){
 			List<HcsaServiceDto> serviceList = serviceClient.getActiveServices().getEntity();
 			RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
 			redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, KEY_NAME_HCSA_SERVICE_LIST, serviceList);
 			if (!IaisCommonUtils.isEmpty(serviceList)){
-				serviceList.stream().forEach(i -> redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, i.getId(), i));
+				serviceList.stream().forEach(i -> redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, i.getId(), i, RedisCacheHelper.NOT_EXPIRE));
 			}
 		}
 	}

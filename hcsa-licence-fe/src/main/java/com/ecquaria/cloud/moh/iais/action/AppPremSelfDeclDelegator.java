@@ -75,7 +75,6 @@ public class AppPremSelfDeclDelegator {
 
         String groupId = appSubmissionDto.getAppGrpId();
 
-
         ParamUtil.setSessionAttr(request, "currentSelfDeclGroupId", groupId);
 
         log.info("assign to self decl group id ==>>>>> " + groupId);
