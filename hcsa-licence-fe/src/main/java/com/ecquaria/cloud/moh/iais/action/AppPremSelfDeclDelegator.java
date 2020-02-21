@@ -211,7 +211,7 @@ public class AppPremSelfDeclDelegator {
         Date endDate = IaisEGPHelper.parseToDate(inspEndDate, "dd/MM/yyyy");
 
         if (endDate.compareTo(startDate) < 0){
-            errorMap.put("inspectionDateErr", "CHKL_ERR002");
+            errorMap.put("inspectionDateErr", MessageCodeKey.CHKL_ERR002);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             return;
