@@ -1,17 +1,20 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+
+import java.util.List;
 
 /**
  * EicGatewayClient
@@ -35,11 +38,11 @@ public interface FeEicGatewayClient {
     * @return:
     */
     @PostMapping(value = "/v1/self-decl-bridge/",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> routeSelfDeclData(@RequestBody List<String> contentJsonList,
-                                                  @RequestHeader("date") String date,
-                                                  @RequestHeader("authorization") String authorization,
-                                                  @RequestHeader("date-Secondary") String dateSec,
-                                                  @RequestHeader("authorization-Secondary") String authorizationSec);
+    FeignResponseEntity<IaisApiResult<AppPremisesSelfDeclChklDto>> routeSelfDeclData(@RequestBody List<String> contentJsonList,
+                                                                                     @RequestHeader("date") String date,
+                                                                                     @RequestHeader("authorization") String authorization,
+                                                                                     @RequestHeader("date-Secondary") String dateSec,
+                                                                                     @RequestHeader("authorization-Secondary") String authorizationSec);
 
 /**
  *@Author :weilu on 2020/1/15 12:35

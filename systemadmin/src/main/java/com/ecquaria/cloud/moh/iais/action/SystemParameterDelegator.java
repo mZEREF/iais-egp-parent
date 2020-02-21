@@ -5,7 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.IaisResponeContent;
+import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
@@ -179,7 +179,7 @@ public class SystemParameterDelegator {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }else {
-            IaisResponeContent<SystemParameterDto> responeContent = parameterService.saveSystemParameter(editDto);
+            IaisApiResult<SystemParameterDto> responeContent = parameterService.saveSystemParameter(editDto);
             if (responeContent.isHasError()){
                 Map<String,String> errorMap = new HashMap<>(1);
                 errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, MessageUtil.getMessageDesc(responeContent.getErrorCode()));

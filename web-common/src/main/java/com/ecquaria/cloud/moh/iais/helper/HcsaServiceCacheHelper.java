@@ -23,9 +23,6 @@ public final class HcsaServiceCacheHelper {
 
 	private HcsaServiceCacheHelper(){throw new IllegalStateException("Util class");}
 
-	// the key is hcsa service key(pk id)
-	private static final HashMap<String, HcsaServiceDto> svcHashMap = new HashMap<>();
-
 	public static String getServiceNameById(String id){
 		RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
 		HcsaServiceDto hcsaServiceDto = redisCacheHelper.get(CACHE_NAME_HCSA_SERVICE, id);
@@ -47,6 +44,18 @@ public final class HcsaServiceCacheHelper {
 			return hcsaServiceDto.getSvcType();
 		}
 	}
+
+	public static HcsaServiceDto getServiceById(String id){
+		RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
+		HcsaServiceDto hcsaServiceDto = redisCacheHelper.get(CACHE_NAME_HCSA_SERVICE, id);
+
+		if (hcsaServiceDto == null){
+			return null;
+		}else {
+			return hcsaServiceDto;
+		}
+	}
+
 
 	public static void receiveServiceMapping(){
 		HcsaServiceClient serviceClient = SpringContextHelper.getContext().getBean(HcsaServiceClient.class);

@@ -43,8 +43,6 @@
 
           &nbsp;<span id="error_premItemAnswer" name="iaisErrorMsg" class="error-msg"></span>
           &nbsp;<span id="error_inspectionDateErr" name="iaisErrorMsg" class="error-msg"></span>
-          &nbsp;<span id="error_inspStartDate" name="iaisErrorMsg" class="error-msg"></span>
-          &nbsp;<span id="error_inspEndDate" name="iaisErrorMsg" class="error-msg"></span>
           <div class="dashboard-gp">
             <c:forEach var="declItem" items="${selfDeclQueryAttr}"  varStatus="status">
                   <c:choose>
@@ -75,10 +73,12 @@
 
       <div class="col-xs-8 col-sm-6 col-md-5">
         Inspection Start Date: <iais:datePicker id = "inspStartDate" name = "inspStartDate"  value="${inspStartDate}"></iais:datePicker>
+        <span id="error_inspStartDate" name="iaisErrorMsg" class="error-msg"></span>
       </div>
 
       <div class="col-xs-8 col-sm-6 col-md-5">
         Inspection End Date: <iais:datePicker id = "inspEndDate" name = "inspEndDate" value="${inspEndDate}"></iais:datePicker>
+        <span id="error_inspEndDate" name="iaisErrorMsg" class="error-msg"></span>
       </div>
 
       <div class="tab-content">
@@ -115,7 +115,6 @@
         <div class="application-tab-footer">
           <td>
             <div class="text-right text-center-mobile">
-              <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doCancel();">Cancel</a>
               <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>
               <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSave('${tabIndex}');">Draft</a>
               <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSubmit();">Submit</a>

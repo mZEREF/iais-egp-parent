@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -30,6 +31,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,7 +80,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     */
     private void setServiceSelfDeclConfig(List<PremCheckItem> premItemList, List<String> confList,
                                           String svcCode, String type, String module, String grpPremId){
-        for (AppSvcPremisesScopeDto premise : this.premScopeList){
+        for (AppSvcPremisesScopeDto premise : premScopeList){
             String scopeId = premise.getId();
             ChecklistConfigDto svcConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module).getEntity();
             if (svcConfig != null){
@@ -94,7 +97,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     * @return:
     */
     private void setSubTypeSelfDeclConfig(List<PremCheckItem> premItemList, List<String> confList, String svcCode, String type, String module, String grpPremId){
-        for (AppSvcPremisesScopeDto premise : this.premScopeList){
+        for (AppSvcPremisesScopeDto premise : premScopeList){
             if (!premise.isSubsumedType()){
                 String scopeId = premise.getId();
                 String subTypeId = premise.getScopeName();
@@ -138,16 +141,16 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
         List<SelfDecl> selfDeclList = new ArrayList<>();
         List<String> premiseList = new ArrayList<>();
 
+        boolean commonFlag = false;
         for (ApplicationDto app : appList){
             SelfDecl selfDecl = new SelfDecl();
             List<String> confList = new ArrayList<>();
             String appId = app.getId();
             String svcId = app.getServiceId();
-            String appType = app.getApplicationType();
             String type = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.SELF_ASSESSMENT);
             String module = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.NEW);
 
-            HcsaServiceDto hcsa = appConfigClient.getHcsaServiceDtoByServiceId(svcId).getEntity();
+            HcsaServiceDto hcsa = HcsaServiceCacheHelper.getServiceById(svcId);
             String svcCode = hcsa.getSvcCode();
 
             // search inspection period
@@ -162,7 +165,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
                 String correId = corre.getId();
                 String grpPremId = corre.getAppGrpPremId();
 
-                this.premScopeList = applicationClient.getAppSvcPremisesScopeListByCorreId(correId).getEntity();
+                premScopeList = applicationClient.getAppSvcPremisesScopeListByCorreId(correId).getEntity();
 
                 setServiceSelfDeclConfig(premItemList, confList, svcCode, type, module, grpPremId);
                 setSubTypeSelfDeclConfig(premItemList, confList, svcCode, type, module, grpPremId);
@@ -177,7 +180,11 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
                 premiseList.add(correId);
                 selfDeclList.add(selfDecl);
 
-                setCommonDeclSelfConfig(selfDeclList, premiseList, grpPremId);
+                //only save one time
+                if (!commonFlag){
+                    setCommonDeclSelfConfig(selfDeclList, premiseList, grpPremId);
+                    commonFlag = true;
+                }
             }
         }
 
@@ -274,19 +281,27 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            gatewayClient.routeSelfDeclData(contentJsonList, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
+
+            int statusCode = gatewayClient.routeSelfDeclData(contentJsonList, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getStatusCode();
+            System.out.println(statusCode);
         }
     }
 
     @Override
     public Date getBlockPeriodByAfterApp(String groupId, List<SelfDecl> selfDeclList) {
+        if (IaisCommonUtils.isEmpty(selfDeclList)){
+            return null;
+        }
+
         ApplicationGroupDto groupDto = applicationClient.getApplicationGroup(groupId).getEntity();
         int min = Integer.MAX_VALUE;
         for (SelfDecl selfDecl : selfDeclList){
             if (!selfDecl.isCommon()){
                 HcsaServicePrefInspPeriodDto periodDto = selfDecl.getPeriodDto();
-                min = Math.min(min, periodDto.getPeriodAfterApp());
+                if (periodDto != null){
+                    min = Math.min(min, periodDto.getPeriodAfterApp());
+                }
             }
         }
         Calendar c = Calendar.getInstance();

@@ -6,7 +6,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
  *description:
  */
 
-import com.ecquaria.cloud.moh.iais.common.dto.IaisResponeContent;
+import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
@@ -35,7 +35,7 @@ public class SystemClientFallback implements SystemClient{
     }
 
     @Override
-    public FeignResponseEntity<IaisResponeContent<SystemParameterDto>> saveSystemParameter(SystemParameterDto dto) {
+    public FeignResponseEntity<IaisApiResult<SystemParameterDto>> saveSystemParameter(SystemParameterDto dto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

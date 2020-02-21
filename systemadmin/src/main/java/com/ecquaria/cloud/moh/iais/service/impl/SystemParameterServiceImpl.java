@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
-import com.ecquaria.cloud.moh.iais.common.dto.IaisResponeContent;
+import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
@@ -27,7 +27,7 @@ public class SystemParameterServiceImpl implements SystemParameterService {
     }
 
     @Override
-    public IaisResponeContent<SystemParameterDto> saveSystemParameter(SystemParameterDto dto) {
+    public IaisApiResult<SystemParameterDto> saveSystemParameter(SystemParameterDto dto) {
         dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return systemClient.saveSystemParameter(dto).getEntity();
     }
