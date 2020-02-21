@@ -159,12 +159,12 @@ public class RequestForChangeDelegator {
      * @Decription compareChangePercentage
      */
     public void compareChangePercentage(BaseProcessClass bpc) {
-        String pageType = (String) ParamUtil.getSessionAttr(bpc.request, "keyType");
-        String licenseNo= (String) ParamUtil.getString(bpc.request, "licenceNo");
+        String pageType =ParamUtil.getString(bpc.request, "keyType");
+        String licenseNo=ParamUtil.getString(bpc.request, "licenceNo");
         String licenceId= (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         //String licenseNo="L/20CLB0156/CLB/001/201";
         LicenceDto licenceDto=requestForChangeService.getLicenceDtoByLicenceId(licenceId);
-        String UNID=(String) ParamUtil.getSessionAttr(bpc.request, "UNID");
+        String UNID=ParamUtil.getString(bpc.request, "UNID");
         String newLicenseeId=null;
         List<String> uenMemberIds=new ArrayList<>();
         if(("UEN").equals(pageType)){
