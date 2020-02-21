@@ -74,7 +74,6 @@
     }
 
     function toLicView(licId){
-        alert("toLicenceView");
         $("[name='crud_action_value']").val(licId);
         $("[name='crud_action_additional']").val("toLicView");
         submit('licDoAmend');
