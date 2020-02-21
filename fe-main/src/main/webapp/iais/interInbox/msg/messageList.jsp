@@ -61,7 +61,7 @@
                     <c:otherwise>
                         <c:forEach var="inboxQuery" items="${inboxResult.rows}" varStatus="status">
                                 <c:choose>
-                                    <c:when test="${inboxQuery.status == 'MSGRS002'}">
+                                    <c:when test="${inboxQuery.status == 'MSGRS001' || inboxQuery.status == 'MSGRS002'}">
                                         <tr style="font-weight:bold">
                                     </c:when>
                                     <c:otherwise>
@@ -70,7 +70,7 @@
                                 </c:choose>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Subject</p>
-                                    <p><a href="${inboxQuery.processUrl}">${inboxQuery.subject}</a></p>
+                                    <p><a href="${inboxQuery.processUrl}">${inboxQuery.subject}${inboxQuery.status}</a></p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Message Type</p>
