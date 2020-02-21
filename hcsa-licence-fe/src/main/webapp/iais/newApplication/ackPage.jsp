@@ -11,6 +11,7 @@
 
 </style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <input type="hidden" name="crud_action_type"  value=""/>
     <div class="main-content">
         <div class="container">
             <div class="row center">
@@ -94,7 +95,7 @@
                     <a class="btn btn-secondary" href="#">Indicate preferred Inspection Date</a>
                 </div>
                 <div class="col-xs-12 col-md-2">
-                    <a class="btn btn-secondary" href="#">Submit Self-Assessment</a>
+                    <a class="btn btn-secondary" id="doSelfAssessment">Submit Self-Assessment</a>
                 </div>
                 <div class="col-xs-12 col-md-2">
                     <a class="btn btn-secondary" href="/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu">Apply for Another Licence</a>
@@ -109,7 +110,11 @@
 
 <script type="text/javascript">
 
-
+    $('#doSelfAssessment').click(function () {
+        $("[name='crud_action_type']").val('MohAppPremSelfDecl');
+        var mainForm = document.getElementById("mainForm");
+        mainForm.submit();
+    });
 </script>
 
 
