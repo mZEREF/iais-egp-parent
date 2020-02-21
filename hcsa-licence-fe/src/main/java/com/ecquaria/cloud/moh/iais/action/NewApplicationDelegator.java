@@ -661,6 +661,22 @@ public class NewApplicationDelegator {
     }
 
     /**
+     * StartStep: preInvoke
+     *
+     * @param bpc
+     * @throws
+     */
+    public void preInvoke(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do preInvoke start ...."));
+        String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(!StringUtil.isEmpty(action)){
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,action);
+        }
+
+        log.debug(StringUtil.changeForLog("the do preInvoke start ...."));
+    }
+
+    /**
      * StartStep: doSaveDraft
      *
      * @param bpc
