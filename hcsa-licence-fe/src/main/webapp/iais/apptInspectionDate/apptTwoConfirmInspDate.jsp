@@ -50,10 +50,15 @@
                                 <br><span class="error-msg" name="iaisErrorMsg" id="error_checkNewDate"></span>
                               </c:forEach>
                             </c:if>
+                            <c:if test="${apptFeConfirmDateDto.inspectionNewDate == null}">
+                              <label><c:out value = "-"/></label>
+                            </c:if>
                           </iais:value>
                         </iais:row>
                         <iais:action >
-                          <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:apptTwoConfirmInspDateCon()">Confirm</button>
+                          <c:if test="${apptFeConfirmDateDto.inspectionNewDate != null}">
+                            <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:apptTwoConfirmInspDateCon()">Confirm</button>
+                          </c:if>
                           <button class="btn btn-lg btn-login-next" style="float:left" type="button" onclick="javascript:apptTwoConfirmInspDateBack()">back</button>
                         </iais:action>
                       </iais:section>

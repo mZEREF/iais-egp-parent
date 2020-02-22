@@ -110,7 +110,12 @@ public class ApplicantConfirmInspDateDelegator {
         log.debug(StringUtil.changeForLog("the userConfirmInspDateConfirm start ...."));
         ApptFeConfirmDateDto apptFeConfirmDateDto = (ApptFeConfirmDateDto) ParamUtil.getSessionAttr(bpc.request, "apptFeConfirmDateDto");
         String dateValue = ParamUtil.getRequestString(bpc.request, "apptCheckDate");
-        apptFeConfirmDateDto.setCheckDate(dateValue);
+        boolean dateFlag = checkDateFlag(dateValue, apptFeConfirmDateDto.getInspectionDateMap());
+        if(dateFlag){
+            apptFeConfirmDateDto.setCheckDate(dateValue);
+        } else {
+            apptFeConfirmDateDto.setCheckDate(null);
+        }
         ValidationResult validationResult = WebValidationHelper.validateProperty(apptFeConfirmDateDto,"confirm");
         if (validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
