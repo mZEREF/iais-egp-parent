@@ -288,7 +288,7 @@
               <th  style="width: 25% ;height: 40px;text-align: center"> Service Workflow Routing Stages<span class="mandatory" >*</span></th>
               <th  style="width: 20% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
               <th  style="width: 25% ;height: 40px;text-align: center">Service Workload Manhours<span class="mandatory">*</span></th>
-              <th  style="width: 25% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
+              <th  style="width: 30% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
             </tr>
             <c:forEach items="${routingStages}" var="routingStage" varStatus="status">
               <tr>
@@ -318,13 +318,12 @@
 
                 </td>
                 <td>
-                  <div>
+                  <div class="col-xs-12 col-md-12">
                     <select name="workingGroup">
                       <option value="">Select one</option>
                       <option>Admin Screening officer</option>
                     </select>
                   </div>
-
                 </td>
               </tr>
             </c:forEach>

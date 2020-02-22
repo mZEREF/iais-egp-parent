@@ -88,8 +88,22 @@ public class ConfigServiceImpl implements ConfigService {
             }
             List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtos =
                     hcsaConfigClient.getHcsaSvcSpeRoutingSchemeByServiceId(hcsaServiceDto.getId()).getEntity();
+                List<String> stageIds=new ArrayList<>();
 
- /*           List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = hcsaConfigClient.getHcsaStageWorkingGroup(hcsaServiceDto.getId()).getEntity();*/
+            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = hcsaConfigClient.getHcsaSvcWorkingGroupByStages(stageIds).getEntity();
+            for(HcsaSvcStageWorkingGroupDto hcsaConfigPageDtos:hcsaSvcStageWorkingGroupDtos){
+                String stageId = hcsaConfigPageDtos.getStageId();
+                String stageWorkGroupId = hcsaConfigPageDtos.getStageWorkGroupId();
+
+            }
+
+            List<WorkingGroupDto> hcsa = organizationClient.getWorkingGroup("hcsa").getEntity();
+            for(WorkingGroupDto every:hcsa){
+                String workingGropId = every.getId();
+
+            }
+
+            /*           List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = hcsaConfigClient.getHcsaStageWorkingGroup(hcsaServiceDto.getId()).getEntity();*/
 
         List<HcsaConfigPageDto> hcsaConfigPageDtos=new ArrayList<>();
         for(HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto:hcsaSvcRoutingStageDtos){

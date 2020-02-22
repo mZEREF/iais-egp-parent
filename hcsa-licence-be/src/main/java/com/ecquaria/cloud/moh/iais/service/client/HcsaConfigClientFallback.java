@@ -637,5 +637,13 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<List<HcsaSvcStageWorkingGroupDto>> getHcsaSvcWorkingGroupByStages(List<String> stageIds) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 
 }

@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
@@ -406,6 +407,9 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocation = applicationListDto.getAppSvcPremisesScopeAllocation();
         List<AppPremiseMiscDto> appPremiseMiscEntities = applicationListDto.getAppPremiseMiscEntities();
         List<AppPremisesSpecialDocDto> appPremisesSpecialDocEntities = applicationListDto.getAppPremisesSpecialDocEntities();
+        List<AppEditSelectDto> appEditSelects = applicationListDto.getAppEditSelects();
+
+
         List<ApplicationListFileDto> applicationListFileDtoList=new ArrayList<>();
         Set<ApplicationGroupDto> applicationGroupDtoSet=new HashSet<>();
         applicationGroupDtoSet.addAll(applicationGroup);
@@ -463,6 +467,10 @@ public class UploadFileServiceImpl implements UploadFileService {
 
             List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList=new ArrayList<>();
             Set<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoSet=new HashSet<>();
+
+            List<AppEditSelectDto> appEditSelectDtos=new ArrayList<>();
+            Set<AppEditSelectDto> appEditSelectDtoSet=new HashSet<>();
+
             groupDtos.add(every);
             String groupId = every.getId();
             for(AppGrpPremisesEntityDto appliGrpPremisesDto:appGrpPremises){
@@ -579,6 +587,15 @@ public class UploadFileServiceImpl implements UploadFileService {
                     }
                 }
 
+
+                for(AppEditSelectDto appEditSelectDto:appEditSelects){
+                    String applicationId = appEditSelectDto.getApplicationId();
+                    String editType = appEditSelectDto.getEditType();
+                    if(applicationDto.getId().equals(applicationId)&&ApplicationConsts.APPLICATION_EDIT_TYPE_RFC.equals(editType)){
+                        appEditSelectDtoSet.add(appEditSelectDto);
+
+                    }
+                }
             }
 
             for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDoc){
@@ -605,6 +622,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             appPremPhOpenPeriodDtoList.addAll(appPremPhOpenPeriodDtoSet);
             appPremiseMiscDtoList.addAll(appPremiseMiscDtoSet);
             appPremisesSpecialDocDtoList.addAll(appPremisesSpecialDocDtoSet);
+            appEditSelectDtos.addAll(appEditSelectDtoSet);
 
             applicationListFileDto.setApplicationGroup(groupDtos);
             applicationListFileDto.setApplication( applicationDtos);
@@ -624,6 +642,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             applicationListFileDto.setAppSvcDoc(appSvcDocDtos);
             applicationListFileDto.setAppPremiseMiscEntities(appPremiseMiscDtoList);
             applicationListFileDto.setAppPremisesSpecialDocEntities(appPremisesSpecialDocDtoList);
+            applicationListFileDto.setAppEditSelects(appEditSelectDtos);
 
             applicationListFileDtoList.add(applicationListFileDto);
         }

@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Wenkang
@@ -15,9 +17,10 @@ public class HcsaConfigPageDto implements Serializable {
     private String workloadId;
     private String appType;
     private String stage;
-    private String workingGroup;
+    private String workingGroupId;
+    private String workingGroupName;
     private Integer manhours;
-
+    private List<WorkingGroupDto>  workingGroup;
     private String stageCode;
 
     private String stageName;
