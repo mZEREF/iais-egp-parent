@@ -6,20 +6,19 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.util.DateUtil;
-
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author weilu
  * @date 2019/12/31 15:03
  */
+@Component
 public class IntranetUserDtoValidate implements CustomizeValidator {
 
     @Autowired
