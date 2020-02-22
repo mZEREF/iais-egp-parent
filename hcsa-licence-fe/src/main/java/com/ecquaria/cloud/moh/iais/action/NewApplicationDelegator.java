@@ -930,8 +930,10 @@ public class NewApplicationDelegator {
                 }
             }
         }
+        Object rfi = ParamUtil.getSessionAttr(request,REQUESTINFORMATIONCONFIG);
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
-                ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+                ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
+                || rfi != null){
             AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
             ParamUtil.setSessionAttr(request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
         }
@@ -1958,7 +1960,7 @@ public class NewApplicationDelegator {
             appSubmissionDto.setNeedEditController(true);
             AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-            ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
+            //ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,"test");
         }
         log.debug(StringUtil.changeForLog("the do requestForInformationLoading end ...."));
