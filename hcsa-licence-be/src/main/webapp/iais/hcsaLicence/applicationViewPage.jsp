@@ -93,7 +93,7 @@
                                     </div>
                                 </div>
                                 <div align="center">
-                                  <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?appId=${applicationViewDto.applicationDto.id}" target="_blank">
+                                  <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService" target="_blank">
                                     <button type="button" class="btn btn-primary">
                                         View Application
                                     </button>
@@ -703,6 +703,12 @@
 
         }
     });
+    $("[name='verified']").change(function selectChange() {
+        var selectValue = $("[name='verified']").val();
+        if (selectValue == "PROCRFI") {
+            showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService');
+        }
+    });
 
 
     $('#verifiedDropdown').change(function verifiedChange() {
@@ -721,6 +727,7 @@
     function dismissWaiting() {
         $.unblockUI();
     }
+
 </script>
 
 
