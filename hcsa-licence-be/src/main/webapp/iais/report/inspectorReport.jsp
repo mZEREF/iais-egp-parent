@@ -503,10 +503,10 @@
                             </td>
                         </c:if>
                         <c:if test="${recomDecision !=null}">
-                            <td>
+                            <td>test="${recomDecision}"
                                 <iais:select name="recommendation" options="recommendationOption"
                                              firstOption="Please select"
-                                             value="${recomDecision.recommendation}"
+                                             value="${recomDecision}"
                                              onchange="javascirpt:changeRecommendation(this.value);"/>
                             </td>
                         </c:if>

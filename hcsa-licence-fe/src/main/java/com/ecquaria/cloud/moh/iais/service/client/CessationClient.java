@@ -23,8 +23,11 @@ import java.util.List;
     FeignResponseEntity<AppInsRepDto> getAppCessationDto(@PathVariable("appNo") String appNo);
 
     @PostMapping(value = "/appeal/application-cessation",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> saveCessation(@RequestBody AppCessMiscDto appCessMiscDto);
+    FeignResponseEntity<Void> saveCessation(@RequestBody List<AppCessMiscDto> appCessMiscDtos);
 
     @PostMapping(value = "/appeal/list-cessation-corrIds",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppCessMiscDto>> getAppCessMiscDtosByCorrIds(@RequestBody List<String> corrIds);
+
+    @PostMapping(value = "/appeal/application-cessation-update",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> updateCessation(@RequestBody List<AppCessMiscDto> appCessMiscDtos);
 }

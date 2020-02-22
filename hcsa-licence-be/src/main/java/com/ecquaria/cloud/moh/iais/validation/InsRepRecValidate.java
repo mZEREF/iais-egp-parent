@@ -20,11 +20,10 @@ public class InsRepRecValidate implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         Map<String, String> errorMap = new HashMap<>(34);
-        String recommendation = ParamUtil.getRequestString(httpServletRequest, RECOMMENDATION);
         String remarks = ParamUtil.getRequestString(httpServletRequest, "remarks");
         String chrono = ParamUtil.getRequestString(httpServletRequest, CHRONO);
         String number = ParamUtil.getRequestString(httpServletRequest, NUMBER);
-        String tcuNeeded = ParamUtil.getRequestString(httpServletRequest, "tcuNeed");
+        String tcuNeeded = ParamUtil.getRequestString(httpServletRequest, "tcuNeeded");
         String tcuDate = ParamUtil.getRequestString(httpServletRequest, "tcuDate");
         String enforcement = ParamUtil.getRequestString(httpServletRequest, "engageEnforcement");
         String enforcementRemarks = ParamUtil.getRequestString(httpServletRequest, "enforcementRemarks");
@@ -47,9 +46,6 @@ public class InsRepRecValidate implements CustomizeValidator {
             if (length > 4000) {
                 errorMap.put("remarks", "remarks must be less than 4000");
             }
-        }
-        if(!StringUtil.isEmpty(tcuNeeded)&&StringUtil.isEmpty(tcuDate)){
-            errorMap.put("tcuDate", "ERR0009");
         }
         if(!StringUtil.isEmpty(enforcement)&&StringUtil.isEmpty(enforcementRemarks)){
             errorMap.put("enforcementRemarks", "ERR0009");

@@ -46,117 +46,121 @@
                                 <td class="col-xs-1">
                                     <p><c:out value="${appCess.svcName}"></c:out></p>
                                 </td>
-                                <td colspan="6" class="col-xs-9">
-                                    <table class="table" border="1" cellspacing="0" cellpadding="0">
-                                        <c:forEach items="${appCess.appCessHciDtos}" var="appCessHci" varStatus="uid">
+                                    <%--                                <td colspan="6" class="col-xs-9">--%>
+                                    <%--                                    <table class="table" border="1" cellspacing="0" cellpadding="0">--%>
+                                <c:forEach items="${appCess.appCessHciDtos}" var="appCessHci" varStatus="uid">
+                                    <%--                                            <tr>--%>
+                                    <td class="col-xs-1">
+                                        <p><c:out value="${appCessHci.hciName}"></c:out></p>
+                                    </td>
+                                    <td class="col-xs-1">
+                                        <p><c:out value="${appCessHci.hciAddress}"></c:out></p>
+                                    </td>
+                                    <td class="col-xs-1">
+                                        <iais:datePicker id="effectiveDate"
+                                                         name="${num.count}effectiveDate"
+                                                         dateVal="${appCessationDtos[num.index].effectiveDate}"/>
+                                        <span id="error_effectiveDate" name="iaisErrorMsg"
+                                              class="error-msg"></span>
+                                    </td>
+                                    <td class="col-xs-1">
+                                        <iais:select id="${num.count}cessationReasonId"
+                                                     name="${num.count}cessationReason"
+                                                     options="reasonOption"
+                                                     firstOption="Please select"
+                                                     onchange="javascirpt:changeReason(this.value);"
+                                                     value="${appCessationDtos[num.index].cessationReason}"/>
+                                        <span id="error_cessationReason" name="iaisErrorMsg"
+                                              class="error-msg"></span>
+                                        <div id="${num.count}reason" hidden><input
+                                                type="text"
+                                                name="${num.count}otherReason">
+                                            <span id="error_otherReason" name="iaisErrorMsg"
+                                                  class="error-msg"></span>
+                                        </div>
+                                    </td>
+                                    <td class="col-xs-4">
+                                        <table>
                                             <tr>
-                                                <td class="col-xs-1">
-                                                    <p><c:out value="${appCessHci.hciName}"></c:out></p>
+                                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <input type="radio"
+                                                           name="${num.count}patRadio"
+                                                           value="yes"
+                                                           id="${num.count}radioYes"
+                                                           <c:if test="${appCessationDtos[num.index].patRadio == 'yes'}">checked</c:if>
+                                                           onchange="javascirpt:changePatSelect(this.value);">Yes
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <input type="radio"
+                                                           name="${num.count}patRadio"
+                                                           value="no"
+                                                           id="${num.count}radioNo"
+                                                           <c:if test="${appCessationDtos[num.index].patRadio == 'no'}">checked</c:if>
+                                                           onchange="javascirpt:changePatSelect(this.value);">No
                                                 </td>
-                                                <td class="col-xs-1">
-                                                    <p><c:out value="${appCessHci.hciAddress}"></c:out></p>
-                                                </td>
-                                                <td class="col-xs-1">
-                                                    <iais:datePicker id="effectiveDate"
-                                                                     name="${num.count}effectiveDate"
-                                                                     dateVal="${appCessationDtos[num.index].effectiveDate}"/>
-                                                    <span id="error_effectiveDate" name="iaisErrorMsg"
-                                                          class="error-msg"></span>
-                                                </td>
-                                                <td class="col-xs-1">
-                                                    <iais:select id="${num.count}cessationReasonId"
-                                                                 name="${num.count}cessationReason"
-                                                                 options="reasonOption"
-                                                                 firstOption="Please select"
-                                                                 onchange="javascirpt:changeReason(this.value);"
-                                                                 value="${appCessationDtos[num.index].cessationReason}"/>
-                                                    <span id="error_cessationReason" name="iaisErrorMsg"
-                                                          class="error-msg"></span>
-                                                    <div id="${num.count}reason" hidden><input
-                                                            type="text"
-                                                            name="${num.count}otherReason">
-                                                        <span id="error_otherReason" name="iaisErrorMsg"
-                                                              class="error-msg"></span>
-                                                    </div>
-                                                </td>
-                                                <td class="col-xs-4">
-                                                    <table>
-                                                        <tr>
-                                                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                <input type="radio"
-                                                                       name="${num.count}patRadio"
-                                                                       value="yes"
-                                                                       id="${num.count}radioYes"
-                                                                       <c:if test="${appCessationDtos[num.index].patRadio == 'yes'}">checked</c:if>
-                                                                       onchange="javascirpt:changePatSelect(this.value);">Yes
-                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                <input type="radio"
-                                                                       name="${num.count}patRadio"
-                                                                       value="no"
-                                                                       id="${num.count}radioNo"
-                                                                       <c:if test="${appCessationDtos[num.index].patRadio == 'no'}">checked</c:if>
-                                                                       onchange="javascirpt:changePatSelect(this.value);">No
-                                                            </td>
-                                                            <span id="error_patRadio" name="iaisErrorMsg"
-                                                                  class="error-msg"></span>
-                                                        </tr>
-                                                        <tr id="${num.count}patYes" hidden>
-                                                            <td><h6>Patients' Record will be transferred to</h6>
-                                                            </td>
-                                                            <td><iais:select
-                                                                    name="${num.count}patientSelect"
-                                                                    options="patientsOption"
-                                                                    firstOption="Please select"
-                                                                    id="${num.count}patientSelectId"
-                                                                    onchange="javascirpt:changePatient(this.value);"
-                                                                    value="${appCessationDtos[num.index].patientSelect}"/></td>
-                                                            <span id="error_patientSelect" name="iaisErrorMsg"
-                                                                  class="error-msg"></span>
-                                                        </tr>
-                                                        <tr id="${num.count}patNo" hidden
-                                                            align="center">
-                                                            <td><textarea
-                                                                    name="${num.count}patNoRemarks"
-                                                                    cols="40" rows="4" maxlength="8000"
-                                                                    title="content"><c:out value="${appCessationDtos[num.index].patNoRemarks}"/></textarea></td>
-                                                            <span id="error_patNoRemarks" name="iaisErrorMsg"
-                                                                  class="error-msg"></span>
-                                                        </tr>
-                                                        <tr id="${num.count}patHciName" hidden>
-                                                            <td>HCI Name</td>
-                                                            <td><input type="text"
-                                                                       name="${num.count}patHciName"
-                                                                       value="${appCessationDtos[num.index].patHciName}"></td>
-                                                            <span id="error_patHciName" name="iaisErrorMsg"
-                                                                  class="error-msg"></span>
-                                                        </tr>
-                                                        <tr id="${num.count}patRegNo" hidden>
-                                                            <td>Professional Registered No.</td>
-                                                            <td><input type="text"
-                                                                       name="${num.count}patRegNo"
-                                                                       value="${appCessationDtos[num.index].patRegNo}"></td>
-                                                            <span id="error_patRegNo" name="iaisErrorMsg"
-                                                                  class="error-msg"></span>
-                                                        </tr>
-                                                        <tr id="${num.count}patOthers" hidden>
-                                                            <td>Others</td>
-                                                            <td><input type="text"
-                                                                       name="${num.count}patOthers"
-                                                                       value="${appCessationDtos[num.index].patOthers}"></td>
-                                                            <span id="error_patOthers" name="iaisErrorMsg"
-                                                                  class="error-msg"></span>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                                <td class="col-xs-1">
-                                                    <input type="checkbox" name="${num.count}whichTodo">
-                                                    <span id="error_whichTodo" name="iaisErrorMsg"
-                                                          class="error-msg"></span>
-                                                </td>
+                                                <span id="error_patRadio" name="iaisErrorMsg"
+                                                      class="error-msg"></span>
                                             </tr>
-                                        </c:forEach>
-                                    </table>
-                                </td>
+                                            <tr id="${num.count}patYes" hidden>
+                                                <td><h6>Patients' Record will be transferred to</h6>
+                                                </td>
+                                                <td><iais:select
+                                                        name="${num.count}patientSelect"
+                                                        options="patientsOption"
+                                                        firstOption="Please select"
+                                                        id="${num.count}patientSelectId"
+                                                        onchange="javascirpt:changePatient(this.value);"
+                                                        value="${appCessationDtos[num.index].patientSelect}"/></td>
+                                                <span id="error_patientSelect" name="iaisErrorMsg"
+                                                      class="error-msg"></span>
+                                            </tr>
+                                            <tr id="${num.count}patHciName" hidden>
+                                                <td>HCI Name</td>
+                                                <td><input type="text"
+                                                           name="${num.count}patHciName"
+                                                           value="${appCessationDtos[num.index].patHciName}">
+                                                </td>
+                                                <span id="error_patHciName" name="iaisErrorMsg"
+                                                      class="error-msg"></span>
+                                            </tr>
+                                            <tr id="${num.count}patRegNo" hidden>
+                                                <td>Professional Registered No.</td>
+                                                <td><input type="text"
+                                                           name="${num.count}patRegNo"
+                                                           value="${appCessationDtos[num.index].patRegNo}">
+                                                </td>
+                                                <span id="error_patRegNo" name="iaisErrorMsg"
+                                                      class="error-msg"></span>
+                                            </tr>
+                                            <tr id="${num.count}patOthers" hidden>
+                                                <td>Others</td>
+                                                <td><input type="text"
+                                                           name="${num.count}patOthers"
+                                                           value="${appCessationDtos[num.index].patOthers}">
+                                                </td>
+                                                <span id="error_patOthers" name="iaisErrorMsg"
+                                                      class="error-msg"></span>
+                                            </tr>
+                                            <tr id="${num.count}patNo" hidden align="center">
+                                                <td><textarea
+                                                        name="${num.count}patNoRemarks"
+                                                        cols="40" rows="4" maxlength="8000"
+                                                        title="content"><c:out
+                                                        value="${appCessationDtos[num.index].patNoRemarks}"/></textarea>
+                                                </td>
+                                                <span id="error_patNoRemarks" name="iaisErrorMsg"
+                                                      class="error-msg"></span>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td class="col-xs-1">
+                                        <input type="checkbox" name="${num.count}whichTodo" value="${appCess.licenceId}"  <c:if test="${appCessationDtos[num.index].whichTodo != null}">checked</c:if>>
+                                        <span id="error_whichTodo" name="iaisErrorMsg"
+                                              class="error-msg"></span>
+                                    </td>
+                                    <%--                                            </tr>--%>
+                                </c:forEach>
+                                    <%--                                    </table>--%>
+                                    <%--                                </td>--%>
                             </tr>
                         </c:forEach>
                         <tr>
@@ -188,7 +192,7 @@
 </form>
 
 <script type="text/javascript">
-    function changeReason(obj) {
+    function changeReason() {
         for (var i = 1; i < 3; i++) {
             if ($("#" + i + "cessationReasonId").val() == "OtherReasons") {
                 $("#" + i + "reason").show();
@@ -198,7 +202,7 @@
         }
     }
 
-    function changePatient(obj) {
+    function changePatient() {
         for (var i = 1; i < 3; i++) {
             if ($("#" + i + "patientSelectId").val() == "Others") {
                 $("#" + i + "patOthers").show();
@@ -222,7 +226,7 @@
                 $("#" + i + "patYes").show();
                 $("#" + i + "patNo").hide();
             } else if ($('#' + i + 'radioNo').is(':checked')) {
-                $("#" + i + "patNo" ).show();
+                $("#" + i + "patNo").show();
                 $("#" + i + "patYes").hide();
                 $("#" + i + "patHciName").hide();
                 $("#" + i + "patOthers").hide();
@@ -248,13 +252,13 @@
                 $("#" + i + "patYes").show();
                 $("#" + i + "patNo").hide();
             } else if ($('#' + i + 'radioNo').is(':checked')) {
-                $("#" + i + "patNo").show();
                 $("#" + i + "patYes").hide();
                 $("#" + i + "patHciName").hide();
                 $("#" + i + "patOthers").hide();
                 $("#" + i + "patRegNo").hide();
+                $("#" + i + "patNo").show();
             }
-            if ($("#" + i + "patientSelectId").val()  == "Others") {
+            if ($("#" + i + "patientSelectId").val() == "Others") {
                 $("#" + i + "patOthers").show();
                 $("#" + i + "patHciName").hide();
                 $("#" + i + "patRegNo").hide();
@@ -271,5 +275,17 @@
         }
     });
 
+    $(document).ready(function () {
+        for (var i = 1; i < 3; i++) {
+            if ($('#' + i + 'radioNo').is(':checked')) {
+                $("#" + i + "patYes").hide();
+                $("#" + i + "patHciName").hide();
+                $("#" + i + "patOthers").hide();
+                $("#" + i + "patRegNo").hide();
+                $("#" + i + "div").hide();
+            }
+        }
+
+    });
 
 </script>

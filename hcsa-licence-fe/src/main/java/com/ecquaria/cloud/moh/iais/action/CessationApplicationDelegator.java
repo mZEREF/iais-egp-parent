@@ -79,7 +79,7 @@ public class CessationApplicationDelegator {
         }
         int i = 0;
         for(AppCessationDto appCessationDto :appCessationDtos){
-            if("on".equals(appCessationDto.getWhichTodo())){
+            if(!StringUtil.isEmpty(appCessationDto.getWhichTodo())){
                 i++;
                 Map<String, String> errorMap = new HashMap<>(34);
                 ValidationResult validationResult = WebValidationHelper.validateProperty(appCessationDto, "save");
@@ -108,7 +108,7 @@ public class CessationApplicationDelegator {
 
     public void saveData(BaseProcessClass bpc){
         List<AppCessationDto> appCessationDtos = (List<AppCessationDto>)ParamUtil.getSessionAttr(bpc.request, "appCessationConfirmDto");
-        //cessationService.saveCessations(appCessMiscDto,"7ECAE165-534A-EA11-BE7F-000C29F371DC");
+        cessationService.saveCessations(appCessationDtos);
     }
 
 

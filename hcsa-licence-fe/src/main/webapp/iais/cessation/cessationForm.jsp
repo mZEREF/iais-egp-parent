@@ -153,7 +153,7 @@
                                                     </table>
                                                 </td>
                                                 <td class="col-xs-1">
-                                                    <input type="checkbox" name="${num.count}whichTodo"  <c:if test="${appCessationDtos[num.index].whichTodo == 'no'}">checked</c:if>>
+                                                    <input type="checkbox" name="${num.count}whichTodo" value="${appCess.licenceId}"  <c:if test="${appCessationDtos[num.index].whichTodo != null}">checked</c:if>>
                                                     <span id="error_whichTodo" name="iaisErrorMsg"
                                                           class="error-msg"></span>
                                                 </td>

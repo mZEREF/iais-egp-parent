@@ -125,7 +125,7 @@
                                         </table>
                                     </td>
                                     <td class="col-xs-1">
-                                        <input type="checkbox" name="whichTodo" <c:if test="${appCessationDtos[num.index].whichTodo == 'no'}">checked</c:if> onclick="return false" >
+                                        <input type="checkbox" name="whichTodo" value="${appCess.licenceId}"  <c:if test="${appCessationDtos[num.index].whichTodo !=null}">checked</c:if> onclick="return false" >
                                     </td>
                                 </c:forEach>
                             </tr>
