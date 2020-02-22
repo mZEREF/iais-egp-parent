@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
@@ -25,6 +26,7 @@ import java.util.Map;
  * @author Shicheng
  * @date 2020/2/15 10:34
  **/
+@Component
 public class ApptInspectionDateValidate implements CustomizeValidator {
 
     @Autowired
