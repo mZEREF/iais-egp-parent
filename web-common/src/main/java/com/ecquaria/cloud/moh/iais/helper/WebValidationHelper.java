@@ -14,19 +14,28 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.annotation.CustomValidate;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.oval.ConstraintViolation;
+import net.sf.oval.Validator;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * WebValidationHelper
@@ -49,10 +58,41 @@ public class WebValidationHelper {
      * @return
      */
     public static <T> ValidationResult validateEntity(T obj) {
-        ValidationResult rslt = ValidationUtils.validateEntity(obj);
-        saveAuditTrail(rslt);
+        return validateProperty(obj, null);
+    }
 
-        return rslt;
+    /**
+     * @description: Do validation for an Object array
+     *
+     * @author: Jinhua on 2019/7/18 15:43
+     * @param: [objs]
+     * @return: ValidationResult
+     */
+    public static ValidationResult doValidate(Object[] objs) {
+        return doValidate(objs, null);
+    }
+
+    /**
+     * @description: Do validation for an Object array and profile array
+     *
+     * @author: Jinhua on 2019/7/18 15:44
+     * @param: [objs, profile] -- These 2 arrays' length must be the same
+     * @return: ValidationResult
+     */
+    public static ValidationResult doValidate(Object[] objs, String[] profile) {
+        ValidationResult result = new ValidationResult();
+        if (profile == null) {
+            profile = new String[objs.length];
+        }
+        for (int i = 0; i < objs.length; i++) {
+            ValidationResult rslt = validateProperty(objs[i], profile[i]);
+            if (rslt != null && rslt.isHasErrors()) {
+                result.setHasErrors(true);
+                result.addMessages(rslt.retrieveAll());
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -65,35 +105,48 @@ public class WebValidationHelper {
      * @return
      */
     public static <T> ValidationResult validateProperty(T obj, String propertyName) {
-        ValidationResult rslt = ValidationUtils.validateProperty(obj, propertyName);
-        saveAuditTrail(rslt);
+        if (obj == null) {
+            return null;
+        }
+        ValidationResult result = new ValidationResult();
+        try {
+            Validator validator = new Validator();
+            List<ConstraintViolation> violations = null;
+            if (!StringUtil.isEmpty(propertyName)) {
+                String[] profiles = propertyName.split("\\,");
+                violations = validator.validate(obj, profiles);
+            } else {
+                violations = validator.validate(obj);
+            }
 
-        return rslt;
-    }
+            if (violations != null && !violations.isEmpty()) {
+                result.setHasErrors(true);
+                for (ConstraintViolation constraintViolation : violations) {
+                    String fullName = constraintViolation.getContext().toString();
+                    String name = fullName.substring(fullName.lastIndexOf('.') + 1);
 
-    /**
-     * @description: Do validation for an Object array
-     *
-     * @author: Jinhua on 2019/7/18 15:43
-     * @param: [objs]
-     * @return: sg.gov.moh.iais.common.validation.dto.ValidationResult
-     */
-    public static ValidationResult doValidate(Object[] objs) {
-        return doValidate(objs, null);
-    }
+                    Collection<? extends Serializable> values = constraintViolation.getMessageVariables() == null ? null
+                            : constraintViolation.getMessageVariables().values();
+                    if (!Objects.isNull(values) && !values.isEmpty()){
+                        String[] val = values.toArray(new String[1]);
+                        if (val.length > 0){
+                            String i = val[0];
+                            //example: "Key/Number"
+                            result.addMessage(name, formatValuesMessage(constraintViolation.getMessage(), i));
+                        }
+                    }else {
+                        result.addMessage(name, constraintViolation.getMessage());
+                    }
+                }
+            }
+            result.addMessages(customizeValidate(obj.getClass(), propertyName, result.isHasErrors()));
+            saveAuditTrail(result);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new IaisRuntimeException(e);
+        }
 
-    /**
-     * @description: Do validation for an Object array and profile array
-     *
-     * @author: Jinhua on 2019/7/18 15:44
-     * @param: [objs, profiles] -- These 2 arrays' length must be the same
-     * @return: sg.gov.moh.iais.common.validation.dto.ValidationResult
-     */
-    public static ValidationResult doValidate(Object[] objs, String[] profiles) {
-        ValidationResult rslt = ValidationUtils.doValidate(objs, profiles);
-        saveAuditTrail(rslt);
-
-        return rslt;
+        return result;
     }
 
     /**
@@ -137,6 +190,9 @@ public class WebValidationHelper {
         }
     }
 
+    public static Boolean cpmpareDate(Date first, Date second){
+        return second.compareTo(first) < 0 ? true : false;
+    }
 
     public static String generateJsonStr(String fieldName, String errorMsg) {
         if (StringUtils.isEmpty(errorMsg)){
@@ -170,6 +226,47 @@ public class WebValidationHelper {
         return sb.substring(0, sb.length() - 1) + "]";
     }
 
+    /**
+     * @description: The method to do the customize validation
+     *
+     * @author: ECQ_Jinhua on 2019/7/5 9:08
+     * @param: [cls]
+     * @return: java.util.Map<java.lang.String,java.lang.String>
+     */
+    private static Map<String, String> customizeValidate(Class cls, String property, boolean withError){
+        CustomValidate ano = (CustomValidate) cls.getAnnotation(CustomValidate.class);
+        if (ano == null || (withError && ano.skipWhenError())) {
+            return null;
+        }
+        if (!org.springframework.util.StringUtils.isEmpty(property)) {
+            boolean jump = true;
+            for (String prop : ano.properties()) {
+                if (property.equals(prop)) {
+                    jump = false;
+                    break;
+                }
+            }
+            if (jump) {
+                return null;
+            }
+        }
+
+        try {
+            Class valCls = Class.forName(ano.impClass());
+            Object obj = SpringContextHelper.getContext().getBean(valCls);
+            CustomizeValidator cv = (CustomizeValidator) obj;
+            HttpServletRequest request = MiscUtil.getCurrentRequest();
+            if (request != null) {
+                return cv.validate(request);
+            }
+        } catch (ClassNotFoundException e) {
+            log.error(e.getMessage(), e);
+            throw new IaisRuntimeException(e);
+        }
+
+        return null;
+    }
+
     private static void saveAuditTrail(ValidationResult result) {
         if (!result.isHasErrors()) {
             return;
@@ -192,8 +289,8 @@ public class WebValidationHelper {
         dto.setValidationFail(null);
     }
 
-    public static Boolean cpmpareDate(Date first, Date second){
-        return second.compareTo(first) < 0 ? true : false;
+    private static String formatValuesMessage(String message, String val){
+        return message + "/" + val;
     }
 
 }
