@@ -739,45 +739,7 @@
         $.unblockUI();
     }
 
-    function showPopupWindow(url) {
-        showPopupWindow(url,'N','popupWindow');
-    }
 
-    function showPopupWindow(url,wName) {
-        showPopupWindow(url,'N',wName);
-    }
-
-    function showPopupWindow(url,full,wName) {
-        showWaiting();
-
-        var w, h;
-        w = $(window).width();
-        h = $(window).height();
-        var popW = 980, popH = h + 40;
-        if (full == 'Y') {
-            popW = w;
-        }
-        var leftPos = (w - popW) / 2, topPos = (h - popH) / 2;
-        var params = "scrollbars=yes,location=no,resizable=yes,width=" + popW + ",height=" + popH + ",left=" + leftPos + ",top="+topPos;
-        if (wName == "" || wName == undefined) {
-            wName = "popupWindow";
-        }
-        var emsTabId = $('#emsStoredTabId').val();
-        if (emsTabId != null && emsTabId != "") {
-            if (url.indexOf("?") >= 0) {
-                url += "&emsStoredTabId=" + emsTabId;
-            } else {
-                url += "?emsStoredTabId=" + emsTabId;
-            }
-        }
-        var popupWin = window.open(url, wName, params);
-        if (window.focus) {
-            popupWin.focus();
-        }
-
-        dismissWaiting();
-        return false;
-    }
 
 </script>
 
