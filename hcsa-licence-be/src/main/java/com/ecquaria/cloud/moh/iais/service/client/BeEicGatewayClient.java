@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -91,4 +92,11 @@ public interface BeEicGatewayClient {
                                                                  @RequestHeader("authorization") String authorization,
                                                                  @RequestHeader("date-Secondary") String dateSec,
                                                                  @RequestHeader("authorization-Secondary") String authorizationSec);
+
+    @PostMapping(value = "/v1/hcsa-app-insdate-down", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApptFeConfirmDateDto> reSchedulingSaveFeDate(@RequestBody ApptFeConfirmDateDto apptFeConfirmDateDto,
+                                                                     @RequestHeader("date") String date,
+                                                                     @RequestHeader("authorization") String authorization,
+                                                                     @RequestHeader("date-Secondary") String dateSec,
+                                                                     @RequestHeader("authorization-Secondary") String authorizationSec);
 }
