@@ -253,13 +253,18 @@ public class WebValidationHelper {
 
         try {
             Class valCls = Class.forName(ano.impClass());
-            Object obj = SpringContextHelper.getContext().getBean(valCls);
+            Object obj = null;
+            try {
+                obj = SpringContextHelper.getContext().getBean(valCls);
+            } catch (Exception e) {
+                obj = valCls.newInstance();
+            }
             CustomizeValidator cv = (CustomizeValidator) obj;
             HttpServletRequest request = MiscUtil.getCurrentRequest();
             if (request != null) {
                 return cv.validate(request);
             }
-        } catch (ClassNotFoundException e) {
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             log.error(e.getMessage(), e);
             throw new IaisRuntimeException(e);
         }
