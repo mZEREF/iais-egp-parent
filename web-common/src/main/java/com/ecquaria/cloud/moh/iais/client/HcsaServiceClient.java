@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  * @author: yichen
@@ -19,4 +20,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public interface HcsaServiceClient {
 	@GetMapping(value = "/iais-hcsa-service/active-service",produces = MediaType.APPLICATION_JSON_VALUE)
 	FeignResponseEntity<List<HcsaServiceDto>> getActiveServices();
+
+	@GetMapping(path = "/iais-hcsa-service/one-of-hcsa-service/{serviceId}", produces = { MediaType.APPLICATION_JSON_VALUE },
+			consumes = {MediaType.APPLICATION_JSON_VALUE})
+	FeignResponseEntity<HcsaServiceDto> getHcsaServiceDtoByServiceId(@PathVariable(value = "serviceId") String serviceId);
 }
