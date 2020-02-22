@@ -353,10 +353,13 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             for(AppPremisesInspecApptDto apptDto : appPremisesInspecApptDtoCreateList){
                 apptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             }
-
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
             apptFeConfirmDateDto.setAppPremisesInspecApptCreateList(appPremisesInspecApptDtoCreateList);
             apptFeConfirmDateDto.setAppPremisesInspecApptUpdateList(appPremisesInspecApptDtoUpdateList);
+            beEicGatewayClient.reSchedulingSaveFeDate(apptFeConfirmDateDto, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization());
 
         } else if(apptInspectionDateDto.getProcessDec().equals(InspectionConstants.PROCESS_DECI_ACCEPTS_THE_DATE)) {
             saveDate = appPremisesInspecApptDto.getSpecificInspDate();
