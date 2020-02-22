@@ -285,9 +285,10 @@
           <table border="1px" style="text-align: center" >
             <tr>
               <th style="width: 20% ;height: 40px;text-align: center"> application type<span class="mandatory" >*</span></th>
-              <th  style="width: 30% ;height: 40px;text-align: center"> Service Workflow Routing Stages<span class="mandatory" >*</span></th>
-              <th  style="width: 30% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
-              <th  style="width: 30% ;height: 40px;text-align: center">  Service Workload Manhours<span class="mandatory">*</span></th>
+              <th  style="width: 25% ;height: 40px;text-align: center"> Service Workflow Routing Stages<span class="mandatory" >*</span></th>
+              <th  style="width: 20% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
+              <th  style="width: 25% ;height: 40px;text-align: center">Service Workload Manhours<span class="mandatory">*</span></th>
+              <th  style="width: 25% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
             </tr>
             <c:forEach items="${routingStages}" var="routingStage" varStatus="status">
               <tr>
@@ -313,6 +314,15 @@
                   <div class="col-xs-12 col-md-12">
                     <input  type="text" name="WorkloadManhours${routingStage.stageCode}"  value="${routingStage.manhours}">
                     <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${status.index}"></span>
+                  </div>
+
+                </td>
+                <td>
+                  <div>
+                    <select name="workingGroup">
+                      <option value="">Select one</option>
+                      <option>Admin Screening officer</option>
+                    </select>
                   </div>
 
                 </td>

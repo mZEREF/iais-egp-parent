@@ -190,10 +190,10 @@ public class ConfigServiceImpl implements ConfigService {
             }
         }
 
-        /*List<WorkingGroupDto> hcsa = organizationClient.getWorkingGroup("hcsa").getEntity();
+        List<WorkingGroupDto> hcsa = organizationClient.getWorkingGroup("hcsa").getEntity();
         for(WorkingGroupDto every:hcsa){
 
-        }*/
+        }
 
         request.setAttribute("routingStages",entity);
         request.setAttribute("applicationType",list);

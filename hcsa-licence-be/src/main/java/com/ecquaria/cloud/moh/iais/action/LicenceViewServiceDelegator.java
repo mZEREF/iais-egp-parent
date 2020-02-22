@@ -14,6 +14,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineA
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -24,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -55,7 +58,8 @@ public class LicenceViewServiceDelegator {
     private ApplicationClient applicationClient;
     @Autowired
     private ApplicationViewService applicationViewService;
-
+    @Autowired
+    private OrganizationClient organizationClient;
     /**
      * StartStep: doStart
      *
@@ -88,18 +92,37 @@ public class LicenceViewServiceDelegator {
              oldCorrelationId = appPremisesCorrelationDto.getOldCorrelationId();
             String applicationId = appPremisesCorrelationDto.getApplicationId();
             appSubmissionDto = licenceViewService.getAppSubmissionByAppId(applicationId);
+
+            ApplicationDto applicationDto = applicationClient.getApplicationById(applicationId).getEntity();
+            ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+            String licenseeId = applicationGroupDto.getLicenseeId();
+            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+            bpc.request.setAttribute("newLicenceDto",licenseeDto);
         }else {
             String appId = ParamUtil.getString(bpc.request,"appId");
             appSubmissionDto = licenceViewService.getAppSubmissionByAppId(appId);
         }
         String status = appSubmissionDto.getStatus();
+
+
         if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(status)){
             //new
             if(appPremisesCorrelationDto!=null){
                 ApplicationDto entity = applicationClient.getApplicationById(appPremisesCorrelationDto.getApplicationId()).getEntity();
+                String newGrpId = entity.getAppGrpId();
+                ApplicationGroupDto newApplicationGroupDto = applicationClient.getAppById(newGrpId).getEntity();
+                String newApplicationGroupDtoLicenseeId = newApplicationGroupDto.getLicenseeId();
+                LicenseeDto newLicenceDto = organizationClient.getLicenseeDtoById(newApplicationGroupDtoLicenseeId).getEntity();
+                bpc.request.setAttribute("newLicenceDto",newLicenceDto);
                 //last
                 ApplicationDto applicationDto = applicationClient.getLastApplicationByAppNo(entity).getEntity();
                 if(applicationDto!=null){
+                    String oldGrpId = applicationDto.getAppGrpId();
+                    ApplicationGroupDto oldApplicationGroupDto = applicationClient.getAppById(oldGrpId).getEntity();
+                    String licenseeId = oldApplicationGroupDto.getLicenseeId();
+                    LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+                    bpc.request.setAttribute("oldLicenceDto",oldLicenceDto);
+
                     AppSubmissionDto appSubmissionByAppId = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
                     if(appSubmissionDto!=null){
                         appSubmissionDto.setOldAppSubmissionDto(appSubmissionByAppId);
@@ -115,9 +138,23 @@ public class LicenceViewServiceDelegator {
 
             //new
             ApplicationDto entity = applicationClient.getApplicationById(applicationId).getEntity();
+            String newGrpId = entity.getAppGrpId();
+            ApplicationGroupDto newApplicationGroupDto = applicationClient.getAppById(newGrpId).getEntity();
+            String newApplicationGroupDtoLicenseeId = newApplicationGroupDto.getLicenseeId();
+            LicenseeDto newLicenceDto = organizationClient.getLicenseeDtoById(newApplicationGroupDtoLicenseeId).getEntity();
+            bpc.request.setAttribute("newLicenceDto",newLicenceDto);
+
+
             //last
             ApplicationDto applicationDto = applicationClient.getLastApplicationByAppNo(entity).getEntity();
             if(applicationDto!=null){
+                String oldGrpId = applicationDto.getAppGrpId();
+                ApplicationGroupDto oldApplicationGroupDto = applicationClient.getAppById(oldGrpId).getEntity();
+                String licenseeId = oldApplicationGroupDto.getLicenseeId();
+                LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+                bpc.request.setAttribute("oldLicenceDto",oldLicenceDto);
+
+
                 AppSubmissionDto appSubmissionByAppId1 = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
                 if(appSubmissionDto!=null){
 
