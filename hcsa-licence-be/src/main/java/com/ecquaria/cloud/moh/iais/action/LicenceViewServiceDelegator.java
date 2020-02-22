@@ -198,6 +198,7 @@ public class LicenceViewServiceDelegator {
     public void doSaveSelect(BaseProcessClass bpc) throws Exception{
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator doSaveSelect start ..."));
          ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+         String parentMsg= null;
          String successMsg = null;
          String errorMsg = null;
          if(applicationViewDto !=null){
@@ -207,6 +208,9 @@ public class LicenceViewServiceDelegator {
                  if(selects!=null && selects.length > 0){
                      List<String> selectsList = Arrays.asList(selects);
                      AppEditSelectDto  appEditSelectDto = setAppEditSelectDto(newAppPremisesCorrelationDto,selectsList);
+                     parentMsg= "<ul>";
+                     parentMsg = parentMsg + appEditSelectDto.getParentMsg();
+                     parentMsg = parentMsg+"</ul>";
                      appEditSelectDto = licenceViewService.saveAppEditSelect(appEditSelectDto);
                      licenceViewService.saveAppEditSelectToFe(appEditSelectDto);
                      successMsg = "save success";
@@ -223,6 +227,7 @@ public class LicenceViewServiceDelegator {
 
          ParamUtil.setRequestAttr(bpc.request,"successMsg",successMsg);
          ParamUtil.setRequestAttr(bpc.request,"errorMsg",errorMsg);
+         ParamUtil.setRequestAttr(bpc.request,"parentMsg",parentMsg);
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator doSaveSelect end ..."));
     }
 
@@ -409,16 +414,20 @@ public class LicenceViewServiceDelegator {
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appEditSelectDto.setApplicationId(newAppPremisesCorrelationDto.getApplicationId());
-
+        String  parentMsg = "";
         if(selectsList.contains("premises")){
             appEditSelectDto.setPremisesEdit(true);
+            parentMsg = parentMsg + "<li>Premises</li>";
         }
         if(selectsList.contains("doc")){
             appEditSelectDto.setDocEdit(true);
+            parentMsg = parentMsg + "<li>AuthoriseD Person</li>";
         }
         if(selectsList.contains("service")){
             appEditSelectDto.setServiceEdit(true);
+            parentMsg = parentMsg + "<li>Service</li>";
         }
+        appEditSelectDto.setParentMsg(parentMsg);
         if(selectsList.contains("po")){
             appEditSelectDto.setPoEdit(true);
         }

@@ -13,23 +13,31 @@
       <div class="center-content">
         <div class="intranet-content">
           <div class="bg-title">
-            <iais:error>
               <c:if test = "${not empty errorMsg}">
+                <iais:error>
                 <div class="error">
                     ${errorMap}
                 </div>
+                </iais:error>
               </c:if>
-            </iais:error>
-            <iais:success>
+
               <c:if test = "${not empty successMsg}">
+                <iais:success>
                 <div class="success">
                     ${successMsg}
                 </div>
+                </iais:success>
               </c:if>
-            </iais:success>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+  $('#selectDetail',window.opener.document).html('${parentMsg}');
+  $('#rfiSelect',window.opener.document).show();
+  window.close();
+</script>
+
