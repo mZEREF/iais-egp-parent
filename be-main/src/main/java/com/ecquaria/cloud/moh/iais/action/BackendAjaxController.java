@@ -110,10 +110,9 @@ public class BackendAjaxController {
                     item.setHciCode("N/A");
                 }
 
-                //todo Kpi Colour
-                /*TaskDto taskDto = taskMap.get(item.getRefNo());
-                String timeLimitWarningColour = getTimeLimitWarningColourByTask(item, hcsaServiceDto, taskDto);*/
-                item.setTimeLimitWarning(HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK);
+                TaskDto taskDto = taskMap.get(item.getRefNo());
+                String timeLimitWarningColour = getTimeLimitWarningColourByTask(item, hcsaServiceDto, taskDto);
+                item.setTimeLimitWarning(timeLimitWarningColour);
             }
             map.put("serviceName", serviceNameMap);
             map.put("appNoUrl", appNoUrl);
