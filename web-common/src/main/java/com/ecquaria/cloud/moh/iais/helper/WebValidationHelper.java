@@ -256,6 +256,7 @@ public class WebValidationHelper {
             Object obj = null;
             try {
                 obj = SpringContextHelper.getContext().getBean(valCls);
+                obj.hashCode();
             } catch (Exception e) {
                 obj = valCls.newInstance();
             }
