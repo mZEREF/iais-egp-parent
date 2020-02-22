@@ -696,7 +696,7 @@ public class NewApplicationDelegator {
     }
 
     /**
-     * StartStep: doRequestInformationSubmit
+     * StartStep: doReDquestInformationSubmit
      *
      * @param bpc
      * @throws
@@ -737,10 +737,11 @@ public class NewApplicationDelegator {
     public void doRenewSubmit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doRenewSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        ApplicationDto applicationDto = requestForChangeService.getApplicationByLicenceId(appSubmissionDto.getLicenceId());
-        if(applicationDto != null){
+        List<ApplicationDto> applicationDtos = requestForChangeService.getOngoingApplicationByLicenceId(appSubmissionDto.getLicenceId());
+        if(!IaisCommonUtils.isEmpty(applicationDtos)){
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
-            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "There is  ongoing application for the licence");
+            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "error");
+            ParamUtil.setRequestAttr(bpc.request,"content","There is  ongoing application for the licence");
             return ;
         }
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
@@ -834,7 +835,7 @@ public class NewApplicationDelegator {
     public void doRequestForChangeSubmit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        ApplicationDto applicationDto = requestForChangeService.getApplicationByLicenceId(appSubmissionDto.getLicenceId());
+        List<ApplicationDto> applicationDtos = requestForChangeService.getOngoingApplicationByLicenceId(appSubmissionDto.getLicenceId());
 
        /* Map<String, String> map = doPreviewAndSumbit(bpc);
         if(!map.isEmpty()){
@@ -849,9 +850,10 @@ public class NewApplicationDelegator {
 
         boolean isAutoRfc = compareAndSendEmail(appSubmissionDto, oldAppSubmissionDto);
 
-        if(applicationDto != null){
+        if(!IaisCommonUtils.isEmpty(applicationDtos)){
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
-            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "There is  ongoing application for the licence");
+            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "error");
+            ParamUtil.setRequestAttr(bpc.request,"content","There is  ongoing application for the licence");
             return ;
         }
         appSubmissionDto.setAutoRfc(isAutoRfc);
@@ -2010,6 +2012,7 @@ public class NewApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "error");
             return false;
         }
+
         List<HcsaServiceDto> hcsaServiceDtoList = null;
         if(!serviceConfigIds.isEmpty()){
             hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
@@ -2802,6 +2805,19 @@ public class NewApplicationDelegator {
         }else{
             //set svc info
             appSubmissionDto = setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
+            Object rfi = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
+            if(rfi != null){
+                List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST);
+                List<HcsaServiceDto> oneHcsaServiceDto = new ArrayList<>();
+                for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
+                    if(hcsaServiceDto.getId().equals(appSubmissionDto.getRfiServiceId())){
+                        oneHcsaServiceDto.add(hcsaServiceDto);
+                        break;
+                    }
+                }
+                ParamUtil.setSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) oneHcsaServiceDto);
+            }
+
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "IndexNoCount", 0);

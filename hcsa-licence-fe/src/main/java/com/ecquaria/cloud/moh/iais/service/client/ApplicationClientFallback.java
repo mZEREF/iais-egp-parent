@@ -313,7 +313,7 @@ public class ApplicationClientFallback implements ApplicationClient {
     }
 
     @Override
-    public FeignResponseEntity<ApplicationDto> getApplicaitonByLicenceId(String licenceId) {
+    public FeignResponseEntity< List<ApplicationDto>> getApplicaitonByLicenceId(String licenceId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
