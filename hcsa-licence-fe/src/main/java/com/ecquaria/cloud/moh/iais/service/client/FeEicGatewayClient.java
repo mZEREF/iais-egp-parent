@@ -1,10 +1,15 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarAndUserIdDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -44,22 +49,18 @@ public interface FeEicGatewayClient {
                                                                                      @RequestHeader("date-Secondary") String dateSec,
                                                                                      @RequestHeader("authorization-Secondary") String authorizationSec);
 
-/**
- *@Author :weilu on 2020/1/15 12:35
- *@param :
- *@return :
- *@Description :
- */
-@PutMapping(value = "/v1/payment-status/",consumes = MediaType.APPLICATION_JSON_VALUE)
-FeignResponseEntity<String> routePaymentStatus(@RequestBody ApplicationGroupDto applicationGroupDto,
-                                               @RequestHeader("date") String date,
-                                               @RequestHeader("authorization") String authorization,
-                                               @RequestHeader("date-Secondary") String dateSec,
-                                               @RequestHeader("authorization-Secondary") String authorizationSec);
-
-
-
-
+    /**
+     *@Author :weilu on 2020/1/15 12:35
+     *@param :
+     *@return :
+     *@Description :
+     */
+    @PutMapping(value = "/v1/payment-status/",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> routePaymentStatus(@RequestBody ApplicationGroupDto applicationGroupDto,
+                                                   @RequestHeader("date") String date,
+                                                   @RequestHeader("authorization") String authorization,
+                                                   @RequestHeader("date-Secondary") String dateSec,
+                                                   @RequestHeader("authorization-Secondary") String authorizationSec);
 
     @PostMapping(value = "/v1/rfi-reply-bridge/",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicPremisesReqForInfoDto> routeRfiData(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto,
@@ -67,4 +68,32 @@ FeignResponseEntity<String> routePaymentStatus(@RequestBody ApplicationGroupDto 
                                                                @RequestHeader("authorization") String authorization,
                                                                @RequestHeader("date-Secondary") String dateSec,
                                                                @RequestHeader("authorization-Secondary") String authorizationSec);
+
+    @PostMapping(value = "/v1/hcsa-reschedule-appt/",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<List<ApptUserCalendarDto>>> getUserCalendarByUserId(@RequestBody AppointmentDto appointmentDto,
+                                                                                 @RequestHeader("date") String date,
+                                                                                 @RequestHeader("authorization") String authorization,
+                                                                                 @RequestHeader("date-Secondary") String dateSec,
+                                                                                 @RequestHeader("authorization-Secondary") String authorizationSec);
+
+    @PostMapping(value = "/v1/hcsa-appt-refno",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApptUserCalendarAndUserIdDto>> getAppointmentByApptRefNo(@RequestBody List<String> apptRefNos,
+                                                                                      @RequestHeader("date") String date,
+                                                                                      @RequestHeader("authorization") String authorization,
+                                                                                      @RequestHeader("date-Secondary") String dateSec,
+                                                                                      @RequestHeader("authorization-Secondary") String authorizationSec);
+
+    @PostMapping(value = "/v1/hcsa-app-insdate-up", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApptInspectionDateDto> apptFeDataUpdateCreateBe(@RequestBody ApptInspectionDateDto apptInspectionDateDto,
+                                                                        @RequestHeader("date") String date,
+                                                                        @RequestHeader("authorization") String authorization,
+                                                                        @RequestHeader("date-Secondary") String dateSec,
+                                                                        @RequestHeader("authorization-Secondary") String authorizationSec);
+
+    @PostMapping(value = "/v1/hcsa-task-assignment", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<TaskDto>> createFeReplyTask(@RequestBody TaskDto taskDto,
+                                                         @RequestHeader("date") String date,
+                                                         @RequestHeader("authorization") String authorization,
+                                                         @RequestHeader("date-Secondary") String dateSec,
+                                                         @RequestHeader("authorization-Secondary") String authorizationSec);
 }
