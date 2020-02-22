@@ -210,6 +210,7 @@ public class LicenceViewServiceDelegator {
                      appEditSelectDto = licenceViewService.saveAppEditSelect(appEditSelectDto);
                      licenceViewService.saveAppEditSelectToFe(appEditSelectDto);
                      successMsg = "save success";
+                     ParamUtil.setSessionAttr(bpc.request,"isSaveRfiSelect",AppConsts.YES);
                  }else{
                      successMsg = "do not select save success!!!";
                  }
@@ -412,11 +413,20 @@ public class LicenceViewServiceDelegator {
         if(selectsList.contains("premises")){
             appEditSelectDto.setPremisesEdit(true);
         }
-        if(selectsList.contains("primary")){
+        if(selectsList.contains("doc")){
             appEditSelectDto.setDocEdit(true);
         }
         if(selectsList.contains("service")){
             appEditSelectDto.setServiceEdit(true);
+        }
+        if(selectsList.contains("po")){
+            appEditSelectDto.setPoEdit(true);
+        }
+        if(selectsList.contains("dpo")){
+            appEditSelectDto.setDpoEdit(true);
+        }
+        if(selectsList.contains("medAlert")){
+            appEditSelectDto.setMedAlertEdit(true);
         }
         appEditSelectDto.setEditType(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
         appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);

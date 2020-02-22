@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
@@ -21,5 +22,7 @@ public interface ApplicationService {
     public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto);
 
     public List<RequestInformationSubmitDto> getRequestInformationSubmitDtos(List<ApplicationDto> applicationDtos);
+
+    public List<AppEditSelectDto> getAppEditSelectDtos(String appId, String changeType);
 
 }

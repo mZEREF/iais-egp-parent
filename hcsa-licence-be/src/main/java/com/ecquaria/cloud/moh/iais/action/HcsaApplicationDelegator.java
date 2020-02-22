@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationD
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
@@ -106,6 +107,7 @@ public class HcsaApplicationDelegator {
         AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence");
         ParamUtil.setSessionAttr(bpc.request,"taskDto",null);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto",null);
+        ParamUtil.setSessionAttr(bpc.request,"isSaveRfiSelect",null);
         log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
     }
 
@@ -215,6 +217,30 @@ public class HcsaApplicationDelegator {
             }
         }
         applicationViewDto.setRecomeDation(riskResult);
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        if(applicationDto != null){
+            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()) ){
+                //RFC
+                if (!StringUtil.isEmpty(applicationDto.getId())) {
+                    List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
+                    if (!IaisCommonUtils.isEmpty(appEditSelectDtos)) {
+                        applicationViewDto.setAppEditSelectDto(appEditSelectDtos.get(0));
+                    }
+                }
+            }else{
+                AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+                appEditSelectDto.setPremisesEdit(true);
+                appEditSelectDto.setDocEdit(true);
+                appEditSelectDto.setMedAlertEdit(true);
+                appEditSelectDto.setServiceEdit(true);
+                appEditSelectDto.setPoEdit(true);
+                appEditSelectDto.setDpoEdit(true);
+                applicationViewDto.setAppEditSelectDto(appEditSelectDto);
+            }
+        }
+
+
+
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
@@ -261,6 +287,13 @@ public class HcsaApplicationDelegator {
         String reply=ParamUtil.getString(bpc.request,"nextStageReply");
         if(!("---select---").equals(reply)){
             nextStage=reply;
+        }
+        if("PROCRFI".equals(nextStage)){
+            String isSaveRfiSelect = (String) ParamUtil.getSessionAttr(bpc.request,"isSaveRfiSelect");
+            if(!AppConsts.YES.equals(isSaveRfiSelect)){
+                nextStage = "PREPARE";
+                ParamUtil.setRequestAttr(bpc.request,"rfi_error_msg","change field not choose/save success");
+            }
         }
         log.debug(StringUtil.changeForLog("the nextStage is -->:"+nextStage));
         ParamUtil.setRequestAttr(bpc.request, "crud_action_type", nextStage);
@@ -581,6 +614,17 @@ public class HcsaApplicationDelegator {
         interMessageDto.setRefNo(mesNO);
         interMessageDto.setService_id(applicationDto.getServiceId());
         String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION+applicationDto.getApplicationNo();
+        //Request For Change
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())){
+            //judge premises amend or licence amend
+            AppEditSelectDto appEditSelectDto = applicationViewDto.getAppEditSelectDto();
+            if(appEditSelectDto != null){
+                if(appEditSelectDto.isPremisesListEdit()){
+                    url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+MessageConstants.MESSAGE_CALL_BACK_URL_PREMISES_LIST+applicationDto.getApplicationNo();
+                }
+            }
+        }
+
         interMessageDto.setProcessUrl(url);
         interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
         interMessageDto.setUserId(applicationViewDto.getSubmitBy());

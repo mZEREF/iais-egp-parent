@@ -504,7 +504,7 @@
 
 
   <div class="amended-service-info-gp">
-    <h2>SERVICE SPECIFIC DOCUMENTS</h2>
+    <h2>SERVICE SPECIFIC DOCUMENTS &nbsp;&nbsp;&nbsp;&nbsp;<input class="form-check-input" id="serviceCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="doc"></h2>
       <div class="amend-preview-info">
         <p></p>
         <div class="form-check-gp">

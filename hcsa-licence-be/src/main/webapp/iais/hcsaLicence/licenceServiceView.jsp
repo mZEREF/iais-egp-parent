@@ -108,7 +108,7 @@
                           <div class="panel-collapse collapse" id="collapseOne" role="tabpanel" aria-labelledby="headingOne">
                             <div class="panel-body">
                               <p class="text-right">
-                                <input class="form-check-input" id="primaryCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="primary">
+                                <!--<input class="form-check-input" id="primaryCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="primary">-->
                               </p>
                               <div class="elemClass-1561088919456">
                                 <div id="control--runtime--34" class="page section control  container-s-1" style="margin: 10px 0px">
@@ -126,15 +126,15 @@
                                                 </wrms:value></span>
                                         </span>
                                       <p>
-                                        <p><strong>AuthoriseD Person 1</strong></p>
+                                        <p><strong>AuthoriseD Person 1(po)</strong>&nbsp;&nbsp;&nbsp;&nbsp;<input class="form-check-input" type="checkbox" name="editCheckbox" aria-invalid="false" value="po"></p>
                                         <p><strong>Name:</strong></p>
                                         <p><strong>ID:</strong></p>
                                         <br>
-                                        <p><strong>AuthoriseD Person 2</strong></p>
+                                        <p><strong>AuthoriseD Person 2(dpo)</strong>&nbsp;&nbsp;&nbsp;&nbsp;<input class="form-check-input"  type="checkbox" name="editCheckbox" aria-invalid="false" value="dpo"></p>
                                         <p><strong>Name:</strong></p>
                                         <p><strong>ID:</strong></p>
                                         <br>
-                                        <p><strong>MedAlert Contact Person</strong></p>
+                                        <p><strong>MedAlert Contact Person</strong>&nbsp;&nbsp;&nbsp;&nbsp;<input class="form-check-input"  type="checkbox" name="editCheckbox" aria-invalid="false" value="medAlert"></p>
                                       </div>
 
                                       <c:forEach var="appGrpPrimaryDocDto" items="${appSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
