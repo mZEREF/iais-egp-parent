@@ -2125,10 +2125,10 @@ public class NewApplicationDelegator {
                         if(endDate<startDate){
                             errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR003");
                         }
-                        String isOtherLic = appGrpPremisesDtoList.get(i).getIsOtherLic();
+                        /*Boolean isOtherLic = appGrpPremisesDtoList.get(i).isLocateWithOthers();
                         if(StringUtil.isEmpty(isOtherLic)){
                             errorMap.put("isOtherLic"+i,"UC_CHKLMD001_ERR002");
-                        }
+                        }*/
 
                         //set  time
                         String errorStartMM = errorMap.get("onsiteStartMM"+i);
@@ -2687,7 +2687,11 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setCertIssuedDtStr(fireSafetyCertIssuedDateStr[i]);
                 Date fireSafetyCertIssuedDateDate = DateUtil.parseDate(fireSafetyCertIssuedDateStr[i], Formatter.DATE);
                 appGrpPremisesDto.setCertIssuedDt(fireSafetyCertIssuedDateDate);
-                appGrpPremisesDto.setIsOtherLic(isOtherLic[i]);
+                if(AppConsts.YES.equals(isOtherLic)){
+                    appGrpPremisesDto.setLocateWithOthers(true);
+                }else if(AppConsts.NO.equals(isOtherLic)){
+                    appGrpPremisesDto.setLocateWithOthers(false);
+                }
                 for(int j =0; j<length; j++){
                     AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();
                     String onsitePubHolidayName = premValue[i]+"onSitePubHoliday"+j;
