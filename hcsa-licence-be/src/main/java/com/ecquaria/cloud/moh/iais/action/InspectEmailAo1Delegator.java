@@ -135,7 +135,9 @@ public class InspectEmailAo1Delegator {
         }
         InspectionFDtosDto serListDto = new InspectionFDtosDto();
         serListDto.setFdtoList(cDtoList);
-        fillupChklistService.getTcuInfo(serListDto,appPremCorrId);
+        if(serListDto.getBestPractice()!=null){
+            fillupChklistService.getTcuInfo(serListDto,appPremCorrId);
+        }
         AdCheckListShowDto adchklDto =insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
@@ -249,7 +251,7 @@ public class InspectEmailAo1Delegator {
             createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
 
 
-            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getId(),HcsaConsts.ROUTING_STAGE_INS);
+            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS);
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setType(applicationViewDto.getApplicationDto().getApplicationType());
             hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
