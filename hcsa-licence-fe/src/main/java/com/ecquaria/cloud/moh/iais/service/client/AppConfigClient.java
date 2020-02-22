@@ -158,4 +158,7 @@ public interface AppConfigClient {
 
     @PostMapping  (value = "/iais-hcsa-fee/fee-renew", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FeeDto> renewFee(@RequestBody @Required List<LicenceFeeDto> dtos);
+
+    @GetMapping(value = "/hcsa-config/hcsa-svc-perosnnel-by-service-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<HcsaSvcPersonnelDto> getHcsaSvcPersonnelDtoByServiceId(@RequestParam("serviceId") String serviceId);
 }

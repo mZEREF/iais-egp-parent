@@ -167,5 +167,4 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-application-be//appCount/{groupId}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Integer> getAppCountByGroupIdAndStatus(@PathVariable(name = "groupId") String groupId,
                                                                @PathVariable(name = "status") String status);
-
 }

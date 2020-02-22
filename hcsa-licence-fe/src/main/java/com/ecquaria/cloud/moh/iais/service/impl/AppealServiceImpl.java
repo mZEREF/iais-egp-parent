@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 
@@ -34,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FileRepositoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
@@ -43,6 +45,9 @@ import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,7 +57,9 @@ import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -79,6 +86,8 @@ public class AppealServiceImpl implements AppealService {
     private MsgTemplateClient msgTemplateClient;
     @Autowired
     private ServiceConfigService serviceConfigService;
+    @Autowired
+    private FileRepositoryClient fileRepositoryClient;
     @Override
     public List<String> reasonAppeal(String applicationNoOrLicenceNo) {
         ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion(applicationNoOrLicenceNo).getEntity();
@@ -107,6 +116,8 @@ public class AppealServiceImpl implements AppealService {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String saveDraftId =(String) req.getSession().getAttribute("saveDraftNo");
         String appealingFor =  request.getParameter("appealingFor");
+        String sessionFileName =(String) req.getSession().getAttribute("filename");
+        AppPremisesSpecialDocDto appPremisesSpecialDocDto =(AppPremisesSpecialDocDto)req.getSession().getAttribute("appPremisesSpecialDocDto");
         String isDelete = request.getParameter("isDelete");
         String reasonSelect = request.getParameter("reasonSelect");
         String[] selectHciNames = request.getParameterValues("selectHciName");
@@ -125,6 +136,10 @@ public class AppealServiceImpl implements AppealService {
                 req.getSession().setAttribute("file",file);
                 req.setAttribute("filename",filename);
             }
+        }
+        if("N".equals(isDelete)){
+            req.getSession().removeAttribute("appPremisesSpecialDocDto");
+            req.getSession().removeAttribute("filename");
         }
         List<AppSvcCgoDto> appSvcCgoDtoList = reAppSvcCgo(request);
         ParamUtil.setRequestAttr(req, "CgoMandatoryCount", appSvcCgoDtoList.size());
@@ -299,7 +314,7 @@ public class AppealServiceImpl implements AppealService {
             }
 
         }
-        else if(sessionFile!=null&sessionFile.getSize()>0){
+        else if(sessionFile!=null&&sessionFile.getSize()>0){
             if ("Y".equals(isDelete)) {
                 long size = sessionFile.getSize()/1024;
                 if(size>5*1024*1024){
@@ -683,9 +698,17 @@ public class AppealServiceImpl implements AppealService {
             }
         }
 
-        AppPremiseMiscDto appPremiseMiscDto = applicationClient.getAppPremisesMisc("063C400F-F452-EA11-BE79-000C29D29DB0").getEntity();
+        AppPremiseMiscDto appPremiseMiscDto = applicationClient.getAppPremisesMisc("267F4F32-BC53-EA11-BE79-000C29D29DB0").getEntity();
         String reason = appPremiseMiscDto.getReason();
         String appPremCorreId = appPremiseMiscDto.getAppPremCorreId();
+        AppPremisesSpecialDocDto appPremisesSpecialDocDto = applicationClient.getAppPremisesSpecialDocDtoByCorreId("4816C36D-7054-EA11-BE79-000C29D29DB0").getEntity();
+        if(appPremisesSpecialDocDto!=null){
+            String fileRepoId = appPremisesSpecialDocDto.getFileRepoId();
+            String docName = appPremisesSpecialDocDto.getDocName();
+            request.getSession().setAttribute("filename",docName);
+            request.getSession().setAttribute("appPremisesSpecialDocDto",appPremisesSpecialDocDto);
+        }
+
         if("MS003".equals(reason)){
             List<AppSvcCgoDto> appSvcCgoDtos = applicationClient.getAppGrpPersonnelByGrpId("F37777A4-0253-EA11-BE79-000C29D29DB0").getEntity();
             ParamUtil.setRequestAttr(request, "CgoMandatoryCount", appSvcCgoDtos.size());
@@ -703,6 +726,7 @@ public class AppealServiceImpl implements AppealService {
     private AppealPageDto getAppealPageDto(HttpServletRequest req){
         AppealPageDto appealDto=new AppealPageDto();
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        AppPremisesSpecialDocDto sessionAppPremisesSpecialDoc =(AppPremisesSpecialDocDto) req.getSession().getAttribute("appPremisesSpecialDocDto");
         String reasonSelect = request.getParameter("reasonSelect");
         String licenceYear = request.getParameter("licenceYear");
         String selectHciNames = request.getParameter("selectHciName");
@@ -748,9 +772,15 @@ public class AppealServiceImpl implements AppealService {
                 }catch (Exception e){
                     log.error(e.getMessage(),e);
                 }
-
             }
-
+        }else if(sessionAppPremisesSpecialDoc!=null&&"Y".equals(isDelete)){
+            AppPremisesSpecialDocDto appPremisesSpecialDocDto=new AppPremisesSpecialDocDto();
+            appPremisesSpecialDocDto.setDocName(sessionAppPremisesSpecialDoc.getDocName());
+            appPremisesSpecialDocDto.setMd5Code(sessionAppPremisesSpecialDoc.getMd5Code());
+            appPremisesSpecialDocDto.setFileRepoId(sessionAppPremisesSpecialDoc.getFileRepoId());
+            appPremisesSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
+            appPremisesSpecialDocDto.setDocSize(sessionAppPremisesSpecialDoc.getDocSize());
+            appealDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
         }
 
         appealDto.setRemarks(remarks);
@@ -787,15 +817,16 @@ public class AppealServiceImpl implements AppealService {
     private void isMaxCGOnumber(ApplicationDto applicationDto){
         String serviceId = applicationDto.getServiceId();
 
-        List<HcsaSvcPersonnelDto> cgo = appConfigClient.getServiceType(serviceId, "CGO").getEntity();
-        String appGrpId = applicationDto.getAppGrpId();
-        String applicationId = applicationDto.getId();
+        List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationClient.getAppSvcKeyPersonnel(applicationDto).getEntity();
+        HcsaSvcPersonnelDto hcsaSvcPersonnelDto = appConfigClient.getHcsaSvcPersonnelDtoByServiceId(serviceId).getEntity();
+        if(hcsaSvcPersonnelDto!=null){
+            int maximumCount = hcsaSvcPersonnelDto.getMaximumCount();
+            int size = appSvcKeyPersonnelDtos.size();
+            if(size<maximumCount){
 
-        List<AppGrpPersonnelDto> entity = applicationClient.getAppGrpPersonnelDtosByGrpId(appGrpId).getEntity();
-        List<String> appGrpPersonelIds=new ArrayList<>();
-        for(AppGrpPersonnelDto appGrpPersonnelDto:entity){
-            appGrpPersonelIds.add(appGrpPersonnelDto.getId());
+            }
         }
+
 
     }
 

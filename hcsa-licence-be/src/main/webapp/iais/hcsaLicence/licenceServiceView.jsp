@@ -118,8 +118,14 @@
                                   <div class="pop-up">
                                     <div class="pop-up-body">
                                       <div class="field col-sm-4 control-label formtext"><p><strong>Licensee (Company)</strong></p>
-                                        <p><strong>Name:</strong></p>
-                                        <br>
+                                        <p style="display: inline"><strong>Name:</strong></p><p style="display: inline"> ${newLicenceDto.name}</p>
+                                        <span>
+                                                <wrms:value width="7">
+                                                  <span class="newVal compareTdStyle" attr="${newLicenceDto.name}" style="display: none" ><label><c:out value="${newLicenceDto.name}"/></label></span>
+                                                  <span class="oldVal compareTdStyle" attr="${oldLicenceDto.name}" style="display: none"><label><c:out value="${oldLicenceDto.name}"/></label></span>
+                                                </wrms:value></span>
+                                        </span>
+                                      <p>
                                         <p><strong>AuthoriseD Person 1</strong></p>
                                         <p><strong>Name:</strong></p>
                                         <p><strong>ID:</strong></p>
