@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -10,8 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.CessationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -30,9 +28,7 @@ import java.util.Map;
 public class WithdrawalDelegator {
 
     @Autowired
-    private ApplicationClient applicationClient;
-    @Autowired
-    private AppConfigClient appConfigClient;
+    private CessationService cessationService;
 
     public void start(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("****The Start Step****"));
@@ -41,8 +37,6 @@ public class WithdrawalDelegator {
 
     public void prepareDate(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("****The prepareDate Step****"));
-        ApplicationDto applicationDto = applicationClient.getApplicationById("CADC4DDF-E71B-EA11-BE78-000C29D29DB0").getEntity();
-        applicationDto.setServiceId(appConfigClient.getServiceNameById(applicationDto.getServiceId()).getEntity());
         List<SelectOption> withdrawalReason = new ArrayList<>();
         withdrawalReason.add(new SelectOption("Duplicate Application", "Duplicate Application"));
         withdrawalReason.add(new SelectOption("Wrong Application", "Wrong Application"));
@@ -50,10 +44,10 @@ public class WithdrawalDelegator {
         withdrawalReason.add(new SelectOption("No longer wish to provide the service", "No longer wish to provide the service"));
         withdrawalReason.add(new SelectOption("Others", "Others"));
         ParamUtil.setRequestAttr(bpc.request, "withdrawalReason", withdrawalReason);
-        ParamUtil.setSessionAttr(bpc.request, "applicationDto", applicationDto);
     }
 
     public void withdrawalStep(BaseProcessClass bpc){
+        String appId = ParamUtil.getRequestString(bpc.request, "applicationId");
         WithdrawnDto withdrawnDto = new WithdrawnDto();
         String withdrawnReason = ParamUtil.getRequestString(bpc.request, "withdrawnReason");
         withdrawnDto.setWithdrawnReason(withdrawnReason);
@@ -67,6 +61,7 @@ public class WithdrawalDelegator {
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }else{
+            cessationService.saveWithdrawn(withdrawnDto,appId);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         }
     }

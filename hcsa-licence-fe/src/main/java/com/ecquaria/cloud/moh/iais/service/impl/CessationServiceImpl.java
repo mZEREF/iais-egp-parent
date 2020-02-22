@@ -1,9 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.Application;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
@@ -12,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
@@ -82,7 +81,7 @@ public class CessationServiceImpl implements CessationService {
             AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
             String licId = appCessationDto.getWhichTodo();
             String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT).getEntity();
-            ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo, licId);
+            ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo, licId,ApplicationConsts.APPLICATION_TYPE_APPEAL);
             List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
             appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);
             ApplicationDto applicationDto = new ApplicationDto();
@@ -99,6 +98,25 @@ public class CessationServiceImpl implements CessationService {
             appCessMiscDtos.add(appCessMiscDto);
         }
         cessationClient.saveCessation(appCessMiscDtos).getEntity();
+    }
+
+    @Override
+    public void saveWithdrawn(WithdrawnDto withdrawnDto, String appId) {
+        List<ApplicationDto> applicationDtoList = new ArrayList<>();
+        ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
+        applicationDtoList.add(applicationDto);
+        withdrawnDto.setApplicationDtoList(applicationDtoList);;
+        ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(applicationDto.getApplicationNo(),applicationDto.getLicenceId(),ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
+        withdrawnDto.setApplicationGroupDto(applicationGroupDto);
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = new ArrayList<>();
+        AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
+        appGrpPremisesDto.setPremisesType(ApplicationConsts.PREMISES_TYPE_ON_SITE);
+        appGrpPremisesDto.setPostalCode("789789");
+        appGrpPremisesDto.setAddrType(ApplicationConsts.ADDRESS_TYPE_APT_BLK);
+        appGrpPremisesDto.setStreetName("Lor 27 Gey");
+        appGrpPremisesDtoList.add(appGrpPremisesDto);
+        withdrawnDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
+        cessationClient.saveWithdrawn(withdrawnDto);
     }
 
     @Override
@@ -142,7 +160,7 @@ public class CessationServiceImpl implements CessationService {
     }
 
 
-    private ApplicationGroupDto getApplicationGroupDto(String appNo, String licId) {
+    private ApplicationGroupDto getApplicationGroupDto(String appNo, String licId,String appType) {
         ApplicationGroupDto applicationGroupDto = new ApplicationGroupDto();
         applicationGroupDto.setSubmitDt(new Date());
         applicationGroupDto.setGroupNo(appNo);
@@ -157,7 +175,7 @@ public class CessationServiceImpl implements CessationService {
         applicationGroupDto.setIsGrpLic(0);
         applicationGroupDto.setDeclStmt("N");
         applicationGroupDto.setSubmitBy("C55C9E62-750B-EA11-BE7D-000C29F371DC");
-        applicationGroupDto.setAppType(ApplicationConsts.APPLICATION_TYPE_APPEAL);
+        applicationGroupDto.setAppType(appType);
         return applicationGroupDto;
 
     }
