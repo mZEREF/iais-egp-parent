@@ -48,6 +48,10 @@ public final class HcsaServiceCacheHelper {
 		if (hcsaServiceDto == null){
 			HcsaServiceClient serviceClient = SpringContextHelper.getContext().getBean(HcsaServiceClient.class);
 			hcsaServiceDto = serviceClient.getHcsaServiceDtoByServiceId(id).getEntity();
+			if (hcsaServiceDto != null) {
+				redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, hcsaServiceDto.getId(),
+						hcsaServiceDto, RedisCacheHelper.NOT_EXPIRE);
+			}
 		}
 
 		return hcsaServiceDto;
