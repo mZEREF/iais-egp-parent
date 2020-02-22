@@ -6,38 +6,67 @@
                 <menu:load id="inbox-top-menus">
                     <menu:include name="INTER_INBOX"/>
                 </menu:load>
-                <menu:iterate id="inbox-top-menus" var="item" varStatus="status">
-                    <c:if test="${item.depth > 0 && !empty item.url}">
-                        <c:choose>
-                            <c:when test="${item.depth > 1}">
-                                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                                        aria-haspopup="true" aria-expanded="false"
-                                                        href="javascript:;"><span>eServices</span></a>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a href="<c:out value="${item.url}" />">
-                                                <egov-smc:commonLabel><c:out
-                                                        value="${item.displayLabel}"/></egov-smc:commonLabel>
-                                            </a>
-                                        </li>
-                                        <li class="divider" role="separator"></li>
-                                        <li><a href="#">Step-by-step guide to eServices</a></li>
-                                    </ul>
-                                </li>
-                            </c:when>
-                            <c:otherwise>
-                                <li>
-                                    <a href="<c:out value="${item.url}" />">
-                                        <egov-smc:commonLabel><c:out
-                                                value="${item.displayLabel}"/></egov-smc:commonLabel>
-                                    </a>
-                                </li>
-                            </c:otherwise>
-                        </c:choose>
+                <menu:iterate id="inbox-top-menus" var="item" varStatus="status" >
+                <c:choose>
+                    <c:when test="${!status.last and status.next.depth > 1}">
+                        <c:set var="nextDepth" value="${status.next.depth}"/>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="nextDepth" value="1"/>
+                    </c:otherwise>
+                </c:choose>
+                <c:choose>
+                    <c:when test="${item.depth >= 1}">
+                        <c:set var="currDepth" value="${item.depth}"/>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="currDepth" value="1"/>
+                    </c:otherwise>
+                </c:choose>
+                <c:if test="${item.depth > 0}">
+                <c:choose>
+                <c:when test="${item.depth > 1}">
+                    <c:if test="${nextDepth == currDepth}">
+                        <li>
+                            <a href="<c:out value="${item.url}" />">
+                                <egov-smc:commonLabel><c:out
+                                        value="${item.displayLabel}"/></egov-smc:commonLabel>
+                            </a>
+                        </li>
                     </c:if>
-                </menu:iterate>
-                <li><a href="#"><span>Activity Log</span></a></li>
-                <li><a href="#"><span>Licensee Details</span></a></li>
+                    <c:if test="${nextDepth < currDepth}">
+                        <li>
+                            <a href="<c:out value="${item.url}" />">
+                                <egov-smc:commonLabel><c:out
+                                        value="${item.displayLabel}"/></egov-smc:commonLabel>
+                            </a>
+                        </li>
+                        <li class="divider" role="separator"></li>
+                        <li><a href="#">Step-by-step guide to eServices</a></li>
+                        </ul>
+                    </c:if>
+                </c:when>
+                <c:otherwise>
+                <c:if test="${nextDepth > currDepth}">
+                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                        aria-haspopup="true" aria-expanded="false"
+                                        href="javascript:;"><span>${item.displayLabel}</span></a>
+                    <ul class="dropdown-menu">
+                        </c:if>
+                        <c:if test="${nextDepth == currDepth}">
+                        <li>
+                            <a href="<c:out value="${item.url}" />">
+                                <egov-smc:commonLabel><c:out
+                                        value="${item.displayLabel}"/></egov-smc:commonLabel>
+                            </a>
+                        </li>
+                        </c:if>
+                        </c:otherwise>
+                        </c:choose>
+                        </c:if>
+                        </menu:iterate>
+                        <li><a href="#"><span>Activity Log</span></a></li>
+                        <li><a href="#"><span>Licensee Details</span></a></li>
             </div>
         </div>
     </div>
