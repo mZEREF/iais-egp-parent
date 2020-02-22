@@ -238,7 +238,7 @@
                                         <td>
                                             <div class="col-sm-9">
                                                 <select id="decision_merge_email" name="decision" onchange="thisTime()" >
-                                                    <option selected>Select</option>
+                                                    <option value="Select" selected>Select</option>
                                                     <c:forEach items="${appTypeOption}" var="decision">
                                                         <option  value="${decision.value}">${decision.text}</option>
                                                     </c:forEach>
@@ -289,8 +289,8 @@
     }
 
     function doSend(){
-        if($('#decision_merge_email option:selected').val()=="Select"){
-
+        if($('#decision_merge_email option:selected').val()!="Select"){
+            //alert("no")
         }else {
             if($('#decision_merge_email option:selected').val()=="REDECI005"){
                 var checkOne = false;

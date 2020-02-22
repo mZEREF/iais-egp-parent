@@ -238,25 +238,25 @@
                                     <tr height="1">
                                         <td class="col-xs-2" >
                                             <p >
-                                                remarks:
+                                                Remarks:
                                             </p>
                                         </td>
                                         <td>
                                             <div class="col-sm-9">
-                                                <p><textarea name="remarks" cols="90" rows="6" class="wenbenkuang"  title="content"  >${insEmailDto.remarks}</textarea></p>
+                                                <p><textarea name="remarks" cols="90" rows="6" maxlength="300" class="wenbenkuang"  title="content"  >${insEmailDto.remarks}</textarea></p>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr height="1">
                                         <td class="col-xs-2" >
                                             <p >
-                                                Processing Decision:
+                                                Processing Decision:<b style="color:#ff0000;">*</b>
                                             </p>
                                         </td>
                                         <td>
                                             <div class="col-sm-9">
                                                 <select id="decision-revise-email" name="decision">
-                                                    <option>Select</option>
+                                                    <option value="Select" selected>Select</option>
                                                     <c:forEach items="${appTypeOption}" var="decision">
                                                         <option  value="${decision.value}">${decision.text}</option>
                                                     </c:forEach>
@@ -281,7 +281,7 @@
                                         <iais:sortableHeader needSort="false" field="USERNAME" value="Username"></iais:sortableHeader>
                                         <iais:sortableHeader needSort="false"  field="WORKING GROUP" value="Working Group"></iais:sortableHeader>
                                         <iais:sortableHeader needSort="false"  field="APP_STATUS" value="Status Update"></iais:sortableHeader>
-                                        <iais:sortableHeader needSort="false"  field="REMARKS" value="remarks"></iais:sortableHeader>
+                                        <iais:sortableHeader needSort="false"  field="REMARKS" value="Remarks"></iais:sortableHeader>
                                         <iais:sortableHeader needSort="false" field="UPDATED_DT" value="Last Updated"></iais:sortableHeader>
                                     </tr>
                                     </thead>
@@ -319,26 +319,15 @@
     </div>
 </form>
 <script type="text/javascript">
-    function doReload(){
-        var r=confirm("Are you sure you want to regenerate the Inspection NC/BP Outcome email?");
-        if (r==true){
-            $.ajax({
-                'url':'${pageContext.request.contextPath}/reload-rev-email',
-                'type':'GET',
-                'success':function (data) {
-                    location.reload();
-                }
-            });
-        }
-
-    }
-
-    function doPreview(){
-        SOP.Crud.cfxSubmit("mainForm", "preview");
-    }
 
     function doSend(){
-        SOP.Crud.cfxSubmit("mainForm", "send");
+        var f=$('#decision-revise-email option:selected').val()
+
+        if(f!="Select"){
+            showWaiting();
+            SOP.Crud.cfxSubmit("mainForm", "send");
+        }
+
     }
 
 
