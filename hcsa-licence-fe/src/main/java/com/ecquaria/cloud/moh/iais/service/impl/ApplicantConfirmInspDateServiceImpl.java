@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarAndUserIdDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -144,9 +145,22 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         setUpdateApplicationDto(apptFeConfirmDateDto, apptInspectionDateDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
         setCreateHistoryDto(apptFeConfirmDateDto, apptInspectionDateDto);
         setCreateInspectionStatus(apptInspectionDateDto, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
+        setRecommendationDto(apptFeConfirmDateDto, apptInspectionDateDto);
+
         feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
-        createApptDateTask(apptFeConfirmDateDto);
+        createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
+    }
+
+    private void setRecommendationDto(ApptFeConfirmDateDto apptFeConfirmDateDto, ApptInspectionDateDto apptInspectionDateDto) {
+        AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+        appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appPremisesRecommendationDto.setAppPremCorreId(apptFeConfirmDateDto.getAppPremCorrId());
+        appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        appPremisesRecommendationDto.setRecomDecision(InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE);
+        appPremisesRecommendationDto.setRecomInDate(apptFeConfirmDateDto.getSaveDate());
+        appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
+        apptInspectionDateDto.setAppPremisesRecommendationDto(appPremisesRecommendationDto);
     }
 
     @Override
@@ -196,23 +210,30 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         apptFeConfirmDateDto.setApptRefNo(refNo);
 
         setApptUpdateList(apptFeConfirmDateDto, apptInspectionDateDto);
-        setApptCreateList(apptFeConfirmDateDto, apptInspectionDateDto);
+        setApptCreateList(apptFeConfirmDateDto, apptInspectionDateDto, null);
         setUpdateApplicationDto(apptFeConfirmDateDto, apptInspectionDateDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
         setCreateHistoryDto(apptFeConfirmDateDto, apptInspectionDateDto);
         setCreateInspectionStatus(apptInspectionDateDto, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
+        setRecommendationDto(apptFeConfirmDateDto, apptInspectionDateDto);
 
         feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
-        createApptDateTask(apptFeConfirmDateDto);
+        createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
         return apptFeConfirmDateDto;
     }
 
     @Override
     public void saveAccSpecificDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
         ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
+
         setUpdateApplicationDto(apptFeConfirmDateDto, apptInspectionDateDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
         setCreateHistoryDto(apptFeConfirmDateDto, apptInspectionDateDto);
         setCreateInspectionStatus(apptInspectionDateDto, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
+        setRecommendationDto(apptFeConfirmDateDto, apptInspectionDateDto);
+
+        feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
+        createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
     }
 
     private void setCreateInspectionStatus(ApptInspectionDateDto apptInspectionDateDto, String status) {
@@ -242,19 +263,26 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         apptInspectionDateDto.setApplicationDto(applicationDto);
     }
 
-    private void setApptCreateList(ApptFeConfirmDateDto apptFeConfirmDateDto, ApptInspectionDateDto apptInspectionDateDto) {
+    private void setApptCreateList(ApptFeConfirmDateDto apptFeConfirmDateDto, ApptInspectionDateDto apptInspectionDateDto, String processDo) {
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = new ArrayList<>();
         AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
         appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appPremisesInspecApptDto.setId(null);
-        appPremisesInspecApptDto.setSpecificInspDate(apptFeConfirmDateDto.getSaveDate());
-        appPremisesInspecApptDto.setApptRefNo(apptFeConfirmDateDto.getApptRefNo());
+        if(InspectionConstants.SWITCH_ACTION_REJECT.equals(processDo)) {
+            appPremisesInspecApptDto.setSpecificInspDate(apptFeConfirmDateDto.getSaveDate());
+            appPremisesInspecApptDto.setApptRefNo(null);
+        } else if(StringUtil.isEmpty(processDo)) {
+            appPremisesInspecApptDto.setSpecificInspDate(null);
+            appPremisesInspecApptDto.setApptRefNo(apptFeConfirmDateDto.getApptRefNo());
+        }
         appPremisesInspecApptDto.setAppCorrId(apptFeConfirmDateDto.getAppPremCorrId());
         appPremisesInspecApptDto.setStartDate(apptFeConfirmDateDto.getAppPremisesInspecApptDtoList().get(0).getStartDate());
         appPremisesInspecApptDto.setEndDate(apptFeConfirmDateDto.getAppPremisesInspecApptDtoList().get(0).getEndDate());
+        appPremisesInspecApptDto.setReason(apptFeConfirmDateDto.getReason());
         appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
         appPremisesInspecApptDtoList = inspectionFeClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList).getEntity();
+
         for(AppPremisesInspecApptDto apptDto : appPremisesInspecApptDtoList){
             apptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         }
@@ -276,10 +304,10 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         }
     }
 
-    private void createApptDateTask(ApptFeConfirmDateDto apptFeConfirmDateDto) {
+    private void createApptDateTask(ApptFeConfirmDateDto apptFeConfirmDateDto, String processUrl) {
         TaskDto taskDto = new TaskDto();
         taskDto.setRefNo(apptFeConfirmDateDto.getAppPremCorrId());
-        taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
+        taskDto.setProcessUrl(processUrl);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         feEicGatewayClient.createFeReplyTask(taskDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
@@ -308,11 +336,17 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     @Override
     public void rejectSystemDateAndCreateTask(ApptFeConfirmDateDto apptFeConfirmDateDto) {
         ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
+
         setApptUpdateList(apptFeConfirmDateDto, apptInspectionDateDto);
-        setApptCreateList(apptFeConfirmDateDto, apptInspectionDateDto);
+        setApptCreateList(apptFeConfirmDateDto, apptInspectionDateDto, InspectionConstants.SWITCH_ACTION_REJECT);
         setUpdateApplicationDto(apptFeConfirmDateDto, apptInspectionDateDto, ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING);
         setCreateHistoryDto(apptFeConfirmDateDto, apptInspectionDateDto);
         setCreateInspectionStatus(apptInspectionDateDto, InspectionConstants.INSPECTION_STATUS_PENDING_RE_APPOINTMENT_INSPECTION_DATE);
+        apptInspectionDateDto.setAppPremisesRecommendationDto(null);
+
+        feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
+        createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_RE_CONFIRM_INSPECTION_DATE);
     }
 
     /**
@@ -321,8 +355,13 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     @Override
     public ApptFeConfirmDateDto getSpecificDateDto(String appPremCorrId) {
         ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
+        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = new ArrayList<>();
         if(!StringUtil.isEmpty(appPremCorrId)){
             AppPremisesInspecApptDto appPremisesInspecApptDto = inspectionFeClient.getSpecificDtoByAppPremCorrId(appPremCorrId).getEntity();
+            appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
+
+            apptFeConfirmDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDto);
+            apptFeConfirmDateDto.setAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList);
             ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(appPremCorrId).getEntity();
             LicenceDto licenceDto = licenceClient.getLicBylicId(applicationDto.getLicenceId()).getEntity();
             if(appPremisesInspecApptDto != null){
@@ -356,10 +395,16 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         appPremisesInspecApptDto = inspectionFeClient.updateAppPremisesInspecApptDto(appPremisesInspecApptDto).getEntity();
         appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
+
         apptInspectionDateDto.setAppPremisesInspecApptUpdateList(appPremisesInspecApptDtoList);
         setUpdateApplicationDto(apptFeConfirmDateDto, apptInspectionDateDto, ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING);
         setCreateHistoryDto(apptFeConfirmDateDto, apptInspectionDateDto);
         setCreateInspectionStatus(apptInspectionDateDto, InspectionConstants.INSPECTION_STATUS_PENDING_RE_APPOINTMENT_INSPECTION_DATE);
+        apptInspectionDateDto.setAppPremisesRecommendationDto(null);
+
+        feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
+        createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_RE_CONFIRM_INSPECTION_DATE);
     }
 
     private String apptDateToStringShow(Date date) {
