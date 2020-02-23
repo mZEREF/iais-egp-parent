@@ -97,4 +97,12 @@ public class IntranetUserClientFallback implements IntranetUserClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<OrgUserDto> getOrgUserAccountByUserId(String userId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

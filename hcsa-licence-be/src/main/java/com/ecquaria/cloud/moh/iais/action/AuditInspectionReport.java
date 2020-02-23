@@ -87,12 +87,14 @@ public class AuditInspectionReport {
         List<SelectOption> chronoOption = getChronoOption();
         List<SelectOption> recommendationOption = getRecommendationOption();
         List<SelectOption> riskLevelOptions = getriskLevel();
+        List<SelectOption> frameworknOption = getFrameworknOption();
         List<SelectOption> processingDe = getProcessingDecision();
         ParamUtil.setSessionAttr(bpc.request, "processingDe", (Serializable) processingDe);
         ParamUtil.setSessionAttr(bpc.request, "riskLevelOptions", (Serializable) riskLevelOptions);
         ParamUtil.setSessionAttr(bpc.request, "recommendationOption", (Serializable) recommendationOption);
         ParamUtil.setSessionAttr(bpc.request, "chronoOption", (Serializable) chronoOption);
         ParamUtil.setSessionAttr(bpc.request, "riskOption", (Serializable) riskOption);
+        ParamUtil.setSessionAttr(bpc.request, "frameworknOption", (Serializable) frameworknOption);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
     }
@@ -255,6 +257,14 @@ public class AuditInspectionReport {
         return riskLevelResult;
     }
 
+    private List<SelectOption> getFrameworknOption() {
+        List<SelectOption> recommendationResult = new ArrayList<>();
+        SelectOption so1 = new SelectOption("LGR", "Leadership and Governance Risk");
+        SelectOption so2 = new SelectOption("CR", "Compliance Risk");
+        recommendationResult.add(so1);
+        recommendationResult.add(so2);
+        return recommendationResult;
+    }
     private List<SelectOption> getProcessingDecision() {
         List<SelectOption> riskLevelResult = new ArrayList<>();
         SelectOption so1 = new SelectOption("submit", "Submit Inspection Report for review");

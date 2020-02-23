@@ -19,6 +19,7 @@ public interface IntranetUserService {
     OrgUserDto updateOrgUser(OrgUserDto orgUserDto);
     void delOrgUser(String id);
     OrgUserDto findIntranetUserById(String id);
+    OrgUserDto findIntranetUserByUserId(String userId);
     Boolean UserIsExist(String userId);
 
     ClientUser saveEgpUser(ClientUser clientUser);

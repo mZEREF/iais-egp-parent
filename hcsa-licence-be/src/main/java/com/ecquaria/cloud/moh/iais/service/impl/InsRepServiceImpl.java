@@ -76,9 +76,11 @@ public class InsRepServiceImpl implements InsRepService {
     @Autowired
     private TaskOrganizationClient taskOrganizationClient;
     @Autowired
-    ApplicationService applicationService;
+    private ApplicationService applicationService;
     @Autowired
-    FillupChklistService fillupChklistService;
+    private FillupChklistService fillupChklistService;
+    @Autowired
+    private HcsaLicenceClient hcsaLicenceClient;
 
     private final String APPROVAL="Approval";
     private final String REJECT="Reject";
@@ -607,6 +609,12 @@ public class InsRepServiceImpl implements InsRepService {
             reportDtoForAo.setInspectors(inspectorsName);
         }
         return reportDtoForAo;
+    }
+
+    @Override
+    public void saveAuditRecommendation(LicPremisesRecommendationDto licPremisesRecommendationDto) {
+        licPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        hcsaLicenceClient.saveAppRecom(licPremisesRecommendationDto).getEntity();
     }
 
 

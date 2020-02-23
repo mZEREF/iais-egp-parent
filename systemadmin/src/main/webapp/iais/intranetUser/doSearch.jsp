@@ -28,10 +28,10 @@
     </div>
     <div id="advfilter" class="collapse">
         <div class="filter-box">
-            <h3>Master Code Search</h3>
+            <br/><br/>
             <div class="form-group">
                 <iais:value>
-                    <label class="col-xs-12 col-md-4 control-label" for="userId">User ID.</label>
+                    <label class="col-xs-12 col-md-4 control-label" for="userId">User ID:</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
                         <input id="userId" name="userId" type="text">
                     </div>
@@ -39,7 +39,7 @@
             </div>
             <div class="form-group">
                 <iais:value>
-                    <label class="col-xs-12 col-md-4 control-label" for="emailAddress">Email address.</label>
+                    <label class="col-xs-12 col-md-4 control-label" for="emailAddress">Email address:</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
                         <input id="emailAddress" name="emailAddress" type="text">
                     </div>
@@ -47,7 +47,7 @@
             </div>
             <div class="form-group">
                 <iais:value>
-                    <label class="col-xs-12 col-md-4 control-label" for="displayName">Display Name.</label>
+                    <label class="col-xs-12 col-md-4 control-label" for="displayName">Display Name:</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
                         <input id="displayName" type="text" name="displayName">
                     </div>
@@ -55,15 +55,16 @@
             </div>
             <div class="form-group">
                 <iais:value>
-                    <label class="col-xs-12 col-md-4 control-label" for="accountStatus">Account Status.</label>
+                    <label class="col-xs-12 col-md-4 control-label" for="accountStatus">Account Status:</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                        <input id="accountStatus" type="text" name="accountStatus">
+                        <iais:select name="accountStatus" options="statusOption" firstOption="Please Select"></iais:select>
                     </div>
                 </iais:value>
             </div>
+            <br/>
             <div class="form-group">
                 <iais:value>
-                    <label class="col-xs-12 col-md-4 control-label" for="roleAssigned">Roles Assigned.</label>
+                    <label class="col-xs-12 col-md-4 control-label" for="roleAssigned">Roles Assigned:</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
                         <input id="roleAssigned" type="text" name="roleAssigned">
                     </div>
@@ -72,20 +73,18 @@
 
             <div class="form-group">
                 <iais:value>
-                    <label class="col-xs-12 col-md-4 control-label" for="privilegeAssigned">Privileges Assigned.</label>
+                    <label class="col-xs-12 col-md-4 control-label" for="privilegeAssigned">Privileges Assigned:</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
                         <input id="privilegeAssigned" type="text" name="privilegeAssigned">
                     </div>
                 </iais:value>
             </div>
 
-            <div class="application-tab-footer">
                 <div class="row">
                     <div class="col-xs-12 col-md-12">
                         <div class="text-right"><a class="btn btn-primary" id="IU_Search">Search</a></div>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 </div>

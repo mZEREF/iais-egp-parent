@@ -54,6 +54,11 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
+    public OrgUserDto findIntranetUserByUserId(String userId) {
+        return intranetUserClient.getOrgUserAccountByUserId(userId).getEntity();
+    }
+
+    @Override
     public Boolean UserIsExist(String userId) {
         OrgUserDto entity = intranetUserClient.retrieveOneOrgUserAccount(userId).getEntity();
         if(entity!=null){

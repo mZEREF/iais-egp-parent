@@ -1,3 +1,4 @@
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <div class="main-content">
     <form class="form-horizontal" method="post" id="IntranetUserForm" action=<%=process.runtime.continueURL()%>>
         <%--        <%@ include file="/include/formHidden.jsp" %>--%>
@@ -8,13 +9,11 @@
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
                     <div class="intranet-content">
-                        <div class="bg-title">
-                            <h2>Intranet User View</h2>
-                        </div>
+                        <iais:pagination  param="IntranetUserSearchParam" result="IntranetUserSearchResult"/>
                         <table class="table">
                             <thead>
                             <tr>
-                                <th></th>
+                                <th><input type="checkbox" name="userUid" id="checkboxAll" onchange="javascirpt:checkAll();"/></th>
                                 <th>No.</th>
                                 <th>User ID</th>
                                 <th>Email address</th>
@@ -36,7 +35,6 @@
                                 <c:otherwise>
                                     <c:forEach var="user" items="${IntranetUserSearchResult.rows}" varStatus="status">
                                         <tr>
-                                            <td>
                                             <td><input type="checkbox" value="<c:out value='${user.id}'/>"
                                                        name="userUid" id="userUid<c:out value='${user.id}'/>"></td>
                                             </td>
@@ -53,9 +51,8 @@
                                                 <p>${user.emailAddr}</p>
                                             </td>
                                             <td>
-                                                <p class="visible-xs visible-sm table-row-title">Code
-                                                    Category</p>
-                                                <p>${user.status}</p>
+                                                <p class="visible-xs visible-sm table-row-title">Code Category</p>
+                                                <p><iais:code code="${user.status}"></iais:code></p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Action</p>
@@ -72,23 +69,18 @@
                             </c:choose>
                             </tbody>
                         </table>
-                        <div class="table-footnote">
-                            <div class="row">
-                                <div class="col-xs-6 col-md-4">
-                                    <p class="count">${IntranetUserSearchResult.rowCount} out
-                                        of ${IntranetUserSearchParam.pageNo}</p>
-                                </div>
-                                <div class="col-xs-6 col-md-8 text-right">
-                                    <div class="nav">
-                                        <ul class="pagination">
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </form>
 </div>
+<script>
+    function checkAll() {
+        if ($('#checkboxAll').is(':checked')) {
+            $("input[name='userUid']").attr("checked","true");
+        } else {
+            $("input[name='userUid']").removeAttr("checked");
+        }
+    }
+</script>

@@ -20,22 +20,11 @@
                             <h2>Change Status</h2>
                         </div>
                         <div class="form-group">
-                            <span style="color:red">*</span>
-                            <label class="col-xs-12 col-md-4 control-label" for="userId">UserId.</label>
+                            <label class="col-xs-12 col-md-4 control-label" for="userId">UserId:<span style="color:red">*</span></label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="userId" type="text" name="userId" value="">
-                                    <span id="error_displayName" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
-                            </iais:value>
-                        </div>
-                        <div class="form-group">
-                            <span style="color:red">*</span>
-                            <label class="col-xs-12 col-md-4 control-label" for="password">Password.</label>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="password" type="text" name="password" value="">
-                                    <span id="error_password" name="iaisErrorMsg" class="error-msg"></span>
+                                    <span id="error_userId" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
@@ -50,19 +39,19 @@
                     </div>
                 </div>
                 <div class="col-xs-2 col-sm-2">
-                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('deactivate')">Deactivate</a>
+                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('doDeactivate')">Deactivate</a>
                     </div>
                 </div>
                 <div class="col-xs-2 col-sm-2">
-                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('reactivate')">Reactivate</a>
+                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('doReactivate')">Reactivate</a>
                     </div>
                 </div>
                 <div class="col-xs-2 col-sm-2">
-                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('terminate')">Terminate</a>
+                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('doTerminate')">Terminate</a>
                     </div>
                 </div>
                 <div class="col-xs-2 col-sm-2">
-                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('unlock')">Unlock</a>
+                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('doUnlock')">Unlock</a>
                     </div>
                 </div>
 

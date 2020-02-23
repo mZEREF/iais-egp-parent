@@ -23,14 +23,23 @@
                             <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                                 <li class="active" role="presentation"><a href="#tabAccount" aria-controls="tabAccount" role="tab" data-toggle="tab">Account Information</a></li>
                                 <li class="complete" role="presentation"><a href="#tabPersonal" aria-controls="tabPersonal" role="tab" data-toggle="tab">Personal Information</a></li>
-                                <li class="complete" role="presentation"><a href="#tabContaact" aria-controls="tabContaact" role="tab" data-toggle="tab">Contaact Information</a></li>
+                                <li class="complete" role="presentation"><a href="#tabContact" aria-controls="tabContact" role="tab" data-toggle="tab">Contact Information</a></li>
                             </ul>
                         </div>
+                        <br/><br/>
                         <div class="tab-content">
                             <div class="tab-pane active" id="tabAccount" role="tabAccount">
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-md-4 control-label" for="userId">User ID:<span style="color:red">*</span></label>
+                                    <iais:value>
+                                        <div class="col-xs-8 col-sm-6 col-md-5">
+                                            <input id="userId" type="text" name="userId" value="${orgUserDto.userId}" disabled>
+                                            <span id="error_userId" name="iaisErrorMsg" class="error-msg"></span>
+                                        </div>
+                                    </iais:value>
+                                </div>
                                     <div class="form-group">
-                                        <span style="color:red">*</span>
-                                        <label class="col-xs-12 col-md-4 control-label" for="displayName">Display Name.</label>
+                                        <label class="col-xs-12 col-md-4 control-label" for="displayName">Display Name:<span style="color:red">*</span></label>
                                         <iais:value>
                                             <div class="col-xs-8 col-sm-6 col-md-5">
                                                 <input id="displayName" type="text" name="displayName" value="${orgUserDto.displayName}">
@@ -39,8 +48,7 @@
                                         </iais:value>
                                     </div>
                                     <div class="form-group">
-                                        <span style="color:red">*</span>
-                                        <label class="col-xs-12 col-md-4 control-label" for="startDate">Account Activation Start.</label>
+                                        <label class="col-xs-12 col-md-4 control-label" for="startDate">Account Activation Start:<span style="color:red">*</span></label>
                                         <iais:value>
                                             <div class="col-xs-8 col-sm-6 col-md-5">
                                                 <iais:datePicker id="startDate" name="startDate" dateVal="${orgUserDto.accountActivateDatetime}"/>
@@ -49,8 +57,7 @@
                                         </iais:value>
                                     </div>
                                     <div class="form-group">
-                                        <span style="color:red">*</span>
-                                        <label class="col-xs-12 col-md-4 control-label" for="endDate">Account Activation End.</label>
+                                        <label class="col-xs-12 col-md-4 control-label" for="endDate">Account Activation End:<span style="color:red">*</span></label>
                                         <iais:value>
                                             <div class="col-xs-8 col-sm-6 col-md-5">
                                                 <iais:datePicker id="endDate" name="endDate" dateVal="${orgUserDto.accountDeactivateDatetime}"/>
@@ -69,18 +76,30 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="firstName">First Name.</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="firstName">First Name:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="firstName" type="text" name="firstName" value="${orgUserDto.firstName}">
+                                            <span id="error_firstName" name="iaisErrorMsg"
+                                                  class="error-msg"></span>
                                         </div>
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="lastName">Last Name.</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="lastName">Last Name:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="lastName" type="text" name="lastName" value="${orgUserDto.lastName}">
+                                            <span id="error_lastName" name="iaisErrorMsg"
+                                                  class="error-msg"></span>
+                                        </div>
+                                    </iais:value>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-md-4 control-label" for="organization">Organization:</label>
+                                    <iais:value>
+                                        <div class="col-xs-8 col-sm-6 col-md-5">
+                                            <input id="organization" type="text" name="organization">
                                         </div>
                                     </iais:value>
                                 </div>
@@ -93,7 +112,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="branch">Branch/Unit.</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="branch">Branch / Unit.</label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="branch" type="text" name="branch" value="${orgUserDto.branchUnit}">
@@ -101,10 +120,9 @@
                                     </iais:value>
                                 </div>
                             </div>
-                            <div class="tab-pane" id="tabContaact" role="tabContaact">
+                            <div class="tab-pane" id="tabContact" role="tabContact">
                                 <div class="form-group">
-                                    <span style="color:red">*</span>
-                                    <label class="col-xs-12 col-md-4 control-label" for="email">Email</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="email">Email:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="email" type="text" name="email" value="${orgUserDto.email}">
@@ -125,7 +143,15 @@
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="officeNo" type="number" name="officeNo" value="${orgUserDto.officeTelNo}">
-                                            <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
+                                        </div>
+                                    </iais:value>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-md-4 control-label" for="remarks">Remarks:</label>
+                                    <iais:value>
+                                        <div class="col-xs-8 col-sm-6 col-md-5">
+                                            <input id="remarks" type="text" name="remarks"
+                                                   value="${orgUserDto.remarks}">
                                         </div>
                                     </iais:value>
                                 </div>

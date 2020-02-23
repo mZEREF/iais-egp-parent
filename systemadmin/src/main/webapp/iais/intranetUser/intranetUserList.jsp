@@ -21,7 +21,7 @@
     String webroot = IaisEGPConstant.BE_CSS_ROOT;
 %>
 <div class="main-content">
-    <form class="form-horizontal" method="post" id="IntranetUserForm" action=<%=process.runtime.continueURL()%>>
+    <form class="" method="post" id="IntranetUserForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/include/formHidden.jsp" %>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
@@ -35,7 +35,6 @@
                         </div>
                         <%@ include file="doSearch.jsp" %>
                         <%@ include file="userList.jsp" %>
-                        <iais:pagination  param="IntranetUserSearchParam" result="IntranetUserSearchResult"/>
                     </div>
                 </div>
             </div>
