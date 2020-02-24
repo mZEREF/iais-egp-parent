@@ -200,8 +200,8 @@ public class InsRepServiceImpl implements InsRepService {
             inspectionReportDto.setMarkedForAudit(true);
         }
         //checkList
-        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview("B3A5C76D-9C3A-EA11-BE7E-000C29F371DC","service");
-        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview("B3A5C76D-9C3A-EA11-BE7E-000C29F371DC","common");
+        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
+        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
         InspectionFillCheckListDto commonDto = null;
         if(commonList!=null && !commonList.isEmpty()){
             commonDto = commonList.get(0);

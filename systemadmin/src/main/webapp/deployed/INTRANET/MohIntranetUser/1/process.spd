@@ -100,6 +100,13 @@
     <JavaCode defClass="" executor="" methodName="port_OnStepProcess_0" name="port_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="import" x="740" y="190">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="import_OnStepProcess_0" name="import_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="UserList" stageIndicator="" x="280" y="60">
@@ -126,7 +133,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="doDownload" stageIndicator="" x="700" y="290">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="doDownload" stageIndicator="" x="680" y="370">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -232,7 +239,16 @@
    <position>{(580,80)(720,210)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/doDownload" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Port" style="rectanular">
-   <position>{(720,210)(720,310)}</position>
+   <position>{(720,210)(700,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/doDownload" style="rectanular">
+   <position>{(700,390)(580,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/import" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(580,80)(760,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/import" style="rectanular">
+   <position>{(760,210)(580,640)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -256,7 +272,8 @@
    <SwitchCase component="/Steps/AutomaticStep/doSorting" value="&quot;sort&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doPaging" value="&quot;page&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doStatus" value="&quot;doStatus&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Port" value="&quot;port&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Port" value="&quot;doExport&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/import" value="&quot;doImport&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

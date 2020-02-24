@@ -404,16 +404,6 @@ public class InspecReassignTaskDelegator {
 
 
 
-
-
-
-
-
-
-
-
-
-
     private void routingTask(BaseProcessClass bpc,String reassignRemarks){
         //String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
         String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
@@ -435,7 +425,6 @@ public class InspecReassignTaskDelegator {
             createAppPremisesRoutingHistory(applicationNo,appStatus,stageId,reassignRemarks,InspectionConstants.PROCESS_DECI_SUPER_USER_POOL_REASSIGN, RoleConsts.USER_ROLE_INSPECTIOR);
         }
     }
-
     private void removeTask(TaskDto taskDto) {
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
         taskDto.setSlaDateCompleted(new Date());
@@ -448,6 +437,7 @@ public class InspecReassignTaskDelegator {
         taskDto.setId(null);
         taskDto.setUserId(userId);
         taskDto.setDateAssigned(new Date());
+        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         list.add(taskDto);
         taskService.createTasks(list);

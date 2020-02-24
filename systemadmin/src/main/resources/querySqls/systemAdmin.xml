@@ -34,10 +34,10 @@
 			FROM user_account as iu
             WHERE 1=1
             <#if id??> AND CHARINDEX(:id, iu.id) >0</#if>
-            <#if userId??> AND iu.USER_ID = :userId</#if>
-            <#if displayName??> AND iu.DISPLAY_NAME = :displayName</#if>
-            <#if email??> AND iu.EMAIL_ADDR = :email</#if>
-            <#if status??> AND iu.STATUS > :status</#if>
+            <#if userId??> and charindex(:userId, iu.USER_ID) >0</#if>
+            <#if displayName??> and charindex(:displayName, iu.DISPLAY_NAME) >0</#if>
+            <#if status??> and charindex(:status, iu.STATUS) >0</#if>
+            <#if email??> and charindex(:email, iu.EMAIL_ADDR) >0</#if>
         ]]>
     </sql>
 

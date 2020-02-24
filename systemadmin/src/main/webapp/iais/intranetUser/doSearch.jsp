@@ -21,9 +21,15 @@
             <a class="btn btn-primary" onclick="doStatus()">Change Status</a>
         </div>
     </div>
-    <div class="col-xs-3 col-md-3">
+    <div class="col-xs-2 col-md-3">
         <div class="components">
-            <a class="btn btn-primary" onclick="doExport(port)">Export</a>
+            <a class="btn btn-primary" onclick="doExport()">Export</a>
+        </div>
+    </div>
+    <div class="col-xs-2 col-md-3">
+        <div class="components">
+            <input class="btn btn-primary"  type="file" name="xmlFile" onchange="javascirpt:doImport();">
+<%--            <a class="btn btn-primary" onclick="doImport()">Import</a>--%>
         </div>
     </div>
     <div id="advfilter" class="collapse">
@@ -33,7 +39,7 @@
                 <iais:value>
                     <label class="col-xs-12 col-md-4 control-label" for="userId">User ID:</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                        <input id="userId" name="userId" type="text">
+                        <input id="userId" name="userId" type="text" value="${userId}">
                     </div>
                 </iais:value>
             </div>
@@ -41,7 +47,7 @@
                 <iais:value>
                     <label class="col-xs-12 col-md-4 control-label" for="emailAddress">Email address:</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                        <input id="emailAddress" name="emailAddress" type="text">
+                        <input id="emailAddress" name="emailAddress" type="text" value="${email}">
                     </div>
                 </iais:value>
             </div>
@@ -49,7 +55,7 @@
                 <iais:value>
                     <label class="col-xs-12 col-md-4 control-label" for="displayName">Display Name:</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                        <input id="displayName" type="text" name="displayName">
+                        <input id="displayName" type="text" name="displayName" value="${displayName}">
                     </div>
                 </iais:value>
             </div>
@@ -57,7 +63,7 @@
                 <iais:value>
                     <label class="col-xs-12 col-md-4 control-label" for="accountStatus">Account Status:</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                        <iais:select name="accountStatus" options="statusOption" firstOption="Please Select"></iais:select>
+                        <iais:select name="accountStatus" options="statusOption" firstOption="Please Select" value="${status}"></iais:select>
                     </div>
                 </iais:value>
             </div>

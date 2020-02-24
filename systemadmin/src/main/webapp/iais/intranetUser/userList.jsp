@@ -13,7 +13,7 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <th><input type="checkbox" name="userUid" id="checkboxAll" onchange="javascirpt:checkAll();"/></th>
+                                <th><input type="checkbox" name="userUids" id="checkboxAll" onchange="javascirpt:checkAll();"/></th>
                                 <th>No.</th>
                                 <th>User ID</th>
                                 <th>Email address</th>
@@ -44,7 +44,7 @@
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Code Category</p>
-                                                <p>${user.displayName}</p>
+                                                <p>${user.userId}</p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Code Category</p>

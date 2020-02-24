@@ -21,7 +21,7 @@
     String webroot = IaisEGPConstant.BE_CSS_ROOT;
 %>
 <div class="main-content">
-    <form class="" method="post" id="IntranetUserForm" action=<%=process.runtime.continueURL()%>>
+    <form class="" method="post" id="IntranetUserForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/include/formHidden.jsp" %>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
@@ -42,38 +42,40 @@
     </form>
 </div>
 <script type="text/javascript">
-    function submit(action){
+    function submitUser(action){
         $("[name='crud_action_type']").val(action);
         $("#IntranetUserForm").submit();
     }
 
     function doCreate(){
-        submit('doSave');
+        submitUser('doSave');
     }
 
     function doStatus(){
-        submit('doStatus');
+        submitUser('doStatus');
     }
 
     $("#IU_Search").click(function() {
-        submit('doSearch');
+        submitUser('doSearch');
     });
 
     function doEdit(Id){
         $("[name='crud_action_value']").val(Id);
-        submit('doEdit');
+        submitUser('doEdit');
     }
 
     function doDelete(Id){
         $("[name='crud_action_value']").val(Id);
-        submit('doDelete');
+        submitUser('doDelete');
     }
 
 
-    function doExport(action) {
-        // $("[name='crud_action_value']").val(Id);
-        //$("[name='crud_action_type']").val(action);
-        submit('port');
+    function doExport() {
+        submitUser('doExport');
+    }
+
+    function doImport() {
+        submitUser('doImport');
     }
 
     function jumpToPagechangePage(){
