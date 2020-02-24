@@ -396,6 +396,8 @@ public class BackendInboxDelegator {
         broadcastApplicationDto.setEventRefNo(eventRefNo);
         broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,true);
         broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,true);
+
+        applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
 
     private TaskDto completedTask(TaskDto taskDto){
