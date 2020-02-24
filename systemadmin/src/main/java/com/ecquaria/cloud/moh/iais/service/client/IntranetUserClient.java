@@ -61,6 +61,6 @@ public interface IntranetUserClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<UserGroupCorrelationDto>> getUserGroupCorreByUserId(@PathVariable(value = "userId") String userId);
 
-    @GetMapping(value = "//iais-orguser-be/users-by-userId/{user_id}")
+    @GetMapping(value = "/iais-orguser-be/users-by-userId/{user_id}")
     FeignResponseEntity<OrgUserDto> getOrgUserAccountByUserId(@PathVariable("user_id") String userId);
 }

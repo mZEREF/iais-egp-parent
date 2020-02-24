@@ -6,30 +6,29 @@
   To change this template use File | Settings | File Templates.
 --%>
 <div class="row">
-    <div class="col-xs-2 col-md-2">
+    <div class="col-xs-2">
         <div class="components">
             <a class="btn btn-secondary" data-toggle="collapse" data-target="#advfilter">Filter</a>
         </div>
     </div>
-    <div class="col-xs-3 col-md-3">
+    <div class="col-xs-2">
         <div class="components">
             <a class="btn btn-primary" onclick="doCreate()">Create</a>
         </div>
     </div>
-    <div class="col-xs-3 col-md-3">
+    <div class="col-xs-2">
         <div class="components">
             <a class="btn btn-primary" onclick="doStatus()">Change Status</a>
         </div>
     </div>
-    <div class="col-xs-2 col-md-3">
+    <div class="col-xs-2">
         <div class="components">
             <a class="btn btn-primary" onclick="doExport()">Export</a>
         </div>
     </div>
-    <div class="col-xs-2 col-md-3">
+    <div class="col-xs-2">
         <div class="components">
             <input class="btn btn-primary"  type="file" name="xmlFile" onchange="javascirpt:doImport();">
-<%--            <a class="btn btn-primary" onclick="doImport()">Import</a>--%>
         </div>
     </div>
     <div id="advfilter" class="collapse">

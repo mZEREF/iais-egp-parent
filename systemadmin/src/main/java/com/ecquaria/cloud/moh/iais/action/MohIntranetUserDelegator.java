@@ -277,11 +277,40 @@ public class MohIntranetUserDelegator {
         String userDomain = "intranet";
         ClientUser intranetUser = null;
         OrgUserDto orgUserDto = null;
+        Map<String, String> errorMap = new HashMap<>(34);
         if (!StringUtil.isEmpty(userId)) {
-            //intranetUser = intranetUserService.getUserByIdentifier(userId, userDomain);
             orgUserDto = intranetUserService.findIntranetUserByUserId(userId);
+            if(orgUserDto!=null){
+                if (IntranetUserConstant.DEACTIVATE.equals(actionType)) {
+                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_IACTIVE);
+                    intranetUserService.updateOrgUser(orgUserDto);
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+                    return;
+                } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType)) {
+                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+                    intranetUserService.updateOrgUser(orgUserDto);
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+                    return;
+                } else if (IntranetUserConstant.TERMINATE.equals(actionType)) {
+                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_TERMINATED);
+                    intranetUserService.updateOrgUser(orgUserDto);
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+                    return;
+                } else if (IntranetUserConstant.UNLOCK.equals(actionType)) {
+                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+                    intranetUserService.updateOrgUser(orgUserDto);
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+                    return;
+                }
+                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+                return;
+            }else {
+                errorMap.put("userId", "Please input correct userId");
+                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+                return;
+            }
         } else {
-            Map<String, String> errorMap = new HashMap<>(34);
             errorMap.put("userId", "ERR0009");
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
@@ -295,30 +324,7 @@ public class MohIntranetUserDelegator {
 //            validatepassword = intranetUserService.validatepassword(password, userIdentifier);
 //        }
 //        if(validatepassword){
-        if (IntranetUserConstant.DEACTIVATE.equals(actionType)) {
-            orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_IACTIVE);
-            intranetUserService.updateOrgUser(orgUserDto);
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-            return;
-        } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType)) {
-            orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
-            intranetUserService.updateOrgUser(orgUserDto);
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-            return;
-        } else if (IntranetUserConstant.TERMINATE.equals(actionType)) {
-            orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_TERMINATED);
-            intranetUserService.updateOrgUser(orgUserDto);
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-            return;
-        } else if (IntranetUserConstant.UNLOCK.equals(actionType)) {
-            orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
-            intranetUserService.updateOrgUser(orgUserDto);
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-            return;
-        }
-//        }
-        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-        return;
+
 
 //        if(validatepassword){
 //           // ClientUser userByIdentifier = intranetUserService.getUserByIdentifier(userId,userDomain);
