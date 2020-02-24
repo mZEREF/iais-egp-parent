@@ -6,10 +6,6 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%
-  String webroot= IaisEGPConstant.CSS_ROOT+ IaisEGPConstant.FE_CSS_ROOT;
-  String webRootCommon = IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
-%>
 <br><br>
 
 <div class="form-horizontal">

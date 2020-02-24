@@ -15,10 +15,7 @@
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
-<%
-  String webroot= IaisEGPConstant.CSS_ROOT+ IaisEGPConstant.FE_CSS_ROOT;
-  String webRootCommon = IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
-%>
+
 <style>
   .col-md-10 {
     width: 100%;
@@ -92,7 +89,7 @@
 </div>
 
 <%@include file="/include/validation.jsp" %>
-<script src="<%=webRootCommon%>js/iaisUtils.js"></script>
+<%@include file="/include/utils.jsp"%>
 <script type="text/javascript">
 
     $('#docBack').click(function () {

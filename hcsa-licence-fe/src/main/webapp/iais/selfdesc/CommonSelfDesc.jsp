@@ -12,10 +12,6 @@
 <webui:setLayout name="iais-intranet"/>
 
 <%
-  String webroot=IaisEGPConstant.CSS_ROOT+ IaisEGPConstant.FE_CSS_ROOT;
-  String webRootCommon = IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
-%>
-<%
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
@@ -134,7 +130,7 @@
 </c:choose>
 
   <%@include file="/include/validation.jsp"%>
-  <script src="<%=webRootCommon%>js/iaisUtils.js"></script>
+  <%@include file="/include/utils.jsp"%>
   <script>
       function doCancel(){
           SOP.Crud.cfxSubmit("mainForm", "doCancel");
