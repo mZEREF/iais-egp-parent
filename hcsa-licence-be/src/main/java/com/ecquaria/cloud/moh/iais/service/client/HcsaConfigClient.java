@@ -282,6 +282,6 @@ public interface HcsaConfigClient {
     @GetMapping(path = "/iais-hcsa-service/servicedto-by-name/{svcName}")
     FeignResponseEntity<HcsaServiceDto> getServiceDtoByName(@PathVariable(name= "svcName") String svcName);
 
-    @PostMapping(value = "/hcsa-svc-working-group-by-stages",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/hcsa-config/hcsa-svc-working-group-by-stages",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcStageWorkingGroupDto>> getHcsaSvcWorkingGroupByStages(@RequestBody List<String> stageIds);
 }

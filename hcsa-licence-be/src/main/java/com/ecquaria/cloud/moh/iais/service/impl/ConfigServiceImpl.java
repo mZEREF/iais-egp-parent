@@ -74,61 +74,9 @@ public class ConfigServiceImpl implements ConfigService {
                 String psnType = hcsaSvcPersonnelDto.getPsnType();
                 request.getSession().setAttribute(psnType,hcsaSvcPersonnelDto);
             }
-            List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = hcsaConfigClient.stagelist().getEntity();
-            for(int i=0;i<hcsaSvcRoutingStageDtos.size();i++ ){
-                String stageOrder = hcsaSvcRoutingStageDtos.get(i).getStageOrder();
-                try {
-                    if(Integer.valueOf(stageOrder)%100!=0){
-                        hcsaSvcRoutingStageDtos.remove(i);
-                        i--;
-                    }
-                }catch (Exception e){
 
-                }
-            }
-            List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtos =
-                    hcsaConfigClient.getHcsaSvcSpeRoutingSchemeByServiceId(hcsaServiceDto.getId()).getEntity();
-                List<String> stageIds=new ArrayList<>();
 
-            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = hcsaConfigClient.getHcsaSvcWorkingGroupByStages(stageIds).getEntity();
-            for(HcsaSvcStageWorkingGroupDto hcsaConfigPageDtos:hcsaSvcStageWorkingGroupDtos){
-                String stageId = hcsaConfigPageDtos.getStageId();
-                String stageWorkGroupId = hcsaConfigPageDtos.getStageWorkGroupId();
-
-            }
-
-            List<WorkingGroupDto> hcsa = organizationClient.getWorkingGroup("hcsa").getEntity();
-            for(WorkingGroupDto every:hcsa){
-                String workingGropId = every.getId();
-
-            }
-
-            /*           List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = hcsaConfigClient.getHcsaStageWorkingGroup(hcsaServiceDto.getId()).getEntity();*/
-
-        List<HcsaConfigPageDto> hcsaConfigPageDtos=new ArrayList<>();
-        for(HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto:hcsaSvcRoutingStageDtos){
-
-            HcsaConfigPageDto hcsaConfigPageDto=new HcsaConfigPageDto();
-            hcsaConfigPageDto.setStageCode(hcsaSvcRoutingStageDto.getStageCode());
-
-            hcsaConfigPageDto.setStageName(hcsaSvcRoutingStageDto.getStageName());
-            for(int i=0;i<hcsaSvcStageWorkloadDtos.size();i++ ){
-                String stageId = hcsaSvcStageWorkloadDtos.get(i).getStageId();
-                Integer manhourCount = hcsaSvcStageWorkloadDtos.get(i).getManhourCount();
-                String appType = hcsaSvcStageWorkloadDtos.get(i).getAppType();
-                if ("APTY002".equals(appType)) {
-                        String id1 = hcsaSvcRoutingStageDto.getId();
-                        if(id1.equals(stageId)){
-                            hcsaConfigPageDto.setManhours(manhourCount);
-                            hcsaConfigPageDto.setAppType("APTY002");
-                            hcsaConfigPageDto.setWorkloadId(hcsaSvcStageWorkloadDtos.get(i).getId());
-                            hcsaConfigPageDto.setRoutingSchemeId(hcsaSvcStageWorkloadDtos.get(i).getId());
-                        }
-
-                }
-            }
-            hcsaConfigPageDtos.add(hcsaConfigPageDto);
-        }
+            List<HcsaConfigPageDto> hcsaConfigPageDtos = getHcsaConfigPageDtos(hcsaServiceDto);
 
             request.setAttribute("routingStages",hcsaConfigPageDtos);
         }
@@ -145,11 +93,12 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public void saveOrUpdate(HttpServletRequest request) {
         Map<String,String> errorMap=new HashMap<>();
-
+        String crud_action_value = request.getParameter("crud_action_value");
         HcsaServiceConfigDto hcsaServiceConfigDto = getDateOfHcsaService(request);
         doValidate(hcsaServiceConfigDto,errorMap);
         if(!errorMap.isEmpty()){
             HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
+            hcsaServiceConfigDto.getHcsaSvcSpecificStageWorkloadDtos();
             List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = hcsaServiceConfigDto.getHcsaSvcSpePremisesTypeDtos();
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
             List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtos = hcsaServiceConfigDto.getHcsaSvcSpecificStageWorkloadDtos();
@@ -169,14 +118,19 @@ public class ConfigServiceImpl implements ConfigService {
             request.setAttribute("PremisesType",premisesSet);
             request.setAttribute("hcsaServiceDto",hcsaServiceDto);
             request.setAttribute("crud_action_type","dovalidate");
+            if("update".equals(crud_action_value)){
+                request.setAttribute("crud_action_value",crud_action_value);
+            }
             request.setAttribute("errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             return;
         }
-        String crud_action_value = request.getParameter("crud_action_value");
+
         if("update".equals(crud_action_value)){
-            hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto);
+
+//            hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto);
+
         }
-      /*  hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto);*/
+//        hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto);
         request.setAttribute("crud_action_type","save");
     }
 
@@ -190,26 +144,43 @@ public class ConfigServiceImpl implements ConfigService {
         list.add("appeal");
         list.add("renew");
 
-        List<HcsaSvcRoutingStageDto> entity = hcsaConfigClient.stagelist().getEntity();
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = getHcsaSvcRoutingStageDtos();
+        List<WorkingGroupDto> workingGroup = getWorkingGroup();
+        List<HcsaConfigPageDto> hcsaConfigPageDtos=new ArrayList<>();
+        for(HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto:hcsaSvcRoutingStageDtos) {
+            HcsaConfigPageDto hcsaConfigPageDto=new HcsaConfigPageDto();
+            hcsaConfigPageDto.setStageCode(hcsaSvcRoutingStageDto.getStageCode());
 
-        for(int i=0;i<entity.size();i++ ){
-            String stageOrder = entity.get(i).getStageOrder();
-            try {
-                if(Integer.valueOf(stageOrder)%100!=0){
-                    entity.remove(i);
-                    i--;
+            hcsaConfigPageDto.setStageName(hcsaSvcRoutingStageDto.getStageName());
+
+            List<WorkingGroupDto> workingGroupDtoList=new ArrayList<>();
+            for(WorkingGroupDto workingGroupDto:workingGroup){
+                String groupName = workingGroupDto.getGroupName();
+                String stageName = hcsaSvcRoutingStageDto.getStageName();
+                if(groupName.contains("Admin Screening")&&stageName.contains("Admin Screening")){
+                    workingGroupDtoList.add(workingGroupDto);
                 }
-            }catch (Exception e){
-
+                if(groupName.contains("Professional Screening")&&stageName.contains("Professional Screening")){
+                    workingGroupDtoList.add(workingGroupDto);
+                }
+                if(groupName.contains("Inspection Stage")&&stageName.contains("Inspection Stage")){
+                    workingGroupDtoList.add(workingGroupDto);
+                }
+                if(groupName.contains("Level 1 Approval")&&stageName.contains("Level 1 Approval")){
+                    workingGroupDtoList.add(workingGroupDto);
+                }
+                if(groupName.contains("Level 2 Approval")&&stageName.contains("Level 2 Approval")){
+                    workingGroupDtoList.add(workingGroupDto);
+                }
+                if(groupName.contains("Level 3 Approval")&&stageName.contains("Level 3 Approval")){
+                    workingGroupDtoList.add(workingGroupDto);
+                }
+                hcsaConfigPageDto.setWorkingGroup(workingGroupDtoList);
             }
+
+            hcsaConfigPageDtos.add(hcsaConfigPageDto);
         }
-
-        List<WorkingGroupDto> hcsa = organizationClient.getWorkingGroup("hcsa").getEntity();
-        for(WorkingGroupDto every:hcsa){
-
-        }
-
-        request.setAttribute("routingStages",entity);
+        request.setAttribute("routingStages",hcsaConfigPageDtos);
         request.setAttribute("applicationType",list);
     }
 
@@ -217,18 +188,7 @@ public class ConfigServiceImpl implements ConfigService {
         HcsaServiceConfigDto hcsaServiceConfigDto=new HcsaServiceConfigDto();
         HcsaServiceDto hcsaServiceDto =new HcsaServiceDto();
 
-        List<HcsaSvcRoutingStageDto> entity = hcsaConfigClient.stagelist().getEntity();
-        for(int i=0;i<entity.size();i++ ){
-            String stageOrder = entity.get(i).getStageOrder();
-            try {
-                if(Integer.valueOf(stageOrder)%100!=0){
-                    entity.remove(i);
-                    i--;
-                }
-            }catch (Exception e){
-
-            }
-        }
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = getHcsaSvcRoutingStageDtos();
         String serviceId = request.getParameter("serviceId");
         String serviceName = request.getParameter("serviceName");
         String description = request.getParameter("description");
@@ -326,20 +286,35 @@ public class ConfigServiceImpl implements ConfigService {
 
         List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtoList=new ArrayList<>();
         List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtoList=new ArrayList<>();
-        for(HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto:entity){
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos=new ArrayList<>();
+        List<HcsaConfigPageDto> hcsaConfigPageDtos=new ArrayList<>();
+
+        for(HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto:hcsaSvcRoutingStageDtos){
+            HcsaConfigPageDto hcsaConfigPageDto=new HcsaConfigPageDto();
             HcsaSvcSpecificStageWorkloadDto hcsaSvcSpecificStageWorkloadDto =new HcsaSvcSpecificStageWorkloadDto();
             HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto=new HcsaSvcSpeRoutingSchemeDto();
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto=new HcsaSvcStageWorkingGroupDto();
             String stageCode = hcsaSvcRoutingStageDto.getStageCode();
             String id = hcsaSvcRoutingStageDto.getId();
             String routingScheme = request.getParameter("RoutingScheme"+stageCode);
             String workloadManhours = request.getParameter("WorkloadManhours"+stageCode);
+            String workingGroupId = request.getParameter("workingGroup" + stageCode);
             String stageId=  request.getParameter("stageId"+stageCode);
             if (!StringUtil.isEmpty(workloadManhours)) {
                 hcsaSvcSpecificStageWorkloadDto.setManhourCount(Integer.parseInt(workloadManhours));
+                hcsaConfigPageDto.setManhours(Integer.parseInt(workloadManhours));
             }
             if(!StringUtil.isEmpty(stageId)){
                 hcsaSvcSpeRoutingSchemeDto.setId(stageId);
+                hcsaConfigPageDto.setStage(stageId);
             }
+            if(!StringUtil.isEmpty(workingGroupId)){
+                hcsaSvcStageWorkingGroupDto.setStageWorkGroupId(workingGroupId);
+                hcsaSvcStageWorkingGroupDto.setStageId(id);
+                hcsaConfigPageDto.setWorkingGroupId(workingGroupId);
+            }
+
+            hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
             hcsaSvcSpeRoutingSchemeDto.setSchemeType(routingScheme);
             hcsaSvcSpeRoutingSchemeDto.setAppType("APTY002");
             hcsaSvcSpeRoutingSchemeDto.setStatus("CMSTAT003");
@@ -348,7 +323,7 @@ public class ConfigServiceImpl implements ConfigService {
             hcsaSvcSpecificStageWorkloadDto.setStatus("CMSTAT003");
             hcsaSvcSpecificStageWorkloadDtoList.add(hcsaSvcSpecificStageWorkloadDto);
             hcsaSvcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto);
-
+            hcsaConfigPageDtos.add(hcsaConfigPageDto);
         }
 
         String[] steps = request.getParameterValues("step");
@@ -391,12 +366,23 @@ public class ConfigServiceImpl implements ConfigService {
         hcsaServiceConfigDto.setHcsaSvcSpeRoutingSchemeDtos(hcsaSvcSpeRoutingSchemeDtoList);
         hcsaServiceConfigDto.setHcsaSvcSpecificStageWorkloadDtos(hcsaSvcSpecificStageWorkloadDtoList);
         hcsaServiceConfigDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
+        hcsaServiceConfigDto.setHcsaSvcStageWorkingGroupDtos(hcsaSvcStageWorkingGroupDtos);
             return hcsaServiceConfigDto;
     }
 
 
     private void doValidate(HcsaServiceConfigDto hcsaServiceConfigDto, Map<String,String> errorMap){
         HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = hcsaServiceConfigDto.getHcsaSvcStageWorkingGroupDtos();
+        for(int i=0;i<hcsaSvcStageWorkingGroupDtos.size();i++){
+            String stageWorkGroupId = hcsaSvcStageWorkingGroupDtos.get(i).getStageWorkGroupId();
+            if(StringUtil.isEmpty(stageWorkGroupId)){
+
+                errorMap.put("stageWorkGroupId"+i,"UC_CHKLMD001_ERR001");
+            }
+
+
+        }
         String svcCode = hcsaServiceDto.getSvcCode();
         String svcName = hcsaServiceDto.getSvcName();
         String svcDesc = hcsaServiceDto.getSvcDesc();
@@ -462,4 +448,113 @@ public class ConfigServiceImpl implements ConfigService {
 
         }
     }
+
+    private   List<HcsaConfigPageDto> getHcsaConfigPageDtos ( HcsaServiceDto hcsaServiceDto){
+
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = getHcsaSvcRoutingStageDtos();
+
+        List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtos =
+                hcsaConfigClient.getHcsaSvcSpeRoutingSchemeByServiceId(hcsaServiceDto.getId()).getEntity();
+        List<String> stageIds=new ArrayList<>();
+        stageIds.add("12848A70-820B-EA11-BE7D-000C29F371DC");
+        stageIds.add("13848A70-820B-EA11-BE7D-000C29F371DC");
+        stageIds.add("14848A70-820B-EA11-BE7D-000C29F371DC");
+        stageIds.add("15848A70-820B-EA11-BE7D-000C29F371DC");
+        stageIds.add("16848A70-820B-EA11-BE7D-000C29F371DC");
+        stageIds.add("17848A70-820B-EA11-BE7D-000C29F371DC");
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = hcsaConfigClient.getHcsaSvcWorkingGroupByStages(stageIds).getEntity();
+        for(HcsaSvcStageWorkingGroupDto hcsaConfigPageDtos:hcsaSvcStageWorkingGroupDtos){
+            String stageId = hcsaConfigPageDtos.getStageId();
+            String stageWorkGroupId = hcsaConfigPageDtos.getStageWorkGroupId();
+
+        }
+
+        List<WorkingGroupDto> hcsa = organizationClient.getWorkingGroup("hcsa").getEntity();
+
+        /*           List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = hcsaConfigClient.getHcsaStageWorkingGroup(hcsaServiceDto.getId()).getEntity();*/
+
+        List<HcsaConfigPageDto> hcsaConfigPageDtos=new ArrayList<>();
+        for(HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto:hcsaSvcRoutingStageDtos){
+
+            HcsaConfigPageDto hcsaConfigPageDto=new HcsaConfigPageDto();
+            hcsaConfigPageDto.setStageCode(hcsaSvcRoutingStageDto.getStageCode());
+
+            hcsaConfigPageDto.setStageName(hcsaSvcRoutingStageDto.getStageName());
+            for(int i=0;i<hcsaSvcStageWorkloadDtos.size();i++ ){
+                String stageId = hcsaSvcStageWorkloadDtos.get(i).getStageId();
+                Integer manhourCount = hcsaSvcStageWorkloadDtos.get(i).getManhourCount();
+                String appType = hcsaSvcStageWorkloadDtos.get(i).getAppType();
+                if ("APTY002".equals(appType)) {
+                    String id1 = hcsaSvcRoutingStageDto.getId();
+                    if(id1.equals(stageId)){
+                        hcsaConfigPageDto.setManhours(manhourCount);
+                        hcsaConfigPageDto.setAppType("APTY002");
+                        hcsaConfigPageDto.setWorkloadId(hcsaSvcStageWorkloadDtos.get(i).getId());
+                        hcsaConfigPageDto.setRoutingSchemeId(hcsaSvcStageWorkloadDtos.get(i).getId());
+                    }
+
+                }
+            }
+            List<WorkingGroupDto> workingGroupDtoList=new ArrayList<>();
+
+            for(WorkingGroupDto workingGroupDto:hcsa){
+                String groupName = workingGroupDto.getGroupName();
+                String stageName = hcsaSvcRoutingStageDto.getStageName();
+                if(groupName.contains("Admin Screening")&&stageName.contains("Admin Screening")){
+                    workingGroupDtoList.add(workingGroupDto);
+                }
+                if(groupName.contains("Professional Screening")&&stageName.contains("Professional Screening")){
+                    workingGroupDtoList.add(workingGroupDto);
+                }
+                if(groupName.contains("Inspection Stage")&&stageName.contains("Inspection Stage")){
+                    workingGroupDtoList.add(workingGroupDto);
+                }
+                if(groupName.contains("Level 1 Approval")&&stageName.contains("Level 1 Approval")){
+                    workingGroupDtoList.add(workingGroupDto);
+                }
+                if(groupName.contains("Level 2 Approval")&&stageName.contains("Level 2 Approval")){
+                    workingGroupDtoList.add(workingGroupDto);
+                }
+                if(groupName.contains("Level 3 Approval")&&stageName.contains("Level 3 Approval")){
+                    workingGroupDtoList.add(workingGroupDto);
+                }
+                hcsaConfigPageDto.setWorkingGroup(workingGroupDtoList);
+            }
+
+            hcsaConfigPageDtos.add(hcsaConfigPageDto);
+        }
+
+
+        return hcsaConfigPageDtos;
+    }
+
+    private    List<HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageDtos(){
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = hcsaConfigClient.stagelist().getEntity();
+        for(int i=0;i<hcsaSvcRoutingStageDtos.size();i++ ){
+            String stageOrder = hcsaSvcRoutingStageDtos.get(i).getStageOrder();
+            try {
+                if(Integer.valueOf(stageOrder)%100!=0){
+                    hcsaSvcRoutingStageDtos.remove(i);
+                    i--;
+                }
+            }catch (Exception e){
+
+            }
+        }
+        return hcsaSvcRoutingStageDtos;
+    }
+
+    private   List<WorkingGroupDto> getWorkingGroup(){
+        List<WorkingGroupDto>  workingGroup = organizationClient.getWorkingGroup("hcsa").getEntity();
+        return workingGroup;
+    }
+
+
+    private   List<HcsaSvcStageWorkloadDto> getHcsaSvcStageWorkloadDtos(HcsaServiceDto hcsaServiceDto){
+        List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtos =
+                hcsaConfigClient.getHcsaSvcSpeRoutingSchemeByServiceId(hcsaServiceDto.getId()).getEntity();
+        return hcsaSvcStageWorkloadDtos;
+    }
+
+
 }

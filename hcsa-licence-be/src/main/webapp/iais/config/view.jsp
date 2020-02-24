@@ -277,10 +277,11 @@
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
           <table border="1px" style="text-align: center" >
             <tr>
-              <th style="width: 20% ;height: 40px;text-align: center"> application type<span class="mandatory" >*</span></th>
-              <th  style="width: 30% ;height: 40px;text-align: center"> Service Workflow Routing Stages<span class="mandatory" >*</span></th>
-              <th  style="width: 30% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
-              <th  style="width: 30% ;height: 40px;text-align: center">  Service Workload Manhours<span class="mandatory">*</span></th>
+              <th style="width: 15% ;height: 40px;text-align: center"> application type<span class="mandatory" >*</span></th>
+              <th  style="width: 20% ;height: 40px;text-align: center"> Service Workflow Routing Stages<span class="mandatory" >*</span></th>
+              <th  style="width: 20% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
+              <th  style="width: 15% ;height: 40px;text-align: center">  Service Workload Manhours<span class="mandatory">*</span></th>
+              <th  style="width: 30% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
             </tr>
             <c:forEach items="${routingStages}" var="routingStage" varStatus="status">
               <tr>
@@ -288,7 +289,7 @@
                 <td >${routingStage.stageName}</td>
                 <td>
                   <div class="col-xs-12 col-md-12">
-                    <select  name="RoutingScheme${routingStage.stageCode}" <c:if test="${routingStage.stageCode!='INS'}">disabled="disabled" </c:if> > >
+                    <select  name="RoutingScheme${routingStage.stageCode}"  >
                       <option value="">Select one</option>
                       <option value="common"
                               <c:if test="${routingStage.stageCode=='PSO'}">selected="selected" </c:if>
@@ -307,6 +308,11 @@
                     <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${status.index}"></span>
                   </div>
 
+                </td>
+                <td>
+                  <div class="col-xs-12 col-md-12">
+
+                  </div>
                 </td>
               </tr>
             </c:forEach>
@@ -460,7 +466,7 @@
         <div class="row">
           <div class="col-xs-10 col-md-8">
             <div class="components">
-              <p style="text-align: center">Version 1</p>
+              <p style="text-align: center">Version ${hcsaServiceDto.version}</p>
             </div>
           </div>
         </div>

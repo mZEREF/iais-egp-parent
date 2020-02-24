@@ -284,10 +284,10 @@
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
           <table border="1px" style="text-align: center" >
             <tr>
-              <th style="width: 20% ;height: 40px;text-align: center"> application type<span class="mandatory" >*</span></th>
-              <th  style="width: 25% ;height: 40px;text-align: center"> Service Workflow Routing Stages<span class="mandatory" >*</span></th>
+              <th style="width: 15% ;height: 40px;text-align: center"> application type<span class="mandatory" >*</span></th>
+              <th  style="width: 20% ;height: 40px;text-align: center"> Service Workflow Routing Stages<span class="mandatory" >*</span></th>
               <th  style="width: 20% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
-              <th  style="width: 25% ;height: 40px;text-align: center">Service Workload Manhours<span class="mandatory">*</span></th>
+              <th  style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours<span class="mandatory">*</span></th>
               <th  style="width: 30% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
             </tr>
             <c:forEach items="${routingStages}" var="routingStage" varStatus="status">
@@ -319,9 +319,10 @@
                 </td>
                 <td>
                   <div class="col-xs-12 col-md-12">
-                    <select name="workingGroup">
-                      <option value="">Select one</option>
-                      <option>Admin Screening officer</option>
+                    <select name="workingGroup${routingStage.stageCode}">
+                      <option value="">Select one</option><c:forEach items="${routingStage.workingGroup}" var="workingGroup">
+                      <option value="${workingGroup.id}">${workingGroup.groupName}</option>
+                    </c:forEach>
                     </select>
                   </div>
                 </td>
@@ -480,7 +481,7 @@
         <div class="row">
           <div class="col-xs-10 col-md-8">
             <div class="components">
-              <p style="text-align: center">Version 1</p>
+              <p style="text-align: center">Version ${hcsaServiceDto.version}</p>
             </div>
           </div>
         </div>
