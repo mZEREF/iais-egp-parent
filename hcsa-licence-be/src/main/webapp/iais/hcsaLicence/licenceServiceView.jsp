@@ -9,6 +9,7 @@
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
   <input style="display: none" value="${NOT_VIEW}" id="view">
+  <c:set var="appEdit" value="${applicationViewDto.appEditSelectDto}"/>
   <div class="main-content">
     <div class="container">
       <div class="row">
@@ -34,8 +35,10 @@
                           <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
                             <div class="panel-body">
                               <p class="text-right">
-                                <input class="form-check-input" id="premisesCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="premises">
-                              </p>
+                                <c:if test="${appEdit.premisesEdit || appEdit.premisesListEdit }" >
+                                  <input class="form-check-input" id="premisesCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="premises">
+                                </c:if>
+                                 </p>
                               <c:forEach var="appGrpPremDto" items="${appSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
                                 <div class="panel-main-content">
                                   <div class="preview-info">
@@ -126,15 +129,27 @@
                                                 </wrms:value></span>
                                         </span>
                                       <p>
-                                        <p><strong>AuthoriseD Person 1(po)</strong>&nbsp;&nbsp;&nbsp;&nbsp;<input class="form-check-input" type="checkbox" name="editCheckbox" aria-invalid="false" value="po"></p>
+                                        <p><strong>AuthoriseD Person 1(po)</strong>&nbsp;&nbsp;&nbsp;&nbsp;
+                                          <c:if test="${appEdit.serviceEdit || appEdit.poEdit}" >
+                                          <input class="form-check-input" type="checkbox" name="editCheckbox" aria-invalid="false" value="po">
+                                          </c:if>
+                                        </p>
                                         <p><strong>Name:</strong></p>
                                         <p><strong>ID:</strong></p>
                                         <br>
-                                        <p><strong>AuthoriseD Person 2(dpo)</strong>&nbsp;&nbsp;&nbsp;&nbsp;<input class="form-check-input"  type="checkbox" name="editCheckbox" aria-invalid="false" value="dpo"></p>
-                                        <p><strong>Name:</strong></p>
+                                        <p><strong>AuthoriseD Person 2(dpo)</strong>&nbsp;&nbsp;&nbsp;&nbsp;
+                                          <c:if test="${appEdit.serviceEdit ||appEdit.dpoEdit}" >
+                                          <input class="form-check-input"  type="checkbox" name="editCheckbox" aria-invalid="false" value="dpo">
+                                          </c:if>
+                                        </p>
+                                          <p><strong>Name:</strong></p>
                                         <p><strong>ID:</strong></p>
                                         <br>
-                                        <p><strong>MedAlert Contact Person</strong>&nbsp;&nbsp;&nbsp;&nbsp;<input class="form-check-input"  type="checkbox" name="editCheckbox" aria-invalid="false" value="medAlert"></p>
+                                        <p><strong>MedAlert Contact Person</strong>&nbsp;&nbsp;&nbsp;&nbsp;
+                                          <c:if test="${appEdit.medAlertEdit || appEdit.serviceEdit}">
+                                          <input class="form-check-input"  type="checkbox" name="editCheckbox" aria-invalid="false" value="medAlert">
+                                          </c:if>
+                                        </p>
                                       </div>
 
                                       <c:forEach var="appGrpPrimaryDocDto" items="${appSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
