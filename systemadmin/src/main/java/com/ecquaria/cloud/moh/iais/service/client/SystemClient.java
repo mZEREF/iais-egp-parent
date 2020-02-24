@@ -33,7 +33,7 @@ public interface SystemClient {
     FeignResponseEntity<SystemParameterDto> getParameterByRowguid(@PathVariable(name = "id") String rowguid);
 
     @PostMapping(path = "/system-parameter/",  consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<IaisApiResult<SystemParameterDto>> saveSystemParameter(@RequestBody SystemParameterDto dto);
+    FeignResponseEntity<String> saveSystemParameter(@RequestBody SystemParameterDto dto);
 
     @PostMapping(path = "/iais-message", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> saveMessage(@RequestBody MessageDto messageDto);
@@ -44,5 +44,7 @@ public interface SystemClient {
     @GetMapping(path = "/iais-message/{id}")
     FeignResponseEntity<MessageDto> getMessageByRowguid(@PathVariable(name = "id") String id);
 
+    @PostMapping(path = "/system-parameter/config-properties",  consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<IaisApiResult<Void>> saveSystemConfigProperties(@RequestBody String jsonStr);
 
 }

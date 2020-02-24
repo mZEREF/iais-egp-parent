@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
@@ -29,7 +28,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -179,20 +177,11 @@ public class SystemParameterDelegator {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }else {
-            IaisApiResult<SystemParameterDto> responeContent = parameterService.saveSystemParameter(editDto);
-            if (responeContent.isHasError()){
-                Map<String,String> errorMap = new HashMap<>(1);
-                errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, MessageUtil.getMessageDesc(responeContent.getErrorCode()));
-
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-
-            }else {
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-                String msg = MessageUtil.getMessageDesc(MessageCodeKey.ACKSPM001);
-                if (!StringUtil.isEmpty(msg)){
-                    ParamUtil.setRequestAttr(request,"ackMsg", msg.replace("<Date>", new Date().toString()));
-                }
+            parameterService.saveSystemParameter(editDto);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+            String msg = MessageUtil.getMessageDesc(MessageCodeKey.ACKSPM001);
+            if (!StringUtil.isEmpty(msg)){
+                ParamUtil.setRequestAttr(request,"ackMsg", msg.replace("<Date>", new Date().toString()));
             }
 
             ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO, editDto);
@@ -251,6 +240,7 @@ public class SystemParameterDelegator {
                         systemParameterDto.setMaxlength(query.getMaxlength());
                         systemParameterDto.setStatus(query.getStatus());
                         systemParameterDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                        systemParameterDto.setPropertiesKey(query.getPropertiesKey());
                         ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO, systemParameterDto);
                     }
                 }

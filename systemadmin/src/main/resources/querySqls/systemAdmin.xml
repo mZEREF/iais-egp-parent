@@ -82,7 +82,7 @@
 
     <sql key="querySystemParam" remarks="query system param sql">
         <![CDATA[
-            select pid, domain_type , module, description, units,  value, param_type, is_mandatory,  can_update , max_length, status
+            select pid, domain_type , module, description, units,  value, param_type, is_mandatory,  can_update , max_length, status, properties_key
             from
             cm_system_parameters
             where 1=1

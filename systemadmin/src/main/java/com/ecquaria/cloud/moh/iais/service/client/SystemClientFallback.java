@@ -35,7 +35,7 @@ public class SystemClientFallback implements SystemClient{
     }
 
     @Override
-    public FeignResponseEntity<IaisApiResult<SystemParameterDto>> saveSystemParameter(SystemParameterDto dto) {
+    public FeignResponseEntity<String> saveSystemParameter(SystemParameterDto dto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -60,6 +60,14 @@ public class SystemClientFallback implements SystemClient{
 
     @Override
     public FeignResponseEntity<MessageDto> getMessageByRowguid(String id) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<IaisApiResult<Void>> saveSystemConfigProperties(String jsonStr) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
