@@ -47,7 +47,8 @@ public interface AppointmentClient {
     @GetMapping(value = "/iais-appointment/user-calendar/{userId}")
     FeignResponseEntity<List<String>> getIdByAgencyUserId(@PathVariable("userId") String userId);
 
-    @PostMapping(value = "/iais-appointment/user-calendar",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-appointment/user-calendar",produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<List<ApptUserCalendarDto>>> getUserCalendarByUserId(@RequestBody AppointmentDto appointmentDto);
 
     @GetMapping(value = "/iais-appointment/ava-appt-date/{strSpecDate}")
