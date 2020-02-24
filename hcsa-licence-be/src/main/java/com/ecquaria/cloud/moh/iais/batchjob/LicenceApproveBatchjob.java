@@ -234,6 +234,10 @@ public class LicenceApproveBatchjob {
                 Map<String,String> error = new HashMap();
                 error.put(applicationGroupDto.getGroupNo(),generateResult.getErrorMessage());
                 fail.add(error);
+                for(Map.Entry<String,String> ent : error.entrySet()){
+                    String value = ent.getValue();
+                    log.error(StringUtil.changeForLog("The error is -->:"+value));
+                }
             }
         }
 
