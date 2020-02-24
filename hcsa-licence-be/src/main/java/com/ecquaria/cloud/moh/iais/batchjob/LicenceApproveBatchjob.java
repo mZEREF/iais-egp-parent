@@ -678,11 +678,12 @@ public class LicenceApproveBatchjob {
             //create LicPremisesScopeDto
             AppSvcPremisesScopeDto appSvcPremisesScopeDto = getAppSvcPremisesScopeDtoByCorrelationId(appSvcPremisesScopeDtos,appPremCorrecId);
             if(appSvcPremisesScopeDto == null){
-                premisesGroupDto.setHasError(true);
-                premisesGroupDto.setErrorMessage("This appPremCorrecId can not find out AppSvcPremisesScopeDto -->:"+appPremCorrecId);
-                reuslt.clear();
-                reuslt.add(premisesGroupDto);
-                break;
+//                premisesGroupDto.setHasError(true);
+//                premisesGroupDto.setErrorMessage("This appPremCorrecId can not find out AppSvcPremisesScopeDto -->:"+appPremCorrecId);
+//                reuslt.clear();
+//                reuslt.add(premisesGroupDto);
+//                break;
+                continue;
             }
             LicPremisesScopeDto licPremisesScopeDto = new LicPremisesScopeDto();
             licPremisesScopeDto.setSubsumedType(appSvcPremisesScopeDto.isSubsumedType());
