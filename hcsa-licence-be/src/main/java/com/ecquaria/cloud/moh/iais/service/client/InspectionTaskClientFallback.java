@@ -117,5 +117,11 @@ public class InspectionTaskClientFallback implements InspectionTaskClient {
         return entity;
     }
 
-
+    @Override
+    public FeignResponseEntity<List<String>> getItemIdsByAppNo(String appPremCorrId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
