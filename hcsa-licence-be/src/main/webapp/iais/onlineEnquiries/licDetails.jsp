@@ -220,200 +220,69 @@
                             </div>
 
                             <div class="tab-pane" id="tabPersonnelDetails" role="tabpanel">
-                                <div class="panel panel-default">
+
                                     <!-- Default panel contents -->
-                                    <div class="panel-heading"><b>CGO</b></div>
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div class="table-gp">
-                                                <table class="table table-bordered">
-                                                    <tbody>
-                                                    <tr>
-                                                        <td class="col-xs-6" align="right">Name</td>
-                                                        <td class="col-xs-6">${personnelsDto.keyPersonnelDto.name}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Salutation</td>
-                                                        <td>${personnelsDto.keyPersonnelDto.salutation}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">ID Type</td>
-                                                        <td>${personnelsDto.keyPersonnelDto.idType}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">ID No</td>
-                                                        <td>${personnelsDto.keyPersonnelDto.idNo}</td>
-                                                    </tr>
+                                <c:forEach var="personnel" items="${personnelsDto}">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading"><b>${personnel.licKeyPersonnelDto.psnType}</b></div>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="table-gp">
+                                                    <table class="table table-bordered">
+                                                        <tbody>
+                                                        <tr>
+                                                            <td class="col-xs-6" align="right">Name</td>
+                                                            <td class="col-xs-6">${personnel.keyPersonnelDto.name}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">Salutation</td>
+                                                            <td>${personnel.keyPersonnelDto.salutation}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">ID Type</td>
+                                                            <td>${personnel.keyPersonnelDto.idType}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">ID No</td>
+                                                            <td>${personnel.keyPersonnelDto.idNo}</td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <td align="right">Designation</td>
-                                                        <td>${personnelsDto.keyPersonnelDto.designation}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Profession Type</td>
-                                                        <td>${personnelsDto.keyPersonnelExtDto.professionType}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Professional Regn No</td>
-                                                        <td>${personnelsDto.keyPersonnelExtDto.profRegNo}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Specialty</td>
-                                                        <td>${personnelsDto.keyPersonnelExtDto.speciality}</td>
-                                                    </tr><tr>
-                                                        <td align="right">SubSpeciality or relevant qualification</td>
-                                                        <td>${personnelsDto.keyPersonnelExtDto.subSpeciality}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Mobile No</td>
-                                                        <td>${personnelsDto.keyPersonnelDto.mobileNo}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Email Address</td>
-                                                        <td>${personnelsDto.keyPersonnelDto.emailAddr}</td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
+                                                        <tr>
+                                                            <td align="right">Designation</td>
+                                                            <td>${personnel.keyPersonnelDto.designation}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">Profession Type</td>
+                                                            <td>${personnel.keyPersonnelExtDto.professionType}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">Professional Regn No</td>
+                                                            <td>${personnel.keyPersonnelExtDto.profRegNo}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">Specialty</td>
+                                                            <td>${personnel.keyPersonnelExtDto.speciality}</td>
+                                                        </tr><tr>
+                                                            <td align="right">SubSpeciality or relevant qualification</td>
+                                                            <td>${personnel.keyPersonnelExtDto.subSpeciality}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">Mobile No</td>
+                                                            <td>${personnel.keyPersonnelDto.mobileNo}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">Email Address</td>
+                                                            <td>${personnel.keyPersonnelDto.emailAddr}</td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div>&nbsp</div>
-                                <div class="panel panel-default">
-                                    <div class="panel-heading"><b>Principal Officer</b></div>
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div class="table-gp">
-                                                <table class="table table-bordered">
-                                                    <tbody>
-                                                    <tr>
-                                                        <td class="col-xs-6" align="right">Name</td>
-                                                        <td class="col-xs-6">Tan Ah Kow</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Salutation</td>
-                                                        <td>DR</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">ID Type</td>
-                                                        <td>NRIC</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">ID No</td>
-                                                        <td>S123456789I</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Designation</td>
-                                                        <td>Director</td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td align="right">Mobile No</td>
-                                                        <td>-</td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td align="right">Office Telephone No</td>
-                                                        <td>-</td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td align="right">Email Address</td>
-                                                        <td>-</td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>&nbsp</div>
-                                <div class="panel panel-default">
-                                    <div class="panel-heading"><b>Deputy Principal Officer</b></div>
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div class="table-gp">
-                                                <table class="table table-bordered">
-                                                    <tbody>
-                                                    <tr>
-                                                        <td class="col-xs-6" align="right">Name</td>
-                                                        <td class="col-xs-6">Tan Ah Kow</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Salutation</td>
-                                                        <td>DR</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">ID Type</td>
-                                                        <td>NRIC</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">ID No</td>
-                                                        <td>S123456789I</td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td align="right">Designation</td>
-                                                        <td>Director</td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td align="right">Mobile No</td>
-                                                        <td>-</td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td align="right">Email Address</td>
-                                                        <td>-</td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>&nbsp</div>
-                                <div class="panel panel-default">
-                                    <div class="panel-heading"><b>MedAlert</b></div>
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div class="table-gp">
-                                                <table class="table table-bordered">
-                                                    <tbody>
-                                                    <tr>
-                                                        <td class="col-xs-6" align="right">Name</td>
-                                                        <td class="col-xs-6">Tan Ah Kow</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Salutation</td>
-                                                        <td>DR</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">ID Type</td>
-                                                        <td>NRIC</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">ID No</td>
-                                                        <td>S123456789I</td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td align="right">Mobile No</td>
-                                                        <td>-</td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td align="right">Email Address</td>
-                                                        <td>-</td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
+                                    <div>&nbsp</div>
+                                </c:forEach>
                             </div>
                             <div class="tab-pane" id="tabComplianceHistory" role="tabpanel">
                                 <div class="panel panel-default">

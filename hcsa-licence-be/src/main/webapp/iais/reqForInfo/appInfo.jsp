@@ -52,7 +52,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Application Type</td>
-                                                        <td>${applicationViewDto.applicationType}</td>
+                                                        <td>${applicationViewDto.applicationDto.applicationType}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Service Name</td>
@@ -60,7 +60,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Service Discipline/Modality</td>
-                                                        <td>${applicationViewDto.serviceType}</td>
+                                                        <td>${hcsaServiceDto.serviceSubTypeDtos[0].type}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Submission Date</td>
@@ -163,13 +163,12 @@
                                                     <tbody>
                                                     <tr>
                                                         <td class="col-xs-6" align="right">Service Name</td>
-                                                        <td class="col-xs-6">Tan Ah Kow</td>
+                                                        <td>${hcsaServiceDto.svcName}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Service (Lab Discipline, Modality, Subsumed and etc) </td>
-                                                        <td>DR</td>
+                                                        <td>${hcsaServiceDto.serviceSubTypeDtos[0].type}</td>
                                                     </tr>
-
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -178,25 +177,33 @@
                                     <div class="panel-heading"><b>Allocation</b></div>
                                     <div class="row">
                                         <div class="col-xs-12">
-                                            <div class="table-gp">
-                                                <table class="table table-bordered">
-                                                    <tbody>
+                                            <table class="table">
+                                                <thead >
+                                                <tr >
+                                                    <th  style="text-align: center">Premises</th>
+                                                    <th  style="text-align: center">Radiological Modalities</th>
+                                                    <th  style="text-align: center">Clinical Governance Officers</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <c:forEach var="disciplineAllocation" items="${reloadDisciplineAllocationMap}" varStatus="stat">
                                                     <tr>
-                                                        <td class="col-xs-6" align="right">Premises</td>
-                                                        <td class="col-xs-6">Tan Ah Kow</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Service / Granular Service</td>
-                                                        <td>DR</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">CGO</td>
-                                                        <td>NRIC</td>
-                                                    </tr>
+                                                        <td style="text-align: center" >
+                                                            <p>${applicationViewDto.hciAddress}</p>
+                                                        </td>
 
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                                        <td style="text-align: center">
+                                                            <p>${disciplineAllocation.chkLstName}</p>
+
+                                                        </td>
+                                                        <td style="text-align: center">
+                                                            <p>${disciplineAllocation.cgoSelName}</p>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
+                                                </tbody>
+                                            </table>
+
                                         </div>
                                     </div>
                                 </div>

@@ -3,17 +3,18 @@
 
     <sql key = "applicationQuery" remarks = "Query Application Data by condition">
         <![CDATA[
-            SELECT
+            SELECT distinct
                 app.id,app.application_no,app.app_type,app.status,
                 T2.id APP_CORR_ID,
                 T3.HCI_CODE,T3.HCI_NAME,
                 T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME,
-                T4.LICENSEE_ID
+                T4.LICENSEE_ID,chkl_item.RISK_LEVEL
             FROM APPLICATION AS app
              LEFT JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = app.ID
              LEFT JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
              LEFT JOIN APPLICATION_GROUP T4 ON T4.ID = app.APP_GRP_ID
-
+             LEFT JOIN app_premises_adhoc_chkl_config chkl_config ON chkl_config.APP_PREM_CORRE_ID = T2.ID
+             LEFT JOIN app_premises_adhoc_chkl_item chkl_item ON chkl_item.ADHOC_CONF_ID = chkl_config.ID
             WHERE 1=1
             <#if id??> AND app.id = :id </#if>
             <#if appType??> AND app.app_type = :appType</#if>
@@ -48,7 +49,7 @@
 
     <sql key = "licenceQuery" remarks = "Query Licence Data by condition">
         <![CDATA[
-            SELECT
+            SELECT distinct
                 lic.id as id,
                 lic.licence_no as licence_no,
                 lic.svc_name as svc_name,
@@ -59,8 +60,7 @@
                 licApp.APPLICATION_ID as APPLICATION_ID,
                 Prem.HCI_CODE,Prem.HCI_NAME,
                 Prem.BLK_NO, Prem.FLOOR_NO, Prem.UNIT_NO, Prem.STREET_NAME, Prem.BUILDING_NAME,
-                licPrem.ID as lic_prem_id,
-                LicPremisesAdhocChklItem.RISK_LEVEL
+                licPrem.ID as lic_prem_id,LicPremisesAdhocChklItem.RISK_LEVEL
             FROM LICENCE AS lic
             LEFT JOIN LIC_PREMISES licPrem ON licPrem.LICENCE_ID = lic.ID
             LEFT JOIN PREMISES Prem ON Prem.ID = licPrem.PREMISES_ID
@@ -101,7 +101,7 @@
 
     <sql key = "licenseeQuery" remarks = "Query Licensee Data by condition">
         <![CDATA[
-            SELECT
+            SELECT distinct
                 lic.id,
                 lic.name,
                 lic.organization_id,
@@ -143,7 +143,7 @@
 
     <sql key = "serviceQuery" remarks = "Query Service Data by condition">
         <![CDATA[
-            SELECT
+            SELECT distinct
                 svc.id,
                 svc.SVC_NAME as SVC_NAME
             FROM hcsa_service AS svc

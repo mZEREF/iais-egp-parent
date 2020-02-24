@@ -307,7 +307,7 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<PersonnelsDto> getPersonnelDtoByLicId(String licId) {
+    public FeignResponseEntity<List<PersonnelsDto>> getPersonnelDtoByLicId(String licId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
