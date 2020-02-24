@@ -67,14 +67,14 @@
         <div class="form-group">
           <label class="col-md-2">Service Name &nbsp;</label>
           <div class="col-md-5">
-            <iais:select name="svcName" id="svcName" options = "svcNameSelect" firstOption="Select Service Name" value="${svcName}"></iais:select>
+            <iais:select name="svcName" id="svcName" options = "svcNameSelect" firstOption="Please Select" value="${svcName}"></iais:select>
           </div>
         </div>
 
         <div class="form-group">
           <label class="col-md-2">Service Sub Type &nbsp;</label>
           <div class="col-md-5">
-            <iais:select name="svcSubType" id="svcSubType"   options = "subtypeSelect" firstOption="Select Sub Type Name" value="${svcSubType}"></iais:select>
+            <iais:select name="svcSubType" id="svcSubType"   options = "subtypeSelect" firstOption="Please Select" value="${svcSubType}"></iais:select>
           </div>
         </div>
 

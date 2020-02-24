@@ -61,12 +61,12 @@ public class HcsaChklConfigValidate implements CustomizeValidator {
 
 
         if (StringUtils.isEmpty(eftStartDate)){
-            errMap.put("eftStartDate", MessageUtil.getMessageDesc(MessageCodeKey.CHKL_ERR014));
+            errMap.put("eftStartDate", MessageUtil.getMessageDesc(MessageCodeKey.ERR0010));
             return errMap;
         }
 
         if (StringUtils.isEmpty(eftEndDate)){
-            errMap.put("eftEndDate", MessageUtil.getMessageDesc(MessageCodeKey.CHKL_ERR014));
+            errMap.put("eftEndDate", MessageUtil.getMessageDesc(MessageCodeKey.ERR0010));
             return errMap;
         }
 

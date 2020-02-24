@@ -85,7 +85,7 @@
           <div class="form-group">
             <label class="col-md-2">HCI Code</label>
             <div class="col-md-3">
-              <input type="text" name="hciCode" value="${hciCode}"/>
+              <input type="text" name="hciCode" maxlength="7" value="${hciCode}"/>
             <span id="error_hciCode" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>

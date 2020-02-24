@@ -157,4 +157,4 @@
 
 </div>
 <%@include file="/include/validation.jsp"%>
-<script src="<%=webRootCommon%>js/iaisUtils.js"></script>
+<%@include file="/include/utils.jsp"%>

@@ -84,7 +84,7 @@
 
                         </c:when>
                         <c:otherwise>
-                            <input name="value" type="text" value="${parameterRequestDto.value}">
+                            <input name="value" type="text" maxlength="3" value="${parameterRequestDto.value}">
                         </c:otherwise>
                     </c:choose>
                     <span id="error_value" name="iaisErrorMsg" class="error-msg"></span>
@@ -95,7 +95,7 @@
                 <label class="col-md-1">Parameter Description:
                 </label>
                 <div class="col-md-3">
-                    <input name="description" type="text" value="${parameterRequestDto.description}">
+                    <input name="description" type="text" maxlength="255" value="${parameterRequestDto.description}">
                     <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
