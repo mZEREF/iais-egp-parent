@@ -41,7 +41,7 @@ public interface AppointmentClient {
     @GetMapping(value = "/iais-appointment/appt-nonava/{id}")
     FeignResponseEntity<ApptNonAvailabilityDateDto> getNonAvailabilityById(@PathVariable("id") String id);
 
-    @GetMapping(value = "/iais-appointment/appt-nonava-contain")
+    @PostMapping(value = "/iais-appointment/appt-nonava-contain", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> dateIsContainNonWork(@RequestBody ApptNonAvailabilityDateDto apptNonAvailabilityDateDto);
 
     @GetMapping(value = "/iais-appointment/user-calendar/{userId}")
