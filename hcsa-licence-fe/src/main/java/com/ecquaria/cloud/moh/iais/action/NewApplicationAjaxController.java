@@ -120,9 +120,9 @@ public class NewApplicationAjaxController {
     }
 
 
-    @RequestMapping(value = "/file-repo-pop", method = RequestMethod.GET)
-    public @ResponseBody void filePopDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.debug(StringUtil.changeForLog("filePopDownload start ...."));
+    @RequestMapping(value = "/file-repo-popup", method = RequestMethod.GET)
+    public @ResponseBody void filePopUpDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.debug(StringUtil.changeForLog("filePopUpDownload start ...."));
         String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
         String maskFileRepoIdName = ParamUtil.getRequestString(request, "filerepo");
         String fileRepoId = ParamUtil.getMaskedString(request, maskFileRepoIdName);
@@ -138,7 +138,7 @@ public class NewApplicationAjaxController {
         ops.write(fileData);
         ops.close();
         ops.flush();
-        log.debug(StringUtil.changeForLog("filePopDownload end ...."));
+        log.debug(StringUtil.changeForLog("filePopUpDownload end ...."));
     }
 
 }
