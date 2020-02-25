@@ -1,7 +1,12 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
+import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +29,12 @@ import java.util.Map;
  * @date 2019/12/5 15:51
  */
 @Controller
+@Slf4j
 public class NewApplicationAjaxController {
+
+    @Autowired
+    private ServiceConfigService serviceConfigService;
+
     @RequestMapping(value = "/request-check-error",method = RequestMethod.POST)
     public @ResponseBody Map<String,String> doVail(HttpServletRequest request, HttpServletResponse response){
         List<String> subList=new ArrayList<>();
@@ -105,4 +118,27 @@ public class NewApplicationAjaxController {
         List<AppGrpPremisesDto> appGrpPremisesDtos = applicationDelegator.genAppGrpPremisesDtoList(request);
         return maps;
     }
+
+
+    @RequestMapping(value = "/file-repo-pop", method = RequestMethod.GET)
+    public @ResponseBody void filePopDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.debug(StringUtil.changeForLog("filePopDownload start ...."));
+        String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
+        String maskFileRepoIdName = ParamUtil.getRequestString(request, "filerepo");
+        String fileRepoId = ParamUtil.getMaskedString(request, maskFileRepoIdName);
+        if (StringUtil.isEmpty(fileRepoId)) {
+            log.debug(StringUtil.changeForLog("file-repo id is empty"));
+            return;
+        }
+        byte[] fileData = serviceConfigService.downloadFile(fileRepoId);
+        response.setContentType("application/OCTET-STREAM");
+        response.addHeader("Content-Disposition", "attachment;filename=" + fileRepoName);
+        response.addHeader("Content-Length", "" + fileData.length);
+        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+        ops.write(fileData);
+        ops.close();
+        ops.flush();
+        log.debug(StringUtil.changeForLog("filePopDownload end ...."));
+    }
+
 }
