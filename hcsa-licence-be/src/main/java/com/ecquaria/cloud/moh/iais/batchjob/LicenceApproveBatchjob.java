@@ -658,11 +658,12 @@ public class LicenceApproveBatchjob {
             String premisesId = appGrpPremisesEntityDto.getId();
             String appPremCorrecId = getAppPremCorrecId(appPremisesCorrelationDtos,premisesId);
             if(StringUtil.isEmpty(appPremCorrecId)){
-                premisesGroupDto.setHasError(true);
-                premisesGroupDto.setErrorMessage("This PremisesId can not find out appPremCorrecId -->:"+premisesId);
-                reuslt.clear();
-                reuslt.add(premisesGroupDto);
-                break;
+//                premisesGroupDto.setHasError(true);
+//                premisesGroupDto.setErrorMessage("This PremisesId can not find out appPremCorrecId -->:"+premisesId);
+//                reuslt.clear();
+//                reuslt.add(premisesGroupDto);
+//                break;
+                continue;
             }
             AppPremisesRecommendationDto appPremisesRecommendationDto = licenceService.getTcu(appPremCorrecId);
             LicPremisesDto licPremisesDto = new LicPremisesDto();
@@ -678,12 +679,11 @@ public class LicenceApproveBatchjob {
             //create LicPremisesScopeDto
             AppSvcPremisesScopeDto appSvcPremisesScopeDto = getAppSvcPremisesScopeDtoByCorrelationId(appSvcPremisesScopeDtos,appPremCorrecId);
             if(appSvcPremisesScopeDto == null){
-//                premisesGroupDto.setHasError(true);
-//                premisesGroupDto.setErrorMessage("This appPremCorrecId can not find out AppSvcPremisesScopeDto -->:"+appPremCorrecId);
-//                reuslt.clear();
-//                reuslt.add(premisesGroupDto);
-//                break;
-                continue;
+                premisesGroupDto.setHasError(true);
+                premisesGroupDto.setErrorMessage("This appPremCorrecId can not find out AppSvcPremisesScopeDto -->:"+appPremCorrecId);
+                reuslt.clear();
+                reuslt.add(premisesGroupDto);
+                break;
             }
             LicPremisesScopeDto licPremisesScopeDto = new LicPremisesScopeDto();
             licPremisesScopeDto.setSubsumedType(appSvcPremisesScopeDto.isSubsumedType());
