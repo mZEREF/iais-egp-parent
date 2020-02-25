@@ -322,7 +322,7 @@
 <script type="text/javascript">
 
     function doSend(){
-        var f=$('#decision-revise-email option:selected').val()
+        var f=$('#decision-validate-email option:selected').val()
 
         if(f!="Select"){
             showWaiting();
