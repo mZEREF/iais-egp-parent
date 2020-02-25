@@ -12,6 +12,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: jiahao
@@ -139,7 +140,7 @@ public class FillUpCheckListGetAppClientFallBack implements  FillUpCheckListGetA
     }
 
     @Override
-    public FeignResponseEntity<List<ApplicationDto>> getApplicationDtoByNcItem() {
+    public FeignResponseEntity<Map<String, ApplicationDto>> getApplicationDtoByNcItem() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
