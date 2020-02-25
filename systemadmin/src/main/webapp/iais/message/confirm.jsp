@@ -42,14 +42,14 @@
 
           <div class="form-group">
             <label class="col-xs-4 col-md-2 control-label" >Description</label>
-            <div class="col-xs-10 col-md-3">
+            <div class="col-xs-10 col-md-7">
               <input type="text" name="description" disabled="disabled" value="${msgRequestDto.description}" />
             </div>
           </div>
 
           <div class="form-group">
             <label class="col-xs-4 col-md-2 control-label" >Message</label>
-            <div class="col-xs-5 col-md-3">
+            <div class="col-xs-5 col-md-7">
               <input type="text" name="message" disabled="disabled" value="${msgRequestDto.message}" />
             </div>
           </div>
@@ -66,8 +66,9 @@
     </div>
 
     <div class="text-right text-center-mobile">
-      <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doConfirm();">Submit</a>
       <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doCancel();">Cancel</a>
+      <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doConfirm();">Submit</a>
+
     </div>
 
   </form>

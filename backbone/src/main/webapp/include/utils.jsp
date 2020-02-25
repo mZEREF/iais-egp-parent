@@ -31,7 +31,6 @@
             window.open(url, "Iais Export", "location=no,status=no,scrollvars=no");
            // window.location.href = url;
             dismissWaiting();
-            window.close()
         }
     }
 

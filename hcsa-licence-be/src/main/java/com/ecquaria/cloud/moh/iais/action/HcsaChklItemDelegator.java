@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -740,7 +741,7 @@ public class HcsaChklItemDelegator {
                 SearchParam  searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
                 QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
                 SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
-                if (searchResult != null){
+                if (!IaisCommonUtils.isEmpty(searchResult.getRows())){
 
                     //master code to description
                     List<CheckItemQueryDto> checkItemQueryDtoList = searchResult.getRows();
@@ -757,12 +758,15 @@ public class HcsaChklItemDelegator {
             default:
         }
 
-        try {
-            FileUtils.writeFileResponeContent(response, file);
-            FileUtils.deleteTempFile(file);
-        } catch (IOException e) {
-           log.debug(e.getMessage());
+        if(file != null){
+            try {
+                FileUtils.writeFileResponeContent(response, file);
+                FileUtils.deleteTempFile(file);
+            } catch (IOException e) {
+                log.debug(e.getMessage());
+            }
         }
+
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
     }
 }

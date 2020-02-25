@@ -49,7 +49,7 @@
 
   <iais:action style="text-align:center;">
     <button class="btn btn-lg btn-login-search" type="button" value="doQuery" style="background:#2199E8; color: white" >Search</button>
-    <a class="btn btn-lg btn-login-export" type="button" onclick="Utils.doExport('${pageContext.request.contextPath}/audit-trail-file')" style="background:#2199E8; color: white" >Export</a>
+    <a class="btn btn-lg btn-login-export" type="button" href="${pageContext.request.contextPath}/audit-trail-file" target="_blank" style="background:#2199E8; color: white" >Export</a>
     <button class="btn btn-lg btn-login-clear" type="button"  style="background:#2199E8; color: white" >Clear</button>
   </iais:action>
 

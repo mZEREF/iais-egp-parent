@@ -85,8 +85,8 @@
 
           <iais:action style="text-align:center;">
             <button class="btn btn-lg btn-login-search" type="button" style="background:#2199E8; color: white" value="doSearch">Search</button>
-            <a class="btn btn-lg btn-login-export" type="button" onclick="Utils.doExport('${pageContext.request.contextPath}/checklist-item-file?action=checklistItem')" style="background:#2199E8; color: white" >Export Checklist Item</a>
-            <a class="btn btn-lg btn-login-export" type="button" onclick="Utils.doExport('${pageContext.request.contextPath}/checklist-item-file?action=regulation')" style="background:#2199E8; color: white" >Export Regulation</a>
+            <a class="btn btn-lg btn-login-export" type="button" href="${pageContext.request.contextPath}/checklist-item-file?action=checklistItem" target="_blank" style="background:#2199E8; color: white" >Export Checklist Item</a>
+            <a class="btn btn-lg btn-login-export" type="button" href="${pageContext.request.contextPath}/checklist-item-file?action=regulation" target="_blank" style="background:#2199E8; color: white" >Export Regulation</a>
             <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" >Clear</button>
           </iais:action>
 

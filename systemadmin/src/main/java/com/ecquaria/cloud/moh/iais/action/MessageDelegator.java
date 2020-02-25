@@ -59,10 +59,11 @@ public class MessageDelegator {
         List<SelectOption> domainOptionList = new ArrayList<>();
         domainOptionList.add(new SelectOption("Internet", "Internet"));
         domainOptionList.add(new SelectOption("Intranet", "Intranet"));
+        domainOptionList.add(new SelectOption("Mobil", "Mobil"));
         ParamUtil.setRequestAttr(request, "domainTypeSelect", domainOptionList);
 
         List<SelectOption> msgOptionList = new ArrayList<>();
-        msgOptionList.add(new SelectOption("Ack", "Acknowledgement"));
+        msgOptionList.add(new SelectOption("Acknowledgement", "Acknowledgement"));
         msgOptionList.add(new SelectOption("Error", "Error"));
         ParamUtil.setRequestAttr(request, "msgTypeSelect", msgOptionList);
 
@@ -127,17 +128,13 @@ public class MessageDelegator {
         }
 
         preSelectOption(request);
-        String domainType = ParamUtil.getString(request, MessageConstants.PARAM_DOMAIN_TYPE);
-        String msgType = ParamUtil.getString(request, MessageConstants.PARAM_MSG_TYPE);
-        String module = ParamUtil.getString(request, MessageConstants.PARAM_MODULE);
+
         String description = ParamUtil.getString(request, MessageConstants.PARAM_DESCRIPTION);
         String message = ParamUtil.getString(request, MessageConstants.PARAM_MESSAGE);
         String status = ParamUtil.getString(request, MessageConstants.PARAM_STATUS);
 
         MessageDto editDto = (MessageDto) ParamUtil.getSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO);
-        editDto.setDomainType(domainType);
-        editDto.setMsgType(msgType);
-        editDto.setModule(module);
+
         editDto.setDescription(description);
         editDto.setMessage(message);
         editDto.setStatus(status);

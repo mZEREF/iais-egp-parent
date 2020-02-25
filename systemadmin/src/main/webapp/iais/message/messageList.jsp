@@ -20,22 +20,21 @@
                     <label class="col-xs-4 col-md-2 control-label" >Type</label>
                     <div class="col-xs-5 col-md-3">
                         <iais:select name="domainType" id="domainType" value="${domainType}" options="domainTypeSelect" firstOption="Please select" onchange="displaySection()"></iais:select>
-
                     </div>
                     <span id="error_domainType" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
 
-                <div id = "msgTypeRow" class="form-group" >
+                <div id = "msgTypeRow" class="form-group" style="display:none">
                     <label class="col-xs-4 col-md-2 control-label" >Message Type</label>
                     <div class="col-xs-5 col-md-3">
-                        <iais:select name="msgType" value="${msgType}" options="msgTypeSelect" firstOption="Please select" ></iais:select>
+                        <iais:select name="msgType" id="msgType" value="${msgType}" options="msgTypeSelect" firstOption="Please select" ></iais:select>
                     </div>
                 </div>
 
-                <div id = "moduleTypeRow" class="form-group" >
+                <div id = "moduleTypeRow" class="form-group" style="display:none">
                     <label class="col-xs-4 col-md-2 control-label" >Module</label>
                     <div class="col-xs-5 col-md-3">
-                        <iais:select name="module"  value="${module}" options="moduleTypeSelect" firstOption="Please select" ></iais:select>
+                        <iais:select name="module"  id="module" value="${module}" options="moduleTypeSelect" firstOption="Please select" ></iais:select>
                     </div>
                 </div>
             </div>
@@ -140,4 +139,24 @@
         $(".current").text("Please select");
     }
 
+    document.ready = function () {
+        displaySection();
+    }
+
+    function displaySection(){
+        var val = $("#domainType").val()
+        alert(val)
+        if(val == null || val == '' ){
+            return;
+        }else {
+            var msgTypeRow = document.getElementById("msgTypeRow");
+            var moduleTypeRow = document.getElementById("moduleTypeRow");
+            if(msgTypeRow && moduleTypeRow){
+                msgTypeRow.style = "block";
+                moduleTypeRow.style = "block";
+            }
+        }
+
+
+    }
 </script>

@@ -42,16 +42,16 @@
 
                <div class="form-group">
                     <label class="col-xs-4 col-md-2 control-label" >Description</label>
-                    <div class="col-xs-10 col-md-3">
-                        <input type="text" name="description" value="${msgRequestDto.description}" />
+                    <div class="col-xs-10 col-md-7">
+                        <input type="text" name="description" maxlength="255" value="${msgRequestDto.description}" />
                         <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="col-xs-4 col-md-2 control-label" >Message</label>
-                    <div class="col-xs-5 col-md-3">
-                        <input type="text" name="message" value="${msgRequestDto.message}" />
+                    <div class="col-xs-5 col-md-7">
+                        <input type="text" name="message" maxlength="255" value="${msgRequestDto.message}" />
                         <span id="error_message" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </div>
@@ -71,9 +71,8 @@
     <div class="application-tab-footer">
         <td>
             <div class="text-right text-center-mobile">
-
-                <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doEdit('${msgRequestDto.id}');">UPDATE</a>
                 <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doCancel();">Cancel</a>
+                <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doEdit('${msgRequestDto.id}');">UPDATE</a>
             </div>
 
         </td>
