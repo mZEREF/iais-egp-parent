@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -32,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * @Process MohInspecUserRectifiUpload
+ *
  * @author Shicheng
  * @date 2019/12/23 15:20
  **/
@@ -50,6 +53,7 @@ public class InspecUserRecUploadDelegator {
      */
     public void inspecUserRectifiUploadStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadStart start ...."));
+        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("User Rectification Upload", "Upload Doc Rectification");
     }
 
@@ -61,7 +65,6 @@ public class InspecUserRecUploadDelegator {
      */
     public void inspecUserRectifiUploadInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadInit start ...."));
-        AccessUtil.initLoginUserInfo(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", null);
     }
 
@@ -75,8 +78,9 @@ public class InspecUserRecUploadDelegator {
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadPre start ...."));
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
         if(inspecUserRecUploadDtos == null){
-            String appNo = ParamUtil.getRequestString(bpc.request, "appNo");
-            List<ChecklistItemDto> checklistItemDtos = inspecUserRecUploadService.getQuesAndClause(appNo);
+            String appPremCorrId = ParamUtil.getRequestString(bpc.request, "appPremCorrId");
+            List<ChecklistItemDto> checklistItemDtos = inspecUserRecUploadService.getQuesAndClause(appPremCorrId);
+            ApplicationDto applicationDto = inspecUserRecUploadService.getApplicationByCorrId(appPremCorrId);
             inspecUserRecUploadDtos = new ArrayList<>();
             int index = -1;
             if(checklistItemDtos != null && !(checklistItemDtos.isEmpty())) {
@@ -85,7 +89,7 @@ public class InspecUserRecUploadDelegator {
                     iDto.setCheckClause(cDto.getRegulationClause());
                     iDto.setCheckQuestion(cDto.getChecklistItem());
                     iDto.setIndex(index++);
-                    iDto.setAppNo(appNo);
+                    iDto.setAppNo(applicationDto.getApplicationNo());
                     iDto.setItemId(cDto.getItemId());
                     inspecUserRecUploadDtos.add(iDto);
                 }

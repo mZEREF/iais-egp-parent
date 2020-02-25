@@ -44,7 +44,7 @@
                                                                                    data-toggle="tab">Documents</a></li>
               <li id="recInspTabInspection" class="complete" role="presentation" style="display: block"><a href="#tabInspection"
                                                                                                            aria-controls="tabInspection" role="tab"
-                                                                                                           data-toggle="tab">Checklist</a></li>
+                                                                                                           data-toggle="tab">Rectification</a></li>
               <li id="recInspTabProcessing" class="incomplete" role="presentation"><a href="#tabProcessing"
                                                                                       aria-controls="tabProcessing" role="tab"
                                                                                       data-toggle="tab">Processing</a></li>
@@ -239,7 +239,46 @@
                       <div class="panel-body">
                         <div class="panel-main-content">
                           <iais:section title="" id = "retificationView">
+                            <iais:row>
+                              <iais:field value="Rectifications submitted by Applicant"/>
+                            </iais:row>
+                            <div class="table-gp">
+                              <table class="table">
+                                <thead>
+                                <tr align="center">
+                                  <th>NC Clause</th>
+                                  <th>Checklist Question</th>
+                                  <th>Remarks</th>
+                                  <th>Documents</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:choose>
+                                  <c:when test="${empty cPoolSearchResult.rows}">
+                                    <tr>
+                                      <td colspan="7">
+                                        <iais:message key="ACK018" escape="true"></iais:message>
+                                      </td>
+                                    </tr>
+                                  </c:when>
+                                  <c:otherwise>
+                                    <c:forEach var="pool" items="${cPoolSearchResult.rows}">
+                                      <tr>
+                                        <td><c:out value="${pool.applicationNo}"/></td>
+                                        <td><iais:code code="${pool.applicationType}"/></td>
+                                        <td><c:out value="${pool.hciCode}"/></td>
+                                        <td>
+                                          <c:forEach var="file" items="${cPoolSearchResult.rows}">
 
+                                          </c:forEach>
+                                        </td>
+                                      </tr>
+                                    </c:forEach>
+                                  </c:otherwise>
+                                </c:choose>
+                                </tbody>
+                              </table>
+                            </div>
                           </iais:section>
                         </div>
                       </div>

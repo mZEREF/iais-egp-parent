@@ -14,11 +14,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -30,7 +32,10 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,6 +76,15 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
 
     @Autowired
     private ApplicationService applicationService;
+
+    @Autowired
+    private ApplicationClient applicationClient;
+
+    @Autowired
+    private InspectionTaskClient inspectionTaskClient;
+
+    @Autowired
+    private HcsaChklClient hcsaChklClient;
 
     @Override
     public AppPremisesRoutingHistoryDto getAppHistoryByTask(String appNo, String stageId) {
@@ -140,6 +154,27 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
         }
 
 
+    }
+
+    @Override
+    public List<ChecklistItemDto> getQuesAndClause(String appPremCorrId) {
+        List<ChecklistItemDto> checklistItemDtos = new ArrayList<>();
+        if(!(StringUtil.isEmpty(appPremCorrId))){
+            List<String> itemIds = inspectionTaskClient.getItemIdsByAppNo(appPremCorrId).getEntity();
+            checklistItemDtos = getcheckDtosByItemIds(itemIds);
+        }
+        return checklistItemDtos;
+    }
+
+    private List<ChecklistItemDto> getcheckDtosByItemIds(List<String> itemIds) {
+        List<ChecklistItemDto> checklistItemDtos = new ArrayList<>();
+        if(itemIds != null && !(itemIds.isEmpty())) {
+            for (String itemId:itemIds) {
+                ChecklistItemDto checklistItemDto = hcsaChklClient.getChklItemById(itemId).getEntity();
+                checklistItemDtos.add(checklistItemDto);
+            }
+        }
+        return checklistItemDtos;
     }
 
     private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){

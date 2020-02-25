@@ -74,7 +74,7 @@ public interface InspectionTaskClient {
     @GetMapping(value = "/iais-appt-inspec-be/appt-systemdate-dto/{appPremCorrId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesInspecApptDto>> getSystemDtosByAppPremCorrId(@PathVariable(name = "appPremCorrId")String appPremCorrId);
 
-    @GetMapping(value = "/itemids/{appPremCorrId}",produces = MediaType.APPLICATION_JSON_VALUE,
+    @GetMapping(value = "/iais-inspection/itemids/{appPremCorrId}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<String>> getItemIdsByAppNo(@PathVariable(name = "appPremCorrId") String appPremCorrId);
 }

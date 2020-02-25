@@ -161,7 +161,7 @@ public class ApplicationClientFallback implements ApplicationClient {
     }
 
     @Override
-    public FeignResponseEntity<List<String>> getItemIdsByAppNo(String appNo){
+    public FeignResponseEntity<List<String>> getItemIdsByAppNo(String appPremCorrId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

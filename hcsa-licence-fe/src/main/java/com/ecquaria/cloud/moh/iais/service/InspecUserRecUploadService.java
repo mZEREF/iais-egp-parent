@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -29,4 +30,13 @@ public interface InspecUserRecUploadService {
       * @Descripation: submit Rectification By User
       */
     void submitRecByUser(LoginContext loginContext, String auditTrailStr, List<InspecUserRecUploadDto> inspecUserRecUploadDtos);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/2/24
+      * @Param: appPremCorrId
+      * @return: ApplicationDto
+      * @Descripation: get Application By CorrId
+      */
+    ApplicationDto getApplicationByCorrId(String appPremCorrId);
 }

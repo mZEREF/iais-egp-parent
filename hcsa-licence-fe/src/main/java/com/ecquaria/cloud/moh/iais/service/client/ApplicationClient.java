@@ -110,9 +110,9 @@ public interface ApplicationClient  {
     @RequestMapping(path = "/iais-submission/appSubmissionDto/{appNo}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE )
     FeignResponseEntity<AppSubmissionDto>  getAppSubmissionDtoByAppNo(@PathVariable("appNo") String appNo);
 
-    @GetMapping(path = "/iais-inspection-fe/itemids/{appNo}", produces = { MediaType.APPLICATION_JSON_VALUE },
+    @GetMapping(path = "/iais-inspection-fe/itemids/{appPremCorrId}", produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
-    FeignResponseEntity<List<String>> getItemIdsByAppNo(@PathVariable("appNo") String appNo);
+    FeignResponseEntity<List<String>> getItemIdsByAppNo(@PathVariable("appPremCorrId") String appPremCorrId);
 
     @PostMapping(value = "/iais-inspection-fe/appncdocs", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)

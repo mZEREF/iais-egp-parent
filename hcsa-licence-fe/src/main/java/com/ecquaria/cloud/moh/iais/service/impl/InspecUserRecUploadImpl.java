@@ -47,7 +47,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
         List<ChecklistItemDto> checklistItemDtos = new ArrayList<>();
         if(!(StringUtil.isEmpty(appNo))){
             List<String> itemIds = applicationClient.getItemIdsByAppNo(appNo).getEntity();
-            checklistItemDtos = getcheckDtosByItemIds(itemIds);
+            checklistItemDtos = getCheckDtosByItemIds(itemIds);
         }
         return checklistItemDtos;
     }
@@ -88,6 +88,11 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
         applicationClient.saveAppNcDoc(appNcDocDtoList).getEntity();
     }
 
+    @Override
+    public ApplicationDto getApplicationByCorrId(String appPremCorrId) {
+        return applicationClient.getApplicationByCorreId(appPremCorrId).getEntity();
+    }
+
     private AppPremPreInspectionNcDto createAndUpdateAppPreDto(AppPremPreInspectionNcDto appPremPreInspectionNcDto) {
         appPremPreInspectionNcDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
         appPremPreInspectionNcDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -102,7 +107,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
         return aDto;
     }
 
-    private List<ChecklistItemDto> getcheckDtosByItemIds(List<String> itemIds) {
+    private List<ChecklistItemDto> getCheckDtosByItemIds(List<String> itemIds) {
         List<ChecklistItemDto> checklistItemDtos = new ArrayList<>();
         if(itemIds != null && !(itemIds.isEmpty())) {
             for (String itemId:itemIds) {

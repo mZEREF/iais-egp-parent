@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: jiahao
@@ -114,8 +115,9 @@ public interface FillUpCheckListGetAppClient {
     @GetMapping(path = "/iais-apppreinsncitem-be/allrecItem",produces = { MediaType.APPLICATION_JSON_VALUE })
     FeignResponseEntity<List<AppPremisesPreInspectionNcItemDto>> getALlRecItem();
 
-    @GetMapping(path = "/iais-apppreinsncitem-be/ncitemappdto",produces = { MediaType.APPLICATION_JSON_VALUE })
-    FeignResponseEntity<List<ApplicationDto>> getApplicationDtoByNcItem();
+    @GetMapping(path = "/iais-apppreinsncitem-be/ncitemappdto",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<Map<String, ApplicationDto>> getApplicationDtoByNcItem();
 
     @GetMapping(path = "iais-apppreinschkl-be/AppPremissChklByapppremid/{appPremId}",produces = { MediaType.APPLICATION_JSON_VALUE })
     FeignResponseEntity<List<AppPremisesPreInspectChklDto>> getPremInsChklList(@PathVariable("appPremId") String appPremId);

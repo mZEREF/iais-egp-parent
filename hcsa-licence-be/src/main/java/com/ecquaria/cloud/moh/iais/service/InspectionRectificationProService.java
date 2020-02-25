@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -40,4 +41,13 @@ public interface InspectionRectificationProService {
       * @Descripation: routing Task To Report
       */
     void routingTaskToReport(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, ApplicationViewDto applicationViewDto, LoginContext loginContext);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/2/24
+      * @Param: appPremCorrId
+      * @return: List<ChecklistItemDto>
+      * @Descripation: getQuesAndClause
+      */
+    List<ChecklistItemDto> getQuesAndClause(String appPremCorrId);
 }
