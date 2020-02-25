@@ -159,7 +159,7 @@ public class BackendAjaxController {
                     int allWorkDays = 0;
                     int allHolidays = 0;
                     Map<Integer, Integer> workAndNonMap = new HashMap();
-                    int kpi = kpiMap.get(taskDto.getTaskKey());
+                    int kpi = kpiMap.get(taskDto.getTaskKey()) == null ? 999 : kpiMap.get(taskDto.getTaskKey());
                     Date startDate = taskDto.getDateAssigned();
                     Date completeDate;
                     List<TaskDto> taskDtoList = organizationMainClient.getOtherKpiTask(taskDto).getEntity();
