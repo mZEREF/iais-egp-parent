@@ -138,7 +138,7 @@ public class BackendAjaxController {
                 String subStage = getSubStageByInspectionStatus(inspectionAppInGroupQueryDto);
                 Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
                 if(kpiMap != null) {
-                    int kpi = kpiMap.get(taskDto.getTaskKey());
+                    int kpi = kpiMap.get(taskDto.getTaskKey()) == null ? 999 : kpiMap.get(taskDto.getTaskKey());
                     Map<Integer, Integer> workAndNonMap = getWorkingDaysBySubStage(subStage, taskDto);
                     if(workAndNonMap != null){
                         for(Map.Entry<Integer, Integer> map:workAndNonMap.entrySet()){
