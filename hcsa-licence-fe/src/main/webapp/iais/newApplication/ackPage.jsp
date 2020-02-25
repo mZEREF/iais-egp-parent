@@ -91,7 +91,7 @@
                 <div class="col-xs-12 col-md-2">
                     <a>Print</a>
                 </div>
-                <c:if test="${requestInformationConfig != null}">
+                <c:if test="${requestInformationConfig == null}">
                     <div class="col-xs-12 col-md-4">
                         <a class="btn btn-secondary" href="#">Indicate preferred Inspection Date</a>
                     </div>
