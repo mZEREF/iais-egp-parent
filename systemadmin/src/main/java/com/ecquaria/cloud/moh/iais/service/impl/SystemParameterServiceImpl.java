@@ -5,12 +5,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterQueryDto;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.SystemParameterService;
 import com.ecquaria.cloud.moh.iais.service.client.ConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,6 +26,19 @@ public class SystemParameterServiceImpl implements SystemParameterService {
     @Autowired
     private ConfigClient configClient;
 
+    @Autowired
+    private EicGatewayClient eicGatewayClient;
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
+
     @Override
     @SearchTrack(catalog = "systemAdmin",key = "queryMessage")
     public SearchResult<SystemParameterQueryDto> doQuery(SearchParam param) {
@@ -31,15 +47,24 @@ public class SystemParameterServiceImpl implements SystemParameterService {
 
     @Override
     public void saveSystemParameter(SystemParameterDto dto) {
-        dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        systemClient.saveSystemParameter(dto).getEntity();
+        log.info("save system parameter start....");
 
-        /*JSONObject jsonObject = new JSONObject();
-        jsonObject.put(JsonKeyConstants.CONFIG_PROPERTIES_KEY, dto.getPropertiesKey());
-        jsonObject.put(JsonKeyConstants.CONFIG_PROPERTIES_VALUE, dto.getValue());
-        systemClient.saveSystemConfigProperties(jsonObject.toString());
 
-        int statusCode = configClient.refreshConfig().getStatusCode();*/
+        try {
+            dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            systemClient.saveSystemParameter(dto).getEntity();
+
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            int statusCode = eicGatewayClient.saveSystemParameterFe(dto, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getStatusCode();
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
+
+        configClient.refreshConfig();
+
+        log.info("save system parameter end....");
     }
 
     @Override

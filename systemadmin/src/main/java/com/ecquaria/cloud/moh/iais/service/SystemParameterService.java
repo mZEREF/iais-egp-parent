@@ -11,4 +11,5 @@ public interface SystemParameterService {
     void saveSystemParameter(SystemParameterDto dto);
 
     SystemParameterDto getParameterByPid(String rowguid);
+
 }

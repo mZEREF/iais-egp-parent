@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
@@ -44,7 +43,6 @@ public interface SystemClient {
     @GetMapping(path = "/iais-message/{id}")
     FeignResponseEntity<MessageDto> getMessageByRowguid(@PathVariable(name = "id") String id);
 
-    @PostMapping(path = "/system-parameter/config-properties",  consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<IaisApiResult<Void>> saveSystemConfigProperties(@RequestBody String jsonStr);
+
 
 }

@@ -69,6 +69,11 @@
                 <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
             </div>
 
+            <iais:action style="text-align:center;">
+                <button class="btn btn-lg btn-login-search" type="button" style="background:#2199E8; color: white" value="doQuery">Search</button>
+                <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" >Clear</button>
+            </iais:action>
+
             <div class="tab-pane active" id="tabInbox" role="tabpanel">
                 <div class="tab-content">
                     <div class="row">
@@ -122,11 +127,6 @@
                                         </c:choose>
                                         </tbody>
                                     </table>
-                                    <div class="text-right text-center-mobile">
-                                        <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doQuery();">Search</a>
-                                    </div>
-
-
                                 </div>
                             </div>
                         </div>
@@ -145,19 +145,8 @@
 
 
 <%@include file="/include/validation.jsp"%>
+<%@include file="/include/utils.jsp"%>
 <script type="text/javascript">
-    function doQuery(){
-        SOP.Crud.cfxSubmit("mainForm", "doQuery");
-    }
-
-    function sortRecords(sortFieldName,sortType){
-        SOP.Crud.cfxSubmit("mainForm","sortRecords",sortFieldName,sortType);
-    }
-
-    function jumpToPagechangePage(){
-        SOP.Crud.cfxSubmit("mainForm","changePage");
-    }
-
     function prepareEdit(id){
         if(confirm('Are sure you want to edit ? ')){
             SOP.Crud.cfxSubmit("mainForm", "prepareEdit", id);
