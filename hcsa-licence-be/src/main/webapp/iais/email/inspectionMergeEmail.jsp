@@ -289,7 +289,7 @@
     }
 
     function doSend(){
-        if($('#decision_merge_email option:selected').val()!="Select"){
+        if($('#decision_merge_email option:selected').val()=="Select"){
             //alert("no")
         }else {
             if($('#decision_merge_email option:selected').val()=="REDECI005"){
