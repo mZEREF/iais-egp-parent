@@ -17,6 +17,7 @@ import java.util.List;
 /**
  * @author weilu
  * @date 2020/2/13 16:20
+ * Check for Licence Expiry Date   make licence inactive
  */
 @Delegator("CessationLicenceBatchJob")
 @Slf4j

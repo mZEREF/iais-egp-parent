@@ -484,7 +484,7 @@ public class InsRepServiceImpl implements InsRepService {
         ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW);
         updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT);
         completedTask(taskDto);
-        String subStage = getSubStage(applicationNo,taskKey);
+        String subStage = getSubStage(appPremisesCorrelationId,taskKey);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
@@ -506,7 +506,7 @@ public class InsRepServiceImpl implements InsRepService {
         completedTask(taskDto);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
-        String subStage = getSubStage(applicationNo,taskKey);
+        String subStage = getSubStage(appPremisesCorrelationId,taskKey);
         createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId1, subStage);
         List<TaskDto> taskDtos = prepareTaskToAo2(taskDto, serviceId, applicationDto);
         taskService.createTasks(taskDtos);
@@ -522,17 +522,16 @@ public class InsRepServiceImpl implements InsRepService {
         String status = applicationDto.getStatus();
         String applicationNo = applicationDto.getApplicationNo();
         String taskKey = taskDto.getTaskKey();
-        String stageId = taskDto.getTaskKey();
         ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION);
         updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
         completedTask(taskDto);
-        String subStage = getSubStage(applicationNo,taskKey);
+        String subStage = getSubStage(appPremisesCorrelationId,taskKey);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
         createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
-        String userId = getRobackUserId(applicationNo, stageId);
+        String userId = getRobackUserId(applicationNo, taskKey);
         List<TaskDto> taskDtos = prepareBackTaskList(taskDto,userId);
-        taskService.createTasks(taskDtos);
+        List<TaskDto> tasks = taskService.createTasks(taskDtos);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
         createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO1, groupId2, subStage);
@@ -641,8 +640,8 @@ public class InsRepServiceImpl implements InsRepService {
         return taskService.updateTask(taskDto);
     }
 
-    private String getSubStage(String appNo,String stageId) {
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(appNo, stageId).getEntity();
+    private String getSubStage(String corrId,String stageId) {
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(corrId, stageId).getEntity();
         String subStage = appPremisesRoutingHistoryDto.getSubStage();
         if (subStage != null) {
             return subStage;

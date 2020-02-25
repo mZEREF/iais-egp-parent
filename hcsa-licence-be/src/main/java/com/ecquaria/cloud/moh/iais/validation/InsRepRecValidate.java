@@ -50,6 +50,11 @@ public class InsRepRecValidate implements CustomizeValidator {
         if(!StringUtil.isEmpty(enforcement)&&StringUtil.isEmpty(enforcementRemarks)){
             errorMap.put("enforcementRemarks", "ERR0009");
         }
+        if(!StringUtil.isEmpty(tcuNeeded)){
+            if(StringUtil.isEmpty(tcuDate)){
+                errorMap.put("tcuDate", "ERR0009");
+            }
+        }
             return errorMap;
     }
 }

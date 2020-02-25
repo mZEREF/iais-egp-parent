@@ -3,15 +3,18 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.DateUtil;
@@ -30,6 +33,8 @@ public class CessationApplicationDelegator {
 
     @Autowired
     private CessationService cessationService;
+    @Autowired
+    private ApplicationClient applicationClient;
 
 
     public void start(BaseProcessClass bpc){
@@ -43,6 +48,7 @@ public class CessationApplicationDelegator {
         licIds.add("7ECAE165-534A-EA11-BE7F-000C29F371DC");
         licIds.add("CFCAC193-6F4D-EA11-BE7F-000C29F371DC");
         List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
+        int size = appCessDtosByLicIds.size();
         List<SelectOption> reasonOption = getReasonOption();
         List<SelectOption> patientsOption = getPatientsOption();
         String text1 = "(1). The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation," +
@@ -55,6 +61,7 @@ public class CessationApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "patientsOption", (Serializable) patientsOption);
         ParamUtil.setSessionAttr(bpc.request, "text1", text1);
         ParamUtil.setSessionAttr(bpc.request, "text2", text2);
+        ParamUtil.setSessionAttr(bpc.request, "size", size);
 
     }
 
@@ -63,24 +70,32 @@ public class CessationApplicationDelegator {
     }
 
     public void valiant(BaseProcessClass bpc){
-        List<AppCessationDto> appCessationDtos = prepareDataForValiant(bpc);
+        int size = (int)ParamUtil.getSessionAttr(bpc.request, "size");
+        List<AppCessationDto> appCessationDtos = prepareDataForValiant(bpc,size);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable)appCessationDtos);
-        AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
-        String whichTodo = null;
-        for(AppCessationDto appCessationDto :appCessationDtos){
-            String todo = appCessationDto.getWhichTodo();
-            if(!StringUtil.isEmpty(todo)){
-                whichTodo =todo;
-            }
-        }
-        if(StringUtil.isEmpty(whichTodo)){
+//        AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
+//        String whichTodo = null;
+//        for(AppCessationDto appCessationDto :appCessationDtos){
+//            String todo = appCessationDto.getWhichTodo();
+//            if(!StringUtil.isEmpty(todo)){
+//                whichTodo =todo;
+//            }
+//        }
+//        if(StringUtil.isEmpty(whichTodo)){
+//            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+//            return;
+//        }
+        int i = 0;
+        if(appCessationDtos.size()==0){
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;
         }
-        int i = 0;
+        List<String> listLicIds = new ArrayList<>();
         for(AppCessationDto appCessationDto :appCessationDtos){
-            if(!StringUtil.isEmpty(appCessationDto.getWhichTodo())){
+            String licId = appCessationDto.getWhichTodo();
+            if(!StringUtil.isEmpty(licId)){
                 i++;
+                listLicIds.add(licId);
                 Map<String, String> errorMap = new HashMap<>(34);
                 ValidationResult validationResult = WebValidationHelper.validateProperty(appCessationDto, "save");
                 if (validationResult.isHasErrors()) {
@@ -91,6 +106,8 @@ public class CessationApplicationDelegator {
                 }
             }
         }
+        List<AppCessLicDto> appCessConDtos = cessationService.getAppCessDtosByLicIds(listLicIds);
+        ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable)appCessConDtos);
         List<AppCessationDto> appCessationDtosConfirm = prepareDataForConfirm(bpc,i);
         ParamUtil.setSessionAttr(bpc.request, "appCessationConfirmDto", (Serializable)appCessationDtosConfirm);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
@@ -109,6 +126,33 @@ public class CessationApplicationDelegator {
     public void saveData(BaseProcessClass bpc){
         List<AppCessationDto> appCessationDtos = (List<AppCessationDto>)ParamUtil.getSessionAttr(bpc.request, "appCessationConfirmDto");
         cessationService.saveCessations(appCessationDtos);
+        List<AppCessatonConfirmDto> appCessationDtosConfirms = new ArrayList<>();
+        for(AppCessationDto appCessationDto :appCessationDtos){
+            String licId = appCessationDto.getWhichTodo();
+            List<String> licIds = new ArrayList<>();
+            licIds.add(licId);
+            List<ApplicationDto> entity = applicationClient.getApplicationByLicId(licId).getEntity();
+            List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
+            AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
+            String licenceNo = appCessLicDto.getLicenceNo();
+            String svcName = appCessLicDto.getSvcName();
+            String hciName = appCessLicDto.getAppCessHciDtos().get(0).getHciName();
+            String hciAddress = appCessLicDto.getAppCessHciDtos().get(0).getHciAddress();
+            String applicationNo = entity.get(0).getApplicationNo();
+            Date effectiveDate = appCessationDto.getEffectiveDate();
+            AppCessatonConfirmDto appCessatonConfirmDto = new AppCessatonConfirmDto();
+            appCessatonConfirmDto.setAppNo(applicationNo);
+            appCessatonConfirmDto.setEffectiveDate(effectiveDate);
+            appCessatonConfirmDto.setHciAddress(hciAddress);
+            appCessatonConfirmDto.setSvcName(svcName);
+            appCessatonConfirmDto.setLicenceNo(licenceNo);
+            appCessatonConfirmDto.setHciName(hciName);
+            appCessationDtosConfirms.add(appCessatonConfirmDto);
+
+
+
+        }
+        ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable)appCessationDtosConfirms);
     }
 
 
@@ -116,9 +160,11 @@ public class CessationApplicationDelegator {
 
      */
 
-    private List<AppCessationDto> prepareDataForValiant(BaseProcessClass bpc){
+    private List<AppCessationDto> prepareDataForValiant(BaseProcessClass bpc,int size){
         List<AppCessationDto> appCessationDtos = new ArrayList<>();
-        for (int i = 1; i <3 ; i++) {
+        for (int i = 1; i <=size ; i++) {
+            String whichTodo = ParamUtil.getRequestString(bpc.request, i+"whichTodo");
+            if(!StringUtil.isEmpty(whichTodo)){
                 AppCessationDto appCessationDto = new AppCessationDto();
                 String effectiveDateStr = ParamUtil.getRequestString(bpc.request, i+"effectiveDate");
                 Date effectiveDate = DateUtil.parseDate(effectiveDateStr, "dd/MM/yyyy");
@@ -130,7 +176,6 @@ public class CessationApplicationDelegator {
                 String patHciName = ParamUtil.getRequestString(bpc.request, i+"patHciName");
                 String patRegNo = ParamUtil.getRequestString(bpc.request, i+"patRegNo");
                 String patOthers = ParamUtil.getRequestString(bpc.request, i+"patOthers");
-                String whichTodo = ParamUtil.getRequestString(bpc.request, i+"whichTodo");
                 String readInfo = ParamUtil.getRequestString(bpc.request, "readInfo");
 
                 appCessationDto.setEffectiveDate(effectiveDate);
@@ -145,6 +190,7 @@ public class CessationApplicationDelegator {
                 appCessationDto.setWhichTodo(whichTodo);
                 appCessationDto.setReadInfo(readInfo);
                 appCessationDtos.add(appCessationDto);
+            }
             }
         return appCessationDtos;
     }

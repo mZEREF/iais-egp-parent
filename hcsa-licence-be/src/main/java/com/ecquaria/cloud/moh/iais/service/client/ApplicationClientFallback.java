@@ -260,7 +260,7 @@ public class ApplicationClientFallback {
         return entity;
     }
 
-    FeignResponseEntity<List<AppPremisesCorrelationDto>>getAppPreCorrDtosByCorrIds(String type,String date){
+    FeignResponseEntity<List<AppPremisesCorrelationDto>>getAppPreCorrDtos(String type,String date){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

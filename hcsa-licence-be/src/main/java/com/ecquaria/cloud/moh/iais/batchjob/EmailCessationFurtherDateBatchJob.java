@@ -24,6 +24,5 @@ public class EmailCessationFurtherDateBatchJob {
     }
 
     public void action(BaseProcessClass bpc) throws IOException, TemplateException {
-        emailToResultService.sendRenewResultEmail();
     }
 }

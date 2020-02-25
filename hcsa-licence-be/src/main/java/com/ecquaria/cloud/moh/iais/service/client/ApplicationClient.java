@@ -150,7 +150,7 @@ public interface ApplicationClient {
     FeignResponseEntity<List<ApplicationDto>>getAppDtosReject();
 
     @GetMapping(value = "/iais-application-be/cessation/date-type/{type}/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppPremisesCorrelationDto>> getAppPreCorrDtosByCorrIds(@PathVariable(name = "type") String type, @PathVariable(name = "date") String date);
+    FeignResponseEntity<List<AppPremisesCorrelationDto>> getAppPreCorrDtos(@PathVariable(name = "type") String type, @PathVariable(name = "date") String date);
 
     @PutMapping(value = "/iais-application-be/cessation-application",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> updateCessationApplications(@RequestBody List<ApplicationDto> applicationDtos);

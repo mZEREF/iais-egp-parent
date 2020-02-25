@@ -85,9 +85,9 @@ public class CessationServiceImpl implements CessationService {
             List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
             appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);
             ApplicationDto applicationDto = new ApplicationDto();
-            applicationDto.setApplicationType("APTY001");
+            applicationDto.setApplicationType("cessation");
             applicationDto.setApplicationNo(appNo);
-            applicationDto.setStatus("APST007");
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_TYPE_CESSATION);
             applicationDto.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
             applicationDto.setVersion(1);
             applicationDto.setLicenceId(licId);
@@ -95,6 +95,7 @@ public class CessationServiceImpl implements CessationService {
             applicationDtos.add(applicationDto);
             appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
             appCessMiscDto.setApplicationDto(applicationDtos);
+            setMiscData(appCessationDto,appCessMiscDto);
             appCessMiscDtos.add(appCessMiscDto);
         }
         cessationClient.saveCessation(appCessMiscDtos).getEntity();
@@ -111,7 +112,7 @@ public class CessationServiceImpl implements CessationService {
         List<AppGrpPremisesDto> appGrpPremisesDtoList = new ArrayList<>();
         AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
         appGrpPremisesDto.setPremisesType(ApplicationConsts.PREMISES_TYPE_ON_SITE);
-        appGrpPremisesDto.setPostalCode("789789");
+        appGrpPremisesDto.setPostalCode("78979");
         appGrpPremisesDto.setAddrType(ApplicationConsts.ADDRESS_TYPE_APT_BLK);
         appGrpPremisesDto.setStreetName("Lor 27 Gey");
         appGrpPremisesDtoList.add(appGrpPremisesDto);
@@ -149,11 +150,6 @@ public class CessationServiceImpl implements CessationService {
             appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);
             appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
             appCessMiscDtos.add(appCessMiscDto);
-//            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.listAppPremisesCorrelation(appId).getEntity();
-//            String corrId = appPremisesCorrelationDtos.get(0).getId();
-//            List<String> corrIds = new ArrayList<>();
-//            corrIds.add(corrId);
-//            List<AppCessMiscDto> appCessMiscDtos = cessationClient.getAppCessMiscDtosByCorrIds(corrIds).getEntity();
         }
         cessationClient.updateCessation(appCessMiscDtos).getEntity();
 
@@ -189,5 +185,20 @@ public class CessationServiceImpl implements CessationService {
         appGrpPremisesDto.setStreetName("Lor 27 Geylang");
         appGrpPremisesDtos.add(appGrpPremisesDto);
         return appGrpPremisesDtos;
+    }
+
+    private AppCessMiscDto setMiscData(AppCessationDto appCessationDto,AppCessMiscDto appCessMiscDto){
+        Date effectiveDate = appCessationDto.getEffectiveDate();
+        String cessationReason = appCessationDto.getCessationReason();
+        String otherReason = appCessationDto.getOtherReason();
+        String patientSelect = appCessationDto.getPatientSelect();
+        String patHciName = appCessationDto.getPatHciName();
+        String patRegNo = appCessationDto.getPatRegNo();
+        String patOthers = appCessationDto.getPatOthers();
+        String patNoRemarks = appCessationDto.getPatNoRemarks();
+        appCessMiscDto.setEffectiveDate(effectiveDate);
+        appCessMiscDto.setReason(cessationReason);
+        appCessMiscDto.setAppealType(ApplicationConsts.CESSATION_TYPE_APPLICATION);
+        return appCessMiscDto;
     }
 }

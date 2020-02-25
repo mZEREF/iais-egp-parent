@@ -17,9 +17,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * CessationEffectiveDateBatchjob
  * @author weilu
  * @date 2020/2/13 9:42
+ * Check for Cessation Effective Date  when cessation date == new date make licence inactive
  */
 @Delegator("CessationEffectiveDateBatchjob")
 @Slf4j
@@ -36,15 +36,18 @@ public class CessationEffectiveDateBatchjob {
         String type = "cessation";
         Date date = new Date();
         String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getAppPreCorrDtosByCorrIds(type, dateStr).getEntity();
+        //get misc corrId
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getAppPreCorrDtos(type, dateStr).getEntity();
         List<String> appIds = new ArrayList<>();
         List<String> licIds = new ArrayList<>();
+        //get applicationIds
         if(appPremisesCorrelationDtos!=null&&!appPremisesCorrelationDtos.isEmpty()){
             for(AppPremisesCorrelationDto appPremisesCorrelationDto :appPremisesCorrelationDtos){
                 String applicationId = appPremisesCorrelationDto.getApplicationId();
                 appIds.add(applicationId);
             }
         }
+        //get licIds
         List<ApplicationDto> applicationDtos = applicationClient.getApplicationDtosByIds(appIds).getEntity();
         if(applicationDtos!=null&&!applicationDtos.isEmpty()){
             for(ApplicationDto applicationDto :applicationDtos){

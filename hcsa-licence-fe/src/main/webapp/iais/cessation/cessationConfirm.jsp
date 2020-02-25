@@ -36,36 +36,36 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach items="${appCessDtosByLicIds}" var="appCess" varStatus="num">
+                        <c:forEach items="${appCessConDtos}" var="appCess" varStatus="num">
                             <tr>
-                                <td class="col-xs-1">
+                                <td class="col-xs-1" align="center">
                                     <p><c:out value="${num.count}"></c:out></p>
                                 </td>
-                                <td class="col-xs-1">
+                                <td class="col-xs-1" align="center">
                                     <p><c:out value="${appCess.licenceNo}"></c:out></p>
                                 </td>
-                                <td class="col-xs-1">
+                                <td class="col-xs-1" align="center">
                                     <p><c:out value="${appCess.svcName}"></c:out></p>
                                 </td>
                                 <c:forEach items="${appCess.appCessHciDtos}" var="appCessHci">
-                                    <td class="col-xs-1">
+                                    <td class="col-xs-1" align="center">
                                         <p><c:out value="${appCessHci.hciName}"></c:out></p>
                                     </td>
-                                    <td class="col-xs-1">
+                                    <td class="col-xs-1" align="center">
                                         <p><c:out value="${appCessHci.hciAddress}"></c:out></p>
                                     </td>
-                                    <td class="col-xs-1">
+                                    <td class="col-xs-1" align="center">
                                         <fmt:formatDate value="${appCessationDtos[num.index].effectiveDate}"
                                                         pattern="dd/MM/yyyy"></fmt:formatDate>
                                     </td>
-                                    <td class="col-xs-1">
+                                    <td class="col-xs-2" align="center">
                                             <c:out value="${appCessationDtos[num.index].cessationReason}"/>
                                         <c:if test="${appCessationDtos[num.index].otherReason !=null}">
                                             <div id="reason"><input type="text" disabled name="otherReason" value="${appCessationDtos[num.index].otherReason}">
                                             </div>
                                         </c:if>
                                     </td>
-                                    <td class="col-xs-4">
+                                    <td class="col-xs-3" align="center">
                                         <table>
                                             <tr>
                                                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -124,7 +124,7 @@
                                             </tr>
                                         </table>
                                     </td>
-                                    <td class="col-xs-1">
+                                    <td class="col-xs-1" align="center">
                                         <input type="checkbox" name="whichTodo" value="${appCess.licenceId}"  <c:if test="${appCessationDtos[num.index].whichTodo !=null}">checked</c:if> onclick="return false" >
                                     </td>
                                 </c:forEach>
@@ -137,7 +137,9 @@
                             <td colspan="9"><c:out value="${text2}"/></td>
                         </tr>
                         <tr>
-                            <td colspan="9"><input type="checkbox" onclick="return false" checked name="sure" id="confirmInfo">I have read the information</td>
+                            <td colspan="9"><input type="checkbox" onclick="return false" checked name="sure" id="confirmInfo">
+                                <label for="confirmInfo">I have read the information</label>
+                            </td>
                         </tr>
                         </tbody>
                     </table>

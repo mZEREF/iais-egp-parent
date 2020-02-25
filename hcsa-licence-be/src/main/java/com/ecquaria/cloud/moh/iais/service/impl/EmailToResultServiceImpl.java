@@ -128,7 +128,6 @@ public class EmailToResultServiceImpl implements EmailToResultService {
                 }
             }
         }
-
     }
 
     @Override
