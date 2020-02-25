@@ -70,14 +70,13 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
 
-    private HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-    private HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-
     /**
      *System Date
      */
     @Override
     public ApptFeConfirmDateDto getApptSystemDate(String appPremCorrId) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
         if(!StringUtil.isEmpty(appPremCorrId)) {
             ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(appPremCorrId).getEntity();
@@ -132,6 +131,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     @Override
     public void confirmInspectionDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
         String checkDate = apptFeConfirmDateDto.getCheckDate();
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = new ArrayList<>();
@@ -165,6 +166,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     @Override
     public ApptFeConfirmDateDto getApptNewSystemDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<String> systemCorrId = new ArrayList<>();
         for(ApptUserCalendarAndUserIdDto aucauDto : apptFeConfirmDateDto.getApptUserCalendarAndUserIdDtos()){
             for(ApptUserCalendarDto apptUserCalendarDto : aucauDto.getAppointmentDtoList()){
@@ -200,6 +203,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     @Override
     public ApptFeConfirmDateDto confirmNewDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
         Map<String, Date> newDateMap = apptFeConfirmDateDto.getInspectionNewDateMap();
         String key = apptFeConfirmDateDto.getCheckNewDate();
@@ -225,7 +230,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     @Override
     public void saveAccSpecificDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
         ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
-
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         setUpdateApplicationDto(apptFeConfirmDateDto, apptInspectionDateDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
         setCreateHistoryDto(apptFeConfirmDateDto, apptInspectionDateDto);
         setCreateInspectionStatus(apptInspectionDateDto, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
@@ -305,6 +311,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     }
 
     private void createApptDateTask(ApptFeConfirmDateDto apptFeConfirmDateDto, String processUrl) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         TaskDto taskDto = new TaskDto();
         taskDto.setRefNo(apptFeConfirmDateDto.getAppPremCorrId());
         taskDto.setProcessUrl(processUrl);
@@ -336,7 +344,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     @Override
     public void rejectSystemDateAndCreateTask(ApptFeConfirmDateDto apptFeConfirmDateDto) {
         ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
-
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         setApptUpdateList(apptFeConfirmDateDto, apptInspectionDateDto);
         setApptCreateList(apptFeConfirmDateDto, apptInspectionDateDto, InspectionConstants.SWITCH_ACTION_REJECT);
         setUpdateApplicationDto(apptFeConfirmDateDto, apptInspectionDateDto, ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING);
@@ -388,6 +397,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     @Override
     public void rejectSpecificDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
         ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = new ArrayList<>();
         AppPremisesInspecApptDto appPremisesInspecApptDto = apptFeConfirmDateDto.getAppPremisesInspecApptDto();
         appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
