@@ -1,7 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
@@ -50,4 +52,22 @@ public interface InspectionRectificationProService {
       * @Descripation: getQuesAndClause
       */
     List<ChecklistItemDto> getQuesAndClause(String appPremCorrId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/2/25
+      * @Param: appPremPreInspectionNcDocDtos
+      * @return: List<FileRepoDto>
+      * @Descripation: get File By appPremPreInspectionNcDocDtos
+      */
+    List<FileRepoDto> getFileByItemId(List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/2/25
+      * @Param: itemId
+      * @return: List<AppPremPreInspectionNcDocDto>
+      * @Descripation: get AppNcDocList
+      */
+    List<AppPremPreInspectionNcDocDto> getAppNcDocList(String itemId);
 }

@@ -4,10 +4,13 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -26,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -99,7 +103,23 @@ public class InspectionRectificationProDelegator {
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = inspectionRectificationProService.getAppHistoryByTask(applicationDto.getApplicationNo(), InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION);
             inspectionPreTaskDto.setReMarks(appPremisesRoutingHistoryDto.getInternalRemarks());
             inspectionPreTaskDto.setAppStatus(applicationDto.getStatus());
+
+            List<InspecUserRecUploadDto> inspecUserRecUploadDtos = new ArrayList<>();
             List<ChecklistItemDto> checklistItemDtos = inspectionRectificationProService.getQuesAndClause(taskDto.getRefNo());
+            if(checklistItemDtos != null && !(checklistItemDtos.isEmpty())) {
+                int index = 0;
+                for (ChecklistItemDto cDto : checklistItemDtos) {
+                    InspecUserRecUploadDto iDto = new InspecUserRecUploadDto();
+                    iDto.setCheckClause(cDto.getRegulationClause());
+                    iDto.setCheckQuestion(cDto.getChecklistItem());
+                    iDto.setIndex(index++);
+                    iDto.setAppNo(applicationDto.getApplicationNo());
+                    iDto.setItemId(cDto.getItemId());
+                    List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = inspectionRectificationProService.getAppNcDocList(cDto.getItemId());
+                    List<FileRepoDto> fileRepoDtos = inspectionRectificationProService.getFileByItemId(appPremPreInspectionNcDocDtos);
+                    inspecUserRecUploadDtos.add(iDto);
+                }
+            }
         }
         List<SelectOption> processDecOption = inspectionRectificationProService.getProcessRecDecOption();
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);

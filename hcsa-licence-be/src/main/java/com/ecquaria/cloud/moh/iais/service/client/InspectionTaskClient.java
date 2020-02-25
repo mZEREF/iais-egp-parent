@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
@@ -77,4 +78,8 @@ public interface InspectionTaskClient {
     @GetMapping(value = "/iais-inspection/itemids/{appPremCorrId}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<String>> getItemIdsByAppNo(@PathVariable(name = "appPremCorrId") String appPremCorrId);
+
+    @GetMapping(value = "/iais-apppreinsncitem-be/nc-file-ids/{itemId}",produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<AppPremPreInspectionNcDocDto>> getFilesByItemId(@PathVariable(name = "itemId") String itemId);
 }
