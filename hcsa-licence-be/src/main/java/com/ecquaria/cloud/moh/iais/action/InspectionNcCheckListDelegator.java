@@ -156,7 +156,7 @@ public class InspectionNcCheckListDelegator {
             }
         }
         ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
-        if(!IaisCommonUtils.isEmpty(maxVersionfdtos.getFdtoList())){
+        if(maxVersionfdtos != null && !IaisCommonUtils.isEmpty(maxVersionfdtos.getFdtoList())){
             List<InspectionFillCheckListDto> ftos = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
             serListDto.setFdtoList(ftos);
         }
