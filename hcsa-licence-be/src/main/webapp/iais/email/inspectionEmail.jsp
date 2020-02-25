@@ -317,12 +317,10 @@
     }
 
     function doSend(){
-
-        if($('#decision_email option:selected').val()!="Select"){
-            //alert("no")
-        }
-        else {
-            showWaiting();
+        showWaiting();
+        if($('#decision_email option:selected').val()=="Select"){
+            dismissWaiting();
+        } else {
             SOP.Crud.cfxSubmit("mainForm", "send");
         }
     }
