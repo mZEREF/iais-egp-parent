@@ -323,7 +323,7 @@
 
     function doSend(){
         showWaiting();
-        var f=$('#decision-validate-email option:selected').val()
+        var f=$('#decision-validate-email option:selected').val();
 
         if(f!="Select"){
             SOP.Crud.cfxSubmit("mainForm", "send");
