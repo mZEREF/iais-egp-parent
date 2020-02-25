@@ -145,10 +145,10 @@
 
     function displaySection(){
         var val = $("#domainType").val()
-        alert(val)
         if(val == null || val == '' ){
             return;
         }else {
+
             var msgTypeRow = document.getElementById("msgTypeRow");
             var moduleTypeRow = document.getElementById("moduleTypeRow");
             if(msgTypeRow && moduleTypeRow){

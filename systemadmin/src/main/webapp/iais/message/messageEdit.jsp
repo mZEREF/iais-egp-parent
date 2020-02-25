@@ -72,7 +72,7 @@
         <td>
             <div class="text-right text-center-mobile">
                 <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doCancel();">Cancel</a>
-                <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doEdit('${msgRequestDto.id}');">UPDATE</a>
+                <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doEdit('${msgRequestDto.id}');">Preview</a>
             </div>
 
         </td>
@@ -85,9 +85,7 @@
 <%@include file="/include/validation.jsp"%>
 <script type="text/javascript">
     function doEdit(id){
-        if(confirm('Are sure you want to edit ? ')){
-            SOP.Crud.cfxSubmit("mainForm", "doEdit", id);
-        }
+        SOP.Crud.cfxSubmit("mainForm", "doEdit", id);
     }
 
     function doCancel(){
