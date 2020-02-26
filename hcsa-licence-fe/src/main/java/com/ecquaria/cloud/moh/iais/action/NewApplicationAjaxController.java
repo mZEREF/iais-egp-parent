@@ -1,26 +1,30 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Wenkang
@@ -33,88 +37,146 @@ public class NewApplicationAjaxController {
     @Autowired
     private ServiceConfigService serviceConfigService;
 
-    @RequestMapping(value = "/request-check-error",method = RequestMethod.POST)
-    public @ResponseBody Map<String,String> doVail(HttpServletRequest request, HttpServletResponse response){
-        List<String> subList=new ArrayList<>();
-        List<String> sumList=new ArrayList<>();
-        List<String> idList=new ArrayList<>();
-        List<String> parentId=new ArrayList<>();
-        Map<String,String> map=new HashMap<>();
-        String[] parameterValues = request.getParameterValues("control--runtime--1");
-        for(String every:parameterValues){
-            if(every.contains("true")){
-                subList.add(every);
-            }else if(every.contains("false")){
-                sumList.add(every);
-            }
+
+    //=============================================================================
+    //ajax method
+    //=============================================================================
+    /**
+     * @param
+     * @description: ajax
+     * @author: zixia
+     */
+    @RequestMapping(value = "/retrieve-address")
+    public @ResponseBody
+    PostCodeDto retrieveYourAddress(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode start ...."));
+        String postalCode = ParamUtil.getDate(request, "postalCode");
+        if(StringUtil.isEmpty(postalCode)){
+            log.debug(StringUtil.changeForLog("postCode is null"));
+            return null;
         }
-        for(String every:sumList){
-            String[] split = every.split(";");
-            if(split.length==3){
-                idList.add(split[0]);
-            }else if(split.length==4){
-                parentId.add(every);
-            }
+        PostCodeDto postCodeDto = null;
+        try {
+            postCodeDto = serviceConfigService.getPremisesByPostalCode(postalCode);
+        }catch (Exception e){
+            log.debug(StringUtil.changeForLog("api exception"));
         }
-        if(idList.isEmpty()&&!parentId.isEmpty()){
-            map.put("errorM","error massage!");
-            return map;
-        }
-        if(!subList.isEmpty()){
-            boolean recursion1 = recursion(subList);
-            if(!recursion1){
-                map.put("errorM","error massage!");
-                return map;
-            }
-        }
-        boolean recursion = recursion(parentId);
-        if(!recursion){
-            map.put("errorM","error massage!");
-            return map;
-        }
-        return map;
+
+        log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode end ...."));
+        return postCodeDto;
     }
 
-    private boolean recursion(List<String> parentId){
-        boolean flag=false;
-        for(String every:parentId){
-            for(String index:parentId){
-                if( every.split(";")[3].equals(index.split(";")[0]) ){
-                    flag=true;
-                }
+
+
+    /**
+     * @param
+     * @description: ajax
+     * @author: zixia
+     */
+    @RequestMapping(value = "/premises-html", method = RequestMethod.GET)
+    public @ResponseBody String addPremisesHtml(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the add premises html start ...."));
+        String currentLength = ParamUtil.getRequestString(request, "currentLength");
+        log.debug(StringUtil.changeForLog("currentLength : "+currentLength));
+
+        String sql = SqlMap.INSTANCE.getSql("premises", "premisesHtml").getSqlStr();
+        Set<String> premType = (Set<String>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PREMISESTYPE);
+        StringBuffer premTypeBuffer = new StringBuffer();
+
+        for(String type:premType){
+            String className = "";
+            String width = "col-md-3";
+            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)){
+                className = "onSite";
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)){
+                className = "conveyance";
+                width = "col-md-4";
             }
+
+            premTypeBuffer.append("<div class=\"col-xs-5 "+width+"\">")
+                    .append("<div class=\"form-check\">")
+                    .append("<input class=\"form-check-input premTypeRadio "+className+"\"  type=\"radio\" name=\"premType"+currentLength+"\" value = "+type+" aria-invalid=\"false\">");
+            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)){
+                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>On-site<br/><span>(at a fixed address)</span></label>");
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)){
+                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>Conveyance<br/><span>(in a mobile clinic / ambulance)</span></label>");
+            }
+            premTypeBuffer.append("</div>")
+                    .append("</div>");
         }
-        return flag;
+
+        //premiseSelect -- on-site
+        List<SelectOption> premisesOnSite= (List) ParamUtil.getSessionAttr(request, "premisesSelect");
+        Map<String,String> premisesOnSiteAttr = new HashMap<>();
+        premisesOnSiteAttr.put("class", "premSelect");
+        premisesOnSiteAttr.put("id", "onSiteSel");
+        premisesOnSiteAttr.put("name", "onSiteSelect");
+        premisesOnSiteAttr.put("style", "display: none;");
+        String premOnSiteSelectStr = NewApplicationHelper.generateDropDownHtml(premisesOnSiteAttr, premisesOnSite, null);
+
+        //premiseSelect -- conveyance
+        List<SelectOption> premisesConv= (List) ParamUtil.getSessionAttr(request, "conveyancePremSel");
+        Map<String,String> premisesConvAttr = new HashMap<>();
+        premisesConvAttr.put("class", "premSelect");
+        premisesConvAttr.put("id", "conveyanceSel");
+        premisesConvAttr.put("name", "conveyanceSelect");
+        premisesConvAttr.put("style", "display: none;");
+        String premConvSelectStr = NewApplicationHelper.generateDropDownHtml(premisesConvAttr, premisesConv, null);
+
+        //Address Type on-site
+        List<SelectOption> addrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
+        Map<String,String> addrTypesAttr = new HashMap<>();
+        addrTypesAttr.put("class", "siteAddressType");
+        addrTypesAttr.put("id", "siteAddressType");
+        addrTypesAttr.put("name", "onSiteAddressType");
+        addrTypesAttr.put("style", "display: none;");
+        String addrTypeSelectStr = NewApplicationHelper.generateDropDownHtml(addrTypesAttr, addrTypes, NewApplicationDelegator.FIRESTOPTION);
+
+        //Address Type conveyance
+        List<SelectOption> conAddrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
+        Map<String,String> conAddrTypesAttr = new HashMap<>();
+        conAddrTypesAttr.put("class", "conveyanceAddressType");
+        conAddrTypesAttr.put("id", "siteAddressType");
+        conAddrTypesAttr.put("name", "conveyanceAddrType");
+        conAddrTypesAttr.put("style", "display: none;");
+        String conAddrTypeSelectStr = NewApplicationHelper.generateDropDownHtml(conAddrTypesAttr, conAddrTypes, NewApplicationDelegator.FIRESTOPTION);
+
+        sql = sql.replace("(0)", currentLength);
+        sql = sql.replace("(1)", premTypeBuffer.toString());
+        sql = sql.replace("(2)", premOnSiteSelectStr);
+        sql = sql.replace("(3)", premConvSelectStr);
+        sql = sql.replace("(4)", addrTypeSelectStr);
+        sql = sql.replace("(5)", conAddrTypeSelectStr);
+
+        log.debug(StringUtil.changeForLog("the add premises html end ...."));
+        return sql;
     }
 
-    @GetMapping(value = "/sg-number-validator")
-    @ResponseBody
-    public Map<String,String> sgNoValidator(@RequestParam("idType") String idType,@RequestParam("idNumber") String idNumber){
-        Map<String,String> map=new HashMap<>();
-        if(idNumber==null||"".equals(idNumber)){
-            map.put("errorM","cannot be blank!");
-        }else {
-            boolean aBoolean = false;
-            if(idType.equals("fin")){
-                aBoolean= SgNoValidator.validateFin(idNumber);
-            }else  if(idType.equals("nric")){
-              aBoolean = SgNoValidator.validateNric(idNumber);
-            }
-            if(!aBoolean){
-                map.put("errorM","Please key in a valid NRIC/FIN!");
-            }
 
+    /**
+     * @param
+     * @description: ajax
+     * @author: zixia
+     */
+    @RequestMapping(value = "/file-repo", method = RequestMethod.GET)
+    public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.debug(StringUtil.changeForLog("file-repo start ...."));
+        String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
+        String maskFileRepoIdName = ParamUtil.getRequestString(request, "filerepo");
+        String fileRepoId = ParamUtil.getMaskedString(request, maskFileRepoIdName);
+        if(StringUtil.isEmpty(fileRepoId)){
+            log.debug(StringUtil.changeForLog("file-repo id is empty"));
+            return;
         }
-
-        return map;
-    };
-    @GetMapping(value = "/validate-premises")
-    @ResponseBody
-    public Map<String,Map<String,String>> errorMap(HttpServletRequest request){
-        Map<String,Map<String,String>> maps=new HashMap<>();
-//        NewApplicationDelegator applicationDelegator=new NewApplicationDelegator();
-//        List<AppGrpPremisesDto> appGrpPremisesDtos = NewApplicationHelper.genAppGrpPremisesDtoList(request);
-        return maps;
+        byte[] fileData =serviceConfigService.downloadFile(fileRepoId);
+        response.addHeader("Content-Disposition", "attachment;filename=" + fileRepoName);
+        response.addHeader("Content-Length", "" + fileData.length);
+        response.setContentType("application/x-octet-stream");
+        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+        ops.write(fileData);
+        ops.close();
+        ops.flush();
+        log.debug(StringUtil.changeForLog("file-repo end ...."));
     }
 
 
