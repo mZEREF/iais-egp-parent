@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
@@ -26,15 +25,11 @@ import com.ecquaria.cloud.moh.iais.service.AppPremSelfDeclService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
-import com.ecquaria.sz.commons.util.MsgUtil;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -60,8 +55,6 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     @Autowired
     private FeEicGatewayClient gatewayClient;
 
-    @Autowired
-    private MsgTemplateClient msgTemplateClient;
 
     private List<AppSvcPremisesScopeDto> premScopeList;
 
@@ -341,28 +334,5 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
         selfDecl.setConfIdList(configList);
         return selfDecl;
-    }
-
-
-    @Override
-    public void alertNotification() {
-        List<String> userAccountList = applicationClient.getUserAccountByNotSubmittedSelfDecl().getEntity();
-
-        try {
-            Map<String,Object> map =new HashMap();
-            map.put("APPLICANT_NAME", "aaaaa");
-            map.put("DETAILS", "test");
-            MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("C42DBF72-B257-EA11-BE7F-000C29F371DC").getEntity();
-            String messageContent = entity.getMessageContent();
-
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TemplateException e) {
-            e.printStackTrace();
-        }
-
     }
 }

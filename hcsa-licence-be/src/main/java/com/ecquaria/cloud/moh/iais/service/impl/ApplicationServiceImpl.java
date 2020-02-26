@@ -1,25 +1,36 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * ApplicationServiceImpl
@@ -34,6 +45,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     private ApplicationClient applicationClient;
     @Autowired
     private AppPremisesCorrClient appPremisesCorrClient;
+
+    @Autowired
+    private EmailClient emailClient;
 
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
@@ -131,5 +145,38 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public List<AppEditSelectDto> getAppEditSelectDtos(String appId, String changeType) {
         return applicationClient.getAppEditSelectDto(appId, changeType).getEntity();
+    }
+
+    @Override
+    public void alertSelfDeclNotification() {
+        log.info("===>>>>alertSelfDeclNotification start");
+        List<ApplicationGroupDto> userAccountList = applicationClient.getUserAccountByNotSubmittedSelfDecl().getEntity();
+        try {
+            Map<String,Object> map = new HashMap(1);
+            map.put("APPLICANT_NAME", StringUtil.viewHtml("Yi chen"));
+            map.put("DETAILS", StringUtil.viewHtml("test"));
+            map.put("A_HREF", StringUtil.viewHtml(""));
+            map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
+            MsgTemplateDto entity = EmailHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SELF_DECL_ID);
+            String messageContent = entity.getMessageContent();
+            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+
+            List<String> licenseeIdList =  userAccountList.stream().map(ApplicationGroupDto::getLicenseeId).collect(Collectors.toList());
+            List<String> emailAddress = EmailHelper.getEmailAddressListByLicenseeId(licenseeIdList);
+
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(templateMessageByContent);
+            emailDto.setSubject("Self-Assessment submission for Application Number");
+            emailDto.setSender("yichen_guo@ecquaria.com");
+            emailDto.setReceipts(emailAddress);
+
+            emailClient.sendNotification(emailDto);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        } catch (TemplateException e) {
+            log.error(e.getMessage());
+        }
+
+        log.info("===>>>>alertSelfDeclNotification end");
     }
 }

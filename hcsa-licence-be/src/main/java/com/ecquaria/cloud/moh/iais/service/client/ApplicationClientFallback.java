@@ -31,277 +31,354 @@ import java.util.List;
  * @author suocheng
  * @date 11/26/2019
  */
-public class ApplicationClientFallback {
-    FeignResponseEntity<ApplicationViewDto> getAppViewByNo( String appNo){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    FeignResponseEntity<ApplicationDto> getAppViewByCorrelationId( String correlationId){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    FeignResponseEntity<Void> getDownloadFile( ApplicationListFileDto applicationListDtos){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    FeignResponseEntity<List<ApplicationDto>> getApplicationDto(){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    FeignResponseEntity<ApplicationGroupDto> getAppById( String appGroupId){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    FeignResponseEntity<ApplicationGroupDto> updateApplication( ApplicationGroupDto applicationGroupDto){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    FeignResponseEntity<List<ApplicationDto>> getGroupAppsByNo( String appGropId){
+public class ApplicationClientFallback implements ApplicationClient{
+
+    @Override
+    public FeignResponseEntity<ApplicationViewDto> getAppViewByCorrelationId(String correlationId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<ApplicationDto> updateApplication( ApplicationDto applicationDto){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    FeignResponseEntity<AppPremisesRoutingHistoryDto> create( AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto ){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    FeignResponseEntity<List<ApplicationLicenceDto>> getGroup( Integer day){
+    @Override
+    public FeignResponseEntity<ApplicationDto> getAppByNo(String appNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-
-    FeignResponseEntity<List<ApplicationGroupDto>> updateApplications(List<ApplicationGroupDto> applicationGroupDtos){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    public FeignResponseEntity<BroadcastApplicationDto> createBroadcast(BroadcastApplicationDto broadcastApplicationDto){
+    @Override
+    public FeignResponseEntity<Void> getDownloadFile(ApplicationListFileDto applicationListDtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<List<AppSvcPremisesScopeDto>> getAppSvcPremisesScopeListByCorreId(String correId){
+    @Override
+    public FeignResponseEntity<List<ApplicationListFileDto>> parse(String str) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<String> saveAdhocChecklist(AdhocCheckListConifgDto adhocConfigDto){
+    @Override
+    public FeignResponseEntity<List<ApplicationDto>> getApplicationDto() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<List<AppSvcPremisesScopeDto>> getAdhocByAppPremCorrId(AdhocCheckListConifgDto adhocConfigDto){
+    @Override
+    public FeignResponseEntity<ApplicationGroupDto> getAppById(String appGroupId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<AdhocCheckListConifgDto> saveAppAdhocConfig(AdhocCheckListConifgDto adhocConfigDto){
+    @Override
+    public FeignResponseEntity<ApplicationGroupDto> updateApplication(ApplicationGroupDto applicationGroupDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<AdhocCheckListConifgDto> updateAppAdhocConfig(AdhocCheckListConifgDto adhocCheckListConifgDto){
+    @Override
+    public FeignResponseEntity<List<ApplicationDto>> getGroupAppsByNo(String appGropId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-
-
-    public FeignResponseEntity<AdhocCheckListConifgDto> getAdhocConfigByAppPremCorrId(AdhocCheckListConifgDto adhocConfigDto){
+    @Override
+    public FeignResponseEntity<ApplicationDto> updateApplication(ApplicationDto applicationDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<List<AdhocChecklistItemDto>> saveAdhocItems(AdhocCheckListConifgDto adhocConfigDto){
+    @Override
+    public FeignResponseEntity<AppPremisesRoutingHistoryDto> create(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<AppSubmissionDto> getAppSubmissionByAppId(String appId){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    public FeignResponseEntity<SearchResult<RfiApplicationQueryDto>> searchApp( SearchParam searchParam){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    public FeignResponseEntity<Void> saveInspecRecDate(ApplicationListFileDto applicationListFileDto){
+    @Override
+    public FeignResponseEntity<List<ApplicationLicenceDto>> getGroup(Integer day) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<ApplicationDto> getApplicationById(String id){
+    @Override
+    public FeignResponseEntity<List<ApplicationGroupDto>> updateApplications(List<ApplicationGroupDto> applicationGroupDtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<ApplicationDto >> getRequesForInfList(){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    FeignResponseEntity<List<RequestInformationSubmitDto>> getRequestInformationSubmitDto(List<ApplicationDto> applicationDtos){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    FeignResponseEntity<AppPremisesCorrelationDto> getLastAppPremisesCorrelationDtoByCorreId(String appCorreId){
+    @Override
+    public FeignResponseEntity<List<AppSvcPremisesScopeDto>> getAppSvcPremisesScopeListByCorreId(String correId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<ApplicationDto> getLastApplicationByAppNo( ApplicationDto applicationDto){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    FeignResponseEntity<AppEditSelectDto> createAppEditSelectDto(AppEditSelectDto appEditSelectDto){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    FeignResponseEntity<List<AppPremisesCorrelationDto>> listAppPremisesCorrelation(String appId){
+    @Override
+    public FeignResponseEntity<BroadcastApplicationDto> createBroadcast(BroadcastApplicationDto broadcastApplicationDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<ApplicationGroupDto>> getAppGrpsPaySuc(){
+    @Override
+    public FeignResponseEntity<String> saveAdhocChecklist(AdhocCheckListConifgDto adhocConfigDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<ApplicationDto>>getAppDtosByAppGrpId(){
+    @Override
+    public FeignResponseEntity<List<AdhocChecklistItemDto>> getAdhocByAppPremCorrId(String appremId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<ApplicationDto>>getAppDtosReject(){
+    @Override
+    public FeignResponseEntity<List<AdCheckListShowDto>> getAllVersionAdhocList(String appremId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<AdhocCheckListConifgDto>> getAdhocCheckConfigFOrDraftById(String appremId){
+    @Override
+    public FeignResponseEntity<AdhocCheckListConifgDto> saveAppAdhocConfig(AdhocCheckListConifgDto adhocCheckListConifgDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<AdCheckListShowDto>> getAllVersionAdhocList(String appremId){
+    @Override
+    public FeignResponseEntity<AdhocCheckListConifgDto> updateAppAdhocConfig(AdhocCheckListConifgDto adhocCheckListConifgDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<AppPremisesCorrelationDto>>getAppPreCorrDtos(String type,String date){
+    @Override
+    public FeignResponseEntity<AdhocCheckListConifgDto> getAdhocConfigByAppPremCorrId(String appremId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<AppPremisesCorrelationDto>>updateCessationApplications(List<ApplicationDto> applicationDtos){
+    @Override
+    public FeignResponseEntity<List<AdhocCheckListConifgDto>> getAdhocCheckConfigFOrDraftById(String appremId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<ApplicationDto>>getApplicationDtosByIds(List<String> ids){
+    @Override
+    public FeignResponseEntity<List<AdhocChecklistItemDto>> saveAdhocItems(List<AdhocChecklistItemDto> itemDtoList) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<List<AppPremisesInspecApptDto>> createAppPremisesInspecApptDto(List<AppPremisesInspecApptDto> appPremisesInspecApptDtos){
+    @Override
+    public FeignResponseEntity<AppSubmissionDto> getAppSubmissionByAppId(String appId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<AppPremisesInspecApptDto> createAppPremisesInspecApptDto(AppPremisesInspecApptDto appPremisesInspecApptDto){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    public FeignResponseEntity<Integer> getAppCountByGroupIdAndStatus(String groupId,String status){
+    @Override
+    public FeignResponseEntity<SearchResult<RfiApplicationQueryDto>> searchApp(SearchParam searchParam) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<AppEditSelectDto>> getAppEditSelectDto(String appId, String changeType){
+    @Override
+    public FeignResponseEntity<Void> saveInspecRecDate(ApplicationListFileDto applicationListFileDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<ApplicationDto> getApplicationById(String id) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<ApplicationDto>> getRequesForInfList() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Void> updateStatus(String status) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<RequestInformationSubmitDto>> getRequestInformationSubmitDto(List<ApplicationDto> applicationDtos) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<AppPremisesCorrelationDto> getLastAppPremisesCorrelationDtoByCorreId(String appCorreId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<ApplicationDto> getLastApplicationByAppNo(ApplicationDto applicationDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<AppEditSelectDto> createAppEditSelectDto(AppEditSelectDto appEditSelectDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppPremisesCorrelationDto>> listAppPremisesCorrelation(String appId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<ApplicationGroupDto>> getAppGrpsPaySuc() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<ApplicationDto>> getAppDtosByAppGrpId(String appGrpId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<ApplicationDto>> getAppDtosReject() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppPremisesCorrelationDto>> getAppPreCorrDtos(String type, String date) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<ApplicationDto>> updateCessationApplications(List<ApplicationDto> applicationDtos) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<ApplicationDto>> getApplicationDtosByIds(List<String> ids) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppPremisesInspecApptDto>> createAppPremisesInspecApptDto(List<AppPremisesInspecApptDto> appPremisesInspecApptDtos) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<AppPremisesInspecApptDto> updateAppPremisesInspecApptDto(AppPremisesInspecApptDto appPremisesInspecApptDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Integer> getAppCountByGroupIdAndStatus(String groupId, String status) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppEditSelectDto>> getAppEditSelectDto(String appId, String changeType) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<ApplicationGroupDto>> getUserAccountByNotSubmittedSelfDecl() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

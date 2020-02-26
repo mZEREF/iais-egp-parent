@@ -168,7 +168,10 @@ public interface ApplicationClient {
     FeignResponseEntity<Integer> getAppCountByGroupIdAndStatus(@PathVariable(name = "groupId") String groupId,
                                                                @PathVariable(name = "status") String status);
 
-
     @GetMapping(value = "/iais-licence-view/app-edit-select-by-type",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppEditSelectDto>> getAppEditSelectDto(@RequestParam(name="appId")String appId, @RequestParam(name = "changeType")String changeType);
+
+    @GetMapping(value = "/iais-application-be/v1/self-decl/user-account/")
+    FeignResponseEntity<List<ApplicationGroupDto>> getUserAccountByNotSubmittedSelfDecl();
+
 }

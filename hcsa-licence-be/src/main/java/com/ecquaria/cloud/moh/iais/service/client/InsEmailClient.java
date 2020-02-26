@@ -39,6 +39,6 @@ public interface InsEmailClient {
     FeignResponseEntity<InspectionEmailTemplateDto> getInspectionEmail(@PathVariable(value = "appPremCorrId") String appPremCorrId);
 
     @PostMapping(path = "/emails",  consumes =  MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Map<String, String >> SendAndSaveEmail(@RequestBody EmailDto email);
+    FeignResponseEntity<Map<String, String >> sendAndSaveEmail(@RequestBody EmailDto email);
 
 }

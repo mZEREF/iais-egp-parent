@@ -100,7 +100,7 @@ public class InspEmailServiceImpl implements InspEmailService {
 
     @Override
     public Map<String, String > SendAndSaveEmail(EmailDto emailDto){
-        return insEmailClient.SendAndSaveEmail(emailDto).getEntity();
+        return insEmailClient.sendAndSaveEmail(emailDto).getEntity();
     }
 
     @Override

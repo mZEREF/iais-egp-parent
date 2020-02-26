@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  */
 @FeignClient(name = "email-sms",configuration = FeignConfiguration.class,fallback = EmailFClientFallback.class)
 public interface EmailClient {
+
     @PostMapping(value = "/emails/mailNoAttach", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity <String> sendNotification(@RequestBody EmailDto email);
 }

@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
+
 import java.util.List;
 
 /**
@@ -25,4 +26,6 @@ public interface ApplicationService {
 
     public List<AppEditSelectDto> getAppEditSelectDtos(String appId, String changeType);
 
+
+    void alertSelfDeclNotification();
 }
