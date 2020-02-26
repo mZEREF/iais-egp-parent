@@ -138,7 +138,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                 systemCorrIds = getSystemCorrIdByUserId(tDto.getUserId(), systemCorrIds);
             }
         }
-        appointmentDto.setUserId(systemCorrIds);
+        //appointmentDto.setUserId(systemCorrIds);
         if(appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null){
             appointmentDto = hcsaConfigClient.getApptStartEndDateByService(appointmentDto).getEntity();
         }
@@ -157,8 +157,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                 apptUserCalendarDtoListAll.add(apptUserCalendarDtos.get(0));
                 if(!IaisCommonUtils.isEmpty(apptUserCalendarDtos)){
 
-                    String fullDate = getApptDateToShow(apptUserCalendarDtos.get(0).getTimeSlot());
-                    inspectionDates.add(fullDate);
+                    /*String fullDate = getApptDateToShow(apptUserCalendarDtos.get(0).getTimeSlot());
+                    inspectionDates.add(fullDate);*/
                 }
             }
             apptInspectionDateDto.setInspectionDate(inspectionDates);

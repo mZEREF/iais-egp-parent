@@ -114,13 +114,13 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             for (AppPremisesInspecApptDto appPremisesInspecApptDto : apptFeConfirmDateDto.getAppPremisesInspecApptDtoList()) {
                 for(int i = 0; i < apptUserCalendarDtos.size(); i++){
                     if(appPremisesInspecApptDto.getApptRefNo().equals(apptUserCalendarDtos.get(i).getApptRefNo())){
-                        Date inspDate = apptUserCalendarDtos.get(i).getTimeSlot();
+                        /*Date inspDate = apptUserCalendarDtos.get(i).getTimeSlot();
                         String dateStr = apptDateToStringShow(inspDate);
                         inspectionDateMap.put(appPremisesInspecApptDto.getId(), inspDate);
                         SelectOption so = new SelectOption(appPremisesInspecApptDto.getId(), dateStr);
                         inspectionDate.add(so);
                         apptUserCalendarDtos.remove(i);
-                        i--;
+                        i--;*/
                     }
                 }
             }
@@ -171,12 +171,12 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         List<String> systemCorrId = new ArrayList<>();
         for(ApptUserCalendarAndUserIdDto aucauDto : apptFeConfirmDateDto.getApptUserCalendarAndUserIdDtos()){
             for(ApptUserCalendarDto apptUserCalendarDto : aucauDto.getAppointmentDtoList()){
-                systemCorrId.add(apptUserCalendarDto.getUserSysCorreId());
+                //systemCorrId.add(apptUserCalendarDto.getUserSysCorreId());
             }
         }
         AppointmentDto appointmentDto = new AppointmentDto();
         AppPremisesInspecApptDto appPremisesInspecApptDto = apptFeConfirmDateDto.getAppPremisesInspecApptDto();
-        appointmentDto.setUserId(systemCorrId);
+        //appointmentDto.setUserId(systemCorrId);
         appointmentDto.setStartDate(Formatter.formatDateTime(appPremisesInspecApptDto.getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
         appointmentDto.setEndDate(Formatter.formatDateTime(appPremisesInspecApptDto.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
         List<List<ApptUserCalendarDto>> apptUserCalendarDtoLists = feEicGatewayClient.getUserCalendarByUserId(appointmentDto, signature.date(), signature.authorization(),
@@ -186,13 +186,13 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         Map<String, String> refMap = new HashMap<>();
         if(!IaisCommonUtils.isEmpty(apptUserCalendarDtoLists)) {
             for (int i = 0; i < apptUserCalendarDtoLists.size(); i++) {
-                ApptUserCalendarDto apptUserCalendarDto = apptUserCalendarDtoLists.get(i).get(0);
+                /*ApptUserCalendarDto apptUserCalendarDto = apptUserCalendarDtoLists.get(i).get(0);
                 Date inspDate = apptUserCalendarDto.getTimeSlot();
                 String dateStr = apptDateToStringShow(inspDate);
                 inspectionNewDateMap.put(i + "", inspDate);
                 refMap.put(i + "", apptUserCalendarDto.getApptRefNo());
                 SelectOption so = new SelectOption(i + "", dateStr);
-                inspectionNewDate.add(so);
+                inspectionNewDate.add(so);*/
             }
             apptFeConfirmDateDto.setInspectionNewDate(inspectionNewDate);
             apptFeConfirmDateDto.setInspectionNewDateMap(inspectionNewDateMap);
