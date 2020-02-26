@@ -23,18 +23,13 @@
     <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadPre_OnStepProcess_0" name="inspecUserRectifiUploadPre_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="InspecUserRectifiUploadVali" x="890" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="InspecUserRectifiUploadVali" x="1300" y="380">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadVali_OnStepProcess_0" name="inspecUserRectifiUploadVali_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="Step1" x="1130" y="-40">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-  </ReturnInvokeProcessStep>
   <AutomaticStep defClass="" executor="" icon="" name="InspecUserRectifiUploadSuccess" x="1060" y="230">
    <Description/>
    <probepoint type="none"/>
@@ -49,11 +44,11 @@
     <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadConfirm_OnStepProcess_0" name="inspecUserRectifiUploadConfirm_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="InspecUserRectifiUploadQuery" x="1300" y="380">
+  <AutomaticStep defClass="" executor="" icon="" name="Step1" x="940" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadQuery_OnStepProcess_0" name="inspecUserRectifiUploadQuery_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -88,20 +83,8 @@
   <SynchronousLink destinationName="/Pages/WebPage/InspecUserRectifiUploadReviewPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadPre" style="rectanular">
    <position>{(500,120)(670,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadVali" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspecUserRectifiUploadReviewPage" style="rectanular">
-   <position>{(670,120)(910,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/InspecUserRectifiUploadCond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadVali" style="rectanular">
-   <position>{(910,120)(900,250)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/InspecUserRectifiUploadCond1" style="oblique">
-   <position>{(900,250)(1150,120)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadPre" linkstyle="Direct" name="" sourceName="/Conditions/Condition/InspecUserRectifiUploadCond1" style="oblique">
-   <position>{(900,250)(500,120)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Step1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(1150,120)(1150,-20)}</position>
+   <position>{(1320,400)(1320,540)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadConfirm" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(1150,120)(1300,120)}</position>
@@ -116,24 +99,32 @@
    <position>{(1300,120)(1300,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadPre" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(1150,120)(1125,38)(560,38)(500,120)}</position>
+   <position>{(1150,120)(1151,38)(560,38)(500,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadQuery" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspecUserRectifiUploadConfPage" style="rectanular">
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspecUserRectifiUploadReviewPage" style="rectanular">
+   <position>{(670,120)(960,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step1" style="rectanular">
+   <position>{(960,120)(1150,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadVali" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspecUserRectifiUploadConfPage" style="rectanular">
    <position>{(1300,250)(1320,400)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadQuery" style="oblique">
-   <position>{(1320,400)(1150,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/InspecUserRectifiUploadCond1" style="oblique">
+   <position>{(1320,540)(959,540)(960,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadConfirm" linkstyle="Direct" name="" sourceName="/Conditions/Condition/InspecUserRectifiUploadCond1" style="oblique">
+   <position>{(1320,540)(1459,540)(1459,119)(1300,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/InspecUserRectifiUploadPre" componentIfTrue="/Switches/Switch/Switch1" defClass="" executor="" icon="" leftOperand="flag" name="InspecUserRectifiUploadCond1" operator="=" rightOperand="&quot;true&quot;" x="880" y="230">
+  <Condition componentIfFalse="/Steps/AutomaticStep/InspecUserRectifiUploadConfirm" componentIfTrue="/Steps/AutomaticStep/Step1" defClass="" executor="" icon="" leftOperand="flag" name="InspecUserRectifiUploadCond1" operator="=" rightOperand="&quot;true&quot;" x="1300" y="520">
    <Description/>
   </Condition>
  </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="inspecUserRecUploadType" name="Switch1" x="1130" y="100">
    <Description/>
-   <SwitchCase component="/Steps/ReturnInvokeProcessStep/Step1" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspecUserRectifiUploadConfirm" value="&quot;confirm&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspecUserRectifiUploadSuccess" value="&quot;success&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspecUserRectifiUploadPre" value="&quot;review&quot;"/>
