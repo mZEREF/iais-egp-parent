@@ -2,9 +2,11 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ResponseForInformationService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -41,7 +43,8 @@ public class ResponseForInformationDelegator {
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
-
+    @Autowired
+    RequestForChangeService requestForChangeService;
     @Autowired
     FeEicGatewayClient feEicGatewayClient;
     @Autowired
@@ -50,10 +53,12 @@ public class ResponseForInformationDelegator {
     public void Start(BaseProcessClass bpc)  {
         log.debug(StringUtil.changeForLog("the do Start start ...."));
         HttpServletRequest request=bpc.request;
-        String licenseeId = ParamUtil.getString(request,"licenseeId");
-        if(StringUtil.isEmpty(licenseeId)){
-            licenseeId = "36F8537B-FE17-EA11-BE78-000C29D29DB0";
+        String licenceId = ParamUtil.getString(request,"licenceId");
+        if(StringUtil.isEmpty(licenceId)){
+            licenceId = "7ECAE165-534A-EA11-BE7F-000C29F371DC";
         }
+        LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
+        String licenseeId=licenceDto.getLicenseeId();
         ParamUtil.setSessionAttr(request,"licenseeId",licenseeId);
         // 		Start->OnStepProcess
     }

@@ -109,7 +109,7 @@
                                 <c:otherwise>
                                     <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
                                         <tr>
-                                            <td class="row_no"><c:out value="${status.index + 1}"/></td>
+                                            <td class="row_no"><c:out value="${status.index + 1 + (SearchResult.pageNo - 1) * SearchResult.pageSize}}"/></td>
                                             <td><a onclick="javascript:doLicInfo('${pool.licenceId}')">${pool.licenceNo}</a></td>
                                             <td><c:out value="${pool.hciCode}"/></td>
                                             <td><c:out value="${pool.hciName}"/></td>
@@ -164,5 +164,8 @@
     function doLicInfo(licenceId) {
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "licInfo",licenceId);
+    }
+    function jumpToPagechangePage(){
+        inspectorSearchTaskSubmit('searchLic');
     }
 </script>

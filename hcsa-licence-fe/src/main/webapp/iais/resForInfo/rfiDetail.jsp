@@ -1,4 +1,3 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
@@ -68,7 +67,7 @@
                                         <iais:row style="text-align:center;">
                                             <iais:value width="18">
                                                 <label>
-                                                    <textarea id="userReply_rfi" name="userReply" rows="10" cols="100">${licPreReqForInfoDto.userReply}</textarea>
+                                                    <textarea id="userReply_rfi" name="userReply" rows="8" style=" font-weight:normal;" cols="70">${licPreReqForInfoDto.userReply}</textarea>
                                                 </label>
                                             </iais:value>
                                         </iais:row>

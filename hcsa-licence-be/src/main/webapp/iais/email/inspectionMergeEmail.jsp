@@ -246,6 +246,17 @@
                                             </div>
                                         </td>
                                     </tr>
+                                    <tr height="1" style="display: none" id="selectDecisionMsg">
+                                        <td class="col-xs-2" >
+                                        </td>
+                                        <td>
+                                            <div class="col-sm-9">
+                                                <p style="color:#ff0000;">
+                                                    This field is mandatory.
+                                                </p>
+                                            </div>
+                                        </td>
+                                    </tr>
                                     <tr height="1" style="display: none" id="selectReviseNc">
                                         <td class="col-xs-2" >
                                             <p >
@@ -257,7 +268,17 @@
                                                 <c:forEach items="${svcNames}" var="revise" varStatus="index">
                                                     <input type="checkbox"  name="revise${index.index+1}" value="${revise}">${revise}</input>
                                                 </c:forEach>
-
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr height="1" style="display: none" id="selectDecisionMsgRevise">
+                                        <td class="col-xs-2" >
+                                        </td>
+                                        <td>
+                                            <div class="col-sm-9">
+                                                <p style="color:#ff0000;">
+                                                    Need Revise.
+                                                </p>
                                             </div>
                                         </td>
                                     </tr>
@@ -290,7 +311,7 @@
 
     function doSend(){
         if($('#decision_merge_email option:selected').val()=="Select"){
-            //alert("no")
+            $("#selectDecisionMsg").show();
         }else {
             if($('#decision_merge_email option:selected').val()=="REDECI005"){
                 var checkOne = false;
@@ -305,7 +326,7 @@
                     showWaiting();
                     SOP.Crud.cfxSubmit("mainForm", "send");
                 } else {
-                    alert("Need Revise.");
+                    $("#selectDecisionMsgRevise").show();
                 };
 
             }

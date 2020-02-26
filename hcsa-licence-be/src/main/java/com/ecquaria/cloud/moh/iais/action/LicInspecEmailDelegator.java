@@ -80,6 +80,7 @@ public class LicInspecEmailDelegator {
     private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
     @Autowired
     AppInspectionStatusClient appInspectionStatusClient;
+
     private static final String TASK_DTO="taskDto";
     private static final String MSG_CON="messageContent";
     private static final String TD="</td><td>";
@@ -131,7 +132,9 @@ public class LicInspecEmailDelegator {
         inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
         List<NcAnswerDto> ncAnswerDtos =insepctionNcCheckListService.getNcAnswerDtoList(appPremCorrId);
         AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,InspectionConstants.RECOM_TYPE_TCU);
-        inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
+        if(appPreRecommentdationDto.getBestPractice()!=null){
+            inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
+        }
         Map<String,Object> map=new HashMap<>();
         map.put("APPLICANT_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicantName()));
         map.put("APPLICATION_NUMBER",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicationNumber()));
@@ -283,10 +286,10 @@ public class LicInspecEmailDelegator {
         log.info("=======>>>>>doRecallEmail>>>>>>>>>>>>>>>>emailRequest");
     }
 
-    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,String decision,
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus,String decision,
                                                                          TaskDto taskDto,String subStage,String userId ,String remarks) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-        appPremisesRoutingHistoryDto.setApplicationNo(appPremisesCorrelationId);
+        appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(taskDto.getTaskKey());
         appPremisesRoutingHistoryDto.setProcessDecision(decision);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
@@ -334,3 +337,4 @@ public class LicInspecEmailDelegator {
     }
 
 }
+

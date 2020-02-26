@@ -85,6 +85,7 @@ public class OfficerOnlineEnquiriesDelegator {
     @Autowired
     private LicenceViewService licenceViewService;
 
+
     private final String SEARCH_NO="searchNo";
     private final String RFI_QUERY="ReqForInfoQuery";
     FilterParameter licenceParameter = new FilterParameter.Builder()
@@ -324,7 +325,8 @@ public class OfficerOnlineEnquiriesDelegator {
         String applicationNo = ParamUtil.getString(bpc.request, "application_no");
         String applicationType = ParamUtil.getString(bpc.request, "application_type");
         String status = ParamUtil.getString(bpc.request, "application_status");
-        String licence_no = ParamUtil.getString(bpc.request, "licence_no");
+        String licenceNo = ParamUtil.getString(bpc.request, "licence_no");
+        String uenNo = ParamUtil.getString(bpc.request, "uen_no");
         String serviceLicenceType = ParamUtil.getString(bpc.request, "service_licence_type");
         String licenceStatus = ParamUtil.getString(bpc.request, "licence_status");
         String hciCode = ParamUtil.getString(bpc.request, "hci_code");
@@ -399,11 +401,18 @@ public class OfficerOnlineEnquiriesDelegator {
             if(!StringUtil.isEmpty(licExpToDate)){
                 filters.put("expiry_date",licExpToDate);
             }
-            if(!StringUtil.isEmpty(licence_no)){
-                filters.put("licence_no", licence_no);
+            if(!StringUtil.isEmpty(licenceNo)){
+                filters.put("licence_no", licenceNo);
             }
             if(!StringUtil.isEmpty(licenceStatus)){
                 filters.put("licence_status", licenceStatus);
+            }
+            if(!StringUtil.isEmpty(uenNo)){
+                LicenseeDto licenseeDto= organizationClient.getLicenseeDtoByUen(uenNo).getEntity();
+                if(licenseeDto!=null) {
+                    licenseeIds = new ArrayList<>();
+                    licenseeIds.add(licenseeDto.getId());
+                }
             }
         }
 
@@ -559,8 +568,13 @@ public class OfficerOnlineEnquiriesDelegator {
         log.debug(StringUtil.changeForLog("licenseeId start ...."+rfiApplicationQueryDto.getLicenseeId()));
         if(rfiApplicationQueryDto.getLicenseeId()!=null){
             reqForInfoSearchListDto.setLicenseeId(rfiApplicationQueryDto.getLicenseeId());
-            LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiApplicationQueryDto.getLicenseeId());
-            reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
+            try {
+                LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiApplicationQueryDto.getLicenseeId());
+                reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
+            } catch (Exception e) {
+
+            }
+
         }
     }
 

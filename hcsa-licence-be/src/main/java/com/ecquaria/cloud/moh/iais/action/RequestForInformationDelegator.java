@@ -34,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -151,11 +152,6 @@ public class RequestForInformationDelegator {
 
     public void preSearch(BaseProcessClass bpc) {
         log.info("=======>>>>>preSearch>>>>>>>>>>>>>>>>requestForInformation");
-        // 		preBasicSearch->OnStepProcess
-    }
-
-    public void doSearch(BaseProcessClass bpc) {
-        log.info("=======>>>>>doBasicSearch>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         String searchNo= (String) ParamUtil.getSessionAttr(request,"search_no");
@@ -166,11 +162,13 @@ public class RequestForInformationDelegator {
         if("application".equals(selectSearch)) {
             if (!StringUtil.isEmpty(searchNo)) {
                 filters.put("appNo", searchNo);
+                ParamUtil.setRequestAttr(request,"select_search", selectSearch);
             }
         }
         else {
             if (!StringUtil.isEmpty(searchNo)) {
                 filters.put("licence_no", searchNo);
+                ParamUtil.setRequestAttr(request,"select_search", selectSearch);
             }
         }
         applicationParameter.setFilters(filters);
@@ -225,7 +223,14 @@ public class RequestForInformationDelegator {
 
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
         ParamUtil.setSessionAttr(request, "search_no",searchNo);
+        // 		preBasicSearch->OnStepProcess
+    }
 
+    public void doSearch(BaseProcessClass bpc) {
+        log.info("=======>>>>>doBasicSearch>>>>>>>>>>>>>>>>requestForInformation");
+        HttpServletRequest request=bpc.request;
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
         // 		doBasicSearch->OnStepProcess
     }
 
@@ -354,8 +359,12 @@ public class RequestForInformationDelegator {
         log.debug(StringUtil.changeForLog("licenseeId start ...."+rfiApplicationQueryDto.getLicenseeId()));
         if(rfiApplicationQueryDto.getLicenseeId()!=null){
             reqForInfoSearchListDto.setLicenseeId(rfiApplicationQueryDto.getLicenseeId());
-            LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiApplicationQueryDto.getLicenseeId());
-            reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
+            try {
+                LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiApplicationQueryDto.getLicenseeId());
+                reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
+            } catch (Exception e) {
+
+            }
         }
 
     }
@@ -367,6 +376,7 @@ public class RequestForInformationDelegator {
         List<SelectOption> licStatusOption = requestForInformationService.getLicStatusOption();
 
 
+
         String licenceNo = ParamUtil.getString(bpc.request, "licence_no");
 
         String serviceLicenceType = ParamUtil.getString(bpc.request, "service_licence_type");
@@ -375,7 +385,7 @@ public class RequestForInformationDelegator {
                 SystemAdminBaseConstants.DATE_FORMAT);
         String toDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
-        Map<String,Object> filters=new HashMap<>(10);
+        Map<String,Object> filters=new HashMap<>();
 
         if(!StringUtil.isEmpty(licenceNo)){
             filters.put("licence_no", licenceNo);
@@ -392,6 +402,9 @@ public class RequestForInformationDelegator {
         licenceParameter.setFilters(filters);
 
         SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
+
+        CrudHelper.doPaging(licParam,bpc.request);
+
         QueryHelp.setMainSql(RFI_QUERY,"licenceQuery",licParam);
         if (licParam != null) {
             SearchResult<RfiLicenceQueryDto> licResult = requestForInformationService.licenceDoQuery(licParam);

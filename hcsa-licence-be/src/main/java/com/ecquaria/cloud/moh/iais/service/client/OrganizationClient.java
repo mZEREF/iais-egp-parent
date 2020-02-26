@@ -105,6 +105,9 @@ public interface OrganizationClient {
     @GetMapping(value = "/iais-licensee-be/licensee-by-id/{id}")
     FeignResponseEntity<LicenseeDto> getLicenseeDtoById (@PathVariable("id") String id);
 
+    @GetMapping(value = "/iais-licensee-be/licenseeDto-by-uenNo/{uenNo}")
+    FeignResponseEntity<LicenseeDto> getLicenseeDtoByUen(@PathVariable(name = "uenNo") String uenNo);
+
     @RequestMapping(path = "/iais-task/TasksByRoleId/{userId}/{roleId}",method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<TaskDto>> getTasksByUserIdAndRole(@PathVariable(value = "userId") String userId,@PathVariable(value = "roleId") String roleId);

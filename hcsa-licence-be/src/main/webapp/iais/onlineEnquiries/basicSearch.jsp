@@ -1,4 +1,4 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
@@ -34,19 +34,19 @@
                                         </iais:row>
                                         <iais:row>
                                             <iais:value width="18">
-                                                <input type="checkbox" name="hci" />HCI Name
+                                                <input type="checkbox" name="hci" /> HCI Name
                                             </iais:value>
                                             <iais:value width="18">
-                                                <input type="checkbox" name="application"  />Application No
+                                                <input type="checkbox" name="application"  /> Application No
                                             </iais:value>
                                             <iais:value width="18">
-                                                <input type="checkbox" name="licence" />Licence No
+                                                <input type="checkbox" name="licence" /> Licence No
                                             </iais:value>
                                             <iais:value width="18">
-                                                <input type="checkbox" name="licensee"  />Licensee Name
+                                                <input type="checkbox" name="licensee"  /> Licensee Name
                                             </iais:value>
                                             <iais:value width="18">
-                                                <input type="checkbox" name="servicePersonnel"  />Service Personnel Name
+                                                <input type="checkbox" name="servicePersonnel"  /> Service Personnel Name
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">

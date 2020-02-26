@@ -45,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -96,7 +97,8 @@ public class LicInspectEmailAo1Delegator {
     AppInspectionStatusClient appInspectionStatusClient;
     @Autowired
     FillupChklistService fillupChklistService;
-
+    @Autowired
+    private OrganizationClient organizationClient;
     @Autowired
     ApplicationService applicationService;
     private static final String ADCHK_DTO="adchklDto";
@@ -133,7 +135,9 @@ public class LicInspectEmailAo1Delegator {
         }
         InspectionFDtosDto serListDto = new InspectionFDtosDto();
         serListDto.setFdtoList(cDtoList);
-        fillupChklistService.getTcuInfo(serListDto,appPremCorrId);
+        if(serListDto.getBestPractice()!=null){
+            fillupChklistService.getTcuInfo(serListDto,appPremCorrId);
+        }
         AdCheckListShowDto adchklDto =insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
@@ -247,7 +251,7 @@ public class LicInspectEmailAo1Delegator {
             createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
 
 
-            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getId(),HcsaConsts.ROUTING_STAGE_INS);
+            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS);
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setType(applicationViewDto.getApplicationDto().getApplicationType());
             hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
@@ -476,10 +480,10 @@ public class LicInspectEmailAo1Delegator {
         return mesContext;
     }
 
-    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,String decision,
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus,String decision,
                                                                          TaskDto taskDto,String subStage,String userId ,String remarks) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-        appPremisesRoutingHistoryDto.setApplicationNo(appPremisesCorrelationId);
+        appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(taskDto.getTaskKey());
         appPremisesRoutingHistoryDto.setProcessDecision(decision);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);

@@ -223,13 +223,13 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                 if(fil.getName().endsWith(".zip")){
                     String name = fil.getName();
                     String path = fil.getPath();
+                    String relPath="backups"+File.separator+name;
                     HashMap<String,String> map=new HashMap<>();
                     map.put("fileName",name);
-                    map.put("filePath",path);
+                    map.put("filePath",relPath);
 
                     ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
                     if(processFileTrackDto!=null){
-
                         CheckedInputStream cos=null;
                         BufferedInputStream bis=null;
                         BufferedOutputStream bos=null;
@@ -246,7 +246,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
                         try {
 
-                            this.download(processFileTrackDto,name);
+                            this.download(processFileTrackDto,licPremisesReqForInfoDto,name);
                             //save success
                         }catch (Exception e){
                             //save bad
@@ -286,7 +286,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
                 new File(compressPath+File.separator+fileName+File.separator+zipEntry.getName()).mkdirs();
             }
-        }catch (IOException ignored){
+        }catch (IOException e){
 
         }finally {
             if(cos!=null){
@@ -321,7 +321,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     }
 
     @Override
-    public boolean download( ProcessFileTrackDto processFileTrackDto,String fileName) {
+    public boolean download( ProcessFileTrackDto processFileTrackDto,LicPremisesReqForInfoDto licPremisesReqForInfoDto,String fileName) {
 
         Boolean flag=false;
         File file =new File(downZip+File.separator+fileName+File.separator+FOLDER);
@@ -342,7 +342,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                             by.write(size,0,count);
                             count= fileInputStream.read(size);
                         }
-                        Boolean aBoolean = fileToDto(by.toString());
+                        Boolean aBoolean = fileToDto(by.toString(),licPremisesReqForInfoDto,processFileTrackDto);
                         flag=aBoolean;
                         if(aBoolean&&processFileTrackDto!=null){
                             changeStatus(processFileTrackDto);
@@ -356,7 +356,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         }
         return flag;
     }
-    private Boolean fileToDto(String str){
+    private Boolean fileToDto(String str,LicPremisesReqForInfoDto licPremisesReqForInfoDto,ProcessFileTrackDto processFileTrackDto){
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = JsonUtil.parseToObject(str, LicPremisesReqForInfoDto.class);
         return requestForInformationClient.rfiFeUpdateToBe(licPremisesReqForInfoDto1).getStatusCode() == 200;
 
@@ -427,8 +427,8 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     @Override
     public void delete() {
-        download= sharedPath+File.separator+"compress"+File.separator+FOLDER;
-        backups=sharedPath+File.separator+"backups"+File.separator;
+        download= sharedPath+File.separator+File.separator+FOLDER;
+        backups=sharedPath+File.separator+"backupsRec"+File.separator;
         compressPath=sharedPath+File.separator+"compress";
         downZip=sharedPath+File.separator+"compress";
         File file =new File(download);

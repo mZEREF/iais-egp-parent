@@ -132,7 +132,7 @@ public class InspecEmailDelegator {
         inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
         List<NcAnswerDto> ncAnswerDtos =insepctionNcCheckListService.getNcAnswerDtoList(appPremCorrId);
         AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,InspectionConstants.RECOM_TYPE_TCU);
-        if(appPreRecommentdationDto.getBestPractice()!=null){
+        if(appPreRecommentdationDto!=null){
             inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
         }
         Map<String,Object> map=new HashMap<>();
@@ -286,10 +286,10 @@ public class InspecEmailDelegator {
         log.info("=======>>>>>doRecallEmail>>>>>>>>>>>>>>>>emailRequest");
     }
 
-    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,String decision,
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus,String decision,
                                                                          TaskDto taskDto,String subStage,String userId ,String remarks) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-        appPremisesRoutingHistoryDto.setApplicationNo(appPremisesCorrelationId);
+        appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(taskDto.getTaskKey());
         appPremisesRoutingHistoryDto.setProcessDecision(decision);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);

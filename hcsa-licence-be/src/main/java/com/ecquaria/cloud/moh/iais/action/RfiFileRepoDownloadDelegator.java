@@ -30,7 +30,6 @@ public class RfiFileRepoDownloadDelegator {
          logAbout("preparetionData");
         requestForInformationService.delete();
         requestForInformationService.compress(licPremisesReqForInfoDto);
-
     }
 /*******************************/
     private void logAbout(String name){

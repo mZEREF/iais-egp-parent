@@ -264,6 +264,17 @@
                                             </div>
                                         </td>
                                     </tr>
+                                    <tr height="1" style="display: none" id="selectDecisionMsg">
+                                        <td class="col-xs-2" >
+                                        </td>
+                                        <td>
+                                            <div class="col-sm-9">
+                                                <p style="color:#ff0000;">
+                                                    This field is mandatory.
+                                                </p>
+                                            </div>
+                                        </td>
+                                    </tr>
                                     </tbody>
                                 </table>
                                 <p class="text-right text-center-mobile">
@@ -326,6 +337,9 @@
         if(f!="Select"){
             showWaiting();
             SOP.Crud.cfxSubmit("mainForm", "send");
+        }
+        else {
+            $("#selectDecisionMsg").show();
         }
 
     }

@@ -1,4 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
@@ -28,16 +30,28 @@
                                             <iais:field value="Search No"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" name="search_no" style="width:400px; font-weight:normal;" />
+                                                    <input type="text" name="search_no" value="${search_no}" style="width:400px; font-weight:normal;" />
                                                 </label>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
+                                            <%String selectSearch= ParamUtil.getRequestString(request,"select_search");
+                                                String selectApp;
+                                                String selectLic;
+                                                if("application".equals(selectSearch)) {
+                                                    selectApp="checked";
+                                                    selectLic="";
+                                                }
+                                                else {
+                                                    selectApp="";
+                                                    selectLic="checked";
+                                                }
+                                            %>
                                             <iais:value width="18">
-                                                <input type="radio" name="select_search" value="application" checked /> Application No
+                                                <input type="radio" name="select_search" value="application" checked="<%=selectApp%>" /> Application No
                                             </iais:value>
                                             <iais:value width="18">
-                                                <input type="radio" name="select_search" value="licence" /> Licence No
+                                                <input type="radio" name="select_search" value="licence" checked="<%=selectLic%>" /> Licence No
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">

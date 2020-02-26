@@ -1,4 +1,5 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.util.Calendar" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
@@ -32,7 +33,7 @@
                                             <iais:field value="Title:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <textarea id="rfiTitle" maxlength="500"  name="rfiTitle" ></textarea>
+                                                    <textarea id="rfiTitle" maxlength="500" rows="8" cols="70" style=" font-weight:normal;" name="rfiTitle" ></textarea>
                                                 </label>
                                             </iais:value>
                                         </iais:row>
@@ -40,23 +41,27 @@
                                             <iais:field value="Licence No:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" style="width:400px; font-weight:normal;" maxlength="30" name="licenceNo" value="${licenceNo}">
+                                                    <input type="text" style="width:400px; font-weight:normal;" maxlength="30" name="licenceNo" style=" font-weight:normal;" value="${licenceNo}">
                                                 </label>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Due Date:"/>
                                             <iais:value width="18" style="width:400px; font-weight:normal;">
-                                                <iais:datePicker   name = "Due_date" ></iais:datePicker>
+                                                <%Date dueDate ;
+                                                    Calendar calendar = Calendar.getInstance();
+                                                    calendar.add(Calendar.DATE,14);
+                                                    dueDate = calendar.getTime();%>
+                                                <iais:datePicker   name = "Due_date" dateVal="<%=dueDate%>" ></iais:datePicker>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="checkbox"  />Information
+                                                    <input type="checkbox"  /> Information
                                                 </label>
                                                 <label>
-                                                    <input type="checkbox" name="reqType" />Supporting Documents
+                                                    <input type="checkbox" name="reqType" /> Supporting Documents
                                                 </label>
 
                                             </iais:value>
