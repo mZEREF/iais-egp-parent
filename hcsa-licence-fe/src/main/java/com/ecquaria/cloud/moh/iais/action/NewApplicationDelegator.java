@@ -131,7 +131,9 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do Start start ...."));
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
         AuditTrailDto auditTrailDto =IaisEGPHelper.getCurrentAuditTrailDto();
+        //clear Session
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
+
         List<AppSvcPrincipalOfficersDto> list=new ArrayList<>();
         AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto=new AppSvcPrincipalOfficersDto();
         list.add(appSvcPrincipalOfficersDto);
@@ -1890,6 +1892,7 @@ public class NewApplicationDelegator {
                 appSubmissionDto.setNeedEditController(true);
                 AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
                 for(String type:amendLicenceType){
+                    log.info(StringUtil.changeForLog("The RFC select type -->:"+type));
                     if(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION.equals(type)){
                         appEditSelectDto.setPremisesEdit(true);
                     } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_MEDALERT_PERSONNEL.equals(type)) {
