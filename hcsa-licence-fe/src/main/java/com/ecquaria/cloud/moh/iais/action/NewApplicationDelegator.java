@@ -128,7 +128,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
-        log.debug(StringUtil.changeForLog("the do Start start ...."));
+        log.info(StringUtil.changeForLog("the do Start start ...."));
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
         AuditTrailDto auditTrailDto =IaisEGPHelper.getCurrentAuditTrailDto();
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
@@ -151,10 +151,11 @@ public class NewApplicationDelegator {
         loadingDraft(bpc);
         //for loading Service Config
         boolean flag = loadingServiceConfig(bpc);
+        log.info(StringUtil.changeForLog("The loadingServiceConfig -->:"+flag));
         if(flag){
             initSession(bpc);
         }
-        log.debug(StringUtil.changeForLog("the do Start end ...."));
+        log.info(StringUtil.changeForLog("the do Start end ...."));
     }
 
 
@@ -165,7 +166,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void prepare(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do prepare start ...."));
+        log.info(StringUtil.changeForLog("the do prepare start ...."));
         //String action = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         String action = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if (StringUtil.isEmpty(action)) {
@@ -176,7 +177,7 @@ public class NewApplicationDelegator {
             }
         }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, action);
-        log.debug(StringUtil.changeForLog("the do prepare end ...."));
+        log.info(StringUtil.changeForLog("the do prepare end ...."));
     }
     /**
      * StartStep: PreparePremises
@@ -185,7 +186,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void preparePremises(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do preparePremises start ...."));
+        log.info(StringUtil.changeForLog("the do preparePremises start ...."));
         //get svcCode to get svcId
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         List<String> svcIds = new ArrayList<>();
@@ -219,7 +220,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "conveyancePremSel", (Serializable) conveyancePremSel);
         //get premises type
         if (svcIds.size() > 0) {
-            log.debug(StringUtil.changeForLog("svcId not null"));
+            log.info(StringUtil.changeForLog("svcId not null"));
             Set<String> premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
             ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
         }
@@ -299,7 +300,7 @@ public class NewApplicationDelegator {
         }
 
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
-        log.debug(StringUtil.changeForLog("the do preparePremises end ...."));
+        log.info(StringUtil.changeForLog("the do preparePremises end ...."));
     }
 
     /**
@@ -309,7 +310,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void prepareDocuments(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do prepareDocuments start ...."));
+        log.info(StringUtil.changeForLog("the do prepareDocuments start ...."));
 
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(null);
@@ -340,7 +341,7 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, (Serializable) new HashMap());
         }
 
-        log.debug(StringUtil.changeForLog("the do prepareDocuments end ...."));
+        log.info(StringUtil.changeForLog("the do prepareDocuments end ...."));
     }
 
 
@@ -352,9 +353,9 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void prepareForms(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do prepareForms start ...."));
+        log.info(StringUtil.changeForLog("the do prepareForms start ...."));
 
-        log.debug(StringUtil.changeForLog("the do prepareForms end ...."));
+        log.info(StringUtil.changeForLog("the do prepareForms end ...."));
     }
 
     /**
@@ -364,9 +365,9 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void preparePreview(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do preparePreview start ...."));
+        log.info(StringUtil.changeForLog("the do preparePreview start ...."));
 
-        log.debug(StringUtil.changeForLog("the do preparePreview end ...."));
+        log.info(StringUtil.changeForLog("the do preparePreview end ...."));
     }
 
     /**
@@ -376,7 +377,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void preparePayment(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do preparePayment start ...."));
+        log.info(StringUtil.changeForLog("the do preparePayment start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         if(!StringUtil.isEmpty(appSubmissionDto.getAmount())){
             DecimalFormat decimalFormat = new DecimalFormat("###,###");
@@ -384,7 +385,7 @@ public class NewApplicationDelegator {
             appSubmissionDto.setAmountStr(amountStr);
         }
 
-        log.debug(StringUtil.changeForLog("the do preparePayment end ...."));
+        log.info(StringUtil.changeForLog("the do preparePayment end ...."));
     }
 
     /**
@@ -394,7 +395,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doPremises(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do doPremises start ...."));
+        log.info(StringUtil.changeForLog("the do doPremises start ...."));
 
         //gen dto
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
@@ -406,7 +407,7 @@ public class NewApplicationDelegator {
             isRfi = true;
         }
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION, isEdit, isRfi);
-        log.debug("isGetDataFromPage:"+isGetDataFromPage);
+        log.info("isGetDataFromPage:"+isGetDataFromPage);
         if(isGetDataFromPage ){
             List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
@@ -431,7 +432,7 @@ public class NewApplicationDelegator {
         }
 
 
-        log.debug(StringUtil.changeForLog("the do doPremises end ...."));
+        log.info(StringUtil.changeForLog("the do doPremises end ...."));
     }
 
 
@@ -443,7 +444,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doDocument(BaseProcessClass bpc) throws IOException {
-        log.debug(StringUtil.changeForLog("the do doDocument start ...."));
+        log.info(StringUtil.changeForLog("the do doDocument start ...."));
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
@@ -589,7 +590,7 @@ public class NewApplicationDelegator {
 
 
 
-        log.debug(StringUtil.changeForLog("the do doDocument end ...."));
+        log.info(StringUtil.changeForLog("the do doDocument end ...."));
     }
 
 
@@ -600,9 +601,9 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doForms(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do doForms start ...."));
+        log.info(StringUtil.changeForLog("the do doForms start ...."));
 
-        log.debug(StringUtil.changeForLog("the do doForms end ...."));
+        log.info(StringUtil.changeForLog("the do doForms end ...."));
     }
 
     /**
@@ -612,9 +613,9 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doPreview(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do doPreview start ...."));
+        log.info(StringUtil.changeForLog("the do doPreview start ...."));
 
-        log.debug(StringUtil.changeForLog("the do doPreview end ...."));
+        log.info(StringUtil.changeForLog("the do doPreview end ...."));
     }
 
     /**
@@ -624,7 +625,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doPayment(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do doPayment start ...."));
+        log.info(StringUtil.changeForLog("the do doPayment start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String switch2 = "loading";
         String pmtMethod = appSubmissionDto.getPaymentMethod();
@@ -639,7 +640,7 @@ public class NewApplicationDelegator {
         }
         String result = bpc.request.getParameter("result");
         if (!StringUtil.isEmpty(result)) {
-            log.debug(StringUtil.changeForLog("payment result:" + result));
+            log.info(StringUtil.changeForLog("payment result:" + result));
             String pmtRefNo = bpc.request.getParameter("reqRefNo");
             if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
                 log.info("credit card payment success");
@@ -663,7 +664,7 @@ public class NewApplicationDelegator {
         }
 
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, switch2);
-        log.debug(StringUtil.changeForLog("the do doPayment end ...."));
+        log.info(StringUtil.changeForLog("the do doPayment end ...."));
     }
 
     /**
@@ -673,13 +674,13 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void preInvoke(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do preInvoke start ...."));
+        log.info(StringUtil.changeForLog("the do preInvoke start ...."));
         String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         if(!StringUtil.isEmpty(action)){
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,action);
         }
 
-        log.debug(StringUtil.changeForLog("the do preInvoke start ...."));
+        log.info(StringUtil.changeForLog("the do preInvoke start ...."));
     }
 
     /**
@@ -689,16 +690,16 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doSaveDraft(BaseProcessClass bpc) throws IOException {
-        log.debug(StringUtil.changeForLog("the do doSaveDraft start ...."));
+        log.info(StringUtil.changeForLog("the do doSaveDraft start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         if(StringUtil.isEmpty(appSubmissionDto.getDraftNo())){
             String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
-            log.debug(StringUtil.changeForLog("the draftNo -->:") + draftNo);
+            log.info(StringUtil.changeForLog("the draftNo -->:") + draftNo);
             appSubmissionDto.setDraftNo(draftNo);
         }
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        log.debug(StringUtil.changeForLog("the do doSaveDraft end ...."));
+        log.info(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }
 
     /**
@@ -708,7 +709,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doRequestInformationSubmit(BaseProcessClass bpc) throws IOException {
-        log.debug(StringUtil.changeForLog("the do doRequestInformationSubmit start ...."));
+        log.info(StringUtil.changeForLog("the do doRequestInformationSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
 
@@ -736,12 +737,12 @@ public class NewApplicationDelegator {
         // ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","Y");
         ParamUtil.setRequestAttr(bpc.request,ACKMESSAGE,"The request for information save success");
-        log.debug(StringUtil.changeForLog("the do doRequestInformationSubmit end ...."));
+        log.info(StringUtil.changeForLog("the do doRequestInformationSubmit end ...."));
     }
 
 
     public void doRenewSubmit(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do doRenewSubmit start ...."));
+        log.info(StringUtil.changeForLog("the do doRenewSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         List<ApplicationDto> applicationDtos = requestForChangeService.getOngoingApplicationByLicenceId(appSubmissionDto.getLicenceId());
         if(!IaisCommonUtils.isEmpty(applicationDtos)){
@@ -768,13 +769,13 @@ public class NewApplicationDelegator {
         }
         //get appGroupNo
         String appGroupNo = appSubmissionService.getGroupNo(appSubmissionDto.getAppType());
-        log.debug(StringUtil.changeForLog("the appGroupNo is -->:") + appGroupNo);
+        log.info(StringUtil.changeForLog("the appGroupNo is -->:") + appGroupNo);
         appSubmissionDto.setAppGrpNo(appGroupNo);
         //get Amount
         FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto);
         appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
         Double amount = feeDto.getTotal();
-        log.debug(StringUtil.changeForLog("the amount is -->:") + amount);
+        log.info(StringUtil.changeForLog("the amount is -->:") + amount);
         appSubmissionDto.setAmount(amount);
         //judge is the preInspection
         PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
@@ -804,7 +805,7 @@ public class NewApplicationDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess",isrfiSuccess);
 
-        log.debug(StringUtil.changeForLog("the do doRenewSubmit end ...."));
+        log.info(StringUtil.changeForLog("the do doRenewSubmit end ...."));
     }
 
 
@@ -817,7 +818,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doRequestForChangeSubmit(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
+        log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         List<ApplicationDto> applicationDtos = requestForChangeService.getOngoingApplicationByLicenceId(appSubmissionDto.getLicenceId());
 
@@ -849,12 +850,12 @@ public class NewApplicationDelegator {
         //appSubmissionDto =checkAndSetData(bpc.request, appSubmissionDto);
         //get appGroupNo
         String appGroupNo = appSubmissionService.getGroupNo(appSubmissionDto.getAppType());
-        log.debug(StringUtil.changeForLog("the appGroupNo is -->:") + appGroupNo);
+        log.info(StringUtil.changeForLog("the appGroupNo is -->:") + appGroupNo);
         appSubmissionDto.setAppGrpNo(appGroupNo);
         AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(appSubmissionDto, oldAppSubmissionDto);
         FeeDto  feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         double amount = feeDto.getTotal();
-        log.debug(StringUtil.changeForLog("the amount is -->:") + amount);
+        log.info(StringUtil.changeForLog("the amount is -->:") + amount);
         appSubmissionDto.setAmount(amount);
         //judge is the preInspection
         PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
@@ -884,7 +885,7 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess",isrfiSuccess);
 
 
-        log.debug(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
+        log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
 
 
@@ -896,7 +897,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doSubmit(BaseProcessClass bpc) throws IOException {
-        log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
+        log.info(StringUtil.changeForLog("the do doSubmit start ...."));
         //do validate
         // Map<String, Map<String, String>> validateResult = doValidate(bpc);
         //save the app and appGroup
@@ -914,13 +915,13 @@ public class NewApplicationDelegator {
         }
         //get appGroupNo
         String appGroupNo = appSubmissionService.getGroupNo(appSubmissionDto.getAppType());
-        log.debug(StringUtil.changeForLog("the appGroupNo is -->:") + appGroupNo);
+        log.info(StringUtil.changeForLog("the appGroupNo is -->:") + appGroupNo);
         appSubmissionDto.setAppGrpNo(appGroupNo);
         //get Amount
         FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto);
         appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
         Double amount = feeDto.getTotal();
-        log.debug(StringUtil.changeForLog("the amount is -->:") + amount);
+        log.info(StringUtil.changeForLog("the amount is -->:") + amount);
         appSubmissionDto.setAmount(amount);
         //judge is the preInspection
                PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
@@ -939,7 +940,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
         //get wrokgroup
-        log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
+        log.info(StringUtil.changeForLog("the do doSubmit end ...."));
     }
 
 
@@ -952,7 +953,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void controlSwitch(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do controlSwitch start ...."));
+        log.info(StringUtil.changeForLog("the do controlSwitch start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String switch2 = "loading";
         String crudActionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
@@ -976,7 +977,7 @@ public class NewApplicationDelegator {
 
         }
         ParamUtil.setRequestAttr(bpc.request, "Switch2", switch2);
-        log.debug(StringUtil.changeForLog("the do controlSwitch end ...."));
+        log.info(StringUtil.changeForLog("the do controlSwitch end ...."));
 
     }
     /**
@@ -986,7 +987,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void jumpBank(BaseProcessClass bpc) throws IOException {
-        log.debug(StringUtil.changeForLog("the do jumpBank start ...."));
+        log.info(StringUtil.changeForLog("the do jumpBank start ...."));
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
         if(StringUtil.isEmpty(payMethod)){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE,"payment");
@@ -1013,7 +1014,7 @@ public class NewApplicationDelegator {
             serviceConfigService.updatePaymentStatus(appGrp);
             ParamUtil.setRequestAttr(bpc.request, "PmtStatus", "GIRO");
         }
-        log.debug(StringUtil.changeForLog("the do jumpBank end ...."));
+        log.info(StringUtil.changeForLog("the do jumpBank end ...."));
     }
 
     /**
@@ -1023,16 +1024,16 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void prepareErrorAck(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do prepareErrorAck start ...."));
+        log.info(StringUtil.changeForLog("the do prepareErrorAck start ...."));
 
-        log.debug(StringUtil.changeForLog("the do prepareErrorAck end ...."));
+        log.info(StringUtil.changeForLog("the do prepareErrorAck end ...."));
     }
 
     public void doErrorAck(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do doErrorAck start ...."));
+        log.info(StringUtil.changeForLog("the do doErrorAck start ...."));
 
 
-        log.debug(StringUtil.changeForLog("the do doErrorAck end ...."));
+        log.info(StringUtil.changeForLog("the do doErrorAck end ...."));
     }
 
 
@@ -1044,9 +1045,9 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void prepareAckPage(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do prepareAckPage start ...."));
+        log.info(StringUtil.changeForLog("the do prepareAckPage start ...."));
 
-        log.debug(StringUtil.changeForLog("the do prepareAckPage end ...."));
+        log.info(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
 
 
@@ -1861,11 +1862,11 @@ public class NewApplicationDelegator {
 
     }
     private void loadingDraft(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do loadingDraft start ...."));
+        log.info(StringUtil.changeForLog("the do loadingDraft start ...."));
         String draftNo = (String) ParamUtil.getString(bpc.request, "DraftNumber");
         //draftNo = "DN191118000001";
         if(!StringUtil.isEmpty(draftNo)){
-            log.debug(StringUtil.changeForLog("draftNo is not empty"));
+            log.info(StringUtil.changeForLog("draftNo is not empty"));
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
             if(appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() >0){
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -1874,10 +1875,10 @@ public class NewApplicationDelegator {
             }
 
         }
-        log.debug(StringUtil.changeForLog("the do loadingDraft end ...."));
+        log.info(StringUtil.changeForLog("the do loadingDraft end ...."));
     }
     private void requestForChangeLoading(BaseProcessClass bpc) throws CloneNotSupportedException{
-        log.debug(StringUtil.changeForLog("the do requestForChangeLoading start ...."));
+        log.info(StringUtil.changeForLog("the do requestForChangeLoading start ...."));
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         //String licenceId = "B99F41F3-5D1E-EA11-BE7D-000C29F371DC";
 
@@ -1909,10 +1910,10 @@ public class NewApplicationDelegator {
 
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
-        log.debug(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
+        log.info(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
     }
     private void renewLicence(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do renewLicence start ...."));
+        log.info(StringUtil.changeForLog("the do renewLicence start ...."));
         String licenceId = ParamUtil.getString(bpc.request, "licenceId");
         String type = ParamUtil.getString(bpc.request, "type");
         if(!StringUtil.isEmpty(licenceId) && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
@@ -1931,11 +1932,11 @@ public class NewApplicationDelegator {
             }
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
-        log.debug(StringUtil.changeForLog("the do renewLicence end ...."));
+        log.info(StringUtil.changeForLog("the do renewLicence end ...."));
     }
 
     private void requestForInformationLoading(BaseProcessClass bpc) throws CloneNotSupportedException {
-        log.debug(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
+        log.info(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
         String appNo = ParamUtil.getString(bpc.request,"appNo");
         if(!StringUtil.isEmpty(appNo)){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
@@ -1945,11 +1946,11 @@ public class NewApplicationDelegator {
             //ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,"test");
         }
-        log.debug(StringUtil.changeForLog("the do requestForInformationLoading end ...."));
+        log.info(StringUtil.changeForLog("the do requestForInformationLoading end ...."));
     }
 
     private boolean loadingServiceConfig(BaseProcessClass bpc) throws CloneNotSupportedException {
-        log.debug(StringUtil.changeForLog("the do loadingServiceConfig start ...."));
+        log.info(StringUtil.changeForLog("the do loadingServiceConfig start ...."));
         //loading the service
         List<String> serviceConfigIds = new ArrayList<>();
         List<String> names = new ArrayList<>();
@@ -1957,7 +1958,7 @@ public class NewApplicationDelegator {
         if(appSubmissionDto != null ){
             // from draft,rfi
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            if(appSvcRelatedInfoDtoList != null && appSvcRelatedInfoDtoList.size()>0){
+            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtoList){
                     if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getServiceId())){
                         serviceConfigIds.add(appSvcRelatedInfoDto.getServiceId());
@@ -1969,25 +1970,19 @@ public class NewApplicationDelegator {
                 }
             }
         }else {
-
             List<String> baseServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseService");
             List<String> specifiedServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "specifiedService");
-            if(baseServiceIds != null && !baseServiceIds.isEmpty()){
-                for(String id:baseServiceIds){
-                    serviceConfigIds.add(id);
-                }
+            if(!IaisCommonUtils.isEmpty(baseServiceIds)){
+                serviceConfigIds.addAll(baseServiceIds);
             }
-
-            if(specifiedServiceIds != null && !specifiedServiceIds.isEmpty()){
-                for(String id:specifiedServiceIds){
-                    serviceConfigIds.add(id);
-                }
+            if(!IaisCommonUtils.isEmpty(specifiedServiceIds)){
+                serviceConfigIds.addAll(specifiedServiceIds);
             }
         }
 
 
-        if((serviceConfigIds == null || serviceConfigIds.isEmpty()) && names.isEmpty()){
-            log.debug(StringUtil.changeForLog("service id is empty"));
+        if(IaisCommonUtils.isEmpty(serviceConfigIds) && IaisCommonUtils.isEmpty(names)){
+            log.info(StringUtil.changeForLog("service id is empty"));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "errorAck");
             ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "ou have encountered some problems, please contact the administrator !!!");
@@ -2004,7 +1999,7 @@ public class NewApplicationDelegator {
 
         sortHcsaServiceDto(hcsaServiceDtoList);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
-        log.debug(StringUtil.changeForLog("the do loadingServiceConfig end ...."));
+        log.info(StringUtil.changeForLog("the do loadingServiceConfig end ...."));
         return true;
     }
 
@@ -2049,7 +2044,7 @@ public class NewApplicationDelegator {
 
 
     private Map<String, String> doValidatePremiss(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
+        log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         //do validate one premiss
 
         Map<String, String> errorMap = new HashMap<>();
@@ -2386,12 +2381,12 @@ public class NewApplicationDelegator {
             }
 
         }
-        log.debug(StringUtil.changeForLog("the do doValidatePremiss end ...."));
+        log.info(StringUtil.changeForLog("the do doValidatePremiss end ...."));
 
         return errorMap;
     }
     private Map<String,String> doValidatePremissCgo(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
+        log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         //do validate premiss
         Map<String,String> errorMap = new HashMap<>();
         AppSvcCgoDto appSvcCgoDto=  (AppSvcCgoDto) ParamUtil.getSessionAttr(bpc.request,"AppSvcCgoDto");
@@ -2403,14 +2398,14 @@ public class NewApplicationDelegator {
         if(!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")){
             errorMap.put("emailAddr","Please key in a valid email address");
         }
-        log.debug(StringUtil.changeForLog("the do doValidatePremiss end ...."));
+        log.info(StringUtil.changeForLog("the do doValidatePremiss end ...."));
         return errorMap;
     }
 
     private AppSubmissionDto getAppSubmissionDto(HttpServletRequest request){
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
         if(appSubmissionDto == null){
-            log.debug(StringUtil.changeForLog("appSubmissionDto is empty "));
+            log.info(StringUtil.changeForLog("appSubmissionDto is empty "));
             appSubmissionDto = new AppSubmissionDto();
         }
         return appSubmissionDto;
@@ -2472,7 +2467,7 @@ public class NewApplicationDelegator {
     }
 
     private void  documentValid(HttpServletRequest request, Map<String,String> errorMap){
-        log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
+        log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList  = appSubmissionDto.getAppGrpPrimaryDocDtos();
         if(appGrpPrimaryDocDtoList == null){
