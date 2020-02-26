@@ -317,5 +317,33 @@
              </#if>
         ]]>
     </sql>
+
+    <sql key="queryMassDistributionList"  remarks="Mass and email list">
+        <![CDATA[
+            SELECT
+            T1.ID,T1.DISTRIBUTION_NAME,T1.SERVICE_CODE,T1.DELIVERY_MODE,T1.CREATED_DT,T1.CREATED_BY,T2.RECIPIENTS_ROLE
+            FROM distribution T1
+             JOIN distribution_role T2 ON T1.ID = T2.DISTRIBUTION_ID
+            <#if status??> AND T1.STATUS = :status</#if>
+            <#if description??> AND DISTRIBUTION_NAME like :description</#if>
+            <#if recipients??> AND RECIPIENTS_ROLE like :recipients</#if>
+            <#if service??> AND SERVICE_CODE =:service</#if>
+        ]]>
+    </sql>
+
+    <sql key="queryBlastManagementList"  remarks="blast management list">
+        <![CDATA[
+            SELECT
+            T1.ID,T1.MSG_CONTENT,T1.SUBJECT,T1.MSG_NAME,T2.DISTRIBUTION_NAME,T1.DELIVERY_MODE,T1.SCHEDULE_SEND_DATE,
+            T1.ACTUAL_SEND_DATE,T1.STATUS,T3.DOC_NAME,T1.CREATED_BY,T1.CREATED_DT
+            FROM email_sms_blast T1
+            JOIN distribution T2 ON T1.DISTRIBUTION_ID = T2.ID
+            LEFT JOIN email_sms_blast_attachment T3 ON T1.ID = T3.BLAST_ID
+            WHERE  T1.status = 'CMSTAT001' or T1.status = 'CMSTAT003'
+            <#if id??> AND T1.ID =:id</#if>
+            <#if description??> AND DISTRIBUTION_NAME like :description</#if>
+            <#if msgName??> AND MSG_NAME like :msgName</#if>
+        ]]>
+    </sql>
 </sqls>
 

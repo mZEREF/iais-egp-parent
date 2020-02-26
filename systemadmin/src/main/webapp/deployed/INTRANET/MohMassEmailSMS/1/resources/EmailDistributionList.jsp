@@ -1,0 +1,1 @@
+<%@include file="/iais/massEmail/emailDistributionList.jsp"%>
