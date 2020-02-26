@@ -585,17 +585,18 @@ public class UploadFileServiceImpl implements UploadFileService {
 
                         }
                     }
-                }
 
+                    for(AppEditSelectDto appEditSelectDto:appEditSelects){
+                        String applicationId = appEditSelectDto.getApplicationId();
+                        String editType = appEditSelectDto.getEditType();
+                        if(applicationDto.getId().equals(applicationId)&&ApplicationConsts.APPLICATION_EDIT_TYPE_RFC.equals(editType)){
+                            appEditSelectDtoSet.add(appEditSelectDto);
 
-                for(AppEditSelectDto appEditSelectDto:appEditSelects){
-                    String applicationId = appEditSelectDto.getApplicationId();
-                    String editType = appEditSelectDto.getEditType();
-                    if(applicationDto.getId().equals(applicationId)&&ApplicationConsts.APPLICATION_EDIT_TYPE_RFC.equals(editType)){
-                        appEditSelectDtoSet.add(appEditSelectDto);
-
+                        }
                     }
                 }
+
+
             }
 
             for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDoc){
