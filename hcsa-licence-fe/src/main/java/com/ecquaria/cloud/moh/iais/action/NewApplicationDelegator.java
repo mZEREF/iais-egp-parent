@@ -1966,6 +1966,7 @@ public class NewApplicationDelegator {
                     if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getServiceId())){
                         serviceConfigIds.add(appSvcRelatedInfoDto.getServiceId());
                     }
+                    //if get the data from licence, only have the serviceName
                     if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getServiceName())){
                         names.add(appSvcRelatedInfoDto.getServiceName());
                     }
