@@ -1914,6 +1914,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do renewLicence start ...."));
         String licenceId = ParamUtil.getString(bpc.request, "licenceId");
         String type = ParamUtil.getString(bpc.request, "type");
+        log.info(StringUtil.changeForLog("The type is -->:"+type));
         if(!StringUtil.isEmpty(licenceId) && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
             if(appSubmissionDto != null){

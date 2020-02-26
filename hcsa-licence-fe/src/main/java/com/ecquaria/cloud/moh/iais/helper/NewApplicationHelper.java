@@ -240,6 +240,9 @@ public class NewApplicationHelper {
         StringBuilder stringBuilder =new StringBuilder();
         int poIndex=0;
         int dpoIndex=0;
+        if(IaisCommonUtils.isEmpty(poDto)){
+            return oneErrorMap;
+        }
         for (int i=0;i< poDto.size();i++) {
             StringBuilder stringBuilder1 =new StringBuilder();
             String psnType = poDto.get(i).getPsnType();
