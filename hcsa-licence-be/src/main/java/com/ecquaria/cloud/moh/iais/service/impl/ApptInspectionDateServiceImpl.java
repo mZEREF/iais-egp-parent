@@ -483,7 +483,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     private void createMessage(String url, String serviceId) {
         InterMessageDto interMessageDto = new InterMessageDto();
-        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_SRC_ID);
+        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
         interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_APPT_INSPECTION_DATE);
         interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
         String mesNO = inboxMsgService.getMessageNo();
