@@ -607,7 +607,7 @@ public class HcsaApplicationDelegator {
 //        applicationService.updateFEApplicaiton(applicationDto);
         //send message to FE user.
         InterMessageDto interMessageDto = new InterMessageDto();
-        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_SRC_ID);
+        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
         interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION);
         interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
         String mesNO = inboxMsgService.getMessageNo();

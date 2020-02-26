@@ -146,7 +146,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             applicationService.updateFEApplicaiton(applicationDto1);
             updateInspectionStatus(taskDto.getRefNo(), InspectionConstants.INSPECTION_STATUS_PENDING_REQUEST_FOR_INFORMATION);
             InterMessageDto interMessageDto = new InterMessageDto();
-            interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_SRC_ID);
+            interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
             interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION);
             interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
             String mesNO = inboxMsgService.getMessageNo();
