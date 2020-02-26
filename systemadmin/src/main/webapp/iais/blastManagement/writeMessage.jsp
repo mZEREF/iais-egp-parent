@@ -1,0 +1,101 @@
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%
+    String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT;
+%>
+<%
+    sop.webflow.rt.api.BaseProcessClass process =
+            (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+%>
+<script src="<%=webroot%>js/tinymce/tinymce.min.js"></script>
+<script src="<%=webroot%>js/initTinyMce.js"></script>
+<webui:setLayout name="iais-intranet"/>
+<div class="main-content">
+    <form class="form-horizontal" method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
+        <%@ include file="/include/formHidden.jsp" %>
+        <input type="hidden" name="crud_action_type" value="">
+        <input type="hidden" name="crud_action_value" value="">
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">
+                <div class="center-content">
+                    <div class="intranet-content">
+                        <div class="bg-title">
+                            <h2>New Blast Management List</h2>
+                        </div>
+                        <ul class="progress-tracker">
+                            <li class="tracker-item active">Fill in Message Details</li>
+                            <li class="tracker-item active">Write Message</li>
+                            <li class="tracker-item ">Select Recipients to send</li>
+                        </ul>
+                        <h3>New Mass Email</h3>
+                        <div class="form-group">
+                            <label class="col-xs-4 col-md-4 control-label" >Subject:</label>
+                            <iais:value>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <input id="subject" type="text" name="subject" value="${edit.getSubject()}">
+                                    <span id="error_name" name="iaisErrorMsg" class="error-msg"></span>
+                                </div>
+                            </iais:value>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-4 col-md-4 control-label">Content:</label>
+                            <div class="form-group">
+                            <textarea name="messageContent" class="textarea" id="htmlEditor" title="content">
+                                ${edit.msgContent}
+                            </textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-4 col-md-4 control-label">Attachments:</label>
+                            <div class="document-upload-gp">
+                                <div class="document-upload-list">
+                                    <div class="file-upload-gp">
+                                        <div class="fileNameDisplay">${edit.getDocName()}</div>
+                                        <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="application-tab-footer">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12">
+                                <div class="text-right text-center-mobile"><button id="saveDis" type="button" class="btn btn-primary">Continue</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <%@include file="/include/validation.jsp"%>
+</div>
+
+<%@include file="/include/utils.jsp"%>
+
+<script type="text/javascript">
+    $('#saveDis').click(function(){
+        SOP.Crud.cfxSubmit("mainForm");
+    });
+    $(function () {
+        tinymce.init({
+            branding: false,
+            selector: "#htmlEditor",  // change this value according to your HTML
+            toolbar: 'code undo redo restoredraft | cut copy paste pastetext | forecolor backcolor bold italic underline strikethrough link anchor | alignleft aligncenter alignright alignjustify outdent indent | \
+    styleselect formatselect fontselect fontsizeselect | bullist numlist | blockquote subscript superscript removeformat | \
+    table image media charmap emoticons hr pagebreak insertdatetime print preview | fullscreen | bdmap indent2em lineheight formatpainter axupimgs',
+            height: 650,
+        });
+    });
+
+    $('#selectedFile').change(function () {
+        var file = $(this).val();
+        var fileName = Utils.getFileName(file);
+        $(".fileNameDisplay").text(fileName);
+    });
+</script>
