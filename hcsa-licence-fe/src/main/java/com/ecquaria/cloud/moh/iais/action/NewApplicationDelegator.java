@@ -134,10 +134,6 @@ public class NewApplicationDelegator {
         //clear Session
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
 
-        List<AppSvcPrincipalOfficersDto> list=new ArrayList<>();
-        AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto=new AppSvcPrincipalOfficersDto();
-        list.add(appSvcPrincipalOfficersDto);
-        ParamUtil.setSessionAttr(bpc.request,"AppSvcPrincipalOfficersDto",(Serializable) list);
 
         //Primary Documents
         ParamUtil.setSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO, null);
