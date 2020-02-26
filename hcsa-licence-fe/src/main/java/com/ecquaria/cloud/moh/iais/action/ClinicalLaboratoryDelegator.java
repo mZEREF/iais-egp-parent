@@ -24,10 +24,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeO
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.ClinicalOfficerValidateDto;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
@@ -159,103 +157,6 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do prepareJumpPage end ...."));
     }
 
-    private ServiceStepDto getServiceStepDto(ServiceStepDto serviceStepDto,String action,List<HcsaServiceDto> hcsaServiceDtoList,String svcId){
-        //get the service information
-         int serviceNum = -1;
-         if(svcId!=null && hcsaServiceDtoList!=null && hcsaServiceDtoList.size() >0){
-            for (int i = 0 ; i< hcsaServiceDtoList.size();i++){
-                if(svcId.equals(hcsaServiceDtoList.get(i).getId())){
-                  serviceNum = i;
-                  break;
-                }
-            }
-         }
-        serviceStepDto.setServiceNumber(serviceNum);
-         boolean serviceFirst = false;
-         boolean serviceEnd =  false;
-         if(serviceNum == 0){
-             serviceFirst = true;
-         }
-         if(serviceNum+1 == hcsaServiceDtoList.size()){
-             serviceEnd = true;
-         }
-        serviceStepDto.setServiceFirst(serviceFirst);
-        serviceStepDto.setServiceEnd(serviceEnd);
-        //get the step information
-        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceStepDto.getHcsaServiceStepSchemeDtos();
-        if(hcsaServiceStepSchemeDtos!=null && hcsaServiceStepSchemeDtos.size()>0){
-          int number = -1;
-            if(StringUtil.isEmpty(action)){
-                number = 0;
-            }else{
-                for (int i = 0 ;i<hcsaServiceStepSchemeDtos.size();i++){
-                    if(action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())){
-                        number =i;
-                        break;
-                    }
-                }
-            }
-          boolean stepFirst = false;
-          boolean stepEnd = false;
-          if(number == 0){
-              stepFirst = true;
-          }
-          if(number+1 == hcsaServiceStepSchemeDtos.size()){
-              stepEnd = true;
-          }
-          serviceStepDto.setStepFirst(stepFirst);
-          serviceStepDto.setStepEnd(stepEnd);
-          if(number!=-1){
-              //clear the old data
-              serviceStepDto.setPreviousStep(null);
-              serviceStepDto.setNextStep(null);
-              //set the new data
-              serviceStepDto.setCurrentNumber(number);
-              serviceStepDto.setCurrentStep(hcsaServiceStepSchemeDtos.get(number));
-              if(stepFirst){
-                  if(!serviceFirst){
-                      HcsaServiceDto preHcsaServiceDto =  hcsaServiceDtoList.get(serviceNum-1);
-                      HcsaServiceStepSchemeDto preHcsaServiceStepSchemeDto = new HcsaServiceStepSchemeDto();
-                      preHcsaServiceStepSchemeDto.setStepCode(preHcsaServiceDto.getSvcCode());
-                      serviceStepDto.setPreviousStep(preHcsaServiceStepSchemeDto);
-                  }
-                  if(stepEnd){
-                      if(!serviceEnd){
-                          HcsaServiceDto nextHcsaServiceDto =  hcsaServiceDtoList.get(serviceNum+1);
-                          HcsaServiceStepSchemeDto nextHcsaServiceStepSchemeDto = new HcsaServiceStepSchemeDto();
-                          nextHcsaServiceStepSchemeDto.setStepCode(nextHcsaServiceDto.getSvcCode());
-                          serviceStepDto.setNextStep(nextHcsaServiceStepSchemeDto);
-                      }
-                  }else{
-                      serviceStepDto.setNextStep(hcsaServiceStepSchemeDtos.get(number+1));
-                  }
-              }else if(stepEnd){
-                  if(stepFirst){
-                      if(!serviceFirst){
-                          HcsaServiceDto preHcsaServiceDto =  hcsaServiceDtoList.get(serviceNum-1);
-                          HcsaServiceStepSchemeDto preHcsaServiceStepSchemeDto = new HcsaServiceStepSchemeDto();
-                          preHcsaServiceStepSchemeDto.setStepCode(preHcsaServiceDto.getSvcCode());
-                          serviceStepDto.setPreviousStep(preHcsaServiceStepSchemeDto);
-                      }
-                  }else{
-                      serviceStepDto.setPreviousStep(hcsaServiceStepSchemeDtos.get(number-1));
-                  }
-                  if(!serviceEnd){
-                      HcsaServiceDto nextHcsaServiceDto =  hcsaServiceDtoList.get(serviceNum+1);
-                      HcsaServiceStepSchemeDto nextHcsaServiceStepSchemeDto = new HcsaServiceStepSchemeDto();
-                      nextHcsaServiceStepSchemeDto.setStepCode(nextHcsaServiceDto.getSvcCode());
-                      serviceStepDto.setNextStep(nextHcsaServiceStepSchemeDto);
-                  }
-
-              }else{
-                  serviceStepDto.setPreviousStep(hcsaServiceStepSchemeDtos.get(number-1));
-                  serviceStepDto.setNextStep(hcsaServiceStepSchemeDtos.get(number+1));
-              }
-          }
-        }
-
-        return serviceStepDto;
-    }
 
     /**
      * StartStep: prepareLaboratoryDisciplines
@@ -289,16 +190,7 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setSessionAttr(bpc.request, "reloadLaboratoryDisciplines", (Serializable) reloadChkLstMap);
         log.debug(StringUtil.changeForLog("the do prepareLaboratoryDisciplines end ...."));
     }
-    private void turn(List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos,Map<String,HcsaSvcSubtypeOrSubsumedDto> allCheckListMap){
 
-        for(HcsaSvcSubtypeOrSubsumedDto dto:hcsaSvcSubtypeOrSubsumedDtos){
-            allCheckListMap.put(dto.getId(),dto);
-            if(dto.getList() != null && dto.getList().size()>0){
-                turn(dto.getList(), allCheckListMap);
-            }
-        }
-
-    }
 
 
     /**
@@ -335,7 +227,7 @@ public class ClinicalLaboratoryDelegator {
         cgoSelectList.add(sp1);
         ParamUtil.setSessionAttr(bpc.request, "CgoSelectList", (Serializable) cgoSelectList);
 
-        List<SelectOption> idTypeSelectList = getIdTypeSelOp();
+        List<SelectOption> idTypeSelectList = NewApplicationHelper.getIdTypeSelOp();
         ParamUtil.setRequestAttr(bpc.request, DROPWOWN_IDTYPESELECT, idTypeSelectList);
 
         List<HcsaServiceDto> hcsaServiceDtoList= (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
@@ -452,7 +344,7 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setRequestAttr(bpc.request, "ReloadPrincipalOfficers", principalOfficersDtos);
         ParamUtil.setRequestAttr(bpc.request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);
 
-        List<SelectOption> IdTypeSelect = getIdTypeSelOp();
+        List<SelectOption> IdTypeSelect = NewApplicationHelper.getIdTypeSelOp();
         ParamUtil.setRequestAttr(bpc.request, "IdTypeSelect", IdTypeSelect);
 
         List<SelectOption> assignSelectList = getAssignPrincipalOfficerSel(currentSvcId, true);
@@ -655,7 +547,7 @@ public class ClinicalLaboratoryDelegator {
                 }
                 String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
                 if ("next".equals(crud_action_type)) {
-                    errorMap = doValidateLaboratory(appSvcChckListDtoList, currentSvcId);
+                    errorMap = NewApplicationHelper.doValidateLaboratory(appSvcChckListDtoList, currentSvcId);
 
                     if (appSubmissionDto.isNeedEditController()) {
                         Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
@@ -680,52 +572,7 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines end ...."));
     }
 
-    public static Map<String,String> doValidateLaboratory(List<AppSvcChckListDto>  listDtos,String serviceId){
-        Map<String,String> map=new HashMap<>();
-        int count=0;
 
-        if(listDtos.isEmpty()){
-         /*   map.put("checkError","UC_CHKLMD001_ERR002");*/
-        }else {
-            for(int i=0;i<listDtos.size();i++){
-                String parentName = listDtos.get(i).getParentName();
-                if(parentName==null){
-                    count++;
-                    continue;
-                }else  if(listDtos.get(i).isChkLstType()){
-                    if(serviceId.equals(parentName)){
-                        count++;
-                        continue;
-                    }
-                   for(AppSvcChckListDto every :listDtos) {
-                       if(every.getChildrenName()!=null){
-                           if(every.getChildrenName().equals(parentName)){
-                               count++;
-                               break;
-                           }
-                       }
-
-                   }
-                }
-                else if(!listDtos.get(i).isChkLstType()){
-                    for(AppSvcChckListDto every :listDtos) {
-                            if (every.getChkLstConfId().equals(parentName)) {
-                                count++;
-                                break;
-
-                        }
-                    }
-                }
-            }
-
-        }
-        if(count!=listDtos.size()){
-            map.put("checkError","UC_CHKLMD001_ERR002");
-        }
-
-        return map;
-
-    }
 
     /**
      * StartStep: doGovernanceOfficers
@@ -756,7 +603,8 @@ public class ClinicalLaboratoryDelegator {
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
             String crud_action_additional = bpc.request.getParameter("nextStep");
             if ("next".equals(crud_action_additional)) {
-                errList = doValidateGovernanceOfficers(bpc.request);
+                List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST);
+                errList = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoList);
 
                 if (appSubmissionDto.isNeedEditController()) {
                     Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
@@ -860,14 +708,7 @@ public class ClinicalLaboratoryDelegator {
 
     }
 
-    private void doValidateDisciplineAllocation(Map<String ,String> map, List<AppSvcDisciplineAllocationDto> daList){
-        for(int i=0;i< daList.size();i++){
-            String idNo = daList.get(i).getIdNo();
-            if(StringUtil.isEmpty(idNo)){
-                map.put("disciplineAllocation"+i,"UC_CHKLMD001_ERR002");
-            }
-        }
-    }
+
     /**
      * StartStep: doPrincipalOfficers
      *
@@ -1054,43 +895,6 @@ public class ClinicalLaboratoryDelegator {
     }
 
 
-    private void  doValidateSvcDocument(HttpServletRequest request,Map<String,String> errorMap){
-
-        AppSubmissionDto appSubmissionDto =(AppSubmissionDto)request.getSession().getAttribute("AppSubmissionDto");
-        if(appSubmissionDto!=null){
-            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            if(appSvcRelatedInfoDtoList!=null){
-                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtoList){
-                    List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                    if(appSvcDocDtoLit!=null){
-
-                        for(int i=0;i<appSvcDocDtoLit.size();i++){
-
-                            Integer docSize = appSvcDocDtoLit.get(i).getDocSize();
-                            String docName = appSvcDocDtoLit.get(i).getDocName();
-                            if(docSize>4*1024*1024){
-                                errorMap.put("file"+i,"File size is too large!");
-                            }
-
-                            Boolean flag=false;
-                            String substring = docName.substring(docName.lastIndexOf(".") + 1);
-                            FileType[] fileType = FileType.values();
-                            for(FileType f:fileType){
-                                if(f.name().equalsIgnoreCase(substring)){
-                                    flag=true;
-                                }
-                            }
-
-                            if(!flag){
-                                errorMap.put("file"+i,"Wrong file type");
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-    }
 
 
     /**
@@ -1253,85 +1057,8 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doServicePersonnel end ...."));
     }
 
-    private static void doValidatetionServicePerson(Map <String,String> errorMap,List<AppSvcPersonnelDto> appSvcPersonnelDtos){
 
-        for(int i=0;i<appSvcPersonnelDtos.size();i++){
-            String personnelSel = appSvcPersonnelDtos.get(i).getPersonnelType();
-            if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)){
-                String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
-                String name = appSvcPersonnelDtos.get(i).getName();
-                if(StringUtil.isEmpty(name)){
-                    errorMap.put("name"+i,"UC_CHKLMD001_ERR001");
-                }
-                if(StringUtil.isEmpty(profRegNo)){
-                    errorMap.put("regnNo"+i,"UC_CHKLMD001_ERR001");
-                }
-            }
-            if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)){
-                String name = appSvcPersonnelDtos.get(i).getName();
-                String designation = appSvcPersonnelDtos.get(i).getDesignation();
-                String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
-                String qualification = appSvcPersonnelDtos.get(i).getQuaification();
 
-                if(StringUtil.isEmpty(name)){
-                    errorMap.put("name"+i,"UC_CHKLMD001_ERR001");
-                }
-                if(StringUtil.isEmpty(designation)){
-                    errorMap.put("designation"+i,"UC_CHKLMD001_ERR001");
-                }
-                if(StringUtil.isEmpty(wrkExpYear)){
-                    errorMap.put("wrkExpYear"+i,"UC_CHKLMD001_ERR001");
-                }else {
-                    if(!wrkExpYear.matches("^[0-9]*$")){
-                        errorMap.put("wrkExpYear"+i,"CHKLMD001_ERR003");
-                    }
-                }
-                if(StringUtil.isEmpty(qualification)){
-                    errorMap.put("qualification"+i,"UC_CHKLMD001_ERR001");
-                }
-            }
-
-            if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)){
-                String name = appSvcPersonnelDtos.get(i).getName();
-                String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
-                String quaification = appSvcPersonnelDtos.get(i).getQuaification();
-                if(StringUtil.isEmpty(name)){
-                    errorMap.put("name"+i,"UC_CHKLMD001_ERR001");
-                }
-                if(StringUtil.isEmpty(wrkExpYear)){
-                    errorMap.put("wrkExpYear"+i,"UC_CHKLMD001_ERR001");
-                }
-                else {
-                    if(!wrkExpYear.matches("^[0-9]*$")){
-                        errorMap.put("wrkExpYear"+i,"CHKLMD001_ERR003");
-                    }
-                }
-                if(StringUtil.isEmpty(quaification)){
-                    errorMap.put("quaification"+i,"UC_CHKLMD001_ERR001");
-                }
-            }
-            if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)){
-                String name = appSvcPersonnelDtos.get(i).getName();
-                if(StringUtil.isEmpty(name)){
-                    errorMap.put("name"+i,"UC_CHKLMD001_ERR001");
-                }
-            }
-
-        }
-
-    }
-
-    /**
-     * ajax
-     */
-    public void loadGovernanceOfficerByCGOId(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do loadGovernanceOfficerByCGOId start ...."));
-        //
-        String cgoId = bpc.request.getParameter("");
-        AppSvcCgoDto governanceOfficersDto = serviceConfigService.loadGovernanceOfficerByCgoId(cgoId);
-        ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERSDTO, governanceOfficersDto);
-        log.debug(StringUtil.changeForLog("the do loadGovernanceOfficerByCGOId end ...."));
-    }
 
     @RequestMapping(value = "/governance-officer-html", method = RequestMethod.GET)
     public @ResponseBody String genGovernanceOfficerHtmlList(HttpServletRequest request){
@@ -1355,7 +1082,7 @@ public class ClinicalLaboratoryDelegator {
         String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
 
         //ID Type
-        List<SelectOption> idTypeList = getIdTypeSelOp();
+        List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
         Map<String,String>  idTypeAttr = new HashMap<>();
         idTypeAttr.put("class", "idTypeSel");
         idTypeAttr.put("name", "idType");
@@ -1429,6 +1156,322 @@ public class ClinicalLaboratoryDelegator {
         }
         log.debug(StringUtil.changeForLog("getPsnInfoByIdNo end ...."));
         return  appSvcCgoDto;
+    }
+
+
+    //=============================================================================
+    //ajax method
+    //=============================================================================
+    /**
+     * ajax
+     */
+    public void loadGovernanceOfficerByCGOId(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do loadGovernanceOfficerByCGOId start ...."));
+        //
+        String cgoId = bpc.request.getParameter("");
+        AppSvcCgoDto governanceOfficersDto = serviceConfigService.loadGovernanceOfficerByCgoId(cgoId);
+        ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERSDTO, governanceOfficersDto);
+        log.debug(StringUtil.changeForLog("the do loadGovernanceOfficerByCGOId end ...."));
+    }
+
+    @RequestMapping(value = "/nuclear-medicine-imaging-html", method = RequestMethod.GET)
+    public @ResponseBody String addNuclearMedicineImagingHtml(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the add NuclearMedicineImaging html start ...."));
+        String sql = SqlMap.INSTANCE.getSql("servicePersonnel", "NuclearMedicineImaging").getSqlStr();
+        String currentSvcCod = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
+        List<SelectOption> personnel = genPersonnelTypeSel(currentSvcCod);
+        Map<String,String> personnelAttr = new HashMap<>();
+        personnelAttr.put("name", "personnelSel");
+        personnelAttr.put("class", "personnelSel");
+        personnelAttr.put("style", "display: none;");
+        String personnelSelectStr = NewApplicationHelper.generateDropDownHtml(personnelAttr, personnel, NewApplicationDelegator.FIRESTOPTION);
+
+        List<SelectOption> designation = (List) ParamUtil.getSessionAttr(request, "NuclearMedicineImagingDesignation");
+        Map<String,String> designationAttr = new HashMap<>();
+        designationAttr.put("name", "designation");
+        designationAttr.put("style", "display: none;");
+        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designation, NewApplicationDelegator.FIRESTOPTION);
+
+        sql = sql.replace("(1)", personnelSelectStr);
+        sql = sql.replace("(2)", designationSelectStr);
+
+        log.debug(StringUtil.changeForLog("the add NuclearMedicineImaging html end ...."));
+        return sql;
+    }
+
+
+
+    @RequestMapping(value = "/principal-officer-html", method = RequestMethod.GET)
+    public @ResponseBody String addPrincipalOfficeHtml(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the add addPrincipalOfficeHtml html start ...."));
+        String svcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
+        String sql = SqlMap.INSTANCE.getSql("principalOfficers", "generatePrincipalOfficersHtml").getSqlStr();
+
+        //assign select
+        List<SelectOption> assignPrincipalOfficerSel = getAssignPrincipalOfficerSel(svcId, false);
+        Map<String,String> assignPrincipalOfficerAttr = new HashMap<>();
+        assignPrincipalOfficerAttr.put("name", "assignSelect");
+        assignPrincipalOfficerAttr.put("class", "poSelect");
+        assignPrincipalOfficerAttr.put("style", "display: none;");
+        String principalOfficerSelStr = NewApplicationHelper.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, NewApplicationDelegator.FIRESTOPTION);
+
+        //salutation
+        List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
+        Map<String,String> salutationAttr = new HashMap<>();
+        salutationAttr.put("class", "salutation");
+        salutationAttr.put("name", "salutation");
+        salutationAttr.put("style", "display: none;");
+        String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
+
+        //ID Type
+        List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
+        Map<String,String>  idTypeAttr = new HashMap<>();
+        idTypeAttr.put("class", "idType");
+        idTypeAttr.put("name", "idType");
+        idTypeAttr.put("style", "display: none;");
+        String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null);
+
+        //Designation
+        List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
+        Map<String,String> designationAttr = new HashMap<>();
+        designationAttr.put("class", "designation");
+        designationAttr.put("name", "designation");
+        designationAttr.put("style", "display: none;");
+        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
+
+        sql = sql.replace("(1)", principalOfficerSelStr);
+        sql = sql.replace("(2)", salutationSelectStr);
+        sql = sql.replace("(3)", idTypeSelectStr);
+        sql = sql.replace("(4)", designationSelectStr);
+
+        log.debug(StringUtil.changeForLog("the add addPrincipalOfficeHtml html end ...."));
+        return sql;
+    }
+
+
+    @RequestMapping(value = "/deputy-principal-officer-html", method = RequestMethod.GET)
+    public @ResponseBody String addDeputyPrincipalOfficeHtml(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the add addDeputyPrincipalOfficeHtml html start ...."));
+        String sql = SqlMap.INSTANCE.getSql("principalOfficers", "generateDeputyPrincipalOfficersHtml").getSqlStr();
+
+        //salutation
+        List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
+        Map<String,String> salutationAttr = new HashMap<>();
+        salutationAttr.put("class", "deputySalutation");
+        salutationAttr.put("name", "deputySalutation");
+        salutationAttr.put("style", "display: none;");
+        String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
+
+        //ID Type
+        List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
+        Map<String,String>  idTypeAttr = new HashMap<>();
+        idTypeAttr.put("class", "deputyIdType");
+        idTypeAttr.put("name", "deputyIdType");
+        idTypeAttr.put("style", "display: none;");
+        String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null);
+
+        //Designation
+        List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
+        Map<String,String> designationAttr = new HashMap<>();
+        designationAttr.put("class", "deputyDesignation");
+        designationAttr.put("name", "deputyDesignation");
+        designationAttr.put("style", "display: none;");
+        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
+
+        //MedAlert
+        List<SelectOption> medAlertSelectList = getMedAlertSelectList(false);
+        Map<String,String> medAlertSelectAttr = new HashMap<>();
+        medAlertSelectAttr.put("class", "modeOfMedAlert");
+        medAlertSelectAttr.put("name", "modeOfMedAlert");
+        medAlertSelectAttr.put("style", "display: none;");
+        String medAlertSelectStr = NewApplicationHelper.generateDropDownHtml(medAlertSelectAttr, medAlertSelectList, NewApplicationDelegator.FIRESTOPTION);
+
+        sql = sql.replace("(1)", salutationSelectStr);
+        sql = sql.replace("(2)", idTypeSelectStr);
+        sql = sql.replace("(3)", designationSelectStr);
+        sql = sql.replace("(4)", medAlertSelectStr);
+
+        log.debug(StringUtil.changeForLog("the add addDeputyPrincipalOfficeHtml html end ...."));
+        return sql;
+    }
+
+    //=============================================================================
+    //private method
+    //=============================================================================
+
+    private ServiceStepDto getServiceStepDto(ServiceStepDto serviceStepDto,String action,List<HcsaServiceDto> hcsaServiceDtoList,String svcId){
+        //get the service information
+        int serviceNum = -1;
+        if(svcId!=null && hcsaServiceDtoList!=null && hcsaServiceDtoList.size() >0){
+            for (int i = 0 ; i< hcsaServiceDtoList.size();i++){
+                if(svcId.equals(hcsaServiceDtoList.get(i).getId())){
+                    serviceNum = i;
+                    break;
+                }
+            }
+        }
+        serviceStepDto.setServiceNumber(serviceNum);
+        boolean serviceFirst = false;
+        boolean serviceEnd =  false;
+        if(serviceNum == 0){
+            serviceFirst = true;
+        }
+        if(serviceNum+1 == hcsaServiceDtoList.size()){
+            serviceEnd = true;
+        }
+        serviceStepDto.setServiceFirst(serviceFirst);
+        serviceStepDto.setServiceEnd(serviceEnd);
+        //get the step information
+        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceStepDto.getHcsaServiceStepSchemeDtos();
+        if(hcsaServiceStepSchemeDtos!=null && hcsaServiceStepSchemeDtos.size()>0){
+            int number = -1;
+            if(StringUtil.isEmpty(action)){
+                number = 0;
+            }else{
+                for (int i = 0 ;i<hcsaServiceStepSchemeDtos.size();i++){
+                    if(action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())){
+                        number =i;
+                        break;
+                    }
+                }
+            }
+            boolean stepFirst = false;
+            boolean stepEnd = false;
+            if(number == 0){
+                stepFirst = true;
+            }
+            if(number+1 == hcsaServiceStepSchemeDtos.size()){
+                stepEnd = true;
+            }
+            serviceStepDto.setStepFirst(stepFirst);
+            serviceStepDto.setStepEnd(stepEnd);
+            if(number!=-1){
+                //clear the old data
+                serviceStepDto.setPreviousStep(null);
+                serviceStepDto.setNextStep(null);
+                //set the new data
+                serviceStepDto.setCurrentNumber(number);
+                serviceStepDto.setCurrentStep(hcsaServiceStepSchemeDtos.get(number));
+                if(stepFirst){
+                    if(!serviceFirst){
+                        HcsaServiceDto preHcsaServiceDto =  hcsaServiceDtoList.get(serviceNum-1);
+                        HcsaServiceStepSchemeDto preHcsaServiceStepSchemeDto = new HcsaServiceStepSchemeDto();
+                        preHcsaServiceStepSchemeDto.setStepCode(preHcsaServiceDto.getSvcCode());
+                        serviceStepDto.setPreviousStep(preHcsaServiceStepSchemeDto);
+                    }
+                    if(stepEnd){
+                        if(!serviceEnd){
+                            HcsaServiceDto nextHcsaServiceDto =  hcsaServiceDtoList.get(serviceNum+1);
+                            HcsaServiceStepSchemeDto nextHcsaServiceStepSchemeDto = new HcsaServiceStepSchemeDto();
+                            nextHcsaServiceStepSchemeDto.setStepCode(nextHcsaServiceDto.getSvcCode());
+                            serviceStepDto.setNextStep(nextHcsaServiceStepSchemeDto);
+                        }
+                    }else{
+                        serviceStepDto.setNextStep(hcsaServiceStepSchemeDtos.get(number+1));
+                    }
+                }else if(stepEnd){
+                    if(stepFirst){
+                        if(!serviceFirst){
+                            HcsaServiceDto preHcsaServiceDto =  hcsaServiceDtoList.get(serviceNum-1);
+                            HcsaServiceStepSchemeDto preHcsaServiceStepSchemeDto = new HcsaServiceStepSchemeDto();
+                            preHcsaServiceStepSchemeDto.setStepCode(preHcsaServiceDto.getSvcCode());
+                            serviceStepDto.setPreviousStep(preHcsaServiceStepSchemeDto);
+                        }
+                    }else{
+                        serviceStepDto.setPreviousStep(hcsaServiceStepSchemeDtos.get(number-1));
+                    }
+                    if(!serviceEnd){
+                        HcsaServiceDto nextHcsaServiceDto =  hcsaServiceDtoList.get(serviceNum+1);
+                        HcsaServiceStepSchemeDto nextHcsaServiceStepSchemeDto = new HcsaServiceStepSchemeDto();
+                        nextHcsaServiceStepSchemeDto.setStepCode(nextHcsaServiceDto.getSvcCode());
+                        serviceStepDto.setNextStep(nextHcsaServiceStepSchemeDto);
+                    }
+
+                }else{
+                    serviceStepDto.setPreviousStep(hcsaServiceStepSchemeDtos.get(number-1));
+                    serviceStepDto.setNextStep(hcsaServiceStepSchemeDtos.get(number+1));
+                }
+            }
+        }
+
+        return serviceStepDto;
+    }
+    private void turn(List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos,Map<String,HcsaSvcSubtypeOrSubsumedDto> allCheckListMap){
+
+        for(HcsaSvcSubtypeOrSubsumedDto dto:hcsaSvcSubtypeOrSubsumedDtos){
+            allCheckListMap.put(dto.getId(),dto);
+            if(dto.getList() != null && dto.getList().size()>0){
+                turn(dto.getList(), allCheckListMap);
+            }
+        }
+
+    }
+    private static void doValidatetionServicePerson(Map <String,String> errorMap,List<AppSvcPersonnelDto> appSvcPersonnelDtos){
+
+        for(int i=0;i<appSvcPersonnelDtos.size();i++){
+            String personnelSel = appSvcPersonnelDtos.get(i).getPersonnelType();
+            if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)){
+                String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
+                String name = appSvcPersonnelDtos.get(i).getName();
+                if(StringUtil.isEmpty(name)){
+                    errorMap.put("name"+i,"UC_CHKLMD001_ERR001");
+                }
+                if(StringUtil.isEmpty(profRegNo)){
+                    errorMap.put("regnNo"+i,"UC_CHKLMD001_ERR001");
+                }
+            }
+            if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)){
+                String name = appSvcPersonnelDtos.get(i).getName();
+                String designation = appSvcPersonnelDtos.get(i).getDesignation();
+                String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
+                String qualification = appSvcPersonnelDtos.get(i).getQuaification();
+
+                if(StringUtil.isEmpty(name)){
+                    errorMap.put("name"+i,"UC_CHKLMD001_ERR001");
+                }
+                if(StringUtil.isEmpty(designation)){
+                    errorMap.put("designation"+i,"UC_CHKLMD001_ERR001");
+                }
+                if(StringUtil.isEmpty(wrkExpYear)){
+                    errorMap.put("wrkExpYear"+i,"UC_CHKLMD001_ERR001");
+                }else {
+                    if(!wrkExpYear.matches("^[0-9]*$")){
+                        errorMap.put("wrkExpYear"+i,"CHKLMD001_ERR003");
+                    }
+                }
+                if(StringUtil.isEmpty(qualification)){
+                    errorMap.put("qualification"+i,"UC_CHKLMD001_ERR001");
+                }
+            }
+
+            if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)){
+                String name = appSvcPersonnelDtos.get(i).getName();
+                String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
+                String quaification = appSvcPersonnelDtos.get(i).getQuaification();
+                if(StringUtil.isEmpty(name)){
+                    errorMap.put("name"+i,"UC_CHKLMD001_ERR001");
+                }
+                if(StringUtil.isEmpty(wrkExpYear)){
+                    errorMap.put("wrkExpYear"+i,"UC_CHKLMD001_ERR001");
+                }
+                else {
+                    if(!wrkExpYear.matches("^[0-9]*$")){
+                        errorMap.put("wrkExpYear"+i,"CHKLMD001_ERR003");
+                    }
+                }
+                if(StringUtil.isEmpty(quaification)){
+                    errorMap.put("quaification"+i,"UC_CHKLMD001_ERR001");
+                }
+            }
+            if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)){
+                String name = appSvcPersonnelDtos.get(i).getName();
+                if(StringUtil.isEmpty(name)){
+                    errorMap.put("name"+i,"UC_CHKLMD001_ERR001");
+                }
+            }
+
+        }
+
     }
 
     private AppSvcCgoDto isExistIdNo(List<AppSvcCgoDto> appSvcCgoDtoList, String idNo){
@@ -1570,123 +1613,51 @@ public class ClinicalLaboratoryDelegator {
 
         return appSubmissionDto;
     }
-
-    public static Map<String,String> doValidateGovernanceOfficers(HttpServletRequest request){
-        List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
-        if(appSvcCgoList == null){
-            return new HashMap<>();
-        }
-
-        Map<String,String> errMap = new HashMap<>();
-        StringBuilder stringBuilder =new StringBuilder();
-        for(int i=0;i<appSvcCgoList.size();i++ ){
-            StringBuilder stringBuilder1=new StringBuilder();
-            String assignSelect = appSvcCgoList.get(i).getAssignSelect();
-            if("-1".equals(assignSelect)){
-                errMap.put("assignSelect"+i, "UC_CHKLMD001_ERR002");
-            }else {
-                String idTyp = appSvcCgoList.get(i).getIdType();
-                if("-1".equals(idTyp)){
-                    errMap.put("idTyp"+i, "UC_CHKLMD001_ERR002");
-                }
-                String salutation = appSvcCgoList.get(i).getSalutation();
-                if(StringUtil.isEmpty(salutation)){
-                    errMap.put("salutation"+i,"UC_CHKLMD001_ERR001");
-                }
-                String speciality = appSvcCgoList.get(i).getSpeciality();
-                if("-1".equals(speciality)){
-                    errMap.put("speciality"+i,"UC_CHKLMD001_ERR002");
-                }
-                String professionType = appSvcCgoList.get(i).getProfessionType();
-                if(StringUtil.isEmpty(professionType)){
-                    errMap.put("professionType"+i,"UC_CHKLMD001_ERR002");
-                }
-                String designation = appSvcCgoList.get(i).getDesignation();
-                if(StringUtil.isEmpty(designation)){
-                    errMap.put("designation"+i,"UC_CHKLMD001_ERR001");
-                }
-                String professionRegoNo = appSvcCgoList.get(i).getProfessionRegoNo();
-                if(StringUtil.isEmpty(professionRegoNo)){
-                    errMap.put("professionRegoNo"+i,"UC_CHKLMD001_ERR001");
-                }
-                String idNo = appSvcCgoList.get(i).getIdNo();
-                //to do
-                if(StringUtil.isEmpty(idNo)){
-                    errMap.put("idNo"+i,"UC_CHKLMD001_ERR001");
-                }else {
-                    if("FIN".equals(idTyp)){
-                        boolean b = SgNoValidator.validateFin(idNo);
-                        if(!b){
-                            errMap.put("idNo"+i,"CHKLMD001_ERR005");
-                        }
-                        stringBuilder1.append(idTyp).append(idNo);
-
-                    }
-                    if("NRIC".equals(idTyp)){
-                        boolean b1 = SgNoValidator.validateNric(idNo);
-                        if(!b1){
-                            errMap.put("idNo"+i,"CHKLMD001_ERR005");
-                        }
-                            stringBuilder1.append(idTyp).append(idNo);
-
-                    }
-
-                }
-                //to do
-
-                String Specialty = appSvcCgoList.get(i).getSpeciality();
-                if (StringUtil.isEmpty(Specialty)) {
-                    errMap.put("speciality"+i, "UC_CHKLMD001_ERR002");
-                }
-
-                String specialty = appSvcCgoList.get(i).getSpeciality();
-                if(StringUtil.isEmpty(specialty)){
-                    errMap.put("specialty"+i, "UC_CHKLMD001_ERR001");
-                }
-                String name = appSvcCgoList.get(i).getName();
-                if(StringUtil.isEmpty(name)){
-                    errMap.put("name"+i,"UC_CHKLMD001_ERR001");
-                }
-
-                String mobileNo = appSvcCgoList.get(i).getMobileNo();
-                if(StringUtil.isEmpty(mobileNo)){
-                    errMap.put("mobileNo"+i, "UC_CHKLMD001_ERR001");
-                }else if (!StringUtil.isEmpty(mobileNo)) {
-                    if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                        errMap.put("mobileNo"+i, "CHKLMD001_ERR004");
-                    }
-                }
-                String emailAddr = appSvcCgoList.get(i).getEmailAddr();
-                if(StringUtil.isEmpty(emailAddr)){
-                    errMap.put("emailAddr"+i, "UC_CHKLMD001_ERR001");
-                }else if (!StringUtil.isEmpty(emailAddr)) {
-                    if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
-                        errMap.put("emailAddr"+i, "CHKLMD001_ERR006");
-                    }
-                }
-                String s = stringBuilder.toString();
-                if(!StringUtil.isEmpty(stringBuilder1.toString())){
-                    if(s.contains(stringBuilder1.toString())){
-                        errMap.put("idNo","UC_CHKLMD001_ERR002");
-                    }else {
-                        stringBuilder.append(stringBuilder1.toString());
-                    }
-                }
-
+    private void doValidateDisciplineAllocation(Map<String ,String> map, List<AppSvcDisciplineAllocationDto> daList){
+        for(int i=0;i< daList.size();i++){
+            String idNo = daList.get(i).getIdNo();
+            if(StringUtil.isEmpty(idNo)){
+                map.put("disciplineAllocation"+i,"UC_CHKLMD001_ERR002");
             }
-
         }
-        return errMap;
     }
+    private void  doValidateSvcDocument(HttpServletRequest request,Map<String,String> errorMap){
 
+        AppSubmissionDto appSubmissionDto =(AppSubmissionDto)request.getSession().getAttribute("AppSubmissionDto");
+        if(appSubmissionDto!=null){
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if(appSvcRelatedInfoDtoList!=null){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtoList){
+                    List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                    if(appSvcDocDtoLit!=null){
 
-    public ClinicalOfficerValidateDto getValueFromPage(HttpServletRequest request){
-        ClinicalOfficerValidateDto dto =new ClinicalOfficerValidateDto();
-        String goveOffice = request.getParameter("pageCon");
+                        for(int i=0;i<appSvcDocDtoLit.size();i++){
 
-        return dto;
+                            Integer docSize = appSvcDocDtoLit.get(i).getDocSize();
+                            String docName = appSvcDocDtoLit.get(i).getDocName();
+                            if(docSize>4*1024*1024){
+                                errorMap.put("file"+i,"File size is too large!");
+                            }
+
+                            Boolean flag=false;
+                            String substring = docName.substring(docName.lastIndexOf(".") + 1);
+                            FileType[] fileType = FileType.values();
+                            for(FileType f:fileType){
+                                if(f.name().equalsIgnoreCase(substring)){
+                                    flag=true;
+                                }
+                            }
+
+                            if(!flag){
+                                errorMap.put("file"+i,"Wrong file type");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
-
     private void chose(HttpServletRequest request,String type){
         if("goveOffice".equals(type)){
             List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
@@ -1701,8 +1672,8 @@ public class ClinicalLaboratoryDelegator {
 
 
     /*
-    * get current svc dto
-    * */
+     * get current svc dto
+     * */
     private AppSvcRelatedInfoDto getAppSvcRelatedInfo(HttpServletRequest request, String currentSvcId){
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,NewApplicationDelegator.APPSUBMISSIONDTO);
@@ -1769,7 +1740,7 @@ public class ClinicalLaboratoryDelegator {
     }
 
 
-    public List<AppSvcPersonnelDto> genAppSvcPersonnelDtoList(HttpServletRequest request, List<String> personnelTypeList){
+    private List<AppSvcPersonnelDto> genAppSvcPersonnelDtoList(HttpServletRequest request, List<String> personnelTypeList){
         List<AppSvcPersonnelDto> appSvcPersonnelDtos = new ArrayList<>();
         String [] personnelSels =  ParamUtil.getStrings(request, "personnelSel");
         String [] designations = ParamUtil.getStrings(request, "designation");
@@ -1818,32 +1789,6 @@ public class ClinicalLaboratoryDelegator {
         }
         return appSvcPersonnelDtos;
     }
-
-    @RequestMapping(value = "/nuclear-medicine-imaging-html", method = RequestMethod.GET)
-    public @ResponseBody String addNuclearMedicineImagingHtml(HttpServletRequest request) {
-        log.debug(StringUtil.changeForLog("the add NuclearMedicineImaging html start ...."));
-        String sql = SqlMap.INSTANCE.getSql("servicePersonnel", "NuclearMedicineImaging").getSqlStr();
-        String currentSvcCod = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
-        List<SelectOption> personnel = genPersonnelTypeSel(currentSvcCod);
-        Map<String,String> personnelAttr = new HashMap<>();
-        personnelAttr.put("name", "personnelSel");
-        personnelAttr.put("class", "personnelSel");
-        personnelAttr.put("style", "display: none;");
-        String personnelSelectStr = NewApplicationHelper.generateDropDownHtml(personnelAttr, personnel, NewApplicationDelegator.FIRESTOPTION);
-
-        List<SelectOption> designation = (List) ParamUtil.getSessionAttr(request, "NuclearMedicineImagingDesignation");
-        Map<String,String> designationAttr = new HashMap<>();
-        designationAttr.put("name", "designation");
-        designationAttr.put("style", "display: none;");
-        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designation, NewApplicationDelegator.FIRESTOPTION);
-
-        sql = sql.replace("(1)", personnelSelectStr);
-        sql = sql.replace("(2)", designationSelectStr);
-
-        log.debug(StringUtil.changeForLog("the add NuclearMedicineImaging html end ...."));
-        return sql;
-    }
-
     private List<SelectOption> genPersonnelTypeSel(String currentSvcCod){
         List<SelectOption> personnelTypeSel = new ArrayList<>();
         if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)){
@@ -1867,103 +1812,6 @@ public class ClinicalLaboratoryDelegator {
         }
         return personnelTypeSel;
     }
-
-
-    @RequestMapping(value = "/principal-officer-html", method = RequestMethod.GET)
-    public @ResponseBody String addPrincipalOfficeHtml(HttpServletRequest request) {
-        log.debug(StringUtil.changeForLog("the add addPrincipalOfficeHtml html start ...."));
-        String svcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
-        String sql = SqlMap.INSTANCE.getSql("principalOfficers", "generatePrincipalOfficersHtml").getSqlStr();
-
-        //assign select
-        List<SelectOption> assignPrincipalOfficerSel = getAssignPrincipalOfficerSel(svcId, false);
-        Map<String,String> assignPrincipalOfficerAttr = new HashMap<>();
-        assignPrincipalOfficerAttr.put("name", "assignSelect");
-        assignPrincipalOfficerAttr.put("class", "poSelect");
-        assignPrincipalOfficerAttr.put("style", "display: none;");
-        String principalOfficerSelStr = NewApplicationHelper.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, NewApplicationDelegator.FIRESTOPTION);
-
-        //salutation
-        List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-        Map<String,String> salutationAttr = new HashMap<>();
-        salutationAttr.put("class", "salutation");
-        salutationAttr.put("name", "salutation");
-        salutationAttr.put("style", "display: none;");
-        String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
-
-        //ID Type
-        List<SelectOption> idTypeList = getIdTypeSelOp();
-        Map<String,String>  idTypeAttr = new HashMap<>();
-        idTypeAttr.put("class", "idType");
-        idTypeAttr.put("name", "idType");
-        idTypeAttr.put("style", "display: none;");
-        String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null);
-
-        //Designation
-        List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
-        Map<String,String> designationAttr = new HashMap<>();
-        designationAttr.put("class", "designation");
-        designationAttr.put("name", "designation");
-        designationAttr.put("style", "display: none;");
-        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
-
-        sql = sql.replace("(1)", principalOfficerSelStr);
-        sql = sql.replace("(2)", salutationSelectStr);
-        sql = sql.replace("(3)", idTypeSelectStr);
-        sql = sql.replace("(4)", designationSelectStr);
-
-        log.debug(StringUtil.changeForLog("the add addPrincipalOfficeHtml html end ...."));
-        return sql;
-    }
-
-
-    @RequestMapping(value = "/deputy-principal-officer-html", method = RequestMethod.GET)
-    public @ResponseBody String addDeputyPrincipalOfficeHtml(HttpServletRequest request) {
-        log.debug(StringUtil.changeForLog("the add addDeputyPrincipalOfficeHtml html start ...."));
-        String sql = SqlMap.INSTANCE.getSql("principalOfficers", "generateDeputyPrincipalOfficersHtml").getSqlStr();
-
-        //salutation
-        List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-        Map<String,String> salutationAttr = new HashMap<>();
-        salutationAttr.put("class", "deputySalutation");
-        salutationAttr.put("name", "deputySalutation");
-        salutationAttr.put("style", "display: none;");
-        String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
-
-        //ID Type
-        List<SelectOption> idTypeList = getIdTypeSelOp();
-        Map<String,String>  idTypeAttr = new HashMap<>();
-        idTypeAttr.put("class", "deputyIdType");
-        idTypeAttr.put("name", "deputyIdType");
-        idTypeAttr.put("style", "display: none;");
-        String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null);
-
-        //Designation
-        List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
-        Map<String,String> designationAttr = new HashMap<>();
-        designationAttr.put("class", "deputyDesignation");
-        designationAttr.put("name", "deputyDesignation");
-        designationAttr.put("style", "display: none;");
-        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
-
-        //MedAlert
-        List<SelectOption> medAlertSelectList = getMedAlertSelectList(false);
-        Map<String,String> medAlertSelectAttr = new HashMap<>();
-        medAlertSelectAttr.put("class", "modeOfMedAlert");
-        medAlertSelectAttr.put("name", "modeOfMedAlert");
-        medAlertSelectAttr.put("style", "display: none;");
-        String medAlertSelectStr = NewApplicationHelper.generateDropDownHtml(medAlertSelectAttr, medAlertSelectList, NewApplicationDelegator.FIRESTOPTION);
-
-        sql = sql.replace("(1)", salutationSelectStr);
-        sql = sql.replace("(2)", idTypeSelectStr);
-        sql = sql.replace("(3)", designationSelectStr);
-        sql = sql.replace("(4)", medAlertSelectStr);
-
-        log.debug(StringUtil.changeForLog("the add addDeputyPrincipalOfficeHtml html end ...."));
-        return sql;
-    }
-
-
     private List<SelectOption> getAssignPrincipalOfficerSel(String svcId, boolean needFirstOpt){
         List<SelectOption> assignSelectList = new ArrayList<>();
         if(needFirstOpt){
@@ -1978,16 +1826,6 @@ public class ClinicalLaboratoryDelegator {
         return  assignSelectList;
     }
 
-    public static  List<SelectOption> getIdTypeSelOp(){
-        List<SelectOption> idTypeSelectList = new ArrayList<>();
-        SelectOption idType0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
-        idTypeSelectList.add(idType0);
-        SelectOption idType1 = new SelectOption("NRIC", "NRIC");
-        idTypeSelectList.add(idType1);
-        SelectOption idType2 = new SelectOption("FIN", "FIN");
-        idTypeSelectList.add(idType2);
-        return idTypeSelectList;
-    }
 
     private List<SelectOption> getMedAlertSelectList(boolean needFirstOp){
         List<SelectOption> MedAlertSelectList = new ArrayList<>();

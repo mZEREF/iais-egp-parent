@@ -413,7 +413,7 @@ public class RequestForChangeMenuDelegator {
             String hiddenIdNo = "xxxx"+idNo.substring(4);
             personnelListQueryDto.setHiddenIdNo(hiddenIdNo);
         }
-        List<SelectOption> idTypeSelectList = ClinicalLaboratoryDelegator.getIdTypeSelOp();
+        List<SelectOption> idTypeSelectList = NewApplicationHelper.getIdTypeSelOp();
         ParamUtil.setRequestAttr(bpc.request, ClinicalLaboratoryDelegator.DROPWOWN_IDTYPESELECT, idTypeSelectList);
         ParamUtil.setSessionAttr(bpc.request,RfcConst.PERSONNELEDITLIST, (Serializable) personnelEditList);
         log.debug(StringUtil.changeForLog("the do preparePersonnelEdit end ...."));

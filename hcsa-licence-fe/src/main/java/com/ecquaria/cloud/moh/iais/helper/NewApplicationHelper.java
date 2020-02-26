@@ -7,6 +7,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -14,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +31,171 @@ import sop.util.CopyUtil;
  */
 
 public class NewApplicationHelper {
+    public static Map<String,String> doValidateLaboratory(List<AppSvcChckListDto>  listDtos, String serviceId){
+        Map<String,String> map=new HashMap<>();
+        int count=0;
+
+        if(listDtos.isEmpty()){
+            /*   map.put("checkError","UC_CHKLMD001_ERR002");*/
+        }else {
+            for(int i=0;i<listDtos.size();i++){
+                String parentName = listDtos.get(i).getParentName();
+                if(parentName==null){
+                    count++;
+                    continue;
+                }else  if(listDtos.get(i).isChkLstType()){
+                    if(serviceId.equals(parentName)){
+                        count++;
+                        continue;
+                    }
+                    for(AppSvcChckListDto every :listDtos) {
+                        if(every.getChildrenName()!=null){
+                            if(every.getChildrenName().equals(parentName)){
+                                count++;
+                                break;
+                            }
+                        }
+
+                    }
+                }
+                else if(!listDtos.get(i).isChkLstType()){
+                    for(AppSvcChckListDto every :listDtos) {
+                        if (every.getChkLstConfId().equals(parentName)) {
+                            count++;
+                            break;
+
+                        }
+                    }
+                }
+            }
+
+        }
+        if(count!=listDtos.size()){
+            map.put("checkError","UC_CHKLMD001_ERR002");
+        }
+
+        return map;
+
+    }
+    public static Map<String,String> doValidateGovernanceOfficers(List<AppSvcCgoDto> appSvcCgoList){
+
+        if(appSvcCgoList == null){
+            return new HashMap<>();
+        }
+
+        Map<String,String> errMap = new HashMap<>();
+        StringBuilder stringBuilder =new StringBuilder();
+        for(int i=0;i<appSvcCgoList.size();i++ ){
+            StringBuilder stringBuilder1=new StringBuilder();
+            String assignSelect = appSvcCgoList.get(i).getAssignSelect();
+            if("-1".equals(assignSelect)){
+                errMap.put("assignSelect"+i, "UC_CHKLMD001_ERR002");
+            }else {
+                String idTyp = appSvcCgoList.get(i).getIdType();
+                if("-1".equals(idTyp)){
+                    errMap.put("idTyp"+i, "UC_CHKLMD001_ERR002");
+                }
+                String salutation = appSvcCgoList.get(i).getSalutation();
+                if(StringUtil.isEmpty(salutation)){
+                    errMap.put("salutation"+i,"UC_CHKLMD001_ERR001");
+                }
+                String speciality = appSvcCgoList.get(i).getSpeciality();
+                if("-1".equals(speciality)){
+                    errMap.put("speciality"+i,"UC_CHKLMD001_ERR002");
+                }
+                String professionType = appSvcCgoList.get(i).getProfessionType();
+                if(StringUtil.isEmpty(professionType)){
+                    errMap.put("professionType"+i,"UC_CHKLMD001_ERR002");
+                }
+                String designation = appSvcCgoList.get(i).getDesignation();
+                if(StringUtil.isEmpty(designation)){
+                    errMap.put("designation"+i,"UC_CHKLMD001_ERR001");
+                }
+                String professionRegoNo = appSvcCgoList.get(i).getProfessionRegoNo();
+                if(StringUtil.isEmpty(professionRegoNo)){
+                    errMap.put("professionRegoNo"+i,"UC_CHKLMD001_ERR001");
+                }
+                String idNo = appSvcCgoList.get(i).getIdNo();
+                //to do
+                if(StringUtil.isEmpty(idNo)){
+                    errMap.put("idNo"+i,"UC_CHKLMD001_ERR001");
+                }else {
+                    if("FIN".equals(idTyp)){
+                        boolean b = SgNoValidator.validateFin(idNo);
+                        if(!b){
+                            errMap.put("idNo"+i,"CHKLMD001_ERR005");
+                        }
+                        stringBuilder1.append(idTyp).append(idNo);
+
+                    }
+                    if("NRIC".equals(idTyp)){
+                        boolean b1 = SgNoValidator.validateNric(idNo);
+                        if(!b1){
+                            errMap.put("idNo"+i,"CHKLMD001_ERR005");
+                        }
+                        stringBuilder1.append(idTyp).append(idNo);
+
+                    }
+
+                }
+                //to do
+
+                String Specialty = appSvcCgoList.get(i).getSpeciality();
+                if (StringUtil.isEmpty(Specialty)) {
+                    errMap.put("speciality"+i, "UC_CHKLMD001_ERR002");
+                }
+
+                String specialty = appSvcCgoList.get(i).getSpeciality();
+                if(StringUtil.isEmpty(specialty)){
+                    errMap.put("specialty"+i, "UC_CHKLMD001_ERR001");
+                }
+                String name = appSvcCgoList.get(i).getName();
+                if(StringUtil.isEmpty(name)){
+                    errMap.put("name"+i,"UC_CHKLMD001_ERR001");
+                }
+
+                String mobileNo = appSvcCgoList.get(i).getMobileNo();
+                if(StringUtil.isEmpty(mobileNo)){
+                    errMap.put("mobileNo"+i, "UC_CHKLMD001_ERR001");
+                }else if (!StringUtil.isEmpty(mobileNo)) {
+                    if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
+                        errMap.put("mobileNo"+i, "CHKLMD001_ERR004");
+                    }
+                }
+                String emailAddr = appSvcCgoList.get(i).getEmailAddr();
+                if(StringUtil.isEmpty(emailAddr)){
+                    errMap.put("emailAddr"+i, "UC_CHKLMD001_ERR001");
+                }else if (!StringUtil.isEmpty(emailAddr)) {
+                    if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
+                        errMap.put("emailAddr"+i, "CHKLMD001_ERR006");
+                    }
+                }
+                String s = stringBuilder.toString();
+                if(!StringUtil.isEmpty(stringBuilder1.toString())){
+                    if(s.contains(stringBuilder1.toString())){
+                        errMap.put("idNo","UC_CHKLMD001_ERR002");
+                    }else {
+                        stringBuilder.append(stringBuilder1.toString());
+                    }
+                }
+
+            }
+
+        }
+        return errMap;
+    }
+
+    public static  List<SelectOption> getIdTypeSelOp(){
+        List<SelectOption> idTypeSelectList = new ArrayList<>();
+        SelectOption idType0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
+        idTypeSelectList.add(idType0);
+        SelectOption idType1 = new SelectOption("NRIC", "NRIC");
+        idTypeSelectList.add(idType1);
+        SelectOption idType2 = new SelectOption("FIN", "FIN");
+        idTypeSelectList.add(idType2);
+        return idTypeSelectList;
+    }
+
     public static AppSubmissionDto setSubmissionDtoSvcData(HttpServletRequest request, AppSubmissionDto appSubmissionDto) throws CloneNotSupportedException {
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST);
         if(appSubmissionDto != null){
