@@ -1656,7 +1656,8 @@ public class NewApplicationDelegator {
             previewAndSubmitMap.put("po","UC_CHKLMD001_ERR001");
         }
         //
-        Map<String, String> govenMap = ClinicalLaboratoryDelegator.doValidateGovernanceOfficers(bpc.request);
+        List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, ClinicalLaboratoryDelegator.GOVERNANCEOFFICERSDTOLIST);
+        Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoList);
         if(!govenMap.isEmpty()){
             previewAndSubmitMap.put("goven","UC_CHKLMD001_ERR001");
 
