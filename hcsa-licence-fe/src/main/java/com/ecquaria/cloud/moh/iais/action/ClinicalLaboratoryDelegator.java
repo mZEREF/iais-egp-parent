@@ -21,18 +21,23 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.ecquaria.sz.commons.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.servlet.webflow.HttpHandler;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,16 +46,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.servlet.webflow.HttpHandler;
-import sop.webflow.rt.api.BaseProcessClass;
 
 
 /**
@@ -1059,242 +1054,6 @@ public class ClinicalLaboratoryDelegator {
 
 
 
-
-    @RequestMapping(value = "/governance-officer-html", method = RequestMethod.GET)
-    public @ResponseBody String genGovernanceOfficerHtmlList(HttpServletRequest request){
-        log.debug(StringUtil.changeForLog("gen governance officer html start ...."));
-        String sql = SqlMap.INSTANCE.getSql("governanceOfficer", "generateGovernanceOfficerHtml").getSqlStr();
-
-        //assign cgo select
-        List<SelectOption> cgoSelectList= (List) ParamUtil.getSessionAttr(request, "CgoSelectList");
-        Map<String,String> cgoSelectAttr = new HashMap<>();
-        cgoSelectAttr.put("class", "assignSel");
-        cgoSelectAttr.put("name", "assignSelect");
-        cgoSelectAttr.put("style", "display: none;");
-        String cgoSelectStr = NewApplicationHelper.generateDropDownHtml(cgoSelectAttr, cgoSelectList, null);
-
-        //salutation
-        List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-        Map<String,String> salutationAttr = new HashMap<>();
-        salutationAttr.put("class", "salutationSel");
-        salutationAttr.put("name", "salutation");
-        salutationAttr.put("style", "display: none;");
-        String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
-
-        //ID Type
-        List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
-        Map<String,String>  idTypeAttr = new HashMap<>();
-        idTypeAttr.put("class", "idTypeSel");
-        idTypeAttr.put("name", "idType");
-        idTypeAttr.put("style", "display: none;");
-        String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null);
-
-        //Designation
-        List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
-        Map<String,String> designationAttr = new HashMap<>();
-        designationAttr.put("class", "designationSel");
-        designationAttr.put("name", "designation");
-        designationAttr.put("style", "display: none;");
-        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
-
-        //Professional Regn Type
-        List<SelectOption> proRegnTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE);
-        Map<String,String> proRegnTypeAttr = new HashMap<>();
-        proRegnTypeAttr.put("class", "professionTypeSel");
-        proRegnTypeAttr.put("name", "professionType");
-        proRegnTypeAttr.put("style", "display: none;");
-        String proRegnTypeSelectStr = NewApplicationHelper.generateDropDownHtml(proRegnTypeAttr, proRegnTypeList, NewApplicationDelegator.FIRESTOPTION);
-
-        //Specialty
-        List<SelectOption> specialtyList = (List<SelectOption>) ParamUtil.getSessionAttr(request, "SpecialtySelectList");
-        Map<String,String> specialtyAttr = new HashMap<>();
-        specialtyAttr.put("name", "specialty");
-        specialtyAttr.put("class", "specialty");
-        specialtyAttr.put("style", "display: none;");
-        String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialtyList, null);
-
-
-
-        sql = sql.replace("(1)", cgoSelectStr);
-        sql = sql.replace("(2)", salutationSelectStr);
-        sql = sql.replace("(3)", idTypeSelectStr);
-        sql = sql.replace("(4)", designationSelectStr);
-        sql = sql.replace("(5)", proRegnTypeSelectStr);
-        sql = sql.replace("(6)", specialtySelectStr);
-
-
-
-        log.debug(StringUtil.changeForLog("gen governance officer html end ...."));
-        return sql;
-    }
-
-    /**
-     * @param
-     * @description: ajax
-     * @author: zixia
-     */
-    @RequestMapping(value = "/psn-info", method = RequestMethod.GET)
-    public @ResponseBody AppSvcCgoDto getPsnInfoByIdNo (HttpServletRequest request) {
-        log.debug(StringUtil.changeForLog("getPsnInfoByIdNo start ...."));
-        String idNo = ParamUtil.getRequestString(request, "idNo");
-        AppSvcCgoDto appSvcCgoDto = null;
-        if(StringUtil.isEmpty(idNo)){
-            return appSvcCgoDto;
-        }
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
-            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtoList){
-                List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-                if(!IaisCommonUtils.isEmpty(appSvcCgoDtoList)){
-                    appSvcCgoDto = isExistIdNo(appSvcCgoDtoList, idNo);
-                    if(appSvcCgoDto != null){
-                        break;
-                    }
-                }
-            }
-        }
-        log.debug(StringUtil.changeForLog("getPsnInfoByIdNo end ...."));
-        return  appSvcCgoDto;
-    }
-
-
-    //=============================================================================
-    //ajax method
-    //=============================================================================
-    /**
-     * ajax
-     */
-    public void loadGovernanceOfficerByCGOId(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do loadGovernanceOfficerByCGOId start ...."));
-        //
-        String cgoId = bpc.request.getParameter("");
-        AppSvcCgoDto governanceOfficersDto = serviceConfigService.loadGovernanceOfficerByCgoId(cgoId);
-        ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERSDTO, governanceOfficersDto);
-        log.debug(StringUtil.changeForLog("the do loadGovernanceOfficerByCGOId end ...."));
-    }
-
-    @RequestMapping(value = "/nuclear-medicine-imaging-html", method = RequestMethod.GET)
-    public @ResponseBody String addNuclearMedicineImagingHtml(HttpServletRequest request) {
-        log.debug(StringUtil.changeForLog("the add NuclearMedicineImaging html start ...."));
-        String sql = SqlMap.INSTANCE.getSql("servicePersonnel", "NuclearMedicineImaging").getSqlStr();
-        String currentSvcCod = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
-        List<SelectOption> personnel = genPersonnelTypeSel(currentSvcCod);
-        Map<String,String> personnelAttr = new HashMap<>();
-        personnelAttr.put("name", "personnelSel");
-        personnelAttr.put("class", "personnelSel");
-        personnelAttr.put("style", "display: none;");
-        String personnelSelectStr = NewApplicationHelper.generateDropDownHtml(personnelAttr, personnel, NewApplicationDelegator.FIRESTOPTION);
-
-        List<SelectOption> designation = (List) ParamUtil.getSessionAttr(request, "NuclearMedicineImagingDesignation");
-        Map<String,String> designationAttr = new HashMap<>();
-        designationAttr.put("name", "designation");
-        designationAttr.put("style", "display: none;");
-        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designation, NewApplicationDelegator.FIRESTOPTION);
-
-        sql = sql.replace("(1)", personnelSelectStr);
-        sql = sql.replace("(2)", designationSelectStr);
-
-        log.debug(StringUtil.changeForLog("the add NuclearMedicineImaging html end ...."));
-        return sql;
-    }
-
-
-
-    @RequestMapping(value = "/principal-officer-html", method = RequestMethod.GET)
-    public @ResponseBody String addPrincipalOfficeHtml(HttpServletRequest request) {
-        log.debug(StringUtil.changeForLog("the add addPrincipalOfficeHtml html start ...."));
-        String svcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
-        String sql = SqlMap.INSTANCE.getSql("principalOfficers", "generatePrincipalOfficersHtml").getSqlStr();
-
-        //assign select
-        List<SelectOption> assignPrincipalOfficerSel = getAssignPrincipalOfficerSel(svcId, false);
-        Map<String,String> assignPrincipalOfficerAttr = new HashMap<>();
-        assignPrincipalOfficerAttr.put("name", "assignSelect");
-        assignPrincipalOfficerAttr.put("class", "poSelect");
-        assignPrincipalOfficerAttr.put("style", "display: none;");
-        String principalOfficerSelStr = NewApplicationHelper.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, NewApplicationDelegator.FIRESTOPTION);
-
-        //salutation
-        List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-        Map<String,String> salutationAttr = new HashMap<>();
-        salutationAttr.put("class", "salutation");
-        salutationAttr.put("name", "salutation");
-        salutationAttr.put("style", "display: none;");
-        String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
-
-        //ID Type
-        List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
-        Map<String,String>  idTypeAttr = new HashMap<>();
-        idTypeAttr.put("class", "idType");
-        idTypeAttr.put("name", "idType");
-        idTypeAttr.put("style", "display: none;");
-        String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null);
-
-        //Designation
-        List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
-        Map<String,String> designationAttr = new HashMap<>();
-        designationAttr.put("class", "designation");
-        designationAttr.put("name", "designation");
-        designationAttr.put("style", "display: none;");
-        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
-
-        sql = sql.replace("(1)", principalOfficerSelStr);
-        sql = sql.replace("(2)", salutationSelectStr);
-        sql = sql.replace("(3)", idTypeSelectStr);
-        sql = sql.replace("(4)", designationSelectStr);
-
-        log.debug(StringUtil.changeForLog("the add addPrincipalOfficeHtml html end ...."));
-        return sql;
-    }
-
-
-    @RequestMapping(value = "/deputy-principal-officer-html", method = RequestMethod.GET)
-    public @ResponseBody String addDeputyPrincipalOfficeHtml(HttpServletRequest request) {
-        log.debug(StringUtil.changeForLog("the add addDeputyPrincipalOfficeHtml html start ...."));
-        String sql = SqlMap.INSTANCE.getSql("principalOfficers", "generateDeputyPrincipalOfficersHtml").getSqlStr();
-
-        //salutation
-        List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-        Map<String,String> salutationAttr = new HashMap<>();
-        salutationAttr.put("class", "deputySalutation");
-        salutationAttr.put("name", "deputySalutation");
-        salutationAttr.put("style", "display: none;");
-        String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
-
-        //ID Type
-        List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
-        Map<String,String>  idTypeAttr = new HashMap<>();
-        idTypeAttr.put("class", "deputyIdType");
-        idTypeAttr.put("name", "deputyIdType");
-        idTypeAttr.put("style", "display: none;");
-        String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null);
-
-        //Designation
-        List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
-        Map<String,String> designationAttr = new HashMap<>();
-        designationAttr.put("class", "deputyDesignation");
-        designationAttr.put("name", "deputyDesignation");
-        designationAttr.put("style", "display: none;");
-        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
-
-        //MedAlert
-        List<SelectOption> medAlertSelectList = getMedAlertSelectList(false);
-        Map<String,String> medAlertSelectAttr = new HashMap<>();
-        medAlertSelectAttr.put("class", "modeOfMedAlert");
-        medAlertSelectAttr.put("name", "modeOfMedAlert");
-        medAlertSelectAttr.put("style", "display: none;");
-        String medAlertSelectStr = NewApplicationHelper.generateDropDownHtml(medAlertSelectAttr, medAlertSelectList, NewApplicationDelegator.FIRESTOPTION);
-
-        sql = sql.replace("(1)", salutationSelectStr);
-        sql = sql.replace("(2)", idTypeSelectStr);
-        sql = sql.replace("(3)", designationSelectStr);
-        sql = sql.replace("(4)", medAlertSelectStr);
-
-        log.debug(StringUtil.changeForLog("the add addDeputyPrincipalOfficeHtml html end ...."));
-        return sql;
-    }
-
     //=============================================================================
     //private method
     //=============================================================================
@@ -1474,15 +1233,6 @@ public class ClinicalLaboratoryDelegator {
 
     }
 
-    private AppSvcCgoDto isExistIdNo(List<AppSvcCgoDto> appSvcCgoDtoList, String idNo){
-        for (AppSvcCgoDto appSvcCgoDto:appSvcCgoDtoList){
-            if(idNo.equals(appSvcCgoDto.getIdNo())){
-                log.info(StringUtil.changeForLog("had matching dto"));
-                return appSvcCgoDto;
-            }
-        }
-        return  null;
-    }
 
     private List<AppSvcCgoDto> genAppSvcCgoDto(HttpServletRequest request){
         ParamUtil.setSessionAttr(request, ERRORMAP_GOVERNANCEOFFICERS,null);
@@ -1605,7 +1355,7 @@ public class ClinicalLaboratoryDelegator {
         return appSvcRelatedInfoDto;
     }
 
-    private AppSubmissionDto getAppSubmissionDto(HttpServletRequest request){
+    public static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request){
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
         if(appSubmissionDto == null){
             appSubmissionDto = new AppSubmissionDto();
@@ -1789,7 +1539,7 @@ public class ClinicalLaboratoryDelegator {
         }
         return appSvcPersonnelDtos;
     }
-    private List<SelectOption> genPersonnelTypeSel(String currentSvcCod){
+    public static List<SelectOption> genPersonnelTypeSel(String currentSvcCod){
         List<SelectOption> personnelTypeSel = new ArrayList<>();
         if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)){
             SelectOption personnelTypeOp1 = new SelectOption("SPPT001", "Radiology Professional");
@@ -1812,7 +1562,7 @@ public class ClinicalLaboratoryDelegator {
         }
         return personnelTypeSel;
     }
-    private List<SelectOption> getAssignPrincipalOfficerSel(String svcId, boolean needFirstOpt){
+    public static List<SelectOption> getAssignPrincipalOfficerSel(String svcId, boolean needFirstOpt){
         List<SelectOption> assignSelectList = new ArrayList<>();
         if(needFirstOpt){
             SelectOption assignOp1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
@@ -1827,7 +1577,7 @@ public class ClinicalLaboratoryDelegator {
     }
 
 
-    private List<SelectOption> getMedAlertSelectList(boolean needFirstOp){
+    public static List<SelectOption> getMedAlertSelectList(boolean needFirstOp){
         List<SelectOption> MedAlertSelectList = new ArrayList<>();
         if(needFirstOp){
             SelectOption idType0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
