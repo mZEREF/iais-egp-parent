@@ -2,9 +2,11 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -26,8 +28,16 @@ import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,10 +125,19 @@ public class InspectionRectificationProDelegator {
                     iDto.setIndex(index++);
                     iDto.setAppNo(applicationDto.getApplicationNo());
                     iDto.setItemId(cDto.getItemId());
+                    AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = inspectionRectificationProService.getNcItemDtoByItemId(cDto.getItemId());
+                    if(appPremisesPreInspectionNcItemDto != null){
+                        iDto.setUploadRemarks(appPremisesPreInspectionNcItemDto.getRemarks());
+                    } else {
+                        iDto.setUploadRemarks(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+                    }
                     List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = inspectionRectificationProService.getAppNcDocList(cDto.getItemId());
                     List<FileRepoDto> fileRepoDtos = inspectionRectificationProService.getFileByItemId(appPremPreInspectionNcDocDtos);
+                    iDto.setAppPremPreInspectionNcDocDtos(appPremPreInspectionNcDocDtos);
+                    iDto.setFileRepoDtos(fileRepoDtos);
                     inspecUserRecUploadDtos.add(iDto);
                 }
+                inspectionPreTaskDto.setInspecUserRecUploadDtos(inspecUserRecUploadDtos);
             }
         }
         List<SelectOption> processDecOption = inspectionRectificationProService.getProcessRecDecOption();
@@ -126,6 +145,28 @@ public class InspectionRectificationProDelegator {
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+    }
+
+    @RequestMapping(value = "/file-repo-popup", method = RequestMethod.GET)
+    public @ResponseBody
+    void filePopUpDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.debug(StringUtil.changeForLog("filePopUpDownload start ...."));
+        String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
+        String maskFileRepoIdName = ParamUtil.getRequestString(request, "filerepo");
+        String fileRepoId = ParamUtil.getMaskedString(request, maskFileRepoIdName);
+        if (StringUtil.isEmpty(fileRepoId)) {
+            log.debug(StringUtil.changeForLog("file-repo-popup id is empty"));
+            return;
+        }
+        byte[] fileData = inspectionRectificationProService.downloadFile(fileRepoId);
+        response.setContentType("application/OCTET-STREAM");
+        response.addHeader("Content-Disposition", "attachment;filename=" + fileRepoName);
+        response.addHeader("Content-Length", "" + fileData.length);
+        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+        ops.write(fileData);
+        ops.close();
+        ops.flush();
+        log.debug(StringUtil.changeForLog("filePopUpDownload end ...."));
     }
 
     /**

@@ -254,7 +254,7 @@
                                 </thead>
                                 <tbody>
                                 <c:choose>
-                                  <c:when test="${empty cPoolSearchResult.rows}">
+                                  <c:when test="${empty inspectionPreTaskDto.inspecUserRecUploadDtos}">
                                     <tr>
                                       <td colspan="7">
                                         <iais:message key="ACK018" escape="true"></iais:message>
@@ -262,15 +262,21 @@
                                     </tr>
                                   </c:when>
                                   <c:otherwise>
-                                    <c:forEach var="pool" items="${cPoolSearchResult.rows}">
+                                    <c:forEach var="proRec" items="${inspectionPreTaskDto.inspecUserRecUploadDtos}">
                                       <tr>
-                                        <td><c:out value="${pool.applicationNo}"/></td>
-                                        <td><iais:code code="${pool.applicationType}"/></td>
-                                        <td><c:out value="${pool.hciCode}"/></td>
+                                        <td><c:out value="${proRec.checkClause}"/></td>
+                                        <td><iais:code code="${proRec.checkQuestion}"/></td>
+                                        <td><c:out value="${proRec.uploadRemarks}"/></td>
                                         <td>
-                                          <c:forEach var="file" items="${cPoolSearchResult.rows}">
-
-                                          </c:forEach>
+                                          <c:if test="${proRec.fileRepoDtos != null}">
+                                            <c:forEach var="file" items="${proRec.fileRepoDtos}" varStatus="status">
+                                              <div class="fileList ">
+                                                <span class="filename server-site" id="130">
+                                                  <a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${file.id}"/>&fileRepoName=${file.fileName}" title="Download" class="downloadFile">${file.fileName}</a>
+                                                </span>
+                                              </div>
+                                            </c:forEach>
+                                          </c:if>
                                         </td>
                                       </tr>
                                     </c:forEach>
@@ -301,12 +307,6 @@
                               <iais:field value="Current Status"/>
                               <iais:value width="7">
                                 <label><iais:code code="${inspectionPreTaskDto.appStatus}"/></label>
-                              </iais:value>
-                            </iais:row>
-                            <iais:row>
-                              <iais:field value="Remarks"/>
-                              <iais:value width="300">
-                                <label><c:out value="${inspectionPreTaskDto.reMarks}"></c:out></label>
                               </iais:value>
                             </iais:row>
                             <iais:row>

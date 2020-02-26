@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -35,7 +36,8 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
@@ -72,6 +74,9 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
     private InsRepClient insRepClient;
 
     @Autowired
+    private FileRepoClient fileRepoClient;
+
+    @Autowired
     private InboxMsgService inboxMsgService;
 
     @Autowired
@@ -81,7 +86,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
     private ApplicationService applicationService;
 
     @Autowired
-    private ApplicationClient applicationClient;
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
     @Autowired
     private InspectionTaskClient inspectionTaskClient;
@@ -148,8 +153,8 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             interMessageDto.setRefNo(mesNO);
             interMessageDto.setService_id(applicationDto1.getServiceId());
             String url = systemParamConfig.getInterServerName() +
-                    MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION +
-                    applicationDto1.getApplicationNo();
+                    MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION +
+                    taskDto.getRefNo();
             interMessageDto.setProcessUrl(url);
             interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -176,6 +181,8 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             for(AppPremPreInspectionNcDocDto appInspNcDoc : appPremPreInspectionNcDocDtos){
                 fileIds.add(appInspNcDoc.getFileRepoId());
             }
+            List<FileRepoDto> fileRepoDtos = fileRepoClient.getFilesByIds(fileIds).getEntity();
+            return fileRepoDtos;
         }
         return null;
     }
@@ -184,6 +191,20 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
     public List<AppPremPreInspectionNcDocDto> getAppNcDocList(String itemId) {
         List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = inspectionTaskClient.getFilesByItemId(itemId).getEntity();
         return appPremPreInspectionNcDocDtos;
+    }
+
+    @Override
+    public AppPremisesPreInspectionNcItemDto getNcItemDtoByItemId(String itemId) {
+        if(!StringUtil.isEmpty(itemId)){
+            AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = fillUpCheckListGetAppClient.getNcItemByItemId(itemId).getEntity();
+            return appPremisesPreInspectionNcItemDto;
+        }
+        return null;
+    }
+
+    @Override
+    public byte[] downloadFile(String fileRepoId) {
+        return fileRepoClient.getFileFormDataBase(fileRepoId).getEntity();
     }
 
     private List<ChecklistItemDto> getcheckDtosByItemIds(List<String> itemIds) {
