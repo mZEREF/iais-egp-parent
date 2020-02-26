@@ -218,12 +218,13 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "premisesSelect", (Serializable) premisesSelect);
         ParamUtil.setSessionAttr(bpc.request, "conveyancePremSel", (Serializable) conveyancePremSel);
         //get premises type
-        if (svcIds.size() > 0) {
+        if (!IaisCommonUtils.isEmpty(svcIds)) {
             log.info(StringUtil.changeForLog("svcId not null"));
             Set<String> premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
             ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
+        }else{
+           log.error(StringUtil.changeForLog("do not have select the services"));
         }
-
 
         //reload dateTime
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
