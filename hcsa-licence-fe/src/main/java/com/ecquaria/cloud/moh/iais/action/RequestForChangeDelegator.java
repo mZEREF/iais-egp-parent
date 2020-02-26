@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
@@ -31,6 +32,7 @@ public class RequestForChangeDelegator {
 
     @Autowired
     RequestForChangeService requestForChangeService;
+
 
     /**
      *
@@ -163,6 +165,7 @@ public class RequestForChangeDelegator {
         String licenceId= (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         //String licenseNo="L/20CLB0156/CLB/001/201";
         LicenceDto licenceDto=requestForChangeService.getLicenceDtoByLicenceId(licenceId);
+        AppSubmissionDto appSubmissionDto=requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
         String UNID=ParamUtil.getString(bpc.request, "UNID");
         String newLicenseeId=null;
         List<String> uenMemberIds=new ArrayList<>();
@@ -205,15 +208,15 @@ public class RequestForChangeDelegator {
 
 
             if(result){
-                licenceDto.setLicenseeId(newLicenseeId);
-                requestForChangeService.saveLicence(licenceDto);
+                appSubmissionDto.setLicenseeId(newLicenseeId);
+                requestForChangeService.submitChange(appSubmissionDto);
             }
         }else {
             String nric=UNID;
             LicenseeIndividualDto licenseeIndividualDt=requestForChangeService.getLicIndByNRIC(nric);
             if(licenseeIndividualDt!=null){
-            licenceDto.setLicenseeId(licenseeIndividualDt.getId());
-            requestForChangeService.saveLicence(licenceDto);
+                appSubmissionDto.setLicenseeId(licenseeIndividualDt.getId());
+                requestForChangeService.submitChange(appSubmissionDto);
             }
         }
 

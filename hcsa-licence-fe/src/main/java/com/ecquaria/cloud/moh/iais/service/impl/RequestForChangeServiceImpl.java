@@ -16,7 +16,6 @@ import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sop.webflow.rt.api.Process;
 
 import java.util.List;
 
@@ -58,7 +57,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public AppSubmissionDto submitChange(AppSubmissionDto appSubmissionDto, Process process) {
+    public AppSubmissionDto submitChange(AppSubmissionDto appSubmissionDto) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         //save appGrp and app
         appSubmissionDto = applicationClient.saveAppsForRequestForChange(appSubmissionDto).getEntity();

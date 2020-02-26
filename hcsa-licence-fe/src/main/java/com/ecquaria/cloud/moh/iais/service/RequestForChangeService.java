@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
-import sop.webflow.rt.api.Process;
 
 import java.util.List;
 
@@ -19,7 +18,7 @@ public interface RequestForChangeService {
 
     List<ApplicationDto> getOngoingApplicationByLicenceId(String licenceId);
 
-    AppSubmissionDto submitChange(AppSubmissionDto appSubmissionDto, Process process);
+    AppSubmissionDto submitChange(AppSubmissionDto appSubmissionDto);
 
     String getApplicationGroupNumber(String appType);
     
