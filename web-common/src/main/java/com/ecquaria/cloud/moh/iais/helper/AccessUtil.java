@@ -134,4 +134,36 @@ public class AccessUtil {
         }
         ParamUtil.setSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
     }
+    /**
+     * @description: get the login user from the session
+     *
+     * @author: suocheng on 2/26/2020 4:24 PM
+     * @param: [request]
+     * @return: com.ecquaria.cloud.moh.iais.dto.LoginContext
+     */
+    public static LoginContext getLoginUser(HttpServletRequest request){
+
+        LoginContext loginContext = null;
+        if(request!=null){
+            loginContext = (LoginContext)ParamUtil.getSessionAttr(request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        }
+        return loginContext;
+    }
+    /**
+     * @description: get the login id from session
+     *
+     * @author: suocheng on 2/26/2020 4:30 PM
+     * @param: [request]
+     * @return: java.lang.String
+     */
+    public static String getLoginId(HttpServletRequest request){
+
+        String loginId = null;
+        LoginContext loginContext = AccessUtil.getLoginUser(request);
+        if(loginContext!=null){
+            loginId = loginContext.getLoginId();
+        }
+        return loginId;
+    }
+
 }
