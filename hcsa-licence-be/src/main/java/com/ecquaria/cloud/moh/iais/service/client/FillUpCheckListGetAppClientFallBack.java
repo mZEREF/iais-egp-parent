@@ -18,7 +18,7 @@ import java.util.Map;
  * @Author: jiahao
  * @Date: 2019/11/29 16:17
  */
-public class FillUpCheckListGetAppClientFallBack implements  FillUpCheckListGetAppClient{
+public class FillUpCheckListGetAppClientFallBack implements FillUpCheckListGetAppClient{
     @Override
     public FeignResponseEntity<List<AppPremisesCorrelationDto>> getAppPremiseseCorrDto(String appid) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
@@ -197,6 +197,14 @@ public class FillUpCheckListGetAppClientFallBack implements  FillUpCheckListGetA
 
     @Override
     public FeignResponseEntity<List<AppPremisesPreInspectChklDto>> getPremInsChklListFOrDraft(String appPremId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<AppPremisesPreInspectionNcItemDto> getNcItemByItemId(String itemId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
