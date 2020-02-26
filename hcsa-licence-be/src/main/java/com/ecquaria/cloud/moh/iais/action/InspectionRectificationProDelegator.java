@@ -127,7 +127,7 @@ public class InspectionRectificationProDelegator {
                     iDto.setItemId(cDto.getItemId());
                     AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = inspectionRectificationProService.getNcItemDtoByItemId(cDto.getItemId());
                     if(appPremisesPreInspectionNcItemDto != null){
-                        iDto.setUploadRemarks(appPremisesPreInspectionNcItemDto.getRemarks());
+                        //iDto.setUploadRemarks(appPremisesPreInspectionNcItemDto.getRemarks());
                     } else {
                         iDto.setUploadRemarks(HcsaConsts.HCSA_PREMISES_HCI_NULL);
                     }
