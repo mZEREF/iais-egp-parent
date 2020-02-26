@@ -11,6 +11,7 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohRequestForInformation___1 extends BaseProcessClass {
@@ -19,16 +20,6 @@ public class INTRANET___MohRequestForInformation___1 extends BaseProcessClass {
 	public void start_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "start", this); 
 	// 		Start->OnStepProcess
-	}
-
-	public void preBasicSearch_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preBasicSearch", this); 
-	// 		preBasicSearch->OnStepProcess
-	}
-
-	public void doBasicSearch_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doBasicSearch", this); 
-	// 		doBasicSearch->OnStepProcess
 	}
 
 	public void preSearchLicence_OnStepProcess_0() throws Exception {
@@ -119,11 +110,6 @@ public class INTRANET___MohRequestForInformation___1 extends BaseProcessClass {
 	public void preSearch_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "preSearch", this);
 	// 		preSearch->OnStepProcess
-	}
-
-	public void doSearch_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doSearch", this);
-	// 		doSearch->OnStepProcess
 	}
 
 	

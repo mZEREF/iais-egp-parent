@@ -35,23 +35,11 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                            <%String selectSearch= ParamUtil.getRequestString(request,"select_search");
-                                                String selectApp;
-                                                String selectLic;
-                                                if("application".equals(selectSearch)) {
-                                                    selectApp="checked";
-                                                    selectLic="";
-                                                }
-                                                else {
-                                                    selectApp="";
-                                                    selectLic="checked";
-                                                }
-                                            %>
                                             <iais:value width="18">
-                                                <input type="radio" name="select_search" value="application" checked="<%=selectApp%>" /> Application No
+                                                <input type="radio" name="select_search" value="application"  /> Application No
                                             </iais:value>
                                             <iais:value width="18">
-                                                <input type="radio" name="select_search" value="licence" checked="<%=selectLic%>" /> Licence No
+                                                <input type="radio" name="select_search" value="licence"  /> Licence No
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">

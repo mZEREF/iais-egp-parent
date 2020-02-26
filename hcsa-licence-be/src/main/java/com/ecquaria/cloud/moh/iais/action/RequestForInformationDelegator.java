@@ -154,21 +154,18 @@ public class RequestForInformationDelegator {
         log.info("=======>>>>>preSearch>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        String searchNo= (String) ParamUtil.getSessionAttr(request,"search_no");
-
+        String searchNo= ParamUtil.getString(request,"search_no");
         Map<String,Object> filters=new HashMap<>();
 
         String selectSearch =ParamUtil.getString(request,"select_search");
         if("application".equals(selectSearch)) {
             if (!StringUtil.isEmpty(searchNo)) {
                 filters.put("appNo", searchNo);
-                ParamUtil.setRequestAttr(request,"select_search", selectSearch);
             }
         }
         else {
             if (!StringUtil.isEmpty(searchNo)) {
                 filters.put("licence_no", searchNo);
-                ParamUtil.setRequestAttr(request,"select_search", selectSearch);
             }
         }
         applicationParameter.setFilters(filters);
@@ -208,7 +205,7 @@ public class RequestForInformationDelegator {
                             reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
-                    else if("application".equals(selectSearch)) {
+                    else if(!"licence".equals(selectSearch)) {
                         ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
                         rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
                         reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
@@ -226,13 +223,6 @@ public class RequestForInformationDelegator {
         // 		preBasicSearch->OnStepProcess
     }
 
-    public void doSearch(BaseProcessClass bpc) {
-        log.info("=======>>>>>doBasicSearch>>>>>>>>>>>>>>>>requestForInformation");
-        HttpServletRequest request=bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
-        // 		doBasicSearch->OnStepProcess
-    }
 
     public void preSearchLicence(BaseProcessClass bpc) {
         log.info("=======>>>>>preSearchLicence>>>>>>>>>>>>>>>>requestForInformation");
