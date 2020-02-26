@@ -902,7 +902,8 @@ public class ClinicalLaboratoryDelegator {
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
 
             if ("next".equals(crud_action_additional)) {
-                map = NewApplicationDelegator.doValidatePo(bpc.request);
+                List<AppSvcPrincipalOfficersDto> poDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto");
+                map = NewApplicationHelper.doValidatePo(poDto);
                 if (appSubmissionDto.isNeedEditController()) {
                     Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
                     if(isGetDataFromPagePo){
