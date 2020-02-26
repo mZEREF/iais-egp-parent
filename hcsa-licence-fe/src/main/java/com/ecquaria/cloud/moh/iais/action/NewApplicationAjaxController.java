@@ -1,10 +1,18 @@
 package com.ecquaria.cloud.moh.iais.action;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,16 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Wenkang
@@ -114,8 +112,8 @@ public class NewApplicationAjaxController {
     @ResponseBody
     public Map<String,Map<String,String>> errorMap(HttpServletRequest request){
         Map<String,Map<String,String>> maps=new HashMap<>();
-        NewApplicationDelegator applicationDelegator=new NewApplicationDelegator();
-        List<AppGrpPremisesDto> appGrpPremisesDtos = applicationDelegator.genAppGrpPremisesDtoList(request);
+//        NewApplicationDelegator applicationDelegator=new NewApplicationDelegator();
+//        List<AppGrpPremisesDto> appGrpPremisesDtos = NewApplicationHelper.genAppGrpPremisesDtoList(request);
         return maps;
     }
 
