@@ -8,7 +8,22 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
@@ -29,12 +44,29 @@ import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.ecquaria.sz.commons.util.FileUtil;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.sql.Time;
+import java.text.DecimalFormat;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,17 +79,6 @@ import sop.util.CopyUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.sql.Time;
-import java.text.DecimalFormat;
-import java.time.LocalTime;
-import java.util.*;
-
 /**
  * NewApplicationDelegator
  *
@@ -68,9 +89,10 @@ import java.util.*;
 @Slf4j
 public class NewApplicationDelegator {
     private static final String ERRORMAP_PREMISES = "errorMap_premises";
+    private static final String PREMISESTYPE = "premisesType";
+
     public static final String CURRENTSERVICEID = "currentServiceId";
     public static final String CURRENTSVCCODE = "currentSvcCode";
-    private static final String PREMISESTYPE = "premisesType";
     public static final String APPSUBMISSIONDTO = "AppSubmissionDto";
     public static final String OLDAPPSUBMISSIONDTO = "oldAppSubmissionDto";
     public static final String COMMONHCSASVCDOCCONFIGDTO = "commonHcsaSvcDocConfigDto";
@@ -390,7 +412,7 @@ public class NewApplicationDelegator {
         if(requestInformationConfig != null){
             isRfi = true;
         }
-        boolean isGetDataFromPage = isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION, isEdit, isRfi);
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION, isEdit, isRfi);
         log.debug("isGetDataFromPage:"+isGetDataFromPage);
         if(isGetDataFromPage ){
             List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
@@ -450,7 +472,7 @@ public class NewApplicationDelegator {
             isRfi = true;
         }
         String isEdit = ParamUtil.getString(mulReq, IS_EDIT);
-        boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT, isEdit, isRfi);
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT, isEdit, isRfi);
 
 
         if(isGetDataFromPage){
@@ -578,15 +600,6 @@ public class NewApplicationDelegator {
     }
 
 
-    private void isMantory(  List<HcsaSvcDocConfigDto> hcsaSvcDocDtos ,Map errorMap ){
-        for(int i=0;i<hcsaSvcDocDtos.size();i++ ){
-            Boolean isMandatory = hcsaSvcDocDtos.get(i).getIsMandatory();
-            if(isMandatory){
-                errorMap.put("documents","UC_CHKLMD001_ERR002");
-            }
-        }
-
-    }
     /**
      * StartStep: doForms
      *
@@ -801,29 +814,7 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do doRenewSubmit end ...."));
     }
 
-    private Map<String,String> doComChange( AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto){
-        StringBuilder sB=new StringBuilder();
-        Map<String,String> result=new HashMap<>();
-        AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
-        if(appEditSelectDto!=null){
-            if(!appEditSelectDto.isPremisesEdit()){
-                if(!appSubmissionDto.getAppGrpPremisesDtoList().equals(oldAppSubmissionDto.getAppGrpPremisesDtoList())){
-                    result.put("premiss","UC_CHKLMD001_ERR001");
-                }
-            }
-            if(!appEditSelectDto.isDocEdit()){
-                if(!appSubmissionDto.getAppSvcRelatedInfoDtoList().equals(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList())){
-                    result.put("document","UC_CHKLMD001_ERR001");
-                }
-            }
-            if(!appEditSelectDto.isServiceEdit()){
-                if(!appSubmissionDto.getAppGrpPrimaryDocDtos().equals(oldAppSubmissionDto.getAppGrpPrimaryDocDtos())){
-                    result.put("serviceId","UC_CHKLMD001_ERR001");
-                }
-            }
-        }
-        return result;
-    }
+
 
 
     /**
@@ -903,45 +894,364 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
 
-    public static AppSubmissionDto setSubmissionDtoSvcData(HttpServletRequest request, AppSubmissionDto appSubmissionDto) throws CloneNotSupportedException {
-        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST);
-        if(appSubmissionDto != null){
-            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
-                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtoList){
-                    for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtoList){
-                        String svcId = appSvcRelatedInfoDto.getServiceId();
-                        String name = appSvcRelatedInfoDto.getServiceName();
-                        if(!StringUtil.isEmpty(svcId)){
-                            if(hcsaServiceDto.getId().equals(svcId)){
-                                appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
-                                appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
-                                appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
-                            }
 
-                        }else if (!StringUtil.isEmpty(name)){
-                            if(hcsaServiceDto.getSvcName().equals(name)){
-                                appSvcRelatedInfoDto.setServiceId(hcsaServiceDto.getId());
-                                appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
-                                appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
-                            }
 
-                        }
+    /**
+     * StartStep: doSubmit
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doSubmit(BaseProcessClass bpc) throws IOException {
+        log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
+        //do validate
+        // Map<String, Map<String, String>> validateResult = doValidate(bpc);
+        //save the app and appGroup
+        Map<String, String> map = doPreviewAndSumbit(bpc);
+        if(!map.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request,"Msg",map);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
+            return;
+        }
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        String draftNo = appSubmissionDto.getDraftNo();
+        if(StringUtil.isEmpty(draftNo)){
+            draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
+            appSubmissionDto.setDraftNo(draftNo);
+        }
+        //get appGroupNo
+        String appGroupNo = appSubmissionService.getGroupNo(appSubmissionDto.getAppType());
+        log.debug(StringUtil.changeForLog("the appGroupNo is -->:") + appGroupNo);
+        appSubmissionDto.setAppGrpNo(appGroupNo);
+        //get Amount
+        FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto);
+        appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
+        Double amount = feeDto.getTotal();
+        log.debug(StringUtil.changeForLog("the amount is -->:") + amount);
+        appSubmissionDto.setAmount(amount);
+        //judge is the preInspection
+               PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
+        if (preOrPostInspectionResultDto == null) {
+            appSubmissionDto.setPreInspection(true);
+            appSubmissionDto.setRequirement(true);
+        } else {
+            appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
+            appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
+        }
 
-                    }
+        //set Risk Score
+        appSubmissionService.setRiskToDto(appSubmissionDto);
+
+        appSubmissionDto = appSubmissionService.submit(appSubmissionDto, bpc.process);
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+
+        //get wrokgroup
+        log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
+    }
+
+
+
+
+    /**
+     * StartStep: ControlSwitch
+     *
+     * @param bpc
+     * @throws
+     */
+    public void controlSwitch(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do controlSwitch start ...."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String switch2 = "loading";
+        String crudActionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        if (StringUtil.isEmpty(crudActionValue)) {
+            crudActionValue = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        }
+        Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
+        if ("saveDraft".equals(crudActionValue) || "ack".equals(crudActionValue)) {
+            switch2 = crudActionValue;
+        }else if("doSubmit".equals(crudActionValue)){
+            if(requestInformationConfig == null){
+                switch2 = crudActionValue;
+                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+                    switch2 = "requstChange";
+                }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+                    switch2 = "renew";
+                }
+            }else{
+                switch2 = "information";
+            }
+
+        }
+        ParamUtil.setRequestAttr(bpc.request, "Switch2", switch2);
+        log.debug(StringUtil.changeForLog("the do controlSwitch end ...."));
+
+    }
+    /**
+     * StartStep: ControlSwitch
+     *
+     * @param bpc
+     * @throws
+     */
+    public void jumpBank(BaseProcessClass bpc) throws IOException {
+        log.debug(StringUtil.changeForLog("the do jumpBank start ...."));
+        String payMethod = ParamUtil.getString(bpc.request, "payMethod");
+        if(StringUtil.isEmpty(payMethod)){
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE,"payment");
+            return;
+        }
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        appSubmissionDto.setPaymentMethod(payMethod);
+        ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
+        if("Credit".equals(payMethod)){
+            StringBuffer url = new StringBuffer();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/payment-web/eservice/INTERNET/PaymentRequest")
+                    .append("?amount=").append(appSubmissionDto.getAmount())
+                    .append("&payMethod=").append(payMethod)
+                    .append("&reqNo=").append(appSubmissionDto.getAppGrpNo());
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+            return;
+        }else if("GIRO".equals(payMethod)){
+            String appGrpId = appSubmissionDto.getAppGrpId();
+            ApplicationGroupDto appGrp = new ApplicationGroupDto();
+            appGrp.setId(appGrpId);
+            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO);
+            serviceConfigService.updatePaymentStatus(appGrp);
+            ParamUtil.setRequestAttr(bpc.request, "PmtStatus", "GIRO");
+        }
+        log.debug(StringUtil.changeForLog("the do jumpBank end ...."));
+    }
+
+    /**
+     * StartStep: PrePareErrorAckPage
+     *
+     * @param bpc
+     * @throws
+     */
+    public void prepareErrorAck(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do prepareErrorAck start ...."));
+
+        log.debug(StringUtil.changeForLog("the do prepareErrorAck end ...."));
+    }
+
+    public void doErrorAck(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doErrorAck start ...."));
+
+
+        log.debug(StringUtil.changeForLog("the do doErrorAck end ...."));
+    }
+
+
+
+    /**
+     * StartStep: PrepareAckPage
+     *
+     * @param bpc
+     * @throws
+     */
+    public void prepareAckPage(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do prepareAckPage start ...."));
+
+        log.debug(StringUtil.changeForLog("the do prepareAckPage end ...."));
+    }
+
+    //=============================================================================
+    //ajax method
+    //=============================================================================
+    /**
+     * @param
+     * @description: ajax
+     * @author: zixia
+     */
+    @RequestMapping(value = "/retrieve-address")
+    public @ResponseBody PostCodeDto retrieveYourAddress(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode start ...."));
+        String postalCode = ParamUtil.getDate(request, "postalCode");
+        if(StringUtil.isEmpty(postalCode)){
+            log.debug(StringUtil.changeForLog("postCode is null"));
+            return null;
+        }
+        PostCodeDto postCodeDto = null;
+        try {
+            postCodeDto = serviceConfigService.getPremisesByPostalCode(postalCode);
+        }catch (Exception e){
+            log.debug(StringUtil.changeForLog("api exception"));
+        }
+
+        log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode end ...."));
+        return postCodeDto;
+    }
+
+    /**
+     * @param
+     * @description: ajax
+     * @author: zixia
+     */
+    @RequestMapping(value = "/loadSvcBySvcId.do", method = RequestMethod.GET)
+    public AppSvcRelatedInfoDto loadSvcInfoBySvcId(HttpServletRequest request) {
+        String svcId = ParamUtil.getRequestString(request, "svcId");
+        if (StringUtil.isEmpty(svcId)) {
+            return null;
+        }
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        for (AppSvcRelatedInfoDto appSvcDto : appSvcRelatedInfoDtoList) {
+            if (svcId.equals(appSvcDto.getServiceId())) {
+                //return this dto
+            }
+
+        }
+        return null;
+    }
+
+    /**
+     * @param
+     * @description: ajax
+     * @author: zixia
+     */
+    @RequestMapping(value = "/premises-html", method = RequestMethod.GET)
+    public @ResponseBody String addPremisesHtml(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the add premises html start ...."));
+        String currentLength = ParamUtil.getRequestString(request, "currentLength");
+        log.debug(StringUtil.changeForLog("currentLength : "+currentLength));
+
+        String sql = SqlMap.INSTANCE.getSql("premises", "premisesHtml").getSqlStr();
+        Set<String> premType = (Set<String>) ParamUtil.getSessionAttr(request, PREMISESTYPE);
+        StringBuffer premTypeBuffer = new StringBuffer();
+
+        for(String type:premType){
+            String className = "";
+            String width = "col-md-3";
+            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)){
+                className = "onSite";
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)){
+                className = "conveyance";
+                width = "col-md-4";
+            }
+
+            premTypeBuffer.append("<div class=\"col-xs-5 "+width+"\">")
+                    .append("<div class=\"form-check\">")
+                    .append("<input class=\"form-check-input premTypeRadio "+className+"\"  type=\"radio\" name=\"premType"+currentLength+"\" value = "+type+" aria-invalid=\"false\">");
+            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)){
+                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>On-site<br/><span>(at a fixed address)</span></label>");
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)){
+                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>Conveyance<br/><span>(in a mobile clinic / ambulance)</span></label>");
+            }
+            premTypeBuffer.append("</div>")
+                    .append("</div>");
+        }
+
+        //premiseSelect -- on-site
+        List<SelectOption> premisesOnSite= (List) ParamUtil.getSessionAttr(request, "premisesSelect");
+        Map<String,String> premisesOnSiteAttr = new HashMap<>();
+        premisesOnSiteAttr.put("class", "premSelect");
+        premisesOnSiteAttr.put("id", "onSiteSel");
+        premisesOnSiteAttr.put("name", "onSiteSelect");
+        premisesOnSiteAttr.put("style", "display: none;");
+        String premOnSiteSelectStr = NewApplicationHelper.generateDropDownHtml(premisesOnSiteAttr, premisesOnSite, null);
+
+        //premiseSelect -- conveyance
+        List<SelectOption> premisesConv= (List) ParamUtil.getSessionAttr(request, "conveyancePremSel");
+        Map<String,String> premisesConvAttr = new HashMap<>();
+        premisesConvAttr.put("class", "premSelect");
+        premisesConvAttr.put("id", "conveyanceSel");
+        premisesConvAttr.put("name", "conveyanceSelect");
+        premisesConvAttr.put("style", "display: none;");
+        String premConvSelectStr = NewApplicationHelper.generateDropDownHtml(premisesConvAttr, premisesConv, null);
+
+        //Address Type on-site
+        List<SelectOption> addrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
+        Map<String,String> addrTypesAttr = new HashMap<>();
+        addrTypesAttr.put("class", "siteAddressType");
+        addrTypesAttr.put("id", "siteAddressType");
+        addrTypesAttr.put("name", "onSiteAddressType");
+        addrTypesAttr.put("style", "display: none;");
+        String addrTypeSelectStr = NewApplicationHelper.generateDropDownHtml(addrTypesAttr, addrTypes, FIRESTOPTION);
+
+        //Address Type conveyance
+        List<SelectOption> conAddrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
+        Map<String,String> conAddrTypesAttr = new HashMap<>();
+        conAddrTypesAttr.put("class", "conveyanceAddressType");
+        conAddrTypesAttr.put("id", "siteAddressType");
+        conAddrTypesAttr.put("name", "conveyanceAddrType");
+        conAddrTypesAttr.put("style", "display: none;");
+        String conAddrTypeSelectStr = NewApplicationHelper.generateDropDownHtml(conAddrTypesAttr, conAddrTypes, FIRESTOPTION);
+
+        //Vehicle Salutation
+       /* List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
+        Map<String,String> salutationAttr = new HashMap<>();
+        salutationAttr.put("name", "conveyanceSalutation");
+        salutationAttr.put("style", "display: none;");
+        String salutationSelectStr = NewApplicationDelegator.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
+*/
+
+
+        sql = sql.replace("(0)", currentLength);
+        sql = sql.replace("(1)", premTypeBuffer.toString());
+        sql = sql.replace("(2)", premOnSiteSelectStr);
+        sql = sql.replace("(3)", premConvSelectStr);
+        sql = sql.replace("(4)", addrTypeSelectStr);
+        sql = sql.replace("(5)", conAddrTypeSelectStr);
+        //sql = sql.replace("(6)", salutationSelectStr);
+
+        log.debug(StringUtil.changeForLog("the add premises html end ...."));
+        return sql;
+    }
+
+
+    /**
+     * @param
+     * @description: ajax
+     * @author: zixia
+     */
+    @RequestMapping(value = "/file-repo", method = RequestMethod.GET)
+    public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.debug(StringUtil.changeForLog("file-repo start ...."));
+        String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
+        String maskFileRepoIdName = ParamUtil.getRequestString(request, "filerepo");
+        String fileRepoId = ParamUtil.getMaskedString(request, maskFileRepoIdName);
+        if(StringUtil.isEmpty(fileRepoId)){
+            log.debug(StringUtil.changeForLog("file-repo id is empty"));
+            return;
+        }
+        byte[] fileData =serviceConfigService.downloadFile(fileRepoId);
+        response.addHeader("Content-Disposition", "attachment;filename=" + fileRepoName);
+        response.addHeader("Content-Length", "" + fileData.length);
+        response.setContentType("application/x-octet-stream");
+        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+        ops.write(fileData);
+        ops.close();
+        ops.flush();
+        log.debug(StringUtil.changeForLog("file-repo end ...."));
+    }
+
+    //=============================================================================
+    //private method
+    //=============================================================================
+    private Map<String,String> doComChange( AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto){
+        StringBuilder sB=new StringBuilder();
+        Map<String,String> result=new HashMap<>();
+        AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
+        if(appEditSelectDto!=null){
+            if(!appEditSelectDto.isPremisesEdit()){
+                if(!appSubmissionDto.getAppGrpPremisesDtoList().equals(oldAppSubmissionDto.getAppGrpPremisesDtoList())){
+                    result.put("premiss","UC_CHKLMD001_ERR001");
+                }
+            }
+            if(!appEditSelectDto.isDocEdit()){
+                if(!appSubmissionDto.getAppSvcRelatedInfoDtoList().equals(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList())){
+                    result.put("document","UC_CHKLMD001_ERR001");
+                }
+            }
+            if(!appEditSelectDto.isServiceEdit()){
+                if(!appSubmissionDto.getAppGrpPrimaryDocDtos().equals(oldAppSubmissionDto.getAppGrpPrimaryDocDtos())){
+                    result.put("serviceId","UC_CHKLMD001_ERR001");
                 }
             }
         }
-        Object rfi = ParamUtil.getSessionAttr(request,REQUESTINFORMATIONCONFIG);
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
-                ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
-                || rfi != null){
-            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
-            ParamUtil.setSessionAttr(request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
-        }
-        return appSubmissionDto;
+        return result;
     }
-
     private boolean compareAndSendEmail(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto){
         boolean isAuto = true;
 
@@ -1130,58 +1440,204 @@ public class NewApplicationDelegator {
         }
         return new AppSvcRelatedInfoDto();
     }
-
     /**
-     * StartStep: doSubmit
-     *
-     * @param bpc
-     * @throws
+     * @param request
+     * @return
+     * @description: for the page validate call.
      */
-    public void doSubmit(BaseProcessClass bpc) throws IOException {
-        log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
-        //do validate
-        // Map<String, Map<String, String>> validateResult = doValidate(bpc);
-        //save the app and appGroup
-        Map<String, String> map = doPreviewAndSumbit(bpc);
-        if(!map.isEmpty()){
-            ParamUtil.setRequestAttr(bpc.request,"Msg",map);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
-            return;
-        }
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        String draftNo = appSubmissionDto.getDraftNo();
-        if(StringUtil.isEmpty(draftNo)){
-            draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
-            appSubmissionDto.setDraftNo(draftNo);
-        }
-        //get appGroupNo
-        String appGroupNo = appSubmissionService.getGroupNo(appSubmissionDto.getAppType());
-        log.debug(StringUtil.changeForLog("the appGroupNo is -->:") + appGroupNo);
-        appSubmissionDto.setAppGrpNo(appGroupNo);
-        //get Amount
-        FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto);
-        appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
-        Double amount = feeDto.getTotal();
-        log.debug(StringUtil.changeForLog("the amount is -->:") + amount);
-        appSubmissionDto.setAmount(amount);
-        //judge is the preInspection
-               PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
-        if (preOrPostInspectionResultDto == null) {
-            appSubmissionDto.setPreInspection(true);
-            appSubmissionDto.setRequirement(true);
-        } else {
-            appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
-            appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
+    private ApplicationValidateDto getValueFromPage(HttpServletRequest request) {
+        ApplicationValidateDto dto = new ApplicationValidateDto();
+        String pageCon = request.getParameter("pageCon");
+        chose(request,pageCon);
+
+        return dto;
+    }
+    private void chose(HttpServletRequest request,String type){
+        if("valPremiseList".equals(type)){
+            List<AppGrpPremisesDto> list = genAppGrpPremisesDtoList(request);
+            ParamUtil.setRequestAttr(request, "valPremiseList", list);
+        }if("prinOffice".equals(type)){
+            List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDto =
+                    (List<AppSvcPrincipalOfficersDto>)ParamUtil.getSessionAttr(request, "AppSvcPrincipalOfficersDto");
+            ParamUtil.setRequestAttr(request,"prinOffice",appSvcPrincipalOfficersDto);
         }
 
-        //set Risk Score
-        appSubmissionService.setRiskToDto(appSubmissionDto);
+    }
+    /**
+     * @description: get data from page
+     * @author: zixian
+     * @date: 11/6/2019 5:05 PM
+     * @param: request
+     * @return: AppGrpPremisesDto
+     */
+    private List<AppGrpPremisesDto> genAppGrpPremisesDtoList(HttpServletRequest request){
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = new ArrayList<>();
+        int count = 0;
+        String [] premisesType = ParamUtil.getStrings(request, "premType");
+        String [] hciName = ParamUtil.getStrings(request, "onSiteHciName");
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+            int i = 0;
+            if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+                for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                    premisesType[i] =  appGrpPremisesDto.getPremisesType();
 
-        appSubmissionDto = appSubmissionService.submit(appSubmissionDto, bpc.process);
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+                }
+            }
+            //todo:Grandfather Rights
 
-        //get wrokgroup
-        log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
+
+        }
+        if(premisesType != null){
+            count = premisesType.length;
+        }
+        //onsite
+        String [] premisesSelect = ParamUtil.getStrings(request, "onSiteSelect");
+        String [] postalCode = ParamUtil.getStrings(request,  "onSitePostalCode");
+        String [] blkNo = ParamUtil.getStrings(request, "onSiteBlkNo");
+        String [] streetName = ParamUtil.getStrings(request, "onSiteStreetName");
+        String [] floorNo = ParamUtil.getStrings(request, "onSiteFloorNo");
+        String [] unitNo = ParamUtil.getStrings(request, "onSiteUnitNo");
+        String [] buildingName = ParamUtil.getStrings(request, "onSiteBuildingName");
+        String [] siteAddressType = ParamUtil.getStrings(request, "onSiteAddressType");
+        String [] offTelNo= ParamUtil.getStrings(request,"onSiteOffTelNo");
+        String [] scdfRefNo = ParamUtil.getStrings(request, "onSiteScdfRefNo");
+        String [] onsiteStartHH = ParamUtil.getStrings(request, "onSiteStartHH");
+        String [] onsiteStartMM = ParamUtil.getStrings(request, "onSiteStartMM");
+        String [] onsiteEndHHS = ParamUtil.getStrings(request, "onSiteEndHH");
+        String [] onsiteEndMMS = ParamUtil.getStrings(request, "onSiteEndMM");
+        String [] fireSafetyCertIssuedDateStr  = ParamUtil.getStrings(request, "onSiteFireSafetyCertIssuedDate");
+        String [] isOtherLic = ParamUtil.getStrings(request, "onSiteIsOtherLic");
+        //conveyance
+        String [] conPremisesSelect = ParamUtil.getStrings(request, "conveyanceSelect");
+        String [] conVehicleNo = ParamUtil.getStrings(request, "conveyanceVehicleNo");
+        String [] conPostalCode = ParamUtil.getStrings(request,  "conveyancePostalCode");
+        String [] conBlkNo = ParamUtil.getStrings(request, "conveyanceBlockNo");
+        String [] conStreetName = ParamUtil.getStrings(request, "conveyanceStreetName");
+        String [] conFloorNo = ParamUtil.getStrings(request, "conveyanceFloorNo");
+        String [] conUnitNo = ParamUtil.getStrings(request, "conveyanceUnitNo");
+        String [] conBuildingName = ParamUtil.getStrings(request, "conveyanceBuildingName");
+        String [] conSiteAddressType = ParamUtil.getStrings(request, "conveyanceAddrType");
+        String [] conStartHH = ParamUtil.getStrings(request, "conveyanceStartHH");
+        String [] conStartMM = ParamUtil.getStrings(request, "conveyanceStartMM");
+        String [] conEndHHS = ParamUtil.getStrings(request, "conveyanceEndHH");
+        String [] conEndMMS = ParamUtil.getStrings(request, "conveyanceEndMM");
+        /*String [] conSalutation = ParamUtil.getStrings(request,"conveyanceSalutation");
+        String [] conVehicleOwnerName = ParamUtil.getStrings(request,"conveyanceVehicleOwnerName");*/
+        //every prem's ph length
+        String [] phLength = ParamUtil.getStrings(request,"phLength");
+        String [] premValue = ParamUtil.getStrings(request, "premValue");
+        for(int i =0 ; i<count;i++){
+            AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
+            appGrpPremisesDto.setPremisesType(premisesType[i]);
+            List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = new ArrayList<>();
+            int length = 0;
+            try {
+                length = Integer.parseInt(phLength[i]);
+            }catch (Exception e){
+                log.info(StringUtil.changeForLog("length can not parse to int"));
+            }
+            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])){
+                appGrpPremisesDto.setOnsiteStartHH(onsiteStartHH[i]);
+                appGrpPremisesDto.setOnsiteStartMM(onsiteStartMM[i]);
+                appGrpPremisesDto.setOnsiteEndHH(onsiteEndHHS[i]);
+                appGrpPremisesDto.setOnsiteEndMM(onsiteEndMMS[i]);
+                appGrpPremisesDto.setPremisesSelect(premisesSelect[i]);
+                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+
+                }
+                appGrpPremisesDto.setHciName(hciName[i]);
+                appGrpPremisesDto.setPostalCode(postalCode[i]);
+                appGrpPremisesDto.setBlkNo(blkNo[i]);
+                appGrpPremisesDto.setStreetName(streetName[i]);
+                appGrpPremisesDto.setFloorNo(floorNo[i]);
+                appGrpPremisesDto.setUnitNo(unitNo[i]);
+                appGrpPremisesDto.setBuildingName(buildingName[i]);
+                appGrpPremisesDto.setScdfRefNo(scdfRefNo[i]);
+                appGrpPremisesDto.setAddrType(siteAddressType[i]);
+                appGrpPremisesDto.setOffTelNo(offTelNo[i]);
+                appGrpPremisesDto.setCertIssuedDtStr(fireSafetyCertIssuedDateStr[i]);
+                Date fireSafetyCertIssuedDateDate = DateUtil.parseDate(fireSafetyCertIssuedDateStr[i], Formatter.DATE);
+                appGrpPremisesDto.setCertIssuedDt(fireSafetyCertIssuedDateDate);
+                if(AppConsts.YES.equals(isOtherLic)){
+                    appGrpPremisesDto.setLocateWithOthers(true);
+                }else if(AppConsts.NO.equals(isOtherLic)){
+                    appGrpPremisesDto.setLocateWithOthers(false);
+                }
+                for(int j =0; j<length; j++){
+                    AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();
+                    String onsitePubHolidayName = premValue[i]+"onSitePubHoliday"+j;
+                    String onsitePbHolDayStartHHName = premValue[i]+"onSitePbHolDayStartHH"+j;
+                    String onsitePbHolDayStartMMName = premValue[i]+"onSitePbHolDayStartMM"+j;
+                    String onsitePbHolDayEndHHName = premValue[i]+"onSitePbHolDayEndHH"+j;
+                    String onsitePbHolDayEndMMName = premValue[i]+"onSitePbHolDayEndMM"+j;
+
+                    String onsitePubHoliday = ParamUtil.getDate(request, onsitePubHolidayName);
+                    String onsitePbHolDayStartHH = ParamUtil.getString(request, onsitePbHolDayStartHHName);
+                    String onsitePbHolDayStartMM = ParamUtil.getString(request, onsitePbHolDayStartMMName);
+                    String onsitePbHolDayEndHH = ParamUtil.getString(request, onsitePbHolDayEndHHName);
+                    String onsitePbHolDayEndMM = ParamUtil.getString(request, onsitePbHolDayEndMMName);
+                    appPremPhOpenPeriod.setPhDateStr(onsitePubHoliday);
+                    Date phDate = DateUtil.parseDate(onsitePubHoliday, Formatter.DATE);
+                    appPremPhOpenPeriod.setPhDate(phDate);
+                    appPremPhOpenPeriod.setOnsiteStartFromHH(onsitePbHolDayStartHH);
+                    appPremPhOpenPeriod.setOnsiteStartFromMM(onsitePbHolDayStartMM);
+                    appPremPhOpenPeriod.setOnsiteEndToHH(onsitePbHolDayEndHH);
+                    appPremPhOpenPeriod.setOnsiteEndToMM(onsitePbHolDayEndMM);
+                    if(!StringUtil.isEmpty(onsitePubHoliday)||!StringUtil.isEmpty(onsitePbHolDayStartHH) || !StringUtil.isEmpty(onsitePbHolDayStartMM)
+                            ||!StringUtil.isEmpty(onsitePbHolDayEndHH) ||!StringUtil.isEmpty(onsitePbHolDayEndMM)){
+                        appPremPhOpenPeriods.add(appPremPhOpenPeriod);
+                    }
+                }
+
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType[i])){
+                appGrpPremisesDto.setConStartHH(conStartHH[i]);
+                appGrpPremisesDto.setConStartMM(conStartMM[i]);
+                appGrpPremisesDto.setConEndHH(conEndHHS[i]);
+                appGrpPremisesDto.setConEndMM(conEndMMS[i]);
+                appGrpPremisesDto.setPremisesSelect(conPremisesSelect[i]);
+                appGrpPremisesDto.setConveyanceVehicleNo(conVehicleNo[i]);
+                appGrpPremisesDto.setConveyancePostalCode(conPostalCode[i]);
+                appGrpPremisesDto.setConveyanceBlockNo(conBlkNo[i]);
+                appGrpPremisesDto.setConveyanceStreetName(conStreetName[i]);
+                appGrpPremisesDto.setConveyanceFloorNo(conFloorNo[i]);
+                appGrpPremisesDto.setConveyanceUnitNo(conUnitNo[i]);
+                appGrpPremisesDto.setConveyanceBuildingName(conBuildingName[i]);
+                appGrpPremisesDto.setConveyanceAddressType(conSiteAddressType[i]);
+                /*appGrpPremisesDto.setConveyanceSalutation(conSalutation[i]);
+                appGrpPremisesDto.setConveyanceVehicleOwnerName(conVehicleOwnerName[i]);*/
+                for(int j =0; j<length; j++){
+                    AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();
+                    String convPubHolidayName = premValue[i]+"conveyancePubHoliday"+j;
+                    String convPbHolDayStartHHName = premValue[i]+"conveyancePbHolDayStartHH"+j;
+                    String convPbHolDayStartMMName = premValue[i]+"conveyancePbHolDayStartMM"+j;
+                    String convPbHolDayEndHHName = premValue[i]+"conveyancePbHolDayEndHH"+j;
+                    String convPbHolDayEndMMName = premValue[i]+"conveyancePbHolDayEndMM"+j;
+
+                    String convPubHoliday = ParamUtil.getDate(request, convPubHolidayName);
+                    String convPbHolDayStartHH = ParamUtil.getString(request, convPbHolDayStartHHName);
+                    String convPbHolDayStartMM = ParamUtil.getString(request, convPbHolDayStartMMName);
+                    String convPbHolDayEndHH = ParamUtil.getString(request, convPbHolDayEndHHName);
+                    String convPbHolDayEndMM = ParamUtil.getString(request, convPbHolDayEndMMName);
+                    appPremPhOpenPeriod.setPhDateStr(convPubHoliday);
+                    Date phDate = DateUtil.parseDate(convPubHoliday, "dd/mm/yyyy");
+                    appPremPhOpenPeriod.setPhDate(phDate);
+                    appPremPhOpenPeriod.setConvStartFromHH(convPbHolDayStartHH);
+                    appPremPhOpenPeriod.setConvStartFromMM(convPbHolDayStartMM);
+                    appPremPhOpenPeriod.setConvEndToHH(convPbHolDayEndHH);
+                    appPremPhOpenPeriod.setConvEndToMM(convPbHolDayEndMM);
+
+                    if(!StringUtil.isEmpty(convPubHoliday)||!StringUtil.isEmpty(convPbHolDayStartHH) || !StringUtil.isEmpty(convPbHolDayStartMM)
+                            ||!StringUtil.isEmpty(convPbHolDayEndHH) ||!StringUtil.isEmpty(convPbHolDayEndMM)){
+                        appPremPhOpenPeriods.add(appPremPhOpenPeriod);
+                    }
+                }
+            }
+            appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriods);
+            appGrpPremisesDtoList.add(appGrpPremisesDto);
+        }
+        return  appGrpPremisesDtoList;
     }
 
 
@@ -1194,7 +1650,8 @@ public class NewApplicationDelegator {
             previewAndSubmitMap.put("premiss","UC_CHKLMD001_ERR001");
         }
         //
-        Map<String, String> poMap = doValidatePo(bpc.request);
+        List<AppSvcPrincipalOfficersDto> poDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto");
+        Map<String, String> poMap = NewApplicationHelper.doValidatePo(poDto);
         if(!poMap.isEmpty()){
             previewAndSubmitMap.put("po","UC_CHKLMD001_ERR001");
         }
@@ -1271,7 +1728,7 @@ public class NewApplicationDelegator {
                 }
 
                 if(!flag){
-                 /*   sB.append(serviceId);*/
+                    /*   sB.append(serviceId);*/
                 }
             }
 
@@ -1574,312 +2031,9 @@ public class NewApplicationDelegator {
         }
         if(flag){
             sB.append(serviceId);
-
         }
 
     }
-
-    /**
-     * StartStep: ControlSwitch
-     *
-     * @param bpc
-     * @throws
-     */
-    public void controlSwitch(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do controlSwitch start ...."));
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        String switch2 = "loading";
-        String crudActionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        if (StringUtil.isEmpty(crudActionValue)) {
-            crudActionValue = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        }
-        Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
-        if ("saveDraft".equals(crudActionValue) || "ack".equals(crudActionValue)) {
-            switch2 = crudActionValue;
-        }else if("doSubmit".equals(crudActionValue)){
-            if(requestInformationConfig == null){
-                switch2 = crudActionValue;
-                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-                    switch2 = "requstChange";
-                }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
-                    switch2 = "renew";
-                }
-            }else{
-                switch2 = "information";
-            }
-
-        }
-        ParamUtil.setRequestAttr(bpc.request, "Switch2", switch2);
-        log.debug(StringUtil.changeForLog("the do controlSwitch end ...."));
-
-    }
-    /**
-     * StartStep: ControlSwitch
-     *
-     * @param bpc
-     * @throws
-     */
-    public void jumpBank(BaseProcessClass bpc) throws IOException {
-        log.debug(StringUtil.changeForLog("the do jumpBank start ...."));
-        String payMethod = ParamUtil.getString(bpc.request, "payMethod");
-        if(StringUtil.isEmpty(payMethod)){
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE,"payment");
-            return;
-        }
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        appSubmissionDto.setPaymentMethod(payMethod);
-        ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
-        if("Credit".equals(payMethod)){
-            StringBuffer url = new StringBuffer();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/payment-web/eservice/INTERNET/PaymentRequest")
-                    .append("?amount=").append(appSubmissionDto.getAmount())
-                    .append("&payMethod=").append(payMethod)
-                    .append("&reqNo=").append(appSubmissionDto.getAppGrpNo());
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
-            return;
-        }else if("GIRO".equals(payMethod)){
-            String appGrpId = appSubmissionDto.getAppGrpId();
-            ApplicationGroupDto appGrp = new ApplicationGroupDto();
-            appGrp.setId(appGrpId);
-            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO);
-            serviceConfigService.updatePaymentStatus(appGrp);
-            ParamUtil.setRequestAttr(bpc.request, "PmtStatus", "GIRO");
-        }
-        log.debug(StringUtil.changeForLog("the do jumpBank end ...."));
-    }
-
-    /**
-     * StartStep: PrePareErrorAckPage
-     *
-     * @param bpc
-     * @throws
-     */
-    public void prepareErrorAck(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do prepareErrorAck start ...."));
-
-        log.debug(StringUtil.changeForLog("the do prepareErrorAck end ...."));
-    }
-
-    public void doErrorAck(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do doErrorAck start ...."));
-
-
-        log.debug(StringUtil.changeForLog("the do doErrorAck end ...."));
-    }
-
-
-
-    /**
-     * StartStep: PrepareAckPage
-     *
-     * @param bpc
-     * @throws
-     */
-    public void prepareAckPage(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do prepareAckPage start ...."));
-
-        log.debug(StringUtil.changeForLog("the do prepareAckPage end ...."));
-    }
-
-    /**
-     * @param
-     * @description: ajax
-     * @author: zixia
-     */
-    @RequestMapping(value = "/retrieve-address")
-    public @ResponseBody PostCodeDto retrieveYourAddress(HttpServletRequest request) {
-        log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode start ...."));
-        String postalCode = ParamUtil.getDate(request, "postalCode");
-        if(StringUtil.isEmpty(postalCode)){
-            log.debug(StringUtil.changeForLog("postCode is null"));
-            return null;
-        }
-        PostCodeDto postCodeDto = null;
-        try {
-            postCodeDto = serviceConfigService.getPremisesByPostalCode(postalCode);
-        }catch (Exception e){
-            log.debug(StringUtil.changeForLog("api exception"));
-        }
-
-        log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode end ...."));
-        return postCodeDto;
-    }
-
-    /**
-     * @param
-     * @description: ajax
-     * @author: zixia
-     */
-    @RequestMapping(value = "/loadSvcBySvcId.do", method = RequestMethod.GET)
-    public AppSvcRelatedInfoDto loadSvcInfoBySvcId(HttpServletRequest request) {
-        String svcId = ParamUtil.getRequestString(request, "svcId");
-        if (StringUtil.isEmpty(svcId)) {
-            return null;
-        }
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        for (AppSvcRelatedInfoDto appSvcDto : appSvcRelatedInfoDtoList) {
-            if (svcId.equals(appSvcDto.getServiceId())) {
-                //return this dto
-            }
-
-        }
-        return null;
-    }
-
-    /**
-     * @param
-     * @description: ajax
-     * @author: zixia
-     */
-    @RequestMapping(value = "/premises-html", method = RequestMethod.GET)
-    public @ResponseBody String addPremisesHtml(HttpServletRequest request) {
-        log.debug(StringUtil.changeForLog("the add premises html start ...."));
-        String currentLength = ParamUtil.getRequestString(request, "currentLength");
-        log.debug(StringUtil.changeForLog("currentLength : "+currentLength));
-
-        String sql = SqlMap.INSTANCE.getSql("premises", "premisesHtml").getSqlStr();
-        Set<String> premType = (Set<String>) ParamUtil.getSessionAttr(request, PREMISESTYPE);
-        StringBuffer premTypeBuffer = new StringBuffer();
-
-        for(String type:premType){
-            String className = "";
-            String width = "col-md-3";
-            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)){
-                className = "onSite";
-            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)){
-                className = "conveyance";
-                width = "col-md-4";
-            }
-
-            premTypeBuffer.append("<div class=\"col-xs-5 "+width+"\">")
-                    .append("<div class=\"form-check\">")
-                    .append("<input class=\"form-check-input premTypeRadio "+className+"\"  type=\"radio\" name=\"premType"+currentLength+"\" value = "+type+" aria-invalid=\"false\">");
-            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)){
-                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>On-site<br/><span>(at a fixed address)</span></label>");
-            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)){
-                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>Conveyance<br/><span>(in a mobile clinic / ambulance)</span></label>");
-            }
-            premTypeBuffer.append("</div>")
-                    .append("</div>");
-        }
-
-        //premiseSelect -- on-site
-        List<SelectOption> premisesOnSite= (List) ParamUtil.getSessionAttr(request, "premisesSelect");
-        Map<String,String> premisesOnSiteAttr = new HashMap<>();
-        premisesOnSiteAttr.put("class", "premSelect");
-        premisesOnSiteAttr.put("id", "onSiteSel");
-        premisesOnSiteAttr.put("name", "onSiteSelect");
-        premisesOnSiteAttr.put("style", "display: none;");
-        String premOnSiteSelectStr = generateDropDownHtml(premisesOnSiteAttr, premisesOnSite, null);
-
-        //premiseSelect -- conveyance
-        List<SelectOption> premisesConv= (List) ParamUtil.getSessionAttr(request, "conveyancePremSel");
-        Map<String,String> premisesConvAttr = new HashMap<>();
-        premisesConvAttr.put("class", "premSelect");
-        premisesConvAttr.put("id", "conveyanceSel");
-        premisesConvAttr.put("name", "conveyanceSelect");
-        premisesConvAttr.put("style", "display: none;");
-        String premConvSelectStr = generateDropDownHtml(premisesConvAttr, premisesConv, null);
-
-        //Address Type on-site
-        List<SelectOption> addrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
-        Map<String,String> addrTypesAttr = new HashMap<>();
-        addrTypesAttr.put("class", "siteAddressType");
-        addrTypesAttr.put("id", "siteAddressType");
-        addrTypesAttr.put("name", "onSiteAddressType");
-        addrTypesAttr.put("style", "display: none;");
-        String addrTypeSelectStr = generateDropDownHtml(addrTypesAttr, addrTypes, FIRESTOPTION);
-
-        //Address Type conveyance
-        List<SelectOption> conAddrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
-        Map<String,String> conAddrTypesAttr = new HashMap<>();
-        conAddrTypesAttr.put("class", "conveyanceAddressType");
-        conAddrTypesAttr.put("id", "siteAddressType");
-        conAddrTypesAttr.put("name", "conveyanceAddrType");
-        conAddrTypesAttr.put("style", "display: none;");
-        String conAddrTypeSelectStr = generateDropDownHtml(conAddrTypesAttr, conAddrTypes, FIRESTOPTION);
-
-        //Vehicle Salutation
-       /* List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-        Map<String,String> salutationAttr = new HashMap<>();
-        salutationAttr.put("name", "conveyanceSalutation");
-        salutationAttr.put("style", "display: none;");
-        String salutationSelectStr = NewApplicationDelegator.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
-*/
-
-
-        sql = sql.replace("(0)", currentLength);
-        sql = sql.replace("(1)", premTypeBuffer.toString());
-        sql = sql.replace("(2)", premOnSiteSelectStr);
-        sql = sql.replace("(3)", premConvSelectStr);
-        sql = sql.replace("(4)", addrTypeSelectStr);
-        sql = sql.replace("(5)", conAddrTypeSelectStr);
-        //sql = sql.replace("(6)", salutationSelectStr);
-
-        log.debug(StringUtil.changeForLog("the add premises html end ...."));
-        return sql;
-    }
-
-
-    /**
-     * @param
-     * @description: ajax
-     * @author: zixia
-     */
-    @RequestMapping(value = "/file-repo", method = RequestMethod.GET)
-    public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.debug(StringUtil.changeForLog("file-repo start ...."));
-        String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
-        String maskFileRepoIdName = ParamUtil.getRequestString(request, "filerepo");
-        String fileRepoId = ParamUtil.getMaskedString(request, maskFileRepoIdName);
-        if(StringUtil.isEmpty(fileRepoId)){
-            log.debug(StringUtil.changeForLog("file-repo id is empty"));
-            return;
-        }
-        byte[] fileData =serviceConfigService.downloadFile(fileRepoId);
-        response.addHeader("Content-Disposition", "attachment;filename=" + fileRepoName);
-        response.addHeader("Content-Length", "" + fileData.length);
-        response.setContentType("application/x-octet-stream");
-        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-        ops.write(fileData);
-        ops.close();
-        ops.flush();
-        log.debug(StringUtil.changeForLog("file-repo end ...."));
-    }
-
-
-
-    /**
-     * @param request
-     * @return
-     * @description: for the page validate call.
-     */
-    public ApplicationValidateDto getValueFromPage(HttpServletRequest request) {
-        ApplicationValidateDto dto = new ApplicationValidateDto();
-        String pageCon = request.getParameter("pageCon");
-        chose(request,pageCon);
-
-        return dto;
-    }
-
-    private void chose(HttpServletRequest request,String type){
-        if("valPremiseList".equals(type)){
-            List<AppGrpPremisesDto> list = genAppGrpPremisesDtoList(request);
-            ParamUtil.setRequestAttr(request, "valPremiseList", list);
-        }if("prinOffice".equals(type)){
-            List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDto =
-                    (List<AppSvcPrincipalOfficersDto>)ParamUtil.getSessionAttr(request, "AppSvcPrincipalOfficersDto");
-            ParamUtil.setRequestAttr(request,"prinOffice",appSvcPrincipalOfficersDto);
-        }
-
-    }
-
-    //=============================================================================
-    //private method
-    //=============================================================================
     private void loadingDraft(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do loadingDraft start ...."));
         String draftNo = (String) ParamUtil.getString(bpc.request, "DraftNumber");
@@ -2064,13 +2218,7 @@ public class NewApplicationDelegator {
         list.sort((h1, h2) -> h1.getSvcName().compareTo(h2.getSvcName()));
     }
 
-/*    private Map<String, Map<String, String>> doValidate(BaseProcessClass bpc) {
-        Map<String, Map<String, String>> reuslt = new HashMap<>();
-        //do validate premiss
-        Map<String, String> premises = doValidatePremiss(bpc);
-        reuslt.put("premises", premises);
-        return reuslt;
-    }*/
+
 
     private Map<String, String> doValidatePremiss(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
@@ -2150,54 +2298,54 @@ public class NewApplicationDelegator {
                         if(appPremPhOpenPeriodList!=null){
 
 
-                        for(AppPremPhOpenPeriodDto every :appPremPhOpenPeriodList){
-                            String convStartFromHH = every.getOnsiteStartFromHH();
-                            String convStartFromMM = every.getOnsiteStartFromMM();
-                            String onsiteEndToHH = every.getOnsiteEndToHH();
-                            String onsiteEndToMM = every.getOnsiteEndToMM();
-                            if(!StringUtil.isEmpty(convStartFromHH)&&!StringUtil.isEmpty(convStartFromMM)&&!StringUtil.isEmpty(onsiteEndToHH)
-                            &&!StringUtil.isEmpty(onsiteEndToMM)||StringUtil.isEmpty(convStartFromHH)&&StringUtil.isEmpty(convStartFromMM)
-                            &&StringUtil.isEmpty(onsiteEndToHH)&&StringUtil.isEmpty(onsiteEndToMM)){
+                            for(AppPremPhOpenPeriodDto every :appPremPhOpenPeriodList){
+                                String convStartFromHH = every.getOnsiteStartFromHH();
+                                String convStartFromMM = every.getOnsiteStartFromMM();
+                                String onsiteEndToHH = every.getOnsiteEndToHH();
+                                String onsiteEndToMM = every.getOnsiteEndToMM();
                                 if(!StringUtil.isEmpty(convStartFromHH)&&!StringUtil.isEmpty(convStartFromMM)&&!StringUtil.isEmpty(onsiteEndToHH)
-                                        &&!StringUtil.isEmpty(onsiteEndToMM)){
-                                    try {
-                                        int i1 = Integer.parseInt(convStartFromHH);
-                                        int i2 = Integer.parseInt(convStartFromMM);
-                                        int i3 = Integer.parseInt(onsiteEndToHH);
-                                        int i4 = Integer.parseInt(onsiteEndToMM);
-                                        if(i1>=24||i2>=60||i3>=24||i4>=60){
-                                            errorMap.put("onsiteEndToMM"+i,"UC_CHKLMD001_ERR003");
-                                        }
-                                        else if((i1*60+i2)>(i3*60+i4)){
-                                            errorMap.put("onsiteEndToMM"+i,"UC_CHKLMD001_ERR003");
-                                        }
+                                        &&!StringUtil.isEmpty(onsiteEndToMM)||StringUtil.isEmpty(convStartFromHH)&&StringUtil.isEmpty(convStartFromMM)
+                                        &&StringUtil.isEmpty(onsiteEndToHH)&&StringUtil.isEmpty(onsiteEndToMM)){
+                                    if(!StringUtil.isEmpty(convStartFromHH)&&!StringUtil.isEmpty(convStartFromMM)&&!StringUtil.isEmpty(onsiteEndToHH)
+                                            &&!StringUtil.isEmpty(onsiteEndToMM)){
+                                        try {
+                                            int i1 = Integer.parseInt(convStartFromHH);
+                                            int i2 = Integer.parseInt(convStartFromMM);
+                                            int i3 = Integer.parseInt(onsiteEndToHH);
+                                            int i4 = Integer.parseInt(onsiteEndToMM);
+                                            if(i1>=24||i2>=60||i3>=24||i4>=60){
+                                                errorMap.put("onsiteEndToMM"+i,"UC_CHKLMD001_ERR003");
+                                            }
+                                            else if((i1*60+i2)>(i3*60+i4)){
+                                                errorMap.put("onsiteEndToMM"+i,"UC_CHKLMD001_ERR003");
+                                            }
 
 
-                                    }catch (Exception e){
-                                        errorMap.put("onsiteEndToMM"+i,"UC_CHKLMD001_ERR003");
+                                        }catch (Exception e){
+                                            errorMap.put("onsiteEndToMM"+i,"UC_CHKLMD001_ERR003");
+                                        }
+                                    }
+
+                                }else {
+                                    errorMap.put("onsiteEndToMM"+i,"UC_CHKLMD001_ERR003");
+                                }
+
+                            }
+                            //set ph time
+                            String errorOnsiteEndToMM = errorMap.get("onsiteEndToMM"+i);
+                            if(StringUtil.isEmpty(errorOnsiteEndToMM) && !IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
+                                for(AppPremPhOpenPeriodDto ph :appPremPhOpenPeriodList){
+                                    if(!StringUtil.isEmpty(ph.getOnsiteStartFromHH()) && !StringUtil.isEmpty(ph.getOnsiteStartFromMM())){
+                                        LocalTime startTime = LocalTime.of(Integer.parseInt(ph.getOnsiteStartFromHH()),Integer.parseInt(ph.getOnsiteStartFromMM()));
+                                        ph.setStartFrom(Time.valueOf(startTime));
+                                    }
+                                    if(!StringUtil.isEmpty(ph.getOnsiteEndToHH()) && !StringUtil.isEmpty(ph.getOnsiteEndToMM())){
+                                        LocalTime endTime = LocalTime.of(Integer.parseInt(ph.getOnsiteEndToHH()),Integer.parseInt(ph.getOnsiteEndToMM()));
+                                        ph.setEndTo(Time.valueOf(endTime));
                                     }
                                 }
 
-                            }else {
-                                errorMap.put("onsiteEndToMM"+i,"UC_CHKLMD001_ERR003");
                             }
-
-                        }
-                        //set ph time
-                        String errorOnsiteEndToMM = errorMap.get("onsiteEndToMM"+i);
-                        if(StringUtil.isEmpty(errorOnsiteEndToMM) && !IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
-                            for(AppPremPhOpenPeriodDto ph :appPremPhOpenPeriodList){
-                                if(!StringUtil.isEmpty(ph.getOnsiteStartFromHH()) && !StringUtil.isEmpty(ph.getOnsiteStartFromMM())){
-                                    LocalTime startTime = LocalTime.of(Integer.parseInt(ph.getOnsiteStartFromHH()),Integer.parseInt(ph.getOnsiteStartFromMM()));
-                                    ph.setStartFrom(Time.valueOf(startTime));
-                                }
-                                if(!StringUtil.isEmpty(ph.getOnsiteEndToHH()) && !StringUtil.isEmpty(ph.getOnsiteEndToMM())){
-                                    LocalTime endTime = LocalTime.of(Integer.parseInt(ph.getOnsiteEndToHH()),Integer.parseInt(ph.getOnsiteEndToMM()));
-                                    ph.setEndTo(Time.valueOf(endTime));
-                                }
-                            }
-
-                        }
 
 
                         }
@@ -2305,61 +2453,61 @@ public class NewApplicationDelegator {
                         }
 
                         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
-                      if(appPremPhOpenPeriodList!=null){
+                        if(appPremPhOpenPeriodList!=null){
 
 
-                        for(AppPremPhOpenPeriodDto every:appPremPhOpenPeriodList){
-                            String convEndToHH = every.getConvEndToHH();
-                            String convEndToMM = every.getConvEndToMM();
-                            String convStartFromHH = every.getConvStartFromHH();
-                            String convStartFromMM = every.getConvStartFromMM();
-                            if(StringUtil.isEmpty(convEndToHH)&&StringUtil.isEmpty(convEndToMM)&StringUtil.isEmpty(convStartFromHH)
-                            &StringUtil.isEmpty(convStartFromMM)||!StringUtil.isEmpty(convEndToHH)&&!StringUtil.isEmpty(convEndToMM)
-                            &&!StringUtil.isEmpty(convStartFromHH)&!StringUtil.isEmpty(convStartFromMM)){
-                                if(!StringUtil.isEmpty(convEndToHH)&&!StringUtil.isEmpty(convEndToMM)
+                            for(AppPremPhOpenPeriodDto every:appPremPhOpenPeriodList){
+                                String convEndToHH = every.getConvEndToHH();
+                                String convEndToMM = every.getConvEndToMM();
+                                String convStartFromHH = every.getConvStartFromHH();
+                                String convStartFromMM = every.getConvStartFromMM();
+                                if(StringUtil.isEmpty(convEndToHH)&&StringUtil.isEmpty(convEndToMM)&StringUtil.isEmpty(convStartFromHH)
+                                        &StringUtil.isEmpty(convStartFromMM)||!StringUtil.isEmpty(convEndToHH)&&!StringUtil.isEmpty(convEndToMM)
                                         &&!StringUtil.isEmpty(convStartFromHH)&!StringUtil.isEmpty(convStartFromMM)){
-                                    try {
-                                        int i1 = Integer.parseInt(convStartFromHH);
-                                        int i2 = Integer.parseInt(convStartFromMM);
-                                        int i3 = Integer.parseInt(convEndToHH);
-                                        int i4 = Integer.parseInt(convEndToMM);
-                                        if(i1>=24||i2>=60||i3>=24||i4>=60){
-                                            errorMap.put("convEndToHH"+i,"UC_CHKLMD001_ERR003");
-                                        }
-                                        else if((i1*60+i2)>(i3*60+i4)){
-                                            errorMap.put("convEndToHH"+i,"UC_CHKLMD001_ERR003");
-                                        }
+                                    if(!StringUtil.isEmpty(convEndToHH)&&!StringUtil.isEmpty(convEndToMM)
+                                            &&!StringUtil.isEmpty(convStartFromHH)&!StringUtil.isEmpty(convStartFromMM)){
+                                        try {
+                                            int i1 = Integer.parseInt(convStartFromHH);
+                                            int i2 = Integer.parseInt(convStartFromMM);
+                                            int i3 = Integer.parseInt(convEndToHH);
+                                            int i4 = Integer.parseInt(convEndToMM);
+                                            if(i1>=24||i2>=60||i3>=24||i4>=60){
+                                                errorMap.put("convEndToHH"+i,"UC_CHKLMD001_ERR003");
+                                            }
+                                            else if((i1*60+i2)>(i3*60+i4)){
+                                                errorMap.put("convEndToHH"+i,"UC_CHKLMD001_ERR003");
+                                            }
 
 
-                                    }catch (Exception e){
-                                        errorMap.put("convEndToHH"+i,"UC_CHKLMD001_ERR003");
+                                        }catch (Exception e){
+                                            errorMap.put("convEndToHH"+i,"UC_CHKLMD001_ERR003");
+                                        }
                                     }
-                                }
-                            }else {
+                                }else {
 
-                                errorMap.put("convEndToHH"+i,"UC_CHKLMD001_ERR003");
+                                    errorMap.put("convEndToHH"+i,"UC_CHKLMD001_ERR003");
+                                }
+
                             }
 
+                            //set ph time
+                            String errorConvEndToHH = errorMap.get("convEndToHH"+i);
+                            if(StringUtil.isEmpty(errorConvEndToHH) && !IaisCommonUtils.isEmpty(appPremPhOpenPeriodList) ){
+                                for(AppPremPhOpenPeriodDto ph :appPremPhOpenPeriodList){
+                                    if(!StringUtil.isEmpty(ph.getOnsiteEndToHH()) && !StringUtil.isEmpty(ph.getOnsiteEndToMM())){
+                                        LocalTime startTime = LocalTime.of(Integer.parseInt(ph.getConvStartFromHH()),Integer.parseInt(ph.getConvStartFromMM()));
+                                        ph.setStartFrom(Time.valueOf(startTime));
+                                    }
+
+                                    if(!StringUtil.isEmpty(ph.getConvEndToHH()) && !StringUtil.isEmpty(ph.getConvEndToMM())){
+                                        LocalTime endTime = LocalTime.of(Integer.parseInt(ph.getConvEndToHH()),Integer.parseInt(ph.getConvEndToMM()));
+                                        ph.setEndTo(Time.valueOf(endTime));
+                                    }
+
+                                }
+
+                            }
                         }
-
-                          //set ph time
-                          String errorConvEndToHH = errorMap.get("convEndToHH"+i);
-                          if(StringUtil.isEmpty(errorConvEndToHH) && !IaisCommonUtils.isEmpty(appPremPhOpenPeriodList) ){
-                              for(AppPremPhOpenPeriodDto ph :appPremPhOpenPeriodList){
-                                  if(!StringUtil.isEmpty(ph.getOnsiteEndToHH()) && !StringUtil.isEmpty(ph.getOnsiteEndToMM())){
-                                      LocalTime startTime = LocalTime.of(Integer.parseInt(ph.getConvStartFromHH()),Integer.parseInt(ph.getConvStartFromMM()));
-                                      ph.setStartFrom(Time.valueOf(startTime));
-                                  }
-
-                                  if(!StringUtil.isEmpty(ph.getConvEndToHH()) && !StringUtil.isEmpty(ph.getConvEndToMM())){
-                                      LocalTime endTime = LocalTime.of(Integer.parseInt(ph.getConvEndToHH()),Integer.parseInt(ph.getConvEndToMM()));
-                                      ph.setEndTo(Time.valueOf(endTime));
-                                  }
-
-                              }
-
-                          }
-                      }
                         String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
                         if(StringUtil.isEmpty(conveyanceVehicleNo)){
                             errorMap.put("conveyanceVehicleNo"+i,"UC_CHKLMD001_ERR001");
@@ -2414,170 +2562,6 @@ public class NewApplicationDelegator {
 
         return errorMap;
     }
-
-    //todo change
-    public static Map<String,  String> doValidatePo(HttpServletRequest request) {
-        List<AppSvcPrincipalOfficersDto> poDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, "AppSvcPrincipalOfficersDto");
-        Map<String, String> oneErrorMap = new HashMap<>();
-        StringBuilder stringBuilder =new StringBuilder();
-        int poIndex=0;
-        int dpoIndex=0;
-        for (int i=0;i< poDto.size();i++) {
-            StringBuilder stringBuilder1 =new StringBuilder();
-            String psnType = poDto.get(i).getPsnType();
-            if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)){
-                String assignSelect = poDto.get(i).getAssignSelect();
-                if (StringUtil.isEmpty(assignSelect)) {
-                    oneErrorMap.put("assignSelect", "UC_CHKLMD001_ERR002");
-                } else {
-                    //do by wenkang
-                    String mobileNo = poDto.get(i).getMobileNo();
-                    String officeTelNo = poDto.get(i).getOfficeTelNo();
-                    String emailAddr = poDto.get(i).getEmailAddr();
-                    String idNo = poDto.get(i).getIdNo();
-                    String name = poDto.get(i).getName();
-                    String salutation = poDto.get(i).getSalutation();
-                    String designation = poDto.get(i).getDesignation();
-                    String idType = poDto.get(i).getIdType();
-
-                    if("-1".equals(idType)){
-                        oneErrorMap.put("idType"+poIndex,"UC_CHKLMD001_ERR001");
-                    }
-                    if(StringUtil.isEmpty(name)){
-                        oneErrorMap.put("name"+poIndex,"UC_CHKLMD001_ERR001");
-                    }
-                    if(StringUtil.isEmpty(salutation)){
-                        oneErrorMap.put("salutation"+poIndex,"UC_CHKLMD001_ERR001");
-                    }
-                    if(StringUtil.isEmpty(designation)){
-                        oneErrorMap.put("designation"+poIndex,"UC_CHKLMD001_ERR001");
-                    }
-                    if(!StringUtil.isEmpty(idNo)){
-                        if("FIN".equals(idType)){
-                            boolean b = SgNoValidator.validateFin(idNo);
-                            if(!b){
-                                oneErrorMap.put("NRICFIN","CHKLMD001_ERR005");
-                            }else {
-                                stringBuilder1.append(idType).append(idNo);
-                            }
-                        }
-                        if("NRIC".equals(idType)){
-                            boolean b1 = SgNoValidator.validateNric(idNo);
-                            if(!b1){
-                                oneErrorMap.put("NRICFIN","CHKLMD001_ERR005");
-                            }else {
-                                stringBuilder1.append(idType).append(idNo);
-                            }
-                        }
-                    }else {
-                        oneErrorMap.put("NRICFIN","UC_CHKLMD001_ERR001");
-                    }
-                    if(!StringUtil.isEmpty(mobileNo)){
-                        if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                            oneErrorMap.put("mobileNo"+poIndex, "CHKLMD001_ERR004");
-                        }
-                    }else {
-                        oneErrorMap.put("mobileNo"+poIndex, "UC_CHKLMD001_ERR001");
-                    }
-                    if(!StringUtil.isEmpty(emailAddr)) {
-                        if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
-                            oneErrorMap.put("emailAddr"+poIndex, "CHKLMD001_ERR006");
-                        }
-                    }else {
-                        oneErrorMap.put("emailAddr"+poIndex, "UC_CHKLMD001_ERR001");
-                    }
-                    if(!StringUtil.isEmpty(officeTelNo)) {
-                        if (!officeTelNo.matches("^[6][0-9]{7}$")) {
-                            oneErrorMap.put("officeTelNo"+poIndex, "CHKLMD001_ERR007");
-                        }
-                    }else {
-                        oneErrorMap.put("officeTelNo"+poIndex, "UC_CHKLMD001_ERR001");
-                    }
-                }
-                poIndex++;
-            }
-
-            if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)){
-                String salutation = poDto.get(i).getSalutation();
-                String name = poDto.get(i).getName();
-                String idType = poDto.get(i).getIdType();
-                String mobileNo = poDto.get(i).getMobileNo();
-                String emailAddr = poDto.get(i).getEmailAddr();
-                String idNo = poDto.get(i).getIdNo();
-                String modeOfMedAlert = poDto.get(i).getModeOfMedAlert();
-                String designation = poDto.get(i).getDesignation();
-                if(StringUtil.isEmpty(modeOfMedAlert)||"-1".equals(modeOfMedAlert)){
-                    oneErrorMap.put("modeOfMedAlert"+dpoIndex,"UC_CHKLMD001_ERR001");
-                }
-
-                if(StringUtil.isEmpty(designation)||"-1".equals(designation)){
-                    oneErrorMap.put("deputyDesignation"+dpoIndex,"UC_CHKLMD001_ERR001");
-                }
-                if(StringUtil.isEmpty(salutation)){
-                    oneErrorMap.put("deputySalutation"+dpoIndex,"UC_CHKLMD001_ERR001");
-                }
-
-                if(StringUtil.isEmpty(idType)||"-1".equals(idType)){
-                    oneErrorMap.put("deputyIdType"+dpoIndex,"UC_CHKLMD001_ERR001");
-                }
-                if(StringUtil.isEmpty(name)){
-                    oneErrorMap.put("deputyName"+dpoIndex,"UC_CHKLMD001_ERR001");
-                }
-                if(StringUtil.isEmpty(idNo)){
-                    oneErrorMap.put("deputyIdNo"+dpoIndex,"UC_CHKLMD001_ERR001");
-                }
-                if("FIN".equals(idType)){
-                    boolean b = SgNoValidator.validateFin(idNo);
-                    if(!b){
-                        oneErrorMap.put("deputyIdNo"+dpoIndex,"CHKLMD001_ERR005");
-                    }else {
-                        stringBuilder1.append(idType).append(idNo);
-                    }
-                }
-                if("NRIC".equals(idType)){
-                    boolean b1 = SgNoValidator.validateNric(idNo);
-                    if(!b1){
-                        oneErrorMap.put("deputyIdNo"+dpoIndex,"CHKLMD001_ERR005");
-                    }else {
-                        stringBuilder1.append(idType).append(idNo);
-                    }
-                }
-
-                if(StringUtil.isEmpty(mobileNo)){
-                    oneErrorMap.put("deputyMobileNo"+dpoIndex,"UC_CHKLMD001_ERR001");
-                }
-                else {
-                    if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                        oneErrorMap.put("deputyMobileNo"+dpoIndex, "CHKLMD001_ERR004");
-                    }
-                }
-                if(StringUtil.isEmpty(emailAddr)){
-                    oneErrorMap.put("deputyEmailAddr"+dpoIndex,"UC_CHKLMD001_ERR001");
-                }else {
-                    if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
-                        oneErrorMap.put("deputyEmailAddr"+dpoIndex, "CHKLMD001_ERR006");
-                    }
-                }
-
-                dpoIndex++;
-            }
-            String s = stringBuilder.toString();
-
-            if(!StringUtil.isEmpty(stringBuilder1.toString())){
-                if(s.contains(stringBuilder1.toString())){
-
-                    oneErrorMap.put("NRICFIN","UC_CHKLMD001_ERR002");
-
-                }else {
-                    stringBuilder.append(stringBuilder1.toString());
-                }
-
-            }
-
-        }
-        return oneErrorMap;
-    }
-
     private Map<String,String> doValidatePremissCgo(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         //do validate premiss
@@ -2593,183 +2577,6 @@ public class NewApplicationDelegator {
         }
         log.debug(StringUtil.changeForLog("the do doValidatePremiss end ...."));
         return errorMap;
-    }
-
-    /**
-     * @description: get data from page
-     * @author: zixian
-     * @date: 11/6/2019 5:05 PM
-     * @param: request
-     * @return: AppGrpPremisesDto
-     */
-    public List<AppGrpPremisesDto> genAppGrpPremisesDtoList(HttpServletRequest request){
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = new ArrayList<>();
-        int count = 0;
-        String [] premisesType = ParamUtil.getStrings(request, "premType");
-        String [] hciName = ParamUtil.getStrings(request, "onSiteHciName");
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-            int i = 0;
-            if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
-                for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
-                    premisesType[i] =  appGrpPremisesDto.getPremisesType();
-
-                }
-            }
-            //todo:Grandfather Rights
-
-
-        }
-        if(premisesType != null){
-            count = premisesType.length;
-        }
-        //onsite
-        String [] premisesSelect = ParamUtil.getStrings(request, "onSiteSelect");
-        String [] postalCode = ParamUtil.getStrings(request,  "onSitePostalCode");
-        String [] blkNo = ParamUtil.getStrings(request, "onSiteBlkNo");
-        String [] streetName = ParamUtil.getStrings(request, "onSiteStreetName");
-        String [] floorNo = ParamUtil.getStrings(request, "onSiteFloorNo");
-        String [] unitNo = ParamUtil.getStrings(request, "onSiteUnitNo");
-        String [] buildingName = ParamUtil.getStrings(request, "onSiteBuildingName");
-        String [] siteAddressType = ParamUtil.getStrings(request, "onSiteAddressType");
-        String [] offTelNo= ParamUtil.getStrings(request,"onSiteOffTelNo");
-        String [] scdfRefNo = ParamUtil.getStrings(request, "onSiteScdfRefNo");
-        String [] onsiteStartHH = ParamUtil.getStrings(request, "onSiteStartHH");
-        String [] onsiteStartMM = ParamUtil.getStrings(request, "onSiteStartMM");
-        String [] onsiteEndHHS = ParamUtil.getStrings(request, "onSiteEndHH");
-        String [] onsiteEndMMS = ParamUtil.getStrings(request, "onSiteEndMM");
-        String [] fireSafetyCertIssuedDateStr  = ParamUtil.getStrings(request, "onSiteFireSafetyCertIssuedDate");
-        String [] isOtherLic = ParamUtil.getStrings(request, "onSiteIsOtherLic");
-        //conveyance
-        String [] conPremisesSelect = ParamUtil.getStrings(request, "conveyanceSelect");
-        String [] conVehicleNo = ParamUtil.getStrings(request, "conveyanceVehicleNo");
-        String [] conPostalCode = ParamUtil.getStrings(request,  "conveyancePostalCode");
-        String [] conBlkNo = ParamUtil.getStrings(request, "conveyanceBlockNo");
-        String [] conStreetName = ParamUtil.getStrings(request, "conveyanceStreetName");
-        String [] conFloorNo = ParamUtil.getStrings(request, "conveyanceFloorNo");
-        String [] conUnitNo = ParamUtil.getStrings(request, "conveyanceUnitNo");
-        String [] conBuildingName = ParamUtil.getStrings(request, "conveyanceBuildingName");
-        String [] conSiteAddressType = ParamUtil.getStrings(request, "conveyanceAddrType");
-        String [] conStartHH = ParamUtil.getStrings(request, "conveyanceStartHH");
-        String [] conStartMM = ParamUtil.getStrings(request, "conveyanceStartMM");
-        String [] conEndHHS = ParamUtil.getStrings(request, "conveyanceEndHH");
-        String [] conEndMMS = ParamUtil.getStrings(request, "conveyanceEndMM");
-        /*String [] conSalutation = ParamUtil.getStrings(request,"conveyanceSalutation");
-        String [] conVehicleOwnerName = ParamUtil.getStrings(request,"conveyanceVehicleOwnerName");*/
-        //every prem's ph length
-        String [] phLength = ParamUtil.getStrings(request,"phLength");
-        String [] premValue = ParamUtil.getStrings(request, "premValue");
-        for(int i =0 ; i<count;i++){
-            AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-            appGrpPremisesDto.setPremisesType(premisesType[i]);
-            List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = new ArrayList<>();
-            int length = 0;
-            try {
-                length = Integer.parseInt(phLength[i]);
-            }catch (Exception e){
-                log.info(StringUtil.changeForLog("length can not parse to int"));
-            }
-            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])){
-                appGrpPremisesDto.setOnsiteStartHH(onsiteStartHH[i]);
-                appGrpPremisesDto.setOnsiteStartMM(onsiteStartMM[i]);
-                appGrpPremisesDto.setOnsiteEndHH(onsiteEndHHS[i]);
-                appGrpPremisesDto.setOnsiteEndMM(onsiteEndMMS[i]);
-                appGrpPremisesDto.setPremisesSelect(premisesSelect[i]);
-                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-
-                }
-                appGrpPremisesDto.setHciName(hciName[i]);
-                appGrpPremisesDto.setPostalCode(postalCode[i]);
-                appGrpPremisesDto.setBlkNo(blkNo[i]);
-                appGrpPremisesDto.setStreetName(streetName[i]);
-                appGrpPremisesDto.setFloorNo(floorNo[i]);
-                appGrpPremisesDto.setUnitNo(unitNo[i]);
-                appGrpPremisesDto.setBuildingName(buildingName[i]);
-                appGrpPremisesDto.setScdfRefNo(scdfRefNo[i]);
-                appGrpPremisesDto.setAddrType(siteAddressType[i]);
-                appGrpPremisesDto.setOffTelNo(offTelNo[i]);
-                appGrpPremisesDto.setCertIssuedDtStr(fireSafetyCertIssuedDateStr[i]);
-                Date fireSafetyCertIssuedDateDate = DateUtil.parseDate(fireSafetyCertIssuedDateStr[i], Formatter.DATE);
-                appGrpPremisesDto.setCertIssuedDt(fireSafetyCertIssuedDateDate);
-                if(AppConsts.YES.equals(isOtherLic)){
-                    appGrpPremisesDto.setLocateWithOthers(true);
-                }else if(AppConsts.NO.equals(isOtherLic)){
-                    appGrpPremisesDto.setLocateWithOthers(false);
-                }
-                for(int j =0; j<length; j++){
-                    AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();
-                    String onsitePubHolidayName = premValue[i]+"onSitePubHoliday"+j;
-                    String onsitePbHolDayStartHHName = premValue[i]+"onSitePbHolDayStartHH"+j;
-                    String onsitePbHolDayStartMMName = premValue[i]+"onSitePbHolDayStartMM"+j;
-                    String onsitePbHolDayEndHHName = premValue[i]+"onSitePbHolDayEndHH"+j;
-                    String onsitePbHolDayEndMMName = premValue[i]+"onSitePbHolDayEndMM"+j;
-
-                    String onsitePubHoliday = ParamUtil.getDate(request, onsitePubHolidayName);
-                    String onsitePbHolDayStartHH = ParamUtil.getString(request, onsitePbHolDayStartHHName);
-                    String onsitePbHolDayStartMM = ParamUtil.getString(request, onsitePbHolDayStartMMName);
-                    String onsitePbHolDayEndHH = ParamUtil.getString(request, onsitePbHolDayEndHHName);
-                    String onsitePbHolDayEndMM = ParamUtil.getString(request, onsitePbHolDayEndMMName);
-                    appPremPhOpenPeriod.setPhDateStr(onsitePubHoliday);
-                    Date phDate = DateUtil.parseDate(onsitePubHoliday, Formatter.DATE);
-                    appPremPhOpenPeriod.setPhDate(phDate);
-                    appPremPhOpenPeriod.setOnsiteStartFromHH(onsitePbHolDayStartHH);
-                    appPremPhOpenPeriod.setOnsiteStartFromMM(onsitePbHolDayStartMM);
-                    appPremPhOpenPeriod.setOnsiteEndToHH(onsitePbHolDayEndHH);
-                    appPremPhOpenPeriod.setOnsiteEndToMM(onsitePbHolDayEndMM);
-                    if(!StringUtil.isEmpty(onsitePubHoliday)||!StringUtil.isEmpty(onsitePbHolDayStartHH) || !StringUtil.isEmpty(onsitePbHolDayStartMM)
-                            ||!StringUtil.isEmpty(onsitePbHolDayEndHH) ||!StringUtil.isEmpty(onsitePbHolDayEndMM)){
-                        appPremPhOpenPeriods.add(appPremPhOpenPeriod);
-                    }
-                }
-
-            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType[i])){
-                appGrpPremisesDto.setConStartHH(conStartHH[i]);
-                appGrpPremisesDto.setConStartMM(conStartMM[i]);
-                appGrpPremisesDto.setConEndHH(conEndHHS[i]);
-                appGrpPremisesDto.setConEndMM(conEndMMS[i]);
-                appGrpPremisesDto.setPremisesSelect(conPremisesSelect[i]);
-                appGrpPremisesDto.setConveyanceVehicleNo(conVehicleNo[i]);
-                appGrpPremisesDto.setConveyancePostalCode(conPostalCode[i]);
-                appGrpPremisesDto.setConveyanceBlockNo(conBlkNo[i]);
-                appGrpPremisesDto.setConveyanceStreetName(conStreetName[i]);
-                appGrpPremisesDto.setConveyanceFloorNo(conFloorNo[i]);
-                appGrpPremisesDto.setConveyanceUnitNo(conUnitNo[i]);
-                appGrpPremisesDto.setConveyanceBuildingName(conBuildingName[i]);
-                appGrpPremisesDto.setConveyanceAddressType(conSiteAddressType[i]);
-                /*appGrpPremisesDto.setConveyanceSalutation(conSalutation[i]);
-                appGrpPremisesDto.setConveyanceVehicleOwnerName(conVehicleOwnerName[i]);*/
-                for(int j =0; j<length; j++){
-                    AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();
-                    String convPubHolidayName = premValue[i]+"conveyancePubHoliday"+j;
-                    String convPbHolDayStartHHName = premValue[i]+"conveyancePbHolDayStartHH"+j;
-                    String convPbHolDayStartMMName = premValue[i]+"conveyancePbHolDayStartMM"+j;
-                    String convPbHolDayEndHHName = premValue[i]+"conveyancePbHolDayEndHH"+j;
-                    String convPbHolDayEndMMName = premValue[i]+"conveyancePbHolDayEndMM"+j;
-
-                    String convPubHoliday = ParamUtil.getDate(request, convPubHolidayName);
-                    String convPbHolDayStartHH = ParamUtil.getString(request, convPbHolDayStartHHName);
-                    String convPbHolDayStartMM = ParamUtil.getString(request, convPbHolDayStartMMName);
-                    String convPbHolDayEndHH = ParamUtil.getString(request, convPbHolDayEndHHName);
-                    String convPbHolDayEndMM = ParamUtil.getString(request, convPbHolDayEndMMName);
-                    appPremPhOpenPeriod.setPhDateStr(convPubHoliday);
-                    Date phDate = DateUtil.parseDate(convPubHoliday, "dd/mm/yyyy");
-                    appPremPhOpenPeriod.setPhDate(phDate);
-                    appPremPhOpenPeriod.setConvStartFromHH(convPbHolDayStartHH);
-                    appPremPhOpenPeriod.setConvStartFromMM(convPbHolDayStartMM);
-                    appPremPhOpenPeriod.setConvEndToHH(convPbHolDayEndHH);
-                    appPremPhOpenPeriod.setConvEndToMM(convPbHolDayEndMM);
-
-                    if(!StringUtil.isEmpty(convPubHoliday)||!StringUtil.isEmpty(convPbHolDayStartHH) || !StringUtil.isEmpty(convPbHolDayStartMM)
-                            ||!StringUtil.isEmpty(convPbHolDayEndHH) ||!StringUtil.isEmpty(convPbHolDayEndMM)){
-                        appPremPhOpenPeriods.add(appPremPhOpenPeriod);
-                    }
-                }
-            }
-            appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriods);
-            appGrpPremisesDtoList.add(appGrpPremisesDto);
-        }
-        return  appGrpPremisesDtoList;
     }
 
     private AppSubmissionDto getAppSubmissionDto(HttpServletRequest request){
@@ -2804,7 +2611,7 @@ public class NewApplicationDelegator {
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         }else{
             //set svc info
-            appSubmissionDto = setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
+            appSubmissionDto = NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
             Object rfi = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
             if(rfi != null){
                 List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST);
@@ -2871,89 +2678,7 @@ public class NewApplicationDelegator {
         }
     }
 
-    /**
-     * @description:
-     * @author: zixian
-     * @date: 12/9/2019 2:47 PM
-     * @param:  [baseDropDown] --- DropDown Html    [category] --Master Code Categorys
-     * @return: dropdown html
-     */
-    public String generateDropDownHtml(String baseDropDown, String category, String firestOption){
-        StringBuffer sBuffer = new StringBuffer();
-        sBuffer.append(baseDropDown)
-                .append("<div class=\"nice-select input-large\" tabindex=\"0\">")
-                .append("<span class=\"current\">"+firestOption+"</span>")
-                .append("<ul class=\"list mCustomScrollbar _mCS_3 mCS_no_scrollbar\">")
-                .append("<div id=\"mCSB_3\" class=\"mCustomScrollBox mCS-light mCSB_vertical mCSB_inside\" tabindex=\"0\" style=\"max-height: none;\">")
-                .append("<div id=\"mCSB_3_container\" class=\"mCSB_container mCS_y_hidden mCS_no_scrollbar_y\" style=\"position:relative; top:0; left:0;\" dir=\"ltr\">")
-                .append("<li data-value=\"-1\" class=\"option selected\">"+firestOption+"</li>");
-        List<SelectOption> selectOptionList= MasterCodeUtil.retrieveOptionsByCate(category);
-        for(SelectOption kv:selectOptionList){
-            sBuffer.append(" <li data-value="+kv.getValue()+" class=\"option\">"+kv.getText()+"</li>");
-        }
-        sBuffer.append("</div>")
-                .append("<div id=\"mCSB_3_scrollbar_vertical\" class=\"mCSB_scrollTools mCSB_3_scrollbar mCS-light mCSB_scrollTools_vertical\" style=\"display: none;\">")
-                .append("<div class=\"mCSB_draggerContainer\">")
-                .append(" <div id=\"mCSB_3_dragger_vertical\" class=\"mCSB_dragger\" style=\"position: absolute; min-height: 30px; top: 0px;\">")
-                .append(" <div class=\"mCSB_dragger_bar\" style=\"line-height: 30px;\"></div>")
-                .append("</div>")
-                .append("<div class=\"mCSB_draggerRail\"></div>")
-                .append("</div>")
-                .append("</div>")
-                .append("</div>")
-                .append("</ul>")
-                .append("</div>");
-        return sBuffer.toString();
-    }
-
-    public static String generateDropDownHtml(Map<String, String> premisesOnSiteAttr, List<SelectOption> selectOptionList, String firestOption){
-        StringBuffer sBuffer = new StringBuffer();
-        sBuffer.append("<select ");
-        for(Map.Entry<String, String> entry : premisesOnSiteAttr.entrySet()){
-            sBuffer.append(entry.getKey()+"=\""+entry.getValue()+"\" ");
-        }
-        sBuffer.append(" >");
-        for(SelectOption sp:selectOptionList){
-            sBuffer.append("<option value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
-        }
-        sBuffer.append("</select>");
-        String classNameValue = premisesOnSiteAttr.get("class");
-        String className = "premSelect";
-        if(!StringUtil.isEmpty(classNameValue)){
-            className =  classNameValue;
-        }
-        sBuffer.append("<div class=\"nice-select "+className+"\" tabindex=\"0\">");
-        if(StringUtil.isEmpty(firestOption)){
-            sBuffer.append("<span class=\"current\">"+selectOptionList.get(0).getText()+"</span>");
-        }else {
-            sBuffer.append("<span class=\"current\">"+firestOption+"</span>");
-        }
-        sBuffer.append("<ul class=\"list mCustomScrollbar _mCS_2 mCS_no_scrollbar\">")
-                .append("<div id=\"mCSB_2\" class=\"mCustomScrollBox mCS-light mCSB_vertical mCSB_inside\" tabindex=\"0\" style=\"max-height: none;\">")
-                .append("<div id=\"mCSB_2_container\" class=\"mCSB_container mCS_y_hidden mCS_no_scrollbar_y\" style=\"position:relative; top:0; left:0;\" dir=\"ltr\">");
-        if(!StringUtil.isEmpty(firestOption)){
-            sBuffer.append("<li data-value=\"-1\" class=\"option selected\">"+firestOption+"</li>");
-        }
-        for(SelectOption kv:selectOptionList){
-            sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
-        }
-        sBuffer.append("</div>")
-                .append("<div id=\"mCSB_2_scrollbar_vertical\" class=\"mCSB_scrollTools mCSB_2_scrollbar mCS-light mCSB_scrollTools_vertical\" style=\"display: none;\">")
-                .append("<div class=\"mCSB_draggerContainer\">")
-                .append("<div id=\"mCSB_2_dragger_vertical\" class=\"mCSB_dragger\" style=\"position: absolute; min-height: 30px; top: 0px; height: 0px;\">")
-                .append("<div class=\"mCSB_dragger_bar\" style=\"line-height: 30px;\">")
-                .append("</div>")
-                .append("</div>")
-                .append("<div class=\"mCSB_draggerRail\"></div>")
-                .append("</div>")
-                .append("</div>")
-                .append("</div>")
-                .append("</ul>")
-                .append("</div>");
-        return sBuffer.toString();
-    }
-
-    public Map<String,List<HcsaSvcPersonnelDto>> getAllSvcAllPsnConfig(HttpServletRequest request){
+    private Map<String,List<HcsaSvcPersonnelDto>> getAllSvcAllPsnConfig(HttpServletRequest request){
         Map<String,List<HcsaSvcPersonnelDto>> svcAllPsnConfig = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(request, SERVICEALLPSNCONFIGMAP);
         if(svcAllPsnConfig == null){
             AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
@@ -2968,40 +2693,6 @@ public class NewApplicationDelegator {
         return svcAllPsnConfig;
     }
 
-    private static boolean checkCanEdit(AppEditSelectDto appEditSelectDto, String currentType){
-        boolean pageCanEdit = false;
-        if(appEditSelectDto != null){
-            if(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION.equals(currentType)){
-                pageCanEdit = appEditSelectDto.isPremisesEdit();
-            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_MEDALERT_PERSONNEL.equals(currentType)) {
-                pageCanEdit = appEditSelectDto.isMedAlertEdit();
-            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PRINCIPAL_OFFICER.equals(currentType)) {
-                pageCanEdit = appEditSelectDto.isPoEdit();
-            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_DEPUTY_PRINCIPAL_OFFICER.equals(currentType)) {
-                pageCanEdit = appEditSelectDto.isDocEdit();
-            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION.equals(currentType)) {
-                pageCanEdit = appEditSelectDto.isServiceEdit();
-            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT.equals(currentType)) {
-                pageCanEdit = appEditSelectDto.isDocEdit();
-            }
-        }
-        return pageCanEdit;
-    }
-
-    public static boolean isGetDataFromPage(AppSubmissionDto appSubmissionDto, String currentType, String isClickEdit, boolean isRfi){
-        if(appSubmissionDto == null){
-            return true;
-        }
-        boolean isNewApp = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
-                && !isRfi;
-        boolean isOther = false;
-
-        if(appSubmissionDto.isNeedEditController()){
-            boolean canEdit = checkCanEdit(appSubmissionDto.getAppEditSelectDto(), currentType);
-            isOther = canEdit && AppConsts.YES.equals(isClickEdit);
-        }
-        return isNewApp || isOther;
-    }
 
 }
 

@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
@@ -249,7 +250,7 @@ public class RequestForChangeMenuDelegator {
                     if(!IaisCommonUtils.isEmpty(names)){
                         List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceByNames(names);
                         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
-                        NewApplicationDelegator.setSubmissionDtoSvcData(bpc.request,appSubmissionDto);
+                        NewApplicationHelper.setSubmissionDtoSvcData(bpc.request,appSubmissionDto);
                     }
                 }
             }
@@ -510,7 +511,7 @@ public class RequestForChangeMenuDelegator {
         List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceByNames(names);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
         for(AppSubmissionDto appSubmissionDto:appSubmissionDtos){
-            NewApplicationDelegator.setSubmissionDtoSvcData(bpc.request,appSubmissionDto);
+            NewApplicationHelper.setSubmissionDtoSvcData(bpc.request,appSubmissionDto);
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
             appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
             appSubmissionDto.setAppGrpNo(appGroupNo);

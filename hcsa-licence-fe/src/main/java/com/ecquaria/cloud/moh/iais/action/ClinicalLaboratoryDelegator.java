@@ -30,10 +30,20 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.ClinicalOfficerValidateDto;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.ecquaria.sz.commons.util.FileUtil;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,16 +53,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -598,7 +598,7 @@ public class ClinicalLaboratoryDelegator {
         if(requestInformationConfig != null){
             isRfi = true;
         }
-        boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit, isRfi);
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit, isRfi);
         log.debug("isGetDataFromPage:"+isGetDataFromPage);
         if(isGetDataFromPage) {
             AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto = null;
@@ -742,7 +742,7 @@ public class ClinicalLaboratoryDelegator {
         if(requestInformationConfig != null){
             isRfi = true;
         }
-        boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit, isRfi);
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit, isRfi);
         log.debug("isGetDataFromPage:"+isGetDataFromPage);
         if(isGetDataFromPage) {
             List<AppSvcCgoDto> appSvcCgoDtoList = genAppSvcCgoDto(bpc.request);
@@ -792,7 +792,7 @@ public class ClinicalLaboratoryDelegator {
         if(requestInformationConfig != null){
             isRfi = true;
         }
-        boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit, isRfi);
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit, isRfi);
         log.debug("isGetDataFromPage:"+isGetDataFromPage);
         if (isGetDataFromPage) {
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -886,8 +886,8 @@ public class ClinicalLaboratoryDelegator {
         }
         String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
         String isEditDpo = ParamUtil.getString(bpc.request, "isEditDpo");
-        boolean isGetDataFromPagePo = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit, isRfi);
-        boolean isGetDataFromPageDpo = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEditDpo, isRfi);
+        boolean isGetDataFromPagePo = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit, isRfi);
+        boolean isGetDataFromPageDpo = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEditDpo, isRfi);
 
         if (isGetDataFromPagePo || isGetDataFromPageDpo) {
             List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = genAppSvcPrincipalOfficersDto(bpc.request, isGetDataFromPagePo, isGetDataFromPageDpo);
@@ -968,7 +968,7 @@ public class ClinicalLaboratoryDelegator {
             isRfi = true;
         }
         String isEdit = ParamUtil.getString(mulReq, NewApplicationDelegator.IS_EDIT);
-        boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT, isEdit, isRfi);
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT, isEdit, isRfi);
         log.debug("isGetDataFromPage:"+isGetDataFromPage);
         if(isGetDataFromPage){
             Map<String,AppSvcDocDto> beforeReloadDocMap = (Map<String, AppSvcDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADSVCDOC);
@@ -1200,7 +1200,7 @@ public class ClinicalLaboratoryDelegator {
         if(requestInformationConfig != null){
             isRfi = true;
         }
-        boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit, isRfi);
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit, isRfi);
 
 
         if(isGetDataFromPage){
@@ -1343,7 +1343,7 @@ public class ClinicalLaboratoryDelegator {
         cgoSelectAttr.put("class", "assignSel");
         cgoSelectAttr.put("name", "assignSelect");
         cgoSelectAttr.put("style", "display: none;");
-        String cgoSelectStr = NewApplicationDelegator.generateDropDownHtml(cgoSelectAttr, cgoSelectList, null);
+        String cgoSelectStr = NewApplicationHelper.generateDropDownHtml(cgoSelectAttr, cgoSelectList, null);
 
         //salutation
         List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
@@ -1351,7 +1351,7 @@ public class ClinicalLaboratoryDelegator {
         salutationAttr.put("class", "salutationSel");
         salutationAttr.put("name", "salutation");
         salutationAttr.put("style", "display: none;");
-        String salutationSelectStr = NewApplicationDelegator.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
+        String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
 
         //ID Type
         List<SelectOption> idTypeList = getIdTypeSelOp();
@@ -1359,7 +1359,7 @@ public class ClinicalLaboratoryDelegator {
         idTypeAttr.put("class", "idTypeSel");
         idTypeAttr.put("name", "idType");
         idTypeAttr.put("style", "display: none;");
-        String idTypeSelectStr = NewApplicationDelegator.generateDropDownHtml(idTypeAttr, idTypeList, null);
+        String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null);
 
         //Designation
         List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
@@ -1367,7 +1367,7 @@ public class ClinicalLaboratoryDelegator {
         designationAttr.put("class", "designationSel");
         designationAttr.put("name", "designation");
         designationAttr.put("style", "display: none;");
-        String designationSelectStr = NewApplicationDelegator.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
+        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
 
         //Professional Regn Type
         List<SelectOption> proRegnTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE);
@@ -1375,7 +1375,7 @@ public class ClinicalLaboratoryDelegator {
         proRegnTypeAttr.put("class", "professionTypeSel");
         proRegnTypeAttr.put("name", "professionType");
         proRegnTypeAttr.put("style", "display: none;");
-        String proRegnTypeSelectStr = NewApplicationDelegator.generateDropDownHtml(proRegnTypeAttr, proRegnTypeList, NewApplicationDelegator.FIRESTOPTION);
+        String proRegnTypeSelectStr = NewApplicationHelper.generateDropDownHtml(proRegnTypeAttr, proRegnTypeList, NewApplicationDelegator.FIRESTOPTION);
 
         //Specialty
         List<SelectOption> specialtyList = (List<SelectOption>) ParamUtil.getSessionAttr(request, "SpecialtySelectList");
@@ -1383,7 +1383,7 @@ public class ClinicalLaboratoryDelegator {
         specialtyAttr.put("name", "specialty");
         specialtyAttr.put("class", "specialty");
         specialtyAttr.put("style", "display: none;");
-        String specialtySelectStr = NewApplicationDelegator.generateDropDownHtml(specialtyAttr, specialtyList, null);
+        String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialtyList, null);
 
 
 
@@ -1828,13 +1828,13 @@ public class ClinicalLaboratoryDelegator {
         personnelAttr.put("name", "personnelSel");
         personnelAttr.put("class", "personnelSel");
         personnelAttr.put("style", "display: none;");
-        String personnelSelectStr = NewApplicationDelegator.generateDropDownHtml(personnelAttr, personnel, NewApplicationDelegator.FIRESTOPTION);
+        String personnelSelectStr = NewApplicationHelper.generateDropDownHtml(personnelAttr, personnel, NewApplicationDelegator.FIRESTOPTION);
 
         List<SelectOption> designation = (List) ParamUtil.getSessionAttr(request, "NuclearMedicineImagingDesignation");
         Map<String,String> designationAttr = new HashMap<>();
         designationAttr.put("name", "designation");
         designationAttr.put("style", "display: none;");
-        String designationSelectStr = NewApplicationDelegator.generateDropDownHtml(designationAttr, designation, NewApplicationDelegator.FIRESTOPTION);
+        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designation, NewApplicationDelegator.FIRESTOPTION);
 
         sql = sql.replace("(1)", personnelSelectStr);
         sql = sql.replace("(2)", designationSelectStr);
@@ -1880,7 +1880,7 @@ public class ClinicalLaboratoryDelegator {
         assignPrincipalOfficerAttr.put("name", "assignSelect");
         assignPrincipalOfficerAttr.put("class", "poSelect");
         assignPrincipalOfficerAttr.put("style", "display: none;");
-        String principalOfficerSelStr = NewApplicationDelegator.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, NewApplicationDelegator.FIRESTOPTION);
+        String principalOfficerSelStr = NewApplicationHelper.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, NewApplicationDelegator.FIRESTOPTION);
 
         //salutation
         List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
@@ -1888,7 +1888,7 @@ public class ClinicalLaboratoryDelegator {
         salutationAttr.put("class", "salutation");
         salutationAttr.put("name", "salutation");
         salutationAttr.put("style", "display: none;");
-        String salutationSelectStr = NewApplicationDelegator.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
+        String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
 
         //ID Type
         List<SelectOption> idTypeList = getIdTypeSelOp();
@@ -1896,7 +1896,7 @@ public class ClinicalLaboratoryDelegator {
         idTypeAttr.put("class", "idType");
         idTypeAttr.put("name", "idType");
         idTypeAttr.put("style", "display: none;");
-        String idTypeSelectStr = NewApplicationDelegator.generateDropDownHtml(idTypeAttr, idTypeList, null);
+        String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null);
 
         //Designation
         List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
@@ -1904,7 +1904,7 @@ public class ClinicalLaboratoryDelegator {
         designationAttr.put("class", "designation");
         designationAttr.put("name", "designation");
         designationAttr.put("style", "display: none;");
-        String designationSelectStr = NewApplicationDelegator.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
+        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
 
         sql = sql.replace("(1)", principalOfficerSelStr);
         sql = sql.replace("(2)", salutationSelectStr);
@@ -1927,7 +1927,7 @@ public class ClinicalLaboratoryDelegator {
         salutationAttr.put("class", "deputySalutation");
         salutationAttr.put("name", "deputySalutation");
         salutationAttr.put("style", "display: none;");
-        String salutationSelectStr = NewApplicationDelegator.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
+        String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
 
         //ID Type
         List<SelectOption> idTypeList = getIdTypeSelOp();
@@ -1935,7 +1935,7 @@ public class ClinicalLaboratoryDelegator {
         idTypeAttr.put("class", "deputyIdType");
         idTypeAttr.put("name", "deputyIdType");
         idTypeAttr.put("style", "display: none;");
-        String idTypeSelectStr = NewApplicationDelegator.generateDropDownHtml(idTypeAttr, idTypeList, null);
+        String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null);
 
         //Designation
         List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
@@ -1943,7 +1943,7 @@ public class ClinicalLaboratoryDelegator {
         designationAttr.put("class", "deputyDesignation");
         designationAttr.put("name", "deputyDesignation");
         designationAttr.put("style", "display: none;");
-        String designationSelectStr = NewApplicationDelegator.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
+        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
 
         //MedAlert
         List<SelectOption> medAlertSelectList = getMedAlertSelectList(false);
@@ -1951,7 +1951,7 @@ public class ClinicalLaboratoryDelegator {
         medAlertSelectAttr.put("class", "modeOfMedAlert");
         medAlertSelectAttr.put("name", "modeOfMedAlert");
         medAlertSelectAttr.put("style", "display: none;");
-        String medAlertSelectStr = NewApplicationDelegator.generateDropDownHtml(medAlertSelectAttr, medAlertSelectList, NewApplicationDelegator.FIRESTOPTION);
+        String medAlertSelectStr = NewApplicationHelper.generateDropDownHtml(medAlertSelectAttr, medAlertSelectList, NewApplicationDelegator.FIRESTOPTION);
 
         sql = sql.replace("(1)", salutationSelectStr);
         sql = sql.replace("(2)", idTypeSelectStr);
