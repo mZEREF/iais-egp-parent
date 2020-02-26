@@ -78,7 +78,6 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
             appNcDocDto.setFileRepoId(fileReportId);
             appNcDocDto.setSubmitBy(loginContext.getUserId());
             appNcDocDto.setSubmitDt(new Date());
-            appNcDocDto.setInternalRemarks(iDto.getUploadRemarks());
             appNcDocDto.setNcItemId(appNcItemDto.getId());
             appNcDocDtoList.add(appNcDocDto);
         }
