@@ -102,7 +102,7 @@
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>
                                     <p><a href="#"
-                                          onclick="doDraft('${app.applicationNo}')">${app.applicationNo}</a></p>
+                                          onclick="doDraft('${app.applicationNo}','${app.status}')">${app.applicationNo}</a></p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Type</p>

@@ -56,7 +56,8 @@ public class InterInboxDelegator {
             .clz(InboxQueryDto.class)
             .searchAttr(InboxConst.INBOX_PARAM)
             .resultAttr(InboxConst.INBOX_RESULT)
-            .sortField("id").build();
+            .sortField("created_dt")
+            .sortType(SearchParam.DESCENDING).build();
 
     private FilterParameter licenceParameter = new FilterParameter.Builder()
             .clz(InboxLicenceQueryDto.class)

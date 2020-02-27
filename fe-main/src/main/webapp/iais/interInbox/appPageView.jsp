@@ -63,14 +63,9 @@
         submit('appPage');
     }
 
-    function sortRecords(sortFieldName, sortType) {
-        $("[name='crud_action_value']").val(sortFieldName);
-        $("[name='crud_action_additional']").val(sortType);
-        submit('appSort');
-    }
-
-    function doDraft(appNo) {
-        if (appNo.indexOf("DN") !== -1 || appNo.indexOf("DR") !== -1) {
+    function doDraft(appNo,appStatus) {
+        alert(appStatus);
+        if ('APST008' == appStatus) {
             $("[name='crud_action_value']").val(appNo);
             submit('appDraft');
         }
