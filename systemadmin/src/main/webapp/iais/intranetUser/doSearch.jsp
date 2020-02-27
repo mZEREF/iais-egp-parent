@@ -28,7 +28,7 @@
     </div>
     <div class="col-xs-2">
         <div class="components">
-            <input class="btn btn-primary"  type="file" name="xmlFile" onchange="javascirpt:doImport();">
+            <input class="btn btn-primary"  type="file" name="xmlFile" onchange="javascirpt:doImport();" accept="*.dtd">
         </div>
     </div>
     <div id="advfilter" class="collapse">

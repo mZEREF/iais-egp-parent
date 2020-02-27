@@ -68,7 +68,7 @@
                             </div>
                             <div class="tab-pane" id="tabPersonal" role="tabPersonal">
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label">Salutation.</label>
+                                    <label class="col-xs-12 col-md-4 control-label">Salutation:</label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <iais:select name="salutation" options="salutation" firstOption="Please select" value="${orgUserDto.salutation}"></iais:select>
@@ -104,7 +104,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="division">Division.</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="division">Division:</label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="division" type="text" name="division" value="${orgUserDto.division}">
@@ -112,7 +112,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="branch">Branch / Unit.</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="branch">Branch / Unit:</label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="branch" type="text" name="branch" value="${orgUserDto.branchUnit}">
@@ -131,7 +131,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="mobileNo">Mobile No.</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="mobileNo">Mobile No:</label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="mobileNo" type="number" name="mobileNo" value="${orgUserDto.mobileNo}">
@@ -139,7 +139,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="officeNo">Office No.</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="officeNo">Office No:</label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="officeNo" type="number" name="officeNo" value="${orgUserDto.officeTelNo}">

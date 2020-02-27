@@ -656,9 +656,13 @@ public class MohIntranetUserDelegator {
 
             OutputFormat outputFormat = OutputFormat.createPrettyPrint();
             outputFormat.setEncoding("UTF-8");
-            XMLWriter xmlWriter = new XMLWriter(new FileOutputStream(new File("D:/user.xml")), outputFormat);
+            File tempFile = File.createTempFile("temp", ".xml");
+            XMLWriter xmlWriter = new XMLWriter(new FileOutputStream(tempFile), outputFormat);
             xmlWriter.write(document);
             xmlWriter.close();
+            byte[] tempFileByte = FileUtils.readFileToByteArray(tempFile);
+            bpc.request.setAttribute("content", tempFileByte);
+            FileUtils.deleteTempFile(tempFile);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IOException e) {

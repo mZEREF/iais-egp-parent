@@ -232,7 +232,7 @@ public class AuditInspectionReport {
         for(AppPremisesRecommendationDto appPremisesRecommendationDto :appPremisesRecommendationDtos){
             LicPremisesRecommendationDto licPremisesRecommendationDto = new LicPremisesRecommendationDto();
             String appPremCorreId = appPremisesRecommendationDto.getAppPremCorreId();
-            licPremisesRecommendationDto.setLicPremId(appPremCorreId);
+            licPremisesRecommendationDto.setLicPremId("CFB51822-A656-EA11-BE7F-000C29F371DC");
             String recomType = appPremisesRecommendationDto.getRecomType();
             licPremisesRecommendationDto.setRecomType(recomType);
             String recomDecision = appPremisesRecommendationDto.getRecomDecision();
@@ -243,10 +243,6 @@ public class AuditInspectionReport {
             licPremisesRecommendationDto.setChronoUnit(chronoUnit);
             Date recomInDate = appPremisesRecommendationDto.getRecomInDate();
             licPremisesRecommendationDto.setRecomInDate(recomInDate);
-            Integer version = appPremisesRecommendationDto.getVersion();
-            licPremisesRecommendationDto.setVersion(version);
-            String status = appPremisesRecommendationDto.getStatus();
-            licPremisesRecommendationDto.setStatus(status);
             String bestPractice = appPremisesRecommendationDto.getBestPractice();
             licPremisesRecommendationDto.setBestPractice(bestPractice);
             String remarks = appPremisesRecommendationDto.getRemarks();

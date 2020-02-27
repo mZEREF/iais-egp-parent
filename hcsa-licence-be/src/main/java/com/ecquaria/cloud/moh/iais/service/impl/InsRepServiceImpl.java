@@ -344,7 +344,6 @@ public class InsRepServiceImpl implements InsRepService {
         } else {
             oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
-
             version = oldAppPremisesRecommendationDto.getVersion() + 1;
             oldAppPremisesRecommendationDto.setVersion(version);
             oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -613,7 +612,98 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public void saveAuditRecommendation(LicPremisesRecommendationDto licPremisesRecommendationDto) {
         licPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        licPremisesRecommendationDto.setVersion(1);
         hcsaLicenceClient.saveAppRecom(licPremisesRecommendationDto).getEntity();
+    }
+
+    @Override
+    public void updateAuditRecommendation(LicPremisesRecommendationDto licPremisesRecommendationDto) {
+        String licPremId = licPremisesRecommendationDto.getLicPremId();
+        LicPremisesRecommendationDto old = hcsaLicenceClient.getLicPremRecordByIdAndType(licPremId,InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+        if(old==null){
+            licPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            licPremisesRecommendationDto.setVersion(1);
+            hcsaLicenceClient.saveAppRecom(licPremisesRecommendationDto).getEntity();
+        }else {
+            old.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+        }
+
+    }
+
+    @Override
+    public void updateAuditTcuRecommendation(LicPremisesRecommendationDto licPremisesRecommendationDto) {
+        String licPremId = licPremisesRecommendationDto.getLicPremId();
+        LicPremisesRecommendationDto old = hcsaLicenceClient.getLicPremRecordByIdAndType(licPremId,InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+        if(old==null){
+            licPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            licPremisesRecommendationDto.setVersion(1);
+            hcsaLicenceClient.saveAppRecom(licPremisesRecommendationDto).getEntity();
+        }else {
+            old.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            saveAuditRecommendation(old);
+            old.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            old.setVersion(old.getVersion()+1);
+            old.setRecomInDate(licPremisesRecommendationDto.getRecomInDate());
+            old.setId(null);
+            saveAuditRecommendation(old);
+        }
+    }
+
+    @Override
+    public void updateAuditEngageRecommendation(LicPremisesRecommendationDto licPremisesRecommendationDto) {
+        String licPremId = licPremisesRecommendationDto.getLicPremId();
+        LicPremisesRecommendationDto old = hcsaLicenceClient.getLicPremRecordByIdAndType(licPremId,InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
+        if(old==null){
+            licPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            licPremisesRecommendationDto.setVersion(1);
+            hcsaLicenceClient.saveAppRecom(licPremisesRecommendationDto).getEntity();
+        }else {
+            old.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            saveAuditRecommendation(old);
+            old.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            old.setVersion(old.getVersion()+1);
+            old.setRemarks(licPremisesRecommendationDto.getRemarks());
+            old.setId(null);
+            saveAuditRecommendation(old);
+        }
+    }
+
+    @Override
+    public void updateAuditRiskRecommendation(LicPremisesRecommendationDto licPremisesRecommendationDto) {
+        String licPremId = licPremisesRecommendationDto.getLicPremId();
+        LicPremisesRecommendationDto old = hcsaLicenceClient.getLicPremRecordByIdAndType(licPremId,InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity();
+        if(old==null){
+            licPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            licPremisesRecommendationDto.setVersion(1);
+            hcsaLicenceClient.saveAppRecom(licPremisesRecommendationDto).getEntity();
+        }else {
+            old.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            saveAuditRecommendation(old);
+            old.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            old.setVersion(old.getVersion()+1);
+            old.setRecomInDate(licPremisesRecommendationDto.getRecomInDate());
+            old.setId(null);
+            saveAuditRecommendation(old);
+        }
+    }
+
+    @Override
+    public void updateAuditFollowRecommendation(LicPremisesRecommendationDto licPremisesRecommendationDto) {
+        String licPremId = licPremisesRecommendationDto.getLicPremId();
+        LicPremisesRecommendationDto old = hcsaLicenceClient.getLicPremRecordByIdAndType(licPremId,InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
+        if(old==null){
+            licPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            licPremisesRecommendationDto.setVersion(1);
+            hcsaLicenceClient.saveAppRecom(licPremisesRecommendationDto).getEntity();
+        }else {
+            old.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            saveAuditRecommendation(old);
+            old.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            old.setVersion(old.getVersion()+1);
+            old.setRecomInDate(licPremisesRecommendationDto.getRecomInDate());
+            old.setId(null);
+            saveAuditRecommendation(old);
+        }
     }
 
 

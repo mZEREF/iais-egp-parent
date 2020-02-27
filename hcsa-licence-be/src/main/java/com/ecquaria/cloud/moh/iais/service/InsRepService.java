@@ -42,4 +42,12 @@ public interface InsRepService {
 
     //Audit inspection
     void saveAuditRecommendation(LicPremisesRecommendationDto licPremisesRecommendationDto);
+    void updateAuditRecommendation(LicPremisesRecommendationDto licPremisesRecommendationDto);
+    void updateAuditTcuRecommendation(LicPremisesRecommendationDto licPremisesRecommendationDto);
+    void updateAuditEngageRecommendation(LicPremisesRecommendationDto licPremisesRecommendationDto);
+    void updateAuditRiskRecommendation(LicPremisesRecommendationDto licPremisesRecommendationDto);
+    void updateAuditFollowRecommendation(LicPremisesRecommendationDto licPremisesRecommendationDto);
+
+
+
 }
