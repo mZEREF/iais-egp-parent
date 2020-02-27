@@ -1,1 +1,1 @@
-<h2>APPROVE SUCCESS!!!</h2>
+<%@include file="/iais/report/inspectorReportConfirm.jsp"%>
