@@ -6,8 +6,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,6 +44,9 @@ public interface SystemClient {
 
     @GetMapping(path = "/iais-message/{id}")
     FeignResponseEntity<MessageDto> getMessageByRowguid(@PathVariable(name = "id") String id);
+
+    @PostMapping(path = "/api-postcodes", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> saveAllPostCode(@RequestBody List<PostCodeDto> postCodeDtos);
 
 
 
