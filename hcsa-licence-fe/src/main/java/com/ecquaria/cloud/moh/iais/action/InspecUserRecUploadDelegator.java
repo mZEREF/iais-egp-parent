@@ -4,11 +4,11 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -116,11 +116,12 @@ public class InspecUserRecUploadDelegator {
     public void inspecUserRectifiUploadVali(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadVali start ...."));
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
+        InspecUserRecUploadDto inspecUserRecUploadDto = (InspecUserRecUploadDto)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDto");
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         Map<String,String> errorMap = new HashMap<>();
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
-        if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue))){
-            errorMap = doValidateByRecFile(inspecUserRecUploadDtos, mulReq, errorMap);
+        if(InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue) || InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)){
+            errorMap = doValidateByRecFile(inspecUserRecUploadDto, mulReq, errorMap, actionValue);
             if(errorMap != null && !(errorMap.isEmpty())){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
@@ -131,56 +132,49 @@ public class InspecUserRecUploadDelegator {
         } else {
             ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.TRUE);
         }
+        ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
     }
 
-    private Map<String, String> doValidateByRecFile(List<InspecUserRecUploadDto> inspecUserRecUploadDtos,
-                                                    MultipartHttpServletRequest mulReq, Map<String, String> errorMap) {
-        for(InspecUserRecUploadDto iDto: inspecUserRecUploadDtos){
-            String delFlagName = InspectionConstants.INSEPCTION_FILE_NAME_DELFLAG + iDto.getIndex();
-            String selectedFileName = InspectionConstants.INSEPCTION_FILE_NAME_SELECTEDFILE + iDto.getIndex();
-            String uploadRemarksName = InspectionConstants.INSEPCTION_FILE_NAME_UPLOADREMARKS + iDto.getIndex();
-            String delFlagValue =  mulReq.getParameter(delFlagName);
-            String uploadRemarks = mulReq.getParameter(uploadRemarksName);
-            String errorKey = "recFile" + iDto.getIndex();
-            CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile(selectedFileName);
-            if(file == null || file.getSize() == 0){
-                if(SystemParameterConstants.STATUS_DEACTIVATED.equals(delFlagValue)) {
-                    file = iDto.getRecFile();
-                }
-            }
-            if(file.isEmpty() || file.getSize() == 0) {
+    private Map<String, String> doValidateByRecFile(InspecUserRecUploadDto inspecUserRecUploadDto, MultipartHttpServletRequest mulReq,
+                                                    Map<String, String> errorMap, String actionValue) {
+        String uploadRemarks = mulReq.getParameter("recFileUpload");
+        inspecUserRecUploadDto.setUploadRemarks(uploadRemarks);
+        String errorKey = "recFile";
+        CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("recFileUpload");
+        if(InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)) {
+            if (IaisCommonUtils.isEmpty(inspecUserRecUploadDto.getFileRepoDtos())) {
                 errorMap.put(errorKey, "ERR0009");
-                continue;
+                return errorMap;
             }
+        } else {
             Boolean flag = false;
             String fileName = file.getOriginalFilename();
-            String substring = fileName.substring(fileName.lastIndexOf(".")+1);
-            if(file.getSize() > 4*1024*1024) {
+            String substring = fileName.substring(fileName.lastIndexOf(".") + 1);
+            if (file.getSize() > 4 * 1024 * 1024) {
                 errorMap.put(errorKey, "The file has exceeded the maximum upload size of 4MB.");
-                continue;
+                return errorMap;
             }
             FileType[] values = FileType.values();
-            for(FileType f:values){
-                if(f.name().equalsIgnoreCase(substring)){
+            for (FileType f : values) {
+                if (f.name().equalsIgnoreCase(substring)) {
                     flag = true;
                 }
             }
 
-            if(!flag){
-                errorMap.put(errorKey,"The file type is incorrect.");
-                continue;
+            if (!flag) {
+                errorMap.put(errorKey, "The file type is incorrect.");
+                return errorMap;
             }
-            iDto.setRecFile(file);
-            if(file.getSize() / 1024 > 0){
-                if(file.getSize() / 1024 < 1){
-                    iDto.setFileSize(1);
+            inspecUserRecUploadDto.setRecFile(file);
+            if (file.getSize() / 1024 > 0) {
+                if (file.getSize() / 1024 < 1) {
+                    inspecUserRecUploadDto.setFileSize(1);
                 } else {
-                    iDto.setFileSize((int)file.getSize() / 1024);
+                    inspecUserRecUploadDto.setFileSize((int) file.getSize() / 1024);
                 }
             }
-            iDto.setFileName(fileName);
-            iDto.setUploadRemarks(uploadRemarks);
+            inspecUserRecUploadDto.setFileName(fileName);
         }
         return errorMap;
     }
@@ -232,7 +226,7 @@ public class InspecUserRecUploadDelegator {
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadAdd start ...."));
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
         InspecUserRecUploadDto inspecUserRecUploadDto = (InspecUserRecUploadDto)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDto");
-
+        inspecUserRecUploadDto = inspecUserRecUploadService.saveFileReportGetFileId(inspecUserRecUploadDto);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
     }

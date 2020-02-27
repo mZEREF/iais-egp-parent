@@ -92,6 +92,11 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
         return applicationClient.getApplicationByCorreId(appPremCorrId).getEntity();
     }
 
+    @Override
+    public InspecUserRecUploadDto saveFileReportGetFileId(InspecUserRecUploadDto inspecUserRecUploadDto) {
+        return null;
+    }
+
     private AppPremPreInspectionNcDto createAndUpdateAppPreDto(AppPremPreInspectionNcDto appPremPreInspectionNcDto) {
         appPremPreInspectionNcDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
         appPremPreInspectionNcDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());

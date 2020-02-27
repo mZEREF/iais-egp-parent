@@ -39,4 +39,13 @@ public interface InspecUserRecUploadService {
       * @Descripation: get Application By CorrId
       */
     ApplicationDto getApplicationByCorrId(String appPremCorrId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/2/27
+      * @Param: inspecUserRecUploadDto
+      * @return: InspecUserRecUploadDto
+      * @Descripation: save File Report Get File Id
+      */
+    InspecUserRecUploadDto saveFileReportGetFileId(InspecUserRecUploadDto inspecUserRecUploadDto);
 }

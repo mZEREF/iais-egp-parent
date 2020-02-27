@@ -57,8 +57,9 @@
                           <iais:row>
                             <iais:field value="Choose a file to attach"/>
                             <iais:value width="7">
-                              <input class="selectedFile premDoc" id="recFileUpload" name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile1"/>
+                              <input class="selectedFile premDoc" id="recFileUpload" name = "recFileUpload" type="file" style="display: none;" aria-label="selectedFile1"/>
                               <button type="button" class="btn btn-lg" onchange="javascript:doUserRecUploadConfirmUpload()">Upload</button>
+                              <br><span class="error-msg" name="iaisErrorMsg" id="error_recFile"></span>
                             </iais:value>
                           </iais:row>
                           <iais:row>
@@ -70,13 +71,12 @@
                                 </c:forEach>
                               </c:if>
                               <label id="recFileName"></label>
-                              <br><span class="error-msg" name="iaisErrorMsg" id="error_recFile"></span>
                             </iais:value>
                           </iais:row>
                           <iais:row>
                             <iais:field value="Remarks"/>
                             <iais:value width="300">
-                              <textarea id="${uploadRemarks}" name="${uploadRemarks}" cols="70" rows="7"><c:out value="${recCheck.uploadRemarks}"></c:out></textarea>
+                              <textarea id="uploadRemarks" name="uploadRemarks" cols="70" rows="7"><c:out value="${inspecUserRecUploadDto.uploadRemarks}"></c:out></textarea>
                             </iais:value>
                           </iais:row>
                         </c:if>
