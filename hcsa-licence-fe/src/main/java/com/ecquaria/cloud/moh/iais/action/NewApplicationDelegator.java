@@ -52,7 +52,6 @@ import com.ecquaria.sz.commons.util.FileUtil;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Time;
-import java.text.DecimalFormat;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -380,8 +379,8 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do preparePayment start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         if(!StringUtil.isEmpty(appSubmissionDto.getAmount())){
-            DecimalFormat decimalFormat = new DecimalFormat("###,###");
-            String amountStr = "$"+decimalFormat.format(appSubmissionDto.getAmount());
+            String amountStr = Formatter.formatterMoney(appSubmissionDto.getAmount());
+            log.info(StringUtil.changeForLog("The amountStr is -->:"+amountStr));
             appSubmissionDto.setAmountStr(amountStr);
         }
 
