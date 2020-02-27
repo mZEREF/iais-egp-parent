@@ -15,7 +15,7 @@
                         <h2>The application has been submitted.</h2>
                     </div>
                 </div>
-                <div align="left"><span><a href="https://egp.sit.intra.iais.com/main-web/eservice/INTRANET/MohBackendInbox">Bcak</a></span></div>
+                <div align="left"><span><a href="/main-web/eservice/INTRANET/MohBackendInbox">Bcak</a></span></div>
             </div>
         </div>
     </div>
