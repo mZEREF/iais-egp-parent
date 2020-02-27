@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarAndUserIdDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -28,11 +27,6 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,6 +34,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Shicheng
@@ -78,36 +76,36 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
-        if(!StringUtil.isEmpty(appPremCorrId)) {
-            ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(appPremCorrId).getEntity();
-            apptFeConfirmDateDto.setApplicationDto(applicationDto);
-            List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = inspectionFeClient.getSystemDtosByAppPremCorrId(appPremCorrId).getEntity();
-            if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtoList)){
-                List<String> apptRefNos = new ArrayList<>();
-                for(AppPremisesInspecApptDto aDto : appPremisesInspecApptDtoList){
-                    apptRefNos.add(aDto.getApptRefNo());
-                }
-                List<ApptUserCalendarAndUserIdDto> apptUserCalendarAndUserIdDtos = feEicGatewayClient.getAppointmentByApptRefNo(apptRefNos, signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization()).getEntity();
-                if(!IaisCommonUtils.isEmpty(apptUserCalendarAndUserIdDtos)) {
-                    apptFeConfirmDateDto.setApptUserCalendarAndUserIdDtos(apptUserCalendarAndUserIdDtos);
-                    setSystemDateMap(apptFeConfirmDateDto);
-                }
-            }
-            apptFeConfirmDateDto.setAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList);
-            apptFeConfirmDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDtoList.get(0));
-            apptFeConfirmDateDto.setAppPremCorrId(appPremCorrId);
-        }
+//        if(!StringUtil.isEmpty(appPremCorrId)) {
+//            ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(appPremCorrId).getEntity();
+//            apptFeConfirmDateDto.setApplicationDto(applicationDto);
+//            List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = inspectionFeClient.getSystemDtosByAppPremCorrId(appPremCorrId).getEntity();
+//            if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtoList)){
+//                List<String> apptRefNos = new ArrayList<>();
+//                for(AppPremisesInspecApptDto aDto : appPremisesInspecApptDtoList){
+//                    apptRefNos.add(aDto.getApptRefNo());
+//                }
+//                List<ApptUserCalendarAndUserIdDto> apptUserCalendarAndUserIdDtos = feEicGatewayClient.getAppointmentByApptRefNo(apptRefNos, signature.date(), signature.authorization(),
+//                        signature2.date(), signature2.authorization()).getEntity();
+//                if(!IaisCommonUtils.isEmpty(apptUserCalendarAndUserIdDtos)) {
+//                    apptFeConfirmDateDto.setApptUserCalendarAndUserIdDtos(apptUserCalendarAndUserIdDtos);
+//                    setSystemDateMap(apptFeConfirmDateDto);
+//                }
+//            }
+//            apptFeConfirmDateDto.setAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList);
+//            apptFeConfirmDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDtoList.get(0));
+//            apptFeConfirmDateDto.setAppPremCorrId(appPremCorrId);
+//        }
         return apptFeConfirmDateDto;
     }
 
     private void setSystemDateMap(ApptFeConfirmDateDto apptFeConfirmDateDto) {
         List<ApptUserCalendarDto> apptUserCalendarDtos = new ArrayList<>();
-        for(ApptUserCalendarAndUserIdDto aucauDto : apptFeConfirmDateDto.getApptUserCalendarAndUserIdDtos()){
-            if(!IaisCommonUtils.isEmpty(aucauDto.getAppointmentDtoList())){
-                apptUserCalendarDtos.add(aucauDto.getAppointmentDtoList().get(0));
-            }
-        }
+//        for(ApptUserCalendarAndUserIdDto aucauDto : apptFeConfirmDateDto.getApptUserCalendarAndUserIdDtos()){
+//            if(!IaisCommonUtils.isEmpty(aucauDto.getAppointmentDtoList())){
+//                apptUserCalendarDtos.add(aucauDto.getAppointmentDtoList().get(0));
+//            }
+//        }
         if(!IaisCommonUtils.isEmpty(apptUserCalendarDtos)) {
             Map<String, Date> inspectionDateMap = new HashMap<>();
             List<SelectOption> inspectionDate = new ArrayList<>();
@@ -169,11 +167,11 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<String> systemCorrId = new ArrayList<>();
-        for(ApptUserCalendarAndUserIdDto aucauDto : apptFeConfirmDateDto.getApptUserCalendarAndUserIdDtos()){
-            for(ApptUserCalendarDto apptUserCalendarDto : aucauDto.getAppointmentDtoList()){
-                //systemCorrId.add(apptUserCalendarDto.getUserSysCorreId());
-            }
-        }
+//        for(ApptUserCalendarAndUserIdDto aucauDto : apptFeConfirmDateDto.getApptUserCalendarAndUserIdDtos()){
+//            for(ApptUserCalendarDto apptUserCalendarDto : aucauDto.getAppointmentDtoList()){
+//                //systemCorrId.add(apptUserCalendarDto.getUserSysCorreId());
+//            }
+//        }
         AppointmentDto appointmentDto = new AppointmentDto();
         AppPremisesInspecApptDto appPremisesInspecApptDto = apptFeConfirmDateDto.getAppPremisesInspecApptDto();
         //appointmentDto.setUserId(systemCorrId);
