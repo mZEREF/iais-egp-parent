@@ -273,6 +273,8 @@
         </div>
       </div>
 
+<c:forEach items="${routingStagess}" var="routingStages">
+
       <div class="form-group" >
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
           <table border="1px" style="text-align: center" >
@@ -283,9 +285,9 @@
               <th  style="width: 15% ;height: 40px;text-align: center">  Service Workload Manhours<span class="mandatory">*</span></th>
               <th  style="width: 30% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
             </tr>
-            <c:forEach items="${routingStages}" var="routingStage" varStatus="status">
+            <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
               <tr>
-                <td > new application</td>
+                <td >${routingStage.appTypeName}</td>
                 <td >${routingStage.stageName}</td>
                 <td>
                   <div class="col-xs-12 col-md-12">
@@ -304,14 +306,20 @@
                 </td>
                 <td>
                   <div class="col-xs-12 col-md-12">
-                    <input  type="text" name="WorkloadManhours${routingStage.stageCode}"  value="${manhours.NEW1}">
+                    <input  type="text" name="WorkloadManhours${routingStage.stageCode}"  value="${routingStage.manhours}">
                     <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${status.index}"></span>
                   </div>
 
                 </td>
                 <td>
                   <div class="col-xs-12 col-md-12">
-
+                    <div class="col-xs-12 col-md-12">
+                      <select name="workingGroup${routingStage.stageCode}">
+                        <option value="">Select one</option><c:forEach items="${routingStage.workingGroup}" var="workingGroup">
+                        <option <c:if test="${routingStage.workingGroupId==workingGroup.id}">selected="selected"</c:if> value="${workingGroup.id}">${workingGroup.groupName}</option>
+                      </c:forEach>
+                      </select>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -320,93 +328,53 @@
           </table>
         </div>
       </div>
+</c:forEach>
 
 
       <div class="form-group">
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
           <label class="col-xs-12 col-md-10 control-label" >Service step<span class="mandatory">*</span></label>
+          <span name="iaisErrorMsg" class="error-msg" id="error_serviceStep" style="display: block"></span>
         </div>
       </div>
+      <c:set var="hcsaServiceStepScheme" value="${hcsaServiceStepSchemeDto}"></c:set>
       <div class="form-group">
         <div class="form-check-gp">
           <div class="row">
-            <div class="col-xs-12 col-md-2" >
-              <div >
-                <select  name="step" >
-                  <option value="">Select one</option>
-                  <option value="SVST001">laboratorydisciplines</option>
-                  <option value="SVST002">governanceofficers</option>
-                  <option value="SVST003">disciplineallocation</option>
-                  <option value="SVST004">principalofficers</option>
-                  <option value="SVST005">documents</option>
-                  <option value="SVST006">nuclearmedicineimaging</option>
-                </select>
+            <div class="col-xs-12 col-md-2">
+              <div class="form-check " style="left: 10%">
+                <input class="form-check-input" name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST001')}">checked="checked"</c:if>  type="checkbox" value="SVST001"  aria-invalid="false">
+                <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>laboratorydisciplines</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-2">
-              <div  >
-                <select  name="step" >
-                  <option value="">Select one</option>
-                  <option value="SVST001">laboratorydisciplines</option>
-                  <option value="SVST002">governanceofficers</option>
-                  <option value="SVST003">disciplineallocation</option>
-                  <option value="SVST004">principalofficers</option>
-                  <option value="SVST005">documents</option>
-                  <option value="SVST006">nuclearmedicineimaging</option>
-                </select>
+              <div class="form-check ">
+                <input class="form-check-input"  name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST002')}">checked="checked"</c:if>   type="checkbox" value="SVST002" aria-invalid="false">
+                <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>governanceofficers</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-2">
-              <div  >
-                <select  name="step" >
-                  <option value="">Select one</option>
-                  <option value="SVST001">laboratorydisciplines</option>
-                  <option value="SVST002">governanceofficers</option>
-                  <option value="SVST003">disciplineallocation</option>
-                  <option value="SVST004">principalofficers</option>
-                  <option value="SVST005">documents</option>
-                  <option value="SVST006">nuclearmedicineimaging</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="col-xs-12 col-md-2">
-              <div  >
-                <select  name="step" >
-                  <option value="">Select one</option>
-                  <option value="SVST001">laboratorydisciplines</option>
-                  <option value="SVST002">governanceofficers</option>
-                  <option value="SVST003">disciplineallocation</option>
-                  <option value="SVST004">principalofficers</option>
-                  <option value="SVST005">documents</option>
-                  <option value="SVST006">nuclearmedicineimaging</option>
-                </select>
+              <div class="form-check ">
+                <input class="form-check-input"  name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST003')}">checked="checked"</c:if>   type="checkbox" value="SVST003"  aria-invalid="false">
+                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>disciplineallocation</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-2">
-              <div  >
-                <select  name="step" >
-                  <option value="">Select one</option>
-                  <option value="SVST001">laboratorydisciplines</option>
-                  <option value="SVST002">governanceofficers</option>
-                  <option value="SVST003">disciplineallocation</option>
-                  <option value="SVST004">principalofficers</option>
-                  <option value="SVST005">documents</option>
-                  <option value="SVST006">nuclearmedicineimaging</option>
-                </select>
+              <div class="form-check ">
+                <input class="form-check-input"  name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST004')}">checked="checked"</c:if>  type="checkbox" value="SVST004" aria-invalid="false">
+                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>principalofficers</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-2">
-              <div  >
-                <select  name="step" >
-                  <option value="">Select one</option>
-                  <option value="SVST001">laboratorydisciplines</option>
-                  <option value="SVST002">governanceofficers</option>
-                  <option value="SVST003">disciplineallocation</option>
-                  <option value="SVST004">principalofficers</option>
-                  <option value="SVST005">documents</option>
-                  <option value="SVST006">nuclearmedicineimaging</option>
-                </select>
+              <div class="form-check ">
+                <input class="form-check-input"  name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST005')}">checked="checked"</c:if>  type="checkbox" value="SVST005"  aria-invalid="false">
+                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>documents</label>
+              </div>
+            </div>
+            <div class="col-xs-12 col-md-1">
+              <div class="form-check ">
+                <input class="form-check-input" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST006')}">checked="checked"</c:if> name="step"   type="checkbox" value="SVST006"  aria-invalid="false">
+                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>nuclearmedicineimaging</label>
               </div>
             </div>
           </div>

@@ -69,5 +69,9 @@ public class INTRANET___MohServiceConfig___1 extends BaseProcessClass {
 
         EngineHelper.delegate(DELEGATOR, "deleteOrCancel", this);
     }
+    public void step2_OnStepProcess_0() throws Exception {
+    // 		Step2->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "update", this);
+    }
 
 }

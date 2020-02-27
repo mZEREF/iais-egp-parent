@@ -112,6 +112,37 @@
         </div>
       </div>
 
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-8">
+          <label class="col-xs-12 col-md-6 control-label" >Subsumption Base Service:<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-4">
+            <select  name="Subsumption">
+              <option >Select one</option>
+              <option>Acute Hospital</option>
+              <option>Community Hospital</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-8">
+          <label class="col-xs-12 col-md-6 control-label" >Pre-requisite Base Service:<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-4">
+            <select  name="Subsumption">
+              <option >Select one</option>
+              <option>Acute Hospital</option>
+              <option>Community Hospital</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+
+
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label">Principal Officer (PO)<span class="mandatory">*</span></label>
@@ -285,29 +316,45 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <div class="col-xs-12 col-md-8">
+          <div class="col-xs-10 col-md-4">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showNEW()"><span class="view">NEW APPLICATION</span></a>
+
+            </div>
+          </div>
+          <div class="col-xs-10 col-md-4">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showRENEW()"><span class="view">RENEW</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
 
 
-      <div class="form-group" >
+
+      <c:forEach items="${routingStagess}" var="routingStages">
+      <div class="form-group" style="display: none" id="${routingStages.key}" >
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
       <table border="1px" style="text-align: center" >
         <tr>
-          <th style="width: 15% ;height: 40px;text-align: center"> application type<span class="mandatory" >*</span></th>
-          <th  style="width: 20% ;height: 40px;text-align: center"> Service Workflow Routing Stages<span class="mandatory" >*</span></th>
+          <th style="width: 15% ;height: 40px;text-align: center">application type<span class="mandatory" >*</span></th>
+          <th  style="width: 20% ;height: 40px;text-align: center">Service Workflow Routing Stages<span class="mandatory" >*</span></th>
           <th  style="width: 20% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
-          <th  style="width: 15% ;height: 40px;text-align: center">  Service Workload Manhours<span class="mandatory">*</span></th>
+          <th  style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours<span class="mandatory">*</span></th>
           <th  style="width: 30% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
         </tr>
-        <c:forEach items="${routingStages}" var="routingStage" varStatus="status">
+        <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
       <tr>
-        <td > new application</td>
+        <td >${routingStage.appTypeName}</td>
         <td >${routingStage.stageName}</td>
         <td>
           <div class="col-xs-12 col-md-12">
-            <select  name="RoutingScheme${routingStage.stageCode}" > > >
+            <select  name="RoutingScheme${routingStage.stageCode}${routingStages.key}"  >
               <option >Select one</option>
               <option value="common"
                       <c:if test="${routingStage.stageCode=='PSO'}">selected="selected" </c:if>
-
               >Common Pool</option>
               <option value="assign">Supervisor Assign</option>
               <option value="round"
@@ -318,16 +365,17 @@
         </td>
         <td>
           <div class="col-xs-12 col-md-12">
-            <input  type="text" name="WorkloadManhours${routingStage.stageCode}"  >
+            <input  type="text" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
             <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${status.index}"></span>
           </div>
 
         </td>
         <td>
           <div class="col-xs-12 col-md-12">
-            <select name="workingGroup${routingStage.stageCode}">
+
+            <select name="workingGroup${routingStage.stageCode}${routingStages.key}">
               <option value="">Select one</option><c:forEach items="${routingStage.workingGroup}" var="workingGroup">
-              <option value="${workingGroup.id}">${workingGroup.groupName}</option>
+              <option <c:if test="${routingStage.workingGroupId==workingGroup.id}">selected="selected"</c:if>value="${workingGroup.id}">${workingGroup.groupName}</option>
             </c:forEach>
             </select>
           </div>
@@ -339,98 +387,60 @@
       </table>
         </div>
       </div>
-
+      </c:forEach>
 
       <div class="form-group">
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
           <label class="col-xs-12 col-md-10 control-label" >Service step<span class="mandatory">*</span></label>
+          <span name="iaisErrorMsg" class="error-msg" id="error_serviceStep" style="display: block"></span>
         </div>
+
       </div>
+
       <div class="form-group">
         <div class="form-check-gp">
           <div class="row">
-            <div class="col-xs-12 col-md-2" >
-              <div >
-                <select  name="step" >
-                  <option >Select one</option>
-                  <option value="SVST001">laboratorydisciplines</option>
-                  <option value="SVST002">governanceofficers</option>
-                  <option value="SVST003">disciplineallocation</option>
-                  <option value="SVST004">principalofficers</option>
-                  <option value="SVST005">documents</option>
-                  <option value="SVST006">nuclearmedicineimaging</option>
-                </select>
+            <div class="col-xs-12 col-md-2">
+              <div class="form-check " style="left: 10%">
+                <input class="form-check-input" name="step"   type="checkbox" value="SVST001"  aria-invalid="false">
+                <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>laboratorydisciplines</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-2">
-              <div  >
-                <select  name="step" >
-                  <option>Select one</option>
-                  <option value="SVST001">laboratorydisciplines</option>
-                  <option value="SVST002">governanceofficers</option>
-                  <option value="SVST003">disciplineallocation</option>
-                  <option value="SVST004">principalofficers</option>
-                  <option value="SVST005">documents</option>
-                  <option value="SVST006">nuclearmedicineimaging</option>
-                </select>
+              <div class="form-check ">
+                <input class="form-check-input"  name="step"    type="checkbox" value="SVST002" aria-invalid="false">
+                <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>governanceofficers</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-2">
-              <div  >
-                <select  name="step" >
-                  <option >Select one</option>
-                  <option value="SVST001">laboratorydisciplines</option>
-                  <option value="SVST002">governanceofficers</option>
-                  <option value="SVST003">disciplineallocation</option>
-                  <option value="SVST004">principalofficers</option>
-                  <option value="SVST005">documents</option>
-                  <option value="SVST006">nuclearmedicineimaging</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="col-xs-12 col-md-2">
-              <div  >
-                <select  name="step" >
-                  <option >Select one</option>
-                  <option value="SVST001">laboratorydisciplines</option>
-                  <option value="SVST002">governanceofficers</option>
-                  <option value="SVST003">disciplineallocation</option>
-                  <option value="SVST004">principalofficers</option>
-                  <option value="SVST005">documents</option>
-                  <option value="SVST006">nuclearmedicineimaging</option>
-                </select>
+              <div class="form-check ">
+                <input class="form-check-input"  name="step"   type="checkbox" value="SVST003"  aria-invalid="false">
+                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>disciplineallocation</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-2">
-              <div  >
-                <select  name="step" >
-                  <option >Select one</option>
-                  <option value="SVST001">laboratorydisciplines</option>
-                  <option value="SVST002">governanceofficers</option>
-                  <option value="SVST003">disciplineallocation</option>
-                  <option value="SVST004">principalofficers</option>
-                  <option value="SVST005">documents</option>
-                  <option value="SVST006">nuclearmedicineimaging</option>
-                </select>
+              <div class="form-check ">
+                <input class="form-check-input"  name="step"   type="checkbox" value="SVST004" aria-invalid="false">
+                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>principalofficers</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-2">
-              <div  >
-                <select  name="step" >
-                  <option>Select one</option>
-                  <option value="SVST001">laboratorydisciplines</option>
-                  <option value="SVST002">governanceofficers</option>
-                  <option value="SVST003">disciplineallocation</option>
-                  <option value="SVST004">principalofficers</option>
-                  <option value="SVST005">documents</option>
-                  <option value="SVST006">nuclearmedicineimaging</option>
-                </select>
+              <div class="form-check ">
+                <input class="form-check-input"  name="step"   type="checkbox" value="SVST005"  aria-invalid="false">
+                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>documents</label>
+              </div>
+            </div>
+            <div class="col-xs-12 col-md-1">
+              <div class="form-check ">
+                <input class="form-check-input"  name="step"   type="checkbox" value="SVST006"  aria-invalid="false">
+                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>nuclearmedicineimaging</label>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+
 
 
       <div class="form-group">
@@ -468,7 +478,7 @@
           <div class="col-xs-10 col-md-8">
             <div class="components">
 
-              <a class="btn  btn-secondary"  onclick="edit()">Edit</a>
+              <a class="btn  btn-secondary"  onclick="cancel()">Cancel</a>
 
             </div>
           </div>
@@ -485,7 +495,7 @@
         <div class="row">
           <div class="col-xs-10 col-md-8">
             <div class="components">
-              <p style="text-align: center">Version ${hcsaServiceDto.version}</p>
+              <p style="text-align: center">Version 1</p>
             </div>
           </div>
         </div>
@@ -504,9 +514,9 @@
 </style>
 <script type="text/javascript">
 
-    function edit() {
-        showWaiting();
-        SOP.Crud.cfxSubmit("mainForm","edit");
+    function cancel() {
+
+        SOP.Crud.cfxSubmit("mainForm","");
     }
 
     function save() {
@@ -514,6 +524,24 @@
         SOP.Crud.cfxSubmit("mainForm","save");
     }
 
+  function showNEW() {
+      let jQuery = $('#APTY002').attr("style");
+      $('#APTY001').attr("style","display: none");
+      if(jQuery=='display: block'){
+          $('#APTY002').attr("style","display: none");
+      }else if(jQuery=='display: none'){
+          $('#APTY002').attr("style","display: block");
+      }
+  }
 
+  function showRENEW() {
+      let jQuery = $('#APTY001').attr("style");
+      $('#APTY002').attr("style","display: none");
+      if(jQuery=='display: block'){
+          $('#APTY001').attr("style","display: none");
+      }else if(jQuery=='display: none'){
+          $('#APTY001').attr("style","display: block");
+      }
+  }
 </script>
 </>

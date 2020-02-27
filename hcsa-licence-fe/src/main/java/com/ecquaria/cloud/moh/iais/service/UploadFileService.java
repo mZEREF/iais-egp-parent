@@ -15,4 +15,6 @@ public interface UploadFileService {
     String  changeStatus(ApplicationListFileDto applicationListDto);
     boolean compressFile();
 
+    List<ApplicationListFileDto> parse(String data);
+
 }

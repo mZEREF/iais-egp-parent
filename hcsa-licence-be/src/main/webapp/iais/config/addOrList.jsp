@@ -46,7 +46,7 @@
 <script type="text/javascript">
 
     function add() {
-        SOP.Crud.cfxSubmit("mainForm","addNewService");
+        SOP.Crud.cfxSubmit("mainForm","addNewService","addNewService","");
     }
     function list() {
     SOP.Crud.cfxSubmit("mainForm","list");

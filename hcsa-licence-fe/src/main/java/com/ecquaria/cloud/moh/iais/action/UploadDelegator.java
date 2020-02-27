@@ -37,7 +37,7 @@ public class UploadDelegator {
         logAbout("preparetionData");
         String data = uploadFileService.getData();
         log.info("------------------- getData  end --------------");
-        List<ApplicationListFileDto> parse = UploadFileServiceImpl.parse(data);
+        List<ApplicationListFileDto> parse = uploadFileService.parse(data);
         for(ApplicationListFileDto applicationListFileDto :parse){
 
             String s = JsonUtil.parseToJson(applicationListFileDto);

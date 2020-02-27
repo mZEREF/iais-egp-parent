@@ -20,4 +20,11 @@ public interface ConfigService {
     void saveOrUpdate(HttpServletRequest request);
 
     void addNewService(HttpServletRequest request);
+
+    void update(HttpServletRequest request);
+
+    void saData(HttpServletRequest request);
+
+    void delete(HttpServletRequest request);
+
 }

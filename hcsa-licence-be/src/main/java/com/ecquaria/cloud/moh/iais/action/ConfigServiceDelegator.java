@@ -35,6 +35,7 @@ public class ConfigServiceDelegator {
     }
     public void addNewService(BaseProcessClass bpc){
         log.info("*********addNewService  start***********");
+        bpc.request.getSession().removeAttribute("routingStage");
         configService.addNewService(bpc.request);
     }
     public void saveOrUpdate(BaseProcessClass bpc){
@@ -44,6 +45,7 @@ public class ConfigServiceDelegator {
     }
     public void saveDate(BaseProcessClass bpc){
         log.info("*********saveDate  start***********");
+        configService.saData(bpc.request);
     }
     public void editOrDelete(BaseProcessClass bpc){
         log.info("*********editOrDelete  start***********");
@@ -74,10 +76,21 @@ public class ConfigServiceDelegator {
     }
 
     public void delete(BaseProcessClass bpc){
+
         log.info("*********delete  start***********");
+
+        configService.delete(bpc.request);
+
     }
 
     public void deleteOrCancel(BaseProcessClass bpc){
         log.info("*********deleteOrCancel  start***********");
+    }
+
+    public void update(BaseProcessClass bpc){
+
+        log.info("*********update  start***********");
+        configService.update(bpc.request);
+
     }
 }

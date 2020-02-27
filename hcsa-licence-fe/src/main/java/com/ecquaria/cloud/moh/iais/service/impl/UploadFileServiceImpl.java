@@ -89,7 +89,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     @Override
     public Boolean saveFile(String  str) {
-        List<ApplicationListFileDto> parse = UploadFileServiceImpl.parse(str);
+        List<ApplicationListFileDto> parse = parse(str);
         if(parse.isEmpty()){
            return false;
         }
@@ -388,8 +388,8 @@ public class UploadFileServiceImpl implements UploadFileService {
         return s;
     }
 
-
-    public static List<ApplicationListFileDto> parse(String str){
+    @Override
+    public  List<ApplicationListFileDto> parse(String str){
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = applicationListDto.getAppPremPhOpenPeriods();
         List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
@@ -585,15 +585,17 @@ public class UploadFileServiceImpl implements UploadFileService {
 
                         }
                     }
+                    if(appEditSelects!=null){
+                        for(AppEditSelectDto appEditSelectDto:appEditSelects){
+                            String applicationId = appEditSelectDto.getApplicationId();
+                            String editType = appEditSelectDto.getEditType();
+                            if(applicationDto.getId().equals(applicationId)&&ApplicationConsts.APPLICATION_EDIT_TYPE_RFC.equals(editType)){
+                                appEditSelectDtoSet.add(appEditSelectDto);
 
-                    for(AppEditSelectDto appEditSelectDto:appEditSelects){
-                        String applicationId = appEditSelectDto.getApplicationId();
-                        String editType = appEditSelectDto.getEditType();
-                        if(applicationDto.getId().equals(applicationId)&&ApplicationConsts.APPLICATION_EDIT_TYPE_RFC.equals(editType)){
-                            appEditSelectDtoSet.add(appEditSelectDto);
-
+                            }
                         }
                     }
+
                 }
 
 

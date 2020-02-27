@@ -44,7 +44,7 @@
 
         <td  style="text-align: center">${hcsaServiceDto.effectiveDate}</td>
         <td  style="text-align: center">${hcsaServiceDto.endDate}</td>
-        <td  style="text-align: center"><button onclick="edit(this)" value="${hcsaServiceDto.svcCode}">edit</button><button onclick="del()">delete</button></td>
+        <td  style="text-align: center"><button onclick="edit(this)" value="${hcsaServiceDto.svcCode}">edit</button><button value="${hcsaServiceDto.svcCode}" onclick="del(this)">delete</button></td>
 
       </tr>
         </c:forEach>
@@ -61,8 +61,8 @@
 
        SOP.Crud.cfxSubmit("mainForm","edit",$(obj).val(),"");
    }
-   function del() {
-       SOP.Crud.cfxSubmit("mainForm","delete");
+   function del(obj) {
+       SOP.Crud.cfxSubmit("mainForm","delete",$(obj).val(),"");
    }
 
    function  back() {

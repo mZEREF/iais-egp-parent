@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import lombok.Data;
 
@@ -22,7 +23,9 @@ public class HcsaConfigPageDto implements Serializable {
     private Integer manhours;
     private List<WorkingGroupDto>  workingGroup;
     private String stageCode;
-
+    private String workStageId;
     private String stageName;
+    private String stageId;
+    private String appTypeName;
 
 }

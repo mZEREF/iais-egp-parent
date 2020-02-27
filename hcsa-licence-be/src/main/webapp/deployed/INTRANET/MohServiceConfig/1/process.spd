@@ -23,7 +23,7 @@
     <JavaCode defClass="" executor="" methodName="step3_OnStepProcess_0" name="step3_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="addNewService" x="420" y="360">
+  <AutomaticStep defClass="" executor="" icon="" name="addNewService" x="380" y="350">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -91,7 +91,7 @@
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
-  <AutomaticStep defClass="" executor="" icon="" name="editView" x="1020" y="500">
+  <AutomaticStep defClass="" executor="" icon="" name="editView" x="1120" y="580">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -105,6 +105,19 @@
     <JavaCode defClass="" executor="" methodName="step5_OnStepProcess_0" name="step5_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Step2" x="890" y="440">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step2_OnStepProcess_0" name="step2_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="Step4" processname="" project="" version="" x="1090" y="290">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="350" y="170">
@@ -131,7 +144,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page2" stageIndicator="" x="900" y="500">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page2" stageIndicator="" x="910" y="580">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -159,7 +172,7 @@
    <position>{(480,190)(600,190)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/addNewService" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(600,190)(440,380)}</position>
+   <position>{(600,190)(400,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/list" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(600,190)(600,80)}</position>
@@ -168,7 +181,7 @@
    <position>{(600,80)(810,40)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/configService" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/addNewService" style="rectanular">
-   <position>{(440,380)(610,500)}</position>
+   <position>{(400,370)(610,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Step6" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/listing" style="rectanular">
    <position>{(810,40)(810,140)}</position>
@@ -207,7 +220,7 @@
    <position>{(640,270)(820,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Page2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/editView" style="rectanular">
-   <position>{(1040,520)(920,520)}</position>
+   <position>{(1140,600)(930,600)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Page3" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/edit" style="rectanular">
    <position>{(1040,260)(1180,300)}</position>
@@ -219,10 +232,7 @@
    <position>{(1290,300)(1400,300)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/editView" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch6" style="rectanular">
-   <position>{(1400,300)(1040,520)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/saveOrUpdate" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Page2" style="rectanular">
-   <position>{(920,520)(610,380)}</position>
+   <position>{(1400,300)(1140,600)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/list" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch4" style="rectanular">
    <position>{(630,-60)(546,17)(600,80)}</position>
@@ -234,10 +244,25 @@
    <position>{(1020,130)(303,565)(260,190)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/addNewService" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
-   <position>{(640,270)(440,380)}</position>
+   <position>{(640,270)(400,370)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/saveOrUpdate" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch6" style="rectanular">
-   <position>{(1400,300)(610,380)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step2" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Page2" style="rectanular">
+   <position>{(930,600)(910,460)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch5" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step2" style="rectanular">
+   <position>{(910,460)(920,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/save" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch5" style="rectanular">
+   <position>{(920,310)(760,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/editView" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch5" style="rectanular">
+   <position>{(920,310)(1124,387)(1140,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Step4" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch5" style="rectanular">
+   <position>{(920,310)(1110,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step2" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch6" style="rectanular">
+   <position>{(1400,300)(910,460)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -262,12 +287,18 @@
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch4" x="610" y="-80">
    <Description/>
    <SwitchCase component="/Steps/InvokeStep/Step9" value="&quot;cancel&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/list" value="\u201cdelete\u201d"/>
+   <SwitchCase component="/Steps/AutomaticStep/list" value="&quot;delete&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch6" x="1380" y="280">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/editView" value="&quot;edit&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/saveOrUpdate" value="&quot;save&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Step2" value="&quot;save&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/save" executor="" icon="" leftOperand="crud_action_type" name="Switch5" x="900" y="290">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/save" value="&quot;save&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/editView" value="&quot;validate&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/Step4" value="&quot;cancel&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
