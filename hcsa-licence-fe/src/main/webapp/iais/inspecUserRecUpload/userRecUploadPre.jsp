@@ -68,7 +68,12 @@
                                     <td><c:out value="${feRecNc.checkClause}"/></td>
                                     <td><iais:code code="${feRecNc.checkQuestion}"/></td>
                                     <td>
-                                      <button class="btn btn-lg btn-login-Next" style="float:right" type="button" disabled onclick="javascript:doUserRecUploadRectify('<iais:mask name="itemId" value="${feRecNc.itemId}"/>')">Rectify</button>
+                                      <c:if test="${'SUCCESS' eq buttonFlag}">
+                                        <button class="btn btn-lg disabled" style="float:right" type="button" disabled>Rectify</button>
+                                      </c:if>
+                                      <c:if test="${'SUCCESS' ne buttonFlag}">
+                                        <button class="btn btn-lg btn-login-Next" style="float:right" type="button" onclick="javascript:doUserRecUploadRectify('<iais:mask name="itemId" value="${feRecNc.itemId}"/>')">Rectify</button>
+                                      </c:if>
                                     </td>
                                     <td><c:out value="${feRecNc.buttonFlag}"/></td>
                                   </tr>

@@ -28,7 +28,6 @@
       <br>
       <input type="hidden" name="inspecUserRecUploadType" value="">
       <input type="hidden" id="actionValue" name="actionValue" value="">
-      <input type="hidden" id="buttonValue" name="buttonValue" value="">
       <input type="hidden" id="fileId" name="fileId" value="">
       <iais:body >
         <div class="container">
@@ -67,11 +66,10 @@
                             <iais:value width="300">
                               <c:if test="${inspecUserRecUploadDto.fileRepoDtos != null}">
                                 <c:forEach items="${inspecUserRecUploadDto.fileRepoDtos}" var="recFile">
-                                  <label><c:out value="${recFile.fileName}"></c:out></label><button type="button" class="btn btn-lg" onclick="javascript:doUserRecUploadConfirmDel('<iais:mask name="fileId" value="${recFile.id}"/>')">Delete</button>
+                                  <label><c:out value="${recFile.fileName}"></c:out></label><button type="button" class="btn btn-lg" onclick="javascript:doUserRecUploadConfirmDel('<iais:mask name="fileId" value="${recFile.id}"/>')">Delete</button><br>
                                 </c:forEach>
                               </c:if>
-                              <label><c:out value="${uploadRemarks}"></c:out></label>
-                              <br><label id="recFileName"></label>
+                              <label id="recFileName"></label>
                               <br><span class="error-msg" name="iaisErrorMsg" id="error_recFile"></span>
                             </iais:value>
                           </iais:row>
@@ -108,14 +106,12 @@
 
     function doUserRecUploadConfirmCancel() {
         $("#actionValue").val('review');
-        $("#buttonValue").val('cancel');
         userRecUploadConfirmSubmit('review');
     }
 
     function doUserRecUploadConfirmSave() {
-        $("#actionValue").val('review');
-        $("#buttonValue").val('save');
-        userRecUploadConfirmSubmit('review');
+        $("#actionValue").val('success');
+        userRecUploadConfirmSubmit('success');
     }
 
     function doUserRecUploadConfirmDel(fileId) {
@@ -127,7 +123,7 @@
     function doUserRecUploadConfirmUpload() {
       $("#recFileUpload").onclick;
       var file = $("#recFileUpload").val();
-      if(file != null){
+      if(file != null && "" != file){
         var fileName = getFileName(file);
         $("#recFileName").text(fileName);
         $("#actionValue").val('add');
