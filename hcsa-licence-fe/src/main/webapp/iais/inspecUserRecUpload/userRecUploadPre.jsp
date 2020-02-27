@@ -70,7 +70,7 @@
                                     <td>
                                       <button class="btn btn-lg btn-login-Next" style="float:right" type="button" disabled onclick="javascript:doUserRecUploadRectify('<iais:mask name="itemId" value="${feRecNc.itemId}"/>')">Rectify</button>
                                     </td>
-                                    <td><c:out value="${feRecNc.rectifiedFlag}"/></td>
+                                    <td><c:out value="${feRecNc.buttonFlag}"/></td>
                                   </tr>
                                 </c:forEach>
                               </c:otherwise>
@@ -78,14 +78,7 @@
                             </tbody>
                           </table>
                         </div>
-                        <iais:action >
-                          <c:if test="${'true' eq buttonFlag}">
-                            <button class="btn btn-lg btn-login-Submit" style="float:right;background:#F2B227; color: white" type="button" onclick="javascript:doUserRecUploadSubmit()">Submit</button>
-                          </c:if>
-                          <c:if test="${'true' ne buttonFlag}">
-                            <button class="btn btn-lg disabled" style="float:right" type="button" disabled="disabled" >Submit</button>
-                          </c:if>
-                        </iais:action>
+
                       </iais:section>
                     </div>
                   </div>
@@ -104,11 +97,6 @@
       $("[name='inspecUserRecUploadType']").val(action);
       var mainPoolForm = document.getElementById('mainReviewForm');
       mainPoolForm.submit();
-  }
-
-  function doUserRecUploadSubmit() {
-      $("#actionValue").val('success');
-      userRecUploadSubmit('success');
   }
 
   function doUserRecUploadRectify(itemId) {

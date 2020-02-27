@@ -53,4 +53,14 @@ public class INTERNET___MohInspecUserRectifiUpload___1 extends BaseProcessClass 
 		EngineHelper.delegate(DELEGATOR, "step1", this);
 	}
 
+	public void inspecUserRectifiUploadAdd_OnStepProcess_0() throws Exception {
+	// 		InspecUserRectifiUploadAdd->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "inspecUserRectifiUploadAdd", this);
+	}
+
+	public void inspecUserRectifiUploadDel_OnStepProcess_0() throws Exception {
+	// 		InspecUserRectifiUploadDel->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "inspecUserRectifiUploadDel", this);
+	}
+
 }

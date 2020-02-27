@@ -51,15 +51,23 @@
     <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspecUserRectifiUploadAdd" x="860" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadAdd_OnStepProcess_0" name="inspecUserRectifiUploadAdd_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspecUserRectifiUploadDel" x="860" y="380">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadDel_OnStepProcess_0" name="inspecUserRectifiUploadDel_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspecUserRectifiUploadReviewPage" stageIndicator="" x="650" y="100">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
-  </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspecUserRectifiUploadSuccPage" stageIndicator="" x="1060" y="380">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -92,9 +100,6 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadSuccess" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(1150,120)(1080,250)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/InspecUserRectifiUploadSuccPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadSuccess" style="rectanular">
-   <position>{(1080,250)(1080,400)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/InspecUserRectifiUploadConfPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadConfirm" style="rectanular">
    <position>{(1300,120)(1300,250)}</position>
   </SynchronousLink>
@@ -110,11 +115,29 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadVali" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspecUserRectifiUploadConfPage" style="rectanular">
    <position>{(1300,250)(1320,400)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Step1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/InspecUserRectifiUploadCond1" style="oblique">
-   <position>{(1320,540)(959,540)(960,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadConfirm" linkstyle="Direct" name="" sourceName="/Conditions/Condition/InspecUserRectifiUploadCond1" style="oblique">
    <position>{(1320,540)(1459,540)(1459,119)(1300,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadAdd" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(1150,120)(880,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadAdd" style="oblique">
+   <position>{(880,250)(814,421)(1160,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadDel" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(1150,120)(880,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadDel" style="oblique">
+   <position>{(880,400)(1160,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/InspecUserRectifiUploadCond1" style="rectanular">
+   <position>{(1320,540)(1160,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step1" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(1160,540)(692,540)(960,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadPre" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadSuccess" style="oblique">
+   <position>{(1080,250)(500,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -128,10 +151,16 @@
    <SwitchCase component="/Steps/AutomaticStep/InspecUserRectifiUploadConfirm" value="&quot;confirm&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspecUserRectifiUploadSuccess" value="&quot;success&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspecUserRectifiUploadPre" value="&quot;review&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspecUserRectifiUploadAdd" value="&quot;add&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspecUserRectifiUploadDel" value="&quot;delete&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
- <Merges/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1140" y="520">
+   <Description/>
+  </Merge>
+ </Merges>
  <StudioLabels/>
  <StageIndicator/>
  <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
