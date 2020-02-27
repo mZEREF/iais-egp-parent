@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
@@ -110,8 +109,6 @@ public class InspectionRectificationProDelegator {
             taskDto = taskService.getTaskById(taskId);
             applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = inspectionRectificationProService.getAppHistoryByTask(applicationDto.getApplicationNo(), InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION);
-            inspectionPreTaskDto.setReMarks(appPremisesRoutingHistoryDto.getInternalRemarks());
             inspectionPreTaskDto.setAppStatus(applicationDto.getStatus());
 
             List<InspecUserRecUploadDto> inspecUserRecUploadDtos = new ArrayList<>();
@@ -127,7 +124,7 @@ public class InspectionRectificationProDelegator {
                     iDto.setItemId(cDto.getItemId());
                     AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = inspectionRectificationProService.getNcItemDtoByItemId(cDto.getItemId());
                     if(appPremisesPreInspectionNcItemDto != null){
-                        //iDto.setUploadRemarks(appPremisesPreInspectionNcItemDto.getRemarks());
+                        iDto.setUploadRemarks(appPremisesPreInspectionNcItemDto.getRemarks());
                     } else {
                         iDto.setUploadRemarks(HcsaConsts.HCSA_PREMISES_HCI_NULL);
                     }
