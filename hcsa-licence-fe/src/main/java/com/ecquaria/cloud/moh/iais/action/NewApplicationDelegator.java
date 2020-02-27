@@ -424,7 +424,6 @@ public class NewApplicationDelegator {
                 if(errorMap.size()>0){
                     ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
-                    return;
                 }
             }
 
@@ -1361,7 +1360,7 @@ public class NewApplicationDelegator {
             try {
                 length = Integer.parseInt(phLength[i]);
             }catch (Exception e){
-                log.info(StringUtil.changeForLog("length can not parse to int"));
+                log.error(StringUtil.changeForLog("length can not parse to int"));
             }
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])){
                 appGrpPremisesDto.setOnsiteStartHH(onsiteStartHH[i]);
@@ -2043,6 +2042,18 @@ public class NewApplicationDelegator {
         list.sort((h1, h2) -> h1.getSvcName().compareTo(h2.getSvcName()));
     }
 
+    private void validateTime(Map<String, String> errorMap,String onsiteHH,String onsiteMM,int date,String key,int i,String error){
+        try {
+            int i1 = Integer.parseInt(onsiteHH);
+            int i2= Integer.parseInt(onsiteMM);
+            date=  i1*60+i2*1;
+            if(i1>=24||i2>=60){
+                errorMap.put(key+i,error);
+            }
+        }catch (Exception e){
+            errorMap.put(key+i,error);
+        }
+    }
 
 
     private Map<String, String> doValidatePremiss(BaseProcessClass bpc) {
@@ -2069,17 +2080,7 @@ public class NewApplicationDelegator {
                         if(StringUtil.isEmpty(onsiteStartHH)||StringUtil.isEmpty(onsiteStartMM)){
                             errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR001");
                         }else {
-                            try {
-                                int i1 = Integer.parseInt(onsiteStartHH);
-                                int i2= Integer.parseInt(onsiteStartMM);
-                                startDate=  i1*60+i2*1;
-                                if(i1>=24||i2>=60){
-                                    errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR003");
-                                }
-                            }catch (Exception e){
-                                errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR003");
-                            }
-
+                            validateTime(errorMap,onsiteStartHH,onsiteStartMM,startDate,"onsiteStartMM",i,"UC_CHKLMD001_ERR003");
                         }
 
                         String onsiteEndHH = appGrpPremisesDtoList.get(i).getOnsiteEndHH();
@@ -2087,18 +2088,7 @@ public class NewApplicationDelegator {
                         if(StringUtil.isEmpty(onsiteEndHH)||StringUtil.isEmpty(onsiteEndMM)){
                             errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR001");
                         }else {
-                            try {
-                                int i1 = Integer.parseInt(onsiteEndHH);
-                                int i2 = Integer.parseInt(onsiteEndMM);
-                                endDate=i1*60+i2*1;
-                                if(i1>=24||i2>=60){
-                                    errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR003");
-                                }
-                            }catch (Exception e){
-                                errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR003");
-
-                            }
-
+                            validateTime(errorMap,onsiteEndHH,onsiteEndMM,endDate,"onsiteEndMM",i,"UC_CHKLMD001_ERR003");
                         }
                         if(endDate<startDate){
                             errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR003");
@@ -2109,9 +2099,7 @@ public class NewApplicationDelegator {
                         }*/
 
                         //set  time
-                        String errorStartMM = errorMap.get("onsiteStartMM"+i);
-                        String errorEndMM = errorMap.get("onsiteEndMM"+i);
-                        if(StringUtil.isEmpty(errorStartMM) && StringUtil.isEmpty(errorEndMM)){
+                        if(!errorMap.containsKey("onsiteStartMM"+i) && !errorMap.containsKey("onsiteEndMM"+i)){
                             LocalTime startTime = LocalTime.of(Integer.parseInt(onsiteStartHH),Integer.parseInt(onsiteStartMM));
                             appGrpPremisesDtoList.get(i).setWrkTimeFrom(Time.valueOf(startTime));
 
@@ -2120,9 +2108,7 @@ public class NewApplicationDelegator {
                         }
 
                         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
-                        if(appPremPhOpenPeriodList!=null){
-
-
+                        if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
                             for(AppPremPhOpenPeriodDto every :appPremPhOpenPeriodList){
                                 String convStartFromHH = every.getOnsiteStartFromHH();
                                 String convStartFromMM = every.getOnsiteStartFromMM();
@@ -2171,14 +2157,10 @@ public class NewApplicationDelegator {
                                 }
 
                             }
-
-
                         }
                         String hciName = appGrpPremisesDtoList.get(i).getHciName();
                         if(StringUtil.isEmpty(hciName)){
                             errorMap.put("hciName"+i,"UC_CHKLMD001_ERR002");
-                        }else {
-
                         }
                         String offTelNo = appGrpPremisesDtoList.get(i).getOffTelNo();
                         if(StringUtil.isEmpty(offTelNo)){
@@ -2222,8 +2204,6 @@ public class NewApplicationDelegator {
                         }else {
                             errorMap.put("postalCode"+i, "UC_CHKLMD001_ERR001");
                         }
-
-
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
                         String conStartHH = appGrpPremisesDtoList.get(i).getConStartHH();
                         String conStartMM = appGrpPremisesDtoList.get(i).getConStartMM();
@@ -2232,35 +2212,14 @@ public class NewApplicationDelegator {
                         if(StringUtil.isEmpty(conStartHH)||StringUtil.isEmpty(conStartMM)){
                             errorMap.put("conStartMM"+i,"UC_CHKLMD001_ERR001");
                         }else {
-                            try {
-                                int i1 = Integer.parseInt(conStartHH);
-                                int i2= Integer.parseInt(conStartMM);
-                                conStartDate=i1*60+i2*1;
-                                if(i1>=24||i2>=60){
-                                    errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR003");
-                                }
-                            }catch (Exception e){
-                                errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR003");
-                            }
+                            validateTime(errorMap,conStartHH,conStartMM,conStartDate,"conStartMM",i,"UC_CHKLMD001_ERR003");
                         }
                         String conEndHH = appGrpPremisesDtoList.get(i).getConEndHH();
                         String conEndMM = appGrpPremisesDtoList.get(i).getConEndMM();
                         if(StringUtil.isEmpty(conEndHH)||StringUtil.isEmpty(conEndMM)){
                             errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR001");
                         }else {
-
-                            try {
-                                int i1 = Integer.parseInt(conEndHH);
-                                int i2 = Integer.parseInt(conEndMM);
-                                conEndDate=i1*60+i2*1;
-                                if(i1>=24||i2>=60){
-
-                                    errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR003");
-                                }
-
-                            }catch (Exception e){
-                                errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR003");
-                            }
+                            validateTime(errorMap,conEndHH,conEndMM,conStartDate,"conEndMM",i,"UC_CHKLMD001_ERR003");
                         }
                         if(conEndDate<conStartDate){
                             errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR003");
@@ -2279,8 +2238,6 @@ public class NewApplicationDelegator {
 
                         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
                         if(appPremPhOpenPeriodList!=null){
-
-
                             for(AppPremPhOpenPeriodDto every:appPremPhOpenPeriodList){
                                 String convEndToHH = every.getConvEndToHH();
                                 String convEndToMM = every.getConvEndToMM();
