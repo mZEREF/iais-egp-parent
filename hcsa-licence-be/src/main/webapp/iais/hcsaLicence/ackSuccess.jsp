@@ -12,7 +12,7 @@
             <div class="center-content">
                 <div class="intranet-content">
                     <div class="bg-title">
-                        <h2>Success!</h2>
+                        <h2>The application has been submitted.</h2>
                     </div>
                 </div>
                 <div align="left"><span><a href="https://egp.sit.intra.iais.com/main-web/eservice/INTRANET/MohBackendInbox">Bcak</a></span></div>
