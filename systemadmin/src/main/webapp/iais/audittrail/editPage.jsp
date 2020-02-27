@@ -101,7 +101,7 @@
 
 
     function doEdit(rowguid){
-        if(confirm('are sure you want to edit ? ')){
+        if(confirm('Are you sure you want to edit ? ')){
             SOP.Crud.cfxSubmit("mainForm", "doEdit", rowguid);
         }
     }

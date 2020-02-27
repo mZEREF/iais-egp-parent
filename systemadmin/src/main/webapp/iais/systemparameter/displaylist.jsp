@@ -9,7 +9,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
 <webui:setLayout name="iais-intranet"/>
-
+<%@ page contentType="text/html; charset=UTF-8"  %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
@@ -54,7 +54,7 @@
                 <label class="col-md-1">Parameter Description:
                 </label>
                 <div class="col-md-3">
-                    <input id="description" name="description" type="text" value="${description}">
+                    <input id="description" name="description" maxlength="500" type="text" value="${description}">
                     <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
@@ -73,7 +73,7 @@
                 <button class="btn btn-lg btn-login-search" type="button" style="background:#2199E8; color: white" value="doQuery">Search</button>
                 <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" >Clear</button>
             </iais:action>
-
+        </div>
             <div class="tab-pane active" id="tabInbox" role="tabpanel">
                 <div class="tab-content">
                     <div class="row">
@@ -111,8 +111,25 @@
                                                         <td><iais:code code="${resultRow.domainType}"></iais:code></td>
                                                         <td><iais:code code="${resultRow.module}"></iais:code></td>
                                                         <td>${resultRow.description}</td>
-                                                            <td><iais:code code="${resultRow.paramType}"></iais:code></td>
-                                                        <td>${resultRow.value}</td>
+                                                        <td><iais:code code="${resultRow.paramType}"></iais:code></td>
+
+                                                        <c:choose>
+                                                            <c:when test="${resultRow.paramType == 'TPOF00007'
+                                                            || resultRow.paramType == 'TPOF00008'}">
+                                                                <c:if test="${resultRow.value == '1'}">
+                                                                    <td>Yes</td>
+                                                                </c:if>
+                                                                <c:if test="${resultRow.value == '0'}">
+                                                                    <td>No</td>
+                                                                </c:if>
+
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <td>${resultRow.value}</td>
+                                                            </c:otherwise>
+                                                        </c:choose>
+
+
                                                         <td><iais:code code="${resultRow.status}"></iais:code></td>
                                                         <td>
                                                             <c:if test="${resultRow.update == true }">
@@ -134,7 +151,7 @@
                 </div>
             </div>
 
-        </div>
+
 
 
 
@@ -148,7 +165,7 @@
 <%@include file="/include/utils.jsp"%>
 <script type="text/javascript">
     function prepareEdit(id){
-        if(confirm('Are sure you want to edit ? ')){
+        if(confirm('Are you sure you want to edit ? ')){
             SOP.Crud.cfxSubmit("mainForm", "prepareEdit", id);
         }
     }

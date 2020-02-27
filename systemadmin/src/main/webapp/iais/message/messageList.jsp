@@ -37,12 +37,13 @@
                         <iais:select name="module"  id="module" value="${module}" options="moduleTypeSelect" firstOption="Please select" ></iais:select>
                     </div>
                 </div>
-            </div>
+
 
             <iais:action style="text-align:center;">
                 <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doSearch()">Search</button>
                 <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doClear()">Clear</button>
             </iais:action>
+            </div>
 
             <div class="components">
                 <iais:pagination  param="msgSearchParam" result="msgSearchResult"/>
@@ -117,13 +118,13 @@
     }
 
     function prepareEdit(id){
-        if(confirm('Are sure you want to edit ? ')){
+        if(confirm('Are you sure you want to edit ? ')){
             SOP.Crud.cfxSubmit("mainForm", "prepareEdit", id);
         }
     }
 
     function disable(id){
-        if(confirm('are sure you want to disable ? ')){
+        if(confirm('Are you sure you want to disable ?')){
             SOP.Crud.cfxSubmit("mainForm", "disableStatus", id);
         }
     }
@@ -136,27 +137,28 @@
         $("#msgType").val("");
         $("#module option[text = 'Please select']").val("selected", "selected");
         $("#module").val("");
-        $(".current").text("Please select");
+        $(".form-horizontal .current").text("Please select");
     }
 
-    document.ready = function () {
-        displaySection();
-    }
+    $(document).ready(function() {
+        displaySection()
+    });
 
     function displaySection(){
-        var val = $("#domainType").val()
+        var val = document.getElementById("domainType").value;
+        console.log(val);
         if(val == null || val == '' ){
             return;
-        }else {
-
-            var msgTypeRow = document.getElementById("msgTypeRow");
-            var moduleTypeRow = document.getElementById("moduleTypeRow");
-            if(msgTypeRow && moduleTypeRow){
-                msgTypeRow.style = "block";
-                moduleTypeRow.style = "block";
-            }
         }
 
+        document.getElementById("msgTypeRow").style = "block";
+
+        if(document.getElementById("msgType").value == null || document.getElementById("msgType").value == '' ){
+            console.log("====>>>>>>>>");
+            return;
+        }
+
+        document.getElementById("moduleTypeRow").style = "block";
 
     }
 </script>

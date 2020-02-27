@@ -48,21 +48,23 @@ public class SystemParameterServiceImpl implements SystemParameterService {
     @Override
     public void saveSystemParameter(SystemParameterDto dto) {
         log.info("save system parameter start....");
-
-
         try {
             dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             systemClient.saveSystemParameter(dto).getEntity();
-
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            int statusCode = eicGatewayClient.saveSystemParameterFe(dto, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getStatusCode();
         }catch (Exception e){
             log.error(e.getMessage());
         }
 
-        configClient.refreshConfig();
+        try {
+            //refresh spring config
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            int statusCode = eicGatewayClient.saveSystemParameterFe(dto, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getStatusCode();
+            configClient.refreshConfig();
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
 
         log.info("save system parameter end....");
     }

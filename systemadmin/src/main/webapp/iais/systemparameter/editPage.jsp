@@ -95,7 +95,7 @@
                 <label class="col-md-1">Parameter Description:
                 </label>
                 <div class="col-md-3">
-                    <input name="description" type="text" maxlength="255" value="${parameterRequestDto.description}">
+                    <input name="description" type="text" maxlength="500" value="${parameterRequestDto.description}">
                     <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
@@ -129,7 +129,7 @@
 
 
     function doEdit(id){
-        if(confirm('Are sure you want to edit ? ')){
+        if(confirm('Are you sure you want to edit ? ')){
             SOP.Crud.cfxSubmit("mainForm", "doEdit", id);
         }
     }

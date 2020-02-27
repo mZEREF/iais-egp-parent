@@ -32,14 +32,14 @@ public class SystemParameterValidator implements CustomizeValidator {
 			case SystemParameterConstants.PARAM_TYPE_REMINDER:
 
 			break;
-			case SystemParameterConstants.PARAM_TYPE_PAGE:
+			case SystemParameterConstants.PARAM_TYPE_PAGE_SIZE:
 				errMap = verifyPageSize(errMap, value);
 			break;
-			case SystemParameterConstants.PARAM_TYPE_SIZE:
+			case SystemParameterConstants.PARAM_TYPE_MAX_FILE_SIZE:
 				errMap = verifyFileUploadSize(errMap, value);
 			break;
-			case SystemParameterConstants.PARAM_TYPE_WEEK:
-
+			case SystemParameterConstants.PARAM_TYPE_AUDIT_TRAIL_SEARCH_WEEK:
+				errMap = verifyAuditTrailWeek(errMap, value);
 			break;
 
 			case SystemParameterConstants.PARAM_TYPE_MONTH:
@@ -62,6 +62,14 @@ public class SystemParameterValidator implements CustomizeValidator {
 		boolean hasError = value < 10 || (value > 50) ? true : false;
 		if (hasError){
 			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "The page size must be between 10 and 50");
+		}
+		return errorMap;
+	}
+
+	private Map<String, String> verifyAuditTrailWeek(Map<String, String> errorMap, int value){
+		boolean hasError = value < 1 || (value > 52) ? true : false;
+		if (hasError){
+			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "The Audit trail week must be between 1 and 52");
 		}
 		return errorMap;
 	}
