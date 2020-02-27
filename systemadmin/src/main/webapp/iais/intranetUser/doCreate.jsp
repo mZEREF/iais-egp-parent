@@ -148,7 +148,7 @@
                             </div>
                             <div class="tab-pane" id="tabContact" role="tabContact">
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="email">Email.<span style="color:red">*</span></label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="email">Email:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="email" type="text" name="email" value="${orgUserDto.email}">

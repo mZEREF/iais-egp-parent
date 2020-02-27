@@ -71,7 +71,10 @@
 
 
     function doExport() {
-        submitUser('doExport');
+        var check = $("input[name='userUid']").attr("checked");
+        if(check=='checked'){
+            submitUser('doExport');
+        }
     }
 
     function doImport() {

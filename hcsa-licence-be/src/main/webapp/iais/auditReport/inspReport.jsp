@@ -367,7 +367,7 @@
                             </td>
                             <div>
                                 <td class="col-xs-4">
-                                    <p><textarea name="remarks" cols="90" rows="6" title="content" maxlength="8000">
+                                    <p><textarea name="remarks" cols="50" rows="6" title="content" maxlength="8000">
                                     <c:if test="${appPremisesRecommendationDto.remarks ==null}">${reportRemarks}</c:if>
                                 <c:if test="${appPremisesRecommendationDto.remarks !=null}">${appPremisesRecommendationDto.remarks}</c:if>
                                     </textarea></p>
@@ -515,7 +515,7 @@
                                 <p>Follow up Action:</p>
                             </td>
                             <td class="col-xs-4">
-                                <p><textarea name="followUpAction" cols="90" rows="6" title="content" maxlength="8000">
+                                <p><textarea name="followUpAction" cols="50" rows="6" title="content" maxlength="8000">
                             <c:if test="${appPremisesRecommendationDto.followUpAction == null}">${followRemarks}</c:if>
                                 <c:if test="${appPremisesRecommendationDto.followUpAction != null}">${appPremisesRecommendationDto.followUpAction}</c:if>
                             </textarea></p>
@@ -540,7 +540,7 @@
                                 <p>Enforcement Remarks</p>
                             </td>
                             <td class="col-xs-4">
-                                <p><textarea name="enforcementRemarks" cols="90" rows="6" title="content" MAXLENGTH="4000">
+                                <p><textarea name="enforcementRemarks" cols="50" rows="6" title="content" MAXLENGTH="4000">
                                 <c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks ==null}">${remarks}</c:if>
                                 <c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks !=null}">${appPremisesRecommendationDto.engageEnforcementRemarks}</c:if>
                                 </textarea></p>
@@ -585,7 +585,7 @@
                                 <p>Enforcement Remarks</p>
                             </td>
                             <td class="col-xs-4">
-                                <p><textarea name="frameworkRemarks" cols="90" rows="6" title="content" MAXLENGTH="4000"></textarea></p>
+                                <p><textarea name="frameworkRemarks" cols="50" rows="6" title="content" MAXLENGTH="4000"></textarea></p>
                                 <span id="error_frameworkRemarks" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>

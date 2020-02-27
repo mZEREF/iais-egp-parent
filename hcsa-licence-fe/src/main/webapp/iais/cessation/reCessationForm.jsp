@@ -37,33 +37,33 @@
                         <tbody>
                         <c:forEach items="${appCessDtosByLicIds}" var="appCess" varStatus="num">
                             <tr>
-                                <td class="col-xs-1">
+                                <td class="col-xs-1" align="center">
                                     <p><c:out value="${num.count}"></c:out></p>
                                 </td>
-                                <td class="col-xs-1">
+                                <td class="col-xs-1" align="center">
                                     <p><c:out value="${appCess.licenceNo}"></c:out></p>
                                 </td>
-                                <td class="col-xs-1">
+                                <td class="col-xs-1" align="center">
                                     <p><c:out value="${appCess.svcName}"></c:out></p>
                                 </td>
                                     <%--                                <td colspan="6" class="col-xs-9">--%>
                                     <%--                                    <table class="table" border="1" cellspacing="0" cellpadding="0">--%>
                                 <c:forEach items="${appCess.appCessHciDtos}" var="appCessHci" varStatus="uid">
                                     <%--                                            <tr>--%>
-                                    <td class="col-xs-1">
+                                    <td class="col-xs-1" align="center">
                                         <p><c:out value="${appCessHci.hciName}"></c:out></p>
                                     </td>
-                                    <td class="col-xs-1">
+                                    <td class="col-xs-1" align="center">
                                         <p><c:out value="${appCessHci.hciAddress}"></c:out></p>
                                     </td>
-                                    <td class="col-xs-1">
+                                    <td class="col-xs-1" align="center">
                                         <iais:datePicker id="effectiveDate"
                                                          name="${num.count}effectiveDate"
                                                          dateVal="${appCessationDtos[num.index].effectiveDate}"/>
                                         <span id="error_effectiveDate" name="iaisErrorMsg"
                                               class="error-msg"></span>
                                     </td>
-                                    <td class="col-xs-1">
+                                    <td class="col-xs-2" align="center">
                                         <iais:select id="${num.count}cessationReasonId"
                                                      name="${num.count}cessationReason"
                                                      options="reasonOption"
@@ -79,7 +79,7 @@
                                                   class="error-msg"></span>
                                         </div>
                                     </td>
-                                    <td class="col-xs-4">
+                                    <td class="col-xs-3" align="center">
                                         <table>
                                             <tr>
                                                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -101,7 +101,9 @@
                                                       class="error-msg"></span>
                                             </tr>
                                             <tr id="${num.count}patYes" hidden>
-                                                <td><h6>Patients' Record will be transferred to</h6>
+                                                <td>
+                                                    <div>Patients'Record will</div>
+                                                    <div>be transferred to</div>
                                                 </td>
                                                 <td><iais:select
                                                         name="${num.count}patientSelect"
@@ -152,7 +154,7 @@
                                             </tr>
                                         </table>
                                     </td>
-                                    <td class="col-xs-1">
+                                    <td class="col-xs-1" align="center">
                                         <input type="checkbox" name="${num.count}whichTodo" value="${appCess.licenceId}"  <c:if test="${appCessationDtos[num.index].whichTodo != null}">checked</c:if>>
                                         <span id="error_whichTodo" name="iaisErrorMsg"
                                               class="error-msg"></span>
@@ -170,8 +172,8 @@
                             <td colspan="9"><c:out value="${text2}"/></td>
                         </tr>
                         <tr>
-                            <td colspan="9"><input type="checkbox" name="readInfo" id="confirmInfo">I have read the
-                                information
+                            <td colspan="9"><input type="checkbox" name="readInfo" id="confirmInfo">
+                                <label for="confirmInfo">I have read the information</label>
                             </td>
                         </tr>
                         </tbody>

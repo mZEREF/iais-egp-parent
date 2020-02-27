@@ -15,7 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,13 +26,12 @@ import java.util.List;
 
 /**
  * @author weilu
- * @date 2020/2/7 13:17
+ * @date 2020/2/26 16:29
  */
 @Service
 public class CessationServiceImpl implements CessationService {
-
     @Autowired
-    private LicenceClient licenceClient;
+    private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
     private CessationClient cessationClient;
     @Autowired
@@ -46,8 +45,8 @@ public class CessationServiceImpl implements CessationService {
         if (licIds != null && !licIds.isEmpty()) {
             for (String licId : licIds) {
                 AppCessLicDto appCessDto = new AppCessLicDto();
-                LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
-                List<PremisesDto> premisesDtos = licenceClient.getPremisesDto(licId).getEntity();
+                LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
+                List<PremisesDto> premisesDtos = hcsaLicenceClient.getPremisess(licId).getEntity();
                 String svcName = licenceDto.getSvcName();
                 String licenceNo = licenceDto.getLicenceNo();
                 appCessDto.setLicenceNo(licenceNo);
@@ -75,16 +74,6 @@ public class CessationServiceImpl implements CessationService {
 
     }
 
-    @Override
-    public List<AppCessationDto> getCessationByIds(List<String> licIds) {
-        List<AppCessationDto> appCessationDtos = new ArrayList<>();
-        String type = ApplicationConsts.APPLICATION_TYPE_CESSATION;
-        String status = ApplicationConsts.APPLICATION_STATUS_CESSATION_PENDING_APPROVE;
-        for(String licId :licIds){
-            AppCessMiscDto appCessMiscDto = cessationClient.getCessationByLicId(type, status, licId).getEntity();
-        }
-        return appCessationDtos;
-    }
 
     @Override
     public void saveCessations(List<AppCessationDto> appCessationDtos) {
@@ -113,24 +102,6 @@ public class CessationServiceImpl implements CessationService {
         cessationClient.saveCessation(appCessMiscDtos).getEntity();
     }
 
-    @Override
-    public void saveWithdrawn(WithdrawnDto withdrawnDto, String appId) {
-        List<ApplicationDto> applicationDtoList = new ArrayList<>();
-        ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
-        applicationDtoList.add(applicationDto);
-        withdrawnDto.setApplicationDtoList(applicationDtoList);;
-        ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(applicationDto.getApplicationNo(),applicationDto.getLicenceId(),ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
-        withdrawnDto.setApplicationGroupDto(applicationGroupDto);
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = new ArrayList<>();
-        AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-        appGrpPremisesDto.setPremisesType(ApplicationConsts.PREMISES_TYPE_ON_SITE);
-        appGrpPremisesDto.setPostalCode("78979");
-        appGrpPremisesDto.setAddrType(ApplicationConsts.ADDRESS_TYPE_APT_BLK);
-        appGrpPremisesDto.setStreetName("Lor 27 Gey");
-        appGrpPremisesDtoList.add(appGrpPremisesDto);
-        withdrawnDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-        cessationClient.saveWithdrawn(withdrawnDto);
-    }
 
     @Override
     public void updateCesation(List<AppCessationDto> appCessationDtos) {

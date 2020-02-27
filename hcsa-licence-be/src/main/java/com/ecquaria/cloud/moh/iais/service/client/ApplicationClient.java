@@ -171,6 +171,9 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-licence-view/app-edit-select-by-type",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppEditSelectDto>> getAppEditSelectDto(@RequestParam(name="appId")String appId, @RequestParam(name = "changeType")String changeType);
 
+    @PostMapping(value = "/iais-application-be/iais-application/apps-by-licId/{licId}")
+    FeignResponseEntity<List<ApplicationDto>> getApplicationByLicId(@PathVariable(name = "licId") String licId);
+
     @GetMapping(value = "/iais-application-be/v1/self-decl/user-account/")
     FeignResponseEntity<List<ApplicationGroupDto>> getUserAccountByNotSubmittedSelfDecl();
 

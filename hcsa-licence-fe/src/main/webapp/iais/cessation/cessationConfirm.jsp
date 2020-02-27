@@ -59,7 +59,10 @@
                                                         pattern="dd/MM/yyyy"></fmt:formatDate>
                                     </td>
                                     <td class="col-xs-2" align="center">
-                                            <c:out value="${appCessationDtos[num.index].cessationReason}"/>
+                                        <iais:select id="${num.count}cessationReasonId"
+                                                     name="${num.count}cessationReason"
+                                                     options="reasonOption"
+                                                     value="${appCessationDtos[num.index].reason}" disabled="true"/>
                                         <c:if test="${appCessationDtos[num.index].otherReason !=null}">
                                             <div id="reason"><input type="text" disabled name="otherReason" value="${appCessationDtos[num.index].otherReason}">
                                             </div>
@@ -73,13 +76,13 @@
                                                            name="${num.count}patRadio"
                                                            value="yes"
                                                            id="${num.count}radioYes"
-                                                           <c:if test="${appCessationDtos[num.index].patRadio == 'yes'}">checked</c:if> onclick="return false">Yes
+                                                           <c:if test="${appCessationDtos[num.index].patNeedTrans==true}">checked</c:if> onclick="return false">Yes
                                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                     <input type="radio"
                                                            name="${num.count}patRadio"
                                                            value="no"
                                                            id="${num.count}radioNo"
-                                                           <c:if test="${appCessationDtos[num.index].patRadio == 'no'}">checked</c:if> onclick="return false">No
+                                                           <c:if test="${appCessationDtos[num.index].patNeedTrans==false}">checked</c:if> onclick="return false">No
                                                 </td>
                                             </tr>
                                             <tr id="${num.count}patYes" hidden>
@@ -90,7 +93,7 @@
                                                         options="patientsOption"
                                                         firstOption="Please select"
                                                         id="${num.count}patientSelectId"
-                                                        value="${appCessationDtos[num.index].patientSelect}" disabled="disabled"/></td>
+                                                        value="${appCessationDtos[num.index].patientSelect}" disabled="true"/></td>
                                             </tr>
                                             <tr id="${num.count}patNo" hidden
                                                 align="center">

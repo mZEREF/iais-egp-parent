@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohCessationApplication" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="310" y="180">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreapreData" x="440" y="340">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preapreData_OnStepProcess_0" name="preapreData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Init" x="310" y="340">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="SaveData" x="883" y="374">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="saveData_OnStepProcess_0" name="saveData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Action" x="733" y="184">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="action_OnStepProcess_0" name="action_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Valiant" x="603" y="184">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="valiant_OnStepProcess_0" name="valiant_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AckPage" stageIndicator="" x="1040" y="370">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreaprePage" stageIndicator="" x="443" y="184">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ConfirmPage" stageIndicator="" x="730" y="360">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Valiant" style="rectanular">
+   <position>{(623,204)(623,384)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SaveData" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(903,204)(903,394)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AckPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/SaveData" style="rectanular">
+   <position>{(903,394)(1060,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreapreData" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Init" style="rectanular">
+   <position>{(330,360)(460,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Action" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ConfirmPage" style="rectanular">
+   <position>{(750,380)(753,204)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/PreaprePage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreapreData" style="rectanular">
+   <position>{(460,360)(463,204)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Valiant" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/PreaprePage" style="rectanular">
+   <position>{(463,204)(623,204)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Action" style="rectanular">
+   <position>{(753,204)(903,204)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ConfirmPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(623,384)(750,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Init" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
+   <position>{(330,200)(330,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreapreData" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(623,384)(460,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreapreData" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(903,204)(460,360)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/SaveData" componentIfTrue="/Steps/AutomaticStep/PreapreData" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="883" y="184">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/PreapreData" componentIfTrue="/Pages/WebPage/ConfirmPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="603" y="364">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches/>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

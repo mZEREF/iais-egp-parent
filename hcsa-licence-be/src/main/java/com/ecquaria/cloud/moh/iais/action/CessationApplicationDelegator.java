@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserCons
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -27,7 +26,7 @@ import java.util.*;
  * @author weilu
  * @date 2020/2/7 13:12
  */
-@Delegator("CessationApplication")
+@Delegator("CessationApplicationBe")
 @Slf4j
 public class CessationApplicationDelegator {
 

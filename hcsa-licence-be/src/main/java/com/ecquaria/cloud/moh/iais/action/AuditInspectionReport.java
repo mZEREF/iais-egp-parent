@@ -10,7 +10,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -122,10 +124,10 @@ public class AuditInspectionReport {
         }
         List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = prepareForSave(bpc, appPremisesCorrelationId);
         saveRecommendations(appPremisesRecommendationDtoList);
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        AppPremisesRecommendationDto appPremisesRecDto = appPremisesRecommendationDtoList.get(0);
-        insRepService.routingTaskToAo1(taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecDto);
-        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+//        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+//        AppPremisesRecommendationDto appPremisesRecDto = appPremisesRecommendationDtoList.get(0);
+//        insRepService.routingTaskToAo1(taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecDto);
+//        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
     }
 
     private AppPremisesRecommendationDto prepareRecommendation(BaseProcessClass bpc) {
@@ -178,6 +180,7 @@ public class AuditInspectionReport {
         appPremisesRecommendationDto.setRecomDecision(InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT);
         appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
         appPremisesRecommendationDto.setRecommendation(recommendation);
+        appPremisesRecommendationDto.setRecomDecision("Approved");
         if (OTHERS.equals(periods) && !StringUtil.isEmpty(chrono) && !StringUtil.isEmpty(number)) {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
             appPremisesRecommendationDto.setChronoUnit(chrono);
@@ -193,7 +196,7 @@ public class AuditInspectionReport {
             appPremisesRecommendationDto.setRecommendation(recommendation);
         }else if("Reject".equals(recommendation)) {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-            appPremisesRecommendationDto.setProcessingDecision(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+            appPremisesRecommendationDto.setProcessingDecision("Reject");
         }
 
         AppPremisesRecommendationDto tcuAppPremisesRecommendationDto = new AppPremisesRecommendationDto();
@@ -222,6 +225,37 @@ public class AuditInspectionReport {
         appPremisesRecommendationDtos.add(riskLevelAppPremisesRecommendationDto);
         appPremisesRecommendationDtos.add(followAppPremisesRecommendationDto);
         return appPremisesRecommendationDtos;
+    }
+
+    private List<LicPremisesRecommendationDto> transform(List<AppPremisesRecommendationDto> appPremisesRecommendationDtos){
+        List<LicPremisesRecommendationDto> licPremisesRecommendationDtos = new ArrayList<>();
+        for(AppPremisesRecommendationDto appPremisesRecommendationDto :appPremisesRecommendationDtos){
+            LicPremisesRecommendationDto licPremisesRecommendationDto = new LicPremisesRecommendationDto();
+            String appPremCorreId = appPremisesRecommendationDto.getAppPremCorreId();
+            licPremisesRecommendationDto.setLicPremId(appPremCorreId);
+            String recomType = appPremisesRecommendationDto.getRecomType();
+            licPremisesRecommendationDto.setRecomType(recomType);
+            String recomDecision = appPremisesRecommendationDto.getRecomDecision();
+            licPremisesRecommendationDto.setRecomDecision(recomDecision);
+            Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
+            licPremisesRecommendationDto.setRecomInNumber(recomInNumber);
+            String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
+            licPremisesRecommendationDto.setChronoUnit(chronoUnit);
+            Date recomInDate = appPremisesRecommendationDto.getRecomInDate();
+            licPremisesRecommendationDto.setRecomInDate(recomInDate);
+            Integer version = appPremisesRecommendationDto.getVersion();
+            licPremisesRecommendationDto.setVersion(version);
+            String status = appPremisesRecommendationDto.getStatus();
+            licPremisesRecommendationDto.setStatus(status);
+            String bestPractice = appPremisesRecommendationDto.getBestPractice();
+            licPremisesRecommendationDto.setBestPractice(bestPractice);
+            String remarks = appPremisesRecommendationDto.getRemarks();
+            licPremisesRecommendationDto.setRemarks(remarks);
+            licPremisesRecommendationDtos.add(licPremisesRecommendationDto);
+        }
+        return licPremisesRecommendationDtos;
+
+
     }
 
     private List<SelectOption> getChronoOption() {
@@ -331,29 +365,30 @@ public class AuditInspectionReport {
     }
 
     private void saveRecommendations(List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList){
-        AppPremisesRecommendationDto appPremisesRecommendationDto1 = appPremisesRecommendationDtoList.get(0);
-        AppPremisesRecommendationDto appPremisesRecommendationDto2 = appPremisesRecommendationDtoList.get(1);
-        AppPremisesRecommendationDto appPremisesRecommendationDto3 = appPremisesRecommendationDtoList.get(2);
-        AppPremisesRecommendationDto appPremisesRecommendationDto4 = appPremisesRecommendationDtoList.get(3);
-        AppPremisesRecommendationDto appPremisesRecommendationDto5 = appPremisesRecommendationDtoList.get(4);
+        List<LicPremisesRecommendationDto> licPremisesRecommendationDtos = transform(appPremisesRecommendationDtoList);
+        LicPremisesRecommendationDto licPremisesRecommendationDto1 = licPremisesRecommendationDtos.get(0);
+        LicPremisesRecommendationDto licPremisesRecommendationDto2 = licPremisesRecommendationDtos.get(1);
+        LicPremisesRecommendationDto licPremisesRecommendationDto3 = licPremisesRecommendationDtos.get(2);
+        LicPremisesRecommendationDto licPremisesRecommendationDto4 = licPremisesRecommendationDtos.get(3);
+        LicPremisesRecommendationDto licPremisesRecommendationDto5 = licPremisesRecommendationDtos.get(4);
 
-        insRepService.updateRecommendation(appPremisesRecommendationDto1);
-        Date recomInDate = appPremisesRecommendationDto2.getRecomInDate();
+        insRepService.saveAuditRecommendation(licPremisesRecommendationDto1);
+        Date recomInDate = licPremisesRecommendationDto2.getRecomInDate();
         if (recomInDate != null) {
-            insRepService.updateTcuRecommendation(appPremisesRecommendationDto2);
+            insRepService.saveAuditRecommendation(licPremisesRecommendationDto2);
         }
-        String remarks = appPremisesRecommendationDto3.getRemarks();
+        String remarks = licPremisesRecommendationDto3.getRemarks();
         if (!StringUtil.isEmpty(remarks)) {
-            appPremisesRecommendationDto3.setRemarks(remarks);
-            insRepService.updateengageRecommendation(appPremisesRecommendationDto3);
+            licPremisesRecommendationDto3.setRemarks(remarks);
+            insRepService.saveAuditRecommendation(licPremisesRecommendationDto3);
         }
-        String riskLevel = appPremisesRecommendationDto4.getRecomDecision();
+        String riskLevel = licPremisesRecommendationDto4.getRecomDecision();
         if (!StringUtil.isEmpty(riskLevel)) {
-            insRepService.updateRiskRecommendation(appPremisesRecommendationDto4);
+            insRepService.saveAuditRecommendation(licPremisesRecommendationDto4);
         }
-        String followRemarks = appPremisesRecommendationDto5.getRemarks();
+        String followRemarks = licPremisesRecommendationDto5.getRemarks();
         if (!StringUtil.isEmpty(followRemarks)) {
-            insRepService.updateFollowRecommendation(appPremisesRecommendationDto5);
+            insRepService.saveAuditRecommendation(licPremisesRecommendationDto5);
         }
     }
 }
