@@ -31,10 +31,6 @@ public class InsEmailClientFallBack implements InsEmailClient{
         return entity;
     }
 
-    @Override
-    public void recallEmailTemplate(String id) {
-
-    }
 
     @Override
     public FeignResponseEntity<InspectionEmailTemplateDto> getInspectionEmail(String appPremCorrId) {

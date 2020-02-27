@@ -13,11 +13,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
@@ -40,8 +39,8 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
-import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
+import com.ecquaria.cloud.moh.iais.service.LicInspNcEmailService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -76,7 +75,7 @@ import java.util.Map;
 @Slf4j
 public class LicInspectReviseNcEmailDelegator  {
     @Autowired
-    InspEmailService inspEmailService;
+    LicInspNcEmailService inspEmailService;
     @Autowired
     InspectionService inspectionService;
     @Autowired
@@ -100,7 +99,7 @@ public class LicInspectReviseNcEmailDelegator  {
 
     private static final String ADCHK_DTO="adchklDto";
     private static final String TASK_DTO="taskDto";
-    private static final String APP_VIEW_DTO="applicationViewDto";
+    private static final String LIC_VIEW_DTO="licenceViewDto";
     private static final String COM_DTO="commonDto";
     private static final String MSG_CON="messageContent";
     private static final String EMAIL_VIEW="emailView";
@@ -136,12 +135,11 @@ public class LicInspectReviseNcEmailDelegator  {
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
         ParamUtil.setSessionAttr(request,TASK_DTO,taskDto);
-        ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
         ParamUtil.setSessionAttr(request,MSG_CON, null);
         ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
         ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
-        ParamUtil.setSessionAttr(request,APP_VIEW_DTO,appViewDto);
+        ParamUtil.setSessionAttr(request,LIC_VIEW_DTO,appViewDto);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL_VIEW);
     }
@@ -184,8 +182,8 @@ public class LicInspectReviseNcEmailDelegator  {
         HttpServletRequest request = bpc.request;
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
-        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,APP_VIEW_DTO);
-        String serviceId=applicationViewDto.getApplicationDto().getServiceId();
+        LicenceViewDto licenceViewDto= (LicenceViewDto) ParamUtil.getSessionAttr(request,LIC_VIEW_DTO);
+        String serviceId="";
         TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
         String decision=ParamUtil.getString(request,"decision");
 
@@ -202,20 +200,20 @@ public class LicInspectReviseNcEmailDelegator  {
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
         }
         if (decision.equals(InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW)){
-            applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW);
-            applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
-            AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
-            appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_AO1_EMAIL_VERIFY);
-            appInspectionStatusDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            appInspectionStatusClient.update(appInspectionStatusDto1);
+            licenceViewDto.getLicenceDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW);
+//            applicationViewService.updateApplicaiton(licenceViewDto.getLicenceDto());
+//            AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
+//            appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_AO1_EMAIL_VERIFY);
+//            appInspectionStatusDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+//            appInspectionStatusClient.update(appInspectionStatusDto1);
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             completedTask(taskDto);
-            createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
+            createAppPremisesRoutingHistory(licenceViewDto.getLicenceDto().getLicenceNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
 
-            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_AO1);
+            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(licenceViewDto.getLicenceDto().getLicenceNo(),HcsaConsts.ROUTING_STAGE_AO1);
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
-            hcsaSvcStageWorkingGroupDto.setType(applicationViewDto.getApplicationDto().getApplicationType());
+            //hcsaSvcStageWorkingGroupDto.setType(licenceViewDto.getLicenceDto().getApplicationType());
             hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
             hcsaSvcStageWorkingGroupDto.setOrder(2);
             TaskDto taskDto1=new TaskDto();
@@ -228,19 +226,19 @@ public class LicInspectReviseNcEmailDelegator  {
             taskDto1.setUserId(appPremisesRoutingHistoryDto.getActionby());
             List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
             taskService.createTasks(taskDtos);
-            createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,taskDto1,HcsaConsts.ROUTING_STAGE_POT,taskDto1.getUserId(),inspectionEmailTemplateDto.getRemarks());
+            createAppPremisesRoutingHistory(licenceViewDto.getLicenceDto().getLicenceNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,taskDto1,HcsaConsts.ROUTING_STAGE_POT,taskDto1.getUserId(),inspectionEmailTemplateDto.getRemarks());
 
         }
         if (decision.equals(InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT)){
-            applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING);
-            applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
-            AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
-            appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER);
-            appInspectionStatusDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            appInspectionStatusClient.update(appInspectionStatusDto1);
+            licenceViewDto.getLicenceDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING);
+//            applicationViewService.updateApplicaiton(licenceViewDto.getLicenceDto());
+//            AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
+//            appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER);
+//            appInspectionStatusDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+//            appInspectionStatusClient.update(appInspectionStatusDto1);
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             completedTask(taskDto);
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
+            createAppPremisesRoutingHistory(licenceViewDto.getLicenceDto().getLicenceNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
 
         }
         inspEmailService.updateEmailDraft(inspectionEmailTemplateDto);
@@ -308,8 +306,8 @@ public class LicInspectReviseNcEmailDelegator  {
         String correlationId = taskDto.getRefNo();
         String appPremCorrId=correlationId;
         InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail(appPremCorrId);
-        ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);
-        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNo(applicationViewDto.getApplicationDto().getApplicationNo());
+        LicenceViewDto licenceViewDto = inspEmailService.getLicenceDtoByLicPremCorrId(correlationId);
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNo(licenceViewDto.getLicenceDto().getLicenceNo());
         for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1:appPremisesRoutingHistoryDtos){
 
             if(!StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getWrkGrpId())) {
@@ -330,8 +328,8 @@ public class LicInspectReviseNcEmailDelegator  {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
         List<SelectOption> appTypeOption;
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS);
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_AO1);
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(licenceViewDto.getLicenceDto().getLicenceNo(),HcsaConsts.ROUTING_STAGE_INS);
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(licenceViewDto.getLicenceDto().getLicenceNo(),HcsaConsts.ROUTING_STAGE_AO1);
         if(appPremisesRoutingHistoryDto==null){ appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW});}
         else if(appPremisesRoutingHistoryDto1==null){appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT});}
         else if(appPremisesRoutingHistoryDto.getUpdatedDt().compareTo(appPremisesRoutingHistoryDto1.getUpdatedDt())>0 && !appPremisesRoutingHistoryDto.getActionby().equals(userId)){
@@ -345,7 +343,7 @@ public class LicInspectReviseNcEmailDelegator  {
         if(content!=null){
             inspectionEmailTemplateDto.setMessageContent(content);
         }
-        inspectionEmailTemplateDto.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getStatus()}).get(0).getText());
+        inspectionEmailTemplateDto.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{licenceViewDto.getLicenceDto().getStatus()}).get(0).getText());
         ParamUtil.setRequestAttr(request,"appPremisesRoutingHistoryDtos", appPremisesRoutingHistoryDtos);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setSessionAttr(request,"draftEmailId",inspectionEmailTemplateDto.getId());
@@ -429,23 +427,23 @@ public class LicInspectReviseNcEmailDelegator  {
     String reloadRevEmail(HttpServletRequest request) throws IOException, TemplateException {
         String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, TASK_DTO);
-        String correlationId = taskDto.getRefNo();
-        ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);
-        String appNo=applicationViewDto.getApplicationDto().getApplicationNo();
-        String licenseeId=inspEmailService.getAppInsRepDto(correlationId).getLicenseeId();
+        String licPremCorrId = taskDto.getRefNo();
+        LicenceViewDto licenceViewDto = inspEmailService.getLicenceDtoByLicPremCorrId(licPremCorrId);
+        String licNo=licenceViewDto.getLicenceDto().getLicenceNo();
+        String licenseeId=licenceViewDto.getLicenceDto().getLicenseeId();
         String licenseeName=inspEmailService.getLicenseeDtoById(licenseeId).getName();
-        String appPremCorrId=correlationId;
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
-        inspectionEmailTemplateDto.setAppPremCorrId(appPremCorrId);
+        inspectionEmailTemplateDto.setLicPremCorrId(licPremCorrId);
         inspectionEmailTemplateDto.setApplicantName(licenseeName);
-        inspectionEmailTemplateDto.setApplicationNumber(appNo);
-        inspectionEmailTemplateDto.setHciCode(applicationViewDto.getHciCode());
-        inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciAddress());
-        HcsaServiceDto hcsaServiceDto=inspectionService.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId());
-        inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
-        List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(appPremCorrId);
-        AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,InspectionConstants.RECOM_TYPE_TCU);
-        inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
+        inspectionEmailTemplateDto.setApplicationNumber(licNo);
+        inspectionEmailTemplateDto.setHciCode(licenceViewDto.getPremisesDtoList().get(0).getHciCode());
+        inspectionEmailTemplateDto.setHciNameOrAddress(licenceViewDto.getAddress());
+        inspectionEmailTemplateDto.setServiceName(licenceViewDto.getLicenceDto().getSvcName());
+        List<NcAnswerDto> ncAnswerDtos =insepctionNcCheckListService.getNcAnswerDtoList(licPremCorrId);
+        AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(licPremCorrId,InspectionConstants.RECOM_TYPE_TCU);
+        if(appPreRecommentdationDto.getBestPractice()!=null){
+            inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
+        }
         Map<String,Object> map=new HashMap<>();
         map.put("APPLICANT_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicantName()));
         map.put("APPLICATION_NUMBER",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicationNumber()));
@@ -457,16 +455,16 @@ public class LicInspectReviseNcEmailDelegator  {
             int i=0;
             for (NcAnswerDto ncAnswerDto:ncAnswerDtos
             ) {
-                stringBuilder.append("<tr><td>"+ ++i);
-                stringBuilder.append(TD+StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
-                stringBuilder.append(TD+StringUtil.viewHtml(ncAnswerDto.getClause()));
-                stringBuilder.append(TD+StringUtil.viewHtml(ncAnswerDto.getRemark()));
+                stringBuilder.append("<tr><td>").append(++i);
+                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
+                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getClause()));
+                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
                 stringBuilder.append("</td></tr>");
             }
-            map.put("NC_DETAILS",stringBuilder.toString());
+            map.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
         }
         if(inspectionEmailTemplateDto.getBestPractices()!=null){
-            map.put("BEST_PRACTICE",inspectionEmailTemplateDto.getBestPractices());
+            map.put("BEST_PRACTICE",StringUtil.viewHtml(inspectionEmailTemplateDto.getBestPractices()));
         }
         map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
         String mesContext= MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(),map);

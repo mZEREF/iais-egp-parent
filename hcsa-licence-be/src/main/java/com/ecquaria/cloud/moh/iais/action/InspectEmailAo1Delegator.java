@@ -499,19 +499,22 @@ public class InspectEmailAo1Delegator {
     private List<TaskDto> prepareTaskList(TaskDto taskDto, HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto) {
         List<TaskDto> list = new ArrayList<>();
         List<HcsaSvcStageWorkingGroupDto> listhcsaSvcStageWorkingGroupDto = hcsaConfigClient.getSvcWorkGroup(hcsaSvcStageWorkingGroupDto).getEntity();
-        String schemeType = listhcsaSvcStageWorkingGroupDto.get(0).getSchemeType();
         Integer count = listhcsaSvcStageWorkingGroupDto.get(0).getCount();
         taskDto.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
 
         taskDto.setId(null);
-        taskDto.setDateAssigned(new Date());
+        if (StringUtil.isEmpty(taskDto.getUserId())) {
+            taskDto.setDateAssigned(null);
+        } else {
+            taskDto.setDateAssigned(new Date());
+        }
         taskDto.setSlaDateCompleted(null);
         taskDto.setSlaRemainInDays(null);
         taskDto.setScore(count);
         taskDto.setSlaAlertInDays(2);
         taskDto.setPriority(0);
         taskDto.setSlaInDays(5);
-        //taskDto.setTaskType(schemeType);
+
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         list.add(taskDto);

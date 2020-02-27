@@ -237,7 +237,7 @@
         var r=confirm("Are you sure you want to regenerate the Inspection NC/BP Outcome email?");
         if (r==true){
             $.ajax({
-                'url':'${pageContext.request.contextPath}/reload-nc-email',
+                'url':'${pageContext.request.contextPath}/reload-lic-nc-email',
                 'type':'GET',
                 'success':function (data) {
                     location.reload();

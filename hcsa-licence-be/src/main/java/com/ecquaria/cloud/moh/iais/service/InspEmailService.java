@@ -25,7 +25,6 @@ import java.util.Map;
 public interface InspEmailService {
     String updateEmailDraft(InspectionEmailTemplateDto inspectionEmailTemplateDto);
     String insertEmailDraft(InspectionEmailTemplateDto inspectionEmailTemplateDto);
-    void recallEmailTemplate(String id);
     InspectionEmailTemplateDto getInsertEmail(String appPremCorrId);
     ApplicationViewDto getAppViewByCorrelationId(String correlationId);
     InspectionEmailTemplateDto loadingEmailTemplate(String id);

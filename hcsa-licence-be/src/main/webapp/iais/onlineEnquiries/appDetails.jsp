@@ -124,25 +124,21 @@
                                                 <table class="table table-bordered">
                                                     <tbody>
                                                     <tr>
-                                                        <td class="col-xs-6" align="right">Licensee Name</td>
-                                                        <td class="col-xs-6">Tan Ah Kow</td>
+                                                        <td class="col-xs-6" align="right">Licensee Name (Company)</td>
+                                                        <td class="col-xs-6"> ${licenseeDto.name}</td>
                                                     </tr>
-                                                    <tr>
-                                                        <td align="right">Authorised Person Name</td>
-                                                        <td>DR</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Authorised Person ID</td>
-                                                        <td>NRIC</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">MedAlert Contact Person</td>
-                                                        <td>S123456789I</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">MedAlert Contact Person ID</td>
-                                                        <td>S123456789I</td>
-                                                    </tr>
+                                                    <c:forEach var="person" items="${authorisedPersonList}">
+                                                        <tr>
+                                                            <td align="right">Authorised Person Name</td>
+                                                            <td> ${person.name}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">Authorised Person ID</td>
+                                                            <td> ${person.idNo} (${person.idType})</td>
+                                                        </tr>
+
+                                                    </c:forEach>
+
 
                                                     </tbody>
                                                 </table>

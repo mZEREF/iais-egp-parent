@@ -10,11 +10,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicEicRequestTracking
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditAdhocItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspectiNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremPreInspNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisemPreInspectChklDto;
@@ -176,4 +178,15 @@ public interface HcsaLicenceClient {
     @GetMapping(value = "hcsa-licence/audittculist",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AuditTaskDataFillterDto>> getAuditTcuList();
 
+    @GetMapping(value = "/iais-inspection-lic/inspection-email/{licPremCorrId}")
+    FeignResponseEntity<InspectionEmailTemplateDto> getInspectionEmail(@PathVariable("licPremCorrId") String licPremCorrId);
+
+    @PutMapping(value = "/iais-inspection-lic/insert-email-draft", consumes =  MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> insertEmailDraft(@RequestBody InspectionEmailTemplateDto inspectionEmailTemplateDto);
+
+    @PostMapping(value = "/iais-inspection-lic/update-email-draft", consumes =  MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> updateEmailDraft(@RequestBody InspectionEmailTemplateDto inspectionEmailTemplateDto);
+
+    @GetMapping(value = "/licenceViewDto/{licPremCorrId}")
+    FeignResponseEntity<LicenceViewDto> getLicenceViewDtoByLicPremCorrId(@PathVariable("licPremCorrId") String licPremCorrId);
 }
