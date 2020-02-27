@@ -25,7 +25,7 @@
                     </h3>
                     <div class="table-gp">
                         <iais:action style="text-align:left;">
-                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="">Back</button>
+                            <div align="left"><span><a href="https://egp.sit.inter.iais.com/hcsa-licence-web/eservicecontinue/INTERNET/MohInternetInbox">Bcak</a></span></div>
                         </iais:action>
                         <table class="table">
                             <thead>
