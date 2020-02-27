@@ -427,16 +427,19 @@ public class LicenceViewServiceDelegator {
             appEditSelectDto.setServiceEdit(true);
             parentMsg = parentMsg + "<li>Service</li>";
         }
-        appEditSelectDto.setParentMsg(parentMsg);
         if(selectsList.contains("po")){
             appEditSelectDto.setPoEdit(true);
+            parentMsg = parentMsg + "<li>PO</li>";
         }
         if(selectsList.contains("dpo")){
             appEditSelectDto.setDpoEdit(true);
+            parentMsg = parentMsg + "<li>DPO</li>";
         }
         if(selectsList.contains("medAlert")){
             appEditSelectDto.setMedAlertEdit(true);
+            parentMsg = parentMsg + "<li>medAlert</li>";
         }
+        appEditSelectDto.setParentMsg(parentMsg);
         appEditSelectDto.setEditType(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
         appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         return  appEditSelectDto;
