@@ -493,6 +493,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             ncItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             ncItemDto.setItemId(temp.getItemId());
             ncItemDto.setPreNcId(ncDto.getId());
+            ncItemDto.setFeRectifiedFlag(0);
             if (temp.isRectified()) {
                 ncItemDto.setIsRecitfied(1);
             } else {
