@@ -17,7 +17,7 @@
                 <iais:value>
                     <label class="col-xs-6 col-md-6" for="appServiceType" style="margin-top:3%;">Service Type:</label>
                     <div class="col-xs-6 col-md-6">
-                        <iais:select name="appServiceType" id="appServiceType" options="appServiceType"
+                        <iais:select name="appServiceType" id="appServiceType" cssClass="appServiceType" options="appServiceType"
                                      firstOption="All"></iais:select>
                     </div>
                 </iais:value>
@@ -28,7 +28,7 @@
                 <iais:value>
                     <label class="col-xs-6 col-md-6" for="appTypeSelect" style="margin-top:3%;">Application Type:</label>
                     <div class="col-xs-6 col-md-6">
-                        <iais:select name="appTypeSelect" id="appTypeSelect" options="appTypeSelect"
+                        <iais:select name="appTypeSelect" id="appTypeSelect" cssClass="appTypeSelect" options="appTypeSelect"
                                      firstOption="All"></iais:select>
                     </div>
                 </iais:value>
@@ -37,7 +37,7 @@
                 <iais:value>
                     <label class="col-xs-6 col-md-6" for="appStatusSelect" style="margin-top:3%;">Application Status:</label>
                     <div class="col-xs-6 col-md-6">
-                        <iais:select codeCategory="CATE_ID_APP_STATUS" name="appStatusSelect" id="appStatusSelect"
+                        <iais:select codeCategory="CATE_ID_APP_STATUS" cssClass="appStatusSelect" name="appStatusSelect" id="appStatusSelect"
                                      firstOption="All"></iais:select>
                     </div>
                 </iais:value>
