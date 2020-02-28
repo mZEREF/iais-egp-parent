@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
@@ -114,13 +115,7 @@ public class CessationServiceImpl implements CessationService {
     }
 
     @Override
-    public void saveWithdrawn(WithdrawnDto withdrawnDto, String appId) {
-        List<ApplicationDto> applicationDtoList = new ArrayList<>();
-        ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
-        applicationDtoList.add(applicationDto);
-        withdrawnDto.setApplicationDtoList(applicationDtoList);;
-        ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(applicationDto.getApplicationNo(),applicationDto.getLicenceId(),ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
-        withdrawnDto.setApplicationGroupDto(applicationGroupDto);
+    public void saveWithdrawn(WithdrawnDto withdrawnDto) {
         List<AppGrpPremisesDto> appGrpPremisesDtoList = new ArrayList<>();
         AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
         appGrpPremisesDto.setPremisesType(ApplicationConsts.PREMISES_TYPE_ON_SITE);
@@ -130,6 +125,12 @@ public class CessationServiceImpl implements CessationService {
         appGrpPremisesDtoList.add(appGrpPremisesDto);
         withdrawnDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
         cessationClient.saveWithdrawn(withdrawnDto);
+    }
+
+    @Override
+    public AppPremisesCorrelationDto getAppPreCorDto(String appId) {
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = applicationClient.listAppPremisesCorrelation(appId).getEntity();
+        return appPremisesCorrelationDtoList.get(0);
     }
 
     @Override
