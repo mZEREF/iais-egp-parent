@@ -29,12 +29,8 @@ public class INTERNET___MohWithdrawalApplication___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "withdrawalStep", this);
 	}
 
-	public void uploadStep_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "uploadStep", this);
-	}
-
-	public void prepareUpload_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "prepareUpload", this);
+	public void saveDate_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "saveDateStep", this);
 	}
 
 }

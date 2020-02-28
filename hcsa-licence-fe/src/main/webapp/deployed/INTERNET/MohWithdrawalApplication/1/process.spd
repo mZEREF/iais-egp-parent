@@ -23,18 +23,11 @@
     <JavaCode defClass="" executor="" methodName="withdrawalStep_OnStepProcess_0" name="withdrawalStep_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="uploadStep" x="740" y="360">
+  <AutomaticStep defClass="" executor="" icon="" name="saveDate" x="760" y="230">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="uploadStep_OnStepProcess_0" name="uploadStep_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="prepareUpload" x="740" y="100">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareUpload_OnStepProcess_0" name="prepareUpload_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="saveDate_OnStepProcess_0" name="saveDate_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -45,13 +38,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="uploadFile" stageIndicator="" x="760" y="230">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
-  </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ackPage" stageIndicator="" x="1010" y="360">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ackPage" stageIndicator="" x="980" y="230">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -72,33 +59,18 @@
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/withdrawalStep" style="oblique">
    <position>{(420,250)(610,250)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareUpload" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(610,250)(760,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
    <position>{(610,250)(270,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/uploadStep" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/uploadFile" style="rectanular">
-   <position>{(780,250)(760,380)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/saveDate" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(610,250)(780,250)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/uploadStep" style="rectanular">
-   <position>{(760,380)(900,380)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareUpload" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
-   <position>{(900,380)(760,120)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/ackPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
-   <position>{(900,380)(1030,380)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/uploadFile" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareUpload" style="rectanular">
-   <position>{(760,120)(780,250)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/ackPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/saveDate" style="rectanular">
+   <position>{(780,250)(1000,250)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/prepareDate" componentIfTrue="/Steps/AutomaticStep/prepareUpload" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="590" y="230">
-   <Description/>
-  </Condition>
-  <Condition componentIfFalse="/Steps/AutomaticStep/prepareUpload" componentIfTrue="/Pages/WebPage/ackPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="880" y="360">
+  <Condition componentIfFalse="/Steps/AutomaticStep/prepareDate" componentIfTrue="/Steps/AutomaticStep/saveDate" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="590" y="230">
    <Description/>
   </Condition>
  </Conditions>
