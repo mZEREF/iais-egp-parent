@@ -44,7 +44,7 @@
 
         <td  style="text-align: center">${hcsaServiceDto.effectiveDate}</td>
         <td  style="text-align: center">${hcsaServiceDto.endDate}</td>
-        <td  style="text-align: center"><button onclick="edit(this)" value="${hcsaServiceDto.svcCode}">edit</button><button value="${hcsaServiceDto.svcCode}" onclick="del(this)">delete</button></td>
+        <td  style="text-align: center"><button onclick="edit(this)" value="${hcsaServiceDto.id}">edit</button><button value="${hcsaServiceDto.id}" onclick="del(this)">delete</button></td>
 
       </tr>
         </c:forEach>

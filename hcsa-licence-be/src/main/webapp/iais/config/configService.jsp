@@ -516,7 +516,7 @@
 
     function cancel() {
 
-        SOP.Crud.cfxSubmit("mainForm","");
+       location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohServiceConfig";
     }
 
     function save() {

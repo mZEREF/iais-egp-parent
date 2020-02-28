@@ -32,7 +32,7 @@
      Add a new HCSA Module
 
     </svg>
-    <svg width="500" height="500" onclick="list()" style="background-color: #E2E2E2" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <svg width="500" height="500" onclick="list()" style="background-color: #E2E2E2" version="1.1" xmlns="http://www.w3.org/2000/svg" >
       List HCSA Modules
     </svg>
   </div>

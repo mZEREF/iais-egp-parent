@@ -511,7 +511,7 @@
 <script type="text/javascript">
 
     function cancel() {
-
+        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohServiceConfig";
     }
 
     function save() {
@@ -521,7 +521,7 @@
 
     function showNEW() {
         let jQuery = $('#APTY002').attr("style");
-        $('#APTY003').attr("style","display: none");
+        $('#APTY001').attr("style","display: none");
         if(jQuery=='display: block'){
             $('#APTY002').attr("style","display: none");
         }else if(jQuery=='display: none'){
@@ -530,12 +530,12 @@
     }
 
     function showRENEW() {
-        let jQuery = $('#APTY003').attr("style");
+        let jQuery = $('#APTY001').attr("style");
         $('#APTY002').attr("style","display: none");
         if(jQuery=='display: block'){
-            $('#APTY003').attr("style","display: none");
+            $('#APTY001').attr("style","display: none");
         }else if(jQuery=='display: none'){
-            $('#APTY003').attr("style","display: block");
+            $('#APTY001').attr("style","display: block");
         }
     }
 

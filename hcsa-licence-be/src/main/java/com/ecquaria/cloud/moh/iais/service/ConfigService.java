@@ -27,4 +27,5 @@ public interface ConfigService {
 
     void delete(HttpServletRequest request);
 
+    void deleteOrCancel(HttpServletRequest request);
 }

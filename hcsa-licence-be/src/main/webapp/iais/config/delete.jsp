@@ -466,7 +466,14 @@
         <div class="row">
           <div class="col-xs-10 col-md-8">
             <div class="components">
-              <a class="btn  btn-secondary" onclick="confirmDelete()"><span class="mandatory">CONFIRM DELETE</span></a>
+              <button class="btn  btn-secondary"  value="${hcsaServiceDto.id}"  onclick="confirmDelete(this)" ><span class="mandatory">CONFIRM DELETE</span></button>
+            </div>
+          </div>
+          <div class="col-xs-10 col-md-8">
+            <div class="components">
+
+              <a class="btn  btn-secondary"  onclick="cancel()">Cancel</a>
+
             </div>
           </div>
         </div>
@@ -494,10 +501,13 @@
 </style>
 <script type="text/javascript">
 
-    function confirmDelete() {
-        SOP.Crud.cfxSubmit("mainForm","delete");
+    function confirmDelete(obj) {
+        SOP.Crud.cfxSubmit("mainForm","delete",$(obj).val(),"");
     }
 
+    function cancel() {
+        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohServiceConfig";
+    }
 
     function showNEW() {
         let jQuery = $('#NEW').attr("style");

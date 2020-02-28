@@ -53,7 +53,7 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public List<HcsaServiceDto> getAllHcsaServices(HttpServletRequest request) {
         List<HcsaServiceDto> entity = hcsaConfigClient.allHcsaService().getEntity();
-        request.getSession().setAttribute("hcsaServiceDtos", entity);
+        request.setAttribute("hcsaServiceDtos", entity);
         return entity;
     }
 
@@ -99,6 +99,7 @@ public class ConfigServiceImpl implements ConfigService {
             request.setAttribute("hcsaServiceDto", hcsaServiceDto);
             request.setAttribute("crud_action_type", "dovalidate");
             Map<String, List<HcsaConfigPageDto>> map = new HashMap<>();
+
             map.put("APTY002",hcsaConfigPageDtos);
             request.setAttribute("routingStagess", map);
             request.setAttribute("errorMsg", WebValidationHelper.generateJsonStr(errorMap));
@@ -193,6 +194,8 @@ public class ConfigServiceImpl implements ConfigService {
                 }
             }
             Map<String, List<HcsaConfigPageDto>> map = new HashMap<>();
+            List<HcsaConfigPageDto> workGrop = getWorkGrop("APTY001", "renew");
+            map.put("APTY001",workGrop);
             map.put("APTY002",hcsaConfigPageDtos);
             request.setAttribute("routingStagess", map);
             request.setAttribute("errorMsg", WebValidationHelper.generateJsonStr(errorMap));
@@ -228,6 +231,17 @@ public class ConfigServiceImpl implements ConfigService {
 
         }
 
+    }
+
+    @Override
+    public void deleteOrCancel(HttpServletRequest request) {
+        String serviceId = request.getParameter("crud_action_value");
+        Boolean flag = hcsaConfigClient.serviceIdIsUsed(serviceId).getEntity();
+        if(flag){
+
+        }
+
+        hcsaConfigClient.updateService(serviceId);
     }
 
     private HcsaServiceConfigDto getDateOfHcsaService(HttpServletRequest request) {
@@ -353,27 +367,31 @@ public class ConfigServiceImpl implements ConfigService {
                     hcsaSvcSpecificStageWorkloadDto.setManhourCount(Integer.parseInt(workloadManhours));
                     hcsaConfigPageDto.setManhours(Integer.parseInt(workloadManhours));
                 }
-                hcsaSvcSpecificStageWorkloadDto.setId(workloadId);
+
                 hcsaConfigPageDto.setWorkloadId(workloadId);
                 if (!StringUtil.isEmpty(stageId)) {
+                    //todo delete
                     hcsaSvcSpeRoutingSchemeDto.setId(stageId);
-                    hcsaSvcSpeRoutingSchemeDto.setStageId(id);
                     hcsaConfigPageDto.setRoutingSchemeId(stageId);
                 }
+                hcsaSvcSpeRoutingSchemeDto.setStageId(id);
                 if (!StringUtil.isEmpty(workingGroupId)) {
                     hcsaSvcStageWorkingGroupDto.setStageWorkGroupId(workingGroupId);
                     hcsaSvcStageWorkingGroupDto.setStageId(id);
-                    hcsaSvcStageWorkingGroupDto.setId(workstageId);
                     hcsaConfigPageDto.setWorkingGroupId(workingGroupId);
-
+                }
+                if(!StringUtil.isEmpty(workstageId)){
+                    hcsaSvcStageWorkingGroupDto.setId(workstageId);
+                    //todo delete
+                    hcsaSvcSpecificStageWorkloadDto.setId(workloadId);
                 }
                 hcsaConfigPageDto.setWorkStageId(workstageId);
                 hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
                 hcsaSvcSpeRoutingSchemeDto.setSchemeType(routingScheme);
-                hcsaSvcSpeRoutingSchemeDto.setAppType("APTY002");
+                hcsaSvcSpeRoutingSchemeDto.setAppType(every);
                 hcsaSvcSpeRoutingSchemeDto.setStatus("CMSTAT001");
                 hcsaSvcSpecificStageWorkloadDto.setStageId(id);
-                hcsaSvcSpecificStageWorkloadDto.setAppType("APTY002");
+                hcsaSvcSpecificStageWorkloadDto.setAppType(every);
                 hcsaSvcSpecificStageWorkloadDto.setStatus("CMSTAT001");
                 hcsaSvcSpecificStageWorkloadDtoList.add(hcsaSvcSpecificStageWorkloadDto);
                 hcsaSvcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto);
@@ -399,6 +417,7 @@ public class ConfigServiceImpl implements ConfigService {
         String startDate = request.getParameter("StartDate");
         String endDate = request.getParameter("EndDate");
 
+        //todo delete
         if (!StringUtil.isEmpty(serviceId)) {
             hcsaServiceDto.setId(serviceId);
         }
@@ -527,7 +546,7 @@ public class ConfigServiceImpl implements ConfigService {
         }
     }
 
-    private List<HcsaConfigPageDto> getHcsaConfigPageDtos(HcsaServiceDto hcsaServiceDto) {
+    private   Map<String, List<HcsaConfigPageDto>> getHcsaConfigPageDtos(HcsaServiceDto hcsaServiceDto) {
 
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = getHcsaSvcRoutingStageDtos();
 
@@ -544,6 +563,62 @@ public class ConfigServiceImpl implements ConfigService {
         List<WorkingGroupDto> hcsa = organizationClient.getWorkingGroup("hcsa").getEntity();
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = hcsaConfigClient.getHcsaStageWorkingGroup(hcsaServiceDto.getId()).getEntity();
 
+        List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos = hcsaConfigClient.getHcsaSvcSpeRoutingSchemeDtoByServiceId(hcsaServiceDto.getId()).getEntity();
+
+
+        List<String> types = getType();
+        Map<String,List<HcsaSvcStageWorkloadDto>> map=new HashMap<>();
+        Map<String, List<HcsaSvcSpeRoutingSchemeDto>> hcsaSvcSpeRoutingSchemeDtoMap=new HashMap<>();
+        for(String type:types){
+            List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtos1=new ArrayList<>();
+            List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos1=new ArrayList<>();
+            for(HcsaSvcStageWorkloadDto hcsaSvcStageWorkloadDto:hcsaSvcStageWorkloadDtos){
+                String appType = hcsaSvcStageWorkloadDto.getAppType();
+                if(type.equals(appType)){
+                    hcsaSvcStageWorkloadDtos1.add(hcsaSvcStageWorkloadDto);
+                }
+            }
+            for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto:hcsaSvcSpeRoutingSchemeDtos){
+                String appType = hcsaSvcSpeRoutingSchemeDto.getAppType();
+                if(type.equals(appType)){
+                    hcsaSvcSpeRoutingSchemeDtos1.add(hcsaSvcSpeRoutingSchemeDto);
+                }
+            }
+            map.put(type,hcsaSvcStageWorkloadDtos1);
+            hcsaSvcSpeRoutingSchemeDtoMap.put(type,hcsaSvcSpeRoutingSchemeDtos1);
+        }
+        Map<String,  List<HcsaSvcStageWorkingGroupDto>> hcsaSvcStageWorkingGroupDtoMap=new HashMap<>();
+        hcsaSvcSpeRoutingSchemeDtoMap.forEach((k,v)->{
+            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos1=new ArrayList<>();
+            for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto:v){
+                String stageWrkGrpID = hcsaSvcSpeRoutingSchemeDto.getStageWrkGrpID();
+                for(HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto:hcsaSvcStageWorkingGroupDtos){
+                    if(stageWrkGrpID.equals(hcsaSvcStageWorkingGroupDto.getId())){
+                        hcsaSvcStageWorkingGroupDtos1.add(hcsaSvcStageWorkingGroupDto);
+                    }
+
+                }
+
+            }
+            hcsaSvcStageWorkingGroupDtoMap.put(k,hcsaSvcStageWorkingGroupDtos1);
+        });
+        Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtoMap=new HashMap<>();
+        for (String type:types){
+            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos1 = hcsaSvcStageWorkingGroupDtoMap.get(type);
+            List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtos1 = map.get(type);
+            List<HcsaConfigPageDto> hcsaConfigPageDtos =
+                    ProcessingData(type,hcsaSvcRoutingStageDtos, hcsaSvcStageWorkloadDtos1, hcsaSvcStageWorkingGroupDtos1, hcsa);
+            hcsaConfigPageDtoMap.put(type,hcsaConfigPageDtos);
+        }
+
+
+      /*  List<HcsaConfigPageDto> hcsaConfigPageDtos = ProcessingData("APTY002",hcsaSvcRoutingStageDtos, hcsaSvcStageWorkloadDtos, hcsaSvcStageWorkingGroupDtos, hcsa);*/
+
+
+        return hcsaConfigPageDtoMap;
+    }
+
+    private  List<HcsaConfigPageDto> ProcessingData(String type,List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos,List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtos,List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos,  List<WorkingGroupDto> hcsa  ){
         List<HcsaConfigPageDto> hcsaConfigPageDtos = new ArrayList<>();
         for (HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto : hcsaSvcRoutingStageDtos) {
             HcsaConfigPageDto hcsaConfigPageDto = new HcsaConfigPageDto();
@@ -554,12 +629,18 @@ public class ConfigServiceImpl implements ConfigService {
                 String stageId = hcsaSvcStageWorkloadDtos.get(i).getStageId();
                 Integer manhourCount = hcsaSvcStageWorkloadDtos.get(i).getManhourCount();
                 String appType = hcsaSvcStageWorkloadDtos.get(i).getAppType();
-                if ("APTY002".equals(appType)) {
+                if (type.equals(appType)) {
                     String id1 = hcsaSvcRoutingStageDto.getId();
                     if (id1.equals(stageId)) {
                         hcsaConfigPageDto.setManhours(manhourCount);
-                        hcsaConfigPageDto.setAppType("APTY002");
-                        hcsaConfigPageDto.setAppTypeName("new application");
+                        hcsaConfigPageDto.setAppType(type);
+                        if("APTY001".equals(type)){
+                            hcsaConfigPageDto.setAppTypeName("renew");
+                        }
+                        else if("APTY002".equals(type)){
+                            hcsaConfigPageDto.setAppTypeName("new application");
+                        }
+
                         hcsaConfigPageDto.setWorkloadId(hcsaSvcStageWorkloadDtos.get(i).getId());
                         hcsaConfigPageDto.setRoutingSchemeId(hcsaSvcStageWorkloadDtos.get(i).getId());
                     }
@@ -570,20 +651,23 @@ public class ConfigServiceImpl implements ConfigService {
 
             hcsaConfigPageDtos.add(hcsaConfigPageDto);
         }
+
         for (int i = 0; i < hcsaConfigPageDtos.size(); i++) {
             if (!hcsaSvcStageWorkingGroupDtos.isEmpty()) {
-                String stageId = hcsaSvcStageWorkingGroupDtos.get(i).getStageId();
-                String workingStageId = hcsaSvcStageWorkingGroupDtos.get(i).getId();
-                String stage = hcsaConfigPageDtos.get(i).getStage();
-                if (stageId.equals(stage)) {
-                    String id = hcsaSvcStageWorkingGroupDtos.get(i).getStageWorkGroupId();
-                    hcsaConfigPageDtos.get(i).setWorkingGroupId(id);
-                    hcsaConfigPageDtos.get(i).setWorkStageId(workingStageId);
+                for(HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto:hcsaSvcStageWorkingGroupDtos){
+                    String stageId = hcsaSvcStageWorkingGroupDto.getStageId();
+                    String workingStageId = hcsaSvcStageWorkingGroupDto.getId();
+                    String stage = hcsaConfigPageDtos.get(i).getStage();
+                    if (stageId.equals(stage)) {
+                        String id = hcsaSvcStageWorkingGroupDto.getStageWorkGroupId();
+                        hcsaConfigPageDtos.get(i).setWorkingGroupId(id);
+                        hcsaConfigPageDtos.get(i).setWorkStageId(workingStageId);
+                    }
                 }
+
             }
 
         }
-
         return hcsaConfigPageDtos;
     }
 
@@ -632,7 +716,41 @@ public class ConfigServiceImpl implements ConfigService {
                 map.put(type,list);
             }
         }
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = getHcsaSvcRoutingStageDtos();
+        List<WorkingGroupDto> workingGroup = getWorkingGroup();
+        List<HcsaConfigPageDto> hcsaConfigPageDtos = new ArrayList<>();
+        for(String type:types){
+            for (HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto : hcsaSvcRoutingStageDtos) {
+                HcsaConfigPageDto hcsaConfigPageDto = new HcsaConfigPageDto();
+                hcsaConfigPageDto.setStageCode(hcsaSvcRoutingStageDto.getStageCode());
+                hcsaConfigPageDto.setStageName(hcsaSvcRoutingStageDto.getStageName());
 
+                hcsaConfigPageDto.setAppType(type);
+                if("APTY002".equals(type)){
+                    hcsaConfigPageDto.setAppTypeName("new Application");
+                }else if("APTY001".equals(type)){
+                    hcsaConfigPageDto.setAppTypeName("renew");
+                }
+                getWorkingGroupDto(workingGroup,hcsaSvcRoutingStageDto,hcsaConfigPageDto);
+                hcsaConfigPageDtos.add(hcsaConfigPageDto);
+            }
+
+        }
+
+        if (hcsaConfigPageDtos1 != null) {
+            for (int i = 0; i < hcsaConfigPageDtos.size(); i++) {
+                Integer manhours = hcsaConfigPageDtos1.get(i).getManhours();
+                String workingGroupId = hcsaConfigPageDtos1.get(i).getWorkingGroupId();
+                String workloadId = hcsaConfigPageDtos1.get(i).getWorkloadId();
+                String routingSchemeId = hcsaConfigPageDtos1.get(i).getRoutingSchemeId();
+                String workStageId = hcsaConfigPageDtos1.get(i).getWorkStageId();
+                hcsaConfigPageDtos.get(i).setManhours(manhours);
+                hcsaConfigPageDtos.get(i).setWorkingGroupId(workingGroupId);
+                hcsaConfigPageDtos.get(i).setWorkloadId(workloadId);
+                hcsaConfigPageDtos.get(i).setRoutingSchemeId(routingSchemeId);
+                hcsaConfigPageDtos.get(i).setWorkStageId(workStageId);
+            }
+        }
 
         return map;
     }
@@ -644,10 +762,9 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     private void view(HttpServletRequest request, String crud_action_value) {
-        List<String> list = new ArrayList<>();
-        list.add(crud_action_value);
-        List<HcsaServiceDto> entity = hcsaConfigClient.getHcsaServiceDtoByCode(list).getEntity();
-        HcsaServiceDto hcsaServiceDto = entity.get(0);
+
+        HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(crud_action_value).getEntity();
+
         request.setAttribute("hcsaServiceDto", hcsaServiceDto);
         String id = hcsaServiceDto.getId();
         List<String> ids = new ArrayList<>();
@@ -667,10 +784,9 @@ public class ConfigServiceImpl implements ConfigService {
         }
 
         request.setAttribute("hcsaServiceStepSchemeDto", stringList);
-        List<HcsaConfigPageDto> hcsaConfigPageDtos = getHcsaConfigPageDtos(hcsaServiceDto);
-        Map<String, List<HcsaConfigPageDto>> map = new HashMap<>();
-        map.put("APTY002",hcsaConfigPageDtos);
-        request.setAttribute("routingStagess", map);
+        Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtos = getHcsaConfigPageDtos(hcsaServiceDto);
+
+        request.setAttribute("routingStagess", hcsaConfigPageDtos);
     }
 
     private void getWorkingGroupDto(List<WorkingGroupDto> hcsa, HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto, HcsaConfigPageDto hcsaConfigPageDto) {
@@ -746,7 +862,7 @@ public class ConfigServiceImpl implements ConfigService {
        /* list.add("APTY003");
         list.add("APTY004");
         list.add("APTY005");*/
-     /*   list.add("APTY001");*/
+        list.add("APTY001");
         return list;
     }
 

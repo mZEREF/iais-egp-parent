@@ -84,7 +84,10 @@ public class ConfigServiceDelegator {
     }
 
     public void deleteOrCancel(BaseProcessClass bpc){
+
         log.info("*********deleteOrCancel  start***********");
+        configService.deleteOrCancel(bpc.request);
+
     }
 
     public void update(BaseProcessClass bpc){
