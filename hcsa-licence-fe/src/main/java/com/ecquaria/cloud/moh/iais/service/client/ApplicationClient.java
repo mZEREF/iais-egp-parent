@@ -122,9 +122,6 @@ public interface ApplicationClient  {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremPreInspectionNcDocDto> updateAppNcDoc(@RequestBody AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto);
 
-    @GetMapping(value = "/iais-inspection-fe/appncdociteid/{ncItemId}", produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppPremPreInspectionNcDocDto> getNcDocByNcItemId(@PathVariable(name = "ncItemId") String ncItemId);
 
     @PutMapping(value = "/iais-inspection-fe/appprempreitemncu", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
