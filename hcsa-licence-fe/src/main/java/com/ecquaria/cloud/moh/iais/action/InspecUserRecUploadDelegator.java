@@ -97,14 +97,8 @@ public class InspecUserRecUploadDelegator {
                 }
             }
         }
-        String buttonFlag = AppConsts.SUCCESS;
-        for(InspecUserRecUploadDto inspecUserRecUploadDto : inspecUserRecUploadDtos){
-            if(StringUtil.isEmpty(inspecUserRecUploadDto.getButtonFlag()) || AppConsts.FAIL.equals(inspecUserRecUploadDto.getButtonFlag())){
-                buttonFlag = AppConsts.FAIL;
-            }
-        }
+
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
-        ParamUtil.setSessionAttr(bpc.request, "buttonFlag", buttonFlag);
     }
 
     /**
@@ -199,6 +193,7 @@ public class InspecUserRecUploadDelegator {
                     }
                 }
             }
+            inspecUserRecUploadDto = inspecUserRecUploadService.getNcItemData(inspecUserRecUploadDto);
             ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
         }
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
@@ -226,7 +221,9 @@ public class InspecUserRecUploadDelegator {
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadAdd start ...."));
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
         InspecUserRecUploadDto inspecUserRecUploadDto = (InspecUserRecUploadDto)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDto");
-        inspecUserRecUploadDto = inspecUserRecUploadService.saveFileReportGetFileId(inspecUserRecUploadDto);
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+        String auditTrailStr = JsonUtil.parseToJson(auditTrailDto);
+        inspecUserRecUploadDto = inspecUserRecUploadService.saveFileReportGetFileId(inspecUserRecUploadDto, auditTrailStr);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
     }
@@ -241,7 +238,10 @@ public class InspecUserRecUploadDelegator {
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadDel start ...."));
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
         InspecUserRecUploadDto inspecUserRecUploadDto = (InspecUserRecUploadDto)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDto");
-
+        String removeId = ParamUtil.getMaskedString(bpc.request, "fileId");
+        if(!StringUtil.isEmpty(removeId)) {
+            inspecUserRecUploadDto = inspecUserRecUploadService.removeFileByFileId(inspecUserRecUploadDto, removeId);
+        }
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
     }
@@ -255,10 +255,11 @@ public class InspecUserRecUploadDelegator {
     public void inspecUserRectifiUploadSuccess(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadSuccess start ...."));
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
+        InspecUserRecUploadDto inspecUserRecUploadDto = (InspecUserRecUploadDto)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDto");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-        String auditTrailStr = JsonUtil.parseToJson(auditTrailDto);
-        inspecUserRecUploadService.submitRecByUser(loginContext, auditTrailStr, inspecUserRecUploadDtos);
+        inspecUserRecUploadService.submitRecByUser(loginContext, inspecUserRecUploadDto);
+        inspecUserRecUploadDto.setButtonFlag(AppConsts.SUCCESS);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
+        ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
     }
 }

@@ -25,11 +25,11 @@ public interface InspecUserRecUploadService {
     /**
       * @author: shicheng
       * @Date 2019/12/24
-      * @Param: loginContext, auditTrailStr, inspecUserRecUploadDtos
+      * @Param: loginContext, auditTrailStr, inspecUserRecUploadDto
       * @return: void
       * @Descripation: submit Rectification By User
       */
-    void submitRecByUser(LoginContext loginContext, String auditTrailStr, List<InspecUserRecUploadDto> inspecUserRecUploadDtos);
+    void submitRecByUser(LoginContext loginContext, InspecUserRecUploadDto inspecUserRecUploadDto);
 
     /**
       * @author: shicheng
@@ -43,9 +43,27 @@ public interface InspecUserRecUploadService {
     /**
       * @author: shicheng
       * @Date 2020/2/27
-      * @Param: inspecUserRecUploadDto
+      * @Param: inspecUserRecUploadDto auditTrailStr
       * @return: InspecUserRecUploadDto
       * @Descripation: save File Report Get File Id
       */
-    InspecUserRecUploadDto saveFileReportGetFileId(InspecUserRecUploadDto inspecUserRecUploadDto);
+    InspecUserRecUploadDto saveFileReportGetFileId(InspecUserRecUploadDto inspecUserRecUploadDto, String auditTrailStr);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/2/27
+      * @Param: inspecUserRecUploadDto
+      * @return: InspecUserRecUploadDto
+      * @Descripation: getNcItemData
+      */
+    InspecUserRecUploadDto getNcItemData(InspecUserRecUploadDto inspecUserRecUploadDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/2/28
+      * @Param: inspecUserRecUploadDto, removeId
+      * @return: InspecUserRecUploadDto
+      * @Descripation: removeFileByFileId
+      */
+    InspecUserRecUploadDto removeFileByFileId(InspecUserRecUploadDto inspecUserRecUploadDto, String removeId);
 }

@@ -1,14 +1,13 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -53,38 +52,39 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
     }
 
     @Override
-    public void submitRecByUser(LoginContext loginContext, String auditTrailStr, List<InspecUserRecUploadDto> inspecUserRecUploadDtos) {
-        String appNo = inspecUserRecUploadDtos.get(0).getAppNo();
+    public void submitRecByUser(LoginContext loginContext, InspecUserRecUploadDto inspecUserRecUploadDto) {
+        String appNo = inspecUserRecUploadDto.getAppNo();
         ApplicationViewDto applicationViewDto = applicationClient.searchAppByNo(appNo).getEntity();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.listAppPremisesCorrelation(applicationDto.getId()).getEntity().get(0);
-        AppPremPreInspectionNcDto appPremPreInspectionNcDto = applicationClient.getAppPremPreInsNcDtoByAppCorrId(appPremisesCorrelationDto.getId()).getEntity();
-        AppPremPreInspectionNcDto aDto = createAndUpdateAppPreDto(appPremPreInspectionNcDto);
-        List<AppPremPreInspectionNcDocDto> appNcDocDtoList = new ArrayList<>();
-        for(InspecUserRecUploadDto iDto : inspecUserRecUploadDtos){
-            AppPremisesPreInspectionNcItemDto appNcItemDto = new AppPremisesPreInspectionNcItemDto();
-            appNcItemDto.setId(null);
-            appNcItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            appNcItemDto.setIsRecitfied(1);
-            appNcItemDto.setItemId(iDto.getItemId());
-            appNcItemDto.setPreNcId(aDto.getId());
-            appNcItemDto = applicationClient.createAppNcItemDto(appNcItemDto).getEntity();
-            String fileReportId = fileRepoClient.saveFiles(iDto.getRecFile(), auditTrailStr).getEntity();
-            AppPremPreInspectionNcDocDto appNcDocDto = new AppPremPreInspectionNcDocDto();
+        List<AppPremPreInspectionNcDocDto> appNcDocDtoList = inspecUserRecUploadDto.getAppPremPreInspectionNcDocDtos();
+        for(AppPremPreInspectionNcDocDto appNcDocDto : appNcDocDtoList) {
             appNcDocDto.setId(null);
             appNcDocDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            appNcDocDto.setDocName(iDto.getFileName());
-            appNcDocDto.setDocSize(iDto.getFileSize());
-            appNcDocDto.setFileRepoId(fileReportId);
             appNcDocDto.setSubmitBy(loginContext.getUserId());
             appNcDocDto.setSubmitDt(new Date());
-            appNcDocDto.setNcItemId(appNcItemDto.getId());
-            appNcDocDtoList.add(appNcDocDto);
         }
+        AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = inspecUserRecUploadDto.getAppPremisesPreInspectionNcItemDto();
+        appPremisesPreInspectionNcItemDto.setRemarks(inspecUserRecUploadDto.getUploadRemarks());
+        appPremisesPreInspectionNcItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+
         applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION);
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        applicationClient.updateApplication(applicationDto);
-        applicationClient.saveAppNcDoc(appNcDocDtoList).getEntity();
+
+        inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
+        inspecUserRecUploadDto.setApplicationDto(applicationDto);
+        inspecUserRecUploadDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        applicationDto = applicationClient.updateApplication(applicationDto).getEntity();
+        appPremisesPreInspectionNcItemDto = applicationClient.updateAppPreItemNc(appPremisesPreInspectionNcItemDto).getEntity();
+        appNcDocDtoList = applicationClient.saveAppNcDoc(appNcDocDtoList).getEntity();
+        inspecUserRecUploadDto.setAppPremPreInspectionNcDocDtos(appNcDocDtoList);
+
+        InspRectificationSaveDto inspRectificationSaveDto = new InspRectificationSaveDto();
+        inspRectificationSaveDto.setApplicationDto(applicationDto);
+        inspRectificationSaveDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
+        inspRectificationSaveDto.setAppPremPreInspectionNcDocDtos(appNcDocDtoList);
+        inspRectificationSaveDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+
+
     }
 
     @Override
@@ -93,22 +93,60 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
     }
 
     @Override
-    public InspecUserRecUploadDto saveFileReportGetFileId(InspecUserRecUploadDto inspecUserRecUploadDto) {
-        return null;
+    public InspecUserRecUploadDto saveFileReportGetFileId(InspecUserRecUploadDto inspecUserRecUploadDto, String auditTrailStr) {
+        String fileReportId = fileRepoClient.saveFiles(inspecUserRecUploadDto.getRecFile(), auditTrailStr).getEntity();
+        List<String> ids = new ArrayList<>();
+        ids.add(fileReportId);
+        FileRepoDto fileRepoDto = fileRepoClient.getFilesByIds(ids).getEntity().get(0);
+        if(inspecUserRecUploadDto.getFileRepoDtos() == null){
+            List<FileRepoDto> fileRepoDtos = new ArrayList<>();
+            fileRepoDtos.add(fileRepoDto);
+            inspecUserRecUploadDto.setFileRepoDtos(fileRepoDtos);
+        } else {
+            inspecUserRecUploadDto.getFileRepoDtos().add(fileRepoDto);
+        }
+        AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto = new AppPremPreInspectionNcDocDto();
+        appPremPreInspectionNcDocDto.setId(null);
+        appPremPreInspectionNcDocDto.setDocName(inspecUserRecUploadDto.getFileName());
+        appPremPreInspectionNcDocDto.setDocSize(inspecUserRecUploadDto.getFileSize());
+        appPremPreInspectionNcDocDto.setFileRepoId(fileReportId);
+        appPremPreInspectionNcDocDto.setNcItemId(inspecUserRecUploadDto.getAppPremisesPreInspectionNcItemDto().getId());
+
+        if(inspecUserRecUploadDto.getAppPremPreInspectionNcDocDtos() == null){
+            List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = new ArrayList<>();
+            appPremPreInspectionNcDocDtos.add(appPremPreInspectionNcDocDto);
+            inspecUserRecUploadDto.setAppPremPreInspectionNcDocDtos(appPremPreInspectionNcDocDtos);
+        } else {
+            inspecUserRecUploadDto.getAppPremPreInspectionNcDocDtos().add(appPremPreInspectionNcDocDto);
+        }
+        return inspecUserRecUploadDto;
     }
 
-    private AppPremPreInspectionNcDto createAndUpdateAppPreDto(AppPremPreInspectionNcDto appPremPreInspectionNcDto) {
-        appPremPreInspectionNcDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-        appPremPreInspectionNcDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appPremPreInspectionNcDto = applicationClient.updateAppPremPreNc(appPremPreInspectionNcDto).getEntity();
-        AppPremPreInspectionNcDto aDto = new AppPremPreInspectionNcDto();
-        aDto.setId(null);
-        aDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        aDto.setVersion(appPremPreInspectionNcDto.getVersion() + 1);
-        aDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        aDto.setAppPremCorrId(appPremPreInspectionNcDto.getAppPremCorrId());
-        aDto = applicationClient.saveAppPremPreNc(aDto).getEntity();
-        return aDto;
+    @Override
+    public InspecUserRecUploadDto getNcItemData(InspecUserRecUploadDto inspecUserRecUploadDto) {
+        AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = applicationClient.getNcItemByItemId(inspecUserRecUploadDto.getItemId()).getEntity();
+        inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
+        return inspecUserRecUploadDto;
+    }
+
+    @Override
+    public InspecUserRecUploadDto removeFileByFileId(InspecUserRecUploadDto inspecUserRecUploadDto, String removeId) {
+        fileRepoClient.removeFileById(removeId);
+        List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = inspecUserRecUploadDto.getAppPremPreInspectionNcDocDtos();
+        List<FileRepoDto> fileRepoDtos = inspecUserRecUploadDto.getFileRepoDtos();
+        for(int i= 0; i < appPremPreInspectionNcDocDtos.size(); i++){
+            if(removeId.equals(appPremPreInspectionNcDocDtos.get(i).getFileRepoId())){
+                appPremPreInspectionNcDocDtos.remove(i);
+            }
+        }
+        for(int i= 0; i < fileRepoDtos.size(); i++){
+            if(removeId.equals(fileRepoDtos.get(i).getId())){
+                fileRepoDtos.remove(i);
+            }
+        }
+        inspecUserRecUploadDto.setAppPremPreInspectionNcDocDtos(appPremPreInspectionNcDocDtos);
+        inspecUserRecUploadDto.setFileRepoDtos(fileRepoDtos);
+        return inspecUserRecUploadDto;
     }
 
     private List<ChecklistItemDto> getCheckDtosByItemIds(List<String> itemIds) {
