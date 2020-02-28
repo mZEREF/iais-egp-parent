@@ -288,13 +288,7 @@ public class HcsaApplicationDelegator {
         if(!("---select---").equals(reply)){
             nextStage=reply;
         }
-        if("PROCRFI".equals(nextStage)){
-            String isSaveRfiSelect = (String) ParamUtil.getSessionAttr(bpc.request,"isSaveRfiSelect");
-            if(!AppConsts.YES.equals(isSaveRfiSelect)){
-                nextStage = "PREPARE";
-                ParamUtil.setRequestAttr(bpc.request,"rfi_error_msg","change field not choose/save success");
-            }
-        }
+
         log.debug(StringUtil.changeForLog("the nextStage is -->:"+nextStage));
         ParamUtil.setRequestAttr(bpc.request, "crud_action_type", nextStage);
         log.debug(StringUtil.changeForLog("the do chooseStage end ...."));
