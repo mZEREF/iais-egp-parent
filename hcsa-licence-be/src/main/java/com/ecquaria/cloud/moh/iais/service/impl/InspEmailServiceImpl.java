@@ -88,11 +88,6 @@ public class InspEmailServiceImpl implements InspEmailService {
         return insRepClient.getAppInsRepDto(appCorrId).getEntity();
     }
 
-    @Override
-    public List<AppPremisesCorrelationDto> getAppPremisesCorrelationsByAppGroupId(String appGroupId) {
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=appPremisesCorrClient.getGroupAppsByNo(appGroupId).getEntity();
-        return appPremisesCorrelationDtos;
-    }
 
     @Override
     public Map<String, String > SendAndSaveEmail(EmailDto emailDto){

@@ -126,7 +126,7 @@ public class RequestForInformationDelegator {
             .clz(RfiApplicationQueryDto.class)
             .searchAttr("appParam")
             .resultAttr("appResult")
-            .sortField("application_no").pageNo(0).pageSize(10).sortType(SearchParam.ASCENDING).build();
+            .sortField("application_no").pageNo(1).pageSize(10).sortType(SearchParam.ASCENDING).build();
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>requestForInformation");
@@ -139,20 +139,66 @@ public class RequestForInformationDelegator {
     }
 
 
-    public void preBasicSearch(BaseProcessClass bpc) {
+    public void preSearchLic(BaseProcessClass bpc) {
         log.info("=======>>>>>preBasicSearch>>>>>>>>>>>>>>>>requestForInformation");
-        // 		preBasicSearch->OnStepProcess
-    }
-
-    public void doBasicSearch(BaseProcessClass bpc) {
-        log.info("=======>>>>>doSearch>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        String searchNo= ParamUtil.getString(request,"search_no");
+        Map<String,Object> filters=new HashMap<>();
+
+        if (!StringUtil.isEmpty(searchNo)) {
+            filters.put("licence_no", searchNo);
+        }
+        licenceParameter.setFilters(filters);
+
+        SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
+
+        CrudHelper.doPaging(licParam,bpc.request);
+
+        QueryHelp.setMainSql(RFI_QUERY,"licenceQuery",licParam);
+        if (licParam != null) {
+            SearchResult<RfiLicenceQueryDto> licResult = requestForInformationService.licenceDoQuery(licParam);
+
+            if(!StringUtil.isEmpty(licResult)){
+                SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
+                searchListDtoSearchResult.setRowCount(licResult.getRowCount());
+                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=new ArrayList<>();
+                for (RfiLicenceQueryDto rfiLicenceQueryDto:licResult.getRows()
+                ) {
+                    ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
+                    String licStatus= MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiLicenceQueryDto.getLicenceStatus()}).get(0).getText();
+                    reqForInfoSearchListDto.setLicenceId(rfiLicenceQueryDto.getId());
+                    reqForInfoSearchListDto.setLicenceStatus(licStatus);
+                    reqForInfoSearchListDto.setLicenceNo(rfiLicenceQueryDto.getLicenceNo());
+                    reqForInfoSearchListDto.setAppId(rfiLicenceQueryDto.getAppId());
+                    reqForInfoSearchListDto.setServiceName(rfiLicenceQueryDto.getServiceName());
+                    reqForInfoSearchListDto.setStartDate(rfiLicenceQueryDto.getStartDate());
+                    reqForInfoSearchListDto.setExpiryDate(rfiLicenceQueryDto.getExpiryDate());
+                    reqForInfoSearchListDto.setHciCode(rfiLicenceQueryDto.getHciCode());
+                    reqForInfoSearchListDto.setHciName(rfiLicenceQueryDto.getHciName());
+                    reqForInfoSearchListDto.setBlkNo(rfiLicenceQueryDto.getBlkNo());
+                    reqForInfoSearchListDto.setBuildingName(rfiLicenceQueryDto.getBuildingName());
+                    reqForInfoSearchListDto.setUnitNo(rfiLicenceQueryDto.getUnitNo());
+                    reqForInfoSearchListDto.setStreetName(rfiLicenceQueryDto.getStreetName());
+                    reqForInfoSearchListDto.setFloorNo(rfiLicenceQueryDto.getFloorNo());
+                    reqForInfoSearchListDto.setLicenseeId(rfiLicenceQueryDto.getLicenseeId());
+                    reqForInfoSearchListDto.setLicPremId(rfiLicenceQueryDto.getLicPremId());
+
+                    LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiLicenceQueryDto.getLicenseeId());
+                    reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
+                    reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
+
+                }
+                searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
+                ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
+            }
+        }
+        ParamUtil.setRequestAttr(request,"SearchParam", licParam);
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
-        String searchNo=ParamUtil.getString(request,"search_no");
-        ParamUtil.setSessionAttr(request,"search_no",searchNo);
-        // 		doBasicSearch->OnStepProcess
+        ParamUtil.setSessionAttr(request, "search_no",searchNo);
+        // 		preLicSearch->OnStepProcess
     }
+
 
     public void preSearch(BaseProcessClass bpc) {
         log.info("=======>>>>>preSearch>>>>>>>>>>>>>>>>requestForInformation");
@@ -161,19 +207,13 @@ public class RequestForInformationDelegator {
         String searchNo= ParamUtil.getString(request,"search_no");
         Map<String,Object> filters=new HashMap<>();
 
-        String selectSearch =ParamUtil.getString(request,"select_search");
-        if("application".equals(selectSearch)) {
-            if (!StringUtil.isEmpty(searchNo)) {
-                filters.put("appNo", searchNo);
-            }
+        if (!StringUtil.isEmpty(searchNo)) {
+            filters.put("appNo", searchNo);
         }
-        else {
-            if (!StringUtil.isEmpty(searchNo)) {
-                filters.put("licence_no", searchNo);
-            }
-        }
+
         applicationParameter.setFilters(filters);
         SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
+        CrudHelper.doPaging(appParam,bpc.request);
         QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
         if (appParam != null) {
             SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
@@ -209,15 +249,14 @@ public class RequestForInformationDelegator {
                             reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
-                    else if(!"licence".equals(selectSearch)) {
+                    else {
                         ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
                         rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
                         reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                     }
                 }
                 searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
-                ParamUtil.setRequestAttr(request,"Sear" +
-                        "chResult", searchListDtoSearchResult);
+                ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
             }
         }
 
@@ -286,6 +325,7 @@ public class RequestForInformationDelegator {
         }
         applicationParameter.setFilters(filters);
         SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
+        CrudHelper.doPaging(appParam,bpc.request);
         QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
         if (appParam != null) {
             SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
@@ -701,8 +741,7 @@ public class RequestForInformationDelegator {
     public void preNewRfi(BaseProcessClass bpc) {
         log.info("=======>>>>>preNewRfi>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-//        String licenceNo= (String) ParamUtil.getSessionAttr(request,"licenceNo");
-//        ParamUtil.setRequestAttr(request,"licenceNo",licenceNo);
+
         // 		preNewRfi->OnStepProcess
     }
     public void doCreateRequest(BaseProcessClass bpc) throws ParseException, IOException, TemplateException {

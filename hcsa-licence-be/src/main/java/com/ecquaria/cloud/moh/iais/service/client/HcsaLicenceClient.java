@@ -63,6 +63,8 @@ public interface HcsaLicenceClient {
             method = RequestMethod.POST)
     FeignResponseEntity<Map<String, List<LicenceDto>>> licenceRenwal(@RequestBody List<Integer>  days);
 
+    @GetMapping(value = "/hcsa-licence/licPremisesCorrelationsByPremises/{licCorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicPremisesDto>> getlicPremisesCorrelationsByPremises(@PathVariable("licCorrId") String licCorreId);
 
     @RequestMapping(value = "/hcsa-licence/resHcsaLicenceGroupFee",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE
     ,method = RequestMethod.POST)

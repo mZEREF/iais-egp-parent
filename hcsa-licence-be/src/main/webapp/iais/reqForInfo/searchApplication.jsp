@@ -30,7 +30,7 @@
                                             <iais:field value="Application No:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" style="width:400px; font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
+                                                    <input type="text" style="width:180%; font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
                                                 </label>
                                             </iais:value>
                                         </iais:row>

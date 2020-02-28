@@ -30,13 +30,13 @@
                                             <iais:field value="Search No"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" name="search_no" value="${search_no}" style="width:400px; font-weight:normal;" />
+                                                    <input type="text" name="search_no" value="${search_no}" style="width:180%; font-weight:normal;" />
                                                 </label>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:value width="18">
-                                                <input type="radio" name="select_search" value="application"  /> Application No
+                                                <input type="radio" name="select_search" value="application" checked /> Application No
                                             </iais:value>
                                             <iais:value width="18">
                                                 <input type="radio" name="select_search" value="licence"  /> Licence No
@@ -64,7 +64,7 @@
                     <h3>
                         <span>Search Results</span>
                     </h3>
-<%--                    <iais:pagination  param="SearchParam" result="SearchResult"/>--%>
+                    <iais:pagination  param="SearchParam" result="SearchResult"/>
                     <div class="table-gp">
                         <table class="table">
                             <thead>
@@ -97,7 +97,7 @@
                                 <c:otherwise>
                                     <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
                                         <tr>
-                                            <td class="row_no"><c:out value="${status.index + 1}"/></td>
+                                            <td class="row_no"><c:out value="${status.index + 1+ (SearchParam.pageNo - 1) * SearchParam.pageSize}"/></td>
                                             <td>
                                                 <c:if test="${pool.appCorrId==null}">${pool.applicationNo}</c:if>
                                                 <c:if test="${pool.appCorrId!=null}"><a onclick="javascript:doAppInfo('${pool.appCorrId}')">${pool.applicationNo}</a></c:if>
@@ -148,7 +148,12 @@
         for (var i = 0, length = radios.length; i < length; i++) {
             if (radios[i].checked) {
                 showWaiting();
-                SOP.Crud.cfxSubmit("mainForm", "search");
+                if(radios[i].value=="application"){
+                    SOP.Crud.cfxSubmit("mainForm", "search");
+                }
+                else {
+                    SOP.Crud.cfxSubmit("mainForm", "searchLic");
+                }
                 break;
             }
         }
@@ -158,5 +163,13 @@
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
         submit('licSort');
+    }
+    function doAppInfo(appCorrId) {
+        showWaiting();
+        SOP.Crud.cfxSubmit("mainForm", "appInfo",appCorrId);
+    }
+    function doLicInfo(licenceId) {
+        showWaiting();
+        SOP.Crud.cfxSubmit("mainForm", "licInfo",licenceId);
     }
 </script>

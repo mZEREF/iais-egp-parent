@@ -31,7 +31,7 @@
                                             <iais:field value="Licence No:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" style="width:400px; font-weight:normal;" name="licence_no" value="${SearchParam.filters['licence_no']}" />
+                                                    <input type="text" style="width:180%; font-weight:normal;" name="licence_no" value="${SearchParam.filters['licence_no']}" />
                                                 </label>
                                             </iais:value>
                                         </iais:row>

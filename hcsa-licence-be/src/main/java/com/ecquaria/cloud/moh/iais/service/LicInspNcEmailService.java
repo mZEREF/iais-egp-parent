@@ -1,8 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+
+import java.util.List;
 
 
 /**
@@ -18,6 +21,7 @@ public interface LicInspNcEmailService {
     InspectionEmailTemplateDto loadingEmailTemplate(String id);
     LicenseeDto getLicenseeDtoById(String id);
     LicenceViewDto getLicenceDtoByLicPremCorrId(String licPremCorrId);
+    List<LicPremisesDto> getLicPremisesCorrelationsByPremises(String licPremCorrId);
 
 
 }

@@ -41,13 +41,13 @@
                                             <iais:field value="Licence No:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" style="width:400px; font-weight:normal;" maxlength="30" name="licenceNo" style=" font-weight:normal;" value="${licenceNo}">
+                                                    <input type="text" style="width:180%; font-weight:normal;" maxlength="30" name="licenceNo" style=" font-weight:normal;" value="${licenceNo}">
                                                 </label>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Due Date:"/>
-                                            <iais:value width="18" style="width:400px; font-weight:normal;">
+                                            <iais:value width="18" style="width:180%; font-weight:normal;">
                                                 <%Date dueDate ;
                                                     Calendar calendar = Calendar.getInstance();
                                                     calendar.add(Calendar.DATE,14);

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
@@ -9,6 +10,8 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * LicInspNcEmailServiceImpl
@@ -57,5 +60,10 @@ public class LicInspNcEmailServiceImpl implements LicInspNcEmailService {
     @Override
     public LicenceViewDto getLicenceDtoByLicPremCorrId(String licPremCorrId) {
         return hcsaLicenceClient.getLicenceViewDtoByLicPremCorrId(licPremCorrId).getEntity();
+    }
+
+    @Override
+    public List<LicPremisesDto> getLicPremisesCorrelationsByPremises(String licPremCorrId) {
+        return hcsaLicenceClient.getlicPremisesCorrelationsByPremises(licPremCorrId).getEntity();
     }
 }
