@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -28,7 +27,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,61 +71,6 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     private FileRepoClient fileRepoClient;
 
     @Override
-    public String getRecData() {
-        return applicationClient.recDatesToString().getEntity();
-    }
-
-    @Override
-    public void createDataTxt(String data) {
-        fileName = "userRecFile";
-        download = sharedPath + fileName;
-        backups = sharedPath + "backupsRec";
-        FileOutputStream fileOutputStream = null;
-        FileOutputStream fileOutputStream2 = null;
-        File d = new File(download);
-        File b = new File(backups);
-        if(!d.exists()){
-            d.mkdirs();
-        }
-        if(!b.exists()){
-            b.mkdirs();
-        }
-        File file = new File(download + File.separator + data + fileFormat);
-        try {
-            boolean fileStatus = false;
-            if(!file.exists()){
-                fileStatus = file.createNewFile();
-            }
-            if (fileStatus) {
-                fileOutputStream2 = new FileOutputStream(backups + File.separator + file.getName());
-                fileOutputStream = new FileOutputStream(file);
-                fileOutputStream.write(data.getBytes());
-                fileOutputStream2.write(data.getBytes());
-            }
-
-        } catch (Exception e) {
-            log.error(e.getMessage(),e);
-        }
-        finally {
-            if(fileOutputStream2!=null){
-                try {
-                    fileOutputStream2.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(),e);
-
-                }
-            }
-            if(fileOutputStream!=null){
-                try {
-                    fileOutputStream.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(),e);
-                }
-            }
-        }
-    }
-
-    @Override
     public void compressFile(Map<String, String> appIdItemIdMap) {
         String compress = compress();
         rename(compress, appIdItemIdMap);
@@ -135,40 +78,24 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     }
 
     @Override
-    public Map<List<Map<String, String>>, List<ApplicationDto>> getDocFile() {
-        Map<String, Map<String, AppPremPreInspectionNcDocDto>> fileReportIds = applicationClient.recFileId().getEntity();
-        List<ApplicationDto> applicationDtos = new ArrayList<>();
-        List<Map<String, String>> appIdNcItemIdMaps = new ArrayList<>();
-        Map<List<Map<String, String>>, List<ApplicationDto>> appItemMap = new HashMap<>();
-        for(Map.Entry<String, Map<String, AppPremPreInspectionNcDocDto>> entry : fileReportIds.entrySet()){
-            String appId = entry.getKey();
-            Map<String, AppPremPreInspectionNcDocDto> mapValue = entry.getValue();
-            Map<String, String> appIdNcItemIdMap = getFileAndClassify(appId, mapValue);
-            ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
-            applicationDtos.add(applicationDto);
-            appIdNcItemIdMaps.add(appIdNcItemIdMap);
-        }
-        appItemMap.put(appIdNcItemIdMaps, applicationDtos);
-        return appItemMap;
-    }
-
-    @Override
-    public void changeStatus(List<ApplicationDto> applicationDtos, AuditTrailDto internet) {
-        if(flag){
-            for(ApplicationDto aDto : applicationDtos){
-                aDto.setStatus(ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION);
-                aDto.setAuditTrailDto(internet);
-                applicationClient.updateApplication(aDto);
-            }
-        }
-    }
-
-    private Map<String, String> getFileAndClassify(String appId, Map<String, AppPremPreInspectionNcDocDto> mapValue) {
+    public Map<String, String> getDocFile() {
+        fileName = "userRecFile";
+        download = sharedPath + fileName;
+        backups = sharedPath + "backupsRec";
+        Map<String, List<AppPremPreInspectionNcDocDto>> fileReportIds = applicationClient.recFileId().getEntity();
         Map<String, String> appIdNcItemIdMap = new HashMap<>();
-        for(Map.Entry<String, AppPremPreInspectionNcDocDto> entry : mapValue.entrySet()){
-            String mapKey = entry.getKey();
-            AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto = entry.getValue();
-            byte[] fileByte = fileRepoClient.getFileFormDataBase(appPremPreInspectionNcDocDto.getFileRepoId()).getEntity();
+        for(Map.Entry<String, List<AppPremPreInspectionNcDocDto>> entry : fileReportIds.entrySet()){
+            String appId = entry.getKey();
+            List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = entry.getValue();
+            appIdNcItemIdMap = getFileAndClassify(appId, appPremPreInspectionNcDocDtos, appIdNcItemIdMap);
+        }
+        return appIdNcItemIdMap;
+    }
+
+    private Map<String, String> getFileAndClassify(String appId, List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos, Map<String, String> appIdNcItemIdMap) {
+        for(AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto : appPremPreInspectionNcDocDtos){
+            String fileId = appPremPreInspectionNcDocDto.getFileRepoId();
+            byte[] fileByte = fileRepoClient.getFileFormDataBase(fileId).getEntity();
             String s;
             try {
                 s = new String(fileByte, "UTF-8");
@@ -176,9 +103,9 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                 log.error(e.getMessage(),e);
                 s = "";
             }
-            File file = new File(download + File.separator + mapKey + File.separator + s, appPremPreInspectionNcDocDto.getDocName());
-            File backupsFile = new File(backups + File.separator + mapKey + File.separator + s, appPremPreInspectionNcDocDto.getDocName());
-            appIdNcItemIdMap.put(mapKey, appId);
+            File file = new File(download + File.separator + fileId + File.separator + s, appPremPreInspectionNcDocDto.getDocName());
+            File backupsFile = new File(backups + File.separator + fileId + File.separator + s, appPremPreInspectionNcDocDto.getDocName());
+            appIdNcItemIdMap.put(fileId, appId);
             writeFileByFileByte(file, backupsFile, fileByte);
         }
         return appIdNcItemIdMap;

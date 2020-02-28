@@ -50,7 +50,7 @@ public interface ApplicationClient  {
     FeignResponseEntity<String> recDatesToString();
 
     @GetMapping(value = "/iais-application/rec-file-datas")
-    FeignResponseEntity<Map<String, Map<String, AppPremPreInspectionNcDocDto>>> recFileId();
+    FeignResponseEntity<Map<String, List<AppPremPreInspectionNcDocDto>>> recFileId();
 
     @RequestMapping(value = "/iais-application/status",produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE,method =RequestMethod.PUT)
