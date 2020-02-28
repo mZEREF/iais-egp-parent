@@ -6,19 +6,26 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.ArrayList;
@@ -52,6 +59,19 @@ public class InspectionSendRecBatchjob {
     private ApplicationService applicationService;
 
     @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
+
+    @Autowired
     private InspectionSendRecBatchjob(SystemBeLicClient systemBeLicClient, SystemParamConfig systemParamConfig, FillUpCheckListGetAppClient fillUpCheckListGetAppClient, InboxMsgService inboxMsgService){
         this.fillUpCheckListGetAppClient = fillUpCheckListGetAppClient;
         this.inboxMsgService = inboxMsgService;
@@ -80,6 +100,12 @@ public class InspectionSendRecBatchjob {
         if(mapApp == null || mapApp.isEmpty()){
             return;
         }
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        List<AppPremPreInspectionNcDto> appPremPreInspectionNcDtos = new ArrayList<>();
+        List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = new ArrayList<>();
+        InspRectificationSaveDto inspRectificationSaveDto = new InspRectificationSaveDto();
+
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         for(Map.Entry<String, ApplicationDto> map : mapApp.entrySet()){
             ApplicationDto aDto = map.getValue();
@@ -105,6 +131,15 @@ public class InspectionSendRecBatchjob {
                 applicationViewService.updateApplicaiton(aDto);
                 applicationService.updateFEApplicaiton(aDto);
 
+                AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremCorrId).getEntity();
+                appPremPreInspectionNcDtos.add(appPremPreInspectionNcDto);
+                List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = fillUpCheckListGetAppClient.getAppNcItemByNcId(appPremPreInspectionNcDto.getId()).getEntity();
+                if(!IaisCommonUtils.isEmpty(appPremisesPreInspectionNcItemDtoList)){
+                    for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtoList){
+                        appPremisesPreInspectionNcItemDtos.add(appPremisesPreInspectionNcItemDto);
+                    }
+                }
+
                 List<JobRemindMsgTrackingDto> jobRemindMsgTrackingDtos = new ArrayList<>();
                 JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
                 jobRemindMsgTrackingDto.setAuditTrailDto(intranet);
@@ -116,5 +151,10 @@ public class InspectionSendRecBatchjob {
                 systemBeLicClient.createJobRemindMsgTrackingDtos(jobRemindMsgTrackingDtos);
             }
         }
+        inspRectificationSaveDto.setAppPremPreInspectionNcDtos(appPremPreInspectionNcDtos);
+        inspRectificationSaveDto.setAppPremisesPreInspectionNcItemDtos(appPremisesPreInspectionNcItemDtos);
+        inspRectificationSaveDto.setAuditTrailDto(intranet);
+        beEicGatewayClient.beCreateNcData(inspRectificationSaveDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
     }
 }

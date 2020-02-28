@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -99,4 +100,12 @@ public interface BeEicGatewayClient {
                                                                      @RequestHeader("authorization") String authorization,
                                                                      @RequestHeader("date-Secondary") String dateSec,
                                                                      @RequestHeader("authorization-Secondary") String authorizationSec);
+
+    @PostMapping(value = "/v1/hcsa-inspect-nc-down", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<InspRectificationSaveDto> beCreateNcData(@RequestBody InspRectificationSaveDto inspRectificationSaveDto,
+                                                                 @RequestHeader("date") String date,
+                                                                 @RequestHeader("authorization") String authorization,
+                                                                 @RequestHeader("date-Secondary") String dateSec,
+                                                                 @RequestHeader("authorization-Secondary") String authorizationSec);
 }
