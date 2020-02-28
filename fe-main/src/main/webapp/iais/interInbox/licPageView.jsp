@@ -47,6 +47,7 @@
     function submit(action){
         $("[name='lic_action_type']").val(action);
         $("#licForm").submit();
+        $("input[name='licenceNo']").prop("checked",false);
     }
 
     function licToMsgPage(){
