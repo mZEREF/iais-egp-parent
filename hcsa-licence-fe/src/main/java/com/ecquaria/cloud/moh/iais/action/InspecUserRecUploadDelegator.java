@@ -93,7 +93,17 @@ public class InspecUserRecUploadDelegator {
                     iDto.setIndex(index++);
                     iDto.setAppNo(applicationDto.getApplicationNo());
                     iDto.setItemId(cDto.getItemId());
-                    inspecUserRecUploadDtos.add(iDto);
+                    iDto = inspecUserRecUploadService.getNcItemData(iDto);
+                    int feRec = iDto.getAppPremisesPreInspectionNcItemDto().getFeRectifiedFlag();
+                    if(1 == feRec){
+                        iDto.setButtonFlag(AppConsts.SUCCESS);
+                    } else if(0 == feRec){
+                        iDto.setButtonFlag(AppConsts.FAIL);
+                    }
+                    int rec = iDto.getAppPremisesPreInspectionNcItemDto().getIsRecitfied();
+                    if(0 == rec) {
+                        inspecUserRecUploadDtos.add(iDto);
+                    }
                 }
             }
         }
@@ -193,7 +203,6 @@ public class InspecUserRecUploadDelegator {
                     }
                 }
             }
-            inspecUserRecUploadDto = inspecUserRecUploadService.getNcItemData(inspecUserRecUploadDto);
             ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
         }
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);

@@ -11,13 +11,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDt
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.InspecUserRecUploadService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,6 +44,18 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
     @Autowired
     private FileRepoClient fileRepoClient;
 
+    @Autowired
+    private FeEicGatewayClient feEicGatewayClient;
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
+
     @Override
     public List<ChecklistItemDto> getQuesAndClause(String appNo) {
         List<ChecklistItemDto> checklistItemDtos = new ArrayList<>();
@@ -53,6 +68,8 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
 
     @Override
     public void submitRecByUser(LoginContext loginContext, InspecUserRecUploadDto inspecUserRecUploadDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         String appNo = inspecUserRecUploadDto.getAppNo();
         ApplicationViewDto applicationViewDto = applicationClient.searchAppByNo(appNo).getEntity();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -65,6 +82,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
         }
         AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = inspecUserRecUploadDto.getAppPremisesPreInspectionNcItemDto();
         appPremisesPreInspectionNcItemDto.setRemarks(inspecUserRecUploadDto.getUploadRemarks());
+        appPremisesPreInspectionNcItemDto.setFeRectifiedFlag(1);
         appPremisesPreInspectionNcItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
         applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION);
@@ -84,7 +102,8 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
         inspRectificationSaveDto.setAppPremPreInspectionNcDocDtos(appNcDocDtoList);
         inspRectificationSaveDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
-
+        feEicGatewayClient.feCreateAndUpdateItemDoc(inspRectificationSaveDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
     }
 
     @Override
