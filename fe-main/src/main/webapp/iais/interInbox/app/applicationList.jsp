@@ -124,7 +124,7 @@
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title" for="appAction">Actions</p>
                                     <c:choose>
-                                        <c:when test="${app.applicationNo.indexOf('DN') != -1 || app.applicationNo .indexOf('DR') != -1}">
+                                        <c:when test="${app.status == 'APST008'}">
                                             <iais:select name="draftAction" id="draftAction"
                                                          options="selectDraftApplication" firstOption="Select"
                                                          onchange="doDraftAction('${app.applicationNo}',this.value)"></iais:select>
