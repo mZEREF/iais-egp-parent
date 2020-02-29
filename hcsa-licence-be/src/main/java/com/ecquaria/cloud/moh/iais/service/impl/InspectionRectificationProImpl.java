@@ -192,8 +192,6 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             inboxMsgService.saveInterMessage(interMessageDto);
         }
-
-
     }
 
     private InspRectificationSaveDto getUpdateItemNcList(InspectionPreTaskDto inspectionPreTaskDto, InspRectificationSaveDto inspRectificationSaveDto) {
