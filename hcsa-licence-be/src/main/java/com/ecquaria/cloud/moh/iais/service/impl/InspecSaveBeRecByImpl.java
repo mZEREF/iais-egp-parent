@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
@@ -152,6 +151,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             for(ProcessFileTrackDto pDto:processFileTrackDtos){
                 String fileName = pDto.getFileName().substring(0,pDto.getFileName().lastIndexOf("."));
                 for(File file2:files){
+                    //file2 is zip
                     if(file2.getName().equals(fileName)){
                         String eventRefNo = pDto.getRefId();
                         saveDataDtoAndFile(file2, intranet, aBoolean, textJson,
@@ -203,10 +203,25 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 }
                 List<FileRepoDto> list = new ArrayList<>();
                 for (File file3:files2) {
+                    //file3 is file Directory
                     if (file3.isDirectory()) {
-                        for (String s : textJson) {
-                            list.addAll(saveUploadFile(s, file3, intranet, submissionId));
+                        String fileReportId = file3.getName();
+                        File[] files = file3.listFiles();
+                        List<FileRepoDto> fileList = new ArrayList<>();
+                        for (File fileReport : files) {
+                            FileRepoDto fileRepoDto = new FileRepoDto();
+                            fileRepoDto.setId(fileReportId);
+                            fileRepoDto.setAuditTrailDto(intranet);
+                            fileRepoDto.setFileName(fileReport.getName());
+                            String relativePath = fileReport.getPath().replaceFirst(sharedPath, "");
+                            fileRepoDto.setRelativePath(relativePath);
+                            fileRepoDto.setEventRefNo(submissionId);
+                            fileList.add(fileRepoDto);
                         }
+                        if(!IaisCommonUtils.isEmpty(fileList)) {
+                            list.addAll(fileList);
+                        }
+
                     }
                 }
                 String callbackUrl = systemParamConfig.getInterServerName()
@@ -232,40 +247,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 e.printStackTrace();
             }
         }
-    }
-
-    private List<FileRepoDto> saveUploadFile(String toString, File file, AuditTrailDto intranet, String submissionId) {
-        List<FileRepoDto> list = new ArrayList<>();
-        ApplicationListFileDto applicationListFileDto = JsonUtil.parseToObject(toString, ApplicationListFileDto.class);
-        List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = applicationListFileDto.getAppPremPreInspectionNcDocDtos();
-        if(!(IaisCommonUtils.isEmpty(appPremPreInspectionNcDocDtos))) {
-            for (AppPremPreInspectionNcDocDto aItemDocDto : appPremPreInspectionNcDocDtos) {
-                if(file.getName().equals(aItemDocDto.getNcItemId())){
-                    list.addAll(genFileByNcItemId(aItemDocDto.getFileRepoId(), file, intranet, submissionId));
-                }
-            }
-        }
-        return list;
-    }
-
-    private List<FileRepoDto> genFileByNcItemId(String fileReportId, File file, AuditTrailDto intranet,
-                        String submissionId) {
-        List<FileRepoDto> list = new ArrayList<>();
-        if(file.isDirectory()) {
-            File[] files = file.listFiles();
-            for (File file2 : files) {
-                FileRepoDto fileRepoDto = new FileRepoDto();
-                fileRepoDto.setId(fileReportId);
-                fileRepoDto.setAuditTrailDto(intranet);
-                fileRepoDto.setFileName(file.getName());
-                String relativePath = file2.getPath().replaceFirst(sharedPath, "");
-                fileRepoDto.setRelativePath(relativePath);
-                fileRepoDto.setEventRefNo(submissionId);
-                list.add(fileRepoDto);
-            }
-        }
-
-        return list;
     }
 
     private void fileToDto(String toString, AuditTrailDto intranet, String submissionId) {
