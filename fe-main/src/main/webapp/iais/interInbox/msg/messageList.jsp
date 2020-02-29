@@ -76,7 +76,7 @@
                                     <p class="visible-xs visible-sm table-row-title">Message Type</p>
                                     <p><iais:code code="${inboxQuery.messageType}"></iais:code></p>
                                 </td>
-                            <td>
+                                <td>
                                     <p class="visible-xs visible-sm table-row-title">Ref. No</p>
                                     <p>${inboxQuery.refNo}</p>
                                 </td>

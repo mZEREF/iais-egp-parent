@@ -72,6 +72,7 @@
 
     function doLicRenew() {
         submit('licDoRenew');
+        $("[name='crud_action_additional']").val("doLicRenew");
     }
 
     function toLicView(licId){
