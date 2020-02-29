@@ -4,6 +4,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -108,10 +109,11 @@
                                             <td><c:out value="${pool.currentRiskTagging}"/></td>
 
                                             <td>
-                                                    <%--                                                <c:if test="${pool.applicationStatus==''}"></c:if>--%>
-                                                <iais:action style="text-align:center;">
-                                                    <button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo('${pool.licPremId}');" >ReqForInfo</button>
-                                                </iais:action>
+                                               <c:if test="${pool.licenceStatus=='LICEST001'}">
+                                                   <iais:action style="text-align:center;">
+                                                       <button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo('${pool.licPremId}');" >ReqForInfo</button>
+                                                   </iais:action>
+                                               </c:if>
                                             </td>
                                         </tr>
                                     </c:forEach>

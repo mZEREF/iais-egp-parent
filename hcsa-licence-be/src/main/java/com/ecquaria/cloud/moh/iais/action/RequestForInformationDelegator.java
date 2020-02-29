@@ -166,9 +166,9 @@ public class RequestForInformationDelegator {
                 for (RfiLicenceQueryDto rfiLicenceQueryDto:licResult.getRows()
                 ) {
                     ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
-                    String licStatus= MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiLicenceQueryDto.getLicenceStatus()}).get(0).getText();
+                    //String licStatus= MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiLicenceQueryDto.getLicenceStatus()}).get(0).getText();
                     reqForInfoSearchListDto.setLicenceId(rfiLicenceQueryDto.getId());
-                    reqForInfoSearchListDto.setLicenceStatus(licStatus);
+                    reqForInfoSearchListDto.setLicenceStatus(rfiLicenceQueryDto.getLicenceStatus());
                     reqForInfoSearchListDto.setLicenceNo(rfiLicenceQueryDto.getLicenceNo());
                     reqForInfoSearchListDto.setAppId(rfiLicenceQueryDto.getAppId());
                     reqForInfoSearchListDto.setServiceName(rfiLicenceQueryDto.getServiceName());
@@ -383,6 +383,7 @@ public class RequestForInformationDelegator {
         reqForInfoSearchListDto.setApplicationType(appType);
         reqForInfoSearchListDto.setApplicationNo(rfiApplicationQueryDto.getApplicationNo());
         reqForInfoSearchListDto.setApplicationStatus(rfiApplicationQueryDto.getApplicationStatus());
+        reqForInfoSearchListDto.setServiceName(rfiApplicationQueryDto.getSvcId());
         reqForInfoSearchListDto.setHciCode(rfiApplicationQueryDto.getHciCode());
         reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getHciName());
         reqForInfoSearchListDto.setBlkNo(rfiApplicationQueryDto.getBlkNo());
@@ -451,9 +452,9 @@ public class RequestForInformationDelegator {
                 for (RfiLicenceQueryDto rfiLicenceQueryDto:licResult.getRows()
                 ) {
                     ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
-                    String licStatus= MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiLicenceQueryDto.getLicenceStatus()}).get(0).getText();
+                    //String licStatus= MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiLicenceQueryDto.getLicenceStatus()}).get(0).getText();
                     reqForInfoSearchListDto.setLicenceId(rfiLicenceQueryDto.getId());
-                    reqForInfoSearchListDto.setLicenceStatus(licStatus);
+                    reqForInfoSearchListDto.setLicenceStatus(rfiLicenceQueryDto.getLicenceStatus());
                     reqForInfoSearchListDto.setLicenceNo(rfiLicenceQueryDto.getLicenceNo());
                     reqForInfoSearchListDto.setAppId(rfiLicenceQueryDto.getAppId());
                     reqForInfoSearchListDto.setServiceName(rfiLicenceQueryDto.getServiceName());

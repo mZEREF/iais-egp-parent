@@ -232,11 +232,11 @@ public class OfficerOnlineEnquiriesDelegator {
                         ) {
                             ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
                             rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
-                            String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
+                            //String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
                             reqForInfoSearchListDto.setLicenceId(lic.getId());
-                            reqForInfoSearchListDto.setLicenceStatus(licStatus);
+                            reqForInfoSearchListDto.setLicenceStatus(lic.getLicenceStatus());
                             reqForInfoSearchListDto.setLicenceNo(lic.getLicenceNo());
-                            reqForInfoSearchListDto.setServiceName(lic.getServiceName());
+                            //reqForInfoSearchListDto.setServiceName(lic.getServiceName());
                             reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                             reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
                             reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
@@ -508,11 +508,11 @@ public class OfficerOnlineEnquiriesDelegator {
                         ) {
                             ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
                             rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
-                            String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
+                            //String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
                             reqForInfoSearchListDto.setLicenceId(lic.getId());
-                            reqForInfoSearchListDto.setLicenceStatus(licStatus);
+                            reqForInfoSearchListDto.setLicenceStatus(lic.getLicenceStatus());
                             reqForInfoSearchListDto.setLicenceNo(lic.getLicenceNo());
-                            reqForInfoSearchListDto.setServiceName(lic.getServiceName());
+//                            reqForInfoSearchListDto.setServiceName(lic.getServiceName());
                             reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                             reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
                             reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
@@ -561,6 +561,7 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setAppCorrId(rfiApplicationQueryDto.getAppCorrId());
         reqForInfoSearchListDto.setApplicationNo(rfiApplicationQueryDto.getApplicationNo());
         reqForInfoSearchListDto.setApplicationStatus(rfiApplicationQueryDto.getApplicationStatus());
+        reqForInfoSearchListDto.setServiceName(rfiApplicationQueryDto.getSvcId());
         reqForInfoSearchListDto.setHciCode(rfiApplicationQueryDto.getHciCode());
         reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getHciName());
         reqForInfoSearchListDto.setBlkNo(rfiApplicationQueryDto.getBlkNo());

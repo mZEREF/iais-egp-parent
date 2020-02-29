@@ -123,7 +123,7 @@
                                             <td><c:out value="${pool.hciName}"/></td>
                                             <td><c:out value="${pool.blkNo}-${pool.floorNo}-${pool.unitNo}-${pool.streetName}-${pool.buildingName}"/></td>
                                             <td><c:out value="${pool.licenseeName}"/></td>
-                                            <td><c:out value="${pool.serviceName}"/></td>
+                                            <td><iais:service value="${pool.serviceName}"></iais:service></td>
                                             <td><fmt:formatDate value="${pool.startDate}" pattern="dd/MM/yyyy" />-<fmt:formatDate value="${pool.expiryDate}" pattern="dd/MM/yyyy" /></td>
                                             <td><c:out value="${pool.licenceStatus}"/></td>
                                             <td><c:out value="${pool.pastComplianceHistory}"/></td>

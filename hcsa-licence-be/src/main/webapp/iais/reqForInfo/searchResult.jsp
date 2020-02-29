@@ -1,9 +1,8 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
+
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -108,7 +107,7 @@
                                             <td><c:out value="${pool.hciName}"/></td>
                                             <td><c:out value="${pool.blkNo}-${pool.floorNo}-${pool.unitNo}-${pool.streetName}-${pool.buildingName}"/></td>
                                             <td><c:out value="${pool.licenseeName}"/></td>
-                                            <td><c:out value="${pool.serviceName}"/></td>
+                                            <td><iais:service value="${pool.serviceName}"></iais:service></td>
                                             <td><fmt:formatDate value="${pool.startDate}" pattern="dd/MM/yyyy" />-<fmt:formatDate value="${pool.expiryDate}" pattern="dd/MM/yyyy" /></td>
                                             <td><c:out value="${pool.licenceStatus}"/></td>
                                             <td><c:out value="${pool.pastComplianceHistory}"/></td>
