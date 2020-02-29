@@ -18,8 +18,24 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator("licenceViewDelegator")
 @Slf4j
 public class LicenceViewDelegator {
+
+    private static final  String LICENCE_ID = "licenceId";
+
     @Autowired
     private LicenceViewService licenceViewService;
+    /**
+     * StartStep: doStart
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doStart(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("The LicenceViewDelegator doStart start ..."));
+        //ParamUtil.setSessionAttr(bpc.request,LICENCE_ID,null);
+        log.info(StringUtil.changeForLog("The LicenceViewDelegator doStart end ..."));
+
+    }
+
     /**
      * StartStep: Prepare
      *
@@ -28,7 +44,11 @@ public class LicenceViewDelegator {
      */
     public void prepareData(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("The LicenceViewDelegator prepareData start ..."));
-        String licencId= ParamUtil.getRequestString(bpc.request,"licenceId");
+        String licencId= ParamUtil.getRequestString(bpc.request,LICENCE_ID);
+        if(StringUtil.isEmpty(licencId)){
+            licencId = (String)ParamUtil.getSessionAttr(bpc.request,LICENCE_ID);
+        }
+        ParamUtil.setSessionAttr(bpc.request,LICENCE_ID,licencId);
         LicenceViewDto licenceViewDto = licenceViewService.getLicenceViewDtoByLicenceId(licencId);
         ParamUtil.setSessionAttr(bpc.request,"licenceViewDto",licenceViewDto);
         log.info(StringUtil.changeForLog("The LicenceViewDelegator prepareData end ..."));
