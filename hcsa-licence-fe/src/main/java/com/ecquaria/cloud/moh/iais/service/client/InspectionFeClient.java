@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -40,4 +41,8 @@ public interface InspectionFeClient {
     @DeleteMapping(value = "/iais-inspection-fe/file-report-did/{fileId}",produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> deleteByFileReportId(@PathVariable(name = "fileId") String fileId);
+
+    @GetMapping(value = "/nc-item-list/{appNcId}", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremisesPreInspectionNcItemDto>> getNcItemDtoListByAppPremNcId(@PathVariable(name = "appNcId") String appNcId);
 }
