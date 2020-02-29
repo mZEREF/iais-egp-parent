@@ -123,17 +123,21 @@ public class InspectionRectificationProDelegator {
                     iDto.setAppNo(applicationDto.getApplicationNo());
                     iDto.setItemId(cDto.getItemId());
                     AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = inspectionRectificationProService.getNcItemDtoByItemId(cDto.getItemId());
-                    if(appPremisesPreInspectionNcItemDto != null){
-                        iDto.setUploadRemarks(appPremisesPreInspectionNcItemDto.getRemarks());
-                    } else {
-                        iDto.setUploadRemarks(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+                    int feRecFlag = appPremisesPreInspectionNcItemDto.getFeRectifiedFlag();
+                    int recFlag = appPremisesPreInspectionNcItemDto.getIsRecitfied();
+                    if(1 == feRecFlag && 0 == recFlag){
+                        if (appPremisesPreInspectionNcItemDto != null) {
+                            iDto.setUploadRemarks(appPremisesPreInspectionNcItemDto.getRemarks());
+                        } else {
+                            iDto.setUploadRemarks(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+                        }
+                        iDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
+                        List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = inspectionRectificationProService.getAppNcDocList(cDto.getItemId());
+                        List<FileRepoDto> fileRepoDtos = inspectionRectificationProService.getFileByItemId(appPremPreInspectionNcDocDtos);
+                        iDto.setAppPremPreInspectionNcDocDtos(appPremPreInspectionNcDocDtos);
+                        iDto.setFileRepoDtos(fileRepoDtos);
+                        inspecUserRecUploadDtos.add(iDto);
                     }
-                    iDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
-                    List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = inspectionRectificationProService.getAppNcDocList(cDto.getItemId());
-                    List<FileRepoDto> fileRepoDtos = inspectionRectificationProService.getFileByItemId(appPremPreInspectionNcDocDtos);
-                    iDto.setAppPremPreInspectionNcDocDtos(appPremPreInspectionNcDocDtos);
-                    iDto.setFileRepoDtos(fileRepoDtos);
-                    inspecUserRecUploadDtos.add(iDto);
                 }
                 inspectionPreTaskDto.setInspecUserRecUploadDtos(inspecUserRecUploadDtos);
             }

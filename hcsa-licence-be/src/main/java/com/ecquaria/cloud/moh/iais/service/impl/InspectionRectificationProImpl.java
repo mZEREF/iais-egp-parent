@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
@@ -177,6 +178,10 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION);
             applicationService.updateFEApplicaiton(applicationDto1);
             updateInspectionStatus(taskDto.getRefNo(), InspectionConstants.INSPECTION_STATUS_PENDING_REQUEST_FOR_INFORMATION);
+
+            //create new version
+            String version = getVersionAddOne(taskDto, inspectionPreTaskDto);
+
             InterMessageDto interMessageDto = new InterMessageDto();
             interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
             interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION);
@@ -186,12 +191,46 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             interMessageDto.setService_id(applicationDto1.getServiceId());
             String url = systemParamConfig.getInterServerName() +
                     MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION +
-                    taskDto.getRefNo();
+                    taskDto.getRefNo() + "&recVersion=" + version;
             interMessageDto.setProcessUrl(url);
             interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             inboxMsgService.saveInterMessage(interMessageDto);
+
         }
+    }
+
+    private String getVersionAddOne(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto) {
+        String appPremCorrId = taskDto.getRefNo();
+        AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremCorrId).getEntity();
+        String curVersionStr = appPremPreInspectionNcDto.getVersion();
+        String ncId = appPremPreInspectionNcDto.getId();
+        curVersionStr = curVersionStr.trim();
+        int curVersion = Integer.parseInt(curVersionStr);
+        String version = curVersion + 1 + "";
+
+        appPremPreInspectionNcDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+        appPremPreInspectionNcDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appPremPreInspectionNcDto = fillUpCheckListGetAppClient.updateAppPreNc(appPremPreInspectionNcDto).getEntity();
+
+        appPremPreInspectionNcDto.setVersion(version);
+        appPremPreInspectionNcDto.setId(null);
+        appPremPreInspectionNcDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appPremPreInspectionNcDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        appPremPreInspectionNcDto = fillUpCheckListGetAppClient.saveAppPreNc(appPremPreInspectionNcDto).getEntity();
+
+        List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
+        if(!IaisCommonUtils.isEmpty(appPremisesPreInspectionNcItemDtos)){
+            for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtos){
+                appPremisesPreInspectionNcItemDto.setFeRectifiedFlag(0);
+                appPremisesPreInspectionNcItemDto.setId(null);
+                appPremisesPreInspectionNcItemDto.setPreNcId(appPremPreInspectionNcDto.getId());
+                appPremisesPreInspectionNcItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            }
+            fillUpCheckListGetAppClient.saveAppPreNcItem(appPremisesPreInspectionNcItemDtos);
+        }
+
+        return version;
     }
 
     private InspRectificationSaveDto getUpdateItemNcList(InspectionPreTaskDto inspectionPreTaskDto, InspRectificationSaveDto inspRectificationSaveDto) {
