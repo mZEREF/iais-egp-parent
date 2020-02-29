@@ -14,7 +14,7 @@ import com.ecquaria.cloud.helper.EngineHelper;
 
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTRANET___LicenceBEViewService___2 extends BaseProcessClass {
+public class INTRANET___LicenceBEViewService___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="licenceViewServiceDelegator";
 	public void start_OnStepProcess_0() throws Exception {
 		// 		Start->OnStepProcess
