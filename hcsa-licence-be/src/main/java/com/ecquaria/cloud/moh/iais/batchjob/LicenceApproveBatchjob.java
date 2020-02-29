@@ -313,11 +313,11 @@ public class LicenceApproveBatchjob {
                 String licenceNo = null;
                 int yearLength = getYearLength(appPremisesRecommendationDto);
                 //create licence
-                if(!applicationGroupDto.isAutoRfc()) {
+                if(applicationGroupDto.isNeedNewLicNo()) {
                     licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(), yearLength);
                 }
                 log.debug(StringUtil.changeForLog("The licenceNo is -->;"+licenceNo));
-                if(StringUtil.isEmpty(licenceNo)&&!applicationGroupDto.isAutoRfc()){
+                if(StringUtil.isEmpty(licenceNo)&& applicationGroupDto.isNeedNewLicNo()){
                     errorMessage = "The licenceNo is null .-->:" + hcsaServiceDto.getSvcCode() + ":" + applicationListDtos.size() + ":" + yearLength;
                     break;
                 }
@@ -505,11 +505,11 @@ public class LicenceApproveBatchjob {
                     superLicDto.setPremisesGroupDtos(premisesGroupDtos);
 
                     //create licence
-                    if(!applicationGroupDto.isAutoRfc()){
+                    if(applicationGroupDto.isNeedNewLicNo()){
                         licenceNo = licenceService.getLicenceNo(premisesGroupDto.getPremisesDto().getHciCode(),hcsaServiceDto.getSvcCode(),yearLength);
                     }
                     log.debug(StringUtil.changeForLog("The licenceNo is -->;"+licenceNo));
-                    if(StringUtil.isEmpty(licenceNo)&&!applicationGroupDto.isAutoRfc()){
+                    if(StringUtil.isEmpty(licenceNo) && applicationGroupDto.isNeedNewLicNo()){
                         errorMessage = "The licenceNo is null .-->:" + premisesGroupDto.getPremisesDto().getHciCode() + ":" + hcsaServiceDto.getSvcCode() + ":" + yearLength;
                         break;
                     }
@@ -947,6 +947,10 @@ public class LicenceApproveBatchjob {
             licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
             if(applicationGroupDto!=null){
                 licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
+            }
+            if(!StringUtil.isEmpty(licenceNo)){
+                licenceDto.setLicenceNo(licenceNo);
+                licenceDto.setVersion(1);
             }
         }else {
             //todo:The latest choose from Giro pay Date, Approved Date,Aso set Date,
