@@ -32,7 +32,7 @@
 			EMAIL_ADDR,
 			STATUS
 			FROM user_account as iu
-            WHERE 1=1
+            WHERE 1=1 AND STATUS !='CMSTAT002'
             <#if id??> AND CHARINDEX(:id, iu.id) >0</#if>
             <#if userId??> and charindex(:userId, iu.USER_ID) >0</#if>
             <#if displayName??> and charindex(:displayName, iu.DISPLAY_NAME) >0</#if>

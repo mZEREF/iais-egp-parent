@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.client.rbac.UserClient;
@@ -171,9 +172,7 @@ public class MohIntranetUserDelegator {
     public void doDelete(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String id = ParamUtil.getString(request, IntranetUserConstant.CRUD_ACTION_VALUE);
-        OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
-        intranetUserById.setStatus(IntranetUserConstant.COMMON_STATUS_DELETED);
-        intranetUserService.updateOrgUser(intranetUserById);
+        intranetUserService.delOrgUser(id);
         return;
 
 
@@ -196,29 +195,21 @@ public class MohIntranetUserDelegator {
         return;
     }
 
-    public void doExport(BaseProcessClass bpc) {
-        String[] ids = ParamUtil.getStrings(bpc.request, "userUid");
+    public void doExport(BaseProcessClass bpc) throws IOException {
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String[] ids = ParamUtil.getStrings(request, "userUid");
         if (ids == null || ids.length == 0) {
+            ParamUtil.setRequestAttr(request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
         }
-        createXML(bpc,ids);
+//        byte[] xml = createXML(bpc, ids);
+        ParamUtil.setSessionAttr(bpc.request, "ids", ids);
+        String s = "https://egp.sit.intra.iais.com/system-admin-web/eservice/INTRANET/IntranetUserDownload";
+        String url = RedirectUtil.changeUrlToCsrfGuardUrlUrl(s, request);
+        bpc.response.sendRedirect(url);
         return;
     }
 
-
-//    public void  port (BaseProcessClass bpc){
-//        String [] ids = ParamUtil.getStrings(bpc.request,"userUid");
-//        if(ids.length==0||ids==null){
-//            return;
-//        }
-//        for (int i = 0; i <ids.length ; i++) {
-//            String id  = ids[i];
-//            OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
-//            createXML(intranetUserById,bpc);
-//        }
-//
-//
-//    }
 
     public void doSearch(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
@@ -473,10 +464,6 @@ public class MohIntranetUserDelegator {
         clientUser.setEmail(email);
         clientUser.setMobileNo(mobileNo);
         clientUser.setSalutation(salutation);
-
-
-
-
         /*
         {
               "userDomain": "intranet",
@@ -571,139 +558,7 @@ public class MohIntranetUserDelegator {
     }
 
 
-    void createXML(BaseProcessClass bpc ,String [] ids) {
-        try {
-            //1.create dom
-            Document document = DocumentHelper.createDocument();
-            //2.create rootElement
-            Element userGroups = document.addElement("user-groups");
-            for(String id :ids){
-                OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(id);
-                String userIdText = orgUserDto.getUserId();
-                String displayNameText =  orgUserDto.getDisplayName();
-                String userDomainText = orgUserDto.getUserDomain();
-                String salutationText = orgUserDto.getSalutation();
-                Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
-                Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
-                String startStr = DateUtil.formatDate(accountActivateDatetime, "yyyy-MM-dd");
-                String endStr = DateUtil.formatDate(accountDeactivateDatetime, "yyyy-MM-dd");
-                String firstNameText = orgUserDto.getFirstName();
-                String lastNameText = orgUserDto.getLastName();
-                String organizationText =  orgUserDto.getOrganzation();
-                String mobileNoText =  orgUserDto.getMobileNo();
-                String officeTelNoText =  orgUserDto.getOfficeTelNo();
-                String branchUnitText =  orgUserDto.getBranchUnit();
-                String emailText =  orgUserDto.getEmail();
-                String statusText =  orgUserDto.getStatus();
-                Element userGroup = userGroups.addElement("user-group");
-                Element userId = userGroup.addElement("userId");
-                if(!StringUtil.isEmpty(userIdText)){
-                    userId.setText(orgUserDto.getUserId());
-                }
-                Element userDomain = userGroup.addElement("userDomain");
-                if(!StringUtil.isEmpty(userDomainText)){
-                    userDomain.setText(userDomainText);
-                }
-                Element displayName = userGroup.addElement("displayName");
-                if(!StringUtil.isEmpty(displayNameText)){
-                    displayName.setText(displayNameText);
-                }
-                Element startDate = userGroup.addElement("startDate");
-                if(!StringUtil.isEmpty(startStr)){
-                    startDate.setText(startStr);
-                }
-                Element endDate = userGroup.addElement("endDate");
-                if(!StringUtil.isEmpty(endStr)){
-                    endDate.setText(endStr);
-                }
-                Element salutation = userGroup.addElement("salutation");
-                if(!StringUtil.isEmpty(salutationText)){
-                    salutation.setText(salutationText);
-                }
-                Element firstName = userGroup.addElement("firstName");
-                if(!StringUtil.isEmpty(firstNameText)){
-                    firstName.setText(firstNameText);
-                }
-                Element lastName = userGroup.addElement("lastName");
-                if(!StringUtil.isEmpty(lastNameText)){
-                    lastName.setText(lastNameText);
-                }
-                Element mobileNo = userGroup.addElement("mobileNo");
-                if(!StringUtil.isEmpty(mobileNoText)){
-                    mobileNo.setText(mobileNoText);
-                }
-                Element officeNo = userGroup.addElement("officeNo");
-                if(!StringUtil.isEmpty(officeTelNoText)){
-                    officeNo.setText(officeTelNoText);
-                }
-                Element email = userGroup.addElement("email");
-                if(!StringUtil.isEmpty(emailText)){
-                    email.setText(emailText);
-                }
-                Element organization = userGroup.addElement("organization");
-                if(!StringUtil.isEmpty(organizationText)){
-                    organization.setText(organizationText);
-                }
-                Element branchUnit = userGroup.addElement("branchUnit");
-                if(!StringUtil.isEmpty(branchUnitText)){
-                    branchUnit.setText(branchUnitText);
-                }
-                Element status = userGroup.addElement("status");
-                if(!StringUtil.isEmpty(statusText)){
-                    status.setText(statusText);
-                }
-            }
-
-            OutputFormat outputFormat = OutputFormat.createPrettyPrint();
-            outputFormat.setEncoding("UTF-8");
-            File tempFile = File.createTempFile("temp", ".xml");
-            XMLWriter xmlWriter = new XMLWriter(new FileOutputStream(tempFile), outputFormat);
-            xmlWriter.write(document);
-            xmlWriter.close();
-            byte[] tempFileByte = FileUtils.readFileToByteArray(tempFile);
-            bpc.request.setAttribute("content", tempFileByte);
-            FileUtils.deleteTempFile(tempFile);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-//        FileOutputStream fileOutputStream = null;
-//        XMLWriter writer =  null;
-//        File XmlFile=new File("D:/intranet.xml");
-//        try {
-//            byte[] content = FileUtils.readFileToByteArray(XmlFile);
-//            ParamUtil.setSessionAttr(bpc.request,"content",content);
-//            File xmlFile=new File("newTest.xml");
-//            fileOutputStream = new FileOutputStream(xmlFile);
-//            writer = new XMLWriter(fileOutputStream);
-//            writer.write(document);
-//            //writeFileResponeContent(bpc.response,xmlFile);
-//            byte[] fileData = FileUtils.readFileToByteArray(xmlFile);
-//            String fileName = "aaa.xml";
-//            bpc.request.setAttribute("content",fileData);
-//            bpc.request.setAttribute("fileName",fileName);
-//        }catch (Exception e) {
-//            log.debug(e.getMessage());
-//        }finally {
-//            if (writer != null){
-//                try {
-//                    writer.close();
-//                } catch (IOException e) {
-//                    log.debug(e.getMessage());
-//                }
-//            }
-//            if (fileOutputStream != null){
-//                try {
-//                    fileOutputStream.close();
-//                } catch (IOException e) {
-//                    log.debug(e.getMessage());
-//                }
-//            }
-//        }
-    }
-
-    void importXML(File file) throws DocumentException {
+    private void importXML(File file) throws DocumentException {
         SAXReader saxReader=new SAXReader();
         CommonsMultipartFile sessionFile;
         Document document=saxReader.read(file);
@@ -747,22 +602,6 @@ public class MohIntranetUserDelegator {
         }
     }
 
-    public static void writeFileResponeContent(final HttpServletResponse response, final File file) throws IOException {
-        Objects.requireNonNull(response);
-        Objects.requireNonNull(file);
-
-        String fileName = file.getName();
-        byte[] fileData = FileUtils.readFileToByteArray(file);
-        Objects.requireNonNull(fileData);
-
-        response.setHeader("Content-disposition", "inline;filename=" + fileName);
-        response.addHeader("Content-Length", "" + fileData.length);
-        response.setContentType("applicatoin/octet-stream");
-        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-        ops.write(fileData);
-        ops.close();
-        ops.flush();
-    }
 
     private List<SelectOption> getStatusOption() {
         List<SelectOption> result = new ArrayList<>();

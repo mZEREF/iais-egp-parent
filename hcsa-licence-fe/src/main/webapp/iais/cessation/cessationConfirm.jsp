@@ -59,8 +59,8 @@
                                                         pattern="dd/MM/yyyy"></fmt:formatDate>
                                     </td>
                                     <td class="col-xs-2" align="center">
-                                        <iais:select id="${num.count}cessationReasonId"
-                                                     name="${num.count}cessationReason"
+                                        <iais:select id="${num.count}reasonId"
+                                                     name="${num.count}reason"
                                                      options="reasonOption"
                                                      value="${appCessationDtos[num.index].reason}" disabled="true"/>
                                         <c:if test="${appCessationDtos[num.index].otherReason !=null}">

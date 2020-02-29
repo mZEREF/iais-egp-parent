@@ -176,7 +176,7 @@ public class ReCessationApplicationDelegator {
                 AppCessationDto appCessationDto = new AppCessationDto();
                 String effectiveDateStr = ParamUtil.getRequestString(bpc.request, i+"effectiveDate");
                 Date effectiveDate = DateUtil.parseDate(effectiveDateStr, "dd/MM/yyyy");
-                String cessationReason = ParamUtil.getRequestString(bpc.request, i+"cessationReason");
+                String reason = ParamUtil.getRequestString(bpc.request, i+"reason");
                 String otherReason = ParamUtil.getRequestString(bpc.request, i+"otherReason");
                 String patRadio = ParamUtil.getRequestString(bpc.request, i+"patRadio");
                 Boolean patNeedTrans = false;
@@ -191,7 +191,7 @@ public class ReCessationApplicationDelegator {
                 String readInfo = ParamUtil.getRequestString(bpc.request, "readInfo");
 
                 appCessationDto.setEffectiveDate(effectiveDate);
-                appCessationDto.setReason(cessationReason);
+                appCessationDto.setReason(reason);
                 appCessationDto.setOtherReason(otherReason);
                 appCessationDto.setPatNeedTrans(patNeedTrans);
                 appCessationDto.setPatientSelect(patientSelect);
@@ -213,7 +213,7 @@ public class ReCessationApplicationDelegator {
             AppCessationDto appCessationDto = new AppCessationDto();
             String effectiveDateStr = ParamUtil.getRequestString(bpc.request, i+"effectiveDate");
             Date effectiveDate = DateUtil.parseDate(effectiveDateStr, "dd/MM/yyyy");
-            String cessationReason = ParamUtil.getRequestString(bpc.request, i+"cessationReason");
+            String reason = ParamUtil.getRequestString(bpc.request, i+"reason");
             String otherReason = ParamUtil.getRequestString(bpc.request, i+"otherReason");
             String patRadio = ParamUtil.getRequestString(bpc.request, i+"patRadio");
             Boolean patNeedTrans = false;
@@ -229,7 +229,7 @@ public class ReCessationApplicationDelegator {
             String readInfo = ParamUtil.getRequestString(bpc.request, "readInfo");
 
             appCessationDto.setEffectiveDate(effectiveDate);
-            appCessationDto.setReason(cessationReason);
+            appCessationDto.setReason(reason);
             appCessationDto.setOtherReason(otherReason);
             appCessationDto.setPatNeedTrans(patNeedTrans);
             appCessationDto.setPatientSelect(patientSelect);

@@ -10,13 +10,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +32,6 @@ public class CessationServiceImpl implements CessationService {
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
     private CessationClient cessationClient;
-    @Autowired
-    private SystemAdminClient systemAdminClient;
     @Autowired
     private ApplicationClient applicationClient;
 
@@ -81,7 +77,7 @@ public class CessationServiceImpl implements CessationService {
         for (AppCessationDto appCessationDto : appCessationDtos) {
             AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
             String licId = appCessationDto.getWhichTodo();
-            String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT).getEntity();
+            String appNo = "AN191276000001";
             ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo, licId,ApplicationConsts.APPLICATION_TYPE_APPEAL);
             List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
             appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);

@@ -103,9 +103,9 @@ public class CessationApplicationDelegator {
     public void action(BaseProcessClass bpc){
         String action_type = ParamUtil.getRequestString(bpc.request, "crud_action_type");
         if("submit".equals(action_type)){
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-        }else if("back".equals(action_type)){
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+        }else if("back".equals(action_type)){
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
         }
 
     }
@@ -152,7 +152,7 @@ public class CessationApplicationDelegator {
                 AppCessationDto appCessationDto = new AppCessationDto();
                 String effectiveDateStr = ParamUtil.getRequestString(bpc.request, i+"effectiveDate");
                 Date effectiveDate = DateUtil.parseDate(effectiveDateStr, "dd/MM/yyyy");
-                String cessationReason = ParamUtil.getRequestString(bpc.request, i+"cessationReason");
+                String reason = ParamUtil.getRequestString(bpc.request, i+"reason");
                 String otherReason = ParamUtil.getRequestString(bpc.request, i+"otherReason");
                 String patRadio = ParamUtil.getRequestString(bpc.request, i+"patRadio");
                 Boolean patNeedTrans = false;
@@ -167,7 +167,7 @@ public class CessationApplicationDelegator {
                 String readInfo = ParamUtil.getRequestString(bpc.request, "readInfo");
 
                 appCessationDto.setEffectiveDate(effectiveDate);
-                appCessationDto.setReason(cessationReason);
+                appCessationDto.setReason(reason);
                 appCessationDto.setOtherReason(otherReason);
                 appCessationDto.setPatNeedTrans(patNeedTrans);
                 appCessationDto.setPatientSelect(patientSelect);
@@ -189,7 +189,7 @@ public class CessationApplicationDelegator {
             AppCessationDto appCessationDto = new AppCessationDto();
             String effectiveDateStr = ParamUtil.getRequestString(bpc.request, i+"effectiveDate");
             Date effectiveDate = DateUtil.parseDate(effectiveDateStr, "dd/MM/yyyy");
-            String cessationReason = ParamUtil.getRequestString(bpc.request, i+"cessationReason");
+            String reason = ParamUtil.getRequestString(bpc.request, i+"reason");
             String otherReason = ParamUtil.getRequestString(bpc.request, i+"otherReason");
             String patRadio = ParamUtil.getRequestString(bpc.request, i+"patRadio");
             Boolean patNeedTrans = false;
@@ -205,7 +205,7 @@ public class CessationApplicationDelegator {
             String readInfo = ParamUtil.getRequestString(bpc.request, "readInfo");
 
             appCessationDto.setEffectiveDate(effectiveDate);
-            appCessationDto.setReason(cessationReason);
+            appCessationDto.setReason(reason);
             appCessationDto.setOtherReason(otherReason);
             appCessationDto.setPatNeedTrans(patNeedTrans);
             appCessationDto.setPatientSelect(patientSelect);

@@ -71,14 +71,21 @@
 
 
     function doExport() {
-        var check = $("input[name='userUid']").attr("checked");
-        if(check=='checked'){
             submitUser('doExport');
-        }
     }
 
     function doImport() {
-        submitUser('doImport');
+        // document.getElementById("inputFileAgent").value = document.getElementById("inputFile").value;
+        var file=document.getElementById("inputFile").value;
+        //var form1=document.getElementById("form1");
+        var ext = file.slice(file.lastIndexOf(".")+1).toLowerCase();
+        if ("xml" != ext) {
+            alert("please import .xml");
+            return false;
+        }else {
+            submitUser('doImport');
+    }
+
     }
 
     function jumpToPagechangePage(){

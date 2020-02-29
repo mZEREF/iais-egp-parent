@@ -64,13 +64,13 @@
                                               class="error-msg"></span>
                                     </td>
                                     <td class="col-xs-2" align="center">
-                                        <iais:select id="${num.count}cessationReasonId"
-                                                     name="${num.count}cessationReason"
+                                        <iais:select id="${num.count}reasonId"
+                                                     name="${num.count}reason"
                                                      options="reasonOption"
                                                      firstOption="Please select"
                                                      onchange="javascirpt:changeReason(this.value);"
-                                                     value="${appCessationDtos[num.index].cessationReason}"/>
-                                        <span id="error_cessationReason" name="iaisErrorMsg"
+                                                     value="${appCessationDtos[num.index].reason}"/>
+                                        <span id="error_reason" name="iaisErrorMsg"
                                               class="error-msg"></span>
                                         <div id="${num.count}reason" hidden><input
                                                 type="text"
@@ -196,7 +196,7 @@
 <script type="text/javascript">
     function changeReason() {
         for (var i = 1; i < 3; i++) {
-            if ($("#" + i + "cessationReasonId").val() == "OtherReasons") {
+            if ($("#" + i + "reasonId").val() == "OtherReasons") {
                 $("#" + i + "reason").show();
             } else {
                 $("#" + i + "reason").hide();
@@ -245,9 +245,9 @@
 
     $(document).ready(function () {
         for (var i = 1; i < 3; i++) {
-            if ($("#" + i + "cessationReasonId").val() == "OtherReasons") {
+            if ($("#" + i + "reasonId").val() == "OtherReasons") {
                 $("#" + i + "reason").show();
-            } else if ($("#" + i + "cessationReasonId").val() != "OtherReasons") {
+            } else if ($("#" + i + "reasonId").val() != "OtherReasons") {
                 $("#" + i + "reason").hide();
             }
             if ($('#' + i + 'radioYes').is(':checked')) {

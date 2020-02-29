@@ -1,1 +1,1 @@
-<h1>BACK SUCCESS !!!</h1>
+<%@include file="/iais/report/Ack.jsp"%>

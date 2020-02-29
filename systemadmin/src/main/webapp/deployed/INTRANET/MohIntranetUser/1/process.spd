@@ -133,7 +133,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="download" stageIndicator="" x="670" y="370">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="download" stageIndicator="" x="670" y="460">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -238,17 +238,20 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/Port" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(580,80)(720,210)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/download" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Port" style="oblique">
-   <position>{(720,210)(690,390)}</position>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond4" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Port" style="oblique">
+   <position>{(720,210)(700,310)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/import" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+  <SynchronousLink destinationName="/Steps/AutomaticStep/import" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(580,80)(760,210)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/import" style="rectanular">
    <position>{(760,210)(580,640)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/download" style="rectanular">
-   <position>{(690,390)(580,640)}</position>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond4" style="oblique">
+   <position>{(700,310)(580,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/download" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond4" style="oblique">
+   <position>{(700,310)(690,480)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -259,6 +262,9 @@
    <Description/>
   </Condition>
   <Condition componentIfFalse="/Steps/AutomaticStep/doStatus" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;true&quot;" x="800" y="620">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Pages/WebPage/download" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond4" operator="=" rightOperand="&quot;true&quot;" x="680" y="290">
    <Description/>
   </Condition>
  </Conditions>
