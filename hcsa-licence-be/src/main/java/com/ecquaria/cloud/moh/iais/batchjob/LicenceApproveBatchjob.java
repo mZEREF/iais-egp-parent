@@ -35,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremPhOpenPeriodDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcSpecificPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
@@ -676,20 +677,30 @@ public class LicenceApproveBatchjob {
             }
             premisesGroupDto.setLicPremisesDto(licPremisesDto);
             //create LicPremisesScopeDto
-            AppSvcPremisesScopeDto appSvcPremisesScopeDto = getAppSvcPremisesScopeDtoByCorrelationId(appSvcPremisesScopeDtos,appPremCorrecId);
-            if(appSvcPremisesScopeDto != null){
-                LicPremisesScopeDto licPremisesScopeDto = new LicPremisesScopeDto();
-                licPremisesScopeDto.setSubsumedType(appSvcPremisesScopeDto.isSubsumedType());
-                licPremisesScopeDto.setScopeName(appSvcPremisesScopeDto.getScopeName());
-                premisesGroupDto.setLicPremisesScopeDto(licPremisesScopeDto);
-                //create LicPremisesScopeAllocationDto
-                AppSvcPremisesScopeAllocationDto appSvcPremisesScopeAllocationDto = getAppSvcPremisesScopeAllocationDto(appSvcPremisesScopeAllocationDtos,
-                        appSvcPremisesScopeDto.getId());
-                if(appSvcPremisesScopeAllocationDto!= null){
-                    LicPremisesScopeAllocationDto licPremisesScopeAllocationDto = new LicPremisesScopeAllocationDto();
-                    licPremisesScopeAllocationDto.setLicCgoId(appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId());
-                    premisesGroupDto.setLicPremisesScopeAllocationDto(licPremisesScopeAllocationDto);
+            List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtoList = getAppSvcPremisesScopeDtoByCorrelationId(appSvcPremisesScopeDtos,appPremCorrecId);
+            if(!IaisCommonUtils.isEmpty(appSvcPremisesScopeDtoList)){
+                List<LicPremisesScopeGroupDto> licPremisesScopeGroupDtoList = new ArrayList<>();
+                for(AppSvcPremisesScopeDto appSvcPremisesScopeDto :appSvcPremisesScopeDtoList){
+                    LicPremisesScopeGroupDto licPremisesScopeGroupDto = new LicPremisesScopeGroupDto();
+                    LicPremisesScopeDto licPremisesScopeDto = new LicPremisesScopeDto();
+                    licPremisesScopeDto.setSubsumedType(appSvcPremisesScopeDto.isSubsumedType());
+                    licPremisesScopeDto.setScopeName(appSvcPremisesScopeDto.getScopeName());
+                    licPremisesScopeGroupDto.setLicPremisesScopeDto(licPremisesScopeDto);
+                    //create LicPremisesScopeAllocationDto
+                    AppSvcPremisesScopeAllocationDto appSvcPremisesScopeAllocationDto = getAppSvcPremisesScopeAllocationDto(appSvcPremisesScopeAllocationDtos,
+                            appSvcPremisesScopeDto.getId());
+                    if(appSvcPremisesScopeAllocationDto!= null){
+                        LicPremisesScopeAllocationDto licPremisesScopeAllocationDto = new LicPremisesScopeAllocationDto();
+                        licPremisesScopeAllocationDto.setLicCgoId(appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId());
+                        licPremisesScopeGroupDto.setLicPremisesScopeAllocationDto(licPremisesScopeAllocationDto);
+                    }else{
+                        log.info(StringUtil.changeForLog("this appSvcPremisesScopeDto.getId() do not have the AppSvcPremisesScopeAllocationDto -->:"+appSvcPremisesScopeDto.getId()));
+                    }
+                    licPremisesScopeGroupDtoList.add(licPremisesScopeGroupDto);
                 }
+                premisesGroupDto.setLicPremisesScopeGroupDtoList(licPremisesScopeGroupDtoList);
+            }else{
+                log.info(StringUtil.changeForLog("This appPremCorrecId can not get the AppSvcPremisesScopeDto -->:"+appPremCorrecId));
             }
             reuslt.add(premisesGroupDto);
         }
@@ -698,16 +709,15 @@ public class LicenceApproveBatchjob {
     }
 
 
-  private AppSvcPremisesScopeDto getAppSvcPremisesScopeDtoByCorrelationId(List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos,String appPremCorrecId){
-      AppSvcPremisesScopeDto result = null;
+  private List<AppSvcPremisesScopeDto> getAppSvcPremisesScopeDtoByCorrelationId(List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos,String appPremCorrecId){
+      List<AppSvcPremisesScopeDto> result = new ArrayList<>();
         if(IaisCommonUtils.isEmpty(appSvcPremisesScopeDtos)|| StringUtil.isEmpty(appPremCorrecId)){
           return result;
         }
 
       for(AppSvcPremisesScopeDto appSvcPremisesScopeDto : appSvcPremisesScopeDtos){
          if(appPremCorrecId.equals(appSvcPremisesScopeDto.getAppPremCorreId())){
-             result = appSvcPremisesScopeDto;
-             break;
+             result.add(appSvcPremisesScopeDto);
          }
       }
       return  result;
