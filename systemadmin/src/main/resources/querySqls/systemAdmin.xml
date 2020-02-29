@@ -279,7 +279,7 @@
             and T3.id = T1.group_id
             and T3.group_name in('Inspection Stage 001', 'Inspection Stage 002', 'Inspection Stage 003', 'Inspection Stage 004')
             and T1.IS_GRP_LEADER = 1
-            <#if userId??> AND T1.user_id = :userId</#if>
+            <#if userId??> AND T2.id = :userId</#if>
         ]]>
     </sql>
     <sql key="getHolidayList"  remarks="Get public holiday">

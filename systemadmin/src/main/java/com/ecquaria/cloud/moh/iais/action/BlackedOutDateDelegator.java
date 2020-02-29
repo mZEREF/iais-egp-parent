@@ -104,14 +104,13 @@ public class BlackedOutDateDelegator {
         QueryHelp.setMainSql("systemAdmin", "getWorkingGroupByUserId", workingGroupQuery);
         workingGroupQuery.addFilter("userId", userId, true);
 
-        List<WorkingGroupQueryDto> workingGroupQueryList = intranetUserService.getWorkingGroupBySearchParam(workingGroupQuery)
-                .getRows();
+        SearchResult<WorkingGroupQueryDto> searchResult = intranetUserService.getWorkingGroupBySearchParam(workingGroupQuery);
 
-        if (IaisCommonUtils.isEmpty(workingGroupQueryList)){
+        if (searchResult == null || IaisCommonUtils.isEmpty(searchResult.getRows())){
             return;
         }
 
-
+        List<WorkingGroupQueryDto> workingGroupQueryList = searchResult.getRows();
         String defualtId = workingGroupQueryList.stream().findFirst().orElse(new WorkingGroupQueryDto()).getId();
         List<SelectOption> wrlGrpNameOpt = new ArrayList<>();
         workingGroupQueryList.stream().forEach(wkr -> {

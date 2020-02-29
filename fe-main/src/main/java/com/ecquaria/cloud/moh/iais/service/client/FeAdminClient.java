@@ -18,17 +18,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "iais-organization",configuration = FeignConfiguration.class,fallback = FeAdminClientFallback.class)
 public interface FeAdminClient {
-    @RequestMapping(path = "/hcsa-User-fe/feAdminlist",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
+    @RequestMapping(path = "/iais-internet-user/feAdminlist",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<SearchResult<FeAdminQueryDto>> getFeAdminList(SearchParam searchParam);
 
-    @GetMapping(value = "/hcsa-User-fe/organization-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-internet-user/organization-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrganizationDto> getOrganizationById(@RequestParam("id") String id);
 
-    @RequestMapping(path = "/hcsa-User-fe/add-admin-account",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(path = "/iais-internet-user/add-admin-account",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FeAdminDto> addAdminAccount(@RequestBody FeAdminDto feAdminDto);
 
-    @GetMapping(value = "/hcsa-User-fe/change-active-status",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-internet-user/change-active-status",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> ChangeActiveStatus(@RequestParam("userId") String id,@RequestParam("targetStatus") String targetStatus);
 
 }

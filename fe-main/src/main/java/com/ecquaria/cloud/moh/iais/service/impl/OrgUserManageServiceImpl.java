@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.JsonKeyConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminDto;
@@ -12,8 +14,11 @@ import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.FeAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -62,4 +67,20 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     public OrgUserRoleDto addUserRole(OrgUserRoleDto orgUserRoleDto){
         return feUserClient.addUserRole(orgUserRoleDto).getEntity();
     }
+
+    @Override
+    public Boolean validateSingpassId(String nric, String pwd) {
+
+        //TODO : call egp api to do validation
+
+        return true;
+    }
+
+	@Override
+	public IaisApiResult<List<String>> singPassLoginFe(String nric) {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put(JsonKeyConstants.SINGPASS_ID, nric);
+
+		return feUserClient.singPassLoginFe(jsonObject.toString()).getEntity();
+	}
 }
