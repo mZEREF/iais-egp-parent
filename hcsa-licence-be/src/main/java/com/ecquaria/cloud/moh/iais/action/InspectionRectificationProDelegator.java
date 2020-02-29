@@ -128,6 +128,7 @@ public class InspectionRectificationProDelegator {
                     } else {
                         iDto.setUploadRemarks(HcsaConsts.HCSA_PREMISES_HCI_NULL);
                     }
+                    iDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
                     List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = inspectionRectificationProService.getAppNcDocList(cDto.getItemId());
                     List<FileRepoDto> fileRepoDtos = inspectionRectificationProService.getFileByItemId(appPremPreInspectionNcDocDtos);
                     iDto.setAppPremPreInspectionNcDocDtos(appPremPreInspectionNcDocDtos);
