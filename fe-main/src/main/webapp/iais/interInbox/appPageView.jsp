@@ -64,12 +64,19 @@
     }
 
     function doDraft(appNo,appStatus) {
-        alert(appStatus);
+        showWaiting();
         if ('APST008' == appStatus) {
             $("[name='crud_action_value']").val(appNo);
             submit('appDraft');
         }
     }
+
+    function doAppAction(appId,actionName) {
+        showWaiting();
+        $("[name='crud_action_additional']").val(actionName);
+        $("[name='crud_action_value']").val(appId);
+        submit('appDraft');
+    };
 
     function doDraftAction(appNo, val) {
         var action = val;

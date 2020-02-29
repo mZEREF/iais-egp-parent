@@ -304,6 +304,16 @@ public class InterInboxDelegator {
     public void appDoDraft(BaseProcessClass bpc) throws IOException {
         log.debug("The prepareEdit start ...");
         HttpServletRequest request = bpc.request;
+        if ("Withdraw".equals(ParamUtil.getString(request, InboxConst.CRUD_ACTION_ADDITIONAL))){
+            String appId = ParamUtil.getString(request, InboxConst.CRUD_ACTION_VALUE);
+            StringBuffer url = new StringBuffer();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohWithdrawalApplication")
+                    .append("?appId=")
+                    .append(appId);
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }else {
         String appNo = ParamUtil.getString(request, InboxConst.CRUD_ACTION_VALUE);
 //        String draftNo = inboxService.getDraftNumber(appNo);
         StringBuffer url = new StringBuffer();
@@ -312,7 +322,7 @@ public class InterInboxDelegator {
                 .append("?DraftNumber=")
                 .append(appNo);
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);
+        bpc.response.sendRedirect(tokenUrl);}
     }
 
     /**

@@ -132,7 +132,7 @@
                                         <c:otherwise>
                                             <iais:select name="appAction" id="appAction"
                                                          options="selectApplication"
-                                                         firstOption="Select"></iais:select>
+                                                         firstOption="Select" onchange="doAppAction('${app.id}',this.value)"></iais:select>
                                         </c:otherwise>
                                     </c:choose>
                                 </td>
