@@ -22,4 +22,9 @@ public class INTERNET___MohLicenceView___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}
 
+	public void start_OnStepProcess_0() throws Exception {
+	// 		Start->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doStart", this);
+	}
+
 }

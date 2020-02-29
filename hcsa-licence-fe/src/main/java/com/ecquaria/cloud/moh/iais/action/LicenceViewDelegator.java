@@ -31,7 +31,7 @@ public class LicenceViewDelegator {
      */
     public void doStart(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("The LicenceViewDelegator doStart start ..."));
-        //ParamUtil.setSessionAttr(bpc.request,LICENCE_ID,null);
+      //  ParamUtil.setSessionAttr(bpc.request,LICENCE_ID,null);
         log.info(StringUtil.changeForLog("The LicenceViewDelegator doStart end ..."));
 
     }
