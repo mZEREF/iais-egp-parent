@@ -123,15 +123,6 @@ public class InterInboxDelegator {
             String serviceName = inboxService.getServiceNameById(inboxQueryDto.getServiceId());
             inboxQueryDto.setProcessUrl(RedirectUtil.changeUrlToCsrfGuardUrlUrl(inboxQueryDto.getProcessUrl(), request));
             inboxQueryDto.setServiceId(serviceName);
-            if ("MESTYPE001".equals(inboxQueryDto.getMessageType())){
-                inboxQueryDto.setMessageType("Notification");
-            }
-            if ("MESTYPE002".equals(inboxQueryDto.getMessageType())){
-                inboxQueryDto.setMessageType("Announcement");
-            }
-            if ("MESTYPE003".equals(inboxQueryDto.getMessageType())){
-                inboxQueryDto.setMessageType("Action Required");
-            }
         }
         if(!StringUtil.isEmpty(inboxResult)){
             ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, inboxParam);
