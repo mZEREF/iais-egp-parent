@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
@@ -25,6 +26,13 @@
                       <p class="print"><a href="#"> <em class="fa fa-print"></em>Print</a></p>
                     </div>
                   </div>
+                  <iais:error>
+                    <c:if test = "${not empty errorMsg}">
+                      <div class="error">
+                          ${errorMsg}
+                      </div>
+                    </c:if>
+                  </iais:error>
                   <div class="row">
                     <div class="col-xs-12">
                       <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">

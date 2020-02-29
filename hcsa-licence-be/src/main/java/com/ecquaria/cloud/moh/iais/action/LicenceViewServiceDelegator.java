@@ -198,6 +198,7 @@ public class LicenceViewServiceDelegator {
     public void doSaveSelect(BaseProcessClass bpc) throws Exception{
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator doSaveSelect start ..."));
          ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+         String isSuccess = "Y";
          String parentMsg= null;
          String successMsg = null;
          String errorMsg = null;
@@ -216,7 +217,7 @@ public class LicenceViewServiceDelegator {
                      successMsg = "save success";
                      ParamUtil.setSessionAttr(bpc.request,"isSaveRfiSelect",AppConsts.YES);
                  }else{
-                     successMsg = "do not select save success!!!";
+                     errorMsg = "do not select save success!!!";
                  }
              }else{
                errorMsg = "Data Error!!!";
@@ -224,8 +225,11 @@ public class LicenceViewServiceDelegator {
          }else{
            errorMsg = "Session Time out !!!";
          }
-
+         if(!StringUtil.isEmpty(errorMsg)){
+             isSuccess = "N";
+         }
          ParamUtil.setRequestAttr(bpc.request,"successMsg",successMsg);
+         ParamUtil.setRequestAttr(bpc.request,"isSuccess",isSuccess);
          ParamUtil.setRequestAttr(bpc.request,"errorMsg",errorMsg);
          ParamUtil.setRequestAttr(bpc.request,"parentMsg",parentMsg);
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator doSaveSelect end ..."));
