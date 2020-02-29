@@ -10,15 +10,15 @@ import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayMainClient;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -45,8 +45,8 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
     }
 
     @Override
-    public boolean isOtherApplicaitonSubmit(List<ApplicationDto> applicationDtoList,String appNo,String status) {
-        if(IaisCommonUtils.isEmpty(applicationDtoList) || StringUtil.isEmpty(appNo) || StringUtil.isEmpty(status)){
+    public boolean isOtherApplicaitonSubmit(List<ApplicationDto> applicationDtoList,List<String> appNos,String status) {
+        if(IaisCommonUtils.isEmpty(applicationDtoList) || appNos.isEmpty() || StringUtil.isEmpty(status)){
             return  false;
         }
         boolean result = true;
@@ -55,13 +55,19 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
             for (Map.Entry<String,List<ApplicationDto>> entry : applicationMap.entrySet()){
                 String key = entry.getKey();
                 List<ApplicationDto> value = entry.getValue();
-                if(appNo.equals(key)){
+                boolean isExistFlag = false;
+                for (String appNo:appNos
+                     ) {
+                    if(appNo.equals(key)){
+                        isExistFlag = true;
+                    }
+                }
+                if(isExistFlag){
                     continue;
                 }else if(!containStatus(value,status)){
                     result = false;
                     break;
                 }
-
             }
         }
         return result;

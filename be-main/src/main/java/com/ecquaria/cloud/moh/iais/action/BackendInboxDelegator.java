@@ -82,6 +82,7 @@ public class BackendInboxDelegator {
     private String hci_code;
     private String hci_name;
     private String hci_address;
+    private List<String> applicationDtoIds;
     private SearchParam searchParam;
     private List<TaskDto> commPools;
     public void start(BaseProcessClass bpc){
@@ -297,6 +298,7 @@ public class BackendInboxDelegator {
      * @throws
      */
     public void doApprove(BaseProcessClass bpc)  throws FeignException, CloneNotSupportedException {
+        applicationDtoIds = new ArrayList<>();
         String[] taskList =  ParamUtil.getStrings(bpc.request, "taskcheckbox");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(!StringUtil.isEmpty(taskList)){
@@ -338,6 +340,8 @@ public class BackendInboxDelegator {
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
 
+        applicationDtoIds.add(applicationDto.getApplicationNo());
+
         //complated this task and create the history
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
         taskDto =  completedTask(taskDto);
@@ -355,7 +359,7 @@ public class BackendInboxDelegator {
         if(!StringUtil.isEmpty(stageId)){
             if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)){
                 List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
-                boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getId(),
+                boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
                         ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
                 if(isAllSubmit){
                     // send the task to Ao3
@@ -377,7 +381,7 @@ public class BackendInboxDelegator {
             }
         }else{
             List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
-            boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getId(),
+            boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
                     ApplicationConsts.APPLICATION_STATUS_APPROVED);
             if(isAllSubmit){
                 //update application Group status
@@ -397,7 +401,7 @@ public class BackendInboxDelegator {
         broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,true);
         broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,true);
 
-        applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+//        applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
 
     private TaskDto completedTask(TaskDto taskDto){
