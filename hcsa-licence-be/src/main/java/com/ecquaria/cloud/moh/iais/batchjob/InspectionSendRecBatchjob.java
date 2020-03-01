@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
@@ -119,12 +118,11 @@ public class InspectionSendRecBatchjob {
                 String mesNO = inboxMsgService.getMessageNo();
                 interMessageDto.setRefNo(mesNO);
                 interMessageDto.setService_id(aDto.getServiceId());
-                String url = systemParamConfig.getInterServerName() +
-                        MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION +
-                        appPremCorrId;
+                interMessageDto.setUserId(intranet.getMohUserGuid());
+                String url = MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION + appPremCorrId;
                 interMessageDto.setProcessUrl(url);
                 interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                interMessageDto.setAuditTrailDto(intranet);
                 inboxMsgService.saveInterMessage(interMessageDto);
                 aDto.setAuditTrailDto(intranet);
                 aDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION);
