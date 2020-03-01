@@ -81,6 +81,11 @@ public class InspecUserRecUploadDelegator {
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
         if(inspecUserRecUploadDtos == null){
             String appPremCorrId = ParamUtil.getRequestString(bpc.request, "appPremCorrId");
+            String versionStr = ParamUtil.getRequestString(bpc.request, "recVersion");
+            int version = 0;
+            if(!StringUtil.isEmpty(versionStr)){
+                version = Integer.parseInt(versionStr);
+            }
             List<ChecklistItemDto> checklistItemDtos = inspecUserRecUploadService.getQuesAndClause(appPremCorrId);
             ApplicationDto applicationDto = inspecUserRecUploadService.getApplicationByCorrId(appPremCorrId);
             inspecUserRecUploadDtos = new ArrayList<>();
@@ -93,7 +98,7 @@ public class InspecUserRecUploadDelegator {
                     iDto.setIndex(index++);
                     iDto.setAppNo(applicationDto.getApplicationNo());
                     iDto.setItemId(cDto.getItemId());
-                    iDto = inspecUserRecUploadService.getNcItemData(iDto);
+                    iDto = inspecUserRecUploadService.getNcItemData(iDto, version, appPremCorrId);
                     int feRec = iDto.getAppPremisesPreInspectionNcItemDto().getFeRectifiedFlag();
                     if(1 == feRec){
                         iDto.setButtonFlag(AppConsts.SUCCESS);

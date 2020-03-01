@@ -42,7 +42,7 @@ public interface InspectionFeClient {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> deleteByFileReportId(@PathVariable(name = "fileId") String fileId);
 
-    @GetMapping(value = "/nc-item-list/{appNcId}", produces = MediaType.APPLICATION_JSON_VALUE,
+    @GetMapping(value = "/iais-inspection-fe/nc-item-list/{appNcId}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesPreInspectionNcItemDto>> getNcItemDtoListByAppPremNcId(@PathVariable(name = "appNcId") String appNcId);
 }

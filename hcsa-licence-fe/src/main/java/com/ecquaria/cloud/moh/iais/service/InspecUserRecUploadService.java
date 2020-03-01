@@ -52,11 +52,11 @@ public interface InspecUserRecUploadService {
     /**
       * @author: shicheng
       * @Date 2020/2/27
-      * @Param: inspecUserRecUploadDto
+      * @Param: inspecUserRecUploadDto version appPremCorrId
       * @return: InspecUserRecUploadDto
       * @Descripation: getNcItemData
       */
-    InspecUserRecUploadDto getNcItemData(InspecUserRecUploadDto inspecUserRecUploadDto);
+    InspecUserRecUploadDto getNcItemData(InspecUserRecUploadDto inspecUserRecUploadDto, int version, String appPremCorrId);
 
     /**
       * @author: shicheng

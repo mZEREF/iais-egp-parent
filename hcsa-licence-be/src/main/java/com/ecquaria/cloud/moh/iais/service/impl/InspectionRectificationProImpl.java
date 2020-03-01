@@ -180,7 +180,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             updateInspectionStatus(taskDto.getRefNo(), InspectionConstants.INSPECTION_STATUS_PENDING_REQUEST_FOR_INFORMATION);
 
             //create new version
-            String version = getVersionAddOne(taskDto, inspectionPreTaskDto);
+            String version = getVersionAddOne(taskDto);
 
             InterMessageDto interMessageDto = new InterMessageDto();
             interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
@@ -200,35 +200,17 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
         }
     }
 
-    private String getVersionAddOne(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto) {
+    private String getVersionAddOne(TaskDto taskDto) {
         String appPremCorrId = taskDto.getRefNo();
         AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremCorrId).getEntity();
         String curVersionStr = appPremPreInspectionNcDto.getVersion();
-        String ncId = appPremPreInspectionNcDto.getId();
         curVersionStr = curVersionStr.trim();
         int curVersion = Integer.parseInt(curVersionStr);
         String version = curVersion + 1 + "";
 
         appPremPreInspectionNcDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
         appPremPreInspectionNcDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appPremPreInspectionNcDto = fillUpCheckListGetAppClient.updateAppPreNc(appPremPreInspectionNcDto).getEntity();
-
-        appPremPreInspectionNcDto.setVersion(version);
-        appPremPreInspectionNcDto.setId(null);
-        appPremPreInspectionNcDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appPremPreInspectionNcDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        appPremPreInspectionNcDto = fillUpCheckListGetAppClient.saveAppPreNc(appPremPreInspectionNcDto).getEntity();
-
-        List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
-        if(!IaisCommonUtils.isEmpty(appPremisesPreInspectionNcItemDtos)){
-            for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtos){
-                appPremisesPreInspectionNcItemDto.setFeRectifiedFlag(0);
-                appPremisesPreInspectionNcItemDto.setId(null);
-                appPremisesPreInspectionNcItemDto.setPreNcId(appPremPreInspectionNcDto.getId());
-                appPremisesPreInspectionNcItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            }
-            fillUpCheckListGetAppClient.saveAppPreNcItem(appPremisesPreInspectionNcItemDtos);
-        }
+        fillUpCheckListGetAppClient.updateAppPreNc(appPremPreInspectionNcDto).getEntity();
 
         return version;
     }

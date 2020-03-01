@@ -200,6 +200,14 @@ public class ApplicationClientFallback implements ApplicationClient {
     }
 
     @Override
+    public FeignResponseEntity<List<AppPremPreInspectionNcDocDto>> getNcDocListByItemId(String id) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<AppPremisesPreInspectionNcItemDto> updateAppPreItemNc(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
