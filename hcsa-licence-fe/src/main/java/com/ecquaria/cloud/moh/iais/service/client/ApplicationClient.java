@@ -130,10 +130,6 @@ public interface ApplicationClient  {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremisesPreInspectionNcItemDto> updateAppPreItemNc(@RequestBody AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto);
 
-    @GetMapping(value = "/iais-inspection-fe/appncitemdto/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppPremisesPreInspectionNcItemDto> getNcItemByItemId(@PathVariable(name = "itemId") String itemId);
-
     @GetMapping(value = "/iais-inspection-fe/apprencdto/{preNcId}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremPreInspectionNcDto> getPreNcByPreNcId(@PathVariable(name = "preNcId") String preNcId);
