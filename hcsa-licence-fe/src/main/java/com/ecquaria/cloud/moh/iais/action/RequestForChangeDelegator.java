@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -161,7 +160,6 @@ public class RequestForChangeDelegator {
      * @Decription compareChangePercentage
      */
     public void compareChangePercentage(BaseProcessClass bpc) {
-        String pageType =ParamUtil.getString(bpc.request, "keyType");
         String licenceId= (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         //String licenseNo="L/20CLB0156/CLB/001/201";
         LicenceDto licenceDto=requestForChangeService.getLicenceDtoByLicenceId(licenceId);
@@ -169,18 +167,16 @@ public class RequestForChangeDelegator {
         String UNID=ParamUtil.getString(bpc.request, "UNID");
         String newLicenseeId=null;
         List<String> uenMemberIds=new ArrayList<>();
-        if(("UEN").equals(pageType)){
-            List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoList=requestForChangeService.getLicenseeKeyApptPersonDtoListByUen(UNID);
-            if(licenseeKeyApptPersonDtoList!=null&&licenseeKeyApptPersonDtoList.size()>0){
+
+        List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoList=requestForChangeService.getLicenseeKeyApptPersonDtoListByUen(UNID);
+         if(licenseeKeyApptPersonDtoList!=null&&licenseeKeyApptPersonDtoList.size()>0){
                 for (LicenseeKeyApptPersonDto e:licenseeKeyApptPersonDtoList
                         ) {
                     uenMemberIds.add(e.getId());
                     newLicenseeId=e.getLicenseeId();
-
                 }
             }
             //uen
-
             List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoListFromLicenseeId=requestForChangeService.getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
             List<String> oldMemberIds=new ArrayList<>();
             if(licenseeKeyApptPersonDtoListFromLicenseeId!=null&&licenseeKeyApptPersonDtoListFromLicenseeId.size()>0) {
@@ -199,29 +195,16 @@ public class RequestForChangeDelegator {
                         }
                     }
                 }
-
-
                 if (count / oldMemberIds.size() < 0.5 && oldMemberIds.size() != 0) {
                     result = true;
                 }
             }
-
-
             if(result){
                 appSubmissionDto.setLicenseeId(newLicenseeId);
+                appSubmissionDto.setAutoRfc(true);
                 requestForChangeService.submitChange(appSubmissionDto);
             }
-        }else {
-            String nric=UNID;
-            LicenseeIndividualDto licenseeIndividualDt=requestForChangeService.getLicIndByNRIC(nric);
-            if(licenseeIndividualDt!=null){
-                appSubmissionDto.setLicenseeId(licenseeIndividualDt.getId());
-                requestForChangeService.submitChange(appSubmissionDto);
-            }
-        }
-
     }
-
 
     private boolean iftranfer(String UNID,String licenceId,String pageType){
         return true;
