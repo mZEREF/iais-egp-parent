@@ -52,7 +52,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -255,23 +257,32 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
     }
 
     @Override
-    public List<AppPremPreInspectionNcDocDto> getAppNcDocList(String itemId) {
-        List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = inspectionTaskClient.getFilesByItemId(itemId).getEntity();
+    public List<AppPremPreInspectionNcDocDto> getAppNcDocList(String id) {
+        List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = inspectionTaskClient.getFilesByItemId(id).getEntity();
         return appPremPreInspectionNcDocDtos;
-    }
-
-    @Override
-    public AppPremisesPreInspectionNcItemDto getNcItemDtoByItemId(String itemId) {
-        if(!StringUtil.isEmpty(itemId)){
-            AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = fillUpCheckListGetAppClient.getNcItemByItemId(itemId).getEntity();
-            return appPremisesPreInspectionNcItemDto;
-        }
-        return null;
     }
 
     @Override
     public byte[] downloadFile(String fileRepoId) {
         return fileRepoClient.getFileFormDataBase(fileRepoId).getEntity();
+    }
+
+    @Override
+    public AppPremPreInspectionNcDto getAppPremPreInspectionNcDtoByCorrId(String refNo) {
+        AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(refNo).getEntity();
+        return appPremPreInspectionNcDto;
+    }
+
+    @Override
+    public Map<String, AppPremisesPreInspectionNcItemDto> getNcItemDtoMap(String id) {
+        Map<String, AppPremisesPreInspectionNcItemDto> ncItemDtoMap = new HashMap<>();
+        List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(id).getEntity();
+        if(!IaisCommonUtils.isEmpty(appPremisesPreInspectionNcItemDtos)){
+            for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtos) {
+                ncItemDtoMap.put(appPremisesPreInspectionNcItemDto.getItemId(), appPremisesPreInspectionNcItemDto);
+            }
+        }
+        return ncItemDtoMap;
     }
 
     private List<ChecklistItemDto> getcheckDtosByItemIds(List<String> itemIds) {

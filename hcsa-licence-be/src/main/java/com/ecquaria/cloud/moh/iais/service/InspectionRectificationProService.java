@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -66,20 +68,11 @@ public interface InspectionRectificationProService {
     /**
       * @author: shicheng
       * @Date 2020/2/25
-      * @Param: itemId
+      * @Param: id
       * @return: List<AppPremPreInspectionNcDocDto>
       * @Descripation: get AppNcDocList
       */
-    List<AppPremPreInspectionNcDocDto> getAppNcDocList(String itemId);
-
-    /**
-      * @author: shicheng
-      * @Date 2020/2/26
-      * @Param: itemId
-      * @return: AppPremisesPreInspectionNcItemDto
-      * @Descripation: getNcItemDtoByItemId
-      */
-    AppPremisesPreInspectionNcItemDto getNcItemDtoByItemId(String itemId);
+    List<AppPremPreInspectionNcDocDto> getAppNcDocList(String id);
 
     /**
       * @author: shicheng
@@ -89,4 +82,22 @@ public interface InspectionRectificationProService {
       * @Descripation: downloadFile
       */
     byte[] downloadFile(String fileRepoId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/3/1
+      * @Param: refNo
+      * @return: AppPremPreInspectionNcDto
+      * @Descripation: getAppPremPreInspectionNcDtoByCorrId
+      */
+    AppPremPreInspectionNcDto getAppPremPreInspectionNcDtoByCorrId(String refNo);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/3/1
+      * @Param: ncId
+      * @return: Map<String, AppPremisesPreInspectionNcItemDto>
+      * @Descripation: getNcItemDtoMap
+      */
+    Map<String, AppPremisesPreInspectionNcItemDto> getNcItemDtoMap(String id);
 }

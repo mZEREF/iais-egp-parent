@@ -79,7 +79,7 @@ public interface InspectionTaskClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<String>> getItemIdsByAppNo(@PathVariable(name = "appPremCorrId") String appPremCorrId);
 
-    @GetMapping(value = "/iais-apppreinsncitem-be/nc-file-ids/{itemId}",produces = MediaType.APPLICATION_JSON_VALUE,
+    @GetMapping(value = "/iais-apppreinsncitem-be/nc-file-ids/{id}",produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = {MediaType.APPLICATION_JSON_VALUE})
-    FeignResponseEntity<List<AppPremPreInspectionNcDocDto>> getFilesByItemId(@PathVariable(name = "itemId") String itemId);
+    FeignResponseEntity<List<AppPremPreInspectionNcDocDto>> getFilesByItemId(@PathVariable(name = "id") String id);
 }
