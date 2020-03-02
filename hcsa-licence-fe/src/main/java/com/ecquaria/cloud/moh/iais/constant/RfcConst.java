@@ -12,9 +12,10 @@ public class RfcConst {
     public static final String CRUD_ACTION_TOP  = "crud_action_top";
     public static final String FORM_TAB_VALUE  = "form_tab_value";
     public static final String CRUD_ACTION_TYPE_MENU = "crud_action_type_menu";
-    
-    public static final String LICENCEID = "LicenceId";
+    public static final String SWITCH_VALUE = "switch_value";
 
+
+    public static final String LICENCEID = "LicenceId";
     //premises list page
     public static final String PREMISESLISTDTOS  = "PremisesListDtos";
     //edit premises page
@@ -22,6 +23,8 @@ public class RfcConst {
 
     public static final String PREMISESLISTQUERYDTO = "PremisesListQueryDto";
 
+    public static final String RFCAPPSUBMISSIONDTO = "RfcAppSubmissionDto";
+    public static final String APPSUBMISSIONDTORFCATTR = "AppSubmissionDtoRfcAttr";
     public static final String APPSUBMISSIONDTO =  "AppSubmissionDto";
     public static final String OLDAPPSUBMISSIONDTO =  "OldAppSubmissionDto";
 
@@ -32,20 +35,20 @@ public class RfcConst {
     //reload-premises
     public static final String RELOADPREMISES = "ReloadPremises";
 
+    public static final String RFC_BTN_OPTION_UNDO_ALL_CHANGES = "undo";
+    public static final String RFC_BTN_OPTION_SKIP = "skip";
+
+    public static final String RFC_CURRENT_EDIT = "RfcCurrentEdit";
+
+
     //error_msg
     public static final String ERRORMAP_PREMISES = "errorMap_premises";
 
 
+    public static final String EDIT_PREMISES = "premises";
 
-    public static final String SWITCH_VALUE = "switch_value";
+    public static final String EDIT_PRIMARY_DOC = "doc";
 
-
-    //rfc amendType text
-    public static final String REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION_TEXT = "Premises Information";
-    public static final String REQUEST_FOR_CHANGE_TYPE_MEDALERT_PERSONNEL_TEXT  = "MedAlert Personnel";
-    public static final String REQUEST_FOR_CHANGE_TYPE_PRINCIPAL_OFFICER_TEXT  = "Principal Officer";
-    public static final String REQUEST_FOR_CHANGE_TYPE_DEPUTY_PRINCIPAL_OFFICER_TEXT  = "Deputy Principal Officer";
-    public static final String REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION_TEXT  = "Service-Related Information";
-    public static final String REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT_TEXT  = "Supporting Document(s)";
+    public static final String EDIT_SERVICE = "service";
 
 }
