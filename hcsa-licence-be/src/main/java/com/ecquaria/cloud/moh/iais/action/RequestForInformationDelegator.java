@@ -696,8 +696,12 @@ public class RequestForInformationDelegator {
     public void preReqForInfo(BaseProcessClass bpc) {
         log.info("=======>>>>>preReqForInfo>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String licPremId = (String) ParamUtil.getSessionAttr(request, "id");
-        List<LicPremisesReqForInfoDto>licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licPremId);
+        String  id=(String) ParamUtil.getSessionAttr(request, "id");
+        if(id==null){
+            id = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        }
+        ParamUtil.setSessionAttr(request,"id",id);
+        List<LicPremisesReqForInfoDto>licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(id);
 
         if(!licPremisesReqForInfoDtoList.isEmpty()) {
             ParamUtil.setSessionAttr(request, "licenceNo", licPremisesReqForInfoDtoList.get(0).getLicenceNo());
@@ -774,6 +778,7 @@ public class RequestForInformationDelegator {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         licPremisesReqForInfoDto1.setAction("create");
+        log.info("=======>>>>>Create Lic Request for Information licPremId "+licPremisesReqForInfoDto1.getReqInfoId());
         gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1,
                 signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
         EmailDto emailDto=new EmailDto();

@@ -111,22 +111,24 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
     @Override
     public String getData(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
-        fileName = "folder";
-        download = sharedPath + "folder";
-        backups = sharedPath + "backups";
+        fileName = "userRecFile";
+        download = sharedPath +fileName;
+        backups = sharedPath + "backupsRec";
         //if path is not exists create path
         File fileRepPath=new File(download+File.separator+"files");
         if(!fileRepPath.exists()){
             fileRepPath.mkdirs();
         }
         String entity1= JsonUtil.parseToJson(licPremisesReqForInfoDto);
-        byte[] entity = fileRepositoryClient.getFileFormDataBase(licPremisesReqForInfoDto.getFileRepoId()).getEntity();
-        File file = MiscUtil.generateFile(download + File.separator + "files",
-                licPremisesReqForInfoDto.getFileRepoId() + "@" + licPremisesReqForInfoDto.getDocName());
-        try (FileOutputStream outputStream=new FileOutputStream(file)) {
-            outputStream.write(entity);
-        } catch (Exception e) {
-            log.error(e.getMessage(),e);
+        if(licPremisesReqForInfoDto.getFileRepoId()!=null){
+            byte[] entity = fileRepositoryClient.getFileFormDataBase(licPremisesReqForInfoDto.getFileRepoId()).getEntity();
+            File file = MiscUtil.generateFile(download + File.separator + "files",
+                    licPremisesReqForInfoDto.getFileRepoId() + "@" + licPremisesReqForInfoDto.getDocName());
+            try (FileOutputStream outputStream=new FileOutputStream(file)) {
+                outputStream.write(entity);
+            } catch (Exception e) {
+                log.error(e.getMessage(),e);
+            }
         }
         return entity1;
     }
@@ -215,8 +217,8 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                     String s = FileUtil.genMd5FileChecksum(bytes);
                     File curFile =new File(backups + File.separator + s + ".zip");
                     file.renameTo(curFile);
-                    log.info("----------- new zip file name is"+backups+File.separator+s+".zip");
-                    String s1 = saveFileName(s+".zip","backups" + File.separator+s+".zip");
+                    log.info("----------- new zip file name is"+backups+File.separator+fileNamesss+".zip");
+                    String s1 = saveFileName(fileNamesss+".zip","backupsRec" + File.separator+fileNamesss+".zip");
                     if(!s1.equals("SUCCESS")){
                         MiscUtil.deleteFile(curFile);
                         flag=false;

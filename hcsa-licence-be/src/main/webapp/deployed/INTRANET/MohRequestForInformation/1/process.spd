@@ -405,6 +405,9 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSearchLicenceAfter" style="oblique">
    <position>{(1050,380)(1220,440)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preReqForInfo" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(280,450)(1450,430)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
@@ -416,6 +419,7 @@
    <SwitchCase component="/Steps/AutomaticStep/preSearchLic" value="&quot;searchLic&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSearchLicenceAfter" value="&quot;licInfo&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSearchApplicationAfter" value="&quot;appInfo&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preReqForInfo" value="&quot;reqForInfo&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Merges/Merge/Merge3" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="1300" y="430">
    <Description/>

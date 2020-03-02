@@ -223,7 +223,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                 if(fil.getName().endsWith(".zip")){
                     String name = fil.getName();
                     String path = fil.getPath();
-                    String relPath="backups"+File.separator+name;
+                    String relPath="backupsRec"+File.separator+name;
                     HashMap<String,String> map=new HashMap<>();
                     map.put("fileName",name);
                     map.put("filePath",relPath);
@@ -324,36 +324,36 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     public boolean download( ProcessFileTrackDto processFileTrackDto,LicPremisesReqForInfoDto licPremisesReqForInfoDto,String fileName) {
 
         Boolean flag=false;
-        File file =new File(downZip+File.separator+fileName+File.separator+FOLDER);
+        File file =new File(downZip+File.separator+fileName+File.separator+"userRecFile");
         if(!file.exists()){
             file.mkdirs();
         }
-        if(file.isDirectory()){
-            File[] files = file.listFiles();
-            for(File  filzz:files){
-                if(filzz.isFile() &&filzz.getName().endsWith(fileFormat)){
-                    try (FileInputStream fileInputStream =new FileInputStream(filzz);
-                         ByteArrayOutputStream by=new ByteArrayOutputStream();) {
 
-                        int count=0;
-                        byte [] size=new byte[1024];
-                        count=fileInputStream.read(size);
-                        while(count!=-1){
-                            by.write(size,0,count);
-                            count= fileInputStream.read(size);
-                        }
-                        Boolean aBoolean = fileToDto(by.toString(),licPremisesReqForInfoDto,processFileTrackDto);
-                        flag=aBoolean;
-                        if(aBoolean&&processFileTrackDto!=null){
-                            changeStatus(processFileTrackDto);
-                            saveFileRepo( fileName);
-                        }
-                    }catch (Exception e){
-                        log.error(e.getMessage(),e);
+        File[] files = file.listFiles();
+        for(File  filzz:files){
+            if(filzz.isFile() &&filzz.getName().endsWith(fileFormat)){
+                try (FileInputStream fileInputStream =new FileInputStream(filzz);
+                     ByteArrayOutputStream by=new ByteArrayOutputStream();) {
+
+                    int count=0;
+                    byte [] size=new byte[1024];
+                    count=fileInputStream.read(size);
+                    while(count!=-1){
+                        by.write(size,0,count);
+                        count= fileInputStream.read(size);
                     }
+                    Boolean aBoolean = fileToDto(by.toString(),licPremisesReqForInfoDto,processFileTrackDto);
+                    flag=aBoolean;
+                    if(aBoolean&&processFileTrackDto!=null){
+                        changeStatus(processFileTrackDto);
+                        saveFileRepo( fileName);
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
                 }
             }
         }
+
         return flag;
     }
     private Boolean fileToDto(String str,LicPremisesReqForInfoDto licPremisesReqForInfoDto,ProcessFileTrackDto processFileTrackDto){
@@ -374,52 +374,50 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     private void saveFileRepo(String fileNames){
         boolean aBoolean=false;
-        File file =new File(downZip+File.separator+fileNames+File.separator+FOLDER+File.separator+"files");
+        File file =new File(sharedPath+File.separator+"userRecFile"+File.separator+"files");
         if(!file.exists()){
             file.mkdirs();
         }
-        if(file.isDirectory()){
-            File[] files = file.listFiles();
-            for(File f:files){
-                if(f.isFile()){
-                    try {
-                        StringBuilder fileName=new StringBuilder();
-                        String[] split = f.getName().split("@");
-                        for(int i=1;i<split.length;i++){
-                            fileName.append(split[i]);
-                        }
-                        FileItem fileItem = null;
-                        try {
-                            fileItem = new DiskFileItem("selectedFile", Files.probeContentType(f.toPath()),
-                                    false, fileName.toString(), (int) f.length(), f.getParentFile());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            log.error(e.getMessage(),e);
-                        }
-                        try ( InputStream input = new FileInputStream(f);){
-                            if(fileItem!=null){
-                                OutputStream os = fileItem.getOutputStream();
-                                IOUtils.copy(input, os);
-                            }
-                        } catch (IOException ex) {
-                            log.error(ex.getMessage(),ex);
-                        }
-                        MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
-
-                        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
-                        FileRepoDto fileRepoDto = new FileRepoDto();
-                        fileRepoDto.setId(split[0]);
-                        fileRepoDto.setAuditTrailDto(intranet);
-                        fileRepoDto.setFileName(fileName.toString());
-                        fileRepoDto.setRelativePath(downZip+File.separator+fileNames+File.separator+FOLDER+File.separator+"files");
-                        aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
-
-                        if(aBoolean){
-                            /*   removeFilePath(f);*/
-                        }
-                    }catch (Exception e){
-                        continue;
+        File[] files = file.listFiles();
+        for(File f:files){
+            if(f.isFile()){
+                try {
+                    StringBuilder fileName=new StringBuilder();
+                    String[] split = f.getName().split("@");
+                    for(int i=1;i<split.length;i++){
+                        fileName.append(split[i]);
                     }
+                    FileItem fileItem = null;
+                    try {
+                        fileItem = new DiskFileItem("selectedFile", Files.probeContentType(f.toPath()),
+                                false, fileName.toString(), (int) f.length(), f.getParentFile());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        log.error(e.getMessage(),e);
+                    }
+                    try ( InputStream input = new FileInputStream(f);){
+                        if(fileItem!=null){
+                            OutputStream os = fileItem.getOutputStream();
+                            IOUtils.copy(input, os);
+                        }
+                    } catch (IOException ex) {
+                        log.error(ex.getMessage(),ex);
+                    }
+                    MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+
+                    AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
+                    FileRepoDto fileRepoDto = new FileRepoDto();
+                    fileRepoDto.setId(split[0]);
+                    fileRepoDto.setAuditTrailDto(intranet);
+                    fileRepoDto.setFileName(fileName.toString());
+                    fileRepoDto.setRelativePath(sharedPath+File.separator+"userRecFile"+File.separator+"files");
+                    aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
+
+                    if(aBoolean){
+                        /*   removeFilePath(f);*/
+                    }
+                }catch (Exception e){
+                    continue;
                 }
             }
         }

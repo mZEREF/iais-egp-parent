@@ -47,7 +47,7 @@
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Due Date:"/>
-                                            <iais:value width="18" style="width:180%; font-weight:normal;">
+                                            <iais:value width="18" style="width:80%; font-weight:normal;">
                                                 <%Date dueDate ;
                                                     Calendar calendar = Calendar.getInstance();
                                                     calendar.add(Calendar.DATE,14);
