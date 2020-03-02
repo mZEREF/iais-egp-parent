@@ -15,20 +15,23 @@
                                 <h1>Renewal Licence Application</h1>
                             </c:when>
                             <c:when test="${'APTY005' == AppSubmissionDto.appType}">
-                                <h1>Amend Licence Application</h1>
+                                <%@include file="../resForChange/amendHeader.jsp"%>
                             </c:when>
                             
                             <c:otherwise>
                                 <h1>New Licence Application</h1>
                             </c:otherwise>
                         </c:choose>
-                        <h3>
-                            You are applying for
-                            <c:forEach var="hcsaServiceDto" items="${hcsaServiceDtoList}" varStatus="status">
-                                <strong>${hcsaServiceDto.svcName}</strong>
-                                <c:if test="${!status.last}"> | </c:if>
-                            </c:forEach>
-                        </h3>
+                        <c:if test="${'APTY005' != AppSubmissionDto.appType}">
+                            <h3>
+                                You are applying for
+                                <c:forEach var="hcsaServiceDto" items="${hcsaServiceDtoList}" varStatus="status">
+                                    <strong>${hcsaServiceDto.svcName}</strong>
+                                    <c:if test="${!status.last}"> | </c:if>
+                                </c:forEach>
+                            </h3>
+                        </c:if>
+
                     </div>
                 </div>
             </div>

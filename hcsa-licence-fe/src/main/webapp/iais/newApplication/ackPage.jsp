@@ -8,7 +8,9 @@
 <webui:setLayout name="iais-internet"/>
 <%@ include file="./dashboard.jsp" %>
 <style>
-
+.margin-bottom-10{
+    margin-bottom:10px; ;
+}
 </style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="crud_action_type"  value=""/>
@@ -16,7 +18,7 @@
         <div class="container">
             <div class="row center">
                 <c:choose>
-                    <c:when test="${'error' != AckMessage}">
+                    <c:when test="${'error' != AckStatus}">
                         <div class="col-xs-12">
                             <p class="ack-font-20"><strong>Submission successful</strong></p>
                         </div>
@@ -44,7 +46,7 @@
                             Transactional details:
                         </div>
                         <div class="col-xs-12">
-                            <table class="table">
+                            <table class="table" style="background-color: #BABABA;">
                                 <thead>
                                 <tr>
                                     <th>Application No.</th>
@@ -81,32 +83,35 @@
                         </div>
                     </c:when>
                     <c:otherwise>
-                        <h3>You have encountered some problems, please contact the administrator !!!</h3>
+                        <h3>${AckMessage}</h3>
                     </c:otherwise>
                 </c:choose>
             </div>
-            <div class="row right align">
-                <%--<a class="btn btn-secondary" href="#">Indicate preferred Inspection Date</a>
-                <a class="btn btn-secondary" href="#">Indicate preferred Inspection Date</a>--%>
+            <div class="row margin-bottom-10">
                 <div class="col-xs-12 col-md-2">
-                    <a>Print</a>
+                    <p class="print"><a href="#"> <em class="fa fa-print"></em>Print</a></p>
                 </div>
-                <c:if test="${requestInformationConfig == null}">
-                    <div class="col-xs-12 col-md-4">
-                        <a class="btn btn-secondary" href="#">Indicate preferred Inspection Date</a>
-                    </div>
-                    <div class="col-xs-12 col-md-3">
-                        <a class="btn btn-secondary" id="doSelfAssessment">Submit Self-Assessment</a>
-                    </div>
-                    <div class="col-xs-12 col-md-3">
-                        <a class="btn btn-secondary" href="/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu">Apply for Another Licence</a>
-                    </div>
-                </c:if>
-
-                <div class="col-xs-12 col-md-2">
-                    <a class="btn btn-primary" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to Dashboard</a>
+                <div class="col-xs-12 col-md-10 text-right">
+                    <a class="btn btn-secondary" href="#">Indicate preferred Inspection Date</a>
                 </div>
             </div>
+            <c:if test="${requestInformationConfig == null}">
+                <div class="row margin-bottom-10">
+                    <div class="col-xs-12 text-right">
+                        <a class="btn btn-secondary" id="doSelfAssessment">Submit Self-Assessment</a>
+                    </div>
+                </div>
+                <div class="row margin-bottom-10">
+                    <div class="col-xs-12 text-right">
+                        <a class="btn btn-secondary" href="/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu">Apply for Another Licence</a>
+                    </div>
+                </div>
+                <div class="row margin-bottom-10">
+                    <div class="col-xs-12 text-right">
+                        <a class="btn btn-primary" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to Dashboard</a>
+                    </div>
+                </div>
+            </c:if>
         </div>
     </div>
 </form>
