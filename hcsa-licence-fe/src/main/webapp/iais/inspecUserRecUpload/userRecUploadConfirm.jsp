@@ -45,7 +45,7 @@
                           <iais:row>
                             <iais:field value="NC Clause"/>
                             <iais:value width="300">
-                              <label><c:out value = "${inspecUserRecUploadDto.regulationClause}"></c:out></label>
+                              <label><c:out value = "${inspecUserRecUploadDto.checkClause}"></c:out></label>
                             </iais:value>
                           </iais:row>
                           <iais:row>
@@ -58,7 +58,7 @@
                             <iais:field value="Choose a file to attach"/>
                             <iais:value width="7">
                               <input class="selectedFile premDoc" id="recFileUpload" name = "recFileUpload" type="file" style="display: none;" aria-label="selectedFile1"/>
-                              <button type="button" class="btn btn-lg" onchange="javascript:doUserRecUploadConfirmUpload()">Upload</button>
+                              <button type="button" class="btn btn-lg" onclick="javascript:doUserRecUploadConfirmUpload()">Upload</button>
                               <br><span class="error-msg" name="iaisErrorMsg" id="error_recFile"></span>
                             </iais:value>
                           </iais:row>

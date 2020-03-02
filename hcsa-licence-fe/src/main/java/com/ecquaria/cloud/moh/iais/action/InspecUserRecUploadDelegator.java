@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
@@ -99,15 +100,18 @@ public class InspecUserRecUploadDelegator {
                     iDto.setAppNo(applicationDto.getApplicationNo());
                     iDto.setItemId(cDto.getItemId());
                     iDto = inspecUserRecUploadService.getNcItemData(iDto, version, appPremCorrId);
-                    int feRec = iDto.getAppPremisesPreInspectionNcItemDto().getFeRectifiedFlag();
-                    if(1 == feRec){
-                        iDto.setButtonFlag(AppConsts.SUCCESS);
-                    } else if(0 == feRec){
-                        iDto.setButtonFlag(AppConsts.FAIL);
-                    }
-                    int rec = iDto.getAppPremisesPreInspectionNcItemDto().getIsRecitfied();
-                    if(0 == rec) {
-                        inspecUserRecUploadDtos.add(iDto);
+                    AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = iDto.getAppPremisesPreInspectionNcItemDto();
+                    if(appPremisesPreInspectionNcItemDto != null) {
+                        int feRec = appPremisesPreInspectionNcItemDto.getFeRectifiedFlag();
+                        if (1 == feRec) {
+                            iDto.setButtonFlag(AppConsts.SUCCESS);
+                        } else if (0 == feRec) {
+                            iDto.setButtonFlag(AppConsts.FAIL);
+                        }
+                        int rec = iDto.getAppPremisesPreInspectionNcItemDto().getIsRecitfied();
+                        if (0 == rec) {
+                            inspecUserRecUploadDtos.add(iDto);
+                        }
                     }
                 }
             }

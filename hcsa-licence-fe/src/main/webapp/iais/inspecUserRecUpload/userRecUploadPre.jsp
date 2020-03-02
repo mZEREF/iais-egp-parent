@@ -69,10 +69,10 @@
                                     <td><iais:code code="${feRecNc.checkQuestion}"/></td>
                                     <td>
                                       <c:if test="${'SUCCESS' eq feRecNc.buttonFlag}">
-                                        <button class="btn btn-lg disabled" style="float:right" type="button" disabled>Rectify</button>
+                                        <button class="btn btn-default btn-sm disabled" type="button" disabled>Rectify</button>
                                       </c:if>
                                       <c:if test="${'SUCCESS' ne feRecNc.buttonFlag}">
-                                        <button class="btn btn-lg btn-login-Next" style="float:right" type="button" onclick="javascript:doUserRecUploadRectify('<iais:mask name="itemId" value="${feRecNc.itemId}"/>')">Rectify</button>
+                                        <button class="btn btn-default btn-sm" type="button" onclick="javascript:doUserRecUploadRectify('<iais:mask name="itemId" value="${feRecNc.itemId}"/>')">Rectify</button>
                                       </c:if>
                                     </td>
                                     <td><c:out value="${feRecNc.buttonFlag}"/></td>
@@ -107,6 +107,6 @@
   function doUserRecUploadRectify(itemId) {
       $("#itemId").val(itemId);
       $("#actionValue").val('confirm');
-      inspectorSearchTaskSubmit('confirm');
+      userRecUploadSubmit('confirm');
   }
 </script>
