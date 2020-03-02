@@ -520,10 +520,10 @@ public class HcsaApplicationDelegator {
             broadcastApplicationDto.setApplicationDto(applicationDto);
             //create the new task and create the history
             TaskDto taskDtoNew = TaskUtil.getTaskDto(taskDto.getTaskKey(),TaskConsts.TASK_TYPE_MAIN_FLOW, taskDto.getRefNo(),null,
-                    null,null,0,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW, null,IaisEGPHelper.getCurrentAuditTrailDto());
+                    null,null,0,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW, RoleConsts.USER_ROLE_BROADCAST,IaisEGPHelper.getCurrentAuditTrailDto());
             broadcastOrganizationDto.setCreateTask(taskDtoNew);
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),
-                    taskDto.getTaskKey(),null, taskDto.getWkGrpId(),null,null,null);
+                    taskDto.getTaskKey(),null, taskDto.getWkGrpId(),null,null,RoleConsts.USER_ROLE_AO3);
             broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             //save the broadcast
             broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
