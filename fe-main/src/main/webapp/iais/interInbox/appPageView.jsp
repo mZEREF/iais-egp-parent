@@ -79,7 +79,7 @@
             $("[name='action_id_value']").val(appId);
         }
         if ("Appeal" == actionName) {
-            $("[name='action_no_value']").val(appId);
+            $("[name='action_no_value']").val(appNo);
         }
         submit('appDraft');
     };
