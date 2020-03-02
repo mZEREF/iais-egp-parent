@@ -4,10 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.*;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -22,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.*;
 
@@ -52,8 +50,6 @@ public class ReCessationApplicationDelegator {
         licIds.add("7ECAE165-534A-EA11-BE7F-000C29F371DC");
         licIds.add("CFCAC193-6F4D-EA11-BE7F-000C29F371DC");
         List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
-//        List<AppCessationDto> cessationByIds = cessationService.getCessationByIds(licIds);
-//        AppCessationDto appCessationDto = cessationByIds.get(0);
         AppCessationDto appCessationDto = new AppCessationDto();
         appCessationDto.setEffectiveDate(new Date());
         appCessationDto.setPatientSelect("hciName");
@@ -92,35 +88,49 @@ public class ReCessationApplicationDelegator {
     }
 
     public void valiant(BaseProcessClass bpc){
-        int size = (int)ParamUtil.getSessionAttr(bpc.request, "size");
-        List<AppCessationDto> appCessationDtos = prepareDataForValiant(bpc,size);
-        ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable)appCessationDtos);
-        int i = 0;
-        if(appCessationDtos.size()==0){
+        List<AppCessLicDto> appCessDtosByLicIds = (List<AppCessLicDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtos");
+        int size = (int) ParamUtil.getSessionAttr(bpc.request, "size");
+        List<AppCessLicDto> appCessHciDtos = prepareDataForValiant(bpc, size, appCessDtosByLicIds);
+        ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable) appCessHciDtos);
+        if (appCessHciDtos.size() == 0) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;
         }
-        List<String> listLicIds = new ArrayList<>();
-        for(AppCessationDto appCessationDto :appCessationDtos){
-            String licId = appCessationDto.getWhichTodo();
-            if(!StringUtil.isEmpty(licId)){
-                i++;
-                listLicIds.add(licId);
-                Map<String, String> errorMap = new HashMap<>(34);
-                ValidationResult validationResult = WebValidationHelper.validateProperty(appCessationDto, "save");
-                if (validationResult.isHasErrors()) {
-                    errorMap = validationResult.retrieveAll();
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    return;
+        Map<String, String> errorMap = new HashMap<>(34);
+        for (int i = 1; i <= size; i++) {
+            for (int j = 0; j <= size; j++) {
+                String whichTodo = ParamUtil.getRequestString(bpc.request, i + "whichTodo" + j);
+                if (!StringUtil.isEmpty(whichTodo)) {
+                    Map<String, String> validate = validate(bpc,i,j);
+                    errorMap.putAll(validate);
                 }
             }
         }
-        List<AppCessLicDto> appCessConDtos = cessationService.getAppCessDtosByLicIds(listLicIds);
-        ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable)appCessConDtos);
-        List<AppCessationDto> appCessationDtosConfirm = prepareDataForConfirm(bpc,i);
-        ParamUtil.setSessionAttr(bpc.request, "appCessationConfirmDto", (Serializable)appCessationDtosConfirm);
+        if (!errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+            return;
+        }
+
+
+        List<AppCessationDto> appCessationDtos = transformDto(appCessHciDtos);
+//        for (AppCessationDto appCessationDto : appCessationDtos) {
+//            String licId = appCessationDto.getWhichTodo();
+//            Map<String, String> errorMap = new HashMap<>(34);
+//            if (!StringUtil.isEmpty(licId)) {
+////                Map<String, String> errorMap1 = new HashMap<>(34);
+////                ValidationResult validationResult = WebValidationHelper.validateProperty(appCessationDto, "save");
+////                if (validationResult.isHasErrors()) {
+////                    errorMap1 = validationResult.retrieveAll();
+////                    errorMap.putAll(errorMap1);
+////                }
+//                Map<String, String> validate = validate(bpc);
+//                errorMap.putAll(validate);
+//            }
+//
+//        }
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+        ParamUtil.setSessionAttr(bpc.request, "appCessationDtosSave", (Serializable)appCessationDtos);
     }
 
     public void action(BaseProcessClass bpc){
@@ -134,10 +144,10 @@ public class ReCessationApplicationDelegator {
     }
 
     public void saveData(BaseProcessClass bpc){
-        List<AppCessationDto> appCessationDtos = (List<AppCessationDto>)ParamUtil.getSessionAttr(bpc.request, "appCessationConfirmDto");
+        List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
         cessationService.saveCessations(appCessationDtos);
         List<AppCessatonConfirmDto> appCessationDtosConfirms = new ArrayList<>();
-        for(AppCessationDto appCessationDto :appCessationDtos){
+        for (AppCessationDto appCessationDto : appCessationDtos) {
             String licId = appCessationDto.getWhichTodo();
             List<String> licIds = new ArrayList<>();
             licIds.add(licId);
@@ -159,8 +169,7 @@ public class ReCessationApplicationDelegator {
             appCessatonConfirmDto.setHciName(hciName);
             appCessationDtosConfirms.add(appCessatonConfirmDto);
         }
-        ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable)appCessationDtosConfirms);
-
+        ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) appCessationDtosConfirms);
     }
 
 
@@ -168,81 +177,148 @@ public class ReCessationApplicationDelegator {
 
      */
 
-    private List<AppCessationDto> prepareDataForValiant(BaseProcessClass bpc,int size){
-        List<AppCessationDto> appCessationDtos = new ArrayList<>();
-        for (int i = 1; i <=size ; i++) {
-            String whichTodo = ParamUtil.getRequestString(bpc.request, i+"whichTodo");
-            if(!StringUtil.isEmpty(whichTodo)){
-                AppCessationDto appCessationDto = new AppCessationDto();
-                String effectiveDateStr = ParamUtil.getRequestString(bpc.request, i+"effectiveDate");
-                Date effectiveDate = DateUtil.parseDate(effectiveDateStr, "dd/MM/yyyy");
-                String reason = ParamUtil.getRequestString(bpc.request, i+"reason");
-                String otherReason = ParamUtil.getRequestString(bpc.request, i+"otherReason");
-                String patRadio = ParamUtil.getRequestString(bpc.request, i+"patRadio");
-                Boolean patNeedTrans = false;
-                if("yes".equals(patRadio)){
-                    patNeedTrans = true;
-                }
-                String patientSelect = ParamUtil.getRequestString(bpc.request, i+"patientSelect");
-                String patNoRemarks = ParamUtil.getRequestString(bpc.request, i+"patNoRemarks");
-                String patHciName = ParamUtil.getRequestString(bpc.request, i+"patHciName");
-                String patRegNo = ParamUtil.getRequestString(bpc.request, i+"patRegNo");
-                String patOthers = ParamUtil.getRequestString(bpc.request, i+"patOthers");
-                String readInfo = ParamUtil.getRequestString(bpc.request, "readInfo");
+    private List<AppCessLicDto> prepareDataForValiant(BaseProcessClass bpc, int size, List<AppCessLicDto> appCessDtosByLicIds) {
+        List<AppCessLicDto> appCessLicDtos = new ArrayList<>();
+        for (int i = 1; i <= size; i++) {
+            AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(i - 1);
+            List<AppCessHciDto> appCessHciDtoso = appCessLicDto.getAppCessHciDtos();
+            int size1 = appCessHciDtoso.size();
+            List<AppCessHciDto> appCessHciDtos = new ArrayList<>();
+            for (int j = 1; j <= size1; j++) {
+                AppCessHciDto appCessHciDto = appCessHciDtoso.get(j - 1);
+                String whichTodo = ParamUtil.getRequestString(bpc.request, i + "whichTodo" + j);
+                if (!StringUtil.isEmpty(whichTodo)) {
+                    String effectiveDateStr = ParamUtil.getRequestString(bpc.request, i + "effectiveDate" + j);
+                    Date effectiveDate = DateUtil.parseDate(effectiveDateStr, "dd/MM/yyyy");
+                    String reason = ParamUtil.getRequestString(bpc.request, i + "reason" + j);
+                    String otherReason = ParamUtil.getRequestString(bpc.request, i + "otherReason" + j);
+                    String patRadio = ParamUtil.getRequestString(bpc.request, i + "patRadio" + j);
+                    Boolean patNeedTrans = false;
+                    if ("yes".equals(patRadio)) {
+                        patNeedTrans = true;
+                    }
+                    String patientSelect = ParamUtil.getRequestString(bpc.request, i + "patientSelect" + j);
+                    String patNoRemarks = ParamUtil.getRequestString(bpc.request, i + "patNoRemarks" + j);
+                    String patHciName = ParamUtil.getRequestString(bpc.request, i + "patHciName" + j);
+                    String patRegNo = ParamUtil.getRequestString(bpc.request, i + "patRegNo" + j);
+                    String patOthers = ParamUtil.getRequestString(bpc.request, i + "patOthers" + j);
+                    String readInfo = ParamUtil.getRequestString(bpc.request, "readInfo");
+                    String hciName = appCessHciDto.getHciName();
+                    String hciAddress = appCessHciDto.getHciAddress();
 
-                appCessationDto.setEffectiveDate(effectiveDate);
-                appCessationDto.setReason(reason);
-                appCessationDto.setOtherReason(otherReason);
-                appCessationDto.setPatNeedTrans(patNeedTrans);
-                appCessationDto.setPatientSelect(patientSelect);
-                appCessationDto.setPatNoRemarks(patNoRemarks);
-                appCessationDto.setPatHciName(patHciName);
-                appCessationDto.setPatRegNo(patRegNo);
-                appCessationDto.setPatOthers(patOthers);
-                appCessationDto.setWhichTodo(whichTodo);
-                appCessationDto.setReadInfo(readInfo);
-                appCessationDtos.add(appCessationDto);
+                    appCessHciDto.setHciAddress(hciAddress);
+                    appCessHciDto.setHciName(hciName);
+                    appCessHciDto.setEffectiveDate(effectiveDate);
+                    appCessHciDto.setReason(reason);
+                    appCessHciDto.setOtherReason(otherReason);
+                    appCessHciDto.setPatNeedTrans(patNeedTrans);
+                    appCessHciDto.setPatientSelect(patientSelect);
+                    appCessHciDto.setPatNoRemarks(patNoRemarks);
+                    appCessHciDto.setPatHciName(patHciName);
+                    appCessHciDto.setPatRegNo(patRegNo);
+                    appCessHciDto.setPatOthers(patOthers);
+                    appCessHciDto.setWhichTodo(whichTodo);
+                    appCessHciDto.setReadInfo(readInfo);
+                }
+                appCessHciDtos.add(appCessHciDto);
+            }
+            appCessLicDto.setAppCessHciDtos(appCessHciDtos);
+            appCessLicDtos.add(appCessLicDto);
+        }
+        return appCessLicDtos;
+    }
+
+    private List<AppCessationDto> transformDto(List<AppCessLicDto> appCessLicDtos) {
+        List<AppCessationDto> appCessationDtos = new ArrayList<>();
+        for (AppCessLicDto appCessLicDto : appCessLicDtos) {
+            List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
+            for (AppCessHciDto appCessHciDto : appCessHciDtos) {
+                String whichTodo = appCessHciDto.getWhichTodo();
+                if(!StringUtil.isEmpty(whichTodo)){
+                    Date effectiveDate = appCessHciDto.getEffectiveDate();
+                    String reason = appCessHciDto.getReason();
+                    String otherReason = appCessHciDto.getOtherReason();
+                    Boolean patNeedTrans = appCessHciDto.getPatNeedTrans();
+                    String patientSelect = appCessHciDto.getPatientSelect();
+                    String patTransType = appCessHciDto.getPatTransType();
+                    String patTransTo = appCessHciDto.getPatTransTo();
+                    String patRegNo = appCessHciDto.getPatRegNo();
+                    String patNoRemarks = appCessHciDto.getPatNoRemarks();
+                    String readInfo = appCessHciDto.getReadInfo();
+
+                    AppCessationDto appCessationDto = new AppCessationDto();
+                    appCessationDto.setEffectiveDate(effectiveDate);
+                    appCessationDto.setReason(reason);
+                    appCessationDto.setOtherReason(otherReason);
+                    appCessationDto.setPatNeedTrans(patNeedTrans);
+                    appCessationDto.setPatientSelect(patientSelect);
+                    appCessationDto.setPatTransType(patTransType);
+                    appCessationDto.setPatTransTo(patTransTo);
+                    appCessationDto.setPatRegNo(patRegNo);
+                    appCessationDto.setPatNoRemarks(patNoRemarks);
+                    appCessationDto.setWhichTodo(whichTodo);
+                    appCessationDto.setReadInfo(readInfo);
+                    appCessationDtos.add(appCessationDto);
+                }
             }
         }
         return appCessationDtos;
     }
 
-    private List<AppCessationDto> prepareDataForConfirm(BaseProcessClass bpc,int j){
-        List<AppCessationDto> appCessationDtos = new ArrayList<>();
-        for (int i = 1; i <=j ; i++) {
-            AppCessationDto appCessationDto = new AppCessationDto();
-            String effectiveDateStr = ParamUtil.getRequestString(bpc.request, i+"effectiveDate");
-            Date effectiveDate = DateUtil.parseDate(effectiveDateStr, "dd/MM/yyyy");
-            String reason = ParamUtil.getRequestString(bpc.request, i+"reason");
-            String otherReason = ParamUtil.getRequestString(bpc.request, i+"otherReason");
-            String patRadio = ParamUtil.getRequestString(bpc.request, i+"patRadio");
-            Boolean patNeedTrans = false;
-            if("yes".equals(patRadio)){
-                patNeedTrans = true;
-            }
-            String patientSelect = ParamUtil.getRequestString(bpc.request, i+"patientSelect");
-            String patNoRemarks = ParamUtil.getRequestString(bpc.request, i+"patNoRemarks");
-            String patHciName = ParamUtil.getRequestString(bpc.request, i+"patHciName");
-            String patRegNo = ParamUtil.getRequestString(bpc.request, i+"patRegNo");
-            String patOthers = ParamUtil.getRequestString(bpc.request, i+"patOthers");
-            String whichTodo = ParamUtil.getRequestString(bpc.request, i+"whichTodo");
-            String readInfo = ParamUtil.getRequestString(bpc.request, "readInfo");
+    private Map<String, String> validate(BaseProcessClass bpc,int i,int j) {
+        HttpServletRequest httpServletRequest = bpc.request;
+        Map<String, String> errorMap = new HashMap<>(34);
 
-            appCessationDto.setEffectiveDate(effectiveDate);
-            appCessationDto.setReason(reason);
-            appCessationDto.setOtherReason(otherReason);
-            appCessationDto.setPatNeedTrans(patNeedTrans);
-            appCessationDto.setPatientSelect(patientSelect);
-            appCessationDto.setPatNoRemarks(patNoRemarks);
-            appCessationDto.setPatHciName(patHciName);
-            appCessationDto.setPatRegNo(patRegNo);
-            appCessationDto.setPatOthers(patOthers);
-            appCessationDto.setWhichTodo(whichTodo);
-            appCessationDto.setReadInfo(readInfo);
-            appCessationDtos.add(appCessationDto);
+        String effectiveDateStr = ParamUtil.getRequestString(httpServletRequest, i + "effectiveDate" + j);
+        if (StringUtil.isEmpty(effectiveDateStr)) {
+            errorMap.put(i + "effectiveDate" + j, "ERR0009");
         }
-        return appCessationDtos;
+        String reason = ParamUtil.getRequestString(httpServletRequest, i + "reason" + j);
+        if (StringUtil.isEmpty(reason)) {
+            errorMap.put(i + "reason" + j, "ERR0009");
+        }
+        String patRadio = ParamUtil.getRequestString(httpServletRequest, i + "patRadio" + j);
+        String readInfo = ParamUtil.getRequestString(httpServletRequest, "readInfo");
+        if (StringUtil.isEmpty(readInfo)) {
+            errorMap.put(i + "readInfo" + j, "ERR0009");
+        }
 
+        String cessationReason = ParamUtil.getRequestString(httpServletRequest, i + "cessationReason" + j);
+        String otherReason = ParamUtil.getRequestString(httpServletRequest, i + "otherReason" + j);
+        String patientSelect = ParamUtil.getRequestString(httpServletRequest, i + "patientSelect" + j);
+        String patNoRemarks = ParamUtil.getRequestString(httpServletRequest, i + "patNoRemarks" + j);
+        String patHciName = ParamUtil.getRequestString(httpServletRequest, i + "patHciName" + j);
+        String patRegNo = ParamUtil.getRequestString(httpServletRequest, i + "patRegNo" + j);
+        String patOthers = ParamUtil.getRequestString(httpServletRequest, i + "patOthers" + j);
+        if ("OtherReasons".equals(cessationReason)) {
+            if (StringUtil.isEmpty(otherReason)) {
+                errorMap.put(i + "otherReason" + j, "ERR0009");
+            }
+        }
+        if ("yes".equals(patRadio)) {
+            if (StringUtil.isEmpty(patientSelect)) {
+                errorMap.put(i + "patientSelect" + j, "ERR0009");
+            } else {
+                if ("hciName".equals(patientSelect)) {
+                    if (StringUtil.isEmpty(patHciName)) {
+                        errorMap.put(i + "patHciName" + j, "ERR0009");
+                    }
+                } else if ("regNo".equals(patientSelect)) {
+                    if (StringUtil.isEmpty(patRegNo)) {
+                        errorMap.put(i + "patRegNo" + j, "ERR0009");
+                    }
+                } else if ("Others".equals(patientSelect)) {
+                    if (StringUtil.isEmpty(patOthers)) {
+                        errorMap.put(i + "patOthers" + j, "ERR0009");
+                    }
+                }
+            }
+        } else if ("no".equals(patRadio)) {
+            if (StringUtil.isEmpty(patNoRemarks)) {
+                errorMap.put(i + "patNoRemarks" + j, "ERR0009");
+            }
+        }
+        return errorMap;
     }
 
     private List<SelectOption> getReasonOption() {
