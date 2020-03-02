@@ -159,6 +159,16 @@ public class RequestForChangeDelegator {
      * @param bpc
      * @Decription compareChangePercentage
      */
+    public void prepareTranfer(BaseProcessClass bpc) {
+        String licenceId= (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
+        AppSubmissionDto appSubmissionDto=requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
+        ParamUtil.setRequestAttr(bpc.request, "prepareTranfer", appSubmissionDto);
+    }
+
+    /**
+     * @param bpc
+     * @Decription compareChangePercentage
+     */
     public void compareChangePercentage(BaseProcessClass bpc) {
         String licenceId= (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         //String licenseNo="L/20CLB0156/CLB/001/201";
