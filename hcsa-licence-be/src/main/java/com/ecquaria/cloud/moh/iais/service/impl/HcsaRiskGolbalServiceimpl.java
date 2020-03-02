@@ -172,7 +172,9 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
             updateLastVersion(golDto);
             create(golDto,extDtoList);
         }else{
-
+            golDto = transferTogolDto(temp);
+            extDtoList = transferToextDtoList(temp);
+            create(golDto,extDtoList);
         }
     }
 
