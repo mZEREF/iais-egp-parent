@@ -361,11 +361,11 @@ public class RequestForChangeMenuDelegator {
     public void preparePersonnelEdit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePersonnelEdit start ...."));
         List<PersonnelListQueryDto> personnelEditList = (List<PersonnelListQueryDto>) ParamUtil.getSessionAttr(bpc.request,RfcConst.PERSONNELEDITLIST);
-        for(PersonnelListQueryDto personnelListQueryDto:personnelEditList){
+        /*for(PersonnelListQueryDto personnelListQueryDto:personnelEditList){
             String idNo = personnelListQueryDto.getIdNo();
             String hiddenIdNo = "xxxx"+idNo.substring(4);
             personnelListQueryDto.setHiddenIdNo(hiddenIdNo);
-        }
+        }*/
         List<SelectOption> idTypeSelectList = NewApplicationHelper.getIdTypeSelOp();
         ParamUtil.setRequestAttr(bpc.request, ClinicalLaboratoryDelegator.DROPWOWN_IDTYPESELECT, idTypeSelectList);
         ParamUtil.setSessionAttr(bpc.request,RfcConst.PERSONNELEDITLIST, (Serializable) personnelEditList);

@@ -403,8 +403,7 @@ public class NewApplicationDelegator {
         String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
 
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-            if("back".equals(action)
-                    ||RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)) {
+            if(RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)) {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "jump");
                 return;
             }
@@ -421,7 +420,7 @@ public class NewApplicationDelegator {
         if(isGetDataFromPage ){
             List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-            if(appSubmissionDto.isNeedEditController()){
+            if(requestInformationConfig != null){
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null? new HashSet<>() :appSubmissionDto.getClickEditPage();
                 clickEditPages.add(APPLICATION_PAGE_NAME_PREMISES);
                 appSubmissionDto.setClickEditPage(clickEditPages);
@@ -466,9 +465,13 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
 
         String action = ParamUtil.getRequestString(bpc.request, "crud_action_value");
-        if(!"next".equals(action)) {
-            return;
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            if(RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)) {
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "jump");
+                return;
+            }
         }
+
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
         boolean isRfi = false;
         if(requestInformationConfig != null){
@@ -1071,8 +1074,22 @@ public class NewApplicationDelegator {
      */
     public void prepareJump(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do prepareJump start ...."));
-
-
+        String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        if(RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)){
+            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+            AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+            AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
+            if(appEditSelectDto.isPremisesEdit()){
+                appSubmissionDto.setAppGrpPremisesDtoList(oldAppSubmissionDto.getAppGrpPremisesDtoList());
+            }
+            if(appEditSelectDto.isDocEdit()){
+                appSubmissionDto.setAppGrpPrimaryDocDtos(oldAppSubmissionDto.getAppGrpPrimaryDocDtos());
+            }
+            if(appEditSelectDto.isServiceEdit()){
+                appSubmissionDto.setAppSvcRelatedInfoDtoList(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
+            }
+            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
+        }
 
         log.info(StringUtil.changeForLog("the do prepareJump end ...."));
     }
@@ -1911,13 +1928,18 @@ public class NewApplicationDelegator {
         String currentEdit = (String) ParamUtil.getRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT);
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
                 && appSubmissionDto!= null && !StringUtil.isEmpty(currentEdit)){
+            AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
             if(RfcConst.EDIT_PREMISES.equals(currentEdit)){
+                appEditSelectDto.setPremisesEdit(true);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
             }else if(RfcConst.EDIT_PRIMARY_DOC.equals(currentEdit)){
+                appEditSelectDto.setDocEdit(true);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"documents");
             }else if(RfcConst.EDIT_SERVICE.equals(currentEdit)){
+                appEditSelectDto.setServiceEdit(true);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"serviceForms");
             }
+            appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setNeedEditController(true);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }

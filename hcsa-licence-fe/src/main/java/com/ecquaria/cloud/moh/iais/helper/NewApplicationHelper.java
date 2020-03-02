@@ -332,9 +332,9 @@ public class NewApplicationHelper {
                 String idNo = poDto.get(i).getIdNo();
                 String modeOfMedAlert = poDto.get(i).getModeOfMedAlert();
                 String designation = poDto.get(i).getDesignation();
-                if(StringUtil.isEmpty(modeOfMedAlert)||"-1".equals(modeOfMedAlert)){
+                /*if(StringUtil.isEmpty(modeOfMedAlert)||"-1".equals(modeOfMedAlert)){
                     oneErrorMap.put("modeOfMedAlert"+dpoIndex,"UC_CHKLMD001_ERR001");
-                }
+                }*/
 
                 if(StringUtil.isEmpty(designation)||"-1".equals(designation)){
                     oneErrorMap.put("deputyDesignation"+dpoIndex,"UC_CHKLMD001_ERR001");

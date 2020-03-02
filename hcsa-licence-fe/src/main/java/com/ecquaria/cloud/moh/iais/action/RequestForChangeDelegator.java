@@ -60,35 +60,13 @@ public class RequestForChangeDelegator {
         ParamUtil.setSessionAttr(bpc.request,"SvcName",null);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
         ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,null);
-        String licenceId = ParamUtil.getString(bpc.request, "licenceId");
-        ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, licenceId);
 
-        //load data
-        if(!StringUtil.isEmpty(licenceId)){
-            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
-            if(appSubmissionDto == null || IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList()) ||
-                    IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
-                log.info("appSubmissionDto incomplete , licenceId:"+licenceId);
-            }else{
-                appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-                String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
-                List<String> svcNames = new ArrayList<>();
-                svcNames.add(svcName);
-                List<HcsaServiceDto> hcsaServiceDtoList  = serviceConfigService.getHcsaServiceByNames(svcNames);
-                ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
-                //set svcInfo
-                NewApplicationHelper.setSubmissionDtoSvcData(bpc.request,appSubmissionDto);
-                //set laboratory disciplines info
-                if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)){
-                    List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(hcsaServiceDtoList.get(0).getId());
-                    NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto,hcsaSvcSubtypeOrSubsumedDtos);
-                    ParamUtil.setSessionAttr(bpc.request, "SvcId",hcsaServiceDtoList.get(0).getId());
-                }
 
-                ParamUtil.setSessionAttr(bpc.request,"SvcName",svcName);
-                ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,appSubmissionDto);
-            }
-        }
+        loadingRequestInformation(bpc);
+
+        loadingDraft(bpc);
+
+
 
 
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
@@ -200,6 +178,11 @@ public class RequestForChangeDelegator {
                 ParamUtil.setRequestAttr(bpc.request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);
 
             }
+            AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+            appEditSelectDto.setPremisesEdit(true);
+            appEditSelectDto.setDocEdit(true);
+            appEditSelectDto.setServiceEdit(true);
+            appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         }
         ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
@@ -245,6 +228,8 @@ public class RequestForChangeDelegator {
      */
     public void doBack(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doBack start ...."));
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO);
+        ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,appSubmissionDto);
 
         log.debug(StringUtil.changeForLog("the do doBack end ...."));
     }
@@ -313,5 +298,53 @@ public class RequestForChangeDelegator {
 
     private boolean iftranfer(String UNID,String licenceId,String pageType){
         return true;
+    }
+
+    private void loadingRequestInformation(BaseProcessClass bpc) throws CloneNotSupportedException {
+        String licenceId = ParamUtil.getString(bpc.request, "licenceId");
+        ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, licenceId);
+
+        //load data
+        if(!StringUtil.isEmpty(licenceId)){
+            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
+            if(appSubmissionDto == null || IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList()) ||
+                    IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
+                log.info("appSubmissionDto incomplete , licenceId:"+licenceId);
+            }else{
+                appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
+                List<String> svcNames = new ArrayList<>();
+                svcNames.add(svcName);
+                List<HcsaServiceDto> hcsaServiceDtoList  = serviceConfigService.getHcsaServiceByNames(svcNames);
+                ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+                //set svcInfo
+                NewApplicationHelper.setSubmissionDtoSvcData(bpc.request,appSubmissionDto);
+                //set laboratory disciplines info
+                if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)){
+                    List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(hcsaServiceDtoList.get(0).getId());
+                    NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto,hcsaSvcSubtypeOrSubsumedDtos);
+                    ParamUtil.setSessionAttr(bpc.request, "SvcId",hcsaServiceDtoList.get(0).getId());
+                }
+
+                ParamUtil.setSessionAttr(bpc.request,"SvcName",svcName);
+                ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,appSubmissionDto);
+            }
+        }
+    }
+
+    private void loadingDraft(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("the do loadingDraft start ...."));
+        String draftNo = ParamUtil.getString(bpc.request, "DraftNumber");
+        //draftNo = "DN191118000001";
+        if(!StringUtil.isEmpty(draftNo)){
+            log.info(StringUtil.changeForLog("draftNo is not empty"));
+            AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
+            if(appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() >0){
+                ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, appSubmissionDto);
+            }else{
+                ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, null);
+            }
+        }
+        log.info(StringUtil.changeForLog("the do loadingDraft end ...."));
     }
 }
