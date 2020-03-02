@@ -377,7 +377,7 @@
    <SwitchCase component="/Steps/AutomaticStep/PreparePreview" value="&quot;preview&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PreparePayment" value="&quot;payment&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PrepareErrorAck" value="&quot;errorAck&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareJump" value="\u201cjump\u201d"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareJump" value="&quot;jump&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="Switch2" name="Switch2" x="970" y="150">
    <Description/>
