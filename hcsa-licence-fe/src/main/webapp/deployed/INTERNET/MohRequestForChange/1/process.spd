@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="14" minorVersion="0" name="MohRequestForChange" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohRequestForChange" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="130" y="50">
@@ -23,13 +23,6 @@
     <JavaCode defClass="" executor="" methodName="doChoose_OnStepProcess_0" name="doChoose_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="prepareAmend" x="290" y="430">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareAmend_OnStepProcess_0" name="prepareAmend_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="jump" x="410" y="240">
    <Description/>
    <probepoint type="none"/>
@@ -37,17 +30,38 @@
     <JavaCode defClass="" executor="" methodName="jump_OnStepProcess_0" name="jump_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <InvokeStep defClass="" executor="" icon="" name="MohNewApplication" processname="MohNewApplication" project="INTERNET" version="-1" x="200" y="510">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
-  </InvokeStep>
   <AutomaticStep defClass="" executor="" icon="" name="Step2" x="530" y="420">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="step2_OnStepProcess_0" name="step2_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="MohNewApplication" processname="MohNewApplication" project="INTERNET" version="-1" x="240" y="710">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doFirstView" x="140" y="580">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doChooseInfo_OnStepProcess_0" name="doChooseInfo_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepareFirstView" x="230" y="420">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareAmend_OnStepProcess_0" name="prepareAmend_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doBack" x="160" y="710">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step3_OnStepProcess_0" name="step3_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -64,6 +78,12 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="firstView" stageIndicator="" x="140" y="480">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Links>
@@ -72,9 +92,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/chooseAmendPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepare" style="rectanular">
    <position>{(270,70)(390,70)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareAmend" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(430,370)(310,450)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doChoose" linkstyle="Direct" name="" sourceName="/Pages/WebPage/chooseAmendPage" style="oblique">
    <position>{(390,70)(420,160)}</position>
@@ -88,27 +105,59 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(430,370)(263,372)(270,70)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/InvokeStep/MohNewApplication" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareAmend" style="oblique">
-   <position>{(310,450)(220,530)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Page2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Step2" style="oblique">
    <position>{(550,440)(630,520)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Step2" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(430,370)(550,440)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doFirstView" linkstyle="Direct" name="" sourceName="/Pages/WebPage/firstView" style="oblique">
+   <position>{(160,500)(160,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/MohNewApplication" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(310,610)(260,730)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareFirstView" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(310,610)(250,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doFirstView" style="rectanular">
+   <position>{(160,600)(310,610)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/firstView" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareFirstView" style="oblique">
+   <position>{(250,440)(160,500)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareFirstView" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(430,370)(250,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareFirstView" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(30,720)(126,437)(250,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doBack" linkstyle="Rectangle" name="" sourceName="/Steps/InvokeStep/MohNewApplication" style="rectanular">
+   <position>{(260,730)(180,730)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doBack" style="rectanular">
+   <position>{(180,730)(30,720)}</position>
+  </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/prepareFirstView" componentIfTrue="/Steps/InvokeStep/MohNewApplication" defClass="" executor="" icon="" leftOperand="isSuccess" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="290" y="590">
+   <Description/>
+  </Condition>
+ </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_form" name="Switch1" x="410" y="350">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/prepareAmend" value="&quot;doAmend&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepare" value="&quot;prepare&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Step2" value="&quot;doTranfer&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/prepareFirstView" value="&quot;doAmend&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
- <Merges/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="10" y="700">
+   <Description/>
+  </Merge>
+ </Merges>
  <StudioLabels/>
  <StageIndicator/>
  <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
