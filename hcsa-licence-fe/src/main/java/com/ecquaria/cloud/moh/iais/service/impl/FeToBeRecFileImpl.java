@@ -96,15 +96,9 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         for(AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto : appPremPreInspectionNcDocDtos){
             String fileId = appPremPreInspectionNcDocDto.getFileRepoId();
             byte[] fileByte = fileRepoClient.getFileFormDataBase(fileId).getEntity();
-            String s;
-            try {
-                s = new String(fileByte, "UTF-8");
-            } catch (Exception e) {
-                log.error(e.getMessage(),e);
-                s = "";
-            }
-            File file = new File(download + File.separator + fileId + File.separator + s, appPremPreInspectionNcDocDto.getDocName());
-            File backupsFile = new File(backups + File.separator + fileId + File.separator + s, appPremPreInspectionNcDocDto.getDocName());
+
+            File file = new File(download + File.separator + fileId , appPremPreInspectionNcDocDto.getDocName());
+            File backupsFile = new File(backups + File.separator + fileId, appPremPreInspectionNcDocDto.getDocName());
             appIdNcItemIdMap.put(fileId, appId);
             writeFileByFileByte(file, backupsFile, fileByte);
         }

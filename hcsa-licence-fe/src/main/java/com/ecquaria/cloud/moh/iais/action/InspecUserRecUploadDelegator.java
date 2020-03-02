@@ -4,8 +4,8 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
@@ -130,10 +130,9 @@ public class InspecUserRecUploadDelegator {
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadVali start ...."));
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
         InspecUserRecUploadDto inspecUserRecUploadDto = (InspecUserRecUploadDto)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDto");
-        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String actionValue = mulReq.getParameter("actionValue");
         ParamUtil.setRequestAttr(bpc.request, "inspecUserRecUploadType", actionValue);
-
         Map<String,String> errorMap = new HashMap<>();
         if(InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue) || InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)){
             errorMap = doValidateByRecFile(inspecUserRecUploadDto, mulReq, errorMap, actionValue);
@@ -142,7 +141,16 @@ public class InspecUserRecUploadDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
             } else {
-                ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+                if(InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue)) {
+                    CommonsMultipartFile commonsMultipartFile = inspecUserRecUploadDto.getRecFile();
+                    FileRepoDto fileRepoDto = new FileRepoDto();
+                    fileRepoDto.setFileName(commonsMultipartFile.getOriginalFilename());
+                    fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    fileRepoDto.setRelativePath(AppConsts.FALSE);
+                    String auditTrailStr = JsonUtil.parseToJson(fileRepoDto);
+                    inspecUserRecUploadDto = inspecUserRecUploadService.saveFileReportGetFileId(inspecUserRecUploadDto, auditTrailStr);
+                }
+                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);
             }
         } else {
             ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.TRUE);
@@ -156,7 +164,7 @@ public class InspecUserRecUploadDelegator {
         String uploadRemarks = mulReq.getParameter("recFileUpload");
         inspecUserRecUploadDto.setUploadRemarks(uploadRemarks);
         String errorKey = "recFile";
-        CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("recFileUpload");
+        CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("selectedFile");
         if(InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)) {
             if (IaisCommonUtils.isEmpty(inspecUserRecUploadDto.getFileRepoDtos())) {
                 errorMap.put(errorKey, "ERR0009");
@@ -227,7 +235,6 @@ public class InspecUserRecUploadDelegator {
      */
     public void step1(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the step1 start ...."));
-        String action = ParamUtil.getRequestString(bpc.request,"inspecUserRecUploadType");
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
     }
@@ -242,9 +249,7 @@ public class InspecUserRecUploadDelegator {
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadAdd start ...."));
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
         InspecUserRecUploadDto inspecUserRecUploadDto = (InspecUserRecUploadDto)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDto");
-        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-        String auditTrailStr = JsonUtil.parseToJson(auditTrailDto);
-        inspecUserRecUploadDto = inspecUserRecUploadService.saveFileReportGetFileId(inspecUserRecUploadDto, auditTrailStr);
+        ParamUtil.setRequestAttr(bpc.request, "inspecUserRecUploadType", "confirm");
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
     }
@@ -263,6 +268,7 @@ public class InspecUserRecUploadDelegator {
         if(!StringUtil.isEmpty(removeId)) {
             inspecUserRecUploadDto = inspecUserRecUploadService.removeFileByFileId(inspecUserRecUploadDto, removeId);
         }
+        ParamUtil.setRequestAttr(bpc.request, "inspecUserRecUploadType", "confirm");
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
     }
@@ -279,6 +285,11 @@ public class InspecUserRecUploadDelegator {
         InspecUserRecUploadDto inspecUserRecUploadDto = (InspecUserRecUploadDto)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDto");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         inspecUserRecUploadService.submitRecByUser(loginContext, inspecUserRecUploadDto);
+        for(InspecUserRecUploadDto iDto : inspecUserRecUploadDtos){
+            if(iDto.getItemId().equals(inspecUserRecUploadDto.getItemId())){
+                iDto.setButtonFlag(AppConsts.SUCCESS);
+            }
+        }
         inspecUserRecUploadDto.setButtonFlag(AppConsts.SUCCESS);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);

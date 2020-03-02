@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
@@ -78,9 +77,8 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
     public void submitRecByUser(LoginContext loginContext, InspecUserRecUploadDto inspecUserRecUploadDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        String appNo = inspecUserRecUploadDto.getAppNo();
-        ApplicationViewDto applicationViewDto = applicationClient.searchAppByNo(appNo).getEntity();
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String appPremCorrId = inspecUserRecUploadDto.getAppPremPreInspectionNcDto().getAppPremCorrId();
+        ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(appPremCorrId).getEntity();
         List<AppPremPreInspectionNcDocDto> appNcDocDtoList = inspecUserRecUploadDto.getAppPremPreInspectionNcDocDtos();
         for(AppPremPreInspectionNcDocDto appNcDocDto : appNcDocDtoList) {
             appNcDocDto.setId(null);
