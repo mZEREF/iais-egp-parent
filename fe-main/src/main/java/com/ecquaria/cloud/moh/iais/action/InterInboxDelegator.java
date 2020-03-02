@@ -127,6 +127,7 @@ public class InterInboxDelegator {
         if(!StringUtil.isEmpty(inboxResult)){
             ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, inboxParam);
             ParamUtil.setRequestAttr(request,InboxConst.INBOX_RESULT, inboxResult);
+            cleanParameter("MSG");
         }
         setNumInfoToRequest(request);
     }
@@ -158,6 +159,7 @@ public class InterInboxDelegator {
         if(!StringUtil.isEmpty(licResult)){
             ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, licParam);
             ParamUtil.setRequestAttr(request,InboxConst.LIC_RESULT, licResult);
+            cleanParameter("LIC");
         }
         setNumInfoToRequest(request);
     }
@@ -245,6 +247,7 @@ public class InterInboxDelegator {
         if(!StringUtil.isEmpty(appResult)){
             ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, appParam);
             ParamUtil.setRequestAttr(request,InboxConst.APP_RESULT, appResult);
+            cleanParameter("APP");
         }
         setNumInfoToRequest(request);
     }
@@ -304,17 +307,32 @@ public class InterInboxDelegator {
     public void appDoDraft(BaseProcessClass bpc) throws IOException {
         log.debug("The prepareEdit start ...");
         HttpServletRequest request = bpc.request;
-        if ("Withdraw".equals(ParamUtil.getString(request, InboxConst.CRUD_ACTION_ADDITIONAL))){
-            String appId = ParamUtil.getString(request, InboxConst.CRUD_ACTION_VALUE);
+        if ("Appeal".equals(ParamUtil.getString(request, InboxConst.ACTION_TYPE_VALUE))){
+            String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
+            StringBuffer url = new StringBuffer();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohAppealApplication")
+                    .append("?appealingFor=")
+                    .append(appNo)
+                    .append("&type=application");
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }
+
+        if ("Withdraw".equals(ParamUtil.getString(request, InboxConst.ACTION_TYPE_VALUE))){
+            String appId = ParamUtil.getString(request, InboxConst.ACTION_ID_VALUE);
+            String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
             StringBuffer url = new StringBuffer();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohWithdrawalApplication")
                     .append("?appId=")
-                    .append(appId);
+                    .append(appId)
+                    .append("&appNo=")
+                    .append(appNo);
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }else {
-        String appNo = ParamUtil.getString(request, InboxConst.CRUD_ACTION_VALUE);
+        String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
 //        String draftNo = inboxService.getDraftNumber(appNo);
         StringBuffer url = new StringBuffer();
         url.append("https://").append(bpc.request.getServerName())
@@ -331,15 +349,26 @@ public class InterInboxDelegator {
      *
      */
     public void licDoAmend(BaseProcessClass bpc) throws IOException {
-        if ("toLicView".equals(ParamUtil.getString(bpc.request, "crud_action_additional"))){
-            String licId = ParamUtil.getString(bpc.request, "crud_action_value");
+        if ("toLicView".equals(ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_ADDITIONAL))){
+            String licId = ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_ADDITIONAL);
             StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohLicenceView")
                     .append("?licenceId=").append(licId);
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
-        }else{
+        }if ("licence".equals(ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_ADDITIONAL))){
+            String licNo = ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_VALUE);
+            StringBuffer url = new StringBuffer();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohAppealApplication")
+                    .append("?appealingFor=")
+                    .append(licNo)
+                    .append("&type=licence");
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }
+        else{
             String licId = ParamUtil.getString(bpc.request, "licenceNo");
             String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
             StringBuilder url = new StringBuilder();
@@ -349,7 +378,6 @@ public class InterInboxDelegator {
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }
-
     }
 
     /**
@@ -392,7 +420,7 @@ public class InterInboxDelegator {
      */
     private void prepareMsgSelectOption(HttpServletRequest request){
         List<SelectOption> inboxServiceSelectList = new ArrayList<>();
-        inboxServiceSelectList.add(new SelectOption("All", "All"));
+        inboxServiceSelectList.add(new SelectOption("All", "Select a service"));
         inboxServiceSelectList.add(new SelectOption("34F99D15-820B-EA11-BE7D-000C29F371DC", "Blood Banking"));
         inboxServiceSelectList.add(new SelectOption("35F99D15-820B-EA11-BE7D-000C29F371DC", "Clinical Laboratory"));
         inboxServiceSelectList.add(new SelectOption("A21ADD49-820B-EA11-BE7D-000C29F371DC", "Nuclear Medicine (Assay)"));
@@ -400,7 +428,7 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(request, "inboxServiceSelect", inboxServiceSelectList);
 
         List<SelectOption> inboxTypSelectList = new ArrayList<>();
-        inboxTypSelectList.add(new SelectOption("All", "All"));
+        inboxTypSelectList.add(new SelectOption("All", "Select a type"));
         inboxTypSelectList.add(new SelectOption("MESTYPE001", "Notification"));
         inboxTypSelectList.add(new SelectOption("MESTYPE002", "Announcement"));
         inboxTypSelectList.add(new SelectOption("MESTYPE003", "Action Required"));
@@ -416,7 +444,6 @@ public class InterInboxDelegator {
         applicationTypeSelectList.add(new SelectOption("APTY003", "Reinstatement "));
         ParamUtil.setRequestAttr(request, "appTypeSelect", applicationTypeSelectList);
 
-
         List<SelectOption> applicationStatusSelectList = new ArrayList<>();
         applicationStatusSelectList.add(new SelectOption("All", "All"));
         applicationStatusSelectList.add(new SelectOption("APST008", "Draft"));
@@ -424,6 +451,10 @@ public class InterInboxDelegator {
         applicationStatusSelectList.add(new SelectOption("APST005", "Approved"));
         applicationStatusSelectList.add(new SelectOption("APST007", "Pending"));
         ParamUtil.setRequestAttr(request, "appStatusSelect", applicationStatusSelectList);
+
+        List<SelectOption> appServiceStatusSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.getCategoryId(MasterCodeUtil.CATE_ID_APP_STATUS));
+        appServiceStatusSelectList.add(0,new SelectOption("All", "All"));
+        ParamUtil.setRequestAttr(request, "appStatusSelect", appServiceStatusSelectList);
 
         List<SelectOption> appServiceTypeSelectList = new ArrayList<>();
         appServiceTypeSelectList.add(new SelectOption("All", "All"));
@@ -434,14 +465,13 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(request, "appServiceType", appServiceTypeSelectList);
 
         List<SelectOption> selectDraftApplicationSelectList = new ArrayList<>();
-        selectDraftApplicationSelectList.add(new SelectOption("All", "All"));
         selectDraftApplicationSelectList.add(new SelectOption("Reload", "Reload"));
         selectDraftApplicationSelectList.add(new SelectOption("Delete", "Delete"));
         ParamUtil.setRequestAttr(request, "selectDraftApplication", selectDraftApplicationSelectList);
 
         List<SelectOption> selectApplicationSelectList = new ArrayList<>();
-        selectApplicationSelectList.add(new SelectOption("All", "All"));
         selectApplicationSelectList.add(new SelectOption("Recall", "Recall"));
+        selectApplicationSelectList.add(new SelectOption("Appeal", "Appeal"));
         selectApplicationSelectList.add(new SelectOption("Withdraw", "Withdraw"));
         ParamUtil.setRequestAttr(request, "selectApplication", selectApplicationSelectList);
     }
@@ -463,8 +493,25 @@ public class InterInboxDelegator {
         LicenceTypeList.add(new SelectOption("Clinical Laboratory", "Clinical Laboratory"));
         LicenceTypeList.add(new SelectOption("Blood Transfusion Service", "Blood Transfusion"));
         ParamUtil.setRequestAttr(request, "licType", LicenceTypeList);
+
+        List<SelectOption> LicenceActionsList = new ArrayList<>();
+        LicenceActionsList.add(new SelectOption("Appeal", "Appeal"));
+        ParamUtil.setRequestAttr(request, "licActions", LicenceActionsList);
     }
-    
-    
+
+    private void cleanParameter(String tabName){
+        if ("MSG".equals(tabName)){
+            appParameter.setFilters(null);
+            licenceParameter.setFilters(null);
+        }
+        if ("APP".equals(tabName)){
+            inboxParameter.setFilters(null);
+            licenceParameter.setFilters(null);
+        }
+        if ("LIC".equals(tabName)){
+            inboxParameter.setFilters(null);
+            appParameter.setFilters(null);
+        }
+    }
     
 }

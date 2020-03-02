@@ -66,27 +66,34 @@
     function doDraft(appNo,appStatus) {
         showWaiting();
         if ('APST008' == appStatus) {
-            $("[name='crud_action_value']").val(appNo);
+            $("[name='action_no_value']").val(appNo);
             submit('appDraft');
         }
     }
 
-    function doAppAction(appId,actionName) {
-        showWaiting();
-        $("[name='crud_action_additional']").val(actionName);
-        $("[name='crud_action_value']").val(appId);
+    function doAppAction(appId,appNo,actionName) {
+        // showWaiting();
+        alert(actionName);
+        $("[name='action_type_value']").val(actionName);
+        if ("Withdraw" == actionName) {
+            $("[name='action_no_value']").val(appNo);
+            $("[name='action_id_value']").val(appId);
+        }
+        if ("Appeal" == actionName) {
+            $("[name='action_no_value']").val(appId);
+        }
         submit('appDraft');
     };
 
     function doDraftAction(appNo, val) {
         var action = val;
         if ("Reload" == action) {
-            $("[name='crud_action_value']").val(appNo);
+            $("[name='action_no_value']").val(appNo);
             submit('appDraft');
         }
 
         if ("Delete" == action) {
-            $("[name='crud_action_value']").val(appNo);
+            $("[name='action_no_value']").val(appNo);
         }
     }
 </script>

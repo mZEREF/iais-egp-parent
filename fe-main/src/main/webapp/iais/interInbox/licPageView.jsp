@@ -76,6 +76,12 @@
         showWaiting();
         submit('licDoRenew');
     }
+    function doLicAction(licNo,actionName){
+        showWaiting();
+        $("[name='crud_action_value']").val(licNo);
+        $("[name='crud_action_additional']").val(actionName);
+        submit('licDoAmend');
+    }
 
     function toLicView(licId){
         showWaiting();

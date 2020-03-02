@@ -4,6 +4,9 @@
         <input type="hidden" name="app_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="crud_action_additional" value="">
+        <input type="hidden" name="action_no_value" value="">
+        <input type="hidden" name="action_id_value" value="">
+        <input type="hidden" name="action_type_value" value="">
         <div class="row">
             <div class="col-md-6">
                 <iais:value>
@@ -15,10 +18,11 @@
             </div>
             <div class="col-md-6">
                 <iais:value>
-                    <label class="col-xs-6 col-md-6" for="appServiceType" style="margin-top:3%;">Service Type:</label>
-                    <div class="col-xs-6 col-md-6">
+                    <label class="col-xs-4 col-md-4" for="appServiceType" style="margin-top:3%;">Service Type:</label>
+                    <div class="col-xs-8 col-md-8">
+                        <%String appServiceType = request.getParameter("appServiceType");%>
                         <iais:select name="appServiceType" id="appServiceType" cssClass="appServiceType" options="appServiceType"
-                                     firstOption="All"></iais:select>
+                                     firstOption="<%=appServiceType%>" value="<%=appServiceType%>"></iais:select>
                     </div>
                 </iais:value>
             </div>
@@ -28,17 +32,19 @@
                 <iais:value>
                     <label class="col-xs-6 col-md-6" for="appTypeSelect" style="margin-top:3%;">Application Type:</label>
                     <div class="col-xs-6 col-md-6">
+                        <%String appTypeSelect = request.getParameter("appTypeSelect");%>
                         <iais:select name="appTypeSelect" id="appTypeSelect" cssClass="appTypeSelect" options="appTypeSelect"
-                                     firstOption="All"></iais:select>
+                                     firstOption="<%=appTypeSelect%>" value="<%=appTypeSelect%>"></iais:select>
                     </div>
                 </iais:value>
             </div>
             <div class="col-md-6">
                 <iais:value>
-                    <label class="col-xs-6 col-md-6" for="appStatusSelect" style="margin-top:3%;">Application Status:</label>
-                    <div class="col-xs-6 col-md-6">
-                        <iais:select codeCategory="CATE_ID_APP_STATUS" cssClass="appStatusSelect" name="appStatusSelect" id="appStatusSelect"
-                                     firstOption="All"></iais:select>
+                    <label class="col-xs-4 col-md-4" for="appStatusSelect" style="margin-top:3%;">Application Status:</label>
+                    <div class="col-xs-8 col-md-8">
+                        <%String appStatusSelect = request.getParameter("appStatusSelect");%>
+                        <iais:select options="appStatusSelect" cssClass="appStatusSelect" name="appStatusSelect" id="appStatusSelect"
+                                     firstOption="<%=appStatusSelect%>" value="<%=appStatusSelect%>"></iais:select>
                     </div>
                 </iais:value>
             </div>
@@ -55,8 +61,8 @@
             </div>
             <div class="col-md-6">
                 <iais:value>
-                    <label class="col-xs-6 col-md-6" for="appStatusSelect" style="margin-top:3%;">To</label>
-                    <div class="col-xs-6 col-md-6">
+                    <label class="col-xs-4 col-md-4" for="appStatusSelect" style="margin-top:3%;">To</label>
+                    <div class="col-xs-8 col-md-8">
                         <%Date eed = Formatter.parseDate(request.getParameter("eed"));%>
                         <iais:datePicker id="eed" name="eed" dateVal="<%=eed%>"/>
                     </div>
@@ -84,7 +90,7 @@
                     <iais:sortableHeader needSort="true" field="STATUS" value="Status"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true" field="CREATED_DT"
                                          value="Submission Date"></iais:sortableHeader>
-                    <th style="width:175px">Actions</th>
+                    <th style="width:15%">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -132,7 +138,7 @@
                                         <c:otherwise>
                                             <iais:select name="appAction" id="appAction"
                                                          options="selectApplication"
-                                                         firstOption="Select" onchange="doAppAction('${app.id}',this.value)"></iais:select>
+                                                         firstOption="Select" onchange="doAppAction('${app.id}','${app.applicationNo}',this.value)"></iais:select>
                                         </c:otherwise>
                                     </c:choose>
                                 </td>

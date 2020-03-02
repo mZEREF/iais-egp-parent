@@ -18,7 +18,8 @@
                 <iais:value>
                     <label class="col-xs-3 col-md-3" for="licType" style="text-align:left;margin-top: 1.5%">Service Type:</label>
                     <div class="col-xs-7 col-md-7">
-                        <iais:select name="licType" id="licType" options="licType" firstOption="All"></iais:select>
+                        <%String licType = request.getParameter("licType");%>
+                        <iais:select name="licType" id="licType" options="licType" firstOption="<%=licType%>" value="<%=licType%>"></iais:select>
                     </div>
                 </iais:value>
             </div>
@@ -75,7 +76,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div class="licence-btns col-md-6">
+                <div class="licence-btns col-md-7">
                     <a class="btn btn-primary disabled" href="javascript:;" id="lic-renew">Renew</a>
                     <a class="btn btn-secondary disabled" href="javascript:;">Cease</a>
                     <a class="btn btn-secondary disabled" href="javascript:;" id="lic-amend">Amend</a>
@@ -100,6 +101,7 @@
                         <iais:sortableHeader needSort="true"  field="PREMISE" value="Premises"></iais:sortableHeader>
                         <iais:sortableHeader needSort="true"  field="START_DATE" value="Start Date"></iais:sortableHeader>
                         <iais:sortableHeader needSort="true"  field="EXPIRY_DATE" value="Expiry Date"></iais:sortableHeader>
+                        <th style="width:15%">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -149,6 +151,11 @@
                                         <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
                                         <p><fmt:formatDate value="${licenceQuery.expiryDate}"
                                                            pattern="dd/MM/yyyy HH:mm:ss"/></p>
+                                    </td>
+                                    <td>
+                                        <p class="visible-xs visible-sm table-row-title">Actions</p>
+                                        <iais:select name="licActions" id="licActions" options="licActions"
+                                                     firstOption="Select"  onchange="doLicAction('${licenceQuery.licenceNo}','licence')"></iais:select>
                                     </td>
                                 </tr>
                             </c:forEach>
