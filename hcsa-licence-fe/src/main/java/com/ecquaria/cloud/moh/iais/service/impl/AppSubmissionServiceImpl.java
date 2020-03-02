@@ -96,6 +96,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
+    public AppSubmissionDto submitPremisesListRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process) {
+        appSubmissionRequestInformationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        AppSubmissionDto appSubmissionDto = appSubmissionRequestInformationDto.getAppSubmissionDto();
+        //asynchronous save the other data.
+        premisesListInformationEventBus(appSubmissionRequestInformationDto, process);
+        return appSubmissionDto;
+    }
+
+    @Override
     public AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
@@ -240,6 +249,29 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
        String project ="hcsaApplicationFe";
        String processName = "requestInfromationSubmit";
        String step = "start";
+       if(process!=null){
+           project= process.getCurrentProject();
+           processName = process.getCurrentProcessName();
+           step = process.getCurrentComponentName();
+           callBackUrl =  process.getHttpRequest().getServerName()
+                   +process.getHttpRequest().getContextPath()
+                   +"/eservice/INTERNET/HcsaApplicationEventBusCallBack";
+       }
+       SubmitReq req = EventBusHelper.getSubmitReq(appSubmissionRequestInformationDto, generateIdClient.getSeqId().getEntity(),
+               EventBusConsts.SERVICE_NAME_APPSUBMIT,
+               EventBusConsts.OPERATION_REQUEST_INFORMATION,
+               sopUrl, callBackUrl, "sop",false,project,processName,step);
+       //
+       SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
+   }
+
+   private void premisesListInformationEventBus(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process){
+        appSubmissionRequestInformationDto.setEventRefNo(EventBusHelper.getEventRefNo());
+        String callBackUrl = systemParamConfig.getInterServerName()+"/hcsa-licence-web/eservice/INTERNET/HcsaApplicationEventBusCallBack";
+        String sopUrl = systemParamConfig.getInterServerName()+"/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList";
+        String project ="hcsaApplicationFe";
+        String processName = "requestInfromationSubmit";
+        String step = "start";
        if(process!=null){
            project= process.getCurrentProject();
            processName = process.getCurrentProcessName();
