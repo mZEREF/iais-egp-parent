@@ -303,6 +303,7 @@ public class InsReportAoDelegator {
             AppPremisesRecommendationDto recommendationDtoTcu = new AppPremisesRecommendationDto();
             recommendationDtoTcu.setAppPremCorreId(appPremisesCorrelationId);
             recommendationDtoTcu.setRecomInDate(tcuDate);
+            recommendationDtoTcu.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_TCU_NEEDED);
             insRepService.updateTcuRecommendation(recommendationDtoTcu);
         }
         if(!StringUtil.isEmpty(engageEnforcement)){
@@ -310,18 +311,21 @@ public class InsReportAoDelegator {
             recommendationDtoEngage.setAppPremCorreId(appPremisesCorrelationId);
             String engageEnforcementRemarks = preapreRecommendationDto.getEngageEnforcementRemarks();
             recommendationDtoEngage.setRemarks(engageEnforcementRemarks);
+            recommendationDtoEngage.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE);
             insRepService.updateengageRecommendation(recommendationDtoEngage);
         }
         if(!StringUtil.isEmpty(riskLevel)){
             AppPremisesRecommendationDto recommendationDtoRisk = new AppPremisesRecommendationDto();
             recommendationDtoRisk.setAppPremCorreId(appPremisesCorrelationId);
             recommendationDtoRisk.setRecomDecision(riskLevel);
+            recommendationDtoRisk.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL);
             insRepService.updateRiskRecommendation(recommendationDtoRisk);
         }
         if(!StringUtil.isEmpty(followUpAction)){
             AppPremisesRecommendationDto followRecommendationDtoFollow = new AppPremisesRecommendationDto();
             followRecommendationDtoFollow.setAppPremCorreId(appPremisesCorrelationId);
             followRecommendationDtoFollow.setRemarks(followUpAction);
+            followRecommendationDtoFollow.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION);
             insRepService.updateFollowRecommendation(followRecommendationDtoFollow);
         }
     }
