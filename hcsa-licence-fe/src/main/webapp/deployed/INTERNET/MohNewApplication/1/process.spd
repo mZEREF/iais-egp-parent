@@ -37,7 +37,7 @@
     <JavaCode defClass="" executor="" methodName="preparePreview_OnStepProcess_0" name="preparePreview_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PreparePayment" x="490" y="470">
+  <AutomaticStep defClass="" executor="" icon="" name="PreparePayment" x="490" y="460">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -168,6 +168,18 @@
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
+  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="doJump" x="620" y="550">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </ReturnInvokeProcessStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareJump" x="500" y="550">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareJump_OnStepProcess_0" name="prepareJump_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Premises" stageIndicator="" x="600" y="20">
@@ -225,7 +237,7 @@
    <position>{(430,160)(520,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreparePayment" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(430,160)(510,490)}</position>
+   <position>{(430,160)(510,480)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doDocument" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Documents" style="oblique">
    <position>{(610,150)(730,160)}</position>
@@ -237,7 +249,7 @@
    <position>{(520,370)(620,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Payment" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreparePayment" style="oblique">
-   <position>{(510,490)(620,480)}</position>
+   <position>{(510,480)(620,480)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doPreview" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Preview" style="oblique">
    <position>{(620,370)(750,370)}</position>
@@ -270,13 +282,13 @@
    <position>{(990,170)(1040,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(990,170)(860,540)}</position>
+   <position>{(990,170)(880,610)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSaveDraft" style="oblique">
-   <position>{(1040,310)(860,540)}</position>
+   <position>{(1040,310)(880,610)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
-   <position>{(860,540)(317,617)(260,160)}</position>
+   <position>{(880,610)(317,617)(260,160)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/InvokeForms" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareForms" style="oblique">
    <position>{(520,260)(610,260)}</position>
@@ -291,7 +303,7 @@
    <position>{(990,170)(1160,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSubmit" style="oblique">
-   <position>{(1160,310)(860,540)}</position>
+   <position>{(1160,310)(880,610)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/jumpBank" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Payment" style="rectanular">
    <position>{(620,480)(730,480)}</position>
@@ -315,7 +327,7 @@
    <position>{(1270,70)(940,-40)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(1270,70)(860,540)}</position>
+   <position>{(1270,70)(880,610)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doRequestForChange" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(990,170)(1090,100)}</position>
@@ -344,6 +356,12 @@
   <SynchronousLink destinationName="/Pages/WebPage/AckPage" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge2" style="rectanular">
    <position>{(1500,280)(1169,-86)(1170,-40)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareJump" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(430,160)(520,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/doJump" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareJump" style="rectanular">
+   <position>{(520,570)(640,570)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Merges/Merge/Merge1" componentIfTrue="/Steps/AutomaticStep/PrepareAckPage" defClass="" executor="" icon="" leftOperand="isrfiSuccess" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="1250" y="50">
@@ -359,6 +377,7 @@
    <SwitchCase component="/Steps/AutomaticStep/PreparePreview" value="&quot;preview&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PreparePayment" value="&quot;payment&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PrepareErrorAck" value="&quot;errorAck&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareJump" value="\u201cjump\u201d"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="Switch2" name="Switch2" x="970" y="150">
    <Description/>
@@ -377,7 +396,7 @@
  </Switches>
  <Branches/>
  <Merges>
-  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="840" y="520">
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="860" y="590">
    <Description/>
   </Merge>
   <Merge defClass="" executor="" icon="" name="Merge2" type="Or" x="1480" y="260">

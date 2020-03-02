@@ -77,9 +77,14 @@ public class INTERNET___MohRfcPermisesList___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "prePayment", this);
 	}
 
-	public void bank_OnStepProcess_0() throws Exception {
-	// 		bank->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "toBank", this);
+	public void doRequestForInformationSubmit_OnStepProcess_0() throws Exception {
+	// 		doRequestForInformationSubmit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doRequestForInformationSubmit", this);
+	}
+
+	public void dosubmit_OnStepProcess_0() throws Exception {
+	// 		dosubmit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doSubmit", this);
 	}
 
 }
