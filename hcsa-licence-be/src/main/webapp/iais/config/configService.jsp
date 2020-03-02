@@ -113,14 +113,15 @@
       </div>
 
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-8">
+      <div class="form-group" style="display: none" id="Subsumption">
+        <div class="col-xs-12 col-md-8"  style="margin-bottom: 10px">
           <label class="col-xs-12 col-md-6 control-label" >Subsumption Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <select  name="Subsumption">
               <option >Select one</option>
-              <option>Acute Hospital</option>
-              <option>Community Hospital</option>
+              <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
+                <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
+              </c:forEach>
             </select>
           </div>
         </div>
@@ -128,15 +129,26 @@
 
 
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-8">
+      <div class="form-group" style="display: none" id="Pre-requisite">
+        <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
           <label class="col-xs-12 col-md-6 control-label" >Pre-requisite Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <select  name="Subsumption">
               <option >Select one</option>
-              <option>Acute Hospital</option>
-              <option>Community Hospital</option>
+              <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
+                <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
+              </c:forEach>
             </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" >
+        <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
+
+          <div class="col-xs-12 col-md-4" style="margin-left: 50%">
+            <label class="col-xs-12 col-md-6 control-label"  style="text-align: center">MINIMUM COUNT</label>
+            <label class="col-xs-12 col-md-6 control-label" style="text-align: center" >MAXIMUM COUNT</label>
           </div>
         </div>
       </div>
@@ -145,9 +157,9 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label">Principal Officer (PO)<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-6 control-label" >Principal Officer (PO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input type="text" name="man-principalOfficer" placeholder="mandatory count" value="${PO.mandatoryCount}">
+            <input type="text" name="man-principalOfficer" placeholder="minimum count" value="${PO.mandatoryCount}">
           </div>
           <div class="col-xs-12 col-md-2">
             <input type="text" name="mix-principalOfficer" placeholder="maximum count" value="${PO.maximumCount}">
@@ -164,7 +176,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Deputy Principal Officer (DPO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-DeputyPrincipalOfficer" placeholder="mandatory count" value="${DPO.mandatoryCount}">
+            <input  type="text" name="man-DeputyPrincipalOfficer" placeholder="minimum count" value="${DPO.mandatoryCount}">
           </div>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-DeputyPrincipalOfficer"  placeholder="maximum count" value="${DPO.maximumCount}">
@@ -182,7 +194,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Clinical Governance Officer (CGO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-ClinicalGovernanceOfficer" placeholder="mandatory count" value="${CGO.mandatoryCount}">
+            <input  type="text" name="man-ClinicalGovernanceOfficer" placeholder="minimum count" value="${CGO.mandatoryCount}">
           </div>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-ClinicalGovernanceOfficer"  placeholder="maximum count" value="${CGO.maximumCount}">
@@ -199,7 +211,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Service Personnel<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-ServicePersonnel" placeholder="mandatory count" value="${SVCPSN.mandatoryCount}">
+            <input  type="text" name="man-ServicePersonnel" placeholder="minimum count" value="${SVCPSN.mandatoryCount}">
           </div>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-ServicePersonnel"  placeholder="maximum count" value="${SVCPSN.maximumCount}">
@@ -543,5 +555,23 @@
           $('#APTY001').attr("style","display: block");
       }
   }
+
+    $('#ServiceType').change(function () {
+
+        let val = $('#ServiceType').val();
+        if("SVTP002"==val){
+            $('#Subsumption').attr("style","display:block");
+            $('#Pre-requisite').attr("style","display:none");
+        }else  if("SVTP003"==val){
+            $('#Pre-requisite').attr("style","display:block")
+            $('#Subsumption').attr("style","display:none");
+
+        }else {
+            $('#Subsumption').attr("style","display:none");
+            $('#Pre-requisite').attr("style","display:none");
+        }
+
+    });
+
 </script>
 </>

@@ -101,12 +101,17 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public String submitData(HttpServletRequest request) {
+        String appealingFor = (String)  request.getSession().getAttribute("appealingFor");
+        String type = (String)  request.getSession().getAttribute("type");
+        if("licence".equals(type)){
+              return     licencePresmises(request,appealingFor);
+        } else if ("application".equals(type)) {
 
-        String appealingFor = request.getParameter("appealingFor");
+            return   applicationPresmies(request ,appealingFor);
+        }else {
+            return null;
+        }
 
-
-      /*  return     licencePresmises(request,appealingFor);*/
-          return   applicationPresmies(request ,appealingFor);
 
     }
 
@@ -193,42 +198,61 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public void getMessage(HttpServletRequest request) {
+
         String appealingFor =  request.getParameter("appealingFor");
-        ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion("AN2001120004032-04").getEntity();
-    /*    LicenceDto licenceDto = licenceClient.getLicBylicNo("L/20CLB0156/CLB/001/201").getEntity();
-        List<PremisesListQueryDto> premisesListQueryDtos = licenceClient.getPremises(licenceDto.getId()).getEntity();
-        for(int i=0;i<premisesListQueryDtos.size();i++){
-            String hciName = premisesListQueryDtos.get(i).getHciName();
-            String address = premisesListQueryDtos.get(i).getAddress();
-
-        }*/
-        String serviceId = applicationDto.getServiceId();
-        String id = applicationDto.getId();
-        if(id!=null){
-            AppInsRepDto entity = applicationClient.getHciNameAndAddress(id).getEntity();
-            String hciName = entity.getHciName();
-            String hciAddress = entity.getHciAddress();
+        String type = request.getParameter("type");
+        if ("licence".equals(type)) {
+            LicenceDto licenceDto = licenceClient.getLicBylicNo(appealingFor).getEntity();
+            String svcName = licenceDto.getSvcName();
+            String licenceNo = licenceDto.getLicenceNo();
+            List<PremisesListQueryDto> premisesListQueryDtos = licenceClient.getPremises(licenceDto.getId()).getEntity();
             List<String> hciNames=new ArrayList<>();
-            hciNames.add(hciName);
-            request.getSession().setAttribute("hciAddress",hciAddress);
+            List<String> addresses=new ArrayList<>();
+            for(int i=0;i<premisesListQueryDtos.size();i++){
+                String hciName = premisesListQueryDtos.get(i).getHciName();
+                String address = premisesListQueryDtos.get(i).getAddress();
+                hciNames.add(hciName);
+                addresses.add(address);
+            }
+            request.getSession().setAttribute("hciAddress",addresses);
             request.getSession().setAttribute("hciNames",hciNames);
-        }
-
-        List<String> list=new ArrayList<>();
-        list.add(serviceId);
-        List<HcsaServiceDto> entity = appConfigClient.getHcsaService(list).getEntity();
-        for(int  i=0;i<entity.size();i++){
-            String svcName = entity.get(i).getSvcName();
             request.getSession().setAttribute("serviceName",svcName);
+            request.getSession().setAttribute("licenceNo",licenceNo);
+        } else if ("application".equals(type)) {
+            ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion(appealingFor).getEntity();
+
+            String serviceId = applicationDto.getServiceId();
+            String id = applicationDto.getId();
+            if(id!=null){
+                AppInsRepDto entity = applicationClient.getHciNameAndAddress(id).getEntity();
+                String hciName = entity.getHciName();
+                String hciAddress = entity.getHciAddress();
+                List<String> hciNames=new ArrayList<>();
+                hciNames.add(hciName);
+                request.getSession().setAttribute("hciAddress",hciAddress);
+                request.getSession().setAttribute("hciNames",hciNames);
+            }
+
+            List<String> list=new ArrayList<>();
+            list.add(serviceId);
+            List<HcsaServiceDto> entity = appConfigClient.getHcsaService(list).getEntity();
+            for(int  i=0;i<entity.size();i++){
+                String svcName = entity.get(i).getSvcName();
+                request.getSession().setAttribute("serviceName",svcName);
+            }
+            String applicationNo = applicationDto.getApplicationNo();
+            request.getSession().setAttribute("applicationNo",applicationNo);
+            request.setAttribute("applicationDto",applicationDto);
+            String status = applicationDto.getStatus();
+            if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
+                requetForInformationGetMessage(request);
+            }
+
+            request.getSession().setAttribute("serviceId",applicationDto.getServiceId());
         }
-        String applicationNo = applicationDto.getApplicationNo();
-        request.getSession().setAttribute("applicationNo",applicationNo);
-        request.setAttribute("applicationDto",applicationDto);
-        String status = applicationDto.getStatus();
-        if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
-            requetForInformationGetMessage(request);
-        }
-        request.getSession().setAttribute("serviceId",applicationDto.getServiceId());
+        request.getSession().setAttribute("appealingFor",appealingFor);
+        request.getSession().setAttribute("type",type);
+
     }
 
     @Override
@@ -497,10 +521,10 @@ public class AppealServiceImpl implements AppealService {
 
     private String licencePresmises(HttpServletRequest request,String  licenceNo){
 
-        LicenceDto licenceDto = licenceClient.getLicBylicNo("L/20CLB0156/CLB/001/201").getEntity();
+        LicenceDto licenceDto = licenceClient.getLicBylicNo(licenceNo).getEntity();
 
         ApplicationDto entity1 = applicationClient.getApplicationsByLicenceId(licenceDto.getId()).getEntity();
-
+        String licenseeId = licenceDto.getLicenseeId();
         LicenceDto entity=new LicenceDto();
                 String id = entity.getId();
         String svcName = entity.getSvcName();
@@ -508,6 +532,7 @@ public class AppealServiceImpl implements AppealService {
         List<PremisesDto> premisess = licenceClient.getPremisesDto(licenceDto.getId()).getEntity();
         String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo);
+        applicationGroupDto.setLicenseeId(licenseeId);
         StringBuilder stringBuilder =new StringBuilder(appNo);
         String s = stringBuilder.append("-1").toString();
         List<AppGrpPremisesDto> premisesDtos=new ArrayList<>();
@@ -614,8 +639,10 @@ public class AppealServiceImpl implements AppealService {
 
     private String applicationPresmies(HttpServletRequest request, String applicationNo){
 
-        ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion("AN2001120004032-04").getEntity();
+        ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion(applicationNo).getEntity();
+        String grpId = applicationDto.getAppGrpId();
 
+        ApplicationGroupDto entity = applicationClient.getApplicationGroup(grpId).getEntity();
         String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
         StringBuilder stringBuilder =new StringBuilder(appNo);
         String s = stringBuilder.append("-1").toString();
@@ -635,6 +662,7 @@ public class AppealServiceImpl implements AppealService {
         //group
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo);
         //info
+        applicationGroupDto.setLicenseeId(entity.getLicenseeId());
 
         ApplicationDto applicationDto1 =new ApplicationDto();
         applicationDto1.setApplicationType(ApplicationConsts.APPLICATION_TYPE_APPEAL);
@@ -698,10 +726,10 @@ public class AppealServiceImpl implements AppealService {
             }
         }
 
-        AppPremiseMiscDto appPremiseMiscDto = applicationClient.getAppPremisesMisc("267F4F32-BC53-EA11-BE79-000C29D29DB0").getEntity();
+        AppPremiseMiscDto appPremiseMiscDto = applicationClient.getAppPremisesMisc("063C400F-F452-EA11-BE79-000C29D29DB0").getEntity();
         String reason = appPremiseMiscDto.getReason();
         String appPremCorreId = appPremiseMiscDto.getAppPremCorreId();
-        AppPremisesSpecialDocDto appPremisesSpecialDocDto = applicationClient.getAppPremisesSpecialDocDtoByCorreId("4816C36D-7054-EA11-BE79-000C29D29DB0").getEntity();
+        AppPremisesSpecialDocDto appPremisesSpecialDocDto = applicationClient.getAppPremisesSpecialDocDtoByCorreId(appPremCorreId).getEntity();
         if(appPremisesSpecialDocDto!=null){
             String fileRepoId = appPremisesSpecialDocDto.getFileRepoId();
             String docName = appPremisesSpecialDocDto.getDocName();
@@ -710,7 +738,7 @@ public class AppealServiceImpl implements AppealService {
         }
 
         if("MS003".equals(reason)){
-            List<AppSvcCgoDto> appSvcCgoDtos = applicationClient.getAppGrpPersonnelByGrpId("F37777A4-0253-EA11-BE79-000C29D29DB0").getEntity();
+            List<AppSvcCgoDto> appSvcCgoDtos = applicationClient.getAppGrpPersonnelByGrpId(appGrpId).getEntity();
             ParamUtil.setRequestAttr(request, "CgoMandatoryCount", appSvcCgoDtos.size());
             List<SelectOption> cgoSelectList = new ArrayList<>();
             SelectOption sp0 = new SelectOption("-1", "Select Personnel");

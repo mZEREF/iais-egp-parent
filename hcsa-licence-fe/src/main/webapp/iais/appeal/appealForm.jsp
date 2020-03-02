@@ -3,7 +3,7 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<webui:setLayout name="iais-intranet"/>
+<webui:setLayout name="iais-internet"/>
 
 <%
   sop.webflow.rt.api.BaseProcessClass process =
@@ -25,7 +25,7 @@
     </div>
 
     <div class="col-xs-12 col-md-5">
-      <input type="text" name="appealingFor"  >
+      <input type="text" name="appealingFor" disabled  value="${appealingFor}" >
     </div>
   </div>
 
@@ -38,9 +38,9 @@
         <option value="MS002" <c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option>
         <option value="MS003" <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option>
         <option value="MS008" <c:if test="${appPremiseMiscDto.reason=='MS008'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option>
-        <option value="MS004" <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option>
-        <option value="MS005" <c:if test="${appPremiseMiscDto.reason=='MS005'}">selected="selected"</c:if>>Appeal against suspension</option>
-        <option value="MS006" <c:if test="${appPremiseMiscDto.reason=='MS006'}">selected="selected"</c:if>>Appeal against revocation</option>
+        <option value="MS004" <c:if test="${type=='application'}"></c:if> disabled <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option>
+       <%-- <option value="MS005" <c:if test="${appPremiseMiscDto.reason=='MS005'}">selected="selected"</c:if>>Appeal against suspension</option>
+        <option value="MS006" <c:if test="${appPremiseMiscDto.reason=='MS006'}">selected="selected"</c:if>>Appeal against revocation</option>--%>
       </select>
 
         <div> <span  class="error-msg" name="iaisErrorMsg" id="error_reason"></span></div>

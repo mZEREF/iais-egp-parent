@@ -289,7 +289,7 @@ public interface HcsaConfigClient {
     FeignResponseEntity<List<HcsaSvcStageWorkingGroupDto>> getHcsaSvcWorkingGroupByStages(@RequestBody List<String> stageIds);
     @GetMapping(value = "/hcsa-config/hcsa-service-step-scheme-by-service-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceStepSchemeDto>> getHcsaServiceStepSchemeDtoByServiceId(@RequestParam("serviceId") String serviceId);
-    @GetMapping(value = "/hcsa-service-categorys",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/hcsa-config/hcsa-service-categorys",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceCategoryDto>> getHcsaServiceCategorys();
     @GetMapping(value = "/hcsa-config/service-is-active")
     FeignResponseEntity<Boolean> serviceIdIsUsed(@RequestParam("serviceId") String serviceId);

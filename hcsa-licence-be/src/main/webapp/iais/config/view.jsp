@@ -104,6 +104,49 @@
         </div>
       </div>
       </div>
+
+
+      <div class="form-group" style="display: none" id="Subsumption">
+        <div class="col-xs-12 col-md-8"  style="margin-bottom: 10px">
+          <label class="col-xs-12 col-md-6 control-label" >Subsumption Base Service:<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-4">
+            <select  name="Subsumption">
+              <option >Select one</option>
+              <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
+                <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
+              </c:forEach>
+            </select>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="form-group" style="display: none" id="Pre-requisite">
+        <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
+          <label class="col-xs-12 col-md-6 control-label" >Pre-requisite Base Service:<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-4">
+            <select  name="Subsumption">
+              <option >Select one</option>
+              <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
+                <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
+              </c:forEach>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" >
+        <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
+
+          <div class="col-xs-12 col-md-4" style="margin-left: 50%">
+            <label class="col-xs-12 col-md-6 control-label"  style="text-align: center">MINIMUM COUNT</label>
+            <label class="col-xs-12 col-md-6 control-label" style="text-align: center" >MAXIMUM COUNT</label>
+          </div>
+        </div>
+      </div>
+
+
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Principal Officer (PO)<span class="mandatory">*</span></label>
@@ -468,6 +511,23 @@
   }
 </style>
 <script type="text/javascript">
+
+
+    $(document).ready(function(){
+        let val = $("select[name='ServiceType']").val();
+        if("SVTP002"==val){
+            $('#Subsumption').attr("style","display:style");
+            $('#Pre-requisite').attr("style","display:none");
+        }else if("SVTP003"==val){
+            $('#Subsumption').attr("style","display:none");
+            $('#Pre-requisite').attr("style","display:style")
+        }else {
+            $('#Subsumption').attr("style","display:none");
+            $('#Pre-requisite').attr("style","display:none");
+        }
+
+
+    });
 
     function edit(obj) {
 

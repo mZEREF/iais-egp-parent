@@ -132,6 +132,8 @@ public class ConfigServiceImpl implements ConfigService {
         map.put("APTY002",workGrop1);
         map.put("APTY001",workGrop);
         request.setAttribute("routingStagess", map);
+        List<HcsaServiceCategoryDto> hcsaServiceCategoryDto = getHcsaServiceCategoryDto();
+        request.setAttribute("hcsaServiceCategoryDtos",hcsaServiceCategoryDto);
 
     }
 
@@ -764,7 +766,8 @@ public class ConfigServiceImpl implements ConfigService {
     private void view(HttpServletRequest request, String crud_action_value) {
 
         HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(crud_action_value).getEntity();
-
+        List<HcsaServiceCategoryDto> hcsaServiceCategoryDto = getHcsaServiceCategoryDto();
+        request.setAttribute("hcsaServiceCategoryDtos",hcsaServiceCategoryDto);
         request.setAttribute("hcsaServiceDto", hcsaServiceDto);
         String id = hcsaServiceDto.getId();
         List<String> ids = new ArrayList<>();

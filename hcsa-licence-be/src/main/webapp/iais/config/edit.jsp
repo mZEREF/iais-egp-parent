@@ -29,7 +29,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="serviceName">Service Name<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceName" name="serviceName" type="text" value="${hcsaServiceDto.svcName}">
+            <input id="serviceName" name="serviceName" disabled type="text" value="${hcsaServiceDto.svcName}">
           </div>
         </div>
       </div>
@@ -54,7 +54,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="serviceCode">Service Code<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceCode" name="serviceCode" type="text"  value="${hcsaServiceDto.svcCode}">
+            <input id="serviceCode" name="serviceCode" disabled type="text"  value="${hcsaServiceDto.svcCode}">
           </div>
         </div>
       </div>
@@ -63,12 +63,12 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="ServiceType">Service Type<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <select id="ServiceType" name="ServiceType" >
+            <select id="ServiceType" disabled name="ServiceType">
 
               <option>Select one</option>
-              <option selected="selected" value="SVTP001">Base</option>
-              <option value="SVTP002">Subsumed</option>
-              <option value="SVTP003">Specified</option>
+              <option <c:if test="${hcsaServiceDto.svcType=='SVTP001'}">selected="selected"</c:if> value="SVTP001">Base</option>
+              <option <c:if test="${hcsaServiceDto.svcType=='SVTP002'}">selected="selected"</c:if> value="SVTP002">Subsumed</option>
+              <option <c:if test="${hcsaServiceDto.svcType=='SVTP003'}">selected="selected"</c:if> value="SVTP003">Specified</option>
             </select>
           </div>
         </div>
@@ -108,14 +108,15 @@
       </div>
       <br>
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-8">
+      <div class="form-group" style="display: none" id="Subsumption">
+        <div class="col-xs-12 col-md-8"  style="margin-bottom: 10px">
           <label class="col-xs-12 col-md-6 control-label" >Subsumption Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <select  name="Subsumption">
               <option >Select one</option>
-              <option>Acute Hospital</option>
-              <option>Community Hospital</option>
+              <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
+                <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
+              </c:forEach>
             </select>
           </div>
         </div>
@@ -123,15 +124,27 @@
 
 
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-8">
+      <div class="form-group" style="display: none" id="Pre-requisite">
+        <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
           <label class="col-xs-12 col-md-6 control-label" >Pre-requisite Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <select  name="Subsumption">
               <option >Select one</option>
-              <option>Acute Hospital</option>
-              <option>Community Hospital</option>
+              <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
+                <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
+              </c:forEach>
             </select>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="form-group" >
+        <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
+
+          <div class="col-xs-12 col-md-4" style="margin-left: 50%">
+            <label class="col-xs-12 col-md-6 control-label"  style="text-align: center">MINIMUM COUNT</label>
+            <label class="col-xs-12 col-md-6 control-label" style="text-align: center" >MAXIMUM COUNT</label>
           </div>
         </div>
       </div>
@@ -141,7 +154,7 @@
         <div class="col-xs-12 col-md-8" >
           <label class="col-xs-12 col-md-6 control-label" >Principal Officer (PO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2" >
-            <input type="text" name="man-principalOfficer" value="${PO.mandatoryCount}" placeholder="mandatory count">
+            <input type="text" name="man-principalOfficer" value="${PO.mandatoryCount}" placeholder="minimum count">
             <input type="text" name="poId" style="display: none" value="${PO.id}">
           </div>
           <div class="col-xs-12 col-md-2" >
@@ -159,7 +172,7 @@
           <label class="col-xs-12 col-md-6 control-label" >Deputy Principal Officer (DPO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input value="${DPO.id}" name="dpoId" style="display:none;" type="text">
-            <input  type="text" name="man-DeputyPrincipalOfficer" value="${DPO.mandatoryCount}" placeholder="mandatory count">
+            <input  type="text" name="man-DeputyPrincipalOfficer" value="${DPO.mandatoryCount}" placeholder="minimum count">
           </div>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-DeputyPrincipalOfficer" value="${DPO.maximumCount}"  placeholder="maximum count">
@@ -176,7 +189,7 @@
           <label class="col-xs-12 col-md-6 control-label" >Clinical Governance Officer (CGO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input value="${CGO.id}" name="cgoId" style="display:none;" type="text">
-            <input  type="text" name="man-ClinicalGovernanceOfficer" value="${CGO.mandatoryCount}" placeholder="mandatory count">
+            <input  type="text" name="man-ClinicalGovernanceOfficer" value="${CGO.mandatoryCount}" placeholder="minimum count">
           </div>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-ClinicalGovernanceOfficer" value="${CGO.maximumCount}"  placeholder="maximum count">
@@ -193,7 +206,7 @@
           <label class="col-xs-12 col-md-6 control-label" >Service Personnel<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input value="${SVCPSN.id}" name="svcpsnId" style="display:none;" type="text">
-            <input  type="text" name="man-ServicePersonnel" value="${SVCPSN.mandatoryCount}" placeholder="mandatory count">
+            <input  type="text" name="man-ServicePersonnel" value="${SVCPSN.mandatoryCount}" placeholder="minimum count">
           </div>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-ServicePersonnel" value="${SVCPSN.maximumCount}"  placeholder="maximum count">
@@ -453,7 +466,7 @@
         <div class="form-group">
           <label class="col-xs-12 col-md-8 control-label">Effective Start Date<span class="mandatory">*</span></label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
-            <input type="text" value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
+            <input type="text" disabled value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
           </div>
           <div class="clear"></div></div>
       </div>
@@ -510,6 +523,22 @@
 </style>
 <script type="text/javascript">
 
+    $(document).ready(function(){
+        let val = $("select[name='ServiceType']").val();
+        if("SVTP002"==val){
+          $('#Subsumption').attr("style","display:style");
+          $('#Pre-requisite').attr("style","display:none");
+        }else if("SVTP003"==val){
+            $('#Subsumption').attr("style","display:none");
+            $('#Pre-requisite').attr("style","display:style")
+        }else {
+            $('#Subsumption').attr("style","display:none");
+            $('#Pre-requisite').attr("style","display:none");
+        }
+
+
+    });
+
     function cancel() {
         location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohServiceConfig";
     }
@@ -539,6 +568,22 @@
         }
     }
 
+    $('#ServiceType').change(function () {
+
+        let val = $('#ServiceType').val();
+        if("SVTP002"==val){
+            $('#Subsumption').attr("style","display:block");
+            $('#Pre-requisite').attr("style","display:none");
+        }else  if("SVTP003"==val){
+            $('#Pre-requisite').attr("style","display:block")
+            $('#Subsumption').attr("style","display:none");
+
+        }else {
+            $('#Subsumption').attr("style","display:none");
+            $('#Pre-requisite').attr("style","display:none");
+        }
+
+    });
 
 </script>
 </>
