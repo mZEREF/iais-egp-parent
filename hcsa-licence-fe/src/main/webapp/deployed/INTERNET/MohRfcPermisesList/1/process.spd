@@ -86,11 +86,18 @@
     <JavaCode defClass="" executor="" methodName="back_OnStepProcess_0" name="back_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="toBank" x="830" y="340">
+  <AutomaticStep defClass="" executor="" icon="" name="doRequestForInformationSubmit" x="880" y="300">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="bank_OnStepProcess_0" name="bank_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doRequestForInformationSubmit_OnStepProcess_0" name="doRequestForInformationSubmit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doSubmit" x="780" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="dosubmit_OnStepProcess_0" name="dosubmit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -114,12 +121,6 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="payment" stageIndicator="" x="460" y="380">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
-  </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="830" y="510">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -173,9 +174,6 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/preparePayment" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
    <position>{(210,250)(330,400)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(860,200)(102,614)(100,250)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareAckPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(860,200)(820,90)}</position>
   </SynchronousLink>
@@ -185,24 +183,47 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/back" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(860,200)(720,70)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/toBank" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(860,200)(850,360)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/jumpBank" style="oblique">
    <position>{(580,400)(730,240)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/toBank" style="rectanular">
-   <position>{(850,360)(850,530)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doRequestForInformationSubmit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(860,200)(900,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doRequestForInformationSubmit" style="oblique">
+   <position>{(900,320)(1060,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareAckPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(1060,440)(820,90)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(1060,440)(900,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(900,540)(102,540)(100,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(860,200)(900,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSubmit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(860,200)(800,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSubmit" style="oblique">
+   <position>{(800,420)(730,240)}</position>
   </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Merges/Merge/Merge1" componentIfTrue="/Steps/AutomaticStep/prepareAckPage" defClass="" executor="" icon="" leftOperand="isrfiSuccess" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="1040" y="420">
+   <Description/>
+  </Condition>
+ </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="switch" name="Switch1" x="840" y="180">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/prepare" value="&quot;loading&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareAckPage" value="&quot;ack&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/back" value=""/>
-   <SwitchCase component="/Steps/AutomaticStep/toBank" value="&quot;bank&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doRequestForInformationSubmit" value="&quot;doRfi&quot;"/>
+   <SwitchCase component="/Merges/Merge/Merge1" value="&quot;loading&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doSubmit" value="&quot;dosubmit&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_form" name="Switch3" x="190" y="230">
    <Description/>
@@ -212,7 +233,11 @@
   </Switch>
  </Switches>
  <Branches/>
- <Merges/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="880" y="520">
+   <Description/>
+  </Merge>
+ </Merges>
  <StudioLabels/>
  <StageIndicator/>
  <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
