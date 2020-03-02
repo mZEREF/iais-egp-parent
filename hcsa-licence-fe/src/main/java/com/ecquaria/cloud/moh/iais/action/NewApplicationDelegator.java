@@ -49,6 +49,16 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.sz.commons.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.servlet.webflow.HttpHandler;
+import sop.util.CopyUtil;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Time;
@@ -60,15 +70,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.servlet.webflow.HttpHandler;
-import sop.util.CopyUtil;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * NewApplicationDelegator
@@ -398,6 +399,16 @@ public class NewApplicationDelegator {
 
         //gen dto
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+
+        String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            if("back".equals(action)
+                    ||RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)) {
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "jump");
+                return;
+            }
+        }
 
         String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
@@ -851,6 +862,9 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the appGroupNo is -->:") + appGroupNo);
         appSubmissionDto.setAppGrpNo(appGroupNo);
         AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(appSubmissionDto, oldAppSubmissionDto);
+        if(!amendmentFeeDto.getChangeInHCIName() && !amendmentFeeDto.getChangeInLocation()){
+            appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
+        }
         FeeDto  feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         double amount = feeDto.getTotal();
         log.info(StringUtil.changeForLog("the amount is -->:") + amount);
@@ -1049,6 +1063,21 @@ public class NewApplicationDelegator {
     }
 
 
+    /**
+     * StartStep: prepareJump
+     *
+     * @param bpc
+     * @throws
+     */
+    public void prepareJump(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("the do prepareJump start ...."));
+
+
+
+        log.info(StringUtil.changeForLog("the do prepareJump end ...."));
+    }
+
+
 
     //=============================================================================
     //private method
@@ -1064,12 +1093,12 @@ public class NewApplicationDelegator {
                 }
             }
             if(!appEditSelectDto.isDocEdit()){
-                if(!appSubmissionDto.getAppSvcRelatedInfoDtoList().equals(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList())){
+                if(!appSubmissionDto.getAppGrpPrimaryDocDtos().equals(oldAppSubmissionDto.getAppGrpPrimaryDocDtos())){
                     result.put("document","UC_CHKLMD001_ERR001");
                 }
             }
             if(!appEditSelectDto.isServiceEdit()){
-                if(!appSubmissionDto.getAppGrpPrimaryDocDtos().equals(oldAppSubmissionDto.getAppGrpPrimaryDocDtos())){
+                if(!appSubmissionDto.getAppSvcRelatedInfoDtoList().equals(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList())){
                     result.put("serviceId","UC_CHKLMD001_ERR001");
                 }
             }
@@ -1875,38 +1904,21 @@ public class NewApplicationDelegator {
         }
         log.info(StringUtil.changeForLog("the do loadingDraft end ...."));
     }
-    private void requestForChangeLoading(BaseProcessClass bpc) throws CloneNotSupportedException{
+    private void requestForChangeLoading(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do requestForChangeLoading start ...."));
-        String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
-        //String licenceId = "B99F41F3-5D1E-EA11-BE7D-000C29F371DC";
-
-        String [] amendLicenceType = ParamUtil.getStrings(bpc.request, "amend-licence-type");
-        //amendLicenceType = new String[]{"RFCATYPE01","RFCATYPE03","RFCATYPE04","RFCATYPE05","RFCATYPE06"};
-        if(!StringUtil.isEmpty(licenceId) && amendLicenceType != null && amendLicenceType.length>0 ){
-            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
-            if(appSubmissionDto != null){
-                appSubmissionDto.setNeedEditController(true);
-                AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-                for(String type:amendLicenceType){
-                    log.info(StringUtil.changeForLog("The RFC select type -->:"+type));
-                    if(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION.equals(type)){
-                        appEditSelectDto.setPremisesEdit(true);
-                    } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_MEDALERT_PERSONNEL.equals(type)) {
-                        appEditSelectDto.setMedAlertEdit(true);
-                    } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PRINCIPAL_OFFICER.equals(type)) {
-                        appEditSelectDto.setPoEdit(true);
-                    } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_DEPUTY_PRINCIPAL_OFFICER.equals(type)) {
-                        appEditSelectDto.setDpoEdit(true);
-                    } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION.equals(type)) {
-                        appEditSelectDto.setServiceEdit(true);
-                    } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT.equals(type)) {
-                        appEditSelectDto.setDocEdit(true);
-                    }
-                }
-                appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
-                appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+        String appType = (String) ParamUtil.getRequestAttr(bpc.request,"appType");
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTORFCATTR);
+        String currentEdit = (String) ParamUtil.getRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT);
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
+                && appSubmissionDto!= null && !StringUtil.isEmpty(currentEdit)){
+            if(RfcConst.EDIT_PREMISES.equals(currentEdit)){
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
+            }else if(RfcConst.EDIT_PRIMARY_DOC.equals(currentEdit)){
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"documents");
+            }else if(RfcConst.EDIT_SERVICE.equals(currentEdit)){
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"serviceForms");
             }
-
+            appSubmissionDto.setNeedEditController(true);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
         log.info(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
