@@ -39,7 +39,7 @@
                                             <br/>
                                         </div>
                                         <div class="form-horizontal">
-                                            <h3><c:out value="${onePersonnel.psnName}"/>,<c:out value="${onePersonnel.hiddenIdNo}"/>(<c:out value="${onePersonnel.idType}"/>)</h3>
+                                            <h3><c:out value="${onePersonnel.psnName}"/>,<c:out value="${onePersonnel.idNo}"/>(<c:out value="${onePersonnel.idType}"/>)</h3>
                                             <h4>Changes made will be applied to all licences associated with this personnel. Please note that payment is required for each affected licence.</h4>
                                         </div>
                                         <div class="form-horizontal"></div>

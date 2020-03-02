@@ -123,7 +123,7 @@
                           </iais:value>
                         </iais:row>
                         <iais:row>
-                          <iais:field value="Fire Safety Shelter Bureau Ref. No. " mandatory="true" width="10"/>
+                          <iais:field value="Fire Safety Shelter Bureau Ref. No. "  width="10"/>
                           <iais:value width="10">
                             <iais:input cssClass="scdfRefNo" maxLength="66" type="text" name="scdfRefNo"
                                         id="siteStreetName" value="${appGrpPremisesDto.scdfRefNo}"></iais:input>

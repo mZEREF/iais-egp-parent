@@ -144,16 +144,24 @@
                       </c:forEach>
                     </c:forEach>
                   </div>
-                  <div class="application-tab-footer">
-                    <div class="row">
-                      <div class="col-xs-12 col-sm-6">
-                        <p><a id = "Back" class="back"><em class="fa fa-angle-left"></em> Back</a></p>
+
+                  <c:choose>
+                    <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
+                      <%@include file="../common/rfcFooter.jsp"%>
+                    </c:when>
+                    <c:otherwise>
+                      <div class="application-tab-footer">
+                        <div class="row">
+                          <div class="col-xs-12 col-sm-6">
+                            <p><a id = "Back" class="back"><em class="fa fa-angle-left"></em> Back</a></p>
+                          </div>
+                          <div class="col-xs-12 col-sm-6">
+                            <div class="button-group"><a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a><a class="btn btn-primary next" id="Next">Next</a></div>
+                          </div>
+                        </div>
                       </div>
-                      <div class="col-xs-12 col-sm-6">
-                        <div class="button-group"><a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a><a class="btn btn-primary next" id="Next">Next</a></div>
-                      </div>
-                    </div>
-                  </div>
+                    </c:otherwise>
+                  </c:choose>
                 </div>
               </div>
             </div>

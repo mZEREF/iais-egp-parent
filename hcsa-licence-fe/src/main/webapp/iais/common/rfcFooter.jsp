@@ -16,7 +16,7 @@
 <script>
     $(document).ready(function() {
         $('#Back').click(function () {
-            submit('jump',null,null);
+            submit('jump','back',null);
         });
 
         $('#Save').click(function () {
@@ -28,7 +28,7 @@
         });
 
         $('#Undo').click(function () {
-            submit('jump',null,null);
+            submit('jump','back',null);
         });
     });
 

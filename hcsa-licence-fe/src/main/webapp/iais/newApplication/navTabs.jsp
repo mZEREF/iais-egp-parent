@@ -56,6 +56,20 @@
             submit('payment',null,null);
         });
 
+        <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
+            $('#premises').unbind();
+            $('#premisesli').unbind();
+            $('#documents').unbind();
+            $('#documentsli').unbind();
+            $('#serviceForms').unbind();
+            $('#serviceFormsli').unbind();
+            $('#preview').unbind();
+            $('#previewli').unbind();
+            $('#payment').unbind();
+            $('#paymentli').unbind();
+
+        </c:if>
+
     });
 
     function submit(action,value,additional){

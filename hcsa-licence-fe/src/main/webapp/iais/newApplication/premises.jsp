@@ -47,7 +47,6 @@
                       <c:choose>
                         <c:when test="${'true' == canEdit}">
                           <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
-                          <
                         </c:when>
                         <c:otherwise>
 

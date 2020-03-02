@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <c:forEach items="${ReloadPrincipalOfficers}" var="po" varStatus="status">
-                        <p><strong>Clinical Governance Officer ${status.index+1}</strong>: ${po.name },${po.hiddenIdNo}(${po.idType })</p>
+                        <p><strong>Clinical Governance Officer ${status.index+1}</strong>: ${po.name },${po.idNo}(${po.idType })</p>
                     </c:forEach>
 
 
@@ -17,7 +17,7 @@
                         </c:when>
                         <c:otherwise>
                             <c:forEach items="${ReloadDeputyPrincipalOfficers}" var="dpo" varStatus="stat">
-                                <p><strong>Deputy Principal Officer ${stat.index+1} (Optional)</strong>: ${dpo.name },${dpo.hiddenIdNo}(${dpo.idType })</p>
+                                <p><strong>Deputy Principal Officer ${stat.index+1} (Optional)</strong>: ${dpo.name },${dpo.idNo}(${dpo.idType })</p>
                             </c:forEach>
                         </c:otherwise>
                     </c:choose>
