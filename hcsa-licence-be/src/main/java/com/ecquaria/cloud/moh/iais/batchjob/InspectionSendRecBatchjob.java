@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDt
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -119,7 +120,8 @@ public class InspectionSendRecBatchjob {
                 interMessageDto.setRefNo(mesNO);
                 interMessageDto.setService_id(aDto.getServiceId());
                 interMessageDto.setUserId(intranet.getMohUserGuid());
-                String url = MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION + appPremCorrId;
+                String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName() +
+                             MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION + appPremCorrId;
                 interMessageDto.setProcessUrl(url);
                 interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 interMessageDto.setAuditTrailDto(intranet);
