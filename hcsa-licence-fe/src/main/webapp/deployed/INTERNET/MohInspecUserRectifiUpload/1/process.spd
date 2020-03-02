@@ -141,7 +141,7 @@
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/InspecUserRectifiUploadConfirm" componentIfTrue="/Steps/AutomaticStep/Step1" defClass="" executor="" icon="" leftOperand="flag" name="InspecUserRectifiUploadCond1" operator="=" rightOperand="&quot;true&quot;" x="1300" y="520">
+  <Condition componentIfFalse="/Steps/AutomaticStep/InspecUserRectifiUploadConfirm" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="flag" name="InspecUserRectifiUploadCond1" operator="=" rightOperand="&quot;true&quot;" x="1300" y="520">
    <Description/>
   </Condition>
  </Conditions>

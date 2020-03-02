@@ -19,7 +19,7 @@
 <div class="container">
   <div class="component-gp">
     <br>
-    <form method="post" id="mainReviewForm" action=<%=process.runtime.continueURL()%>>
+    <form method="post" id="mainReviewForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
       <%@ include file="/include/formHidden.jsp" %>
       <br>
       <br>
@@ -57,8 +57,8 @@
                           <iais:row>
                             <iais:field value="Choose a file to attach"/>
                             <iais:value width="7">
-                              <input class="selectedFile premDoc" id="recFileUpload" name = "recFileUpload" type="file" style="display: none;" aria-label="selectedFile1"/>
-                              <button type="button" class="btn btn-lg" onclick="javascript:doUserRecUploadConfirmUpload()">Upload</button>
+                              <input class="selectedFile premDoc" id="recFileUpload" name = "recFileUpload" type="file" onchange="javascript:doUserRecUploadConfirmFile(this.value)" style="display: none;" aria-label="selectedFile1"/>
+                              <button type="button" class="btn btn-default btn-sm" onclick="javascript:doUserRecUploadConfirmUpload()">Upload</button>
                               <br><span class="error-msg" name="iaisErrorMsg" id="error_recFile"></span>
                             </iais:value>
                           </iais:row>
@@ -67,7 +67,7 @@
                             <iais:value width="300">
                               <c:if test="${inspecUserRecUploadDto.fileRepoDtos != null}">
                                 <c:forEach items="${inspecUserRecUploadDto.fileRepoDtos}" var="recFile">
-                                  <label><c:out value="${recFile.fileName}"></c:out></label><button type="button" class="btn btn-lg" onclick="javascript:doUserRecUploadConfirmDel('<iais:mask name="fileId" value="${recFile.id}"/>')">Delete</button><br>
+                                  <label><c:out value="${recFile.fileName}"></c:out></label><button type="button" class="btn btn-default btn-sm" onclick="javascript:doUserRecUploadConfirmDel('<iais:mask name="fileId" value="${recFile.id}"/>')">Delete</button><br>
                                 </c:forEach>
                               </c:if>
                               <label id="recFileName"></label>
@@ -121,11 +121,11 @@
     }
 
     function doUserRecUploadConfirmUpload() {
-      $("#recFileUpload").onclick;
-      var file = $("#recFileUpload").val();
-      if(file != null && "" != file){
-        var fileName = getFileName(file);
-        $("#recFileName").text(fileName);
+      $("#recFileUpload").trigger('click');
+    }
+
+    function doUserRecUploadConfirmFile(value) {
+      if(value != null && "" != value){
         $("#actionValue").val('add');
         userRecUploadConfirmSubmit('add');
       }

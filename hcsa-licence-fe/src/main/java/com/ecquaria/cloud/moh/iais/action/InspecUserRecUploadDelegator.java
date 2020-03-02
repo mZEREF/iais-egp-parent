@@ -130,9 +130,11 @@ public class InspecUserRecUploadDelegator {
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadVali start ...."));
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
         InspecUserRecUploadDto inspecUserRecUploadDto = (InspecUserRecUploadDto)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDto");
-        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        Map<String,String> errorMap = new HashMap<>();
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        ParamUtil.setRequestAttr(bpc.request, "inspecUserRecUploadType", actionValue);
+
+        Map<String,String> errorMap = new HashMap<>();
         if(InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue) || InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)){
             errorMap = doValidateByRecFile(inspecUserRecUploadDto, mulReq, errorMap, actionValue);
             if(errorMap != null && !(errorMap.isEmpty())){
@@ -225,6 +227,7 @@ public class InspecUserRecUploadDelegator {
      */
     public void step1(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the step1 start ...."));
+        String action = ParamUtil.getRequestString(bpc.request,"inspecUserRecUploadType");
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
     }
