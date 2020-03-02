@@ -73,7 +73,6 @@
 
     function doAppAction(appId,appNo,actionName) {
         // showWaiting();
-        alert(actionName);
         $("[name='action_type_value']").val(actionName);
         if ("Withdraw" == actionName) {
             $("[name='action_no_value']").val(appNo);
