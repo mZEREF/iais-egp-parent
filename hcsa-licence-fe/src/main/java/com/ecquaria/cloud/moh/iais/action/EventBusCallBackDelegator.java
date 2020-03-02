@@ -46,7 +46,7 @@ public class EventBusCallBackDelegator {
         String operation = ParamUtil.getString(request, "operation");
         Map<String, List<ServiceStatus>> map = client.getSubmissionStatus(AppConsts.REST_PROTOCOL_TYPE
                         + RestApiUrlConsts.EVENT_BUS, submissionId, operation);
-        if (map.size() == 1) {
+        if (map.size() >= 1) {
             log.info("Got records from DB");
             boolean completed = true;
             boolean success = true;
