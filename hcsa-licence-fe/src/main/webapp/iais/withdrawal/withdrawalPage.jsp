@@ -18,77 +18,79 @@
                             <div class="center-content">
                                 <h2>Withdrawal Form</h2>
                             </div>
+                        </div>
+                        <div class="row">
+                            <div class="center-content">
+                                <label class="col-md-12">You are withdrawing for:</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="center-content">
+                                <div class="col-md-12">
+                                    <span>${applicationNo}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="center-content">
+                                <label class="col-md-12">Reason for Withdrawal:</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="center-content">
+                                <div class="col-md-7">
+                                    <iais:select name="withdrawalReason" id="withdrawalReason"
+                                                 options="withdrawalReasonList"
+                                                 firstOption="Please select a withdrawal reason"
+                                                 onchange="withdrawalReasons(this.value);"></iais:select>
+                                    <span id="error_withdrawnReason" name="iaisErrorMsg" class="error-msg"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="reason" hidden>
                             <div class="row">
                                 <div class="center-content">
-                                    <label class="col-md-12">You are withdrawing for:</label>
+                                    <label class="col-md-4">Any supporting remarks:</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="center-content">
-                                    <div class="col-md-12">
-                                        <span>sssssss</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="center-content">
-                                    <label class="col-md-12">Reason for Withdrawal:</label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="center-content">
-                                    <div class="col-md-7">
-                                        <iais:select name="withdrawalReason" id="withdrawalReason" options="withdrawalReasonList"
-                                                     firstOption="Please select a withdrawal reason" onchange="withdrawalReasons(this.value);"></iais:select>
-                                        <span id="error_withdrawnReason" name="iaisErrorMsg" class="error-msg"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="reason" hidden>
-                                <div class="row">
-                                    <div class="center-content">
-                                        <label class="col-md-4">Any supporting remarks:</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="center-content">
-                                        <div class="col-md-6">
+                                    <div class="col-md-6">
                         <textarea name="withdrawnRemarks" cols="58" rows="15" id="htmlEditroArea"
                                   title="content"></textarea>
-                                            <span id="error_withdrawnRemarks" name="iaisErrorMsg"
-                                                  class="error-msg"></span>
-                                        </div>
+                                        <span id="error_withdrawnRemarks" name="iaisErrorMsg"
+                                              class="error-msg"></span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="center-content">
-                                    <label>File Upload for Appeal Reasons</label>
+                        </div>
+                        <div class="row">
+                            <div class="center-content">
+                                <label class="col-md-12">File Upload for Appeal Reasons</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="center-content">
+                                <div class="col-md-7">
+                                    <div class="file-upload-gp">
+                                        <input id="withdrawFile" type="file" name="withdrawFile" style="display: none;"><a
+                                            class="btn btn-file-upload btn-secondary">Upload</a>
+                                        <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="center-content">
+                        </div>
+                        <div class="row">
+                            <div class="center-content">
+                                <div class="col-md-2  col-md-offset-7">
                                     <div class="components">
-                                        <div class="file-upload-gp">
-                                            <input id="withdrawFile" type="file" name="withdrawFile" style="display: none;"><a class="btn btn-file-upload btn-secondary">Upload</a>
-                                            <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
-                                        </div>
+                                        <a class="btn btn-primary">Cancel</a>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="center-content">
-                                    <div class="col-md-2  col-md-offset-7">
-                                        <div class="components">
-                                            <a class="btn btn-primary">Cancel</a>
-                                        </div>
+                                <div class="col-md-2">
+                                    <div class="components">
+                                        <a class="btn btn-primary" onclick="doSubmit()">Submit</a>
                                     </div>
-                                    <div class="col-md-2">
-                                        <div class="components">
-                                            <a class="btn btn-primary" onclick="doSubmit()">Submit</a>
-                                        </div>
-                                    </div>
-
                                 </div>
                             </div>
                         </div>
@@ -97,7 +99,7 @@
             </div>
         </div>
     </form>
-    <%@include file="/include/validation.jsp"%>
+    <%@include file="/include/validation.jsp" %>
 </div>
 <script type="text/javascript">
     function withdrawalReasons(obj) {
@@ -105,7 +107,7 @@
         if (obj == "Others") {
             $("#reason").show();
         } else {
-            $("#reason").css("display","none")
+            $("#reason").css("display", "none")
         }
     }
 
@@ -114,7 +116,7 @@
         $("#mainForm").submit();
     }
 
-    function doSubmit(){
+    function doSubmit() {
         showWaiting();
         submit("withdrawalStep");
     }
