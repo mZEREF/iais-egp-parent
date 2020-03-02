@@ -44,8 +44,8 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="dashboard-footernote">
-                        <p class="dashboard-small-txt"><strong>Last Login:</strong> 07 February 2019, 14: 39 | <strong>Last
-                            Activity:</strong> Application For Renewal - Licence No. EP000-2019-2, On 01 Feb 2019</p>
+                        <p class="dashboard-small-txt"><strong>Last Login:</strong> 07 February 2020, 14: 39 | <strong>Last
+                            Activity:</strong> Application For Renewal - Licence No. EP000-2020-2, On 01 Feb 2020</p>
                     </div>
                 </div>
             </div>
