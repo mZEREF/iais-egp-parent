@@ -3,22 +3,33 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
+import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /****
  *
@@ -32,16 +43,53 @@ public class RequestForChangeDelegator {
     @Autowired
     RequestForChangeService requestForChangeService;
 
+    @Autowired
+    private AppSubmissionService appSubmissionService;
+
+    @Autowired
+    private ServiceConfigService serviceConfigService;
 
     /**
      *
      * @param bpc
      * @Decription doStart
      */
-    public void doStart(BaseProcessClass bpc){
+    public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
+        ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, null);
+        ParamUtil.setSessionAttr(bpc.request,"SvcName",null);
+        ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
+        ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,null);
         String licenceId = ParamUtil.getString(bpc.request, "licenceId");
         ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, licenceId);
+
+        //load data
+        if(!StringUtil.isEmpty(licenceId)){
+            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
+            if(appSubmissionDto == null || IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList()) ||
+                    IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
+                log.info("appSubmissionDto incomplete , licenceId:"+licenceId);
+            }else{
+                appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
+                List<String> svcNames = new ArrayList<>();
+                svcNames.add(svcName);
+                List<HcsaServiceDto> hcsaServiceDtoList  = serviceConfigService.getHcsaServiceByNames(svcNames);
+                ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+                //set svcInfo
+                NewApplicationHelper.setSubmissionDtoSvcData(bpc.request,appSubmissionDto);
+                //set laboratory disciplines info
+                if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)){
+                    List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(hcsaServiceDtoList.get(0).getId());
+                    NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto,hcsaSvcSubtypeOrSubsumedDtos);
+                    ParamUtil.setSessionAttr(bpc.request, "SvcId",hcsaServiceDtoList.get(0).getId());
+                }
+
+                ParamUtil.setSessionAttr(bpc.request,"SvcName",svcName);
+                ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,appSubmissionDto);
+            }
+        }
+
 
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
     }
@@ -53,27 +101,8 @@ public class RequestForChangeDelegator {
      */
     public void prepare(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepare start ...."));
-        List<SelectOption> amendType = new ArrayList<>();
-        SelectOption sp1 = new SelectOption(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION,
-                RfcConst.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION_TEXT);
-        SelectOption sp2 = new SelectOption(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_MEDALERT_PERSONNEL,
-                RfcConst.REQUEST_FOR_CHANGE_TYPE_MEDALERT_PERSONNEL_TEXT);
-        SelectOption sp3 = new SelectOption(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PRINCIPAL_OFFICER,
-                RfcConst.REQUEST_FOR_CHANGE_TYPE_PRINCIPAL_OFFICER_TEXT);
-        SelectOption sp4 = new SelectOption(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_DEPUTY_PRINCIPAL_OFFICER,
-                RfcConst.REQUEST_FOR_CHANGE_TYPE_DEPUTY_PRINCIPAL_OFFICER_TEXT);
-        SelectOption sp5 = new SelectOption(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION,
-                RfcConst.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION_TEXT);
-        SelectOption sp6 = new SelectOption(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT,
-                RfcConst.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT_TEXT);
-        amendType.add(sp1);
-        amendType.add(sp2);
-        amendType.add(sp3);
-        amendType.add(sp4);
-        amendType.add(sp5);
-        amendType.add(sp6);
-        ParamUtil.setRequestAttr(bpc.request, "AmendTypeList", amendType);
-
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
+        ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do prepare end ...."));
     }
 
@@ -90,10 +119,15 @@ public class RequestForChangeDelegator {
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
         String UNID=ParamUtil.getString(bpc.request, "UNID");
-
+        if(StringUtil.isEmpty(amendType)){
+            flag = false;
+            //todo:ERRRFC005
+            ParamUtil.setRequestAttr(bpc.request, "ErrorMsg", "Please select at least a premises to transfer");
+        }
         if(licenceDto != null && UNID==null) {
             String status = licenceDto.getStatus();
             if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)) {
+                //todo:ERRRFC001
                 ParamUtil.setRequestAttr(bpc.request, "ErrorMsg", "licence status is not active");
                 flag = false;
             }
@@ -104,12 +138,7 @@ public class RequestForChangeDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "doTranfer");
                 flag = true;
             }else if(AppConsts.YES.equals(amendType)){
-                String [] amendLicenceType = ParamUtil.getStrings(bpc.request, "amend-licence-type");
-                if(amendLicenceType != null && amendLicenceType.length > 0){
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "doAmend");
-                }else{
-                    flag = false;
-                }
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "doAmend");
             }
         }
         if(!flag){
@@ -140,20 +169,86 @@ public class RequestForChangeDelegator {
     /**
      *
      * @param bpc
-     * @Decription prepareAmend
+     * @Decription prepareFirstView
      */
-    public void prepareAmend(BaseProcessClass bpc) throws IOException {
-        log.debug(StringUtil.changeForLog("the do prepareAmend start ...."));
-        /*//String licenceId = "B99F41F3-5D1E-EA11-BE7D-000C29F371DC";
-         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
-        LicenceDto licenceDto = new LicenceDto();
-        licenceDto.setId(licenceId);
-        licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_REQUEST_FOR_CHANGE);
-        //update lic status
-        //requestForChangeService.upDateLicStatus(licenceDto);*/
-        
-        log.debug(StringUtil.changeForLog("the do prepareAmend end ...."));
+    public void prepareFirstView(BaseProcessClass bpc)  {
+        log.debug(StringUtil.changeForLog("the do prepareFirstView start ...."));
+        ParamUtil.setRequestAttr(bpc.request,"FirstView",AppConsts.TRUE);
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
+
+
+        if(appSubmissionDto != null){
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                String svcId = (String) ParamUtil.getSessionAttr(bpc.request,"SvcId");
+                ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDtos.get(0));
+                Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap= NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto,svcId);
+                ParamUtil.setRequestAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
+                //PO/DPO
+                List<AppSvcPrincipalOfficersDto> principalOfficersDtos = new ArrayList<>();
+                List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = new ArrayList<>();
+                if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos.get(0).getAppSvcPrincipalOfficersDtoList())){
+                    for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto:appSvcRelatedInfoDtos.get(0).getAppSvcPrincipalOfficersDtoList()){
+                        if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(appSvcPrincipalOfficersDto.getPsnType())){
+                            principalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                        }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(appSvcPrincipalOfficersDto.getPsnType())){
+                            deputyPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                        }
+                    }
+                }
+                ParamUtil.setRequestAttr(bpc.request, "ReloadPrincipalOfficers", principalOfficersDtos);
+                ParamUtil.setRequestAttr(bpc.request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);
+
+            }
+        }
+        ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,appSubmissionDto);
+        ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
+
+        log.debug(StringUtil.changeForLog("the do prepareFirstView end ...."));
     }
+
+    /**
+     *
+     * @param bpc
+     * @Decription doFirstView
+     */
+    public void doFirstView(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doFirstView start ...."));
+        String editValue = ParamUtil.getString(bpc.request,"EditValue");
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
+        AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto()==null? new AppEditSelectDto():appSubmissionDto.getAppEditSelectDto();
+        String isSuccess = AppConsts.FALSE;
+        if(!StringUtil.isEmpty(editValue)){
+            isSuccess = "Y";
+            if(RfcConst.EDIT_PREMISES.equals(editValue)){
+                appEditSelectDto.setPremisesEdit(true);
+                ParamUtil.setRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT,RfcConst.EDIT_PREMISES);
+            }else if(RfcConst.EDIT_PRIMARY_DOC.equals(editValue)){
+                appEditSelectDto.setDocEdit(true);
+                ParamUtil.setRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT,RfcConst.EDIT_PRIMARY_DOC);
+            }else if(RfcConst.EDIT_SERVICE.equals(editValue)){
+                appEditSelectDto.setServiceEdit(true);
+                ParamUtil.setRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT,RfcConst.EDIT_SERVICE);
+            }
+            appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
+            ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTORFCATTR,appSubmissionDto);
+            ParamUtil.setRequestAttr(bpc.request,"appType",ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+        }
+        ParamUtil.setRequestAttr(bpc.request,"isSuccess",isSuccess);
+        log.debug(StringUtil.changeForLog("the do doFirstView end ...."));
+    }
+
+    /**
+     *
+     * @param bpc
+     * @Decription doBack
+     */
+    public void doBack(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doBack start ...."));
+
+        log.debug(StringUtil.changeForLog("the do doBack end ...."));
+    }
+
 
     /**
      * @param bpc
