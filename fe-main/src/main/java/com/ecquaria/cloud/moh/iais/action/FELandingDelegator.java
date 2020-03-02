@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.helper.EngineHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.IaisApiStatusCode;
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -53,7 +57,7 @@ public class FELandingDelegator {
 	 * @throws
 	 */
 	public void switchAction(BaseProcessClass bpc){
-
+		ParamUtil.setSessionAttr(bpc.request, "uenList", null);
 	}
 
 	/**
@@ -64,6 +68,8 @@ public class FELandingDelegator {
 	 */
 	public void croppassLogin(BaseProcessClass bpc){
 		HttpServletRequest request = bpc.request;
+
+
 		String entityId = ParamUtil.getString(request, "entityId");
 		String corpPassId = ParamUtil.getString(request, "corpPassId");
 		String password = ParamUtil.getString(request, "password");
@@ -98,10 +104,17 @@ public class FELandingDelegator {
 			int errorCode = apiResult.getErrorCode();
 			if (IaisApiStatusCode.FIND_UEN_BY_SINGPASS_ID.getStatusCode() == errorCode){
 				List<String> uenList = apiResult.getEntity();
+				String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl("https://egp.sit.inter.iais.com" + EngineHelper.getContextPath()
+						 + "/eservice/INTERNET/FE_Landing/1/croppass", bpc.request);
+				try {
+					ParamUtil.setSessionAttr(request, "uenList", (Serializable) uenList);
+					bpc.response.sendRedirect(tokenUrl);
+				} catch (IOException e) {
+					log.error(e.getMessage());
+				}
 
 			}
 
-			return;
 		}
 
 

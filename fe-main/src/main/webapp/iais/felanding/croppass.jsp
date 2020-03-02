@@ -33,6 +33,14 @@
               <div id="errorMessage" class="error-login" style="display:block"></div>
               <div class="linebreak"></div>
             </div>
+
+            <c:if test="${uenList != null}">
+              <c:out value="${uenList}"></c:out>
+              <br>
+              multiple UEN signed by MOH found during current singpass ID login, please use they to login
+            </c:if>
+
+
             <div id="login" class="login-area" style="display:block;">
               <div class="form-group">
                 <label class="sr-only" for="entityId">UEN/Entity ID</label>
@@ -55,7 +63,6 @@
               </div>
               <div class="checkbox">
                 <label class="login-label">
-                  <input type="checkbox" name="remember">Remember Entity ID
                   <a class="remTooltip topposition tooltipclick" title="" data-placement="left" data-toggle="tooltip" data-trigger="click" tabindex="-1" href="#" data-original-title="This is for CorpPass to remember your Entity ID so you do not have to enter it the next time.">
                     <span class="icon-remEntityID icon-info-login-main login-info-padding"></span></a>
                 </label>

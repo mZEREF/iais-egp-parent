@@ -52,7 +52,6 @@
               </div>
               <div class="checkbox">
                 <label class="login-label">
-                  <input type="checkbox" name="remember">Remember Entity ID
                   <a class="remTooltip topposition tooltipclick" title="" data-placement="left" data-toggle="tooltip" data-trigger="click" tabindex="-1" href="#" data-original-title="This is for CorpPass to remember your Entity ID so you do not have to enter it the next time.">
                     <span class="icon-remEntityID icon-info-login-main login-info-padding"></span></a>
                 </label>
