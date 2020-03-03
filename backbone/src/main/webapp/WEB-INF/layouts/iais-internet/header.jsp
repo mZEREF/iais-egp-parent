@@ -3,6 +3,7 @@
 <%
     String webrooth=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
 %>
+<webui:setAttribute name="title">HALP</webui:setAttribute>
 <header>
     <div class="container">
         <div class="row">
