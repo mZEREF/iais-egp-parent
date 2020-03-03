@@ -67,4 +67,9 @@ public class INTRANET___MohMassEmailBlast___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "selectRecipients", this); 
 	}
 
+	public void auditTrial_OnStepProcess_0() throws Exception {
+	// 		AuditTrial->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "auditTrial", this); 
+	}
+
 }

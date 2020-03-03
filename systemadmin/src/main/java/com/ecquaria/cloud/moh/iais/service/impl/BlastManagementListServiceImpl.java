@@ -4,8 +4,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.EmailAuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.ResendListDto;
 import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.client.BlastManagementListClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,16 +26,31 @@ public class BlastManagementListServiceImpl implements BlastManagementListServic
     @Autowired
     private BlastManagementListClient blastManagementListClient ;
 
+    @Autowired
+    private EmailHistoryClient emailHistoryClient ;
     @Override
     public SearchResult<BlastManagementListDto> blastList(SearchParam searchParam) {
         return blastManagementListClient.getBlastManagementList(searchParam).getEntity();
     }
 
     @Override
+    public SearchResult<EmailAuditTrailDto> auditList(SearchParam searchParam){
+        return emailHistoryClient.getAuditList(searchParam).getEntity();
+    }
+
+    @Override
+    public SearchResult<ResendListDto> resendList(SearchParam searchParam){
+        return emailHistoryClient.getResendList(searchParam).getEntity();
+    }
+    @Override
     public BlastManagementDto saveBlast(BlastManagementDto blastManagementDto){
         return blastManagementListClient.saveBlastList(blastManagementDto).getEntity();
     }
 
+    @Override
+    public void setSchedule(BlastManagementDto blastManagementDto){
+        blastManagementListClient.setSchedule(blastManagementDto);
+    }
     @Override
     public void deleteBlastList(List<String> list){
         blastManagementListClient.deleteBlastList(list);

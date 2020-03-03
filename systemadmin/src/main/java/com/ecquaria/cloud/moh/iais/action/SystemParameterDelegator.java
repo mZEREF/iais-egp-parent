@@ -240,7 +240,7 @@ public class SystemParameterDelegator {
                         systemParameterDto.setMaxlength(query.getMaxlength());
                         systemParameterDto.setStatus(query.getStatus());
                         systemParameterDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                        systemParameterDto.setPropertiesKey(query.getPropertiesKey());
+//                        systemParameterDto.setPropertiesKey(query.getPropertiesKey());
                         ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO, systemParameterDto);
                     }
                 }

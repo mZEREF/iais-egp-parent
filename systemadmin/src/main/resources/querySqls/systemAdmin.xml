@@ -339,11 +339,42 @@
             FROM email_sms_blast T1
             JOIN distribution T2 ON T1.DISTRIBUTION_ID = T2.ID
             LEFT JOIN email_sms_blast_attachment T3 ON T1.ID = T3.BLAST_ID
-            WHERE  T1.status = 'CMSTAT001' or T1.status = 'CMSTAT003'
+            WHERE  (T1.status = 'CMSTAT001' or T1.status = 'CMSTAT003')
             <#if id??> AND T1.ID =:id</#if>
             <#if description??> AND DISTRIBUTION_NAME like :description</#if>
             <#if msgName??> AND MSG_NAME like :msgName</#if>
+            <#if start??> AND T1.SCHEDULE_SEND_DATE > CONVERT(datetime, :start, 103)</#if>
+            <#if end??> AND T1.SCHEDULE_SEND_DATE < CONVERT(datetime, :end, 103)</#if>
         ]]>
     </sql>
+    <sql key="audit"  remarks="audit">
+        <![CDATA[
+            SELECT
+            T1.notification_id,T3.history_id,T1.notification_type,T1.recipient,T1.sender,T1.subject,T1.content,T1.number_of_attempts,
+            T2.file_name,T3.log_msg,T3.sent_time
+            FROM notification T1
+            JOIN notification_annex T2 ON T1.request_ref_num = T2.request_ref_num
+            JOIN notification_history T3 ON T1.notification_id = T3.notification_id
+            WHERE  1 = 1
+            <#if refNum??> AND T1.request_ref_num =:refNum</#if>
+        ]]>
+    </sql>
+
+    <sql key="resend"  remarks="resend">
+        <![CDATA[
+            SELECT
+            T1.notification_id,T1.request_ref_num,T1.recipient,T1.sender,T1.subject,T1.status,T3.log_msg,T3.sent_time
+            FROM notification T1
+            JOIN notification_annex T2 ON T1.request_ref_num = T2.request_ref_num
+            left JOIN (select N1.history_id,N1.notification_id,N1.sent_time,N1.log_msg from notification_history N1 JOIN
+             (select max(history_id) as history_id from notification_history GROUP BY notification_id) N2
+             on N1.history_id = N2.history_id) T3 ON T1.notification_id = T3.notification_id
+             WHERE  1 = 1
+            <#if start??> AND T3.sent_time > CONVERT(datetime, :start, 103)</#if>
+            <#if end??> AND T3.sent_time < CONVERT(datetime, :end, 103)</#if>
+        ]]>
+    </sql>
+
 </sqls>
+
 

@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.EmailAuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -18,22 +19,28 @@ import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -158,6 +165,8 @@ public class BlastManagementDelegator {
     public void search(BaseProcessClass bpc){
         String descriptionSwitch = ParamUtil.getRequestString(bpc.request,"descriptionSwitch");
         String msgName = ParamUtil.getRequestString(bpc.request,"msgName");
+        String start = ParamUtil.getRequestString(bpc.request,"start");
+        String end = ParamUtil.getRequestString(bpc.request,"end");
         searchParam.getParams().clear();
         searchParam.getFilters().clear();
         searchParam.setPageNo(1);
@@ -167,8 +176,16 @@ public class BlastManagementDelegator {
         if(!StringUtil.isEmpty(msgName)){
             searchParam.addFilter("msgName",  "%" +msgName + "%",true);
         }
+        if(!StringUtil.isEmpty(start)){
+            searchParam.addFilter("start",  start,true);
+        }
+        if(!StringUtil.isEmpty(end)){
+            searchParam.addFilter("end",  end,true);
+        }
         ParamUtil.setRequestAttr(bpc.request,"descriptionSwitch",descriptionSwitch);
         ParamUtil.setRequestAttr(bpc.request,"msgName",msgName);
+        ParamUtil.setRequestAttr(bpc.request,"start",start);
+        ParamUtil.setRequestAttr(bpc.request,"end",end);
     }
 
     /**
@@ -182,11 +199,16 @@ public class BlastManagementDelegator {
         setStatusSelection(bpc,blastManagementDtoById.getStatus());
         setModeSelection(bpc,blastManagementDtoById.getMode());
         String schedule = Formatter.formatDate(blastManagementDtoById.getSchedule());
-
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(blastManagementDtoById.getSchedule());
+        int hour = cal.get(Calendar.HOUR);
+        int minute = cal.get(Calendar.MINUTE);
         blastManagementDto.setId(blastManagementDtoById.getId());
         blastManagementDto.setDistributionId(blastManagementDtoById.getDistributionId());
         blastManagementDto.setDistributionName(blastManagementDtoById.getDistributionName());
         String emailAddress = StringUtils.join(blastManagementDtoById.getEmailAddress(),"\n");
+        ParamUtil.setSessionAttr(bpc.request,"hour",hour);
+        ParamUtil.setSessionAttr(bpc.request,"minutes",minute);
         ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDtoById);
         ParamUtil.setSessionAttr(bpc.request,"emailAddress",emailAddress);
         ParamUtil.setSessionAttr(bpc.request,"schedule",schedule);
@@ -208,6 +230,8 @@ public class BlastManagementDelegator {
         String name = ParamUtil.getString(bpc.request, "name");
         String mode = ParamUtil.getString(bpc.request, "mode");
         String date = ParamUtil.getString(bpc.request, "date");
+        String HH = ParamUtil.getString(bpc.request, "HH");
+        String MM = ParamUtil.getString(bpc.request, "MM");
         String status = ParamUtil.getString(bpc.request, "status");
         blastManagementDto.setMsgName(name);
         blastManagementDto.setMode(mode);
@@ -216,6 +240,8 @@ public class BlastManagementDelegator {
         if(!StringUtil.isEmpty(date)){
             try {
                 schedule = newformat.parse(date);
+                long time = schedule.getTime() + Long.parseLong(HH) * 60 * 60 * 1000 + Long.parseLong(MM) * 60 * 1000;
+                schedule.setTime(time);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -307,5 +333,42 @@ public class BlastManagementDelegator {
         }
 
         return null;
+    }
+
+    public void auditTrial(BaseProcessClass bpc){
+        String id =  ParamUtil.getString(bpc.request, "editBlast");
+        SearchParam auditSearchParam = new SearchParam(EmailAuditTrailDto.class.getName());
+        auditSearchParam.setSort("history_id", SearchParam.ASCENDING);
+//        if(!StringUtil.isEmpty(id)){
+        auditSearchParam.addFilter("refNum", "6F4FAB70-D32E-EA11-BE7D-000C29F371DC",true);
+//        }
+        CrudHelper.doPaging(auditSearchParam,bpc.request);
+        QueryHelp.setMainSql("systemAdmin", "audit",auditSearchParam);
+        SearchResult<EmailAuditTrailDto> searchResult = blastManagementListService.auditList(auditSearchParam);
+        ParamUtil.setRequestAttr(bpc.request,"SearchResult",searchResult);
+    }
+
+    @GetMapping(value = "/file-repo")
+    public @ResponseBody
+    void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        File file = null;
+        QueryHelp.setMainSql("systemAdmin", "queryBlastManagementList",searchParam);
+        SearchResult<BlastManagementListDto> searchResult = blastManagementListService.blastList(searchParam);
+        if (!searchResult.getRows().isEmpty()){
+            //master code to description
+            List<BlastManagementListDto> blastManagementListDtos = searchResult.getRows();
+            file = ExcelWriter.exportExcel(blastManagementListDtos, BlastManagementListDto.class, "Blast_Management_Upload_Template");
+        }
+
+        if(file != null){
+            try {
+                FileUtils.writeFileResponeContent(response, file);
+                FileUtils.deleteTempFile(file);
+            } catch (IOException e) {
+                log.debug(e.getMessage());
+            }
+        }
+
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
     }
 }

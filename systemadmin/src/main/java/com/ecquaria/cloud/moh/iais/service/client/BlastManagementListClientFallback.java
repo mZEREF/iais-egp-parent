@@ -50,4 +50,12 @@ public class BlastManagementListClientFallback implements BlastManagementListCli
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<Void> setSchedule(BlastManagementDto blastManagementDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 }

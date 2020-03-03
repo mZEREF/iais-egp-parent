@@ -27,20 +27,6 @@
                     <iais:section title="" id="supPoolList">
                         <div class="form-group">
                             <iais:value>
-                                <label class="col-xs-2 col-md-2 control-label">DescriptionName</label>
-                                <div class="col-xs-4 col-sm-4 col-md-4">
-                                    <input type="text" name="descriptionSwitch" id="descriptionSwitch" value="${descriptionSwitch}"/>
-                                </div>
-                            </iais:value>
-                            <iais:value>
-                                <label class="col-xs-2 col-md-2 control-label">MsgName</label>
-                                <div class="col-xs-4 col-sm-4 col-md-4">
-                                    <input type="text" name="msgName" id="msgName" value="${msgName}"/>
-                                </div>
-                            </iais:value>
-                        </div>
-                        <div class="form-group">
-                            <iais:value>
                                 <label class="col-xs-2 col-md-2 control-label">SendDate Start</label>
                                 <div class="col-xs-4 col-sm-4 col-md-4">
                                     <iais:datePicker id="start" name="start"  value="${start}" />
@@ -65,34 +51,23 @@
                         </iais:action>
                     </iais:section>
 
-                    <iais:pagination param="blastSearchParam" result="blastSearchResult"/>
-                    <div class="col-xs-12 col-sm-12">
-                        <div class="button-group col-xs-6 col-sm-6">
-                            <a class="btn btn-file-upload btn-secondary" id="addlist" onclick="addList()">Add Blast Management</a>
-                        </div>
-                        <div class="button-group col-xs-6 col-sm-6">
-                            <a class="btn btn-file-upload btn-secondary"  style="float: right" id="delete" onclick="deleteList()">Delete</a>
-                        </div>
-                    </div>
+                    <iais:pagination param="resendSearchParam" result="resendSearchResult"/>
                     <div class="table-gp">
                         <table class="table">
                             <thead>
                             <tr align="center">
-                                <th></th>
-                                <th>Message ID</th>
-                                <th>Message</th>
-                                <th>Distribution Name</th>
-                                <th>Mode of Delivery</th>
-                                <th>Scheduled Send date</th>
-                                <th>Actual send date</th>
-                                <th>Attachment</th>
+                                <th>From</th>
+                                <th>Subject</th>
+                                <th>To</th>
+                                <th>Send Date</th>
                                 <th>Status</th>
-                                <th>Eidt</th>
+                                <th>Reason for Failure</th>
+                                <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>
                                 <c:choose>
-                                    <c:when test="${empty blastSearchResult.rows}">
+                                    <c:when test="${empty resendSearchResult.rows}">
                                         <tr>
                                             <td  colspan="10" >
                                                 <iais:message key="No Result!" escape="true"></iais:message>
@@ -101,37 +76,28 @@
                                         </tr>
                                     </c:when>
                                     <c:otherwise>
-                                        <c:forEach var="item" items="${blastSearchResult.rows}" varStatus="status">
+                                        <c:forEach var="item" items="${resendSearchResult.rows}" varStatus="status">
                                             <tr style="display: table-row;">
                                                 <td>
-                                                    <p><input type="checkbox" name="checkboxlist" value="${item.id}"></p>
+                                                    <p><c:out value="${item.sender}"/></p>
                                                 </td>
                                                 <td>
-                                                    <p><c:out value="${item.id}"/></p>
+                                                    <p><c:out value="${item.subject}"/></p>
                                                 </td>
                                                 <td>
-                                                    <p><a onclick="audit('${item.id}')"><c:out value="${item.msgName}"/></a></p>
+                                                    <p><c:out value="${item.recipient}"/></p>
                                                 </td>
                                                 <td>
-                                                    <p><c:out value="${item.distributionName}"/></p>
+                                                    <p><fmt:formatDate value="${item.sentTime}" pattern="MM/dd/yyyy HH:MM"/></p>
                                                 </td>
                                                 <td>
-                                                    <p><c:out value="${item.mode}"/></p>
+                                                    <p><c:out value="${item.status}"/></p>
                                                 </td>
                                                 <td>
-                                                    <p><fmt:formatDate value="${item.schedule}" pattern="MM/dd/yyyy HH:MM"/></p>
+                                                    <p><c:out value="${item.logMsg}"/></p>
                                                 </td>
                                                 <td>
-                                                    <p><fmt:formatDate value="${item.actual}" pattern="MM/dd/yyyy HH:MM"/></p>
-                                                </td>
-                                                <td>
-                                                    <p><c:out value="${item.docName}"/></p>
-                                                </td>
-                                                <td>
-                                                    <p><iais:code code="${item.status}"></iais:code></p>
-                                                </td>
-                                                <td>
-                                                    <p><a onclick="edit('${item.id}')">eidt</a></p>
+                                                    <p><a onclick="edit('${item.requestRefNum}')">eidt</a></p>
                                                 </td>
                                             </tr>
                                         </c:forEach>
@@ -139,13 +105,6 @@
                                 </c:choose>
                             </tbody>
                         </table>
-                    </div>
-                    <div class="col-xs-12 col-sm-12">
-                        <div class="button-group col-xs-6 col-sm-6">
-                            <a href="${pageContext.request.contextPath}/file-repo" title="Download" class="downloadFile">
-                                Download Excel
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -155,20 +114,9 @@
 </div>
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
-function addList() {
-    showWaiting();
-    SOP.Crud.cfxSubmit("mainForm","create");
-}
-function deleteList() {
-    SOP.Crud.cfxSubmit("mainForm","delete");
-}
 function edit(id) {
     $("#editBlast").val(id);
     SOP.Crud.cfxSubmit("mainForm","edit");
-}
-function audit(id) {
-    $("#editBlast").val(id);
-    SOP.Crud.cfxSubmit("mainForm","audit");
 }
 
 function jumpToPagechangePage() {

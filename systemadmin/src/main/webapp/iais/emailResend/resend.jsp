@@ -17,19 +17,13 @@
                 <div class="center-content">
                     <div class="intranet-content">
                         <div class="bg-title">
-                            <h2>New Blast Management List</h2>
+                            <h2>Blast Management List</h2>
                         </div>
-                        <ul class="progress-tracker">
-                            <li class="tracker-item active">Fill in Message Details</li>
-                            <li class="tracker-item ">Write Message</li>
-                            <li class="tracker-item ">Select Recipients to send</li>
-                        </ul>
                         <div class="form-group">
                             <label class="col-xs-4 col-md-4 control-label">Message Name::</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="name" type="text" name="name" value="${edit.getMsgName()}">
-                                    <span id="error_name" name="iaisErrorMsg" class="error-msg"></span>
+                                    <input id="name" type="text" name="name" value="${edit.getMsgName()}" readonly>
                                 </div>
                             </iais:value>
                         </div>
@@ -37,9 +31,9 @@
                         <div class="form-group">
                             <label class="col-xs-4 col-md-4 control-label">Mode of Delivery:</label>
                             <iais:value>
-                                <iais:value width="10">
-                                    <iais:select name="mode" options="mode" value=""></iais:select>
-                                </iais:value>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <input id="name" type="text" name="name" value="${edit.getMode()}" readonly>
+                                </div>
                             </iais:value>
                         </div>
 
@@ -57,16 +51,18 @@
                         </div>
                         <div class="form-group">
                             <label class="col-xs-4 col-md-4 control-label">Status:</label>
-                                <iais:value width="10">
-                                    <iais:select name="status" options="status" value=""></iais:select>
-                                </iais:value>
+                            <iais:value>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <input id="name" type="text" name="name" value="${edit.getStatus()}" readonly>
+                                </div>
+                            </iais:value>
                         </div>
                     </div>
                     <div class="application-tab-footer">
                         <div class="row">
                             <div class="col-xs-12 col-sm-12">
                                 <div class="text-right text-center-mobile">
-                                    <button id="saveDis" type="button" class="btn btn-primary">Write Message</button>
+                                    <button id="saveDis" type="button" class="btn btn-primary">Save</button>
                                 </div>
                             </div>
                         </div>
@@ -74,6 +70,7 @@
                 </div>
             </div>
         </div>
+        <input hidden id="blastid" name="blastid" value="${edit.getId()}">
     </form>
     <%@include file="/include/validation.jsp" %>
 </div>

@@ -4,6 +4,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.EmailAuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.ResendListDto;
 
 import java.util.List;
 
@@ -13,7 +15,10 @@ import java.util.List;
  */
 public interface BlastManagementListService {
     SearchResult<BlastManagementListDto> blastList(SearchParam searchParam);
+    SearchResult<EmailAuditTrailDto> auditList(SearchParam searchParam);
+    SearchResult<ResendListDto> resendList(SearchParam searchParam);
     BlastManagementDto saveBlast(BlastManagementDto blastManagementDto);
+    void setSchedule(BlastManagementDto blastManagementDto);
     void deleteBlastList(List<String> list);
     BlastManagementDto getBlastById(String id);
 }
