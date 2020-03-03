@@ -202,7 +202,7 @@ public class CessationApplicationDelegator {
             List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
             for (AppCessHciDto appCessHciDto : appCessHciDtos) {
                 String whichTodo = appCessHciDto.getWhichTodo();
-                if(!StringUtil.isEmpty(whichTodo)){
+                if(!StringUtil.isEmpty(whichTodo)) {
                     Date effectiveDate = appCessHciDto.getEffectiveDate();
                     String reason = appCessHciDto.getReason();
                     String otherReason = appCessHciDto.getOtherReason();
@@ -227,9 +227,10 @@ public class CessationApplicationDelegator {
                     appCessationDto.setWhichTodo(whichTodo);
                     appCessationDto.setReadInfo(readInfo);
                     appCessationDtos.add(appCessationDto);
-                }else {
-                    appCessHciDtos.remove(appCessLicDto);
                 }
+//                }else {
+//                    appCessHciDtos.remove(appCessLicDto);
+//                }
             }
         }
         return appCessationDtos;
