@@ -111,6 +111,29 @@
             var svcCode = $(this).next().val();
             submitForms('preview',null,null,svcCode);
         });
+
+        <c:if test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
+            <c:if test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
+                $('#docEdit').unbind();
+                $('.doSvcEdit').unbind();
+                $('#Back').unbind();
+                $('#Back').click(function(){
+                    submit('premises',null,null);
+                });
+            </c:if>
+            <c:if test="${AppSubmissionDto.appEditSelectDto.docEdit}">
+                $('#premisesEdit').unbind();
+                $('.doSvcEdit').unbind();
+                $('#Back').unbind();
+                $('#Back').click(function(){
+                    submit('documents',null,null);
+                });
+            </c:if>
+            <c:if test="${AppSubmissionDto.appEditSelectDto.serviceEdit}">
+                $('#premisesEdit').unbind();
+                $('#docEdit').unbind();
+            </c:if>
+        </c:if>
     });
 
     $('.svc-pannel-collapse').click(function () {

@@ -46,6 +46,9 @@
                                     <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
                                   </c:otherwise>
                                 </c:choose>
+                                <c:if test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
+                                  <p class="text-right"><a class="back" id="RfcSkip">Skip<em class="fa fa-angle-right"></em></a></p>
+                                </c:if>
                                 <c:if test="${'true' != isClickEdit}">
                                   <c:set var="locking" value="true"/>
                                   <div id="edit-content">

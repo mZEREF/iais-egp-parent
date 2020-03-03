@@ -576,7 +576,7 @@
                 </div>
                 <div class="application-tab-footer">
                     <c:choose>
-                        <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
+                        <c:when test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
                             <%@include file="../common/rfcFooter.jsp"%>
                         </c:when>
                         <c:otherwise>

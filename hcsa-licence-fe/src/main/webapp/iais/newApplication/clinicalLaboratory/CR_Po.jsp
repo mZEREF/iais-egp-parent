@@ -34,6 +34,9 @@
                       <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
                     </c:otherwise>
                   </c:choose>
+                  <c:if test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
+                    <p class="text-right"><a class="back" id="RfcSkip">Skip<em class="fa fa-angle-right"></em></a></p>
+                  </c:if>
                   <c:if test="${!isClickEdit}">
                     <c:set var="showPreview" value="true"/>
                     <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.poEdit || AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
@@ -61,11 +64,11 @@
                       <div class="row">
                         <div class="control control-caption-horizontal">
                           <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-6 control-label formtext ">
+                            <div class="col-sm-6 control-label formtext col-md-4">
                               <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a Principal Officer</label>
                               <span class="upload_controls"></span>
                             </div>
-                            <div class="col-sm-5" id="assignSelect${suffix}">
+                            <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
                               <div class="">
                                 <iais:select cssClass="poSelect"  name="assignSelect" options="PrincipalOfficersAssignSelect"  value="${principalOfficer.assignSelect}" ></iais:select>
                                 <div id="control--runtime--2--errorMsg_right" style="display: none;" class="error_placements"></div>
@@ -79,7 +82,7 @@
                       <div class="row">
                         <div class="control control-caption-horizontal">
                           <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext ">
+                            <div class="col-sm-3 control-label formtext col-md-4">
                               <label  class="control-label control-set-font control-font-label">Name</label>
                               <span class="mandatory">*</span>
                             </div>
@@ -96,7 +99,7 @@
                       <div class="row">
                         <div class="control control-caption-horizontal">
                           <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext ">
+                            <div class="col-sm-3 control-label formtext col-md-4">
                               <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">ID No.
                                 <span class="mandatory">*</span>
                               </label>
@@ -117,7 +120,7 @@
                       <div class="row">
                         <div class="control control-caption-horizontal">
                           <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext ">
+                            <div class="col-sm-3 control-label formtext col-md-4">
                               <label  class="control-label control-set-font control-font-label">Designation</label>
                               <span class="mandatory">*</span>
                             </div>
@@ -131,7 +134,7 @@
                       <div class="row">
                         <div class="control control-caption-horizontal">
                           <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext ">
+                            <div class="col-sm-3 control-label formtext col-md-4">
                               <label  class="control-label control-set-font control-font-label">Mobile No.</label>
                               <span class="mandatory">*</span>
                             </div>
@@ -145,7 +148,7 @@
                       <div class="row">
                         <div class="control control-caption-horizontal">
                           <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext ">
+                            <div class="col-sm-3 control-label formtext col-md-4">
                               <label  class="control-label control-set-font control-font-label">Office Telephone.</label>
                               <span class="mandatory">*</span>
                             </div>
@@ -159,7 +162,7 @@
                       <div class="row">
                         <div class="control control-caption-horizontal">
                           <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext ">
+                            <div class="col-sm-3 control-label formtext col-md-4">
                               <label  class="control-label control-set-font control-font-label">Email Address</label>
                               <span class="mandatory">*</span>
                             </div>
@@ -185,11 +188,11 @@
               <br/>
               <div class="row">
                 <div class="form-group form-horizontal formgap">
-                  <div class="col-sm-6">
+                  <div class="col-sm-6 col-md-4">
                     Deputy Principal Officer(Optional):
                   </div>
                   <c:if test="${DeputyPrincipalOfficersMandatory> 0}">
-                  <div class="col-sm-5" >
+                  <div class="col-sm-5 col-md-8" >
                     <c:if test="${ReloadPrincipalOfficers ==null ||ReloadPrincipalOfficers.size()==0}">
                       <c:set var="flag" value="-1"/>
                     </c:if>
@@ -267,7 +270,7 @@
                     <div class="row">
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-3 control-label formtext ">
+                          <div class="col-sm-3 control-label formtext col-md-4">
                             <label  class="control-label control-set-font control-font-label">Name</label>
                             <span class="mandatory">*</span>
                           </div>
@@ -284,7 +287,7 @@
                     <div class="row">
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-3 control-label formtext ">
+                          <div class="col-sm-3 control-label formtext col-md-4">
                             <label  class="control-label control-set-font control-font-label">ID No.
                               <span class="mandatory">*</span>
                             </label>
@@ -306,7 +309,7 @@
                     <div class="row">
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-3 control-label formtext ">
+                          <div class="col-sm-3 control-label formtext col-md-4">
                             <label  class="control-label control-set-font control-font-label">Designation</label>
                             <span class="mandatory">*</span>
                           </div>
@@ -320,7 +323,7 @@
                     <div class="row">
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-3 control-label formtext ">
+                          <div class="col-sm-3 control-label formtext col-md-4">
                             <label  class="control-label control-set-font control-font-label">Mobile No.</label>
                             <span class="mandatory">*</span>
                           </div>
@@ -334,7 +337,7 @@
                     <div class="row">
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-3 control-label formtext ">
+                          <div class="col-sm-3 control-label formtext col-md-4">
                             <label  class="control-label control-set-font control-font-label">Email Address</label>
                             <span class="mandatory">*</span>
                           </div>
@@ -348,7 +351,7 @@
                     <div class="row ">
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-3 control-label formtext ">
+                          <div class="col-sm-3 control-label formtext col-md-4">
                             <label  class="control-label control-set-font control-font-label">Preferred Mode of Receiving MedAlert</label>
                             <span class="mandatory">*</span>
                           </div>

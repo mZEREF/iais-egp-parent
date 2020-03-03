@@ -64,12 +64,12 @@
                                     </div>
                                     <div class="application-tab-footer">
                                         <div class="row">
-                                            <div class="col-xs-12 col-sm-6">
+                                            <div class="col-xs-12 col-sm-3">
                                                 <p><a id = "Back" class="back" ><em class="fa fa-angle-left"></em> Back</a></p>
                                             </div>
-                                            <div class="col-xs-12 col-sm-6">
+                                            <div class="col-xs-12 col-sm-3">
                                                 <div class="button-group">
-                                                   <%-- <a class="next btn btn-primary" id = "Next">SUBMIT & PAY </a>--%>
+                                                    <a class="btn btn-secondary" href="#" >Print</a>
                                                 </div>
                                             </div>
                                         </div>
