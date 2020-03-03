@@ -73,7 +73,7 @@
                             <div class="center-content">
                                 <div class="col-md-7">
                                     <div class="file-upload-gp">
-                                        <input id="withdrawFile" type="file" name="withdrawFile" style="display: none;"><a
+                                        <input id="withdrawFile" type="file" name="selectedFile" style="display: none;"><a
                                             class="btn btn-file-upload btn-secondary">Upload</a>
                                         <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>

@@ -21,7 +21,7 @@ public class WithdrawnValidate implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         Map<String, String> errorMap = new HashMap<>(34);
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) httpServletRequest.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("withdrawFile");
+        CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
         String withdrawnReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
         if (commonsMultipartFile.isEmpty()){
             errorMap.put("withdrawalFile", "ERR0009");

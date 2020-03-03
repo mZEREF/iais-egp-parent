@@ -20,7 +20,7 @@
                                 <h2>Acknowledgement</h2>
                             </div>
                             <div class="center-content">
-                                <span>This is to acknowledge that you have submitted a withdrawal request for RN-20181224-00001</span>
+                                <span>This is to acknowledge that you have submitted a withdrawal request for ${applicationNo}</span>
                             </div>
                         </div>
                     </div>

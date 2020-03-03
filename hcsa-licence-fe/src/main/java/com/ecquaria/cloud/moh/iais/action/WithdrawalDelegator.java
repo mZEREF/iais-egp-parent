@@ -53,12 +53,12 @@ public class WithdrawalDelegator {
         log.debug(StringUtil.changeForLog("****The prepareDate Step****"));
         List<SelectOption> withdrawalReason = new ArrayList<>();
         String appId = ParamUtil.getRequestString(bpc.request, "applicationId");
-        withdrawalReason.add(new SelectOption("Duplicate Application", "Duplicate Application"));
-        withdrawalReason.add(new SelectOption("Wrong Application", "Wrong Application"));
-        withdrawalReason.add(new SelectOption("Failure ", "Failure to obtain pre requisite licence from other agency(ies)"));
-        withdrawalReason.add(new SelectOption("No longer wish to provide the service", "No longer wish to provide the service"));
-        withdrawalReason.add(new SelectOption("Others", "Others"));
-        ParamUtil.setRequestAttr(bpc.request, "applicationNo", "AN191210000144-01");
+        withdrawalReason.add(new SelectOption("WDR001", "Duplicate Application"));
+        withdrawalReason.add(new SelectOption("WDR002", "Wrong Application"));
+        withdrawalReason.add(new SelectOption("WDR003", "Failure to obtain pre requisite licence from other agency(ies)"));
+        withdrawalReason.add(new SelectOption("WDR004", "No longer wish to provide the service"));
+        withdrawalReason.add(new SelectOption("WDR005", "Others"));
+        ParamUtil.setSessionAttr(bpc.request, "applicationNo", "AN191210000143-01");
         ParamUtil.setRequestAttr(bpc.request, "withdrawalReasonList", withdrawalReason);
     }
 
@@ -66,10 +66,10 @@ public class WithdrawalDelegator {
         WithdrawnDto withdrawnDto = new WithdrawnDto();
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
-//        String appId = ParamUtil.getRequestString(mulReq, "applicationId");
-        String appId = "7BCC5724-A469-47A6-A75B-07BE2AF88E3D";
+        String appId = ParamUtil.getRequestString(mulReq, "applicationId");
+//        String appId = "7BCC5724-A469-47A6-A75B-07BE2AF88E3D";
         String withdrawnReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
-        CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("withdrawFile");
+        CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
         withdrawnDto.setApplicationId(appId);
         withdrawnDto.setWithdrawnReason(withdrawnReason);
         if ("Others".equals(withdrawnReason)){

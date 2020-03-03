@@ -125,6 +125,10 @@ public class CessationServiceImpl implements CessationService {
 
     @Override
     public void saveWithdrawn(WithdrawnDto withdrawnDto) {
+        ApplicationDto applicationDto = applicationClient.getApplicationById(withdrawnDto.getApplicationId()).getEntity();
+        applicationDto.setId(null);
+        applicationDto.setApplicationNo(systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity());
+        withdrawnDto.setApplicationDto(applicationDto);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = new ArrayList<>();
         AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
         appGrpPremisesDto.setPremisesType(ApplicationConsts.PREMISES_TYPE_ON_SITE);
