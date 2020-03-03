@@ -203,7 +203,7 @@
                                                 <input type="hidden" id="<c:out value="${fin.svcCode}"></c:out>milevel" name="<c:out value="${fin.svcCode}"></c:out>milevel" value="SOURCE002">
                                                 <p>Minor</p>
                                             </td>
-                                            <td><iais:datePicker id = "${fin.svcCode}mjstartdate" name = "${fin.svcCode}mistartdate" value="${fin.doMiEffectiveDate}"></iais:datePicker>
+                                            <td><iais:datePicker id = "${fin.svcCode}mistartdate" name = "${fin.svcCode}mistartdate" value="${fin.doMiEffectiveDate}"></iais:datePicker>
                                                 <c:set value = "error_${fin.svcCode}miEffDate" var = "miEffDate"/>
                                                 <span class="error-msg" id="<c:out value="${miEffDate}"/>" name="iaisErrorMsg"></span>
                                             </td>
