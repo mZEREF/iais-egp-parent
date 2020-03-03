@@ -45,7 +45,10 @@
 		<%=currentUser==null?"":currentUser.getDisplayName() %></span>
 	</div>
 		</a>
-		<a href="/egov/process/EGPCLOUD/IdentityProviderLogout">Logout</a>
+		<a href="/egov/process/EGPCLOUD/IdentityProviderLogout">
+			<div class="sidebar-profile-details">
+		    <span style="text-align: center"><small>Logout</small></span>
+			</div></a>
 	</div>
 </div>
 <!-- end of /_themes/sop6/jsp/user-info.jsp -->
