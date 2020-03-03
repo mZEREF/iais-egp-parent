@@ -29,7 +29,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="serviceName">Service Name<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceName" name="serviceName" disabled type="text" value="${hcsaServiceDto.svcName}">
+            <input id="serviceName" name="serviceName" maxlength="100" readonly type="text" value="${hcsaServiceDto.svcName}">
           </div>
         </div>
       </div>
@@ -37,7 +37,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="description">Service Description<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="description" name="description" type="text" value="${hcsaServiceDto.svcDesc}">
+            <input id="description" name="description" maxlength="255" type="text" value="${hcsaServiceDto.svcDesc}">
           </div>
         </div>
       </div>
@@ -45,7 +45,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="displayDescription">Service Display Description<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="displayDescription" name="displayDescription" type="text" value="${hcsaServiceDto.svcDisplayDesc}">
+            <input id="displayDescription" name="displayDescription" maxlength="255" type="text" value="${hcsaServiceDto.svcDisplayDesc}">
           </div>
         </div>
       </div>
@@ -54,7 +54,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="serviceCode">Service Code<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceCode" name="serviceCode" disabled type="text"  value="${hcsaServiceDto.svcCode}">
+            <input id="serviceCode" name="serviceCode" maxlength="3" readonly type="text"  value="${hcsaServiceDto.svcCode}">
           </div>
         </div>
       </div>
@@ -63,7 +63,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="ServiceType">Service Type<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <select id="ServiceType" disabled name="ServiceType">
+            <select id="ServiceType" disabled="disabled" name="ServiceType">
 
               <option>Select one</option>
               <option <c:if test="${hcsaServiceDto.svcType=='SVTP001'}">selected="selected"</c:if> value="SVTP001">Base</option>
@@ -113,7 +113,7 @@
           <label class="col-xs-12 col-md-6 control-label" >Subsumption Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <select  name="Subsumption">
-              <option >Select one</option>
+              <option value="" >Select one</option>
               <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
                 <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
               </c:forEach>
@@ -128,8 +128,8 @@
         <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
           <label class="col-xs-12 col-md-6 control-label" >Pre-requisite Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <select  name="Subsumption">
-              <option >Select one</option>
+            <select  name="Pre-requisite">
+              <option value="">Select one</option>
               <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
                 <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
               </c:forEach>
@@ -223,7 +223,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="NumberDocument">Number of Service-Related Document to be
             uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="NumberDocument" type="text">
+            <input id="NumberDocument" type="text" name="NumberDocument" maxlength="2">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
@@ -236,7 +236,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="DescriptionDocument">Description of each Service-Related Document to
             be Uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="DescriptionDocument" type="text">
+            <input id="DescriptionDocument" type="text" name="DescriptionDocument" maxlength="255">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
@@ -249,7 +249,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="Numberfields">Number of Service-Related General Info fields to
             be captured<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="Numberfields" type="text">
+            <input id="Numberfields" type="text" name="Numberfields" maxlength="2">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
@@ -262,7 +262,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="DescriptionGeneral">Description of each Service-Related General Info
             field to be captured*<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="DescriptionGeneral" type="text">
+            <input id="DescriptionGeneral" type="text" name="DescriptionGeneral" maxlength="255">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
@@ -338,44 +338,61 @@
               <a class="btn btn-secondary " onclick="showRENEW()"><span class="view">RENEW</span></a>
             </div>
           </div>
+
+          <div class="col-xs-10 col-md-4">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showAPPEAL()"><span class="view">APPEAL</span></a>
+            </div>
+          </div>
+
         </div>
       </div>
-      <c:forEach items="${routingStagess}" var="routingStages">
+      <c:forEach items="${routingStagess}" var="routingStages" varStatus="sta">
 
       <div class="form-group" style="display: none" id="${routingStages.key}" >
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
           <table border="1px" style="text-align: center" >
             <tr>
-              <th style="width: 15% ;height: 40px;text-align: center"> application type<span class="mandatory" >*</span></th>
+              <th style="width: 10% ;height: 40px;text-align: center"> application type<span class="mandatory" >*</span></th>
               <th  style="width: 20% ;height: 40px;text-align: center"> Service Workflow Routing Stages<span class="mandatory" >*</span></th>
-              <th  style="width: 20% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
+              <th  style="width: 30% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
               <th  style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours<span class="mandatory">*</span></th>
-              <th  style="width: 30% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
+              <th  style="width: 25% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
             </tr>
             <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
               <tr>
                 <td >${routingStage.appTypeName}</td>
                 <td >${routingStage.stageName}</td>
                 <td>
-                  <div class="col-xs-12 col-md-12">
+                  <div class="col-xs-12 col-md-6" >
                     <input type="text" name="stageId${routingStage.stageCode}${routingStages.key}" value="${routingStage.routingSchemeId}" style="display:none;">
+
                     <select  name="RoutingScheme${routingStage.stageCode}${routingStages.key}"   >
                       <option value="">Select one</option>
                       <option value="common"
-                              <c:if test="${routingStage.stageCode=='PSO'}">selected="selected" </c:if>
-
+                              <c:if test="${routingStage.routingSchemeName=='common'}">selected="selected" </c:if>
                       >Common Pool</option>
-                      <option value="assign">Supervisor Assign</option>
+                      <option value="assign"
+                              <c:if test="${routingStage.routingSchemeName=='assign'}">selected="selected" </c:if>
+                      >Supervisor Assign</option>
                       <option value="round"
-                              <c:if test="${routingStage.stageCode=='ASO'||routingStage.stageCode=='AO1'||routingStage.stageCode=='AO2'||routingStage.stageCode=='AO3'}">selected="selected"  </c:if>
+                              <c:if test="${routingStage.routingSchemeName=='round'}">selected="selected" </c:if>
                       >Round Robin</option>
                     </select>
+                  </div>
+                  <div class="col-xs-12 col-md-6" >
+                    <select name="isMandatory${routingStage.stageCode}${routingStages.key}">
+                      <option value="">Select one</option>
+                      <option value="mandatory" selected="selected">Mandatory</option>
+                      <option value="optional">Optional</option>
+                    </select>
+
                   </div>
                 </td>
                 <td>
                   <div class="col-xs-12 col-md-12">
                     <input type="text" style="display:none;" value="${routingStage.workloadId}" name="workloadId${routingStage.stageCode}${routingStages.key}" >
-                    <input  type="text" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}"  value="${routingStage.manhours}">
+                    <input style="margin: 10px 0px 10px" maxlength="2" type="text" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}"  value="${routingStage.manhours}">
                     <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${status.index}"></span>
                   </div>
 
@@ -384,9 +401,10 @@
                   <div class="col-xs-12 col-md-12">
                     <input name="workstageId${routingStage.stageCode}${routingStages.key}" type="text" style="display: none" value="${routingStage.workStageId}">
                     <select name="workingGroup${routingStage.stageCode}${routingStages.key}">
-                      <option value="">Select one</option><c:forEach items="${routingStage.workingGroup}" var="workingGroup">
-                      <option <c:if test="${routingStage.workingGroupId==workingGroup.id}">selected="selected"</c:if> value="${workingGroup.id}">${workingGroup.groupName}</option>
-                    </c:forEach>
+                      <option value="">Select one</option>
+                      <c:forEach items="${routingStage.workingGroup}" var="workingGroup">
+                        <option <c:if test="${routingStage.workingGroupId==workingGroup.id}">selected="selected"</c:if> value="${workingGroup.id}">${workingGroup.groupName}</option>
+                      </c:forEach>
                     </select>
                   </div>
                 </td>
@@ -466,7 +484,7 @@
         <div class="form-group">
           <label class="col-xs-12 col-md-8 control-label">Effective Start Date<span class="mandatory">*</span></label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
-            <input type="text" disabled value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
+            <input type="text" readonly value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
           </div>
           <div class="clear"></div></div>
       </div>
@@ -544,6 +562,7 @@
     }
 
     function save() {
+        $('#ServiceType').removeAttr("disabled");
         SOP.Crud.cfxSubmit("mainForm","save","save","save");
     }
 
@@ -551,6 +570,7 @@
     function showNEW() {
         let jQuery = $('#APTY002').attr("style");
         $('#APTY001').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
         if(jQuery=='display: block'){
             $('#APTY002').attr("style","display: none");
         }else if(jQuery=='display: none'){
@@ -561,6 +581,7 @@
     function showRENEW() {
         let jQuery = $('#APTY001').attr("style");
         $('#APTY002').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
         if(jQuery=='display: block'){
             $('#APTY001').attr("style","display: none");
         }else if(jQuery=='display: none'){
@@ -568,8 +589,19 @@
         }
     }
 
-    $('#ServiceType').change(function () {
+    function showAPPEAL(){
+        let jQuery = $('#APTY005').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY001').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY005').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY005').attr("style","display: block");
+        }
 
+    }
+
+    $('#ServiceType').change(function () {
         let val = $('#ServiceType').val();
         if("SVTP002"==val){
             $('#Subsumption').attr("style","display:block");

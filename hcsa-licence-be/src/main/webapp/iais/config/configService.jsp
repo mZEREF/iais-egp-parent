@@ -226,7 +226,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="NumberDocument">Number of Service-Related Document to be
             uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="NumberDocument" type="text" name="NumberDocument">
+            <input id="NumberDocument" type="text" name="NumberDocument" value="${numberDocument}">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
@@ -239,7 +239,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="DescriptionDocument">Description of each Service-Related Document to
             be Uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="DescriptionDocument" type="text" name="DescriptionDocument">
+            <input id="DescriptionDocument" type="text" name="DescriptionDocument" value="${descriptionDocument}">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
@@ -252,7 +252,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="Numberfields">Number of Service-Related General Info fields to
             be captured<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="Numberfields" type="text" name="Numberfields">
+            <input id="Numberfields" type="text" name="Numberfields" value="${numberfields}">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
@@ -265,7 +265,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="DescriptionGeneral">Description of each Service-Related General Info
             field to be captured*<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="DescriptionGeneral" type="text" name="DescriptionGeneral">
+            <input id="DescriptionGeneral" type="text" name="DescriptionGeneral" value="${descriptionGeneral}">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
@@ -341,30 +341,37 @@
               <a class="btn btn-secondary " onclick="showRENEW()"><span class="view">RENEW</span></a>
             </div>
           </div>
+          <div class="col-xs-10 col-md-4">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showAPPEAL()"><span class="view">APPEAL</span></a>
+            </div>
+          </div>
+
         </div>
       </div>
 
 
-
-      <c:forEach items="${routingStagess}" var="routingStages">
+      <c:set var="index" value="0"></c:set>
+      <c:forEach items="${routingStagess}" var="routingStages" varStatus="sta">
       <div class="form-group" style="display: none" id="${routingStages.key}" >
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
       <table border="1px" style="text-align: center" >
         <tr>
-          <th style="width: 15% ;height: 40px;text-align: center">application type<span class="mandatory" >*</span></th>
+          <th style="width: 10% ;height: 40px;text-align: center">application type<span class="mandatory" >*</span></th>
           <th  style="width: 20% ;height: 40px;text-align: center">Service Workflow Routing Stages<span class="mandatory" >*</span></th>
-          <th  style="width: 20% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
+          <th  style="width:30% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
           <th  style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours<span class="mandatory">*</span></th>
-          <th  style="width: 30% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
+          <th  style="width: 25% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
         </tr>
         <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
+            ${index}+${status.index}
       <tr>
-        <td >${routingStage.appTypeName}</td>
+        <td >${routingStage.appTypeName} </td>
         <td >${routingStage.stageName}</td>
         <td>
-          <div class="col-xs-12 col-md-12">
+          <div class="col-xs-12 col-md-6">
             <select  name="RoutingScheme${routingStage.stageCode}${routingStages.key}"  >
-              <option >Select one</option>
+              <option value="" >Select one</option>
               <option value="common"
                       <c:if test="${routingStage.stageCode=='PSO'}">selected="selected" </c:if>
               >Common Pool</option>
@@ -373,11 +380,18 @@
                       <c:if test="${routingStage.stageCode=='ASO'||routingStage.stageCode=='AO1'||routingStage.stageCode=='AO2'||routingStage.stageCode=='AO3'}">selected="selected"  </c:if>
               >Round Robin</option>
            </select>
+            <span name="iaisErrorMsg" class="iais-msg" id="error_schemeType${status.index}"></span>
           </div>
+          <div class="col-xs-12 col-md-6" >
+            <select name="isMandatory${routingStage.stageCode}${routingStages.key}">
+              <option value="">Select one</option>
+              <option value="mandatory" selected="selected">Mandatory</option>
+              <option value="optional">Optional</option>
+            </select>
         </td>
         <td>
           <div class="col-xs-12 col-md-12">
-            <input  type="text" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
+            <input  type="text" maxlength="2" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
             <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${status.index}"></span>
           </div>
 
@@ -390,6 +404,7 @@
               <option <c:if test="${routingStage.workingGroupId==workingGroup.id}">selected="selected"</c:if>value="${workingGroup.id}">${workingGroup.groupName}</option>
             </c:forEach>
             </select>
+            <span name="iaisErrorMsg" class="error-msg" id="error_stageWorkGroupId${status.index}"></span>
           </div>
         </td>
 
@@ -409,12 +424,14 @@
 
       </div>
 
+      <c:set var="hcsaServiceStepScheme" value="${hcsaServiceStepSchemeDto}"></c:set>
+
       <div class="form-group">
         <div class="form-check-gp">
           <div class="row">
             <div class="col-xs-12 col-md-2">
               <div class="form-check " style="left: 10%">
-                <input class="form-check-input" name="step"   type="checkbox" value="SVST001"  aria-invalid="false">
+                <input class="form-check-input" name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST001')}">checked="checked"</c:if>  type="checkbox" value="SVST001"  aria-invalid="false">
                 <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>laboratorydisciplines</label>
               </div>
             </div>
@@ -539,6 +556,7 @@
   function showNEW() {
       let jQuery = $('#APTY002').attr("style");
       $('#APTY001').attr("style","display: none");
+      $('#APTY005').attr("style","display: none");
       if(jQuery=='display: block'){
           $('#APTY002').attr("style","display: none");
       }else if(jQuery=='display: none'){
@@ -549,12 +567,27 @@
   function showRENEW() {
       let jQuery = $('#APTY001').attr("style");
       $('#APTY002').attr("style","display: none");
+      $('#APTY005').attr("style","display: none");
       if(jQuery=='display: block'){
           $('#APTY001').attr("style","display: none");
       }else if(jQuery=='display: none'){
           $('#APTY001').attr("style","display: block");
       }
   }
+
+    function showAPPEAL(){
+        let jQuery = $('#APTY005').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY001').attr("style","display: none");
+
+        if(jQuery=='display: block'){
+            $('#APTY005').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY005').attr("style","display: block");
+        }
+
+    }
+
 
     $('#ServiceType').change(function () {
 

@@ -296,7 +296,7 @@ public interface HcsaConfigClient {
     @GetMapping(value = "/hcsa-config/hcas-svc-routing-scheme-by-service-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcSpeRoutingSchemeDto>> getHcsaSvcSpeRoutingSchemeDtoByServiceId(@RequestParam("serviceId") String serviceId);
 
-    @PutMapping(value = "/service-cannot-use")
+    @PutMapping(value = "/hcsa-config/service-cannot-use")
     FeignResponseEntity updateService(@RequestParam("serviceId") String serviceId);
 
 }

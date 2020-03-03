@@ -29,7 +29,7 @@
       <div class="col-xs-12 col-md-8">
         <label class="col-xs-12 col-md-8 control-label" for="serviceName">Service Name<span class="mandatory" >*</span></label>
         <div class="col-xs-12 col-md-4">
-          <input id="serviceName" name="serviceName" type="text" disabled value="${hcsaServiceDto.svcName}">
+          <input id="serviceName" name="serviceName" type="text" readonly value="${hcsaServiceDto.svcName}">
         </div>
       </div>
       </div>
@@ -37,7 +37,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="description">Service Description<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="description" name="description" disabled type="text" value="${hcsaServiceDto.svcDesc}">
+            <input id="description" name="description" readonly type="text" value="${hcsaServiceDto.svcDesc}">
           </div>
         </div>
       </div>
@@ -45,7 +45,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="displayDescription">Service Display Description<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="displayDescription" name="displayDescription" disabled type="text" value="${hcsaServiceDto.svcDisplayDesc}">
+            <input id="displayDescription" name="displayDescription" readonly type="text" value="${hcsaServiceDto.svcDisplayDesc}">
           </div>
         </div>
       </div>
@@ -54,7 +54,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="serviceCode">Service Code<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceCode" type="text" name="serviceCode" disabled value="${hcsaServiceDto.svcCode}">
+            <input id="serviceCode" type="text" name="serviceCode" readonly value="${hcsaServiceDto.svcCode}">
           </div>
         </div>
       </div>
@@ -64,7 +64,7 @@
           <label class="col-xs-12 col-md-8 control-label" for="ServiceType">Service Type<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
 
-            <select disabled id="ServiceType"  name="ServiceType">
+            <select  id="ServiceType"  name="ServiceType">
               <option value="">Select one</option>
               <option value="SVTP001" <c:if test="${hcsaServiceDto.svcType=='SVTP001'}">selected="selected"</c:if>>Base</option>
               <option value="SVTP002" <c:if test="${hcsaServiceDto.svcType=='SVTP002'}">selected="selected"</c:if>>Subsumed</option>
@@ -85,19 +85,19 @@
           <div class="col-xs-12 col-md-3">
             <div class="form-check " style="left: 10%">
               <c:set var="type" value="${PremisesType}"></c:set>
-              <input class="form-check-input" disabled  id="icon3checkboxSample" <c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> type="checkbox" name="Onsite" aria-invalid="false">
+              <input class="form-check-input" readonly  id="icon3checkboxSample" <c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> type="checkbox" name="Onsite" aria-invalid="false">
               <label class="form-check-label"  for="icon3checkboxSample"><span class="check-square"></span>Onsite</label>
             </div>
           </div>
           <div class="col-xs-12 col-md-3">
             <div class="form-check ">
-              <input class="form-check-input" disabled id="icon4checkboxSample"  <c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> type="checkbox" name="Offsite" aria-invalid="false">
+              <input class="form-check-input" readonly id="icon4checkboxSample"  <c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> type="checkbox" name="Offsite" aria-invalid="false">
               <label class="form-check-label"  for="icon4checkboxSample"><span class="check-square"></span>Offsite</label>
             </div>
           </div>
           <div class="col-xs-12 col-md-3">
             <div class="form-check ">
-              <input class="form-check-input" disabled id="icon5checkboxSample"  <c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> type="checkbox" name="Conveyance" aria-invalid="false">
+              <input class="form-check-input" readonly id="icon5checkboxSample"  <c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> type="checkbox" name="Conveyance" aria-invalid="false">
               <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
             </div>
           </div>
@@ -111,7 +111,7 @@
           <label class="col-xs-12 col-md-6 control-label" >Subsumption Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <select  name="Subsumption">
-              <option >Select one</option>
+              <option value="">Select one</option>
               <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
                 <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
               </c:forEach>
@@ -127,7 +127,7 @@
           <label class="col-xs-12 col-md-6 control-label" >Pre-requisite Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <select  name="Subsumption">
-              <option >Select one</option>
+              <option value="">Select one</option>
               <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
                 <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
               </c:forEach>
@@ -151,10 +151,10 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Principal Officer (PO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input type="text" name="man-principalOfficer" disabled value="${PO.mandatoryCount}" placeholder="mandatory count">
+            <input type="text" name="man-principalOfficer" readonly value="${PO.mandatoryCount}" placeholder="mandatory count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input type="text" name="mix-principalOfficer"  disabled value="${PO.maximumCount}" placeholder="maximum count">
+            <input type="text" name="mix-principalOfficer"  readonly value="${PO.maximumCount}" placeholder="maximum count">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" disabled  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
@@ -167,10 +167,10 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label">Deputy Principal Officer (DPO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-DeputyPrincipalOfficer" disabled value="${DPO.mandatoryCount}" placeholder="mandatory count">
+            <input  type="text" name="man-DeputyPrincipalOfficer" readonly value="${DPO.mandatoryCount}" placeholder="mandatory count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-DeputyPrincipalOfficer" disabled  value="${DPO.maximumCount}"  placeholder="maximum count">
+            <input  type="text" name="mix-DeputyPrincipalOfficer" readonly  value="${DPO.maximumCount}"  placeholder="maximum count">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" disabled type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
@@ -183,10 +183,10 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Clinical Governance Officer (CGO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-ClinicalGovernanceOfficer"  disabled value="${CGO.mandatoryCount}" placeholder="mandatory count">
+            <input  type="text" name="man-ClinicalGovernanceOfficer"  readonly value="${CGO.mandatoryCount}" placeholder="mandatory count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ClinicalGovernanceOfficer" disabled value="${CGO.maximumCount}"  placeholder="maximum count">
+            <input  type="text" name="mix-ClinicalGovernanceOfficer"  readonly value="${CGO.maximumCount}"  placeholder="maximum count">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" disabled type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
@@ -199,10 +199,10 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Service Personnel<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-ServicePersonnel" disabled value="${SVCPSN.mandatoryCount}" placeholder="mandatory count">
+            <input  type="text" name="man-ServicePersonnel" readonly value="${SVCPSN.mandatoryCount}" placeholder="mandatory count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ServicePersonnel" disabled value="${SVCPSN.maximumCount}" placeholder="maximum count">
+            <input  type="text" name="mix-ServicePersonnel" readonly value="${SVCPSN.maximumCount}" placeholder="maximum count">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" disabled  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
@@ -216,7 +216,7 @@
           <div class="col-xs-12 col-md-4">
             <input id="NumberDocument"  disabled  type="text">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input disabled class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
+          <div class="col-xs-12 col-md-2 form-check">   <input readonly class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
@@ -227,9 +227,9 @@
           <label class="col-xs-12 col-md-6 control-label" for="DescriptionDocument">Description of each Service-Related Document to
             be Uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="DescriptionDocument" disabled type="text">
+            <input id="DescriptionDocument" readonly type="text">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" disabled  type="checkbox" name="Conveyance" aria-invalid="false">
+          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" readonly  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
@@ -240,9 +240,9 @@
           <label class="col-xs-12 col-md-6 control-label" for="Numberfields">Number of Service-Related General Info fields to
             be captured<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="Numberfields" disabled type="text">
+            <input id="Numberfields" readonly type="text">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" disabled type="checkbox" name="Conveyance" aria-invalid="false">
+          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" readonly type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
@@ -253,9 +253,9 @@
           <label class="col-xs-12 col-md-6 control-label" for="DescriptionGeneral">Description of each Service-Related General Info
             field to be captured*<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="DescriptionGeneral" disabled type="text">
+            <input id="DescriptionGeneral" readonly type="text">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" disabled  type="checkbox" name="Conveyance" aria-invalid="false">
+          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" readonly  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
@@ -351,22 +351,23 @@
                 <td >${routingStage.stageName}</td>
                 <td>
                   <div class="col-xs-12 col-md-12">
-                    <select disabled name="RoutingScheme${routingStage.stageCode}"  >
+                    <select  name="RoutingScheme${routingStage.stageCode}"  >
                       <option value="">Select one</option>
                       <option value="common"
-                              <c:if test="${routingStage.stageCode=='PSO'}">selected="selected" </c:if>
+                              <c:if test="${routingStage.routingSchemeName=='common'}">selected="selected" </c:if>
 
                       >Common Pool</option>
-                      <option value="assign">Supervisor Assign</option>
+                      <option value="assign" <c:if test="${routingStage.routingSchemeName=='assign'}">selected="selected" </c:if>
+                      >Supervisor Assign</option>
                       <option value="round"
-                              <c:if test="${routingStage.stageCode=='ASO'||routingStage.stageCode=='AO1'||routingStage.stageCode=='AO2'||routingStage.stageCode=='AO3'}">selected="selected"  </c:if>
+                              <c:if test="${routingStage.routingSchemeName=='round'}">selected="selected" </c:if>
                       >Round Robin</option>
                     </select>
                   </div>
                 </td>
                 <td>
                   <div class="col-xs-12 col-md-12">
-                    <input disabled type="text" name="WorkloadManhours${routingStage.stageCode}"  value="${routingStage.manhours}">
+                    <input readonly type="text" name="WorkloadManhours${routingStage.stageCode}"  value="${routingStage.manhours}">
                     <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${status.index}"></span>
                   </div>
 
@@ -374,7 +375,7 @@
                 <td>
                   <div class="col-xs-12 col-md-12">
                     <div class="col-xs-12 col-md-12">
-                      <select disabled name="workingGroup${routingStage.stageCode}">
+                      <select  name="workingGroup${routingStage.stageCode}">
                         <option value="">Select one</option><c:forEach items="${routingStage.workingGroup}" var="workingGroup">
                         <option <c:if test="${routingStage.workingGroupId==workingGroup.id}">selected="selected"</c:if> value="${workingGroup.id}">${workingGroup.groupName}</option>
                       </c:forEach>
@@ -403,37 +404,37 @@
           <div class="row">
             <div class="col-xs-12 col-md-2">
               <div class="form-check " style="left: 10%">
-                <input class="form-check-input" disabled name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST001')}">checked="checked"</c:if>  type="checkbox" value="SVST001"  aria-invalid="false">
+                <input class="form-check-input" readonly name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST001')}">checked="checked"</c:if>  type="checkbox" value="SVST001"  aria-invalid="false">
                 <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>laboratorydisciplines</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-2">
               <div class="form-check ">
-                <input class="form-check-input" disabled name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST002')}">checked="checked"</c:if>   type="checkbox" value="SVST002" aria-invalid="false">
+                <input class="form-check-input" readonly name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST002')}">checked="checked"</c:if>   type="checkbox" value="SVST002" aria-invalid="false">
                 <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>governanceofficers</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-2">
               <div class="form-check ">
-                <input class="form-check-input" disabled name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST003')}">checked="checked"</c:if>   type="checkbox" value="SVST003"  aria-invalid="false">
+                <input class="form-check-input" readonly name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST003')}">checked="checked"</c:if>   type="checkbox" value="SVST003"  aria-invalid="false">
                 <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>disciplineallocation</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-2">
               <div class="form-check ">
-                <input class="form-check-input" disabled name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST004')}">checked="checked"</c:if>  type="checkbox" value="SVST004" aria-invalid="false">
+                <input class="form-check-input" readonly name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST004')}">checked="checked"</c:if>  type="checkbox" value="SVST004" aria-invalid="false">
                 <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>principalofficers</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-2">
               <div class="form-check ">
-                <input class="form-check-input" disabled name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST005')}">checked="checked"</c:if>  type="checkbox" value="SVST005"  aria-invalid="false">
+                <input class="form-check-input" readonly name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST005')}">checked="checked"</c:if>  type="checkbox" value="SVST005"  aria-invalid="false">
                 <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>documents</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-1">
               <div class="form-check ">
-                <input class="form-check-input" disabled <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST006')}">checked="checked"</c:if> name="step"   type="checkbox" value="SVST006"  aria-invalid="false">
+                <input class="form-check-input" readonly <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST006')}">checked="checked"</c:if> name="step"   type="checkbox" value="SVST006"  aria-invalid="false">
                 <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>nuclearmedicineimaging</label>
               </div>
             </div>
@@ -448,7 +449,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="Sub-Types">Service Sub-Types</label>
           <div class="col-xs-12 col-md-4">
-            <input id="Sub-Types" disabled type="text">
+            <input id="Sub-Types" readonly type="text">
           </div>
         </div>
       </div>
@@ -457,7 +458,7 @@
         <div class="form-group">
           <label class="col-xs-12 col-md-8 control-label">Effective Start Date<span class="mandatory">*</span></label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
-            <input type="text" disabled value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
+            <input type="text" readonly value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
           </div>
           <div class="clear"></div></div>
       </div>
@@ -466,7 +467,7 @@
         <div class="form-group">
           <label class="col-xs-12 col-md-8 control-label">Effective End Date</label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
-            <input type="text" disabled autocomplete="off" class="date_picker form-control form_datetime" name="EndDate" id="-20247433206800" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_EndDate" name="iaisErrorMsg" class="error-msg"></span>
+            <input type="text" readonly autocomplete="off" class="date_picker form-control form_datetime" name="EndDate" id="-20247433206800" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_EndDate" name="iaisErrorMsg" class="error-msg"></span>
           </div>
           <div class="clear"></div></div>
       </div>

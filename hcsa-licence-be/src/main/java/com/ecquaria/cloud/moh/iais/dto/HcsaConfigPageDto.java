@@ -15,6 +15,7 @@ import java.util.List;
 public class HcsaConfigPageDto implements Serializable {
     private static final long serialVersionUID = 1184219139394029281L;
     private String routingSchemeId;
+    private String routingSchemeName;
     private String workloadId;
     private String appType;
     private String stage;
@@ -28,4 +29,5 @@ public class HcsaConfigPageDto implements Serializable {
     private String stageId;
     private String appTypeName;
 
+    private String isMandatory;
 }

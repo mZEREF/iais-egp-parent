@@ -322,8 +322,8 @@
         </div>
       </div>
 
-
-      <div class="form-group" style="display: none" id="NEW" >
+  <c:forEach items="${routingStagess}" var="routingStages" varStatus="sta">
+      <div class="form-group" style="display: none" id="${routingStages.key}" >
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
           <table border="1px" style="text-align: center"  >
             <tr>
@@ -333,7 +333,7 @@
               <th  style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours<span class="mandatory">*</span></th>
               <th  style="width: 30% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
             </tr>
-            <c:forEach items="${routingStages}" var="routingStage" varStatus="status">
+            <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
               <tr>
                 <td >${routingStage.appTypeName}</td>
                 <td >${routingStage.stageName}</td>
@@ -377,7 +377,7 @@
           </table>
         </div>
       </div>
-
+  </c:forEach>
 
       <div class="form-group">
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
@@ -509,15 +509,28 @@
         location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohServiceConfig";
     }
 
-    function showNEW() {
-        let jQuery = $('#NEW').attr("style");
+    function showRENEW() {
+        let jQuery = $('#APTY001').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
         if(jQuery=='display: block'){
-            $('#NEW').attr("style","display: none");
+            $('#APTY001').attr("style","display: none");
         }else if(jQuery=='display: none'){
-            $('#NEW').attr("style","display: block");
+            $('#APTY001').attr("style","display: block");
         }
-
     }
+
+    function showNEW() {
+        let jQuery = $('#APTY002').attr("style");
+        $('#APTY001').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY002').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY002').attr("style","display: block");
+        }
+    }
+
 
 </script>
 </>
