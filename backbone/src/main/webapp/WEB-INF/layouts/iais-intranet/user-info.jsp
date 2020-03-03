@@ -45,6 +45,7 @@
 		<%=currentUser==null?"":currentUser.getDisplayName() %></span>
 	</div>
 		</a>
+		<a href="/egov/process/EGPCLOUD/IdentityProviderLogout">Logout</a>
 	</div>
 </div>
 <!-- end of /_themes/sop6/jsp/user-info.jsp -->
