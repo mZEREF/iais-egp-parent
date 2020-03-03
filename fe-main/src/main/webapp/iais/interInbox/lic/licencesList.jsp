@@ -127,8 +127,8 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <a href="#" onclick="toLicView('${licenceQuery.id}')">${licenceQuery.licenceNo}</a>
-                                        <input type="hidden" name="licenId${status.index}" value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}" />"/>
+                                        <a href="#" onclick="toLicView('<iais:mask name="licId" value="${licenceQuery.id}"/>')">${licenceQuery.licenceNo}</a>
+                                        <input type="hidden" name="licenId${status.index}" value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Type</p>
