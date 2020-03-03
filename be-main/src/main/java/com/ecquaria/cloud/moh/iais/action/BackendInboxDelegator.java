@@ -136,6 +136,7 @@ public class BackendInboxDelegator {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchPre start ...."));
         searchParam = getSearchParam(bpc);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        AuditTrailHelper.auditFunction("BE-inbox", "Backend Inbox");
         commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
         List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
