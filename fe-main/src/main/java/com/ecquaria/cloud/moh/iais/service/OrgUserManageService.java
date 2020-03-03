@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 
 import java.util.List;
+import java.util.Map;
 
 public interface OrgUserManageService {
 
@@ -25,5 +26,11 @@ public interface OrgUserManageService {
 
     Boolean validateSingpassId(String nric, String pwd);
 
-	IaisApiResult<List<String>> singPassLoginFe(String nric);
+    Boolean isKeyappointment(String uen, String nricNumber);
+
+	IaisApiResult<List<String>> createSingpassAccount(String nric);
+
+	IaisApiResult<String> createCropUser(String jsonStr);
+
+    Map<String, Object>  getUserByNricAndUen(String uen, String nric);
 }

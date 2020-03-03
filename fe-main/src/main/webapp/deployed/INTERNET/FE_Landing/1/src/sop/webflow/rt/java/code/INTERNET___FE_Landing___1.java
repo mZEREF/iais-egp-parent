@@ -26,14 +26,6 @@ public class INTERNET___FE_Landing___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "switchAction", this);
 	}
 
-	public void croppassLogin_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "croppassLogin", this);
-	}
-
-	public void singpassLogin_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "singpassLogin", this);
-	}
-
 	public void step1_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "startStep", this);
 	}

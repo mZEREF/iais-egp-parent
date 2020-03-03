@@ -23,20 +23,18 @@
     <JavaCode defClass="" executor="" methodName="switchAction_OnStepProcess_0" name="switchAction_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="singpassLogin" x="850" y="480">
+  <InvokeStep defClass="" executor="" icon="" name="Step4" processname="FE_Singpass_Landing" project="" version="-1" x="800" y="490">
    <Description/>
    <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="singpassLogin_OnStepProcess_0" name="singpassLogin_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="croppassLogin" x="960" y="280">
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="Step5" processname="FE_Croppass_Landing" project="" version="-1" x="1000" y="280">
    <Description/>
    <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="croppassLogin_OnStepProcess_0" name="croppassLogin_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="prelogin" stageIndicator="" x="420" y="100">
@@ -51,13 +49,13 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="singpass" stageIndicator="" x="740" y="380">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="singpass" stageIndicator="" x="670" y="420">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="croppass" stageIndicator="" x="980" y="140">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="croppass" stageIndicator="" x="850" y="180">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -90,17 +88,17 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(560,370)(440,490)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/singpass" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(560,370)(760,400)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/croppass" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(750,120)(1000,160)}</position>
+   <position>{(750,120)(870,200)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/croppassLogin" linkstyle="Direct" name="" sourceName="/Pages/WebPage/croppass" style="oblique">
-   <position>{(1000,160)(980,300)}</position>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Step5" linkstyle="Direct" name="" sourceName="/Pages/WebPage/croppass" style="oblique">
+   <position>{(870,200)(1020,300)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/singpassLogin" linkstyle="Direct" name="" sourceName="/Pages/WebPage/singpass" style="oblique">
-   <position>{(760,400)(870,500)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/singpass" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(560,370)(690,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Step4" linkstyle="Direct" name="" sourceName="/Pages/WebPage/singpass" style="oblique">
+   <position>{(690,440)(820,510)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>

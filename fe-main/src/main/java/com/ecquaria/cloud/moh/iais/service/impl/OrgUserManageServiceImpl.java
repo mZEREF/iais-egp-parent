@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -26,8 +27,11 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Autowired
     FeAdminClient feAdminClient;
+
     @Autowired
     FeUserClient feUserClient;
+
+
     @Override
     public SearchResult<FeUserQueryDto> getFeUserList(SearchParam searchParam){
         return feUserClient.getFeUserList(searchParam).getEntity();
@@ -76,11 +80,26 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         return true;
     }
 
-	@Override
-	public IaisApiResult<List<String>> singPassLoginFe(String nric) {
+    @Override
+    public Boolean isKeyappointment(String uen, String nricNumber){
+        return false;
+    }
+
+    @Override
+	public IaisApiResult<List<String>> createSingpassAccount(String nric) {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put(JsonKeyConstants.SINGPASS_ID, nric);
 
 		return feUserClient.singPassLoginFe(jsonObject.toString()).getEntity();
 	}
+
+    @Override
+    public IaisApiResult<String> createCropUser(String jsonStr) {
+        return feUserClient.createCropUser(jsonStr).getEntity();
+    }
+
+    @Override
+    public Map<String, Object> getUserByNricAndUen(String uen, String nric) {
+        return feUserClient.getUserByNricAndUen(uen, nric).getEntity();
+    }
 }

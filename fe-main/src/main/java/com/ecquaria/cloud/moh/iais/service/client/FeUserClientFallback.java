@@ -10,6 +10,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
+import java.util.Map;
 
 public class FeUserClientFallback implements FeUserClient{
     @Override
@@ -46,6 +47,22 @@ public class FeUserClientFallback implements FeUserClient{
 
     @Override
     public FeignResponseEntity<IaisApiResult<List<String>>> singPassLoginFe(String jsonOpt) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Map<String, Object>> getUserByNricAndUen(String uen, String nric) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<IaisApiResult<String>> createCropUser(String json) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

@@ -41,12 +41,7 @@
                 <input id="entityId" name="entityId" onkeypress="doKeyPress(event, 'login')" placeholder="NRIC/ENTITY ID" class="custom-tag-to-uppercase form-control" required="required" type="uenEnittyID" value="" autocomplete="off">
                 <a class="topposition tooltipclick" title="" data-placement="left" data-toggle="tooltip" data-trigger="click" tabindex="-1" href="#" data-original-title="Unique Entity Number (UEN) or system generated Entity ID registered to your CorpPass account."><span class="icon-info-login-main login-info-padding"></span></a>
               </div>
-              <div class="form-group">
-                <label class="sr-only" for="password">Password</label>
-                <input type="password" name="password" class="form-control" id="password" placeholder="Password" required="required" autocomplete="off" onkeypress="doKeyPress(event, 'login')">
-                <a class="topposition tooltipclick" title="" data-placement="left" data-toggle="tooltip" data-trigger="click" tabindex="-1" href="#" data-original-title="Password which you have created for your CorpPass account."><span class="icon-info-login-main login-info-padding"></span></a>
 
-              </div>
               <div class="form-group">
                 <button type="button" id="login" class="btn btn-primary btn-block" onclick="Utils.submit('mainForm')" onkeypress="doKeyPress(event, 'login')">Login  <i class="fa fa-caret-right" aria-hidden="true"></i></button>
               </div>
