@@ -467,6 +467,8 @@ public class NewApplicationDelegator {
         String action = ParamUtil.getRequestString(bpc.request, "crud_action_value");
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
             if(RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)) {
+                //clear
+                ParamUtil.setSessionAttr(bpc.request,RELOADAPPGRPPRIMARYDOCMAP,null);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "jump");
                 return;
             }
@@ -488,7 +490,7 @@ public class NewApplicationDelegator {
             List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = new ArrayList<>();
             Map<String,String> errorMap = new HashMap<>();
             Map<String,AppGrpPrimaryDocDto> beforeReloadDocMap = (Map<String, AppGrpPrimaryDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP);
-            if(appSubmissionDto.isNeedEditController()){
+            if(requestInformationConfig != null){
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
                 clickEditPages.add(NewApplicationDelegator.APPLICATION_PAGE_NAME_PRIMARY);
                 appSubmissionDto.setClickEditPage(clickEditPages);
@@ -833,6 +835,14 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         List<ApplicationDto> applicationDtos = requestForChangeService.getOngoingApplicationByLicenceId(appSubmissionDto.getLicenceId());
+        //todo chnage edit
+        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+        appEditSelectDto.setServiceEdit(true);
+        appEditSelectDto.setPremisesEdit(true);
+        appEditSelectDto.setDocEdit(true);
+        appEditSelectDto.setPoEdit(true);
+        appEditSelectDto.setDocEdit(true);
+        appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
 
        /* Map<String, String> map = doPreviewAndSumbit(bpc);
         if(!map.isEmpty()){
@@ -1075,6 +1085,9 @@ public class NewApplicationDelegator {
     public void prepareJump(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do prepareJump start ...."));
         String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        if(StringUtil.isEmpty(action)){
+            action = ParamUtil.getRequestString(bpc.request, "nextStep");
+        }
         if(RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)){
             AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
             AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
@@ -2310,7 +2323,7 @@ public class NewApplicationDelegator {
                             String errorConvEndToHH = errorMap.get("convEndToHH"+i);
                             if(StringUtil.isEmpty(errorConvEndToHH) && !IaisCommonUtils.isEmpty(appPremPhOpenPeriodList) ){
                                 for(AppPremPhOpenPeriodDto ph :appPremPhOpenPeriodList){
-                                    if(!StringUtil.isEmpty(ph.getOnsiteEndToHH()) && !StringUtil.isEmpty(ph.getOnsiteEndToMM())){
+                                    if(!StringUtil.isEmpty(ph.getConvStartFromHH()) && !StringUtil.isEmpty(ph.getConvStartFromMM())){
                                         LocalTime startTime = LocalTime.of(Integer.parseInt(ph.getConvStartFromHH()),Integer.parseInt(ph.getConvStartFromMM()));
                                         ph.setStartFrom(Time.valueOf(startTime));
                                     }

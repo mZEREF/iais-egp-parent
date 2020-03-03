@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -428,6 +429,15 @@ public class ClinicalLaboratoryDelegator {
     public void doLaboratoryDisciplines(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+
+        String action = ParamUtil.getRequestString(bpc.request, "nextStep");
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            if(RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)
+                    || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
+                return;
+            }
+        }
+
         String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         boolean isRfi = false;
@@ -527,6 +537,14 @@ public class ClinicalLaboratoryDelegator {
     public void doGovernanceOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+
+        String action = ParamUtil.getRequestString(bpc.request, "nextStep");
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            if(RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)
+                    || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
+                return;
+            }
+        }
         String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         boolean isRfi = false;
@@ -578,6 +596,13 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doDisciplineAllocation start ...."));
         Map<String, String> errorMap = new HashMap<>();
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String action = ParamUtil.getRequestString(bpc.request, "nextStep");
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            if(RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)
+                    || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
+                return;
+            }
+        }
         String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         boolean isRfi = false;
@@ -663,7 +688,13 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers start ...."));
 
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-
+        String action = ParamUtil.getRequestString(bpc.request, "nextStep");
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            if(RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)
+                    || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
+                return;
+            }
+        }
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         boolean isRfi = false;
         if(requestInformationConfig != null){
@@ -742,12 +773,17 @@ public class ClinicalLaboratoryDelegator {
         }else{
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "jump");
         }
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String action =mulReq.getParameter( "nextStep");
-        if(!"next".equals(action)) {
-            return;
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            if(RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)
+                    || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
+                //clear
+                ParamUtil.setSessionAttr(bpc.request,RELOADSVCDOC,null);
+                return;
+            }
         }
 
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         boolean isRfi = false;
         if(requestInformationConfig != null){

@@ -216,6 +216,7 @@ public class RequestForChangeDelegator {
                 ParamUtil.setRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT,RfcConst.EDIT_SERVICE);
             }
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
+            appSubmissionDto.setClickEditPage(null);
             ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTORFCATTR,appSubmissionDto);
             ParamUtil.setRequestAttr(bpc.request,"appType",ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         }
