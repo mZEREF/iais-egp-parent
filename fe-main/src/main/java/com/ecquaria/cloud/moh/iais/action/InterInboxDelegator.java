@@ -25,6 +25,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.*;
 
@@ -387,8 +388,20 @@ public class InterInboxDelegator {
      */
     public void licDoRenew(BaseProcessClass bpc) throws IOException {
         String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
+
         if(licIds != null){
             List<String> licIdValue = new ArrayList<>();
+            if ("cease".equals(ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_ADDITIONAL))){
+                for(String item:licIds){
+                    licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
+                }
+                ParamUtil.setSessionAttr(bpc.request,"licIds", (Serializable) licIdValue);
+                StringBuilder url = new StringBuilder();
+                url.append("https://").append(bpc.request.getServerName())
+                        .append("/hcsa-licence-web/eservice/INTERNET/MohCessationApplication");
+                String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+                bpc.response.sendRedirect(tokenUrl);
+            }
             for(String item:licIds){
                 licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
             }

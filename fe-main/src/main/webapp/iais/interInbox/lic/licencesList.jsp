@@ -78,7 +78,7 @@
             <div class="col-md-12">
                 <div class="licence-btns col-md-7">
                     <a class="btn btn-primary disabled" href="javascript:;" id="lic-renew">Renew</a>
-                    <a class="btn btn-secondary disabled" href="javascript:;">Cease</a>
+                    <a class="btn btn-secondary disabled" href="javascript:;" id="lic-cease">Cease</a>
                     <a class="btn btn-secondary disabled" href="javascript:;" id="lic-amend">Amend</a>
                 </div>
                 <div class="col-md-2 col-md-offset-1">
@@ -175,5 +175,10 @@
     $('#lic-renew').click(function () {
         doLicRenew();
     });
+    $('#lic-cease').click(function () {
+        doLicCease();
+    });
+
+
 
 </script>
