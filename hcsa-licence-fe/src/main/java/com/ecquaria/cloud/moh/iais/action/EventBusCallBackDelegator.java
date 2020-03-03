@@ -59,6 +59,10 @@ public class EventBusCallBackDelegator {
                 log.info(StringUtil.changeForLog("The EventBusCallBackDelegator callBack map start ..."));
                  for (ServiceStatus status : ent.getValue()) {
                      log.info(StringUtil.changeForLog("The EventBusCallBackDelegator callBack status.getStatus()) -->:"+status.getStatus()));
+                     if (status.getStatus().equals(GlobalConstants.STATE_PENDING)) {
+                         log.info("Still got pending. Return");
+                         return;
+                     }
                      if (!status.getStatus().equals(GlobalConstants.STATE_COMPLETED)) {
                          completed = false;
                      }
