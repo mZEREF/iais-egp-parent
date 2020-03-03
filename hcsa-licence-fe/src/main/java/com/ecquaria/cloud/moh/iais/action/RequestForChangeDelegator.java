@@ -296,7 +296,7 @@ public class RequestForChangeDelegator {
             }
             if(result){
                 appSubmissionDto.setLicenseeId(newLicenseeId);
-                appSubmissionDto.setAutoRfc(false);
+                appSubmissionDto.setAutoRfc(true);
                 AmendmentFeeDto amendmentFeeDto=new AmendmentFeeDto();
                 amendmentFeeDto.setChangeInHCIName(false);
                 amendmentFeeDto.setChangeInLicensee(true);
@@ -304,7 +304,7 @@ public class RequestForChangeDelegator {
                 FeeDto feeDto=appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
                 Double amount=feeDto.getTotal();
                 appSubmissionDto.setAmount(amount);
-                appSubmissionDto.setIsNeedNewLicNo("0");
+                appSubmissionDto.setIsNeedNewLicNo("1");
                 String grpNo=appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                 appSubmissionDto.setAppGrpNo(grpNo);
                 List<String> names=new ArrayList<>();
