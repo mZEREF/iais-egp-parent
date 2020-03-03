@@ -58,7 +58,7 @@ public class WithdrawalDelegator {
         withdrawalReason.add(new SelectOption("WDR003", "Failure to obtain pre requisite licence from other agency(ies)"));
         withdrawalReason.add(new SelectOption("WDR004", "No longer wish to provide the service"));
         withdrawalReason.add(new SelectOption("WDR005", "Others"));
-        ParamUtil.setSessionAttr(bpc.request, "applicationNo", "AN191210000143-01");
+        ParamUtil.setSessionAttr(bpc.request, "appNo", "AN191210000143-01");
         ParamUtil.setRequestAttr(bpc.request, "withdrawalReasonList", withdrawalReason);
     }
 
@@ -66,7 +66,7 @@ public class WithdrawalDelegator {
         WithdrawnDto withdrawnDto = new WithdrawnDto();
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
-        String appId = ParamUtil.getRequestString(mulReq, "applicationId");
+        String appId = ParamUtil.getRequestString(mulReq, "appId");
 //        String appId = "7BCC5724-A469-47A6-A75B-07BE2AF88E3D";
         String withdrawnReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
         CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
