@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohRequestForChange" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="19" minorVersion="0" name="MohRequestForChange" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="130" y="50">
@@ -97,12 +97,6 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ack" stageIndicator="" x="410" y="540">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
-  </WebPage>
  </Pages>
  <Forms/>
  <Links>
@@ -163,9 +157,6 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/compareChangePercentage" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/tranferPage" style="rectanular">
    <position>{(580,510)(570,600)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(430,370)(430,560)}</position>
-  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/prepareFirstView" componentIfTrue="/Steps/InvokeStep/MohNewApplication" defClass="" executor="" icon="" leftOperand="isSuccess" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="290" y="590">
@@ -178,7 +169,6 @@
    <SwitchCase component="/Steps/AutomaticStep/prepare" value="&quot;prepare&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareFirstView" value="&quot;doAmend&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareTranfer" value="&quot;doTranfer&quot;"/>
-   <SwitchCase component="/Pages/WebPage/ack" value="&quot;error&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

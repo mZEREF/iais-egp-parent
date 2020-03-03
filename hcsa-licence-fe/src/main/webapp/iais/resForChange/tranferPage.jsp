@@ -14,7 +14,10 @@
                         <h1>Amendment</h1>
                     </strong>
                 </div>
-                <div>You are amending the Clinical Laboratory licence (Licence No. LS-2016-001)</div>
+                <div>&nbsp</div>
+                <h3>You are amending the Clinical Laboratory licence (Licence No. <strong>${prepareTranfer.licenceNo}</strong>)</h3>
+                <div>&nbsp</div>
+                <div>&nbsp</div>
              <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
                 <div class="row">
                  <div class="col-xs-12">
@@ -22,15 +25,19 @@
                          <table class="table">
                              <tr>
                               <td class="col-xs-6">Licence No.</td>
-                              <td class="col-xs-6"> </td>
+                              <td class="col-xs-6">${prepareTranfer.licenceNo}</td>
                              </tr>
                              <tr>
                                 <td>Service Name</td>
-                                <td></td>
+                                <td>${prepareTranfer.serviceName}</td>
                              </tr>
                              <tr>
                                  <td>Select Premises</td>
-                                 <td></td>
+                                 <td><c:forEach items="${prepareTranfer.appGrpPremisesDtoList}"
+                                                var="premises">
+                                     <input type="checkbox" name="premisesInput" value="${premises.hciName}/${premises.blkNo}/${premises.streetName}/${premises.buildingName}/${premises.floorNo}/${premises.unitNo}/${premises.postalCode}">${premises.hciName}&${premises.blkNo} ${premises.streetName} ${premises.buildingName}=${premises.floorNo}-${premises.unitNo},${premises.postalCode} &nbsp;
+                                 </c:forEach>
+                                 </td>
                              </tr>
                              <tr>
                                  <td>UEN of Licence to transfer licence to</td>
@@ -38,21 +45,23 @@
                              </tr>
                           </table>
                       </div>
-                     <div align="center">
-                         <button id="submitButton" type="button" class="btn btn-primary">
-                             Submit
-                         </button>
+                     <div class="col-xs-12 col-md-4">
+                         <a class="back" href="https://egp.sit.inter.iais.com/hcsa-licence-web/eservice/INTERNET/MohRequestForChange?licenceId=${prepareTranfer.licenceId}"><em class="fa fa-angle-left"></em> Back</a>
                      </div>
+                     <div class="col-xs-12 col-md-3">
+                         <a class="btn btn-primary next premiseId" id="Next">Next</a>
+                     </div>
+
                   </div>
                  </div>
                 </form>
             </div>
-        <script type="text/javascript">
-            $("#submitButton").click(function () {
+        <script>
+            $("#Next").click(function () {
                 showWaiting();
                 document.getElementById("mainForm").submit();
-            }
-            function showWaiting() {
+            })
+            function  showWaiting(){
                 $.blockUI({message: '<div style="padding:3px;">We are processing your request now, please do not click the Back or Refresh buttons in the browser.</div>',
                     css: {width: '25%', border: '1px solid #aaa'},
                     overlayCSS: {opacity: 0.2}});

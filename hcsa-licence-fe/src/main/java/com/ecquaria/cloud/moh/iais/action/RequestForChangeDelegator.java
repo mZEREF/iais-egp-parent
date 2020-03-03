@@ -9,6 +9,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -242,6 +244,8 @@ public class RequestForChangeDelegator {
     public void prepareTranfer(BaseProcessClass bpc) {
         String licenceId= (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         AppSubmissionDto appSubmissionDto=requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
+        String serviceName=appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
+        appSubmissionDto.setServiceName(serviceName);
         ParamUtil.setRequestAttr(bpc.request, "prepareTranfer", appSubmissionDto);
     }
 
@@ -249,7 +253,7 @@ public class RequestForChangeDelegator {
      * @param bpc
      * @Decription compareChangePercentage
      */
-    public void compareChangePercentage(BaseProcessClass bpc) {
+    public void compareChangePercentage(BaseProcessClass bpc) throws CloneNotSupportedException{
         String licenceId= (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         //String licenseNo="L/20CLB0156/CLB/001/201";
         LicenceDto licenceDto=requestForChangeService.getLicenceDtoByLicenceId(licenceId);
@@ -278,8 +282,8 @@ public class RequestForChangeDelegator {
             int count = 0;
             boolean result = false;
             if(oldMemberIds.size()>0) {
-                for (int i = 0; i <= oldMemberIds.size(); i++) {
-                    for (int j = 0; j <= uenMemberIds.size(); j++) {
+                for (int i = 0; i < oldMemberIds.size(); i++) {
+                    for (int j = 0; j < uenMemberIds.size(); j++) {
                         if (oldMemberIds.get(i).equals(uenMemberIds.get(j))) {
                             count++;
                         }
@@ -291,9 +295,29 @@ public class RequestForChangeDelegator {
             }
             if(result){
                 appSubmissionDto.setLicenseeId(newLicenseeId);
-                appSubmissionDto.setAutoRfc(true);
+                appSubmissionDto.setAutoRfc(false);
+                AmendmentFeeDto amendmentFeeDto=new AmendmentFeeDto();
+                amendmentFeeDto.setChangeInHCIName(false);
+                amendmentFeeDto.setChangeInLicensee(true);
+                amendmentFeeDto.setChangeInLocation(false);
+                FeeDto feeDto=appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
+                Double amount=feeDto.getTotal();
+                appSubmissionDto.setAmount(amount);
+                appSubmissionDto.setIsNeedNewLicNo("0");
+                String grpNo=appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                appSubmissionDto.setAppGrpNo(grpNo);
+                List<String> names=new ArrayList<>();
+                for (AppSvcRelatedInfoDto e:appSubmissionDto.getAppSvcRelatedInfoDtoList()
+                     ) {
+                    names.add(e.getServiceName());
+                }
+                List<HcsaServiceDto> hcsaServiceDtos=serviceConfigService.getHcsaServiceByNames(names);
+                ParamUtil.setRequestAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST,hcsaServiceDtos);
+                NewApplicationHelper.setSubmissionDtoSvcData(bpc.request,appSubmissionDto);
+                appSubmissionService.setRiskToDto(appSubmissionDto);
                 requestForChangeService.submitChange(appSubmissionDto);
             }
+        log.debug(StringUtil.changeForLog("the do tranfer end ....111111111111111"));
     }
 
     private boolean iftranfer(String UNID,String licenceId,String pageType){
