@@ -7,9 +7,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.AuditAssginListValidateDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemPotitalListService;
+import com.ecquaria.cloud.moh.iais.validation.AuditAssginListValidate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -18,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: jiahao
@@ -51,13 +55,6 @@ public class AuditSystemListDelegator {
     public void vad(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the vad start ...."));
         HttpServletRequest request = bpc.request;
-        ParamUtil.setRequestAttr(request, "isValid", "Y");
-
-    }
-
-    public void next(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the next start ...."));
-        HttpServletRequest request = bpc.request;
         List<SelectOption> aduitTypeOp = auditSystemListService.getAuditOp();
         ParamUtil.setSessionAttr(request,"aduitTypeOp",(Serializable) aduitTypeOp);
         AuditSystemPotentialDto dto = new AuditSystemPotentialDto();
@@ -67,6 +64,13 @@ public class AuditSystemListDelegator {
         List<AuditTaskDataFillterDto> auditTaskDataDtos =  auditSystemPotitalListService.getSystemPotentailAdultList(dto);
         auditSystemListService.getInspectors(auditTaskDataDtos);
         ParamUtil.setSessionAttr(request,"auditTaskDataDtos",(Serializable) auditTaskDataDtos);
+        ParamUtil.setRequestAttr(request, "isValid", "N");
+    }
+
+    public void next(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the next start ...."));
+        HttpServletRequest request = bpc.request;
+
     }
 
     public void listpageNext(BaseProcessClass bpc) {
@@ -78,14 +82,24 @@ public class AuditSystemListDelegator {
     public void remove(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
+        List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,"auditTaskDataDtos");
+        getListData(request);
+        auditTaskDataDtos = auditSystemListService.doRemove(auditTaskDataDtos);
+        ParamUtil.setSessionAttr(request,"auditTaskDataDtos",(Serializable) auditTaskDataDtos);
     }
 
     public void confirm(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
         getListData(request);
-        AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
+        AuditAssginListValidate auditAssginListValidate = new AuditAssginListValidate();
+        Map<String, String> errMap = auditAssginListValidate.validate(request);
+        if(errMap.isEmpty()){
+            ParamUtil.setRequestAttr(request, "isValid", "N");
+        }else{
+            ParamUtil.setRequestAttr(request, "isValid", "Y");
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
+        }
     }
 
     private void getListData(HttpServletRequest request) {
@@ -125,7 +139,11 @@ public class AuditSystemListDelegator {
         }
         return null;
     }
-
+    public AuditAssginListValidateDto getValueFromPage(HttpServletRequest request) {
+        AuditAssginListValidateDto dto = new AuditAssginListValidateDto();
+        getListData(request);
+        return dto;
+    }
     public void precreatehcl(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
@@ -136,6 +154,15 @@ public class AuditSystemListDelegator {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
+        getListData(request);
+        AuditAssginListValidate auditAssginListValidate = new AuditAssginListValidate();
+        Map<String, String> errMap = auditAssginListValidate.validate(request);
+        if(errMap.isEmpty()){
+            ParamUtil.setRequestAttr(request, "isValid", "N");
+        }else{
+            ParamUtil.setRequestAttr(request, "isValid", "Y");
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
+        }
     }
 
     public void submit(BaseProcessClass bpc) {

@@ -41,7 +41,7 @@
                                         <th>Service Name</th>
                                         <th>Audit Type</th>
                                         <th>Inspector</th>
-                                        <th>Select for Audit</th>
+                                        <th>Selected</th>
                                     </tr>
                                     </thead>
                                     <tbody>

@@ -72,7 +72,7 @@
     <JavaCode defClass="" executor="" methodName="precanceltask_OnStepProcess_0" name="precanceltask_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="submit" x="1020" y="460">
+  <AutomaticStep defClass="" executor="" icon="" name="submit" x="1020" y="550">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -107,13 +107,13 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="confirmpage" stageIndicator="" x="1020" y="290">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="confirmpage" stageIndicator="" x="1010" y="370">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="confirmsuccesspage" stageIndicator="" x="900" y="460">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="confirmsuccesspage" stageIndicator="" x="820" y="560">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -125,7 +125,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="canceltaskpage" stageIndicator="" x="1220" y="320">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="canceltaskpage" stageIndicator="" x="1210" y="440">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -179,17 +179,17 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/next" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/remove" style="rectanular">
    <position>{(920,250)(743,248)(740,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/confirmpage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/confirm" style="rectanular">
-   <position>{(1040,220)(1040,310)}</position>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/confirm" style="rectanular">
+   <position>{(1040,220)(1030,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/confirmpage" style="rectanular">
-   <position>{(1040,310)(1040,390)}</position>
+   <position>{(1030,390)(1040,480)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/submit" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
-   <position>{(1040,390)(1040,480)}</position>
+   <position>{(1040,480)(1040,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/confirmsuccesspage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/submit" style="rectanular">
-   <position>{(1040,480)(920,480)}</position>
+   <position>{(1040,570)(840,580)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/createhcl" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/precreatehcl" style="rectanular">
    <position>{(1120,250)(1140,360)}</position>
@@ -198,29 +198,47 @@
    <position>{(1140,360)(1150,460)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/next" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/createhcl" style="rectanular">
-   <position>{(1150,460)(741,545)(740,120)}</position>
+   <position>{(1150,460)(743,636)(740,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/canceltaskpage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/precanceltask" style="rectanular">
-   <position>{(1230,250)(1240,340)}</position>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond3" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/precanceltask" style="rectanular">
+   <position>{(1230,250)(1260,360)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/canceltaskpage" style="rectanular">
-   <position>{(1240,340)(1260,450)}</position>
+   <position>{(1230,460)(1260,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/canceltask" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
-   <position>{(1260,450)(1340,520)}</position>
+   <position>{(1260,570)(1340,520)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/next" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
-   <position>{(1260,450)(740,548)(740,120)}</position>
+   <position>{(1260,570)(743,638)(740,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/next" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
-   <position>{(1040,390)(742,392)(740,120)}</position>
+   <position>{(1040,480)(740,483)(740,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/next" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(1080,120)(744,46)(740,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/pre" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(1080,120)(158,10)(160,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/confirmpage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(1030,310)(1030,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/next" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(1030,310)(731,326)(740,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/canceltaskpage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
+   <position>{(1260,360)(1230,460)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/next" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
+   <position>{(1260,360)(1383,356)(754,41)(740,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/next" componentIfTrue="/Steps/AutomaticStep/pre" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond1" operator="!=" rightOperand="isValid" x="600" y="100">
+  <Condition componentIfFalse="/Steps/AutomaticStep/pre" componentIfTrue="/Steps/AutomaticStep/next" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond1" operator="!=" rightOperand="isValid" x="600" y="100">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/next" componentIfTrue="/Pages/WebPage/confirmpage" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond2" operator="!=" rightOperand="isValid" x="1010" y="290">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/next" componentIfTrue="/Pages/WebPage/canceltaskpage" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond3" operator="!=" rightOperand="isValid" x="1240" y="340">
    <Description/>
   </Condition>
  </Conditions>
@@ -231,14 +249,14 @@
    <SwitchCase component="/Steps/AutomaticStep/confirm" value="&quot;confirm&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/precreatehcl" value="&quot;createhcl&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/precanceltask" value="&quot;cancel&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/next" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/pre" value="&quot;doback&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="1020" y="370">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="1020" y="460">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/submit" value="&quot;submit&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/next" value="&quot;back&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="1240" y="430">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="1240" y="550">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/canceltask" value="&quot;cancel&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/next" value="&quot;back&quot;"/>

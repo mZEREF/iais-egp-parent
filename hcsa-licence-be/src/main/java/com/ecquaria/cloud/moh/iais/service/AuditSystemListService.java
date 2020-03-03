@@ -10,9 +10,13 @@ import java.util.List;
  * @Date: 2020/2/19 10:54
  */
 public interface AuditSystemListService {
-    void getInspectors(List<AuditTaskDataFillterDto> auditTaskDataDtos);
+    void  getInspectors(List<AuditTaskDataFillterDto> auditTaskDataDtos);
 
     List<SelectOption> getAuditOp();
 
     void doSubmit(List<AuditTaskDataFillterDto> auditTaskDataDtos);
+
+    List<AuditTaskDataFillterDto> doRemove(List<AuditTaskDataFillterDto> auditTaskDataDtos);
+
+    void doCancel(List<AuditTaskDataFillterDto> auditTaskDataDtos);
 }

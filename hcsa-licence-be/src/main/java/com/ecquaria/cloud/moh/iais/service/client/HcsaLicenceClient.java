@@ -17,11 +17,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditAdhocItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspectStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspectiNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremPreInspNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisemPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAdhocChklConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditInspectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -191,4 +197,42 @@ public interface HcsaLicenceClient {
 
     @GetMapping(value = "/licenceViewDto/{licPremCorrId}")
     FeignResponseEntity<LicenceViewDto> getLicenceViewDtoByLicPremCorrId(@PathVariable("licPremCorrId") String licPremCorrId);
+
+
+
+    @RequestMapping(path = "/iais-licence-history",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<LicPremisesRoutingHistoryDto> createLicPremisesRoutingHistory(LicPremisesRoutingHistoryDto licPremisesRoutingHistoryDto);
+
+    @PostMapping(path = "/hcsa-licence/lic-status-result", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<LicPremInspectStatusDto>> create(@RequestBody List<LicPremInspectStatusDto> appInspecStatusDtos);
+
+    @PutMapping(path = "/hcsa-licence/lic-status-resultup", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<LicPremInspectStatusDto> update(@RequestBody LicPremInspectStatusDto appInspecStatusDto);
+
+    @PostMapping(path = "/hcsa-licence/licinspectiongroup-result", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<LicInspectionGroupDto> createLicInspectionGroup(@RequestBody LicInspectionGroupDto licInspectionGroupDto);
+
+    @PutMapping(path = "/hcsa-licence/licinspectiongroup-resultup", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<LicInspectionGroupDto> updateLicInspectionGroup(@RequestBody LicInspectionGroupDto licInspectionGroupDto);
+
+    @PostMapping(path = "/hcsa-licence/licpreminspgrpcorre-result", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<LicPremInspGrpCorrelationDto> createLicInspectionGroupCorre(@RequestBody LicPremInspGrpCorrelationDto licPremInspGrpCorrelationDto);
+
+    @PutMapping(path = "/hcsa-licence/licpreminspgrpcorre-resultup", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<LicPremInspGrpCorrelationDto> updateLicInspectionGroupCorre(@RequestBody LicPremInspGrpCorrelationDto licPremInspGrpCorrelationDto);
+
+    @PostMapping(path = "/hcsa-licence/icpremaudit-result", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<LicPremisesAuditDto> createLicPremAudit(@RequestBody LicPremisesAuditDto licPremisesAuditDto);
+
+    @PutMapping(path = "/hcsa-licence/icpremaudit-resultup", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<LicPremisesAuditDto> updateLicPremAudit(@RequestBody LicPremisesAuditDto licPremisesAuditDto);
+
+    @PostMapping(path = "/hcsa-licence/icpremauditinsp-result", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<LicPremisesAuditInspectorDto> createLicPremisesAuditInspector(@RequestBody LicPremisesAuditInspectorDto licPremisesAuditInspectorDto);
+
+    @PutMapping(path = "/hcsa-licence/icpremauditinsp-resultup", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<LicPremisesAuditInspectorDto> updateLicPremisesAuditInspector(@RequestBody LicPremisesAuditInspectorDto licPremisesAuditInspectorDto);
+
+
 }

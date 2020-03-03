@@ -32,13 +32,16 @@
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th>HCI Code</th>
-                                        <th>HCI Name</th>
-                                        <th>Address</th>
+                                        <th></th>
                                         <th>Service Name</th>
-                                        <th>Audit Type</th>
-                                        <th>Inspector</th>
-                                        <th>Select for Audit</th>
+                                        <th>Postal Code/Region </th>
+                                        <th>Last Inspection done before(Start) </th>
+                                        <th>Last Inspection done before(End) </th>
+                                        <th>Results of last Compliance</th>
+                                        <th>Hcsa Service Code</th>
+                                        <th>HCI Code</th>
+                                        <th>Premises Type</th>
+                                        <th>Type of Risk</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -46,24 +49,17 @@
                                     <c:forEach var = "item" items = "${auditTaskDataDtos}" varStatus="status">
                                         <tr>
                                             <c:set var="id" value="${status.index}"></c:set>
-                                            <td><c:out value="${item.hclCode}"/></td>
-                                            <td><c:out value="${item.hclName}"/></td>
-                                            <td><c:out value="${item.address}"/></td>
+                                            <td> <input name="<c:out value="${id}"/>selectForAd" id="<c:out value="${id}"/>selectForAd" type="checkbox" value="ad" <c:if test="${item.selectedForAudit}">checked</c:if>/></td>
                                             <td><c:out value="${item.svcName}"/></td>
-                                            <td><iais:select name="${id}auditType" options="aduitTypeOp" firstOption="Please select" value=""></iais:select></td>
-                                            <td>
-                                                <select name="<c:out value="${id}insOp"/>">
-                                                    <c:forEach var="inspOp" items="${item.inspectors}">
-                                                        <option  value="<c:out value="${inspOp.value}"/>"><c:out value="${inspOp.text}"/></option>
-                                                    </c:forEach>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input name="<c:out value="${id}"/>selectForAd" id="<c:out value="${id}"/>selectForAd" type="checkbox" value="ad">
-                                            </td>
+                                            <td><c:out value="${item.postalCode}"/></td>
+                                            <td><c:out value="${item.lastInspStart}"/></td>
+                                            <td><c:out value="${item.lastInspEnd}"/></td>
+                                            <td><c:out value="${item.resultComplicance}"/></td>
+                                            <td><c:out value="${item.svcCode}"/></td>
+                                            <td><c:out value="${item.hclCode}"/></td>
+                                            <td><c:out value="${item.premisesType}"/></td>
                                         </tr>
                                     </c:forEach>
-
                                     </tbody>
                                 </table>
                                 <div class="table-footnote">
@@ -74,16 +70,10 @@
                     <div class="application-tab-footer">
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: confirm();">Confirm to Audit</a></div>
+                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: addToAudit();">Add to Audit List</a></div>
                             </div>
                             <div class="col-xs-12 col-sm-6">
                                 <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: cancel();">Cancel</a></div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: remove();">Remove Audit Task</a></div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: cancelAudit();">Cancel Audit Task</a></div>
                             </div>
                         </div>
                     </div>
@@ -93,19 +83,11 @@
     </div>
 </form>
 <script type="text/javascript">
-    function confirm() {
-        SOP.Crud.cfxSubmit("mainForm","confirm");
+    function addToAudit() {
+        SOP.Crud.cfxSubmit("mainForm","donext");
     }
     function cancel() {
-        SOP.Crud.cfxSubmit("mainForm","back");
+        SOP.Crud.cfxSubmit("mainForm","doback");
     }
-    function remove() {
-        SOP.Crud.cfxSubmit("mainForm","next");
-    }
-    function cancelAudit() {
-        SOP.Crud.cfxSubmit("mainForm","next");
-    }
-    function createHcl() {
-        SOP.Crud.cfxSubmit("mainForm","next");
-    }
+
 </script>

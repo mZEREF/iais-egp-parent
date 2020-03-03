@@ -41,7 +41,7 @@ public class INTRANET___MohAuditManualList___1 extends BaseProcessClass {
 	}
 
 	public void confirm_OnStepProcess_0() throws Exception {
-	// 		confirm->OnStepProcess
+		// 		confirm->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "confirm", this);
 	}
 
@@ -53,6 +53,21 @@ public class INTRANET___MohAuditManualList___1 extends BaseProcessClass {
 	public void step2_OnStepProcess_0() throws Exception {
 	// 		Step2->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "cancel", this);
+	}
+
+	public void vad_OnStepProcess_0() throws Exception {
+	// 		vad->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "vad", this);
+	}
+
+	public void next_OnStepProcess_0() throws Exception {
+	// 		next->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "next", this);
+	}
+
+	public void step3_OnStepProcess_0() throws Exception {
+	// 		Step3->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "nextToViewTaskList", this);
 	}
 
 }

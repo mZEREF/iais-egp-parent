@@ -34,38 +34,45 @@
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th></th>
                                         <th>HCI Code</th>
                                         <th>HCI Name</th>
                                         <th>Address</th>
                                         <th>Service Name</th>
                                         <th>Audit Type</th>
                                         <th>Inspector</th>
-                                        <th>Select for Audit</th>
+                                        <th>Status</th>
+                                        <th>Select for Cancellation</th>
+                                        <th>Resaons for Cancellation</th>
                                     </tr>
                                     </thead>
                                     <tbody>
 
                                     <c:forEach var = "item" items = "${auditTaskDataDtos}" varStatus="status">
+                                        <c:if test="${item.selectedForAudit}">
                                         <tr>
                                             <c:set var="id" value="${status.index}"></c:set>
-                                            <td><input name="number" type="checkbox" id="<c:out value="${(status.index ) }"/>"></td>
+
                                             <td><c:out value="${item.hclCode}"/></td>
                                             <td><c:out value="${item.hclName}"/></td>
                                             <td><c:out value="${item.address}"/></td>
                                             <td><c:out value="${item.svcName}"/></td>
-                                            <td><iais:select name="${id}" options="aduitTypeOp" firstOption="Please select" value=""></iais:select></td>
+                                            <td><c:out value="${item.inspector}"/></td>
                                             <td>
-                                                <select name="<c:out value="${id}insOp"/>">
-                                                    <c:forEach var="inspOp" items="${item.inspectors}">
-                                                        <option  value=""><c:out value="${inspOp.text}"/></option>
-                                                    </c:forEach>
-                                                </select>
+                                                <c:choose>
+                                                    <c:when test="${item.selectedForAudit}">
+                                                        <p>Audit Confirmed</p>
+                                                    </c:when>
+                                                </c:choose>
+                                            </td>
+                                            <td></td>
+                                            <td>
+                                                <input name="selectForAd" id="<c:out value="${(status.index) }"/>" type="checkbox">
                                             </td>
                                             <td>
-                                                <input name="selectForAd" id="<c:out value="${(status.index ) }"/>" type="checkbox">
+                                                <textarea cols="30" rows="5" name="${id}reason"  maxlength="500"><c:out value="${item.cancelReason}"></c:out></textarea>
                                             </td>
                                         </tr>
+                                        </c:if>
                                     </c:forEach>
 
                                     </tbody>
@@ -108,9 +115,6 @@
         SOP.Crud.cfxSubmit("mainForm","next");
     }
     function cancelAudit() {
-        SOP.Crud.cfxSubmit("mainForm","next");
-    }
-    function createHcl() {
-        SOP.Crud.cfxSubmit("mainForm","next");
+        SOP.Crud.cfxSubmit("mainForm","cancel");
     }
 </script>

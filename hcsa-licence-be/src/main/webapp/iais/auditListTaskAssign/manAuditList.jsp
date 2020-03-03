@@ -38,32 +38,35 @@
                                         <th>Service Name</th>
                                         <th>Audit Type</th>
                                         <th>Inspector</th>
-                                        <th>Selected</th>
+                                        <th>Select for Audit</th>
                                     </tr>
                                     </thead>
                                     <tbody>
 
                                     <c:forEach var = "item" items = "${auditTaskDataDtos}" varStatus="status">
-                                        <c:if test="${item.selectedForAudit}">
-                                            <tr>
-                                                <c:set var="id" value="${status.index}"></c:set>
-                                                <td><c:out value="${item.hclCode}"/></td>
-                                                <td><c:out value="${item.hclName}"/></td>
-                                                <td><c:out value="${item.address}"/></td>
-                                                <td><c:out value="${item.svcName}"/></td>
-                                                <td><c:out value="${item.auditType}"/></td>
-                                                <td>
-                                                    <c:out value="${item.inspector}"/>
-                                                </td>
-                                                <td>
-                                                    <c:choose>
-                                                        <c:when test="${item.selectedForAudit}">
-                                                            <p>Audit Confirmed</p>
-                                                        </c:when>
-                                                    </c:choose>
-                                                </td>
-                                            </tr>
-                                        </c:if>
+                                        <tr>
+                                            <c:set var="id" value="${status.index}"></c:set>
+                                            <td><c:out value="${item.hclCode}"/></td>
+                                            <td><c:out value="${item.hclName}"/></td>
+                                            <td><c:out value="${item.address}"/></td>
+                                            <td><c:out value="${item.svcName}"/></td>
+                                            <td><iais:select name="${id}auditType" options="aduitTypeOp" firstOption="Please select" value=""></iais:select>
+                                                <c:set value = "error_${id}adtype" var = "erradtype"/>
+                                                <span class="error-msg" id="<c:out value="${erradtype}"/>" name="iaisErrorMsg"></span>
+                                            </td>
+                                            <td>
+                                                <select name="<c:out value="${id}insOp"/>">
+                                                    <c:forEach var="inspOp" items="${item.inspectors}">
+                                                        <option  value="<c:out value="${inspOp.value}"/>"><c:out value="${inspOp.text}"/></option>
+                                                    </c:forEach>
+                                                </select>
+                                                <c:set value = "error_${id}insp" var = "errboth"/>
+                                                <span class="error-msg" id="<c:out value="${errboth}"/>" name="iaisErrorMsg"></span>
+                                            </td>
+                                            <td>
+                                                <input name="<c:out value="${id}"/>selectForAd" id="<c:out value="${id}"/>selectForAd" type="checkbox" value="ad" <c:if test="${item.selectedForAudit}">checked</c:if>/>
+                                            </td>
+                                        </tr>
                                     </c:forEach>
 
                                     </tbody>
@@ -96,12 +99,11 @@
         SOP.Crud.cfxSubmit("mainForm","confirm");
     }
     function cancel() {
-        SOP.Crud.cfxSubmit("mainForm","back");
+        SOP.Crud.cfxSubmit("mainForm","doback");
     }
+
     function cancelAudit() {
-        SOP.Crud.cfxSubmit("mainForm","next");
+        SOP.Crud.cfxSubmit("mainForm","cancel");
     }
-    function createHcl() {
-        SOP.Crud.cfxSubmit("mainForm","next");
-    }
+
 </script>

@@ -17,11 +17,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditAdhocItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspectStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspectiNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremPreInspNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisemPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAdhocChklConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditInspectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
@@ -380,5 +386,91 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<LicPremisesRoutingHistoryDto> createLicPremisesRoutingHistory(LicPremisesRoutingHistoryDto licPremisesRoutingHistoryDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 
+    @Override
+    public FeignResponseEntity<List<LicPremInspectStatusDto>> create(List<LicPremInspectStatusDto> appInspecStatusDtos) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<LicPremInspectStatusDto> update(LicPremInspectStatusDto appInspecStatusDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<LicInspectionGroupDto> createLicInspectionGroup(LicInspectionGroupDto licInspectionGroupDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<LicInspectionGroupDto> updateLicInspectionGroup(LicInspectionGroupDto licInspectionGroupDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<LicPremInspGrpCorrelationDto> createLicInspectionGroupCorre(LicPremInspGrpCorrelationDto licPremInspGrpCorrelationDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<LicPremInspGrpCorrelationDto> updateLicInspectionGroupCorre(LicPremInspGrpCorrelationDto licPremInspGrpCorrelationDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<LicPremisesAuditDto> createLicPremAudit(LicPremisesAuditDto licPremisesAuditDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<LicPremisesAuditDto> updateLicPremAudit(LicPremisesAuditDto licPremisesAuditDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<LicPremisesAuditInspectorDto> createLicPremisesAuditInspector(LicPremisesAuditInspectorDto licPremisesAuditInspectorDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<LicPremisesAuditInspectorDto> updateLicPremisesAuditInspector(LicPremisesAuditInspectorDto licPremisesAuditInspectorDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

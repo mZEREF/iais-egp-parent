@@ -16,6 +16,8 @@
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
+    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.AuditManualListDelegator"/>
+    <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.AuditAssginListValidateDto"/>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
@@ -38,11 +40,11 @@
                                         <th>Service Name</th>
                                         <th>Audit Type</th>
                                         <th>Inspector</th>
-                                        <th>Select for Audit</th>
+                                        <th>Selected</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-
+                                    <span class="error-msg" id="error_selectedOne" name="iaisErrorMsg"></span>
                                     <c:forEach var = "item" items = "${auditTaskDataDtos}" varStatus="status">
                                         <tr>
                                             <c:set var="id" value="${status.index}"></c:set>
@@ -50,13 +52,18 @@
                                             <td><c:out value="${item.hclName}"/></td>
                                             <td><c:out value="${item.address}"/></td>
                                             <td><c:out value="${item.svcName}"/></td>
-                                            <td><iais:select name="${id}auditType" options="aduitTypeOp" firstOption="Please select" value=""></iais:select></td>
+                                            <td><iais:select name="${id}auditType" options="aduitTypeOp" firstOption="Please select" value=""></iais:select>
+                                                <c:set value = "error_${id}adtype" var = "erradtype"/>
+                                                <span class="error-msg" id="<c:out value="${erradtype}"/>" name="iaisErrorMsg"></span>
+                                            </td>
                                             <td>
                                                 <select name="<c:out value="${id}insOp"/>">
                                                     <c:forEach var="inspOp" items="${item.inspectors}">
                                                         <option  value="<c:out value="${inspOp.value}"/>"><c:out value="${inspOp.text}"/></option>
                                                     </c:forEach>
                                                 </select>
+                                                <c:set value = "error_${id}insp" var = "errboth"/>
+                                                <span class="error-msg" id="<c:out value="${errboth}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <input name="<c:out value="${id}"/>selectForAd" id="<c:out value="${id}"/>selectForAd" type="checkbox" value="ad">
@@ -80,9 +87,6 @@
                                 <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: cancel();">Cancel</a></div>
                             </div>
                             <div class="col-xs-12 col-sm-6">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: remove();">Remove Audit Task</a></div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
                                 <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: cancelAudit();">Cancel Audit Task</a></div>
                             </div>
                         </div>
@@ -92,6 +96,7 @@
         </div>
     </div>
 </form>
+<%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
     function confirm() {
         SOP.Crud.cfxSubmit("mainForm","confirm");
@@ -99,11 +104,8 @@
     function cancel() {
         SOP.Crud.cfxSubmit("mainForm","back");
     }
-    function remove() {
-        SOP.Crud.cfxSubmit("mainForm","next");
-    }
     function cancelAudit() {
-        SOP.Crud.cfxSubmit("mainForm","next");
+        SOP.Crud.cfxSubmit("mainForm","cancel");
     }
     function createHcl() {
         SOP.Crud.cfxSubmit("mainForm","next");
