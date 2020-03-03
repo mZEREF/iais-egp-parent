@@ -527,10 +527,10 @@ public class InsRepServiceImpl implements InsRepService {
         String subStage = getSubStage(appPremisesCorrelationId,taskKey);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
-        createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
         String userId = getRobackUserId(applicationNo, taskKey);
+        createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
         List<TaskDto> taskDtos = prepareBackTaskList(taskDto,userId);
-        List<TaskDto> tasks = taskService.createTasks(taskDtos);
+        taskService.createTasks(taskDtos);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
         createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO1, groupId2, subStage);

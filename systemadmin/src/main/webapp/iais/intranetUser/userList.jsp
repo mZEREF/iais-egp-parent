@@ -40,7 +40,7 @@
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Code Category</p>
-                                                <p>${status.count}</p>
+                                                <p><c:out value="${(status.index + 1) + (IntranetUserSearchParam.pageNo - 1) * IntranetUserSearchParam.pageSize}"/></p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Code Category</p>

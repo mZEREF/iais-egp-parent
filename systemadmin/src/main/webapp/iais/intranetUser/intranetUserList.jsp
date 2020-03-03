@@ -58,6 +58,15 @@
     $("#IU_Search").click(function() {
         submitUser('doSearch');
     });
+    $("#IU_Clear").click(function() {
+        $('#userId').val("");
+        $('#emailAddress').val("");
+        $('#displayName').val("");
+        $('#roleAssigned').val("");
+        $('#privilegeAssigned').val("");
+
+
+    });
 
     function doEdit(Id){
         $("[name='crud_action_value']").val(Id);

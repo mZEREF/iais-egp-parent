@@ -140,8 +140,9 @@ public class MohIntranetUserDelegator {
 
     public void prepareEdit(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String id = ParamUtil.getString(request, IntranetUserConstant.CRUD_ACTION_VALUE);
-        if (id != null) {
+        String id = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.CRUD_ACTION_VALUE);
+        OrgUserDto orgUserDto = (OrgUserDto)ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
+        if (id != null&&orgUserDto==null) {
             OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
             ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, intranetUserById);
         }
@@ -159,6 +160,7 @@ public class MohIntranetUserDelegator {
         ValidationResult validationResult = WebValidationHelper.validateProperty(orgUserDto, "edit");
         if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
             Map<String, String> validationResultMap = validationResult.retrieveAll();
+            errorMap.putAll(validationResultMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);

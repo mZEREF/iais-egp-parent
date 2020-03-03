@@ -139,8 +139,8 @@
                                                         </tr>
                                                     </table>
                                                 </td>
-                                                <td class="col-xs-1" align="center">
-                                                    <input type="checkbox" name="whichTodo" value="${appCess.licenceId}"
+                                                <td class="col-xs-1" align="center">${appCessHci.whichTodo}
+                                                    <input type="checkbox" name="${num.count}whichTodo${uid.count}"
                                                            <c:if test="${appCessHci.whichTodo !=null}">checked</c:if>
                                                            onclick="return false">
                                                 </td>

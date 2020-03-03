@@ -46,9 +46,12 @@ public class ReCessationApplicationDelegator {
     }
 
     public void init(BaseProcessClass bpc){
-        List<String> licIds = new ArrayList<>();
-        licIds.add("7ECAE165-534A-EA11-BE7F-000C29F371DC");
-        licIds.add("CFCAC193-6F4D-EA11-BE7F-000C29F371DC");
+        List<String> licIds = (List<String>)ParamUtil.getSessionAttr(bpc.request, "licIds");
+        if(licIds==null){
+            licIds = new ArrayList<>();
+            licIds.add("7ECAE165-534A-EA11-BE7F-000C29F371DC");
+            licIds.add("CFCAC193-6F4D-EA11-BE7F-000C29F371DC");
+        }
         List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
         AppCessationDto appCessationDto = new AppCessationDto();
         appCessationDto.setEffectiveDate(new Date());
@@ -92,10 +95,6 @@ public class ReCessationApplicationDelegator {
         int size = (int) ParamUtil.getSessionAttr(bpc.request, "size");
         List<AppCessLicDto> appCessHciDtos = prepareDataForValiant(bpc, size, appCessDtosByLicIds);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable) appCessHciDtos);
-        if (appCessHciDtos.size() == 0) {
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-            return;
-        }
         Map<String, String> errorMap = new HashMap<>(34);
         for (int i = 1; i <= size; i++) {
             for (int j = 0; j <= size; j++) {
@@ -111,24 +110,7 @@ public class ReCessationApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;
         }
-
-
         List<AppCessationDto> appCessationDtos = transformDto(appCessHciDtos);
-//        for (AppCessationDto appCessationDto : appCessationDtos) {
-//            String licId = appCessationDto.getWhichTodo();
-//            Map<String, String> errorMap = new HashMap<>(34);
-//            if (!StringUtil.isEmpty(licId)) {
-////                Map<String, String> errorMap1 = new HashMap<>(34);
-////                ValidationResult validationResult = WebValidationHelper.validateProperty(appCessationDto, "save");
-////                if (validationResult.isHasErrors()) {
-////                    errorMap1 = validationResult.retrieveAll();
-////                    errorMap.putAll(errorMap1);
-////                }
-//                Map<String, String> validate = validate(bpc);
-//                errorMap.putAll(validate);
-//            }
-//
-//        }
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtosSave", (Serializable)appCessationDtos);
     }
@@ -278,6 +260,9 @@ public class ReCessationApplicationDelegator {
             errorMap.put(i + "reason" + j, "ERR0009");
         }
         String patRadio = ParamUtil.getRequestString(httpServletRequest, i + "patRadio" + j);
+        if(StringUtil.isEmpty(patRadio)){
+            errorMap.put(i + "patRadio" + j, "ERR0009");
+        }
         String readInfo = ParamUtil.getRequestString(httpServletRequest, "readInfo");
         if (StringUtil.isEmpty(readInfo)) {
             errorMap.put(i + "readInfo" + j, "ERR0009");

@@ -503,7 +503,7 @@
                             </td>
                         </c:if>
                         <c:if test="${recomDecision !=null}">
-                            <td>test="${recomDecision}"
+                            <td>
                                 <iais:select name="recommendation" options="recommendationOption"
                                              firstOption="Please select"
                                              value="${recomDecision}"

@@ -36,7 +36,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach items="${appCessationDtos}" var="appCess" varStatus="num">
+                        <c:forEach items="${appCessationDtosSave}" var="appCess" varStatus="num">
                             <tr>
                                 <td class="col-xs-1" align="center">
                                     <p><c:out value="${num.count}"></c:out></p>

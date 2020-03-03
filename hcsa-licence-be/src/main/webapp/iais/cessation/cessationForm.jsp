@@ -95,7 +95,7 @@
                                                                        value="no"
                                                                        id="${num.count}radioNo${uid.count}"
                                                                        <c:if test="${appCessHci.patNeedTrans == false}">checked</c:if>
-                                                                       onchange="javascirpt:changePatSelect(this.value);">No
+                                                                       onchange="javascirpt:changePatSelect(this.value);">No ${appCessHci.patNeedTrans}
                                                             </td>
                                                             <span id="error_${num.count}patRadio${uid.count}" name="iaisErrorMsg"
                                                                   class="error-msg"></span>

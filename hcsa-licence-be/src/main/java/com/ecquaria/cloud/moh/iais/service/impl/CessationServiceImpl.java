@@ -77,7 +77,7 @@ public class CessationServiceImpl implements CessationService {
         for (AppCessationDto appCessationDto : appCessationDtos) {
             AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
             String licId = appCessationDto.getWhichTodo();
-            String appNo = "AN191276000001";
+            String appNo = "AN191276000067";
             ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo, licId,ApplicationConsts.APPLICATION_TYPE_APPEAL);
             List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
             appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);
