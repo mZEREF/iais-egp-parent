@@ -44,7 +44,7 @@ public class LicenceViewDelegator {
      */
     public void prepareData(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("The LicenceViewDelegator prepareData start ..."));
-        String licencId= ParamUtil.getRequestString(bpc.request,LICENCE_ID);
+        String licencId= ParamUtil.getMaskedString(bpc.request,LICENCE_ID);
         if(StringUtil.isEmpty(licencId)){
             licencId = (String)ParamUtil.getSessionAttr(bpc.request,LICENCE_ID);
         }
