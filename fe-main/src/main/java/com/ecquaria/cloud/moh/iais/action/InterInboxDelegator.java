@@ -351,7 +351,7 @@ public class InterInboxDelegator {
      */
     public void licDoAmend(BaseProcessClass bpc) throws IOException {
         if ("toLicView".equals(ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_ADDITIONAL))){
-            String licId = ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_ADDITIONAL);
+            String licId = ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_VALUE);
             StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohLicenceView")
@@ -368,8 +368,7 @@ public class InterInboxDelegator {
                     .append("&type=licence");
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
-        }
-        else{
+        }if ("doLicAmend".equals(ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_ADDITIONAL))){
             String licId = ParamUtil.getString(bpc.request, "licenceNo");
             String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
             StringBuilder url = new StringBuilder();

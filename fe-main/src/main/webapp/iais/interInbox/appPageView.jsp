@@ -64,8 +64,8 @@
     }
 
     function doDraft(appNo,appStatus) {
-        showWaiting();
         if ('APST008' == appStatus) {
+            showWaiting();
             $("[name='action_no_value']").val(appNo);
             submit('appDraft');
         }
