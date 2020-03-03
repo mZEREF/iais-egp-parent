@@ -137,7 +137,7 @@ public interface HcsaConfigClient {
     @RequestMapping(value = "/iais-hcsa-risk/LeaderShipMatrixStorageupdate",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskLeadershipMatrixDto>> updateLeadershipRiskMatrix(@RequestBody List<HcsaRiskLeadershipMatrixDto> finDtoList);
 
-    @GetMapping(value = "/iais-hcsa-risk/leadershipbysvccode{serviceCode}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-hcsa-risk/RiskLegislative/{serviceCode}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskLegislativeMatrixDto>> getLegislativeRiskBySvcCode(@PathVariable("serviceCode")String serviceCode);
 
     @RequestMapping(value = "/iais-hcsa-risk/legislativeshow",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
