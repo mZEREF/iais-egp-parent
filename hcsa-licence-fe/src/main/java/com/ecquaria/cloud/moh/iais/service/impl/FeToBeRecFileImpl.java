@@ -99,6 +99,14 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
 
             File file = new File(download + File.separator + fileId , appPremPreInspectionNcDocDto.getDocName());
             File backupsFile = new File(backups + File.separator + fileId, appPremPreInspectionNcDocDto.getDocName());
+            File groupPath = new File(download + File.separator + fileId);
+            if(!groupPath.exists()){
+                groupPath.mkdirs();
+            }
+            File groupBackPath = new File(download + File.separator + fileId);
+            if(!groupBackPath.exists()){
+                groupBackPath.mkdirs();
+            }
             appIdNcItemIdMap.put(fileId, appId);
             writeFileByFileByte(file, backupsFile, fileByte);
         }
@@ -110,13 +118,19 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         FileOutputStream fileOutputStream2 = null;
         try {
             boolean fileStatus = false;
+            boolean fileStatus2 = false;
             if(!file.exists()){
                 fileStatus = file.createNewFile();
             }
+            if(!backupsFile.exists()){
+                fileStatus2 = backupsFile.createNewFile();
+            }
             if(fileStatus) {
-                fileOutputStream2 = new FileOutputStream(backupsFile);
                 fileOutputStream = new FileOutputStream(file);
                 fileOutputStream.write(fileByte);
+            }
+            if(fileStatus2) {
+                fileOutputStream2 = new FileOutputStream(backupsFile);
                 fileOutputStream2.write(fileByte);
             }
 
