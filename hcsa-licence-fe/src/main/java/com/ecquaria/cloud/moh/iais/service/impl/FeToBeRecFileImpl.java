@@ -85,12 +85,9 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
 
     @Override
     public Map<String, String> getDocFile() {
-        /*fileName = "userRecFile";
-        download = sharedPath + fileName;
-        backups = sharedPath + "backupsRec";*/
         fileName = "userRecFile";
-        download = "D:" + File.separator + fileName;
-        backups = "D:" + File.separator + "backupsRec";
+        download = sharedPath + fileName;
+        backups = sharedPath + "backupsRec";
         Map<String, List<AppPremPreInspectionNcDocDto>> fileReportIds = applicationClient.recFileId().getEntity();
         Map<String, String> appIdNcItemIdMap = new HashMap<>();
         for(Map.Entry<String, List<AppPremPreInspectionNcDocDto>> entry : fileReportIds.entrySet()){
@@ -239,23 +236,23 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                     }
                     byte[] bytes = by.toByteArray();
                     String s = FileUtil.genMd5FileChecksum(bytes);
-                    boolean fileStatus = file.renameTo(new File(backups + File.separator + s + ".zip"));
-                    if(!fileStatus){
-                        log.debug(StringUtil.changeForLog(file.getName() + "renameTo false"));
+                    File curFile = new File(backups, s + ".zip");
+                    if (!curFile.exists()){
+                        curFile.createNewFile();
                     }
-                    String s1 = saveFileName(s + ".zip",backups + File.separator + s + ".zip", appId);
-                    if(!s1.equals(AppConsts.SUCCESS)){
-                        AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
-                        ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
-                        applicationDto.setAuditTrailDto(internet);
-                        applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_BE_CREATE_TASK);
-                        applicationClient.updateApplication(applicationDto);
-                        boolean fileDelStatus = new File(backups + File.separator + s + ".zip").delete();
-                        if(!fileDelStatus){
-                            log.debug(StringUtil.changeForLog(file.getName() + "delete false"));
+                    boolean reNameFlag = file.renameTo(curFile);
+                    if(reNameFlag) {
+                        String s1 = saveFileName(s + ".zip", backups + File.separator + s + ".zip", appId);
+                        if(!s1.equals(AppConsts.SUCCESS)){
+                            boolean fileDelStatus = new File(backups + File.separator + s + ".zip").delete();
+                            if(!fileDelStatus){
+                                log.debug(StringUtil.changeForLog(file.getName() + "delete false"));
+                            }
+                            flag = false;
+                            break;
                         }
-                        flag = false;
-                        break;
+                    } else {
+                        log.debug(StringUtil.changeForLog("file rename fail!!!"));
                     }
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
@@ -299,6 +296,12 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             s = eicGatewayClient.saveFile(processFileTrackDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
+            if(AppConsts.SUCCESS.equals(s)) {
+                ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
+                applicationDto.setAuditTrailDto(internet);
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_BE_CREATE_TASK);
+                applicationClient.updateApplication(applicationDto);
+            }
         }catch (Exception e){
             log.error(e.getMessage(), e);
             return s;
