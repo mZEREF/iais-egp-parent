@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -217,16 +216,7 @@ public class InspectEmailAo1Delegator {
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,MSG_CON));
         inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, IntranetUserConstant.INTRANET_REMARKS));
-        if (inspectionEmailTemplateDto.getSubject().isEmpty()){
-            Map<String,String> errorMap = new HashMap<>();
-            ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
-            ParamUtil.setRequestAttr(request,DemoConstants.ISVALID,"N");
-        }
-        if (inspectionEmailTemplateDto.getMessageContent().isEmpty()){
-            Map<String,String> errorMap = new HashMap<>();
-            ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
-            ParamUtil.setRequestAttr(request,DemoConstants.ISVALID,"N");
-        }
+
         if (decision.equals(InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT)){
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING);
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());

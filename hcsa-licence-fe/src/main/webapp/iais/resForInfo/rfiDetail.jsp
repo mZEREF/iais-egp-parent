@@ -76,19 +76,7 @@
                                                 <iais:value width="18">
                                                     <div class="file-upload-gp">
 
-                                                        <c:choose>
-                                                            <c:when test="${licPreReqForInfoDto.docName == '' || licPreReqForInfoDto.docName == null }">
-                                                                <span class="hidden delBtn">
-                                                                  &nbsp;&nbsp;<button type="button" class="">Delete</button>
-                                                                </span>
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <span class="delBtn">
-                                                                &nbsp;&nbsp;<button type="button" class="">Delete</button>
-                                                                </span>
-                                                            </c:otherwise>
-                                                        </c:choose>
-                                                        <br/>
+                                                        &nbsp;&nbsp;&nbsp;<div id="uploadFileName"></div>
                                                         <input class="selectedFile commDoc" id="commonDoc"  name = "UploadFile" type="file" style="display: none;" aria-label="selectedFile1" >
                                                         <a class="btn btn-file-upload btn-secondary" >Attachment</a><br/>
                                                     </div>
@@ -117,6 +105,9 @@
     function doSubmit(reqInfoId) {
         SOP.Crud.cfxSubmit("mainForm", "submit",reqInfoId);
     }
+    $("#commonDoc").change(function () {
+        $("#uploadFileName").text(this.files[0].name)
+    })
 
 
 </script>

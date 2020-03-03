@@ -159,17 +159,17 @@ public class OfficerOnlineEnquiriesDelegator {
         if(searchNo!=null) {
             switch (count) {
                 case 2:
-                    filter.put("appNo", searchNo);
+                    filter.put("appNo", "%"+searchNo+"%");
                     break;
                 case 3:
-                    filter.put("licence_no", searchNo);
+                    filter.put("licence_no", "%"+searchNo+"%");
                     break;
                 case 1:
-                    filter.put("hciName", searchNo);
+                    filter.put("hciName", "%"+searchNo+"%");
                     break;
                 case 5:
                     svcNames=new ArrayList<>();
-                    filter.put("serviceName", searchNo);
+                    filter.put("serviceName", "%"+searchNo+"%");
                     serviceParameter.setFilters(filter);
                     SearchParam serviceParam = SearchResultHelper.getSearchParam(request, serviceParameter,true);
                     QueryHelp.setMainSql(RFI_QUERY,"serviceQuery",serviceParam);
@@ -183,7 +183,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     break;
                 case 4:
                     licenseeIds=new ArrayList<>();
-                    filter.put("licenseeName", searchNo);
+                    filter.put("licenseeName", "%"+searchNo+"%");
                     licenseeParameter.setFilters(filter);
                     SearchParam licenseeParam = SearchResultHelper.getSearchParam(request, licenseeParameter,true);
                     QueryHelp.setMainSql(RFI_QUERY,"licenseeQuery",licenseeParam);
@@ -364,22 +364,22 @@ public class OfficerOnlineEnquiriesDelegator {
         if(ParamUtil.getString(request,"hci")!=null){
             count[0]=1;
             if(!StringUtil.isEmpty(hciCode)){
-                filters.put("hciCode", hciCode);
+                filters.put("hciCode", "%"+hciCode+"%");
             }
             if(!StringUtil.isEmpty(hciName)){
-                filters.put("hciName", hciName);
+                filters.put("hciName", "%"+hciName+"%");
             }
             if(!StringUtil.isEmpty(hciPostalCode)){
-                filters.put("hciPostalCode", hciPostalCode);
+                filters.put("hciPostalCode", "%"+hciPostalCode+"%");
             }
             if(!StringUtil.isEmpty(hciStreetName)){
-                filters.put("hciStreetName", hciStreetName);
+                filters.put("hciStreetName", "%"+hciStreetName+"%");
             }
         }
         if(ParamUtil.getString(request,"application")!=null||ParamUtil.getString(request,"licence")!=null){
             count[2]=3;
             if(!StringUtil.isEmpty(applicationNo)){
-                filters.put("appNo", applicationNo);count[1]=2;
+                filters.put("appNo", "%"+applicationNo+"%");count[1]=2;
             }
             if(!StringUtil.isEmpty(applicationType)){
                 filters.put("appType", applicationType);count[1]=2;
@@ -406,7 +406,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 filters.put("expiry_date",licExpToDate);
             }
             if(!StringUtil.isEmpty(licenceNo)){
-                filters.put("licence_no", licenceNo);
+                filters.put("licence_no", "%"+licenceNo+"%");
             }
             if(!StringUtil.isEmpty(licenceStatus)){
                 filters.put("licence_status", licenceStatus);
@@ -426,10 +426,10 @@ public class OfficerOnlineEnquiriesDelegator {
                 filters.put("licenseeId",licenseeId);
             }
             if(!StringUtil.isEmpty(licenseeName)){
-                filters.put("licenseeName", licenseeName);
+                filters.put("licenseeName", "%"+licenseeName+"%");
             }
             if(!StringUtil.isEmpty(licenseeRegnNo)){
-                filters.put("licenseeRegnNo",licenseeRegnNo);
+                filters.put("licenseeRegnNo","%"+licenseeRegnNo+"%");
             }
             licenseeParameter.setFilters(filters);
             SearchParam licenseeParam = SearchResultHelper.getSearchParam(request, licenseeParameter,true);
@@ -450,13 +450,13 @@ public class OfficerOnlineEnquiriesDelegator {
                 filters.put("serviceId", serviceId);
             }
             if(!StringUtil.isEmpty(serviceName)){
-                filters.put("serviceName",serviceName);
+                filters.put("serviceName","%"+serviceName+"%");
             }
             if(!StringUtil.isEmpty(serviceRegnNo)){
-                filters.put("serviceRegnNo", serviceRegnNo);
+                filters.put("serviceRegnNo", "%"+serviceRegnNo+"%");
             }
             if(!StringUtil.isEmpty(serviceRole)){
-                filters.put("serviceRole", serviceRole);
+                filters.put("serviceRole", "%"+serviceRole+"%");
             }
             serviceParameter.setFilters(filters);
             SearchParam serviceParam = SearchResultHelper.getSearchParam(request, serviceParameter,true);
@@ -692,6 +692,7 @@ public class OfficerOnlineEnquiriesDelegator {
         String appType= MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationType()}).get(0).getText();
         applicationViewDto.setApplicationType(appType);
         List<HcsaServiceDto> hcsaServiceDto=hcsaConfigClient.getHcsaService(new ArrayList<>(Collections.singleton(applicationViewDto.getApplicationDto().getServiceId()))).getEntity();
+        applicationViewDto.getApplicationDto().setApplicationType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getApplicationType()}).get(0).getText());
         ParamUtil.setRequestAttr(request,"applicationViewDto",applicationViewDto);
         ParamUtil.setRequestAttr(request,"authorisedPersonList",appInsRepDto.getPrincipalOfficer());
         ParamUtil.setRequestAttr(request,"hcsaServiceDto",hcsaServiceDto.get(0));

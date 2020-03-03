@@ -133,7 +133,7 @@ public class RequestForInformationDelegator {
         Map<String,Object> filters=new HashMap<>();
 
         if (!StringUtil.isEmpty(searchNo)) {
-            filters.put("licence_no", searchNo);
+            filters.put("licence_no", "%"+searchNo+"%");
         }
         licenceParameter.setFilters(filters);
 
@@ -194,7 +194,7 @@ public class RequestForInformationDelegator {
         Map<String,Object> filters=new HashMap<>();
 
         if (!StringUtil.isEmpty(searchNo)) {
-            filters.put("appNo", searchNo);
+            filters.put("appNo", "%"+searchNo+"%");
         }
 
         applicationParameter.setFilters(filters);
@@ -227,7 +227,7 @@ public class RequestForInformationDelegator {
                             //String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
                             reqForInfoSearchListDto.setLicenceStatus(lic.getLicenceStatus());
                             reqForInfoSearchListDto.setLicenceNo(lic.getLicenceNo());
-                            reqForInfoSearchListDto.setServiceName(lic.getServiceName());
+                            //reqForInfoSearchListDto.setServiceName(lic.getServiceName());
                             reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                             reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
                             reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
@@ -295,7 +295,7 @@ public class RequestForInformationDelegator {
         Map<String,Object> filters=new HashMap<>();
 
         if(!StringUtil.isEmpty(applicationNo)){
-            filters.put("appNo", applicationNo);
+            filters.put("appNo", "%"+applicationNo+"%");
         }
         if(!StringUtil.isEmpty(applicationType)){
             filters.put("appType", applicationType);
@@ -338,7 +338,7 @@ public class RequestForInformationDelegator {
                             //String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
                             reqForInfoSearchListDto.setLicenceStatus(lic.getLicenceStatus());
                             reqForInfoSearchListDto.setLicenceNo(lic.getLicenceNo());
-                            reqForInfoSearchListDto.setServiceName(lic.getServiceName());
+                            //reqForInfoSearchListDto.setServiceName(lic.getServiceName());
                             reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                             reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
                             reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
@@ -410,7 +410,7 @@ public class RequestForInformationDelegator {
         Map<String,Object> filters=new HashMap<>();
 
         if(!StringUtil.isEmpty(licenceNo)){
-            filters.put("licence_no", licenceNo);
+            filters.put("licence_no", "%"+licenceNo+"%");
         }
         if(!StringUtil.isEmpty(licenceStatus)){
             filters.put("licence_status", licenceStatus);
@@ -506,6 +506,7 @@ public class RequestForInformationDelegator {
         HttpServletRequest request=bpc.request;
         String appCorrId = (String) ParamUtil.getSessionAttr(request, "id");
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(appCorrId);
+        applicationViewDto.getApplicationDto().setApplicationType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getApplicationType()}).get(0).getText());
         AppSubmissionDto appSubmissionDto = licenceViewService.getAppSubmissionByAppId(applicationViewDto.getApplicationDto().getId());
 
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos =  appSubmissionDto.getAppSvcRelatedInfoDtoList();

@@ -95,7 +95,7 @@
     }
     function doSubmit(licenceNo) {
 
-        if(licenceNo!=null){
+        if(licenceNo!=""){
             $("#isAlert").show();
         }
         else {

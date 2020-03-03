@@ -97,7 +97,7 @@
                             <c:choose>
                                 <c:when test="${empty SearchResult.rows}">
                                     <tr>
-                                        <td colspan="7">
+                                        <td colspan="14">
                                             <iais:message key="ACK018" escape="true"></iais:message>
                                         </td>
                                     </tr>
