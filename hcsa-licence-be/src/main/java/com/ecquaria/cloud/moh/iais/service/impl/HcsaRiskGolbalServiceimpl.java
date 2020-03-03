@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskTotalDto;
@@ -229,12 +230,14 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
         }else{
             newExt.setPreInspect(false);
         }
-
+        newExt.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        newExt.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         HcsaRiskGolbalExtDto renewExt = new HcsaRiskGolbalExtDto();
         renewExt.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         renewExt.setRsGolbalId(temp.getGalbalId());
         renewExt.setInspectType(temp.getDorenewInspectType());
         renewExt.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        renewExt.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         if("Y".equals(temp.getDorenewIsPreInspect())){
             renewExt.setPreInspect(true);
         }else{
@@ -254,6 +257,8 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
         }
         try {
             dto.setEffectiveDate(Formatter.parseDate(temp.getDoEffectiveDate()));
+            dto.setId(temp.getId());
+            dto.setVersion(Integer.parseInt(temp.getVersion()));
             dto.setEndDate(Formatter.parseDate(temp.getDoEndDate()));
             dto.setLastInpectTh(Integer.parseInt(temp.getDoLastInspection()));
             dto.setMaxLicTenu(Integer.parseInt(temp.getDoMaxLic()));
