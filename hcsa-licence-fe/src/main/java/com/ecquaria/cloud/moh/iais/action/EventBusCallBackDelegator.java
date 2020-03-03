@@ -74,7 +74,7 @@ public class EventBusCallBackDelegator {
                  }
                 log.info(StringUtil.changeForLog("The EventBusCallBackDelegator callBack map end ..."));
             }
-            log.info(StringUtil.changeForLog("The EventBusCallBackDelegator callBack success -->:"+success));
+            log.info(StringUtil.changeForLog("The EventBusCallBackDelegator callBack finale success -->:"+success));
             if (!success) {
                 client.setCompensation(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS,
                         submissionId, operation, "");
