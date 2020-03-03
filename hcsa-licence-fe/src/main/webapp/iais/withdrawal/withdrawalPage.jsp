@@ -27,13 +27,13 @@
                         <div class="row">
                             <div class="center-content">
                                 <div class="col-md-12">
-                                    <span>${applicationNo}</span>
+                                    <span>${appNo}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="center-content">
-                                <label class="col-md-12">Reason for Withdrawal:</label>
+                                <label class="col-md-12">Reason for Withdrawal:<span class="mandatory">*</span></label>
                             </div>
                         </div>
                         <div class="row">
@@ -66,7 +66,7 @@
                         </div>
                         <div class="row">
                             <div class="center-content">
-                                <label class="col-md-12">File Upload for Appeal Reasons</label>
+                                <label class="col-md-12">File Upload for Appeal Reasons:<span class="mandatory">*</span></label>
                             </div>
                         </div>
                         <div class="row">

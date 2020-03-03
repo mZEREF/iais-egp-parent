@@ -58,7 +58,7 @@ public class WithdrawalDelegator {
         withdrawalReason.add(new SelectOption("WDR003", "Failure to obtain pre requisite licence from other agency(ies)"));
         withdrawalReason.add(new SelectOption("WDR004", "No longer wish to provide the service"));
         withdrawalReason.add(new SelectOption("WDR005", "Others"));
-        ParamUtil.setSessionAttr(bpc.request, "appNo", "AN191210000143-01");
+        ParamUtil.setSessionAttr(bpc.request, "appNo", ParamUtil.getRequestString(bpc.request, "appNo"));
         ParamUtil.setRequestAttr(bpc.request, "withdrawalReasonList", withdrawalReason);
     }
 
