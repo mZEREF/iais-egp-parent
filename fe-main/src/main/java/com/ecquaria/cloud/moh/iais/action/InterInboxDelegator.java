@@ -387,7 +387,6 @@ public class InterInboxDelegator {
      */
     public void licDoRenew(BaseProcessClass bpc) throws IOException {
         String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
-
         if(licIds != null){
             List<String> licIdValue = new ArrayList<>();
             if ("cease".equals(ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_ADDITIONAL))){
@@ -401,19 +400,22 @@ public class InterInboxDelegator {
                 String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
                 bpc.response.sendRedirect(tokenUrl);
             }
-            for(String item:licIds){
-                licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
+            else{
+                for(String item:licIds){
+                    licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
+                }
+                boolean auto = false;
+                if(licIdValue.size() == 1 && !auto){
+                    StringBuilder url = new StringBuilder();
+                    url.append("https://").append(bpc.request.getServerName())
+                            .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication")
+                            .append("?licenceId=").append(licIdValue.get(0))
+                            .append("&type=").append(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+                    String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+                    bpc.response.sendRedirect(tokenUrl);
+                }
             }
-            boolean auto = false;
-            if(licIdValue.size() == 1 && !auto){
-                StringBuilder url = new StringBuilder();
-                url.append("https://").append(bpc.request.getServerName())
-                        .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication")
-                        .append("?licenceId=").append(licIdValue.get(0))
-                        .append("&type=").append(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
-                String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-                bpc.response.sendRedirect(tokenUrl);
-            }
+
         }
     }
 
