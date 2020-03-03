@@ -1,4 +1,4 @@
-
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
     String webrooth=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT;
