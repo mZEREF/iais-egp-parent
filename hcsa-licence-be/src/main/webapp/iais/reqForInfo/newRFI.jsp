@@ -41,13 +41,13 @@
                                             <iais:field value="Licence No:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" style="width:180%; font-weight:normal;" maxlength="30" name="licenceNo" style=" font-weight:normal;" value="${licenceNo}">
+                                                    <input type="text" style="width:170%; font-weight:normal;" maxlength="30" name="licenceNo" style=" font-weight:normal;" value="${licenceNo}">
                                                 </label>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Due Date:"/>
-                                            <iais:value width="18" style="width:80%; font-weight:normal;">
+                                            <iais:value width="18" style="width:30%; font-weight:normal;">
                                                 <%Date dueDate ;
                                                     Calendar calendar = Calendar.getInstance();
                                                     calendar.add(Calendar.DATE,14);
@@ -67,9 +67,16 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doSubmit()">Submit</button>
+                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doSubmit('${licenceNo}')">Submit</button>
                                             <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doBack()">Back</button>
                                         </iais:action>
+                                        <iais:row >
+                                            <div class="col-sm-9" style="display: none" id="isAlert">
+                                                <p style="color:#ff0000;">
+                                                    Licence is still pending Applicant's input.Please do not submit any new Requset For Information.
+                                                </p>
+                                            </div>
+                                        </iais:row>
                                     </iais:section>
                                 </div>
                             </div>
@@ -86,9 +93,16 @@
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
-    function doSubmit() {
-        showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "submit");
+    function doSubmit(licenceNo) {
+
+        if(licenceNo!=null){
+            $("#isAlert").show();
+        }
+        else {
+            showWaiting();
+            SOP.Crud.cfxSubmit("mainForm", "submit");
+        }
+
     }
 
 </script>
