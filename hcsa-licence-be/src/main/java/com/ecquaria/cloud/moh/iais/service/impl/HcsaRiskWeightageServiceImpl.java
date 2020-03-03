@@ -74,6 +74,7 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
         }else{
             boolean editfalg =isEdit(lastInp,secLastInp,finan,leadership,legislative,inStartDate,inEndDate);
             if(editfalg){
+                wDto.setEdit(true);
                 wDto.setDoLastInp(lastInp);
                 wDto.setDoSecLastInp(secLastInp);
                 wDto.setDoFinancial(finan);
@@ -81,6 +82,8 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
                 wDto.setDoLegislative(legislative);
                 wDto.setDoEffectiveDate(inStartDate);
                 wDto.setDoEndDate(inEndDate);
+            }else{
+                wDto.setEdit(false);
             }
         }
     }
