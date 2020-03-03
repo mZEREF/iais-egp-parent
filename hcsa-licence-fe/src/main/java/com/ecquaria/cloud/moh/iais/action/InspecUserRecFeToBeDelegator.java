@@ -41,7 +41,6 @@ public class InspecUserRecFeToBeDelegator {
     public void inspecUserRecFeToBePre(BaseProcessClass bpc){
         logAbout("inspecUserRecFeToBePre");
         Map<String, String> appItemMap = feToBeRecFileService.getDocFile();
-
         feToBeRecFileService.compressFile(appItemMap);
     }
 
