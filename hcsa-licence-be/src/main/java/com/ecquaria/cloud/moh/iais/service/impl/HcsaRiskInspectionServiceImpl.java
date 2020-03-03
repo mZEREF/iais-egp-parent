@@ -200,7 +200,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
                 saveList.add(getFinDto(temp,true,"RSKL0003"));
                 saveList.add(getFinDto(temp,false,"RSKL0003"));
                 saveList.add(getFinDto(temp,true,"RSKL0002"));
-                saveList.add(getFinDto(temp,true,"RSKL0002"));
+                saveList.add(getFinDto(temp,false,"RSKL0002"));
             }
         }
         doUpdate(saveList,dtoList);
