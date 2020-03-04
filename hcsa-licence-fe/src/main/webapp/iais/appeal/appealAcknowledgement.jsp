@@ -30,17 +30,20 @@
     <div class="table-gp">
       <table class="table" border="1px">
       <tr>
-        <td style="text-align: center">Application No.</td>
+        <c:if test="${type=='licence'}"> <td style="text-align: center">Licence No.</td></c:if>
+        <c:if test="${type=='application'}"> <td style="text-align: center">Application No.</td></c:if>
         <td style="text-align: center">Service Name</td>
         <td style="text-align: center">HCI Name</td>
         <td style="text-align: center">HCI Address</td>
       </tr>
-        <c:forEach items="${hciNames}" var="hciName">
+        <c:forEach items="${hciNames}" var="hciName" varStatus="stauts">
         <tr>
-          <td style="text-align: center">${applicationNo}</td>
+          <c:if test="${type=='application'}"><td style="text-align: center">${applicationNo}</td>  </c:if>
+
+          <c:if test="${type=='licence'}"><td style="text-align: center">${licenceNo}</td></c:if>
           <td style="text-align: center">${serviceName}</td>
           <td style="text-align: center">${hciName}</td>
-          <td style="text-align: center">${hciAddress}</td>
+          <td style="text-align: center">${hciAddress[stauts.index]}</td>
         </tr>
         </c:forEach>
       </table>

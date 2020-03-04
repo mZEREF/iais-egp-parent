@@ -417,68 +417,42 @@
       </c:forEach>
 
 
+
+
       <div class="form-group">
-        <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
-          <label class="col-xs-12 col-md-10 control-label" >Service step<span class="mandatory">*</span></label>
-          <span name="iaisErrorMsg" class="error-msg" id="error_serviceStep" style="display: block"></span>
-        </div>
-      </div>
-      <c:set var="hcsaServiceStepScheme" value="${hcsaServiceStepSchemeDto}"></c:set>
-      <div class="form-group">
-        <div class="form-check-gp">
-          <div class="row">
-            <div class="col-xs-12 col-md-2">
-              <div class="form-check " style="left: 10%">
-                <input class="form-check-input" name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST001')}">checked="checked"</c:if>  type="checkbox" value="SVST001"  aria-invalid="false">
-                <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>laboratorydisciplines</label>
+        <div class="col-xs-12 col-md-6" style="margin-top: 20px ;margin-bottom: 20px">
+          <label class="col-xs-12 col-md-8 control-label" >Service Sub-Types</label>
+          <div class="col-xs-12 col-md-7">
+            <label>Page name</label>
+          </div >
+          <div  class="col-xs-12 col-md-5"><input  type="text" value="Laboratory Disciplines" ></div>
+
+          <div class="form-group" >
+            <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
+
+              <div class="col-xs-12 col-md-4" style="margin-left: 100%">
+                <label class="col-xs-12 col-md-12 control-label"  style="text-align: center">UP/DOWN</label>
               </div>
             </div>
-            <div class="col-xs-12 col-md-2">
-              <div class="form-check ">
-                <input class="form-check-input"  name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST002')}">checked="checked"</c:if>   type="checkbox" value="SVST002" aria-invalid="false">
-                <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>governanceofficers</label>
-              </div>
-            </div>
-            <div class="col-xs-12 col-md-2">
-              <div class="form-check ">
-                <input class="form-check-input"  name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST003')}">checked="checked"</c:if>   type="checkbox" value="SVST003"  aria-invalid="false">
-                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>disciplineallocation</label>
-              </div>
-            </div>
-            <div class="col-xs-12 col-md-2">
-              <div class="form-check ">
-                <input class="form-check-input"  name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST004')}">checked="checked"</c:if>  type="checkbox" value="SVST004" aria-invalid="false">
-                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>principalofficers</label>
-              </div>
-            </div>
-            <div class="col-xs-12 col-md-2">
-              <div class="form-check ">
-                <input class="form-check-input"  name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST005')}">checked="checked"</c:if>  type="checkbox" value="SVST005"  aria-invalid="false">
-                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>documents</label>
-              </div>
-            </div>
-            <div class="col-xs-12 col-md-1">
-              <div class="form-check ">
-                <input class="form-check-input" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST006')}">checked="checked"</c:if> name="step"   type="checkbox" value="SVST006"  aria-invalid="false">
-                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>nuclearmedicineimaging</label>
-              </div>
-            </div>
+          </div>
+
+          <div class="col-xs-12 col-md-7" style="padding-right: 30%" >
+          <input type="text" value="Assay">
+          </div>
+          <div  class="col-xs-12 col-md-3" >
+            <a class="btn  btn-secondary  view" style="display: inline-block"  >indent</a>
+          </div>
+          <div  class="col-xs-12 col-md-2">
+            <a class="btn  btn-secondary view"  style="display: inline-block">outdent</a>
+          </div>
+
+          <div class="col-xs-12 col-md-6">
+            <a  class="btn  btn-secondary view"   style="margin-right: 10px" id="addAsItem" onclick="addAsItem()"> + </a><label for="addAsItem"> Add as item</label>
           </div>
         </div>
       </div>
 
 
-
-
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-8 control-label" for="Sub-Types">Service Sub-Types</label>
-          <div class="col-xs-12 col-md-4">
-            <input id="Sub-Types" type="text">
-          </div>
-        </div>
-      </div>
 
       <div class="col-xs-12 col-md-8">
         <div class="form-group">
@@ -616,6 +590,13 @@
         }
 
     });
+
+    function addAsItem() {
+
+      alert(11);
+    }
+
+
 
 </script>
 </>

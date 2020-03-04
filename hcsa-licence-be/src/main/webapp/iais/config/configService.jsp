@@ -159,10 +159,10 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Principal Officer (PO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input type="text" name="man-principalOfficer" placeholder="minimum count" value="${PO.mandatoryCount}">
+            <input type="text" name="man-principalOfficer" maxlength="2" placeholder="minimum count" value="${PO.mandatoryCount}">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input type="text" name="mix-principalOfficer" placeholder="maximum count" value="${PO.maximumCount}">
+            <input type="text" name="mix-principalOfficer" maxlength="2" placeholder="maximum count" value="${PO.maximumCount}">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
@@ -176,10 +176,10 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Deputy Principal Officer (DPO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-DeputyPrincipalOfficer" placeholder="minimum count" value="${DPO.mandatoryCount}">
+            <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" placeholder="minimum count" value="${DPO.mandatoryCount}">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-DeputyPrincipalOfficer"  placeholder="maximum count" value="${DPO.maximumCount}">
+            <input  type="text" name="mix-DeputyPrincipalOfficer" maxlength="2" placeholder="maximum count" value="${DPO.maximumCount}">
           </div>
 
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
@@ -194,10 +194,10 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Clinical Governance Officer (CGO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-ClinicalGovernanceOfficer" placeholder="minimum count" value="${CGO.mandatoryCount}">
+            <input  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2" placeholder="minimum count" value="${CGO.mandatoryCount}">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ClinicalGovernanceOfficer"  placeholder="maximum count" value="${CGO.maximumCount}">
+            <input  type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2"  placeholder="maximum count" value="${CGO.maximumCount}">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
@@ -211,10 +211,10 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Service Personnel<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-ServicePersonnel" placeholder="minimum count" value="${SVCPSN.mandatoryCount}">
+            <input  type="text" name="man-ServicePersonnel" maxlength="2" placeholder="minimum count" value="${SVCPSN.mandatoryCount}">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ServicePersonnel"  placeholder="maximum count" value="${SVCPSN.maximumCount}">
+            <input  type="text" name="mix-ServicePersonnel" maxlength="2"  placeholder="maximum count" value="${SVCPSN.maximumCount}">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
@@ -226,7 +226,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="NumberDocument">Number of Service-Related Document to be
             uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="NumberDocument" type="text" name="NumberDocument" value="${numberDocument}">
+            <input id="NumberDocument" type="text" maxlength="2" name="NumberDocument" value="${numberDocument}">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
@@ -423,52 +423,6 @@
         </div>
 
       </div>
-
-      <c:set var="hcsaServiceStepScheme" value="${hcsaServiceStepSchemeDto}"></c:set>
-
-      <div class="form-group">
-        <div class="form-check-gp">
-          <div class="row">
-            <div class="col-xs-12 col-md-2">
-              <div class="form-check " style="left: 10%">
-                <input class="form-check-input" name="step" <c:if test="${fn:contains(hcsaServiceStepScheme, 'SVST001')}">checked="checked"</c:if>  type="checkbox" value="SVST001"  aria-invalid="false">
-                <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>laboratorydisciplines</label>
-              </div>
-            </div>
-            <div class="col-xs-12 col-md-2">
-              <div class="form-check ">
-                <input class="form-check-input"  name="step"    type="checkbox" value="SVST002" aria-invalid="false">
-                <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>governanceofficers</label>
-              </div>
-            </div>
-            <div class="col-xs-12 col-md-2">
-              <div class="form-check ">
-                <input class="form-check-input"  name="step"   type="checkbox" value="SVST003"  aria-invalid="false">
-                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>disciplineallocation</label>
-              </div>
-            </div>
-            <div class="col-xs-12 col-md-2">
-              <div class="form-check ">
-                <input class="form-check-input"  name="step"   type="checkbox" value="SVST004" aria-invalid="false">
-                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>principalofficers</label>
-              </div>
-            </div>
-            <div class="col-xs-12 col-md-2">
-              <div class="form-check ">
-                <input class="form-check-input"  name="step"   type="checkbox" value="SVST005"  aria-invalid="false">
-                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>documents</label>
-              </div>
-            </div>
-            <div class="col-xs-12 col-md-1">
-              <div class="form-check ">
-                <input class="form-check-input"  name="step"   type="checkbox" value="SVST006"  aria-invalid="false">
-                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>nuclearmedicineimaging</label>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
 
 
 

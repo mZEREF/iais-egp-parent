@@ -206,11 +206,17 @@ public class AppealServiceImpl implements AppealService {
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
             List<PremisesListQueryDto> premisesListQueryDtos = licenceClient.getPremises(licenceDto.getId()).getEntity();
+            List<PremisesListQueryDto> listQueryDtos=new ArrayList<>();
+            for(int i=0;i<premisesListQueryDtos.size();i++){
+                if(licenceDto.getId().equals(premisesListQueryDtos.get(i).getLicenceId())){
+                    listQueryDtos.add(premisesListQueryDtos.get(i));
+                }
+            }
             List<String> hciNames=new ArrayList<>();
             List<String> addresses=new ArrayList<>();
-            for(int i=0;i<premisesListQueryDtos.size();i++){
-                String hciName = premisesListQueryDtos.get(i).getHciName();
-                String address = premisesListQueryDtos.get(i).getAddress();
+            for(int i=0;i<listQueryDtos.size();i++){
+                String hciName = listQueryDtos.get(i).getHciName();
+                String address = listQueryDtos.get(i).getAddress();
                 hciNames.add(hciName);
                 addresses.add(address);
             }
@@ -226,9 +232,11 @@ public class AppealServiceImpl implements AppealService {
             if(id!=null){
                 AppInsRepDto entity = applicationClient.getHciNameAndAddress(id).getEntity();
                 String hciName = entity.getHciName();
-                String hciAddress = entity.getHciAddress();
+                String hciAddres = entity.getHciAddress();
                 List<String> hciNames=new ArrayList<>();
                 hciNames.add(hciName);
+                List<String >hciAddress=new ArrayList<>();
+                hciAddress.add(hciAddres);
                 request.getSession().setAttribute("hciAddress",hciAddress);
                 request.getSession().setAttribute("hciNames",hciNames);
             }
