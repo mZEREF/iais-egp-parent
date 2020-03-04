@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sop.rbac.user.UserIdentifier;
 
+import java.util.List;
+
 /**
  * @author weilu
  * @date 2019/12/25 17:41
@@ -30,6 +32,11 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     @Override
     public void createIntranetUser(OrgUserDto orgUserDto) {
         intranetUserClient.createOrgUserDto(orgUserDto);
+    }
+
+    @Override
+    public void createIntranetUsers(List<OrgUserDto> orgUserDtos) {
+        intranetUserClient.createOrgUserDtos(orgUserDtos);
     }
 
     @Override

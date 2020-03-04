@@ -23,7 +23,7 @@
                             <label class="col-xs-12 col-md-4 control-label" for="userId">UserId:<span style="color:red">*</span></label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="userId" type="text" name="userId" value="">
+                                    <input id="userId" type="text" name="userId" value="${userId}">
                                     <span id="error_userId" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>

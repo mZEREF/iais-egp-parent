@@ -20,21 +20,15 @@ import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
-import org.dom4j.io.XMLWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.rbac.user.UserIdentifier;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.*;
 
@@ -261,6 +255,7 @@ public class MohIntranetUserDelegator {
 
     public void saveStatus(BaseProcessClass bpc) {
         String userId = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_USERID);
+        ParamUtil.setSessionAttr(bpc.request,"userId",userId);
         String password = ParamUtil.getRequestString(bpc.request, "password");
         String actionType = ParamUtil.getString(bpc.request, "crud_action_type");
         if ("back".equals(actionType)) {
@@ -277,22 +272,30 @@ public class MohIntranetUserDelegator {
                 if (IntranetUserConstant.DEACTIVATE.equals(actionType)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_IACTIVE);
                     intranetUserService.updateOrgUser(orgUserDto);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+                    errorMap.put("userId", "This user has been deactivated");
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
                 } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
                     intranetUserService.updateOrgUser(orgUserDto);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+                    errorMap.put("userId", "This user has been reactivated");
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
                 } else if (IntranetUserConstant.TERMINATE.equals(actionType)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_TERMINATED);
                     intranetUserService.updateOrgUser(orgUserDto);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+                    errorMap.put("userId", "This user has been terminated");
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
                 } else if (IntranetUserConstant.UNLOCK.equals(actionType)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
                     intranetUserService.updateOrgUser(orgUserDto);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+                    errorMap.put("userId", "This user has been deactivated");
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
                 }
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
@@ -568,6 +571,7 @@ public class MohIntranetUserDelegator {
         Element root=document.getRootElement();
         //ele
         List list=root.elements();
+        List<OrgUserDto> orgUserDtos = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             Element element=(Element)list.get(i);
             String userId=element.element("userId").getText();
@@ -600,9 +604,9 @@ public class MohIntranetUserDelegator {
             orgUserDto.setOfficeTelNo(officeNo);
             orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
             orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
-
-            intranetUserService.createIntranetUser(orgUserDto);
+            orgUserDtos.add(orgUserDto);
         }
+        intranetUserService.createIntranetUsers(orgUserDtos);
     }
 
 
@@ -613,13 +617,11 @@ public class MohIntranetUserDelegator {
         SelectOption so3 = new SelectOption("OUSTAT004", "Terminated");
         SelectOption so4 = new SelectOption("OUSTAT001", "Expired");
         SelectOption so5 = new SelectOption("OUSTAT002", "Locked");
-        SelectOption so6 = new SelectOption("OUSTAT003", "Suspended");
         result.add(so1);
         result.add(so2);
         result.add(so3);
         result.add(so4);
         result.add(so5);
-        result.add(so6);
         return result;
     }
 

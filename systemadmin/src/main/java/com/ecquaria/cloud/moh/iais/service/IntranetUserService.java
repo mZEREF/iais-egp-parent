@@ -9,12 +9,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
 import org.springframework.web.bind.annotation.RequestBody;
 import sop.rbac.user.UserIdentifier;
 
+import java.util.List;
+
 /**
  * @author weilu
  * @date 2019/12/25 17:40
  */
 public interface IntranetUserService {
     void createIntranetUser(OrgUserDto orgUserDto);
+    void createIntranetUsers(List<OrgUserDto> orgUserDtos);
     SearchResult<OrgUserQueryDto> doQuery(SearchParam param);
     OrgUserDto updateOrgUser(OrgUserDto orgUserDto);
     void delOrgUser(String id);

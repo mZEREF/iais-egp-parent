@@ -27,6 +27,14 @@ public class IntranetUserClientFallback implements IntranetUserClient{
     }
 
     @Override
+    public FeignResponseEntity<Void> createOrgUserDtos(List<OrgUserDto> orgUserDtos) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<SearchResult<OrgUserQueryDto>> doQuery(SearchParam searchParam) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
