@@ -266,6 +266,7 @@ public class ConfigServiceImpl implements ConfigService {
         String mixprincipalOfficer = request.getParameter("mix-principalOfficer");
         String poId = request.getParameter("poId");
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = new ArrayList<>();
+        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = new ArrayList<>();
         HcsaSvcPersonnelDto poDto = new HcsaSvcPersonnelDto();
         poDto.setPsnType("PO");
         if (!StringUtil.isEmpty(manprincipalOfficer)) {
@@ -277,6 +278,7 @@ public class ConfigServiceImpl implements ConfigService {
         if (!StringUtil.isEmpty(poId)) {
             poDto.setServiceId(poId);
         }
+
         poDto.setStatus("CMSTAT001");
         hcsaSvcPersonnelDtos.add(poDto);
         String dpoId = request.getParameter("dpoId");
@@ -293,6 +295,9 @@ public class ConfigServiceImpl implements ConfigService {
         if (!StringUtil.isEmpty(mixdeputyPrincipalOfficer)) {
             dpoDto.setMaximumCount(Integer.parseInt(mixdeputyPrincipalOfficer));
         }
+
+
+
         dpoDto.setStatus("CMSTAT001");
         hcsaSvcPersonnelDtos.add(dpoDto);
         String cgoId = request.getParameter("cgoId");
@@ -309,6 +314,33 @@ public class ConfigServiceImpl implements ConfigService {
         if (!StringUtil.isEmpty(mixclinicalGovernanceOfficer)) {
             cgoDto.setMaximumCount(Integer.parseInt(mixclinicalGovernanceOfficer));
         }
+        int count=1;
+        if(cgoDto.getMandatoryCount()>0&&cgoDto.getMaximumCount()>0){
+            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
+            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
+            hcsaServiceStepSchemeDto.setStepCode("SVST002");
+            hcsaServiceStepSchemeDto.setSeqNum(count);
+            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
+            count++;
+        }
+        if(dpoDto.getMandatoryCount()>0&&dpoDto.getMaximumCount()>0){
+            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
+            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
+            hcsaServiceStepSchemeDto.setStepCode("SVST003");
+            hcsaServiceStepSchemeDto.setSeqNum(count);
+            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
+            count++;
+        }
+
+        if(poDto.getMandatoryCount()>0&&poDto.getMaximumCount()>0){
+            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
+            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
+            hcsaServiceStepSchemeDto.setStepCode("SVST004");
+            hcsaServiceStepSchemeDto.setSeqNum(count);
+            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
+            count++;
+        }
+
         cgoDto.setStatus("CMSTAT001");
         hcsaSvcPersonnelDtos.add(cgoDto);
         String svcpsnId = request.getParameter("svcpsnId");
@@ -357,8 +389,15 @@ public class ConfigServiceImpl implements ConfigService {
                     hcsaSvcDocConfigDto.setStatus("CMSTAT001");
                     hcsaSvcDocConfigDto.setDispOrder(0);
                     hcsaSvcDocConfigDto.setDupForPrem("0");
+                    hcsaSvcDocConfigDto.setIsMandatory(false);
                     hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);
                 }
+                HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
+                hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
+                hcsaServiceStepSchemeDto.setStepCode("SVST005");
+                hcsaServiceStepSchemeDto.setSeqNum(count);
+                hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
+                count++;
             }
         }catch (NumberFormatException e){
 
@@ -446,16 +485,7 @@ public class ConfigServiceImpl implements ConfigService {
 
 
         String[] steps = request.getParameterValues("step");
-        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = new ArrayList<>();
-        if (steps != null) {
-            for (int i = 0; i < steps.length; i++) {
-                HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto = new HcsaServiceStepSchemeDto();
-                hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
-                hcsaServiceStepSchemeDto.setSeqNum(i);
-                hcsaServiceStepSchemeDto.setStepCode(steps[i]);
-                hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            }
-        }
+
 
         String parameter = request.getParameter("Sub-Types");
         String startDate = request.getParameter("StartDate");
