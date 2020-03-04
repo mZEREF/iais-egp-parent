@@ -9,13 +9,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 /*
  *author: yichen
@@ -37,7 +38,7 @@ public interface SystemClient {
     FeignResponseEntity<String> saveSystemParameter(@RequestBody SystemParameterDto dto);
 
     @PostMapping(path = "/iais-message", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> saveMessage(@RequestBody MessageDto messageDto);
+    FeignResponseEntity<MessageDto> saveMessage(@RequestBody MessageDto messageDto);
 
     @PostMapping(path = "/iais-message/results", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<MessageQueryDto>> queryMessage(@RequestBody SearchParam searchParam);

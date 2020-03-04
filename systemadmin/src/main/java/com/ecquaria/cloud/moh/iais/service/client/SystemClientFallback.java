@@ -14,8 +14,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.http.HttpHeaders;
+
+import java.util.List;
 
 public class SystemClientFallback implements SystemClient{
 
@@ -44,7 +45,7 @@ public class SystemClientFallback implements SystemClient{
     }
 
     @Override
-    public FeignResponseEntity<String> saveMessage(MessageDto messageDto) {
+    public FeignResponseEntity<MessageDto> saveMessage(MessageDto messageDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
