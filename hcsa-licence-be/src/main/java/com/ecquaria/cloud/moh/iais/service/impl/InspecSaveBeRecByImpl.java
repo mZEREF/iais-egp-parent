@@ -9,12 +9,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventInspRecItemNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.InspecSaveBeRecByService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
@@ -76,6 +78,9 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     @Autowired
     private OrganizationClient organizationClient;
+
+    @Autowired
+    private ApplicationService applicationService;
 
     @Override
     public List<ProcessFileTrackDto> getFileTypeAndStatus(String applicationStatusFeToBeRectification, String commonStatusActive) {
@@ -200,6 +205,15 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             eventInspRecItemNcDto.setAppPremCorrIds(appPremCorrIds);
             eventInspRecItemNcDto.setAuditTrailDto(intranet);
             eventInspRecItemNcDto = organizationClient.getEventInspRecItemNcTaskByCorrIds(eventInspRecItemNcDto).getEntity();
+            String callTaskBackUrl = systemParamConfig.getInterServerName()
+                    + "/hcsa-licence-web/eservice/INTRANET/MohInspecSaveRecRollBack";
+            SubmitReq reqTask = EventBusHelper.getSubmitReq(eventInspRecItemNcDto, appPremCorrIds.get(0), EventBusConsts.SERVICE_NAME_ROUNTINGTASK,
+                    EventBusConsts.OPERATION_BE_REC_DATA_COPY, "", callTaskBackUrl, "batchjob",
+                    false, "INTRANET",
+                    "InspecSaveBeRecByFeBatchjob", "start");
+            SubmitResp submitTaskResp = submissionClient.submit(AppConsts.REST_PROTOCOL_TYPE
+                    + RestApiUrlConsts.EVENT_BUS, reqTask);
+
             //get Application / History / Inspection Status
             if(eventInspRecItemNcDto.getTaskDtos() != null) {
                 eventInspRecItemNcDto.setAuditTrailDto(intranet);
@@ -207,12 +221,19 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             }
             String callbackUrl = systemParamConfig.getInterServerName()
                     + "/hcsa-licence-web/eservice/INTRANET/MohInspecSaveRecRollBack";
-            SubmitReq req = EventBusHelper.getSubmitReq(eventInspRecItemNcDto, appPremCorrIds.get(0), "licenceSave",
+            SubmitReq req = EventBusHelper.getSubmitReq(eventInspRecItemNcDto, appPremCorrIds.get(0), EventBusConsts.SERVICE_NAME_LICENCESAVE,
                     EventBusConsts.OPERATION_BE_REC_DATA_COPY, "", callbackUrl, "batchjob",
                     false, "INTRANET",
                     "InspecSaveBeRecByFeBatchjob", "start");
             SubmitResp submitResp = submissionClient.submit(AppConsts.REST_PROTOCOL_TYPE
                     + RestApiUrlConsts.EVENT_BUS, req);
+
+            //update Fe application
+            if(!IaisCommonUtils.isEmpty(eventInspRecItemNcDto.getApplicationDtos())){
+                for(ApplicationDto applicationDto : eventInspRecItemNcDto.getApplicationDtos()){
+                    applicationService.updateFEApplicaiton(applicationDto);
+                }
+            }
         }
 
         return saveFlag;
