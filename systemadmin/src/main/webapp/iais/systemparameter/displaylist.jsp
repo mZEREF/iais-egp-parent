@@ -89,7 +89,7 @@
                                             <iais:sortableHeader needSort="true"  field="domain_type" value="System Parameter Type"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true"   field="description" value="Parameter Description"></iais:sortableHeader>
-                                            <iais:sortableHeader needSort="true"   field="paramType" value="Type of Value"></iais:sortableHeader>
+                                            <iais:sortableHeader needSort="true"   field="param_type" value="Type of Value"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true"   field="value" value="Value"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true"   field="status" value="Status"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>

@@ -61,7 +61,7 @@ public class SystemParameterValidator implements CustomizeValidator {
 	private Map<String, String> verifyPageSize(Map<String, String> errorMap, int value){
 		boolean hasError = value < 10 || (value > 50) ? true : false;
 		if (hasError){
-			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "The page size must be between 10 and 50");
+			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "The page size must be between 10 and 50.");
 		}
 		return errorMap;
 	}
@@ -69,15 +69,15 @@ public class SystemParameterValidator implements CustomizeValidator {
 	private Map<String, String> verifyAuditTrailWeek(Map<String, String> errorMap, int value){
 		boolean hasError = value < 1 || (value > 52) ? true : false;
 		if (hasError){
-			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "The Audit trail week must be between 1 and 52");
+			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "The Audit trail week must be between 1 and 52.");
 		}
 		return errorMap;
 	}
 
 	private Map<String, String> verifyFileUploadSize(Map<String, String> errorMap, int value){
-		boolean hasError = value < 1 || value > 50 ? true : false;
+		boolean hasError = value < 1 || value > 10 ? true : false;
 		if (hasError){
-			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "The file upload size must be between 1 and 50");
+			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "The file upload size must be between 1 and 10.");
 		}
 		return errorMap;
 	}
