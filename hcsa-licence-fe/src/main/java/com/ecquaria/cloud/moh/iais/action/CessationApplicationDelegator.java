@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -14,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.service.CessationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import sop.util.CopyUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -63,17 +65,17 @@ public class CessationApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "text1", text1);
         ParamUtil.setSessionAttr(bpc.request, "text2", text2);
         ParamUtil.setSessionAttr(bpc.request, "size", size);
-
     }
 
     public void prepareData(BaseProcessClass bpc) {
-
     }
 
     public void valiant(BaseProcessClass bpc) {
         List<AppCessLicDto> appCessDtosByLicIds = (List<AppCessLicDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtos");
         int size = (int) ParamUtil.getSessionAttr(bpc.request, "size");
         List<AppCessLicDto> appCessHciDtos = prepareDataForValiant(bpc, size, appCessDtosByLicIds);
+        List<AppCessLicDto> cloneAppCessHciDtos = new ArrayList<>();
+        CopyUtil.copyMutableObjectList(appCessHciDtos, cloneAppCessHciDtos);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable) appCessHciDtos);
         if (appCessHciDtos.size() == 0) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
@@ -95,8 +97,9 @@ public class CessationApplicationDelegator {
             return;
         }
 
-
-        List<AppCessationDto> appCessationDtos = transformDto(appCessHciDtos);
+        List<AppCessationDto> appCessationDtos = transformDto(cloneAppCessHciDtos);
+        List<AppCessLicDto> confirmDtos = getConfirmDtos(cloneAppCessHciDtos);
+        ParamUtil.setSessionAttr(bpc.request, "confirmDtos", (Serializable)confirmDtos);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtosSave", (Serializable)appCessationDtos);
     }
@@ -161,9 +164,11 @@ public class CessationApplicationDelegator {
                     String reason = ParamUtil.getRequestString(bpc.request, i + "reason" + j);
                     String otherReason = ParamUtil.getRequestString(bpc.request, i + "otherReason" + j);
                     String patRadio = ParamUtil.getRequestString(bpc.request, i + "patRadio" + j);
-                    Boolean patNeedTrans = false;
+                    Boolean patNeedTrans = null;
                     if ("yes".equals(patRadio)) {
                         patNeedTrans = true;
+                    }else if("no".equals(patRadio)) {
+                        patNeedTrans = false;
                     }
                     String patientSelect = ParamUtil.getRequestString(bpc.request, i + "patientSelect" + j);
                     String patNoRemarks = ParamUtil.getRequestString(bpc.request, i + "patNoRemarks" + j);
@@ -187,6 +192,8 @@ public class CessationApplicationDelegator {
                     appCessHciDto.setPatOthers(patOthers);
                     appCessHciDto.setWhichTodo(whichTodo);
                     appCessHciDto.setReadInfo(readInfo);
+                }else{
+                    appCessHciDto.setWhichTodo(null);
                 }
                 appCessHciDtos.add(appCessHciDto);
             }
@@ -200,38 +207,67 @@ public class CessationApplicationDelegator {
         List<AppCessationDto> appCessationDtos = new ArrayList<>();
         for (AppCessLicDto appCessLicDto : appCessLicDtos) {
             List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
-            for (AppCessHciDto appCessHciDto : appCessHciDtos) {
-                String whichTodo = appCessHciDto.getWhichTodo();
-                if(!StringUtil.isEmpty(whichTodo)){
-                    Date effectiveDate = appCessHciDto.getEffectiveDate();
-                    String reason = appCessHciDto.getReason();
-                    String otherReason = appCessHciDto.getOtherReason();
-                    Boolean patNeedTrans = appCessHciDto.getPatNeedTrans();
-                    String patientSelect = appCessHciDto.getPatientSelect();
-                    String patTransType = appCessHciDto.getPatTransType();
-                    String patTransTo = appCessHciDto.getPatTransTo();
-                    String patRegNo = appCessHciDto.getPatRegNo();
-                    String patNoRemarks = appCessHciDto.getPatNoRemarks();
-                    String readInfo = appCessHciDto.getReadInfo();
+            if(appCessHciDtos!=null&&!appCessHciDtos.isEmpty()){
+                for (AppCessHciDto appCessHciDto : appCessHciDtos) {
+                    String whichTodo = appCessHciDto.getWhichTodo();
+                    if(!StringUtil.isEmpty(whichTodo)) {
+                        Date effectiveDate = appCessHciDto.getEffectiveDate();
+                        String reason = appCessHciDto.getReason();
+                        String otherReason = appCessHciDto.getOtherReason();
+                        Boolean patNeedTrans = appCessHciDto.getPatNeedTrans();
+                        String patientSelect = appCessHciDto.getPatientSelect();
+                        String patTransType = appCessHciDto.getPatTransType();
+                        String patTransTo = appCessHciDto.getPatTransTo();
+                        String patRegNo = appCessHciDto.getPatRegNo();
+                        String patNoRemarks = appCessHciDto.getPatNoRemarks();
+                        String readInfo = appCessHciDto.getReadInfo();
 
-                    AppCessationDto appCessationDto = new AppCessationDto();
-                    appCessationDto.setEffectiveDate(effectiveDate);
-                    appCessationDto.setReason(reason);
-                    appCessationDto.setOtherReason(otherReason);
-                    appCessationDto.setPatNeedTrans(patNeedTrans);
-                    appCessationDto.setPatientSelect(patientSelect);
-                    appCessationDto.setPatTransType(patTransType);
-                    appCessationDto.setPatTransTo(patTransTo);
-                    appCessationDto.setPatRegNo(patRegNo);
-                    appCessationDto.setPatNoRemarks(patNoRemarks);
-                    appCessationDto.setWhichTodo(whichTodo);
-                    appCessationDto.setReadInfo(readInfo);
-                    appCessationDtos.add(appCessationDto);
+                        AppCessationDto appCessationDto = new AppCessationDto();
+                        appCessationDto.setEffectiveDate(effectiveDate);
+                        appCessationDto.setReason(reason);
+                        appCessationDto.setOtherReason(otherReason);
+                        appCessationDto.setPatNeedTrans(patNeedTrans);
+                        appCessationDto.setPatientSelect(patientSelect);
+                        appCessationDto.setPatTransType(patTransType);
+                        appCessationDto.setPatTransTo(patTransTo);
+                        appCessationDto.setPatRegNo(patRegNo);
+                        appCessationDto.setPatNoRemarks(patNoRemarks);
+                        appCessationDto.setWhichTodo(whichTodo);
+                        appCessationDto.setReadInfo(readInfo);
+                        appCessationDtos.add(appCessationDto);
+                    }
                 }
             }
+
         }
         return appCessationDtos;
     }
+
+    private List<AppCessLicDto> getConfirmDtos(List<AppCessLicDto> appCessLicDtos){
+        for(AppCessLicDto appCessLicDto :appCessLicDtos){
+            List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
+            if(appCessHciDtos!=null&&!appCessHciDtos.isEmpty()){
+                List<AppCessHciDto> list = new ArrayList<>();
+                for (AppCessHciDto appCessHciDto :appCessHciDtos){
+                    String whichTodo = appCessHciDto.getWhichTodo();
+                    if(StringUtil.isEmpty(whichTodo)){
+                        list.add(appCessHciDto);
+                    }
+                }
+                appCessHciDtos.removeAll(list);
+            }
+        }
+        for (int i = 0; i <appCessLicDtos.size() ; i++) {
+            List<AppCessHciDto> appCessHciDtos = appCessLicDtos.get(i).getAppCessHciDtos();
+            if(appCessHciDtos.size()==0){
+                appCessLicDtos.remove(i);
+                i--;
+            }
+
+        }
+        return appCessLicDtos;
+    }
+
 
     private Map<String, String> validate(BaseProcessClass bpc,int i,int j) {
         HttpServletRequest httpServletRequest = bpc.request;
@@ -294,9 +330,9 @@ public class CessationApplicationDelegator {
 
     private List<SelectOption> getReasonOption() {
         List<SelectOption> riskLevelResult = new ArrayList<>();
-        SelectOption so1 = new SelectOption("Low", "Not Profitable");
-        SelectOption so2 = new SelectOption("Moderate", "Reduce Workloa");
-        SelectOption so3 = new SelectOption("OtherReasons", "Others");
+        SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, "Not Profitable");
+        SelectOption so2 = new SelectOption(ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, "Reduce Workloa");
+        SelectOption so3 = new SelectOption(ApplicationConsts.CESSATION_REASON_OTHER, "Others");
         riskLevelResult.add(so1);
         riskLevelResult.add(so2);
         riskLevelResult.add(so3);
@@ -305,9 +341,9 @@ public class CessationApplicationDelegator {
 
     private List<SelectOption> getPatientsOption() {
         List<SelectOption> riskLevelResult = new ArrayList<>();
-        SelectOption so1 = new SelectOption("hciName", "HCI Name");
-        SelectOption so2 = new SelectOption("regNo", "Professional Regn No.");
-        SelectOption so3 = new SelectOption("Others", "Others");
+        SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, "HCI Name");
+        SelectOption so2 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, "Professional Regn No.");
+        SelectOption so3 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER, "Others");
         riskLevelResult.add(so1);
         riskLevelResult.add(so2);
         riskLevelResult.add(so3);

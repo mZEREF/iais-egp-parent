@@ -20,17 +20,17 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="table-gp">
-                    <table class="table" border="1" cellspacing="0" cellpadding="0">
+                    <table class="table" border="1" cellspacing="0" cellpadding="0" width="100%">
                         <thead>
                         <tr>
-                            <th>S/N</th>
-                            <th>Licence No.</th>
-                            <th>Service Name</th>
-                            <th>HCI Name</th>
-                            <th>HCI Address</th>
-                            <th>Effective Date</th>
-                            <th>Cessation Reasons</th>
-                            <th>Patients' Record will be transferred</th>
+                            <th style="text-align:center;">S/N</th>
+                            <th style="text-align:center;">Licence No.</th>
+                            <th style="text-align:center;">Service Name</th>
+                            <th style="text-align:center;">HCI Name</th>
+                            <th style="text-align:center;">HCI Address</th>
+                            <th style="text-align:center;">Effective Date <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" data-original-title="<p>The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">i</a></th>
+                            <th style="text-align:center;">Cessation Reasons</th>
+                            <th style="text-align:center;">Patients' Record will be transferred</th>
                             <th></th>
                         </tr>
                         </thead>
@@ -46,11 +46,11 @@
                                 <td class="col-xs-1" align="center">
                                     <p><c:out value="${appCess.svcName}"></c:out></p>
                                 </td>
-                                <td colspan="9" class="col-xs-9">
-                                    <table class="table" border="1" cellspacing="0" cellpadding="0">
+                                <td colspan="9" class="col-xs-9" style="width:100% ;padding:0">
+                                    <table class="table" border="1" cellspacing="0" cellpadding="0" width="100%">
                                         <c:forEach items="${appCess.appCessHciDtos}" var="appCessHci" varStatus="uid">
                                             <tr>
-                                                <td class="col-xs-1" align="center">
+                                                <td class="col-xs-2" align="center">
                                                     <p><c:out value="${appCessHci.hciName}"></c:out></p>
                                                 </td>
                                                 <td class="col-xs-1" align="center">
@@ -60,10 +60,11 @@
                                                     <iais:datePicker id="effectiveDate"
                                                                      name="${num.count}effectiveDate${uid.count}"
                                                                      dateVal="${appCessHci.effectiveDate}"/>
-                                                    <span id="error_${num.count}effectiveDate${uid.count}" name="iaisErrorMsg"
+                                                    <span id="error_${num.count}effectiveDate${uid.count}"
+                                                          name="iaisErrorMsg"
                                                           class="error-msg"></span>
                                                 </td>
-                                                <td class="col-xs-2" align="center">
+                                                <td class="col-xs-1" align="center">
                                                     <iais:select id="${num.count}reasonId${uid.count}"
                                                                  name="${num.count}reason${uid.count}"
                                                                  options="reasonOption"
@@ -74,8 +75,10 @@
                                                           class="error-msg"></span>
                                                     <div id="${num.count}reason${uid.count}" hidden><input
                                                             type="text"
-                                                            name="${num.count}otherReason${uid.count}" value="${appCessHci.otherReason}">
-                                                        <span id="error_${num.count}otherReason${uid.count}" name="iaisErrorMsg"
+                                                            name="${num.count}otherReason${uid.count}"
+                                                            value="${appCessHci.otherReason}">
+                                                        <span id="error_${num.count}otherReason${uid.count}"
+                                                              name="iaisErrorMsg"
                                                               class="error-msg"></span>
                                                     </div>
                                                 </td>
@@ -97,7 +100,8 @@
                                                                        <c:if test="${appCessHci.patNeedTrans == false}">checked</c:if>
                                                                        onchange="javascirpt:changePatSelect(this.value);">No
                                                             </td>
-                                                            <span id="error_${num.count}patRadio${uid.count}" name="iaisErrorMsg"
+                                                            <span id="error_${num.count}patRadio${uid.count}"
+                                                                  name="iaisErrorMsg"
                                                                   class="error-msg"></span>
                                                         </tr>
                                                         <tr id="${num.count}patYes${uid.count}" hidden>
@@ -112,7 +116,8 @@
                                                                     id="${num.count}patientSelectId${uid.count}"
                                                                     onchange="javascirpt:changePatient(this.value);"
                                                                     value="${appCessHci.patientSelect}"/></td>
-                                                            <span id="error_${num.count}patientSelect${uid.count}" name="iaisErrorMsg"
+                                                            <span id="error_${num.count}patientSelect${uid.count}"
+                                                                  name="iaisErrorMsg"
                                                                   class="error-msg"></span>
                                                         </tr>
                                                         <tr id="${num.count}patHciName${uid.count}" hidden>
@@ -121,7 +126,8 @@
                                                                        name="${num.count}patHciName${uid.count}"
                                                                        value="${appCessHci.patHciName}">
                                                             </td>
-                                                            <span id="error_${num.count}patHciName${uid.count}" name="iaisErrorMsg"
+                                                            <span id="error_${num.count}patHciName${uid.count}"
+                                                                  name="iaisErrorMsg"
                                                                   class="error-msg"></span>
                                                         </tr>
                                                         <tr id="${num.count}patRegNo${uid.count}" hidden>
@@ -130,7 +136,8 @@
                                                                        name="${num.count}patRegNo${uid.count}"
                                                                        value="${appCessHci.patRegNo}">
                                                             </td>
-                                                            <span id="error_${num.count}patRegNo${uid.count}" name="iaisErrorMsg"
+                                                            <span id="error_${num.count}patRegNo${uid.count}"
+                                                                  name="iaisErrorMsg"
                                                                   class="error-msg"></span>
                                                         </tr>
                                                         <tr id="${num.count}patOthers${uid.count}" hidden>
@@ -139,7 +146,8 @@
                                                                        name="${num.count}patOthers${uid.count}"
                                                                        value="${appCessHci.patOthers}">
                                                             </td>
-                                                            <span id="error_${num.count}patOthers${uid.count}" name="iaisErrorMsg"
+                                                            <span id="error_${num.count}patOthers${uid.count}"
+                                                                  name="iaisErrorMsg"
                                                                   class="error-msg"></span>
                                                         </tr>
                                                         <tr id="${num.count}patNo${uid.count}" hidden align="center">
@@ -149,13 +157,15 @@
                                                                     title="content"><c:out
                                                                     value="${appCessHci.patNoRemarks}"/></textarea>
                                                             </td>
-                                                            <span id="error_${num.count}patNoRemarks${uid.count}" name="iaisErrorMsg"
+                                                            <span id="error_${num.count}patNoRemarks${uid.count}"
+                                                                  name="iaisErrorMsg"
                                                                   class="error-msg"></span>
                                                         </tr>
                                                     </table>
                                                 </td>
                                                 <td class="col-xs-1" align="center">
-                                                    <input type="checkbox" name="${num.count}whichTodo${uid.count}" value="${appCess.licenceId}"  <c:if test="${appCessHci.whichTodo != null}">checked</c:if>>
+                                                    <input type="checkbox" name="${num.count}whichTodo${uid.count}"
+                                                           <c:if test="${appCessHci.whichTodo != null}">checked</c:if>>
                                                     <span id="error_whichTodo" name="iaisErrorMsg"
                                                           class="error-msg"></span>
                                                 </td>
@@ -163,7 +173,6 @@
                                         </c:forEach>
                                     </table>
                                 </td>
-
                             </tr>
                         </c:forEach>
                         <tr>
@@ -197,11 +206,11 @@
 <script type="text/javascript">
     function changeReason() {
         for (var i = 1; i < 8; i++) {
-            for (var j = 1; j < 8; j++){
-                if ($("#" + i +"reasonId"+ j ).val() == "OtherReasons") {
-                    $("#" + i + "reason"+ j ).show();
+            for (var j = 1; j < 8; j++) {
+                if ($("#" + i + "reasonId" + j).val() == "CES001") {
+                    $("#" + i + "reason" + j).show();
                 } else {
-                    $("#" + i + "reason"+ j ).hide();
+                    $("#" + i + "reason" + j).hide();
                 }
             }
 
@@ -210,19 +219,19 @@
 
     function changePatient() {
         for (var i = 1; i < 3; i++) {
-            for (var j = 1; j < 3; j++){
-                if ($("#" + i + "patientSelectId"+ j ).val() == "Others") {
-                    $("#" + i + "patOthers"+ j ).show();
-                    $("#" + i + "patHciName"+ j ).hide();
-                    $("#" + i + "patRegNo"+ j ).hide();
-                } else if ($("#" + i + "patientSelectId"+ j ).val() == "hciName") {
-                    $("#" + i + "patHciName"+ j ).show();
-                    $("#" + i + "patOthers"+ j ).hide();
-                    $("#" + i + "patRegNo"+ j ).hide();
-                } else if ($("#" + i + "patientSelectId"+ j ).val() == "regNo") {
-                    $("#" + i + "patRegNo"+ j ).show();
-                    $("#" + i + "patHciName"+ j ).hide();
-                    $("#" + i + "patOthers"+ j ).hide();
+            for (var j = 1; j < 3; j++) {
+                if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
+                    $("#" + i + "patOthers" + j).show();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                } else if ($("#" + i + "patientSelectId" + j).val() == "CES005") {
+                    $("#" + i + "patHciName" + j).show();
+                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                } else if ($("#" + i + "patientSelectId" + j).val() == "CES006") {
+                    $("#" + i + "patRegNo" + j).show();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "patOthers" + j).hide();
                 }
             }
 
@@ -231,18 +240,18 @@
 
     function changePatSelect() {
         for (var i = 1; i < 3; i++) {
-            for (var j = 1; j < 3; j++){
-                if ($('#' + i + 'radioYes'+ j).is(':checked')) {
-                    $("#" + i + "patYes"+ j).show();
-                    $("#" + i + "patNo"+ j).hide();
-                } else if ($('#' + i + 'radioNo'+ j).is(':checked')) {
-                    $("#" + i + "patNo"+ j).show();
-                    $("#" + i + "patYes"+ j).hide();
-                    $("#" + i + "patHciName"+ j).hide();
-                    $("#" + i + "patOthers"+ j).hide();
-                    $("#" + i + "patRegNo"+ j).hide();
+            for (var j = 1; j < 3; j++) {
+                if ($('#' + i + 'radioYes' + j).is(':checked')) {
+                    $("#" + i + "patYes" + j).show();
+                    $("#" + i + "patNo" + j).hide();
+                } else if ($('#' + i + 'radioNo' + j).is(':checked')) {
+                    $("#" + i + "patNo" + j).show();
+                    $("#" + i + "patYes" + j).hide();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
                 }
-        }
+            }
 
         }
     }
@@ -255,34 +264,34 @@
 
     $(document).ready(function () {
         for (var i = 1; i < 3; i++) {
-            for (var j = 1; j < 3; j++){
-                if ($("#" + i + "reasonId"+ j).val() == "OtherReasons") {
-                    $("#" + i + "reason"+ j).show();
-                } else if ($("#" + i + "reasonId"+ j).val() != "OtherReasons") {
-                    $("#" + i + "reason"+ j).hide();
+            for (var j = 1; j < 3; j++) {
+                if ($("#" + i + "reasonId" + j).val() == "CES001") {
+                    $("#" + i + "reason" + j).show();
+                } else if ($("#" + i + "reasonId" + j).val() != "CES001") {
+                    $("#" + i + "reason" + j).hide();
                 }
-                if ($('#' + i + 'radioYes'+ j).is(':checked')) {
-                    $("#" + i + "patYes"+ j).show();
-                    $("#" + i + "patNo"+ j).hide();
-                } else if ($('#' + i + 'radioNo'+ j).is(':checked')) {
-                    $("#" + i + "patYes"+ j).hide();
-                    $("#" + i + "patHciName"+ j).hide();
-                    $("#" + i + "patOthers"+ j).hide();
-                    $("#" + i + "patRegNo"+ j).hide();
-                    $("#" + i + "patNo"+ j).show();
+                if ($('#' + i + 'radioYes' + j).is(':checked')) {
+                    $("#" + i + "patYes" + j).show();
+                    $("#" + i + "patNo" + j).hide();
+                } else if ($('#' + i + 'radioNo' + j).is(':checked')) {
+                    $("#" + i + "patYes" + j).hide();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                    $("#" + i + "patNo" + j).show();
                 }
-                if ($("#" + i + "patientSelectId"+ j).val() == "Others") {
-                    $("#" + i + "patOthers"+ j).show();
-                    $("#" + i + "patHciName"+ j).hide();
-                    $("#" + i + "patRegNo"+ j).hide();
-                } else if ($("#" + i + "patientSelectId"+ j).val() == "hciName") {
-                    $("#" + i + "patHciName"+ j).show();
-                    $("#" + i + "patOthers"+ j).hide();
-                    $("#" + i + "patRegNo"+ j).hide();
-                } else if ($("#" + i + "patientSelectId"+ j).val() == "regNo") {
-                    $("#" + i + "patRegNo"+ j).show();
-                    $("#" + i + "patHciName"+ j).hide();
-                    $("#" + i + "patOthers"+ j).hide();
+                if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
+                    $("#" + i + "patOthers" + j).show();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                } else if ($("#" + i + "patientSelectId" + j).val() == "CES005") {
+                    $("#" + i + "patHciName" + j).show();
+                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                } else if ($("#" + i + "patientSelectId" + j).val() == "CES006") {
+                    $("#" + i + "patRegNo" + j).show();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "patOthers" + j).hide();
                 }
             }
 
@@ -292,13 +301,13 @@
 
     $(document).ready(function () {
         for (var i = 1; i < 3; i++) {
-            for (var j = 1; j < 3; j++){
-                if ($('#' + i + 'radioNo'+ j).is(':checked')) {
-                    $("#" + i + "patYes"+ j).hide();
-                    $("#" + i + "patHciName"+ j).hide();
-                    $("#" + i + "patOthers"+ j).hide();
-                    $("#" + i + "patRegNo"+ j).hide();
-                    $("#" + i + "div"+ j).hide();
+            for (var j = 1; j < 3; j++) {
+                if ($('#' + i + 'radioNo' + j).is(':checked')) {
+                    $("#" + i + "patYes" + j).hide();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                    $("#" + i + "div" + j).hide();
                 }
             }
 

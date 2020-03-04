@@ -112,7 +112,7 @@ public class CessationServiceImpl implements CessationService {
             applicationDto.setStatus(ApplicationConsts.APPLICATION_TYPE_CESSATION);
             applicationDto.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
             applicationDto.setVersion(1);
-            applicationDto.setLicenceId(licId);
+            //applicationDto.setLicenceId(licId);
             List<ApplicationDto> applicationDtos = new ArrayList<>();
             applicationDtos.add(applicationDto);
             appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
@@ -120,7 +120,7 @@ public class CessationServiceImpl implements CessationService {
             setMiscData(appCessationDto,appCessMiscDto);
             appCessMiscDtos.add(appCessMiscDto);
         }
-        cessationClient.saveCessation(appCessMiscDtos).getEntity();
+        String entity = cessationClient.saveCessation(appCessMiscDtos).getEntity();
     }
 
     @Override
@@ -190,7 +190,7 @@ public class CessationServiceImpl implements CessationService {
         applicationGroupDto.setAmount(0.0);
         applicationGroupDto.setIsPreInspection(1);
         applicationGroupDto.setIsInspectionNeeded(1);
-        applicationGroupDto.setLicenseeId(licId);
+        applicationGroupDto.setLicenseeId("36F8537B-FE17-EA11-BE78-000C29D29DB0");
         applicationGroupDto.setIsBundledFee(9966);
         applicationGroupDto.setIsCharitable(0);
         applicationGroupDto.setIsByGiro(0);

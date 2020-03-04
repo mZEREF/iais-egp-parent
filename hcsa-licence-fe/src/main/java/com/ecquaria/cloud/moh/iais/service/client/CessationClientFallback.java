@@ -22,7 +22,7 @@ public class CessationClientFallback implements CessationClient {
     }
 
     @Override
-    public FeignResponseEntity<Void> saveCessation(List<AppCessMiscDto> appCessMiscDtos) {
+    public FeignResponseEntity<String> saveCessation(List<AppCessMiscDto> appCessMiscDtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

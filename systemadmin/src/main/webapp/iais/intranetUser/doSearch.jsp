@@ -8,7 +8,7 @@
     <iais:row>
         <iais:field value="Email address:"/>
         <iais:value width="18">
-            <input id="emailAddress" name="emailAddress" type="text" value="${email}">
+            <input id="emailAddress" name="email" type="text" value="${email}">
         </iais:value>
     </iais:row>
     <iais:row>

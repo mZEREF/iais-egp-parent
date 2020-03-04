@@ -227,10 +227,9 @@ public class CessationApplicationDelegator {
                     appCessationDto.setWhichTodo(whichTodo);
                     appCessationDto.setReadInfo(readInfo);
                     appCessationDtos.add(appCessationDto);
+                }else {
+                    appCessHciDtos.remove(appCessHciDto);
                 }
-//                }else {
-//                    appCessHciDtos.remove(appCessLicDto);
-//                }
             }
         }
         return appCessationDtos;

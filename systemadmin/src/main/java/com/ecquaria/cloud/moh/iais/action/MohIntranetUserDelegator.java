@@ -600,6 +600,7 @@ public class MohIntranetUserDelegator {
             orgUserDto.setOfficeTelNo(officeNo);
             orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
             orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
+
             intranetUserService.createIntranetUser(orgUserDto);
         }
     }
