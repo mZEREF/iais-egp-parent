@@ -1,15 +1,19 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFeSupportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskWeightageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskWeightageShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskWeightageService;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.util.CopyUtil;
 
@@ -26,7 +30,16 @@ import java.util.List;
 public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
     @Autowired
     HcsaConfigClient hcsaConfigClient;
-
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
     @Override
     public HcsaRiskWeightageShowDto getWeightage() {
         List<HcsaServiceDto> serviceDtoList =  hcsaConfigClient.getActiveServices().getEntity();
@@ -124,6 +137,13 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
         if(saveShowDto!=null&&saveShowDto.getWeightageDtoList()!=null){
             doUpdate(saveList,saveShowDto.getWeightageDtoList());
         }
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        HcsaRiskFeSupportDto supportDto = new HcsaRiskFeSupportDto();
+        supportDto.setHcsaRiskWeightageShowDto(wShowDto);
+        supportDto.setWeightageFlag(true);
+        beEicGatewayClient.feCreateRiskData(supportDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
     }
 
     private HcsaRiskWeightageDto getWeiDto(HcsaRiskWeightageDto temp,String type) {

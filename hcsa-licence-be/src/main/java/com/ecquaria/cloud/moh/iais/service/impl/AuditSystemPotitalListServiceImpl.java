@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemPotitalListService;
@@ -423,7 +422,6 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             searchParam.addFilter("premType",dto.getPremisesType(),true);
         }
         QueryHelp.setMainSql("inspectionQuery", "aduitSystemList", searchParam);
-        String jsointest = JsonUtil.parseToJson(searchParam);
         return searchParam;
     }
 
