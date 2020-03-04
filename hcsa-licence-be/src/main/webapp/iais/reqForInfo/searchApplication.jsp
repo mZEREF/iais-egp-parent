@@ -17,9 +17,9 @@
         <div class="container">
             <div class="col-xs-12">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <br><br><br><br>
+                    <br><br><br><br><br><br>
                     <h3>
-                        <span>Advanced Search Criteria For Licence</span>
+                        <span>Advanced Search Criteria For Application</span>
                     </h3>
                     <div class="panel panel-default">
                         <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
@@ -27,7 +27,7 @@
                                 <div class="panel-main-content">
                                     <iais:section title="" id = "supPoolList">
                                         <iais:row>
-                                            <iais:field value="Application No:"/>
+                                            <iais:field value="Application No."/>
                                             <iais:value width="18">
                                                 <label>
                                                     <input type="text" style="width:180%; font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
@@ -37,23 +37,23 @@
                                         <iais:row>
                                             <iais:field value="Application Type"/>
                                             <iais:value width="18">
-                                                <iais:select name="application_type" options="appTypeOption" firstOption="Please select" value="${appTypeOption}" ></iais:select>
+                                                <iais:select id="application_type" name="application_type" options="appTypeOption" firstOption="Please select" value="${appTypeOption}" ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Application Status"/>
                                             <iais:value width="18">
-                                                <iais:select name="application_status" options="appStatusOption" firstOption="Please select" value="${appStatusOption}" ></iais:select>
+                                                <iais:select id="application_status" name="application_status" options="appStatusOption" firstOption="Please select" value="${appStatusOption}" ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:field value="Application Submitted Date:"/>
+                                            <iais:field value="Application Submitted Date From"/>
                                             <iais:value width="18">
                                                 <iais:datePicker id = "sub_date" name = "sub_date" value="${SearchParam.filters['subDate']}" ></iais:datePicker>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:field value="To:"/>
+                                            <iais:field value="Application Submitted Date To"/>
                                             <iais:value width="18">
                                                 <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['toDate']}"></iais:datePicker>
                                             </iais:value>

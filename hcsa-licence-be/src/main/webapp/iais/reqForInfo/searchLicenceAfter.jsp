@@ -18,7 +18,7 @@
         <div class="container">
             <div class="col-xs-12">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <br><br><br><br>
+                    <br><br><br><br><br><br>
                     <h3>
                         <span>Advanced Search Criteria For Licence</span>
                     </h3>

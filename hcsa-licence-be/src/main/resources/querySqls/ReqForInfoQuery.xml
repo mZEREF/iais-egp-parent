@@ -18,14 +18,14 @@
             WHERE 1=1
             <#if id??> AND app.id = :id </#if>
             <#if appType??> AND app.app_type = :appType</#if>
-            <#if appNo??> AND app.application_no like :appNo</#if>
+            <#if appNo??> AND charindex(:appNo, app.application_no)>0</#if>
             <#if appStatus??> AND app.status = :appStatus</#if>
             <#if subDate??> AND T4.submit_dt >= convert(date,:subDate)</#if>
             <#if toDate??> AND T4.submit_dt <= convert(date,:toDate)</#if>
-            <#if hciCode??> AND T3.HCI_CODE like :hciCode</#if>
-            <#if hciName??> AND T3.HCI_NAME like :hciName</#if>
-            <#if hciStreetName??> AND T3.STREET_NAME like :hciStreetName</#if>
-            <#if hciPostalCode??> AND T3.POSTAL_NAME like :hciPostalCode</#if>
+            <#if hciCode??> AND  charindex(:hciCode, T3.HCI_CODE )>0</#if>
+            <#if hciName??> AND charindex(:hciName, T3.HCI_NAME )>0</#if>
+            <#if hciStreetName??> AND charindex(:hciStreetName, T3.STREET_NAME )>0</#if>
+            <#if hciPostalCode??> AND charindex(:hciPostalCode, T3.POSTAL_NAME )>0</#if>
             
             <#if licence_status??>AND :licence_status = :licence_status</#if>
             <#if start_date??>AND :start_date = :start_date</#if>
@@ -73,13 +73,13 @@
             <#if start_to_date??> AND lic.start_date <= :start_to_date</#if>
             <#if expiry_date??> AND lic.expiry_date <= :expiry_date</#if>
             <#if expiry_start_date??> AND lic.expiry_date >= :expiry_start_date</#if>
-            <#if licence_no??> AND lic.licence_no like :licence_no</#if>
+            <#if licence_no??> AND charindex(:licence_no, lic.licence_no )>0</#if>
             <#if app_id??> AND licApp.APPLICATION_ID = :app_id</#if>
             <#if org_ids??> AND lic.ORGANIZATION_ID in( :org_ids)</#if>
-            <#if hciCode??> AND Prem.HCI_CODE like :hciCode</#if>
-            <#if hciName??> AND Prem.HCI_NAME like :hciName</#if>
-            <#if hciStreetName??> AND Prem.STREET_NAME like :hciStreetName</#if>
-            <#if hciPostalCode??> AND Prem.POSTAL_NAME like :hciPostalCode</#if>
+            <#if hciCode??> AND charindex(:hciCode, Prem.HCI_CODE )>0</#if>
+            <#if hciName??> AND charindex(:hciName, Prem.HCI_NAME )>0</#if>
+            <#if hciStreetName??> AND charindex(:hciStreetName, Prem.STREET_NAME )>0</#if>
+            <#if hciPostalCode??> AND charindex(:hciPostalCode, Prem.POSTAL_NAME )>0</#if>
             <#if svc_names??> AND lic.SVC_NAME in( :svc_names)</#if>
             <#if licenseeIds??> AND lic.LICENSEE_ID in( :licenseeIds)</#if>
 
@@ -110,10 +110,10 @@
             LEFT JOIN ORGANIZATION org ON org.ID = lic.ORGANIZATION_ID
 
             WHERE 1=1
-            <#if uenNo??> AND org.UEN_NO = :uenNo</#if>
+            <#if uenNo??> AND charindex( :uenNo,org.UEN_NO )>0</#if>
             <#if licenseeId??> AND lic.id = :licenseeId</#if>
-            <#if licenseeName??> AND lic.NAME like :licenseeName</#if>
-            <#if licenseeRegnNo??> AND lic.POSTAL_CODE like :licenseeRegnNo</#if>
+            <#if licenseeName??> AND charindex(:licenseeName,lic.NAME )>0</#if>
+            <#if licenseeRegnNo??> AND charindex( :licenseeRegnNo,lic.POSTAL_CODE )>0</#if>
             
             <#if id??>AND :id = :id</#if>
             <#if appType??>AND :appType = :appType</#if>
@@ -151,9 +151,9 @@
 
             WHERE 1=1
             <#if serviceId??> AND svc.id = :serviceId</#if>
-            <#if serviceName??> AND svc.SVC_NAME like :serviceName</#if>
-            <#if serviceRole??> AND svcPersonnel.PSN_TYPE like :serviceRole</#if>
-            <#if serviceRegnNo??> AND svcPersonnel.ID like :serviceRegnNo</#if>
+            <#if serviceName??> AND charindex( :serviceName,svc.SVC_NAME )>0</#if>
+            <#if serviceRole??> AND charindex( :serviceRole,svcPersonnel.PSN_TYPE )>0</#if>
+            <#if serviceRegnNo??> AND charindex( :serviceRegnNo,svcPersonnel.ID )>0</#if>
             
             <#if id??>AND :id = :id</#if>
             <#if appType??>AND :appType = :appType</#if>

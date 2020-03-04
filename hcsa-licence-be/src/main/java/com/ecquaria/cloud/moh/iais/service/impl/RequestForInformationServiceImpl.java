@@ -91,32 +91,10 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL
     };
     private final String[] appStatus=new String[]{
-            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
             ApplicationConsts.APPLICATION_STATUS_APPROVED,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING,
-            ApplicationConsts.APPLICATION_STATUS_REJECTED,
             ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,
             ApplicationConsts.APPLICATION_STATUS_DRAFT,
-            ApplicationConsts.APPLICATION_STATUS_DELETED,
-            ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
-            ApplicationConsts.APPLICATION_STATUS_SUPPORT,
-            ApplicationConsts.APPLICATION_STATUS_VERIFIED,
-            ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_INFORMATION,
-            ApplicationConsts.APPLICATION_STATUS_LICENCE_START_DATE,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
-            ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,
-            ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION,
-            ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION
+            ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING
     };
     private final String[] licServiceType=new String[]{
             ApplicationConsts.SERVICE_CONFIG_TYPE_BASE,

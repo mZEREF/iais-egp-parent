@@ -17,7 +17,7 @@
         <div class="container">
             <div class="col-xs-12">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <br><br><br><br>
+                    <br><br><br><br><br><br>
                     <h3>
                         <span>Advanced Search Criteria For Licence</span>
                     </h3>
@@ -37,13 +37,13 @@
                                         <iais:row>
                                             <iais:field value="Service Licence Type"/>
                                             <iais:value width="18">
-                                                <iais:select name="service_licence_type" options="licSvcTypeOption" firstOption="Please select" value="${licSvcTypeOption}" ></iais:select>
+                                                <iais:select id="service_licence_type" name="service_licence_type" options="licSvcTypeOption" firstOption="Please select" value="${licSvcTypeOption}" ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Licence Status"/>
                                             <iais:value width="18">
-                                                <iais:select name="licence_status" options="licStatusOption" firstOption="Please select" value="${licStatusOption}" ></iais:select>
+                                                <iais:select id="licence_status" name="licence_status" options="licStatusOption" firstOption="Please select" value="${licStatusOption}" ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>

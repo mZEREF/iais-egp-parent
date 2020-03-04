@@ -18,7 +18,7 @@
         <div class="container">
             <div class="col-xs-12">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <br><br><br><br>
+                    <br><br><br><br><br><br>
                     <h2>Basic Search Criteria</h2>
                     <div class="panel panel-default">
                         <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
