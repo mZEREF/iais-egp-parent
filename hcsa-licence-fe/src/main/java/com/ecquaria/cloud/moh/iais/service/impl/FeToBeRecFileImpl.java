@@ -242,7 +242,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                     }
                     boolean reNameFlag = file.renameTo(curFile);
                     if(reNameFlag) {
-                        String s1 = saveFileName(s + ".zip", backups + File.separator + s + ".zip", appId);
+                        String s1 = saveFileName(s + ".zip", "backupsRec" + File.separator + s + ".zip", appId);
                         if(!s1.equals(AppConsts.SUCCESS)){
                             boolean fileDelStatus = new File(backups + File.separator + s + ".zip").delete();
                             if(!fileDelStatus){
