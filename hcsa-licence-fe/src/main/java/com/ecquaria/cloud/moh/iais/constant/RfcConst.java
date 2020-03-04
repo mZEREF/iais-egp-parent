@@ -40,15 +40,15 @@ public class RfcConst {
 
     public static final String RFC_CURRENT_EDIT = "RfcCurrentEdit";
 
+    public static final String ACKMESSAGE ="AckMessage";
+    public static final String DODRAFTCONFIG = "DoDraftConfig";
 
     //error_msg
     public static final String ERRORMAP_PREMISES = "errorMap_premises";
 
 
     public static final String EDIT_PREMISES = "premises";
-
     public static final String EDIT_PRIMARY_DOC = "doc";
-
     public static final String EDIT_SERVICE = "service";
 
 }

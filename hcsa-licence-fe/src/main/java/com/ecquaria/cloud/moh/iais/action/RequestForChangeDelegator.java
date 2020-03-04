@@ -62,14 +62,9 @@ public class RequestForChangeDelegator {
         ParamUtil.setSessionAttr(bpc.request,"SvcName",null);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
         ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,null);
+        ParamUtil.setSessionAttr(bpc.request, RfcConst.DODRAFTCONFIG,null);
 
-
-        loadingRequestInformation(bpc);
-
-        loadingDraft(bpc);
-
-
-
+        init(bpc);
 
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
     }
@@ -84,6 +79,19 @@ public class RequestForChangeDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
         ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do prepare end ...."));
+    }
+
+    /**
+     *
+     * @param bpc
+     * @Decription prepareDraft
+     */
+    public void prepareDraft(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do prepareDraft start ...."));
+        ParamUtil.setSessionAttr(bpc.request, RfcConst.DODRAFTCONFIG,null);
+        loadingDraft(bpc);
+
+        log.debug(StringUtil.changeForLog("the do prepareDraft end ...."));
     }
 
 
@@ -246,7 +254,7 @@ public class RequestForChangeDelegator {
         String licenceId= (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         AppSubmissionDto appSubmissionDto=requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
         String serviceName=appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
-        appSubmissionDto.setServiceName(serviceName);
+        //appSubmissionDto.setServiceName(serviceName);
         ParamUtil.setRequestAttr(bpc.request, "prepareTranfer", appSubmissionDto);
     }
 
@@ -325,7 +333,7 @@ public class RequestForChangeDelegator {
         return true;
     }
 
-    private void loadingRequestInformation(BaseProcessClass bpc) throws CloneNotSupportedException {
+    private void init(BaseProcessClass bpc) throws CloneNotSupportedException {
         String licenceId = ParamUtil.getString(bpc.request, "licenceId");
         ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, licenceId);
 
@@ -360,7 +368,8 @@ public class RequestForChangeDelegator {
     private void loadingDraft(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do loadingDraft start ...."));
         String draftNo = ParamUtil.getString(bpc.request, "DraftNumber");
-        //draftNo = "DN191118000001";
+        //draftNo = "DQ2003030005426";
+        String action = "doAmend";
         if(!StringUtil.isEmpty(draftNo)){
             log.info(StringUtil.changeForLog("draftNo is not empty"));
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
@@ -369,7 +378,12 @@ public class RequestForChangeDelegator {
             }else{
                 ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, null);
             }
+            ParamUtil.setSessionAttr(bpc.request, RfcConst.DODRAFTCONFIG,"test");
+        }else{
+            action = "error";
+            ParamUtil.setRequestAttr(bpc.request, RfcConst.ACKMESSAGE,"error !!!");
         }
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, action);
         log.info(StringUtil.changeForLog("the do loadingDraft end ...."));
     }
 }

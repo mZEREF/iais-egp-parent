@@ -3,7 +3,7 @@
         <c:if test="${!FirstView}">
             <c:if test="${Msg.premiss==null}">completed </c:if> <c:if test="${Msg.premiss!=null}">incompleted </c:if>
         </c:if>" id="headingOne" role="tab">
-        <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Primary Documents</a></h4>
+        <h4 class="panel-title"><a class="collapsed" role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Primary Documents</a></h4>
     </div>
     <div class="panel-collapse collapse " id="collapseOne" role="tabpanel" aria-labelledby="headingOne">
         <div class="panel-body">

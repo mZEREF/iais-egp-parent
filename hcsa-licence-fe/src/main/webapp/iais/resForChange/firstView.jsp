@@ -65,7 +65,9 @@
                                     <div class="application-tab-footer">
                                         <div class="row">
                                             <div class="col-xs-12 col-sm-3">
+                                                <c:if test="${DoDraftConfig == null}">
                                                 <p><a id = "Back" class="back" ><em class="fa fa-angle-left"></em> Back</a></p>
+                                                </c:if>
                                             </div>
                                             <div class="col-xs-12 col-sm-3">
                                                 <div class="button-group">
