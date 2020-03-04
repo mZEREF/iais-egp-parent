@@ -7,6 +7,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
  */
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
@@ -69,7 +70,7 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
 
     @Override
-    public String saveChklItem(ChecklistItemDto itemDto) {
+    public IaisApiResult<ChecklistItemDto> saveChklItem(ChecklistItemDto itemDto) {
        return chklClient.saveChklItem(itemDto).getEntity();
     }
 

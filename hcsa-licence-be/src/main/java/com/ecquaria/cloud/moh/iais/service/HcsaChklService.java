@@ -6,6 +6,7 @@ package com.ecquaria.cloud.moh.iais.service;
  *description:
  */
 
+import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
@@ -62,7 +63,7 @@ public interface HcsaChklService {
      * backend method: saveChecklistItem
      * @param itemDto
      */
-    String saveChklItem(ChecklistItemDto itemDto);
+    IaisApiResult<ChecklistItemDto> saveChklItem(ChecklistItemDto itemDto);
 
     /**
      * list de-weight regulation clause number

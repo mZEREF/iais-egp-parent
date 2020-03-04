@@ -6,6 +6,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
  *description:
  */
 
+import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
@@ -72,7 +73,7 @@ public class HcsaChklFallback implements HcsaChklClient{
     }
 
     @Override
-    public FeignResponseEntity<String> saveChklItem(ChecklistItemDto itemDto) {
+    public FeignResponseEntity<IaisApiResult<ChecklistItemDto>> saveChklItem(ChecklistItemDto itemDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

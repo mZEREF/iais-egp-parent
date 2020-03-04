@@ -8,8 +8,10 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.IaisApiStatusCode;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
+import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -308,14 +310,15 @@ public class HcsaChklItemDelegator {
         }
 
         //Business check
-        String jsonStr = hcsaChklService.saveChklItem(itemDto);
-        MessageContent messageContent = JsonUtil.parseToObject(jsonStr, MessageContent.class);
-        if (messageContent != null){
-            String msg = MessageUtil.getMessageDesc(messageContent.getResult());
-            messageContent.setResult(msg);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
-            ParamUtil.setRequestAttr(request, "messageContent", messageContent);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+        IaisApiResult<ChecklistItemDto> itemDtoIaisApiResult = hcsaChklService.saveChklItem(itemDto);
+        if(itemDtoIaisApiResult.isHasError()){
+            Map<String, String> errorMap = new HashMap<>();
+            int errorCode = itemDtoIaisApiResult.getErrorCode();
+            if (IaisApiStatusCode.DUPLICATION_RECORD.getStatusCode() == errorCode){
+                errorMap.put("messageContent", IaisApiStatusCode.DUPLICATION_RECORD.getMessage());
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+            }
         }else {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
         }
