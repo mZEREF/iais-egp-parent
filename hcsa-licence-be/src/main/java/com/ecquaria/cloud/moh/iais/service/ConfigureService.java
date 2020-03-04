@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecific
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkloadDto;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Guyin
@@ -30,5 +29,5 @@ public interface ConfigureService {
      *
      * backend method: saveStage
      */
-    void saveStage(Map<String , List<HcsaSvcSpecificStageWorkloadDto>> map );
+    void saveStage(List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtoList );
 }

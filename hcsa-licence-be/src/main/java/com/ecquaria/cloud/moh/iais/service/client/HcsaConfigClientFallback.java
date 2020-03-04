@@ -47,7 +47,6 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 
@@ -122,7 +121,7 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
     }
 
     @Override
-    public FeignResponseEntity<Void> saveStage(Map<String, List<HcsaSvcSpecificStageWorkloadDto>> map) {
+    public FeignResponseEntity<Void> saveStage(List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtoList) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

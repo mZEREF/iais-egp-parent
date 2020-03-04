@@ -58,7 +58,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -89,11 +88,11 @@ public interface HcsaConfigClient {
     @GetMapping(value = "/manHour/{serviceId}/{stageId}")
     FeignResponseEntity<Integer> getManHour(@PathVariable("serviceId")String serviceId,@PathVariable("stageId")String stageId);
 
-    @GetMapping(value = "/hcsa-routing/list-workload")
-    FeignResponseEntity<List<HcsaSvcStageWorkloadDto>> listHcsaSvcStageWorkloadEntity(String code);
+    @PostMapping(value = "/hcsa-routing/list-workload",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaSvcStageWorkloadDto>> listHcsaSvcStageWorkloadEntity(@RequestParam("code") String code);
 
-    @PostMapping(value = "/hcsa-routing/save-stage")
-    FeignResponseEntity<Void> saveStage(@RequestBody Map<String , List<HcsaSvcSpecificStageWorkloadDto>> map);
+    @PostMapping(value = "/hcsa-routing/save-stage",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> saveStage(@RequestBody List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtoList);
 
     @PostMapping(value = "/hcsa-routing/calculate-workload")
     FeignResponseEntity<List<HcsaSvcSpecificStageWorkloadDto>> calculateWorkload(@RequestBody String serviceId);

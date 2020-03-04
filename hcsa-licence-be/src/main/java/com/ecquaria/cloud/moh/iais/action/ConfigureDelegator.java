@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
@@ -17,9 +16,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -82,36 +79,24 @@ public class ConfigureDelegator {
      */
     public void submit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        AuditTrailDto intr = AuditTrailHelper.getBatchJobDto("INTRANET");
         List<HcsaSvcSpecificStageWorkloadDto> stageSaveData = new ArrayList<>();
-        List<HcsaSvcSpecificStageWorkloadDto> stageUpdateData = new ArrayList<>();
+        int index = 1;
         for (HcsaSvcStageWorkloadDto item:hcsaSvcStageWorkloadDtoList) {
             HcsaSvcSpecificStageWorkloadDto hcsaSvcSpecificStageWorkloadDto = new HcsaSvcSpecificStageWorkloadDto();
-            HcsaSvcSpecificStageWorkloadDto inactivehcsaSvcSpecificStageWorkloadDto = new HcsaSvcSpecificStageWorkloadDto();
-            String manhour = ParamUtil.getString(request, item.getServiceName());
-            if(!manhour.equals(item.getManhourCount().toString())){
+            String name = "service"+index;
+            String manhour = ParamUtil.getString(request, name);
+            if(manhour != null && !manhour.equals(item.getManhourCount().toString())){
+                hcsaSvcSpecificStageWorkloadDto.setId(item.getId());
                 hcsaSvcSpecificStageWorkloadDto.setAppType(item.getAppType());
-                hcsaSvcSpecificStageWorkloadDto.setAuditTrailDto(intr);
                 hcsaSvcSpecificStageWorkloadDto.setManhourCount(Integer.parseInt(manhour));
                 hcsaSvcSpecificStageWorkloadDto.setServiceId(item.getServiceId());
                 hcsaSvcSpecificStageWorkloadDto.setStageId(item.getStageId());
                 hcsaSvcSpecificStageWorkloadDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 stageSaveData.add(hcsaSvcSpecificStageWorkloadDto);
-
-                inactivehcsaSvcSpecificStageWorkloadDto.setAppType(item.getAppType());
-                inactivehcsaSvcSpecificStageWorkloadDto.setAuditTrailDto(intr);
-                inactivehcsaSvcSpecificStageWorkloadDto.setId(item.getId());
-                inactivehcsaSvcSpecificStageWorkloadDto.setManhourCount(item.getManhourCount());
-                inactivehcsaSvcSpecificStageWorkloadDto.setServiceId(item.getServiceId());
-                inactivehcsaSvcSpecificStageWorkloadDto.setStageId(item.getStageId());
-                inactivehcsaSvcSpecificStageWorkloadDto.setStatus(AppConsts.COMMON_STATUS_DELETED);
-                stageUpdateData.add(inactivehcsaSvcSpecificStageWorkloadDto);
             }
+            index ++;
         }
-        Map<String , List<HcsaSvcSpecificStageWorkloadDto>> stageMap = new HashMap<String,List<HcsaSvcSpecificStageWorkloadDto>>();
-        stageMap.put("update",stageUpdateData);
-        stageMap.put("save",stageSaveData);
-        configureService.saveStage(stageMap);
+        configureService.saveStage(stageSaveData);
     }
 
 
