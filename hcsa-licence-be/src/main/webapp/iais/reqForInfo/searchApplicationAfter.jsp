@@ -39,13 +39,13 @@
                                         <iais:row>
                                             <iais:field value="Application Type"/>
                                             <iais:value width="18">
-                                                <iais:select id="application_type" name="application_type" options="appTypeOption" firstOption="Please select" value="${appTypeOption}" ></iais:select>
+                                                <iais:select id="application_type" name="application_type" options="appTypeOption" firstOption="Please select" value="${SearchParam.filters['appType']}" ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Application Status"/>
                                             <iais:value width="18">
-                                                <iais:select id="application_status" name="application_status" options="appStatusOption" firstOption="Please select" value="${appStatusOption}" ></iais:select>
+                                                <iais:select id="application_status" name="application_status" options="appStatusOption" firstOption="Please select" value="${SearchParam.filters['appStatus']}" ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -59,6 +59,11 @@
                                             <iais:value width="18">
                                                 <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['toDate']}"></iais:datePicker>
                                             </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <p style="color:#ff0000; display: none" id="submittedDateError">
+                                                &nbsp;System detects that user enters Effective end date before Effective start date in predefined format.
+                                            </p>
                                         </iais:row>
                                         <iais:action style="text-align:center;">
                                             <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doAppSearch()">Search</button>
@@ -145,7 +150,16 @@
 <script type="text/javascript">
     function doAppSearch(){
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "searchApp");
+        var to=$('#to_date').val();
+        var sub=$('#sub_date').val();
+        if(sub>to){
+            $("#submittedDateError").show();
+            dismissWaiting();
+        }
+        else {
+            SOP.Crud.cfxSubmit("mainForm", "searchApp");
+        }
+
     }
     function doAppBack(){
         showWaiting();
@@ -170,6 +184,7 @@
         SOP.Crud.cfxSubmit("mainForm", "licInfo",licenceId);
     }
     function jumpToPagechangePage(){
-        inspectorSearchTaskSubmit('searchApp');
+        doAppSearch()
     }
+
 </script>

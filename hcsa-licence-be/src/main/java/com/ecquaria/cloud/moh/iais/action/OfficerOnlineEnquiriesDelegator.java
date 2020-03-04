@@ -232,15 +232,16 @@ public class OfficerOnlineEnquiriesDelegator {
                         ) {
                             ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
                             rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
-                            //String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
+                            String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
                             reqForInfoSearchListDto.setLicenceId(lic.getId());
-                            reqForInfoSearchListDto.setLicenceStatus(lic.getLicenceStatus());
+                            reqForInfoSearchListDto.setLicenceStatus(licStatus);
                             reqForInfoSearchListDto.setLicenceNo(lic.getLicenceNo());
                             //reqForInfoSearchListDto.setServiceName(lic.getServiceName());
                             reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                             reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
                             reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
-                            reqForInfoSearchListDto.setCurrentRiskTagging(lic.getRiskLevel());
+                            String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getRiskLevel()}).get(0).getText();
+                            reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
                             reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
@@ -508,15 +509,16 @@ public class OfficerOnlineEnquiriesDelegator {
                         ) {
                             ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
                             rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
-                            //String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
+                            String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
                             reqForInfoSearchListDto.setLicenceId(lic.getId());
-                            reqForInfoSearchListDto.setLicenceStatus(lic.getLicenceStatus());
+                            reqForInfoSearchListDto.setLicenceStatus(licStatus);
                             reqForInfoSearchListDto.setLicenceNo(lic.getLicenceNo());
 //                            reqForInfoSearchListDto.setServiceName(lic.getServiceName());
                             reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                             reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
                             reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
-                            reqForInfoSearchListDto.setCurrentRiskTagging(lic.getRiskLevel());
+                            String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getRiskLevel()}).get(0).getText();
+                            reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
                             if(!StringUtil.isEmpty(serviceLicenceType)){
                                 boolean isAdd=false;
                                 List<String> serviceNames=requestForInformationService.getSvcNamesByType(serviceLicenceType);
@@ -570,6 +572,8 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setUnitNo(rfiApplicationQueryDto.getUnitNo());
         reqForInfoSearchListDto.setStreetName(rfiApplicationQueryDto.getStreetName());
         reqForInfoSearchListDto.setFloorNo(rfiApplicationQueryDto.getFloorNo());
+        String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getRiskLevel()}).get(0).getText();
+        reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
         log.debug(StringUtil.changeForLog("licenseeId start ...."+rfiApplicationQueryDto.getLicenseeId()));
         if(rfiApplicationQueryDto.getLicenseeId()!=null){
             reqForInfoSearchListDto.setLicenseeId(rfiApplicationQueryDto.getLicenseeId());

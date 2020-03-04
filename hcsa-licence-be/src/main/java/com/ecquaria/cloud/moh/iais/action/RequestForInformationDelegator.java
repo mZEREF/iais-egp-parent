@@ -152,9 +152,9 @@ public class RequestForInformationDelegator {
                 for (RfiLicenceQueryDto rfiLicenceQueryDto:licResult.getRows()
                 ) {
                     ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
-                    //String licStatus= MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiLicenceQueryDto.getLicenceStatus()}).get(0).getText();
+                    String licStatus= MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiLicenceQueryDto.getLicenceStatus()}).get(0).getText();
                     reqForInfoSearchListDto.setLicenceId(rfiLicenceQueryDto.getId());
-                    reqForInfoSearchListDto.setLicenceStatus(rfiLicenceQueryDto.getLicenceStatus());
+                    reqForInfoSearchListDto.setLicenceStatus(licStatus);
                     reqForInfoSearchListDto.setLicenceNo(rfiLicenceQueryDto.getLicenceNo());
                     reqForInfoSearchListDto.setAppId(rfiLicenceQueryDto.getAppId());
                     reqForInfoSearchListDto.setServiceName(rfiLicenceQueryDto.getServiceName());
@@ -169,7 +169,8 @@ public class RequestForInformationDelegator {
                     reqForInfoSearchListDto.setFloorNo(rfiLicenceQueryDto.getFloorNo());
                     reqForInfoSearchListDto.setLicenseeId(rfiLicenceQueryDto.getLicenseeId());
                     reqForInfoSearchListDto.setLicPremId(rfiLicenceQueryDto.getLicPremId());
-
+                    String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiLicenceQueryDto.getRiskLevel()}).get(0).getText();
+                    reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
                     LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiLicenceQueryDto.getLicenseeId());
                     reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
                     reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
@@ -224,14 +225,15 @@ public class RequestForInformationDelegator {
                             ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
 
                             rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
-                            //String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
-                            reqForInfoSearchListDto.setLicenceStatus(lic.getLicenceStatus());
+                            String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
+                            reqForInfoSearchListDto.setLicenceStatus(licStatus);
                             reqForInfoSearchListDto.setLicenceNo(lic.getLicenceNo());
                             //reqForInfoSearchListDto.setServiceName(lic.getServiceName());
                             reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                             reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
                             reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
-                            reqForInfoSearchListDto.setCurrentRiskTagging(lic.getRiskLevel());
+                            String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getRiskLevel()}).get(0).getText();
+                            reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
                             reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
@@ -335,13 +337,15 @@ public class RequestForInformationDelegator {
                         ) {
                             ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
                             rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
-                            //String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
-                            reqForInfoSearchListDto.setLicenceStatus(lic.getLicenceStatus());
+                            String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
+                            reqForInfoSearchListDto.setLicenceStatus(licStatus);
                             reqForInfoSearchListDto.setLicenceNo(lic.getLicenceNo());
                             //reqForInfoSearchListDto.setServiceName(lic.getServiceName());
                             reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                             reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
                             reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
+                            String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getRiskLevel()}).get(0).getText();
+                            reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
                             reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
@@ -355,7 +359,14 @@ public class RequestForInformationDelegator {
                 ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
             }
         }
-
+        if(!StringUtil.isEmpty(subDate)){
+            appParam.getFilters().put("subDate",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
+                    AppConsts.DEFAULT_DATE_FORMAT));
+        }
+        if(!StringUtil.isEmpty(toDate)){
+            appParam.getFilters().put("toDate",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
+                    AppConsts.DEFAULT_DATE_FORMAT));
+        }
         ParamUtil.setRequestAttr(request,"SearchParam", appParam);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setRequestAttr(request,"appStatusOption", appStatusOption);
@@ -377,7 +388,8 @@ public class RequestForInformationDelegator {
         reqForInfoSearchListDto.setUnitNo(rfiApplicationQueryDto.getUnitNo());
         reqForInfoSearchListDto.setStreetName(rfiApplicationQueryDto.getStreetName());
         reqForInfoSearchListDto.setFloorNo(rfiApplicationQueryDto.getFloorNo());
-        reqForInfoSearchListDto.setCurrentRiskTagging(rfiApplicationQueryDto.getRiskLevel());
+        String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getRiskLevel()}).get(0).getText();
+        reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
         log.debug(StringUtil.changeForLog("licenseeId start ...."+rfiApplicationQueryDto.getLicenseeId()));
         if(rfiApplicationQueryDto.getLicenseeId()!=null){
             reqForInfoSearchListDto.setLicenseeId(rfiApplicationQueryDto.getLicenseeId());
@@ -438,9 +450,9 @@ public class RequestForInformationDelegator {
                 for (RfiLicenceQueryDto rfiLicenceQueryDto:licResult.getRows()
                 ) {
                     ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
-                    //String licStatus= MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiLicenceQueryDto.getLicenceStatus()}).get(0).getText();
                     reqForInfoSearchListDto.setLicenceId(rfiLicenceQueryDto.getId());
-                    reqForInfoSearchListDto.setLicenceStatus(rfiLicenceQueryDto.getLicenceStatus());
+                    String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiLicenceQueryDto.getLicenceStatus()}).get(0).getText();
+                    reqForInfoSearchListDto.setLicenceStatus(licStatus);
                     reqForInfoSearchListDto.setLicenceNo(rfiLicenceQueryDto.getLicenceNo());
                     reqForInfoSearchListDto.setAppId(rfiLicenceQueryDto.getAppId());
                     reqForInfoSearchListDto.setServiceName(rfiLicenceQueryDto.getServiceName());
@@ -455,7 +467,8 @@ public class RequestForInformationDelegator {
                     reqForInfoSearchListDto.setFloorNo(rfiLicenceQueryDto.getFloorNo());
                     reqForInfoSearchListDto.setLicenseeId(rfiLicenceQueryDto.getLicenseeId());
                     reqForInfoSearchListDto.setLicPremId(rfiLicenceQueryDto.getLicPremId());
-
+                    String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiLicenceQueryDto.getRiskLevel()}).get(0).getText();
+                    reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
                     LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiLicenceQueryDto.getLicenseeId());
                     reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
                     if(!StringUtil.isEmpty(serviceLicenceType)){
@@ -479,7 +492,16 @@ public class RequestForInformationDelegator {
                 ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
             }
         }
+        if(!StringUtil.isEmpty(subDate)){
+            licParam.getFilters().put("start_date",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
+                    AppConsts.DEFAULT_DATE_FORMAT));
+        }
+        if(!StringUtil.isEmpty(toDate)){
+            licParam.getFilters().put("expiry_date",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
+                    AppConsts.DEFAULT_DATE_FORMAT));
+        }
         ParamUtil.setRequestAttr(request,"SearchParam", licParam);
+        ParamUtil.setRequestAttr(request,"serviceLicenceType",serviceLicenceType);
         ParamUtil.setRequestAttr(request,"licSvcTypeOption", licSvcTypeOption);
         ParamUtil.setRequestAttr(request,"licStatusOption", licStatusOption);
         // 		doSearchLicence->OnStepProcess

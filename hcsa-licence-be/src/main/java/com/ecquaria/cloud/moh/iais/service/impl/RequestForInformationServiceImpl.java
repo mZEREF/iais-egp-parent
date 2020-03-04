@@ -98,13 +98,16 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     };
     private final String[] licServiceType=new String[]{
             ApplicationConsts.SERVICE_CONFIG_TYPE_BASE,
-            ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED,
-            ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED
+            ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED
     };
     private final String[] licStatus=new String[]{
             ApplicationConsts.LICENCE_STATUS_ACTIVE,
-            ApplicationConsts.LICENCE_STATUS_IACTIVE,
-            ApplicationConsts.LICENCE_STATUS_EXPIRY
+            ApplicationConsts.LICENCE_STATUS_CEASED,
+            ApplicationConsts.LICENCE_STATUS_EXPIRY,
+            ApplicationConsts.LICENCE_STATUS_LAPSED,
+            ApplicationConsts.LICENCE_STATUS_APPROVED,
+            ApplicationConsts.LICENCE_STATUS_SUSPENDED,
+            ApplicationConsts.LICENCE_STATUS_REVOKED
     };
     private final String[] licServiceSubType=new String[]{
             ApplicationConsts.SUB_TYPE_MODALITY,

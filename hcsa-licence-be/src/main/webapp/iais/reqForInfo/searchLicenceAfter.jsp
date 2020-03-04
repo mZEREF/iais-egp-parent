@@ -28,7 +28,7 @@
                                 <div class="panel-main-content">
                                     <iais:section title="" id = "supPoolList">
                                         <iais:row>
-                                            <iais:field value="Licence No:"/>
+                                            <iais:field value="Licence No."/>
                                             <iais:value width="18">
                                                 <label>
                                                     <input type="text" style="width:180%; font-weight:normal;" name="licence_no" value="${SearchParam.filters['licence_no']}" />
@@ -38,26 +38,31 @@
                                         <iais:row>
                                             <iais:field value="Service Licence Type"/>
                                             <iais:value width="18">
-                                                <iais:select name="service_licence_type" options="licSvcTypeOption" firstOption="Please select" value="${licSvcTypeOption}" ></iais:select>
+                                                <iais:select id="service_licence_type" name="service_licence_type" options="licSvcTypeOption" firstOption="Please select" value="${serviceLicenceType}" ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Licence Status"/>
                                             <iais:value width="18">
-                                                <iais:select name="licence_status" options="licStatusOption" firstOption="Please select" value="${licStatusOption}" ></iais:select>
+                                                <iais:select id="licence_status" name="licence_status" options="licStatusOption" firstOption="Please select" value="${SearchParam.filters['licence_status']}"  ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:field value="Licence Period:"/>
+                                            <iais:field value="Licence Period From"/>
                                             <iais:value width="18">
                                                 <iais:datePicker id = "sub_date" name = "sub_date" value="${SearchParam.filters['start_date']}"></iais:datePicker>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:field value="To:"/>
+                                            <iais:field value="Licence Period To"/>
                                             <iais:value width="18">
                                                 <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['expiry_date']}"></iais:datePicker>
                                             </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <p style="color:#ff0000; display: none" id="periodDateError">
+                                                &nbsp;System detects that user enters Effective end date before Effective start date in predefined format.
+                                            </p>
                                         </iais:row>
                                         <iais:action style="text-align:center;">
                                             <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doLicSearch()">Search</button>
@@ -122,7 +127,7 @@
                                             <td><c:out value="${pool.currentRiskTagging}"/></td>
 
                                             <td>
-                                                <c:if test="${pool.licenceStatus=='LICEST001'}">
+                                                <c:if test="${pool.licenceStatus=='Active'}">
                                                     <iais:action style="text-align:center;">
                                                         <button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo('${pool.licPremId}');" >ReqForInfo</button>
                                                     </iais:action>
@@ -144,7 +149,17 @@
 </form>
 <script type="text/javascript">
     function doLicSearch(){
-        showWaiting();SOP.Crud.cfxSubmit("mainForm", "searchLic");
+        showWaiting();
+        var to=$('#to_date').val();
+        var sub=$('#sub_date').val();
+        if(sub>to){
+            $("#periodDateError").show();
+            dismissWaiting();
+        }
+        else {
+            SOP.Crud.cfxSubmit("mainForm", "searchLic");
+        }
+
     }
     function doLicBack(){
         showWaiting();SOP.Crud.cfxSubmit("mainForm", "back");
@@ -167,6 +182,6 @@
         SOP.Crud.cfxSubmit("mainForm", "licInfo",licenceId);
     }
     function jumpToPagechangePage(){
-        inspectorSearchTaskSubmit('searchLic');
+        doLicSearch()
     }
 </script>

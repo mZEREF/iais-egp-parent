@@ -109,7 +109,7 @@
                                             <td><c:out value="${pool.currentRiskTagging}"/></td>
 
                                             <td>
-                                               <c:if test="${pool.licenceStatus=='LICEST001'}">
+                                               <c:if test="${pool.licenceStatus=='Active'}">
                                                    <iais:action style="text-align:center;">
                                                        <button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo('${pool.licPremId}');" >ReqForInfo</button>
                                                    </iais:action>
@@ -172,5 +172,8 @@
     function doLicInfo(licenceId) {
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "licInfo",licenceId);
+    }
+    function jumpToPagechangePage(){
+        doSearch()
     }
 </script>

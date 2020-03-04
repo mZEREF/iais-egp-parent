@@ -171,4 +171,8 @@
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "licInfo",licenceId);
     }
+    function jumpToPagechangePage(){
+        doSearch()
+    }
+
 </script>
