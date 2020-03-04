@@ -3,6 +3,7 @@
         <input type="hidden" name="lic_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="crud_action_additional" value="">
+        <input type="hidden" name="action_id_value" value="">
         <div class="row">
             <div class="col-md-12">
                 <iais:value>
@@ -127,7 +128,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <a href="#" onclick="toLicView('<iais:mask name="licId" value="${licenceQuery.id}"/>')">${licenceQuery.licenceNo}</a>
+                                        <a href="#" onclick="toLicView('<iais:mask name="action_id_value" value="${licenceQuery.id}"/>')">${licenceQuery.licenceNo}</a>
                                         <input type="hidden" name="licenId${status.index}" value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
                                     </td>
                                     <td>

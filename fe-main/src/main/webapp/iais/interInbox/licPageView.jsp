@@ -92,7 +92,7 @@
 
     function toLicView(licId){
         showWaiting();
-        $("[name='crud_action_value']").val(licId);
+        $("[name='mask_lic_Id']").val(licId);
         $("[name='crud_action_additional']").val("toLicView");
         submit('licDoAmend');
     }
