@@ -67,6 +67,9 @@ public class MessageUtil {
         return  msg.replace("%d", paramVal);
     }
 
+    public static String dateIntoMessage(String codeKey){
+        return dateIntoMessage(codeKey, "yyyy-MM-dd");
+    }
 
     public static String dateIntoMessage(String codeKey, String pattern){
         if (StringUtils.isEmpty(codeKey) || StringUtils.isEmpty(pattern)){
