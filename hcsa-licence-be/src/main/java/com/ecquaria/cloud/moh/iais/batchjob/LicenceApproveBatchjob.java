@@ -251,16 +251,14 @@ public class LicenceApproveBatchjob {
         }
         for(ApplicationListDto applicationListDto : applicationListDtoList){
             ApplicationDto applicationDto = applicationListDto.getApplicationDto();
-            String serviceId = applicationDto.getServiceId();
-            log.debug(StringUtil.changeForLog("The serviceId is -->:" + serviceId));
-            List<ApplicationListDto> applicationListDtos = result.get(serviceId);
-            if(applicationListDtos != null){
-                applicationListDtos.add(applicationListDto);
-            }else{
+            String groupLicenceFlag = applicationDto.getGroupLicenceFlag();
+            log.debug(StringUtil.changeForLog("The groupLicenceFlag is -->:" + groupLicenceFlag));
+            List<ApplicationListDto> applicationListDtos = result.get(groupLicenceFlag);
+            if(applicationListDtos == null){
                 applicationListDtos = new ArrayList<>();
-                applicationListDtos.add(applicationListDto);
             }
-            result.put(serviceId,applicationListDtos);
+            applicationListDtos.add(applicationListDto);
+            result.put(groupLicenceFlag,applicationListDtos);
         }
         return result;
     }
@@ -303,10 +301,12 @@ public class LicenceApproveBatchjob {
                 //to check this applicaiton is approve
                 AppPremisesRecommendationDto appPremisesRecommendationDto = applicationListDtos.get(0).getAppPremisesRecommendationDto();
                 //get service code
-                log.debug(StringUtil.changeForLog("The serviceId is -->:" + key));
-                HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(hcsaServiceDtos,key);
+                log.debug(StringUtil.changeForLog("The key is -->:" + key));
+                String serviceId = applicationListDtos.get(0).getApplicationDto().getServiceId();
+                log.debug(StringUtil.changeForLog("The serviceId is -->:" + serviceId));
+                HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(hcsaServiceDtos,serviceId);
                 if(hcsaServiceDto ==  null){
-                    errorMessage = "This ServiceId can not get the HcsaServiceDto -->:"+key;
+                    errorMessage = "This ServiceId can not get the HcsaServiceDto -->:"+serviceId;
                     break;
                 }
                 //create licence
@@ -314,11 +314,11 @@ public class LicenceApproveBatchjob {
                 String licenceNo = null;
                 int yearLength = getYearLength(appPremisesRecommendationDto);
                 //create licence
-                if(applicationGroupDto.isNeedNewLicNo()) {
+                if(applicationListDtos.get(0).getApplicationDto().isNeedNewLicNo()) {
                     licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(), yearLength);
                 }
                 log.debug(StringUtil.changeForLog("The licenceNo is -->;"+licenceNo));
-                if(StringUtil.isEmpty(licenceNo)&& applicationGroupDto.isNeedNewLicNo()){
+                if(StringUtil.isEmpty(licenceNo)&& applicationListDtos.get(0).getApplicationDto().isNeedNewLicNo()){
                     errorMessage = "The licenceNo is null .-->:" + hcsaServiceDto.getSvcCode() + ":" + applicationListDtos.size() + ":" + yearLength;
                     break;
                 }
@@ -506,11 +506,11 @@ public class LicenceApproveBatchjob {
                     superLicDto.setPremisesGroupDtos(premisesGroupDtos);
 
                     //create licence
-                    if(applicationGroupDto.isNeedNewLicNo()){
+                    if(applicationDto.isNeedNewLicNo()){
                         licenceNo = licenceService.getLicenceNo(premisesGroupDto.getPremisesDto().getHciCode(),hcsaServiceDto.getSvcCode(),yearLength);
                     }
                     log.debug(StringUtil.changeForLog("The licenceNo is -->;"+licenceNo));
-                    if(StringUtil.isEmpty(licenceNo) && applicationGroupDto.isNeedNewLicNo()){
+                    if(StringUtil.isEmpty(licenceNo) && applicationDto.isNeedNewLicNo()){
                         errorMessage = "The licenceNo is null .-->:" + premisesGroupDto.getPremisesDto().getHciCode() + ":" + hcsaServiceDto.getSvcCode() + ":" + yearLength;
                         break;
                     }
