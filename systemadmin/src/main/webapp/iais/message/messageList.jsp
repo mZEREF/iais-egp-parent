@@ -27,7 +27,7 @@
                 <div id = "msgTypeRow" class="form-group" style="display:none">
                     <label class="col-xs-4 col-md-2 control-label" >Message Type</label>
                     <div class="col-xs-5 col-md-3">
-                        <iais:select name="msgType" id="msgType" value="${msgType}" options="msgTypeSelect" firstOption="Please select" ></iais:select>
+                        <iais:select name="msgType" id="msgType" value="${msgType}" options="msgTypeSelect" firstOption="Please select" onchange="displaySection()"></iais:select>
                     </div>
                 </div>
 
@@ -146,7 +146,6 @@
 
     function displaySection(){
         var val = document.getElementById("domainType").value;
-        console.log(val);
         if(val == null || val == '' ){
             return;
         }
@@ -154,7 +153,7 @@
         document.getElementById("msgTypeRow").style = "block";
 
         if(document.getElementById("msgType").value == null || document.getElementById("msgType").value == '' ){
-            console.log("====>>>>>>>>");
+            console.log("can not open div");
             return;
         }
 
