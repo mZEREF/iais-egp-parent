@@ -59,10 +59,10 @@ public class EventBusCallBackDelegator {
                 log.info(StringUtil.changeForLog("The EventBusCallBackDelegator callBack map start ..."));
                  for (ServiceStatus status : ent.getValue()) {
                      log.info(StringUtil.changeForLog("The EventBusCallBackDelegator callBack status.getStatus()) -->:"+status.getStatus()));
-                     if (!status.getStatus().equals(GlobalConstants.STATE_COMPLETED)) {
+                     if (!status.getStatus().contains(GlobalConstants.STATE_COMPLETED)) {
                          completed = false;
                      }
-                     if (!status.getStatus().equals(GlobalConstants.STATUS_SUCCESS)) {
+                     if (!status.getStatus().contains(GlobalConstants.STATUS_SUCCESS)) {
                          success = false;
                      }
                  }
