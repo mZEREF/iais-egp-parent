@@ -319,7 +319,6 @@ public class InterInboxDelegator {
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }
-
         if ("Withdraw".equals(ParamUtil.getString(request, InboxConst.ACTION_TYPE_VALUE))){
             String appId = ParamUtil.getString(request, InboxConst.ACTION_ID_VALUE);
             String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
@@ -332,16 +331,28 @@ public class InterInboxDelegator {
                     .append(appNo);
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
-        }else {
-        String appNo = ParamUtil.getMaskedString(request, InboxConst.ACTION_NO_VALUE);
-//        String draftNo = inboxService.getDraftNumber(appNo);
-        StringBuffer url = new StringBuffer();
-        url.append("https://").append(bpc.request.getServerName())
-                .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication")
-                .append("?DraftNumber=")
-                .append(appNo);
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);}
+        }
+        String a = ParamUtil.getMaskedString(request, InboxConst.ACTION_TYPE_VALUE);
+        if("APTY005".equals(ParamUtil.getMaskedString(request, InboxConst.ACTION_TYPE_VALUE))){
+            String appNo = ParamUtil.getMaskedString(request, InboxConst.ACTION_NO_VALUE);
+            StringBuffer url = new StringBuffer();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohRequestForChange/prepareDraft")
+                    .append("?DraftNumber=")
+                    .append(appNo);
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }
+        else {
+            String appNo = ParamUtil.getMaskedString(request, InboxConst.ACTION_NO_VALUE);
+    //        String draftNo = inboxService.getDraftNumber(appNo);
+            StringBuffer url = new StringBuffer();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication")
+                    .append("?DraftNumber=")
+                    .append(appNo);
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);}
     }
 
     /**
