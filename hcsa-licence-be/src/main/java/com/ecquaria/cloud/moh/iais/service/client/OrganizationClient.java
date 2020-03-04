@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventInspRecItemNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
@@ -130,4 +131,8 @@ public interface OrganizationClient {
 
     @GetMapping(value = "/iais-task/com-tasks/{refNo}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getCompleteTaskByRefNo(@PathVariable(name = "refNo") String refNo);
+
+    @PostMapping(value = "/iais-task/rec-event-task", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<EventInspRecItemNcDto> getEventInspRecItemNcTaskByCorrIds(@RequestBody EventInspRecItemNcDto eventInspRecItemNcDto);
 }

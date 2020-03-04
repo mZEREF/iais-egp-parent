@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventInspRecItemNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -82,4 +83,8 @@ public interface InspectionTaskClient {
     @GetMapping(value = "/iais-apppreinsncitem-be/nc-file-ids/{id}",produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<AppPremPreInspectionNcDocDto>> getFilesByItemId(@PathVariable(name = "id") String id);
+
+    @PostMapping(value = "/iais-inspection/ins-rec-event", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<EventInspRecItemNcDto> getEventInspRecItemNcDtoByCorrIds(@RequestBody EventInspRecItemNcDto eventInspRecItemNcDto);
 }

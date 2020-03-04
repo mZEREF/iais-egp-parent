@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.annotation.EicService;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -9,13 +8,17 @@ import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventInspRecItemNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.InspecSaveBeRecByService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
@@ -64,6 +67,15 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     @Autowired
     private SubmissionClient submissionClient;
+
+    @Autowired
+    private ApplicationClient applicationClient;
+
+    @Autowired
+    private InspectionTaskClient inspectionTaskClient;
+
+    @Autowired
+    private OrganizationClient organizationClient;
 
     @Override
     public List<ProcessFileTrackDto> getFileTypeAndStatus(String applicationStatusFeToBeRectification, String commonStatusActive) {
@@ -146,9 +158,12 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         Boolean fileBoolean = false;
         Boolean aBoolean = false;
         File file = new File(download);
+        List<String> appPremCorrIds = new ArrayList<>();
+        List<String> appIds = new ArrayList<>();
         if(file.isDirectory()){
             File[] files = file.listFiles();
             for(ProcessFileTrackDto pDto:processFileTrackDtos){
+                appIds.add(pDto.getRefId());
                 String fileName = pDto.getFileName().substring(0,pDto.getFileName().lastIndexOf("."));
                 for(File file2:files){
                     //file2 is zip
@@ -170,13 +185,37 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 }
             }
         }
+        if(!IaisCommonUtils.isEmpty(appIds)){
+            for(String appId : appIds){
+                List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.listAppPremisesCorrelation(appId).getEntity();
+                if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){
+                    AppPremisesCorrelationDto appPremisesCorrelationDto = appPremisesCorrelationDtos.get(0);
+                    appPremCorrIds.add(appPremisesCorrelationDto.getId());
+                }
+            }
+        }
+        if(!IaisCommonUtils.isEmpty(appPremCorrIds)){
+            EventInspRecItemNcDto eventInspRecItemNcDto = new EventInspRecItemNcDto();
+            //get Task
+            eventInspRecItemNcDto.setAppPremCorrIds(appPremCorrIds);
+            eventInspRecItemNcDto.setAuditTrailDto(intranet);
+            eventInspRecItemNcDto = organizationClient.getEventInspRecItemNcTaskByCorrIds(eventInspRecItemNcDto).getEntity();
+            //get Application / History / Inspection Status
+            if(eventInspRecItemNcDto.getTaskDtos() != null) {
+                eventInspRecItemNcDto.setAuditTrailDto(intranet);
+                eventInspRecItemNcDto = inspectionTaskClient.getEventInspRecItemNcDtoByCorrIds(eventInspRecItemNcDto).getEntity();
+            }
+            String callbackUrl = systemParamConfig.getInterServerName()
+                    + "/hcsa-licence-web/eservice/INTRANET/MohInspecSaveRecRollBack";
+            SubmitReq req = EventBusHelper.getSubmitReq(eventInspRecItemNcDto, appPremCorrIds.get(0), "licenceSave",
+                    EventBusConsts.OPERATION_BE_REC_DATA_COPY, "", callbackUrl, "batchjob",
+                    false, "INTRANET",
+                    "InspecSaveBeRecByFeBatchjob", "start");
+            SubmitResp submitResp = submissionClient.submit(AppConsts.REST_PROTOCOL_TYPE
+                    + RestApiUrlConsts.EVENT_BUS, req);
+        }
 
         return saveFlag;
-    }
-
-    @EicService
-    private boolean saveEicAndApp(ProcessFileTrackDto pDto, String inspecSaveBeRecByImpl, ApplicationDto applicationDto) {
-        return false;
     }
 
     private void saveDataDtoAndFile(File file2, AuditTrailDto intranet, boolean aBoolean, List<String> textJson,
