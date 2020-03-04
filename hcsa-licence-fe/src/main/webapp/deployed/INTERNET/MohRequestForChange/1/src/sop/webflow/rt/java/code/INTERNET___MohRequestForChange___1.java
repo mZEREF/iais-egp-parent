@@ -10,10 +10,10 @@
  * reasons.
  */
 package sop.webflow.rt.java.code;
-import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
+import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTERNET___MohRequestForChange___1  extends BaseProcessClass {
+public class INTERNET___MohRequestForChange___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="requestForChangeDelegator";
 
 
@@ -54,6 +54,11 @@ public class INTERNET___MohRequestForChange___1  extends BaseProcessClass {
 	public void step2_OnStepProcess_1() throws Exception {
 	// 		Step2->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareTranfer", this);
+	}
+
+	public void prepareDraft_OnStepProcess_0() throws Exception {
+	// 		prepareDraft->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareDraft", this);
 	}
 
 }
