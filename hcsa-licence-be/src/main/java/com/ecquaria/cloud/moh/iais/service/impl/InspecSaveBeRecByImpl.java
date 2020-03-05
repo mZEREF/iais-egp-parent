@@ -8,11 +8,15 @@ import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventInspRecItemNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.InspecSaveBeRecByService;
@@ -39,7 +43,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
@@ -130,7 +136,11 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     }
 
     private void unzipFile(ZipEntry zipEntry, ZipFile zipFile, String fileName)  {
-        File zipFile1 = MiscUtil.generateFile(compressPath, zipEntry.getName());
+        String realPath = compressPath + fileName.substring(0, fileName.lastIndexOf(File.separator) + 1);
+        String saveFileName = fileName.substring(fileName.lastIndexOf(File.separator) + 1);
+        log.debug(StringUtil.changeForLog("realPath:" + realPath));
+        log.debug(StringUtil.changeForLog("saveFileName:" + saveFileName));
+        File zipFile1 = MiscUtil.generateFile(realPath, saveFileName);
         try(OutputStream os = new FileOutputStream(zipFile1);
             BufferedOutputStream bos = new BufferedOutputStream(os);
             InputStream is = zipFile.getInputStream(zipEntry);
@@ -189,7 +199,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 }
             }
         }
-        /*if(!IaisCommonUtils.isEmpty(appIds)){
+        if(!IaisCommonUtils.isEmpty(appIds)){
             Set<String> appIdSet = new HashSet<>(appIds);
             for(String appId : appIdSet){
                 AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
@@ -233,7 +243,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 }
             }
         }
-*/
+
         return saveFlag;
     }
 
