@@ -121,6 +121,7 @@ public class InterInboxDelegator {
         List<InboxQueryDto> inboxQueryDtoList = inboxResult.getRows();
         for (InboxQueryDto inboxQueryDto:inboxQueryDtoList
                 ) {
+            String msgType = MasterCodeUtil.getCodeDesc(inboxQueryDto.getMessageType());
             String serviceName = inboxService.getServiceNameById(inboxQueryDto.getServiceId());
             inboxQueryDto.setProcessUrl(RedirectUtil.changeUrlToCsrfGuardUrlUrl(inboxQueryDto.getProcessUrl(), request));
             inboxQueryDto.setServiceId(serviceName);
@@ -504,7 +505,7 @@ public class InterInboxDelegator {
     private void prepareLicSelectOption(HttpServletRequest request){
         List<SelectOption> LicenceStatusList = new ArrayList<>();
         LicenceStatusList.add(new SelectOption("All", "All"));
-        LicenceStatusList.add(new SelectOption("LICEST001", "Action"));
+        LicenceStatusList.add(new SelectOption("LICEST001", "Active"));
         LicenceStatusList.add(new SelectOption("LICEST002", "Ceased"));
         LicenceStatusList.add(new SelectOption("LICEST003", "Expired"));
         LicenceStatusList.add(new SelectOption("LICEST004", "Lapsed "));
