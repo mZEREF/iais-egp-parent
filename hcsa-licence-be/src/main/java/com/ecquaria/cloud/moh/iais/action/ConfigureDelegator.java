@@ -4,6 +4,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkloadDto;
@@ -16,7 +17,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -47,7 +50,7 @@ public class ConfigureDelegator {
         AuditTrailHelper.auditFunction("hcsa inspection", "ConfigureDelegator");
 
         HttpServletRequest request = bpc.request;
-        this.stageNames = configureService.listStage();
+        stageNames = configureService.listStage();
         List<SelectOption> stageSelect = new ArrayList<>();
 
         for(HcsaSvcRoutingStageDto sn : stageNames){
@@ -66,7 +69,39 @@ public class ConfigureDelegator {
     public void serviceInStage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String stageValue = ParamUtil.getString(request , "stageSelect");
+        String stageId = "";
+        for(HcsaSvcRoutingStageDto sn : stageNames){
+            if(sn.getStageCode().equals(stageValue)){
+                stageId = sn.getId();
+            }
+        }
         hcsaSvcStageWorkloadDtoList = configureService.serviceInStage(stageValue);
+        List<HcsaServiceDto> hcsaServiceDtoList = configureService.getActiveServices();
+        Map<String,HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtoMap = new HashMap<>();
+        List<HcsaSvcStageWorkloadDto> newlist = new ArrayList<>();
+        if(hcsaSvcStageWorkloadDtoList != null){
+            for (HcsaSvcStageWorkloadDto stage:hcsaSvcStageWorkloadDtoList
+            ) {
+                hcsaSvcStageWorkloadDtoMap.put(stage.getServiceId(),stage);
+            }
+        }
+
+        for (HcsaServiceDto item:hcsaServiceDtoList
+             ) {
+            if(hcsaSvcStageWorkloadDtoMap.get(item.getId()) != null){
+                newlist.add(hcsaSvcStageWorkloadDtoMap.get(item.getId()));
+            }else{
+                HcsaSvcStageWorkloadDto hcsa = new HcsaSvcStageWorkloadDto();
+                hcsa.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                hcsa.setManhourCount(0);
+                hcsa.setServiceId(item.getId());
+                hcsa.setServiceName(item.getSvcName());
+                hcsa.setStageId(stageId);
+                hcsa.setAppType("APTY001");
+                newlist.add(hcsa);
+            }
+        }
+        hcsaSvcStageWorkloadDtoList = newlist;
         ParamUtil.setRequestAttr(request, "stageValue", stageValue);
         ParamUtil.setRequestAttr(request, "stageList", hcsaSvcStageWorkloadDtoList);
     }
@@ -86,7 +121,9 @@ public class ConfigureDelegator {
             String name = "service"+index;
             String manhour = ParamUtil.getString(request, name);
             if(manhour != null && !manhour.equals(item.getManhourCount().toString())){
-                hcsaSvcSpecificStageWorkloadDto.setId(item.getId());
+                if(item.getId() != null){
+                    hcsaSvcSpecificStageWorkloadDto.setId(item.getId());
+                }
                 hcsaSvcSpecificStageWorkloadDto.setAppType(item.getAppType());
                 hcsaSvcSpecificStageWorkloadDto.setManhourCount(Integer.parseInt(manhour));
                 hcsaSvcSpecificStageWorkloadDto.setServiceId(item.getServiceId());

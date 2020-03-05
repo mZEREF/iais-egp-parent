@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkloadDto;
@@ -30,5 +31,10 @@ public class ConfigureServiceImpl implements ConfigureService {
     @Override
     public void saveStage(List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtoList ){
         hcsaConfigClient.saveStage(hcsaSvcSpecificStageWorkloadDtoList);
+    }
+
+    @Override
+    public List<HcsaServiceDto> getActiveServices(){
+        return hcsaConfigClient.getActiveServices().getEntity();
     }
 }
