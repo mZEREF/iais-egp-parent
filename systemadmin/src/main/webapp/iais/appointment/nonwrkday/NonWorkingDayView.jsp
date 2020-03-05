@@ -24,6 +24,14 @@
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <input type="hidden" name="currentValidateId" value="">
+
+
+<c:choose>
+  <c:when test="${empty wrlGrpNameOpt}">
+    Your current group cannot be found or you are not an inspection lead !
+  </c:when>
+  <c:otherwise>
+
     <div class="bg-title"><h2>Define Inspection Team's Weekly Non-Working Days</h2></div>
     <div class="col-md-3">
       <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  onchange="doSearch()" options = "wrlGrpNameOpt" firstOption="Please Select" value="${currentGroupId}" ></iais:select>
@@ -109,8 +117,12 @@
 
     </div>
 
+  </c:otherwise>
+</c:choose>
+
   </form>
 </div>
+
 
 <script>
     function doSearch() {

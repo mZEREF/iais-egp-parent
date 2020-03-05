@@ -10,15 +10,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,9 +21,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 @FeignClient(name = "hcsa-config", configuration = {FeignConfiguration.class},
         fallback = HcsaChklFallback.class)
 public interface HcsaChklClient {
+
 
     @PostMapping(path = "/iais-hcsa-checklist/config/status", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> inActiveConfig(@RequestBody String confId);
@@ -53,6 +51,9 @@ public interface HcsaChklClient {
 
     @GetMapping(path = "/iais-hcsa-checklist/regulation/regulation-clauses-distinct")
     FeignResponseEntity<List<String>> listRegulationClauseNo();
+
+    @GetMapping(path = "/iais-hcsa-checklist/regulations")
+    FeignResponseEntity<List<HcsaChklSvcRegulationDto>> getAllRegulation();
 
     @PostMapping(path = "/iais-hcsa-checklist/item/items-clone", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos);

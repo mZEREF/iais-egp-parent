@@ -9,18 +9,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.InspectorCalendarQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.AppointmentService;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,11 +25,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author: yichen
@@ -68,6 +60,7 @@ public class InspectorCalendarDelegator {
 	 * @throws IllegalAccessException
 	 */
 	public void startStep(BaseProcessClass bpc){
+		AccessUtil.initLoginUserInfo(bpc.request);
 		HttpServletRequest request = bpc.request;
 		log.debug(StringUtil.changeForLog("the inspector calendar start ...."));
 		log.info("Step 1 ==============>" + bpc.request.getSession().getId());
@@ -137,7 +130,16 @@ public class InspectorCalendarDelegator {
 		List<String> leadGroupList = appointmentService.getInspectorGroupLeadByLoginUser(loginContext);
 
 		SearchParam workingGroupQuery = new SearchParam(WorkingGroupQueryDto.class.getName());
-		QueryHelp.setMainSql("systemAdmin", "getWorkingGroupByUserId", workingGroupQuery);
+		workingGroupQuery.addParam("userId", currentUserId);
+		QueryHelp.setMainSql("systemAdmin", "getInspWorkingGroup", workingGroupQuery);
+		workingGroupQuery.addFilter("userId", currentUserId, true);
+
+		SearchResult<WorkingGroupQueryDto> workingGroupBySearchParam = intranetUserService.getWorkingGroupBySearchParam(workingGroupQuery);
+
+		if (workingGroupBySearchParam == null || IaisCommonUtils.isEmpty(workingGroupBySearchParam.getRows())){
+			return;
+		}
+
 		List<WorkingGroupQueryDto> workingGroupQueryList = intranetUserService.getWorkingGroupBySearchParam(workingGroupQuery)
 				.getRows();
 

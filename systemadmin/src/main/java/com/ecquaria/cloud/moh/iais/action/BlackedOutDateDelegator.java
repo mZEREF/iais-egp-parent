@@ -16,11 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.AppointmentService;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,14 +26,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author: yichen
@@ -71,7 +60,7 @@ public class BlackedOutDateDelegator {
      */
     public void startStep(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
+        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("Appointment",
                 "Blacked out date ");
 
@@ -101,6 +90,7 @@ public class BlackedOutDateDelegator {
         String userId = loginContext.getUserId();
 
         SearchParam workingGroupQuery = new SearchParam(WorkingGroupQueryDto.class.getName());
+        workingGroupQuery.addParam("userId", userId);
         QueryHelp.setMainSql("systemAdmin", "getWorkingGroupByUserId", workingGroupQuery);
         workingGroupQuery.addFilter("userId", userId, true);
 
@@ -134,16 +124,16 @@ public class BlackedOutDateDelegator {
         if (isNew.equals("true")){
             blackQuery.addParam("shortName", defualtId);
             blackQuery.addFilter("shortName", defualtId, true);
-            ParamUtil.setRequestAttr(request, "shortName", defualtId);
             ParamUtil.setSessionAttr(request, "isNewViewData", "false");
         }
 
+        ParamUtil.setRequestAttr(request, "shortName", defualtId);
         QueryHelp.setMainSql("systemAdmin", "getBlackedOutDateList", blackQuery);
 
 
         SearchResult<ApptBlackoutDateQueryDto> blackoutDateQueryList  = appointmentService.doQuery(blackQuery);
 
-        ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT, (Serializable) wrlGrpNameOpt);
+        ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT, (Serializable) wrlGrpNameOpt);
         ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_QUERY, blackQuery);
         ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_RESULT, blackoutDateQueryList);
     }
@@ -177,6 +167,11 @@ public class BlackedOutDateDelegator {
                 ApptBlackoutDateQueryDto blackoutDateQueryDto = blackoutDateQueryList.stream()
                         .filter(item -> item.getId().equals(blackDateId)).findFirst().orElse(null);
                 if (Optional.of(blackoutDateQueryDto).isPresent()){
+                    ParamUtil.setRequestAttr(request, "shortName", blackoutDateQueryDto.getShortName());
+                    ParamUtil.setRequestAttr(request, "startDate", IaisEGPHelper.parseToString(blackoutDateQueryDto.getStartDate(), "dd/MM/yyyy"));
+                    ParamUtil.setRequestAttr(request, "endDate", IaisEGPHelper.parseToString(blackoutDateQueryDto.getEndDate(), "dd/MM/yyyy"));
+                    ParamUtil.setRequestAttr(request, "desc", blackoutDateQueryDto.getDesc());
+                    ParamUtil.setRequestAttr(request, "status", blackoutDateQueryDto.getStatus());
                     ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_ATTR, blackoutDateQueryDto);
                 }
             }
@@ -272,7 +267,7 @@ public class BlackedOutDateDelegator {
         ApptBlackoutDateDto blackoutDateDto = new ApptBlackoutDateDto();
         if (ans == CREATE_ACTION) {
             propertName = "insert";
-            blackoutDateDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+            blackoutDateDto.setSrcSystemId(AppointmentConstants.APPT_SRC_SYSTEM_PK_ID);
             blackoutDateDto.setShortName(groupName);
             blackoutDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 

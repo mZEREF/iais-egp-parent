@@ -35,6 +35,9 @@
                 </iais:value>
               </iais:row>
 
+            <div class="clearRow">
+
+              <c:if test="${isGroupLead == 'Y'}">
               <iais:row>
                 <iais:field value="Inspector ID."/>
                 <iais:value width="18">
@@ -42,6 +45,7 @@
                   <span id="error_userName" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
               </iais:row>
+              </c:if>
 
             <iais:row>
               <iais:field value="Year."/>
@@ -87,8 +91,10 @@
 
             <iais:action style="text-align:center;">
               <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doSearch()">Search</button>
-              <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doClear()">Clear</button>
+              <button class="btn btn-lg btn-login-clear-inner" type="button"  style="background:#2199E8; color: white" onclick="javascript:doClear()">Clear</button>
             </iais:action>
+
+            </div>
           </iais:section>
     </form>
 
@@ -140,10 +146,8 @@
                             <td>${calendar.description}</td>
                             <td>
                               <input type="hidden" id="nonAvailId" name="nonAvailId" value="">
-                              <c:if test="${isGroupLead == 'Y'}">
                                 <button type="button"   onclick="doDelete('<iais:mask name="nonAvailId" value="${calendar.id}"/>')"  class="btn btn-default btn-sm" >Delete</button>
                                 <button type="button"  onclick="doEdit('<iais:mask name="nonAvailId" value="${calendar.id}"/>')" class="btn btn-default btn-sm" >Update</button>
-                              </c:if>
                             </td>
                           </tr>
                         </c:forEach>
@@ -175,9 +179,7 @@
     </div>
 
     <div class="text-right text-center-mobile">
-      <c:if test="${isGroupLead == 'Y'}">
         <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doAdd();">Create</a>
-      </c:if>
     </div>
 
   </form>
@@ -201,6 +203,21 @@
     function doDelete(val) {
         $('#nonAvailId').val(val);
         SOP.Crud.cfxSubmit("mainForm", "delete", val);
+    }
+    
+    function doClear() {
+      $("#userName").val("");
+      $("#userBlockDateStart").val("");
+      $("#userBlockDateEnd").val("");
+      $("#userBlockDateDescription").val("");
+
+      $("#recurrence option[text = 'N/A']").val("selected", "selected");
+      $("#recurrence").val("N/A");
+
+      $("#dropYearOpt option[text = 'Please Select']").val("selected", "selected");
+      $("#dropYearOpt").val("");
+
+      $(".form-horizontal .clearRow .current").text("Please Select");
     }
     
 </script>

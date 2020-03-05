@@ -11,6 +11,8 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.Formatter" %>
 <%
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -63,8 +65,9 @@
             <label class="col-md-2">Blacked Out Date Start :
             </label>
             <div class="col-md-5">
+              <%Date ssd = Formatter.parseDate((String) request.getAttribute("startDate"));%>
               <iais:datePicker name="startDate"
-                                dateVal="${blackedOutDateAttr.startDate}"
+                                dateVal="<%=ssd%>"
               ></iais:datePicker>
               <span id="error_startDate" name="iaisErrorMsg" class="error-msg"></span>
             </div>
@@ -76,8 +79,9 @@
             <label class="col-md-2">Blacked Out Date End:
             </label>
             <div class="col-md-5">
+              <%Date esd = Formatter.parseDate((String) request.getAttribute("endDate"));%>
               <iais:datePicker name="endDate"
-                                dateVal="${blackedOutDateAttr.endDate}"></iais:datePicker>
+                                dateVal="<%=esd%>"></iais:datePicker>
             </div>
             <span id="error_endDate" name="iaisErrorMsg" class="error-msg"></span>
           </div>
@@ -89,8 +93,8 @@
             <label class="col-md-2">Blacked Out Date Description:
             </label>
             <div class="col-md-5">
-              <input type="text" name="desc"
-                     value="${blackedOutDateAttr.desc}">
+              <input type="text" max="255" name="desc"
+                     value="${desc}">
               <span id="error_desc" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
@@ -102,7 +106,7 @@
             </label>
             <div class="col-md-5">
               <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
-                           firstOption="Select Status" filterValue="CMSTAT002" value="${blackedOutDateAttr.status}"></iais:select>
+                           firstOption="Select Status" filterValue="CMSTAT002" value="${status}"></iais:select>
             </div>
         </div>
       </div>

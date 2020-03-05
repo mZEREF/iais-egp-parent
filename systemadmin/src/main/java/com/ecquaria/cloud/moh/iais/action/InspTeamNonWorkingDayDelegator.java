@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
@@ -12,6 +13,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -25,12 +28,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author: yichen
@@ -69,7 +67,7 @@ public class InspTeamNonWorkingDayDelegator {
 
 		AuditTrailHelper.auditFunction("Appointment",
 				"Non working day");
-
+		AccessUtil.initLoginUserInfo(bpc.request);
 		ParamUtil.setSessionAttr(request, NON_WKR_DAY_LIST_ATTR, null);
 		ParamUtil.setSessionAttr(request, CURRENT_SHORT_NAME, null);
 	}
@@ -84,15 +82,28 @@ public class InspTeamNonWorkingDayDelegator {
 
 		ParamUtil.setSessionAttr(request, NON_WKR_DAY_ATTR, null);
 
-		SearchParam workingGroupQuery = new SearchParam(WorkingGroupQueryDto.class.getName());
-		QueryHelp.setMainSql("systemAdmin", "getWorkingGroupByUserId", workingGroupQuery);
+		//userid -->> current user group , find it lead to group
+		LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
 
-		List<WorkingGroupQueryDto> workingGroupQueryList = intranetUserService.getWorkingGroupBySearchParam(workingGroupQuery)
-				.getRows();
-
-		if (IaisCommonUtils.isEmpty(workingGroupQueryList)){
+		if (!Optional.ofNullable(loginContext).isPresent()){
+			log.info("can not find current user");
 			return;
 		}
+
+		String userId = loginContext.getUserId();
+
+		SearchParam workingGroupQuery = new SearchParam(WorkingGroupQueryDto.class.getName());
+		workingGroupQuery.addParam("userId", userId);
+		QueryHelp.setMainSql("systemAdmin", "getWorkingGroupByUserId", workingGroupQuery);
+		workingGroupQuery.addFilter("userId", userId, true);
+
+
+		SearchResult<WorkingGroupQueryDto> searchResult = intranetUserService.getWorkingGroupBySearchParam(workingGroupQuery);
+		if (searchResult == null || IaisCommonUtils.isEmpty(searchResult.getRows())){
+			return;
+		}
+
+		List<WorkingGroupQueryDto> workingGroupQueryList = searchResult.getRows();
 
 		List<ApptNonWorkingDateDto> nonWorkingDateListByWorkGroupId;
 		String shotName = ParamUtil.getString(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT);
@@ -138,7 +149,7 @@ public class InspTeamNonWorkingDayDelegator {
 		for (int i = 0; i < wkrDays.size(); i++){
 			ApptNonWorkingDateDto nonWorkingDateDto = new ApptNonWorkingDateDto();
 			nonWorkingDateDto.setId(UUID.randomUUID().toString());
-			nonWorkingDateDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+			nonWorkingDateDto.setSrcSystemId(AppointmentConstants.APPT_SRC_SYSTEM_PK_ID);
 			nonWorkingDateDto.setRecursivceDate(wkrDays.get(i));
 			nonWorkingDateDto.setNonWkrDay(false);
 			nonWorkingDateDto.setDesc("");

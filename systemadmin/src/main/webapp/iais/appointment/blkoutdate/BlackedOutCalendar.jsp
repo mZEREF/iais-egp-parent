@@ -34,41 +34,44 @@
           <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  onchange="doSearch()" options = "wrlGrpNameOpt" firstOption="Please Select" value="${shortName}" ></iais:select>
         </iais:value>
       </iais:row>
+      <div class="clearRow">
+        <iais:row>
+          <iais:field value="Year."/>
+          <iais:value width="18">
+            <iais:select name="dropYearOpt" id="dropYearOpt"  options = "dropYearOpt" firstOption="Please Select" value="${dropYear}" ></iais:select>
+          </iais:value>
+        </iais:row>
+
+        <iais:row>
+          <iais:field value="Blacked Out Date Start"/>
+          <iais:value width="18">
+            <iais:datePicker id = "startDate" name = "startDate"  value="${startDate}"></iais:datePicker>
+          </iais:value>
+        </iais:row>
+
+        <iais:row>
+          <iais:field value="Blacked Out Date End"/>
+          <iais:value width="18">
+            <iais:datePicker id = "endDate" name = "endDate"  value="${endDate}"></iais:datePicker>
+          </iais:value>
+        </iais:row>
+
+        <iais:row>
+          <iais:field value="Status"/>
+          <iais:value width="18">
+            <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
+                         firstOption="Please Select" filterValue="CMSTAT002" value="${status}"></iais:select>
+          </iais:value>
+        </iais:row>
+
+        <iais:action style="text-align:center;">
+          <button class="btn btn-lg btn-login-search" type="button" value="doSearch" style="background:#2199E8; color: white ">Search</button>
+          <button class="btn btn-lg btn-login-clear-inner" onclick="doClear()" type="button" style="background:#2199E8; color: white">Clear</button>
+        </iais:action>
+      </div>
 
 
-      <iais:row>
-        <iais:field value="Year."/>
-        <iais:value width="18">
-          <iais:select name="dropYearOpt" id="dropYearOpt"  onchange="doSearch()" options = "dropYearOpt" firstOption="Please Select" value="${dropYear}" ></iais:select>
-        </iais:value>
-      </iais:row>
 
-      <iais:row>
-        <iais:field value="Blacked Out Date Start"/>
-        <iais:value width="18">
-          <iais:datePicker id = "startDate" name = "startDate"  value="${startDate}"></iais:datePicker>
-        </iais:value>
-      </iais:row>
-
-      <iais:row>
-        <iais:field value="Blacked Out Date End"/>
-        <iais:value width="18">
-          <iais:datePicker id = "endDate" name = "endDate"  value="${endDate}"></iais:datePicker>
-        </iais:value>
-      </iais:row>
-
-      <iais:row>
-        <iais:field value="Status"/>
-        <iais:value width="18">
-          <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
-                       firstOption="Select Status" filterValue="CMSTAT002" value="${status}"></iais:select>
-        </iais:value>
-      </iais:row>
-
-      <iais:action style="text-align:center;">
-        <button class="btn btn-lg btn-login-search" type="button" value="doSearch" style="background:#2199E8; color: white ">Search</button>
-        <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white">Clear</button>
-      </iais:action>
     </iais:section>
 
 
@@ -88,7 +91,7 @@
                       <iais:sortableHeader needSort="false"   field="year" value="Year"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="START_DATE" value="Blacked Out Date Start"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="END_DATE" value="Blacked Out Date End"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false"   field="desc" value="Blacked Out Date Description"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="[DESC]" value="Blacked Out Date Description"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false"   field="status" value="Status"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
                     </tr>
@@ -182,28 +185,28 @@
       SOP.Crud.cfxSubmit("mainForm", "preUpdate");
   }
 
-  $(document).ready(function () {
-      setYears();
-  });
-
   function cutOutDate(date) {
       if (date != null){
           var str = date.toString();
           return str.substring(str.length - 4);
       }
   }
-/*
-  function setYears(){
-    var currentDate = new Date();
-    var startYear= currentDate.getFullYear() - 10 ;
-    var endYear = currentDate.getFullYear();
-    console.log(endYear);
-      $("#dropYear").append("<option value=" + "</option>")
-    for (var i = endYear; i > startYear; i--){
-     $("#dropYear").append("<option value=" + i + ">" + i +"</option>")
-    }
+
+  function doSearch() {
+    SOP.Crud.cfxSubmit("mainForm", "doSearch");
   }
-  */
+
+  function doClear() {
+    $("#startDate").val("");
+    $("#endDate").val("");
+
+    $("#dropYearOpt option[text = 'Please Select']").val("selected", "selected");
+    $("#dropYearOpt").val("");
+    $("#status option[text = 'Please Select']").val("selected", "selected");
+    $("#status").val("");
+
+    $(".form-horizontal .clearRow .current").text("Please Select");
+  }
 
 
   function jumpToPagechangePage(){

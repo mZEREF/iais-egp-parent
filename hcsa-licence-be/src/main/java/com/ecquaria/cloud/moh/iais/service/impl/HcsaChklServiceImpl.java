@@ -10,15 +10,13 @@ import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.*;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +27,16 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
     @Autowired
     private HcsaChklClient chklClient;
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     @Override
     public void deleteRecord(String configId) {
@@ -113,7 +121,17 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
     @Override
     public String submitUploadRegulation(List<HcsaChklSvcRegulationDto> regulationExcelList) {
-        return chklClient.submitHcsaChklSvcRegulation(regulationExcelList).getEntity();
+        String retJson = chklClient.submitHcsaChklSvcRegulation(regulationExcelList).getEntity();
+
+        try {
+            //sync to fe
+            List<HcsaChklSvcRegulationDto> allRegulation = chklClient.getAllRegulation().getEntity();
+
+        }catch (IaisRuntimeException e){
+            log.error("encounter failure when sync regulation to fe" + e.getMessage());
+        }
+
+        return retJson;
     }
 
     @Override

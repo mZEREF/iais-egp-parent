@@ -1,13 +1,10 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.InspectorCalendarQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
@@ -22,13 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -78,7 +69,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 	@Override
 	public List<ApptNonWorkingDateDto> getNonWorkingDateListByWorkGroupId(String groupId) {
-		return onlineApptClient.getNonWorkingDateListByWorkGroupId(groupId).getEntity();
+		return onlineApptClient.getNonWorkingDateListByWorkGroupId(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY, groupId).getEntity();
 	}
 
 	@Override
