@@ -63,6 +63,12 @@
         submit('appPage');
     }
 
+    function sortRecords(sortFieldName, sortType) {
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        submit('appSort');
+    }
+
     function doDraft(appNo,appType,appStatus) {
         if ('APST008' == appStatus) {
             showWaiting();
