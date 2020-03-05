@@ -86,19 +86,19 @@
             <div class="col-xs-12 col-md-3">
               <div class="form-check " style="left: 10%;">
                 <c:set var="type" value="${PremisesType}"></c:set>
-                <input class="form-check-input" disabled name="PremisesType"<c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> id="icon3checkboxSample" type="checkbox" name="Onsite" value="ONSITE"  aria-invalid="false">
+                <input class="form-check-input" readonly name="PremisesType"<c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> id="icon3checkboxSample" type="checkbox" name="Onsite" value="ONSITE"  aria-invalid="false">
                 <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>Onsite</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-3">
               <div class="form-check ">
-                <input class="form-check-input" disabled name="PremisesType"<c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> id="icon4checkboxSample" type="checkbox" name="Offsite"  value="OFFSITE" aria-invalid="false">
+                <input class="form-check-input" readonly name="PremisesType"<c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> id="icon4checkboxSample" type="checkbox" name="Offsite"  value="OFFSITE" aria-invalid="false">
                 <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>Offsite</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-3">
               <div class="form-check ">
-                <input class="form-check-input" disabled name="PremisesType"<c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> id="icon5checkboxSample" type="checkbox" value="CONVEYANCE" name="Conveyance" aria-invalid="false">
+                <input class="form-check-input" readonly name="PremisesType"<c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> id="icon5checkboxSample" type="checkbox" value="CONVEYANCE" name="Conveyance" aria-invalid="false">
                 <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
               </div>
             </div>
@@ -107,14 +107,15 @@
       </div>
 
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-8">
+      <div class="form-group" style="display: none" id="Subsumption">
+        <div class="col-xs-12 col-md-8"  style="margin-bottom: 10px">
           <label class="col-xs-12 col-md-6 control-label" >Subsumption Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <select  name="Subsumption">
-              <option >Select one</option>
-              <option>Acute Hospital</option>
-              <option>Community Hospital</option>
+              <option value="" >Select one</option>
+              <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
+                <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
+              </c:forEach>
             </select>
           </div>
         </div>
@@ -122,14 +123,15 @@
 
 
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-8">
+      <div class="form-group" style="display: none" id="Pre-requisite">
+        <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
           <label class="col-xs-12 col-md-6 control-label" >Pre-requisite Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <select  name="Subsumption">
-              <option >Select one</option>
-              <option>Acute Hospital</option>
-              <option>Community Hospital</option>
+            <select  name="Pre-requisite">
+              <option value="">Select one</option>
+              <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
+                <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
+              </c:forEach>
             </select>
           </div>
         </div>
@@ -159,7 +161,7 @@
           <label class="col-xs-12 col-md-6 control-label" >Deputy Principal Officer (DPO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input  value="${DPO.id}" name="dpoId" style="display:none;" type="text">
-            <input  disabled type="text" name="man-DeputyPrincipalOfficer" value="${DPO.mandatoryCount}" placeholder="mandatory count">
+            <input  readonly type="text" name="man-DeputyPrincipalOfficer" value="${DPO.mandatoryCount}" placeholder="mandatory count">
           </div>
           <div class="col-xs-12 col-md-2">
             <input  type="text" disabled name="mix-DeputyPrincipalOfficer" value="${DPO.maximumCount}"  placeholder="maximum count">
@@ -176,7 +178,7 @@
           <label class="col-xs-12 col-md-6 control-label" >Clinical Governance Officer (CGO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input value="${CGO.id}" name="cgoId" style="display:none;" type="text">
-            <input disabled  type="text" name="man-ClinicalGovernanceOfficer" value="${CGO.mandatoryCount}" placeholder="mandatory count">
+            <input readonly  type="text" name="man-ClinicalGovernanceOfficer" value="${CGO.mandatoryCount}" placeholder="mandatory count">
           </div>
           <div class="col-xs-12 col-md-2">
             <input disabled type="text" name="mix-ClinicalGovernanceOfficer" value="${CGO.maximumCount}"  placeholder="maximum count">
@@ -193,7 +195,7 @@
           <label class="col-xs-12 col-md-6 control-label" >Service Personnel<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input value="${SVCPSN.id}" name="svcpsnId" style="display:none;" type="text">
-            <input  disabled type="text" name="man-ServicePersonnel" value="${SVCPSN.mandatoryCount}" placeholder="mandatory count">
+            <input  readonly type="text" name="man-ServicePersonnel" value="${SVCPSN.mandatoryCount}" placeholder="mandatory count">
           </div>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-ServicePersonnel" disabled value="${SVCPSN.maximumCount}"  placeholder="maximum count">
@@ -210,7 +212,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="NumberDocument">Number of Service-Related Document to be
             uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="NumberDocument" type="text">
+            <input  readonly id="NumberDocument" type="text">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
@@ -223,7 +225,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="DescriptionDocument">Description of each Service-Related Document to
             be Uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input disabled id="DescriptionDocument" type="text">
+            <input readonly id="DescriptionDocument" type="text">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input disabled class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
@@ -236,7 +238,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="Numberfields">Number of Service-Related General Info fields to
             be captured<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input disabled id="Numberfields" type="text">
+            <input readonly id="Numberfields" type="text">
           </div>
           <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" disabled type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
@@ -258,62 +260,62 @@
       </div>
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
+        <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service-Related Checklists<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <a class="btn btn-secondary "><span class="view">view</span></a>
+              <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
             </div>
           </div>
         </div>
       </div>
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
+        <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service Risk Score<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <a class="btn btn-secondary "><span class="view">view</span></a>
+              <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
             </div>
           </div>
         </div>
       </div>
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
+        <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service KPI<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <a class="btn btn-secondary "><span class="view">view</span></a>
+              <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
             </div>
           </div>
         </div>
       </div>
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
+        <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service Fees<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <a class="btn btn-secondary "><span class="view">view</span></a>
+              <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
             </div>
           </div>
         </div>
       </div>
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
+        <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service Fee Bundles<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <a class="btn btn-secondary "><span class="view">view</span></a>
+              <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
             </div>
           </div>
         </div>
       </div>
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
+        <div class="col-xs-12 col-md-8 marg-1">
           <div class="col-xs-10 col-md-4">
             <div class="components">
               <a class="btn btn-secondary " onclick="showNEW()"><span class="view">NEW APPLICATION</span></a>
@@ -383,21 +385,74 @@
 
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-8 control-label" for="Sub-Types">Service Sub-Types</label>
-          <div class="col-xs-12 col-md-4">
-            <input id="Sub-Types" type="text" disabled>
-          </div>
-        </div>
-      </div>
+        <div class="col-xs-12 col-md-6" style="margin-top: 20px ;margin-bottom: 20px">
+          <label class="col-xs-12 col-md-8 control-label" >Service Sub-Types</label>
+          <div class="col-xs-12 col-md-7">
+            <label>Page name</label>
+          </div >
+          <div  class="col-xs-12 col-md-5"><input  type="text" value="Laboratory Disciplines" ></div>
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-8 control-label" for="Sub-Types">Service Sub-Types</label>
-          <div class="col-xs-12 col-md-4">
-            <label>Page name</label><input type="text" >
+          <div class="form-group"  id="add">
+            <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
+
+              <div class="col-xs-12 col-md-4" style="margin-left: 100%">
+                <label class="col-xs-12 col-md-12 control-label"  style="text-align: center">UP/DOWN</label>
+              </div>
+            </div>
+          </div>
+          <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed">
+            <div class="view">
+              <div class="col-xs-12 col-md-7" style="padding-right: 20%;" >
+                <input class="add" type="text"  style="margin-left:0px" readonly name="subType" value="${hcsaSvcSubtypeOrSubsumed.name}">
+              </div>
+              <div class="value">
+                <input type="text" value="0" name="level" style="display: none" >
+              </div>
+              <div  class="col-xs-12 col-md-3" >
+                <a class="btn  btn-secondary  view"   >indent</a>
+              </div>
+              <div  class="col-xs-12 col-md-2">
+                <a class="btn  btn-secondary view"   >outdent</a>
+              </div>
+            </div>
+            <c:forEach items="${hcsaSvcSubtypeOrSubsumed.list}" var="hcsaSvcSubtypeOrSubsumed2">
+              <div class="view">
+                <div class="col-xs-12 col-md-7" style="padding-right: 20%;" >
+                  <input class="add" type="text"  style="margin-left:60px" readonly name="subType" value="${hcsaSvcSubtypeOrSubsumed2.name}">
+                </div>
+                <div class="value">
+                  <input type="text" value="1" name="level" style="display: none" >
+                </div>
+                <div  class="col-xs-12 col-md-3" >
+                  <a class="btn  btn-secondary  view"    >indent</a>
+                </div>
+                <div  class="col-xs-12 col-md-2">
+                  <a class="btn  btn-secondary view"  >outdent</a>
+                </div>
+              </div>
+              <c:forEach items="${hcsaSvcSubtypeOrSubsumed2.list}" var="hcsaSvcSubtypeOrSubsumed3">
+                <div class="view">
+                  <div class="col-xs-12 col-md-7" style="padding-right: 20%;" >
+                    <input class="add" type="text"  style="margin-left:120px" readonly name="subType" value="${hcsaSvcSubtypeOrSubsumed3.name}">
+                  </div>
+                  <div class="value">
+                    <input type="text" value="2" name="level" style="display: none" >
+                  </div>
+                  <div  class="col-xs-12 col-md-3" >
+                    <a class="btn  btn-secondary  view"    >indent</a>
+                  </div>
+                  <div  class="col-xs-12 col-md-2">
+                    <a class="btn  btn-secondary view"   >outdent</a>
+                  </div>
+                </div>
+              </c:forEach>
+            </c:forEach>
+          </c:forEach>
+          <div class="col-xs-12 col-md-6">
+            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" > + </a><label for="addAsItem"> Add as item</label>
           </div>
         </div>
+
       </div>
 
 
@@ -452,16 +507,29 @@
 </div>
 <style>
   .mandatory{
-    color: red;
+    color: #ff0000;
   }
   .view{
     color: #2199E8;
   }
+
+  .marg-1{
+    margin-top: 1%;
+  }
+
 </style>
 <script type="text/javascript">
 
     function confirmDelete(obj) {
-        SOP.Crud.cfxSubmit("mainForm","delete",$(obj).val(),"");
+        var r=confirm("Are you sure to delete!")
+        if(r==true){
+            SOP.Crud.cfxSubmit("mainForm","delete",$(obj).val(),"");
+        }else {
+
+            SOP.Crud.cfxSubmit("mainForm","delete","","");
+        }
+
+
     }
 
     function cancel() {

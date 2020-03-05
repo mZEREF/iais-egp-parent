@@ -6,6 +6,8 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.util.Stack;
+
 /**
  * @author Wenkang
  * @date 2020/2/11 16:19
@@ -18,7 +20,7 @@ public class ConfigServiceDelegator {
     public void start(BaseProcessClass bpc){
         log.info("*********startt***********");
     }
-
+    private Stack stack=new Stack();
     public void switchOr(BaseProcessClass bpc){
     log.info("*********switchOr  start***********");
 
@@ -55,7 +57,10 @@ public class ConfigServiceDelegator {
     public void edit(BaseProcessClass bpc){
         log.info("*********edit  start***********");
         configService.viewPageInfo(bpc.request);
-
+        StringBuffer requestURL = bpc.request.getRequestURL();
+        String queryString = bpc.request.getQueryString();
+        String s = requestURL.append(queryString).toString();
+        stack.push(s);
     }
 
     public void editOrSave(BaseProcessClass bpc){
@@ -72,6 +77,7 @@ public class ConfigServiceDelegator {
     }
     public void editView(BaseProcessClass bpc){
         log.info("*********editView  start***********");
+
         configService.viewPageInfo(bpc.request);
     }
 

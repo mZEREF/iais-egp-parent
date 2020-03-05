@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCategoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -14,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpeRouti
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -22,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.dto.HcsaConfigPageDto;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -59,9 +62,17 @@ public class ConfigServiceImpl implements ConfigService {
     private OrganizationClient organizationClient;
     @Autowired
     private MsgTemplateClient msgTemplateClient;
+    @Autowired
+    private HcsaLicenceClient hcsaLicenceClient;
     @Override
     public List<HcsaServiceDto> getAllHcsaServices(HttpServletRequest request) {
         List<HcsaServiceDto> entity = hcsaConfigClient.allHcsaService().getEntity();
+        for(int i=0;i<entity.size();i++){
+            if("CMSTAT005".equals(entity.get(i).getStatus())){
+                entity.remove(entity.get(i));
+                i--;
+            }
+        }
         request.setAttribute("hcsaServiceDtos", entity);
         return entity;
     }
@@ -94,7 +105,8 @@ public class ConfigServiceImpl implements ConfigService {
             hcsaServiceConfigDto.getHcsaSvcSpecificStageWorkloadDtos();
             List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = hcsaServiceConfigDto.getHcsaSvcSpePremisesTypeDtos();
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
-            List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtos = hcsaServiceConfigDto.getHcsaSvcSpecificStageWorkloadDtos();
+            List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = hcsaServiceConfigDto.getHcsaSvcSubtypeOrSubsumedDtos();
+            request.setAttribute("hcsaSvcSubtypeOrSubsumedDto",hcsaSvcSubtypeOrSubsumedDtos);
             for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtos) {
                 String psnType = hcsaSvcPersonnelDto.getPsnType();
                 request.setAttribute(psnType, hcsaSvcPersonnelDto);
@@ -149,6 +161,8 @@ public class ConfigServiceImpl implements ConfigService {
             HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
             List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = hcsaServiceConfigDto.getHcsaSvcSpePremisesTypeDtos();
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
+            List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = hcsaServiceConfigDto.getHcsaSvcSubtypeOrSubsumedDtos();
+            request.setAttribute("hcsaSvcSubtypeOrSubsumedDto",hcsaSvcSubtypeOrSubsumedDtos);
             for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtos) {
                 String psnType = hcsaSvcPersonnelDto.getPsnType();
                 request.setAttribute(psnType, hcsaSvcPersonnelDto);
@@ -221,12 +235,21 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public void deleteOrCancel(HttpServletRequest request) {
         String serviceId = request.getParameter("crud_action_value");
-        Boolean flag = hcsaConfigClient.serviceIdIsUsed(serviceId).getEntity();
-        if(flag){
+        if(!StringUtil.isEmpty(serviceId)){
+            Boolean flag = hcsaConfigClient.serviceIdIsUsed(serviceId).getEntity();
+       /*     HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+            List<LicenceDto> entity = hcsaLicenceClient.getLicenceDtosBySvcName(hcsaServiceDto.getSvcName()).getEntity();
+            if(!entity.isEmpty()){
+                return;
+            }*/
+            if(flag){
 
+                return;
+            }
+            //todo delete send email
+            hcsaConfigClient.updateService(serviceId);
         }
-        //todo delete send email
-        hcsaConfigClient.updateService(serviceId);
+
     }
 
     private HcsaServiceConfigDto getDateOfHcsaService(HttpServletRequest request) {
@@ -245,6 +268,55 @@ public class ConfigServiceImpl implements ConfigService {
         String serviceType = request.getParameter("ServiceType");
         String[] premisesTypes = request.getParameterValues("PremisesType");
         String version = request.getParameter("version");
+        String[] subTypes = request.getParameterValues("subType");
+        String[] levels = request.getParameterValues("level");
+
+        List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos=new ArrayList<>();
+        Map<Integer ,String> level1=new HashMap<>();
+        if(levels!=null){
+            for(int i=0;i<levels.length;i++ ){
+                level1.put(i,levels[i]);
+            }
+
+            for(int i=0;i<levels.length;i++){
+                String s = level1.get(i);
+                if("0".equals(s)){
+                    HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto1=new HcsaSvcSubtypeOrSubsumedDto();
+                    hcsaSvcSubtypeOrSubsumedDto1.setName(subTypes[i]);
+                    List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos2=new ArrayList<>();
+                    hcsaSvcSubtypeOrSubsumedDtos.add(hcsaSvcSubtypeOrSubsumedDto1);
+                    for(int j=i+1;j<levels.length;j++){
+                        String s1 = level1.get(j);
+                        if("1".equals(s1)){
+                            HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto2=new HcsaSvcSubtypeOrSubsumedDto();
+                            hcsaSvcSubtypeOrSubsumedDto2.setName(subTypes[j]);
+                            List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos3=new ArrayList<>();
+                            hcsaSvcSubtypeOrSubsumedDtos2.add(hcsaSvcSubtypeOrSubsumedDto2);
+                            hcsaSvcSubtypeOrSubsumedDto1.setList(hcsaSvcSubtypeOrSubsumedDtos2);
+                            for(int k=j+1;k<levels.length;k++){
+                                String s2 = level1.get(k);
+                                if("2".equals(s2)){
+                                    HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto3=new HcsaSvcSubtypeOrSubsumedDto();
+                                    hcsaSvcSubtypeOrSubsumedDto3.setName(subTypes[k]);
+                                    hcsaSvcSubtypeOrSubsumedDtos3.add(hcsaSvcSubtypeOrSubsumedDto3);
+                                    hcsaSvcSubtypeOrSubsumedDto2.setList(hcsaSvcSubtypeOrSubsumedDtos3);
+                                }else if(!"2".equals(s2)){
+
+                                    break;
+                                }
+                            }
+                        }else if(!"1".equals(s1)){
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+
         List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = new ArrayList<>();
         if("SVTP002".equals(serviceType)){
 
@@ -315,6 +387,15 @@ public class ConfigServiceImpl implements ConfigService {
             cgoDto.setMaximumCount(Integer.parseInt(mixclinicalGovernanceOfficer));
         }
         int count=1;
+
+        if(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
+            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
+            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
+            hcsaServiceStepSchemeDto.setStepCode("SVST001");
+            hcsaServiceStepSchemeDto.setSeqNum(count);
+            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
+            count++;
+        }
         if(cgoDto.getMandatoryCount()>0&&cgoDto.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
             hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
@@ -371,25 +452,32 @@ public class ConfigServiceImpl implements ConfigService {
         String descriptionDocument = request.getParameter("DescriptionDocument");
         String numberfields = request.getParameter("Numberfields");
         String descriptionGeneral = request.getParameter("DescriptionGeneral");
-
+        String numberDocumentMandatory = request.getParameter("NumberDocumentMandatory");
+        String descriptionDocumentMandatory = request.getParameter("DescriptionDocumentMandatory");
         try {
             request.setAttribute("numberDocument",numberDocument);
             request.setAttribute("descriptionDocument",descriptionDocument);
             Integer integer = Integer.valueOf(numberDocument);
             List<String> split = split(descriptionDocument);
+
             if(integer!=split.size()){
 
 
 
             }else {
                 for(int i=0;i<integer;i++){
+
                     HcsaSvcDocConfigDto hcsaSvcDocConfigDto=new HcsaSvcDocConfigDto();
+
                     hcsaSvcDocConfigDto.setDocDesc(split.get(i));
                     hcsaSvcDocConfigDto.setDocTitle(split.get(i));
                     hcsaSvcDocConfigDto.setStatus("CMSTAT001");
                     hcsaSvcDocConfigDto.setDispOrder(0);
                     hcsaSvcDocConfigDto.setDupForPrem("0");
                     hcsaSvcDocConfigDto.setIsMandatory(false);
+                    if(numberDocumentMandatory!=null&&descriptionDocumentMandatory!=null){
+                        hcsaSvcDocConfigDto.setIsMandatory(true);
+                    }
                     hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);
                 }
                 HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
@@ -524,7 +612,7 @@ public class ConfigServiceImpl implements ConfigService {
         } else {
             hcsaServiceDto.setVersion(version);
         }
-
+        hcsaServiceConfigDto.setHcsaSvcSubtypeOrSubsumedDtos(hcsaSvcSubtypeOrSubsumedDtos);
         hcsaServiceConfigDto.setHcsaSvcSpePremisesTypeDtos(hcsaSvcSpePremisesTypeDtos);
         hcsaServiceConfigDto.setHcsaSvcDocConfigDtos(hcsaSvcDocConfigDtos);
         hcsaServiceConfigDto.setHcsaSvcPersonnelDtos(hcsaSvcPersonnelDtos);
@@ -550,6 +638,12 @@ public class ConfigServiceImpl implements ConfigService {
             }
 
         }
+
+        List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = hcsaServiceConfigDto.getHcsaSvcDocConfigDtos();
+        if(hcsaSvcDocConfigDtos.isEmpty()){
+
+        }
+
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = hcsaServiceConfigDto.getHcsaServiceStepSchemeDtos();
         if (hcsaServiceStepSchemeDtos == null || hcsaServiceStepSchemeDtos.isEmpty()) {
             errorMap.put("serviceStep", "UC_CHKLMD001_ERR001");
@@ -872,6 +966,8 @@ public class ConfigServiceImpl implements ConfigService {
         request.setAttribute("hcsaServiceCategoryDtos",hcsaServiceCategoryDto);
         request.setAttribute("hcsaServiceDto", hcsaServiceDto);
         String id = hcsaServiceDto.getId();
+        List<HcsaSvcSubtypeOrSubsumedDto> entity = hcsaConfigClient.listSubtype(id).getEntity();
+        request.setAttribute("hcsaSvcSubtypeOrSubsumedDto",entity);
         List<String> ids = new ArrayList<>();
         ids.add(id);
         Set<String> set = hcsaConfigClient.getAppGrpPremisesTypeBySvcId(ids).getEntity();

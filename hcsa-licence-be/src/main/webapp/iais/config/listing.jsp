@@ -23,7 +23,7 @@
     </div>
     </div>
     <div class="components">
-      <a class="btn btn-secondary" > Back</a>
+      <a class="btn btn-secondary" onclick="back()" > Back</a>
     </div>
     <div>
 <br>

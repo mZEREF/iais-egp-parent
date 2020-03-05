@@ -19,6 +19,9 @@
       <div class="bg-title" style="text-align: center">
         <h2>  HCSA Configurator Module</h2>
       </div>
+      <div class="components">
+        <a class="btn btn-secondary" onclick="back()" > Back</a>
+      </div>
       <div class="form-group">
         <div class="col-xs-12 col-md-10">
           <h2 class="component-title">Edit HCSA Service</h2>
@@ -225,8 +228,8 @@
           <div class="col-xs-12 col-md-4">
             <input id="NumberDocument" type="text" name="NumberDocument" maxlength="2">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
-            <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
+          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" id="NumberDocumentMandatory"  type="checkbox"  name="NumberDocumentMandatory" aria-invalid="false">
+            <label for="NumberDocumentMandatory" class="form-check-label" ><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
       </div>
@@ -238,8 +241,8 @@
           <div class="col-xs-12 col-md-4">
             <input id="DescriptionDocument" type="text" name="DescriptionDocument" maxlength="255">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
-            <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
+          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" id="DescriptionDocumentMandatory" type="checkbox" name="DescriptionDocumentMandatory" aria-invalid="false">
+            <label for="DescriptionDocumentMandatory" class="form-check-label"><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
       </div>
@@ -271,7 +274,7 @@
       </div>
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
+        <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service-Related Checklists<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
@@ -282,7 +285,7 @@
       </div>
         <br>
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
+        <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service Risk Score<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
@@ -293,7 +296,7 @@
       </div>
       <br>
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
+        <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service KPI<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
@@ -304,7 +307,7 @@
       </div>
       <br>
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
+        <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service Fees<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
@@ -315,7 +318,7 @@
       </div>
       <br>
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
+        <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service Fee Bundles<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
@@ -326,7 +329,7 @@
       </div>
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
+        <div class="col-xs-12 col-md-8 marg-1">
           <div class="col-xs-10 col-md-4">
             <div class="components">
               <a class="btn btn-secondary " onclick="showNEW()"><span class="view">NEW APPLICATION</span></a>
@@ -427,7 +430,7 @@
           </div >
           <div  class="col-xs-12 col-md-5"><input  type="text" value="Laboratory Disciplines" ></div>
 
-          <div class="form-group" >
+          <div class="form-group"  id="add">
             <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
 
               <div class="col-xs-12 col-md-4" style="margin-left: 100%">
@@ -435,22 +438,63 @@
               </div>
             </div>
           </div>
-
-          <div class="col-xs-12 col-md-7" style="padding-right: 30%" >
-          <input type="text" value="Assay">
+      <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed">
+        <div class="view">
+          <div class="col-xs-12 col-md-7" style="padding-right: 20%;" >
+            <input class="add" type="text"  style="margin-left:0px" name="subType" value="${hcsaSvcSubtypeOrSubsumed.name}">
+          </div>
+          <div class="value">
+            <input type="text" value="0" name="level" style="display: none" >
           </div>
           <div  class="col-xs-12 col-md-3" >
-            <a class="btn  btn-secondary  view" style="display: inline-block"  >indent</a>
+            <a class="btn  btn-secondary  view" onclick="indents(this)"   >indent</a>
           </div>
           <div  class="col-xs-12 col-md-2">
-            <a class="btn  btn-secondary view"  style="display: inline-block">outdent</a>
-          </div>
-
-          <div class="col-xs-12 col-md-6">
-            <a  class="btn  btn-secondary view"   style="margin-right: 10px" id="addAsItem" onclick="addAsItem()"> + </a><label for="addAsItem"> Add as item</label>
+            <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
           </div>
         </div>
+          <c:forEach items="${hcsaSvcSubtypeOrSubsumed.list}" var="hcsaSvcSubtypeOrSubsumed2">
+            <div class="view">
+              <div class="col-xs-12 col-md-7" style="padding-right: 20%;" >
+                <input class="add" type="text"  style="margin-left:60px" name="subType" value="${hcsaSvcSubtypeOrSubsumed2.name}">
+              </div>
+              <div class="value">
+                <input type="text" value="1" name="level" style="display: none" >
+              </div>
+              <div  class="col-xs-12 col-md-3" >
+                <a class="btn  btn-secondary  view" onclick="indents(this)"   >indent</a>
+              </div>
+              <div  class="col-xs-12 col-md-2">
+                <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
+              </div>
+            </div>
+            <c:forEach items="${hcsaSvcSubtypeOrSubsumed2.list}" var="hcsaSvcSubtypeOrSubsumed3">
+              <div class="view">
+                <div class="col-xs-12 col-md-7" style="padding-right: 20%;" >
+                  <input class="add" type="text"  style="margin-left:120px" name="subType" value="${hcsaSvcSubtypeOrSubsumed3.name}">
+                </div>
+                <div class="value">
+                  <input type="text" value="2" name="level" style="display: none" >
+                </div>
+                <div  class="col-xs-12 col-md-3" >
+                  <a class="btn  btn-secondary  view" onclick="indents(this)"   >indent</a>
+                </div>
+                <div  class="col-xs-12 col-md-2">
+                  <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
+                </div>
+              </div>
+            </c:forEach>
+          </c:forEach>
+      </c:forEach>
+
+          <div class="col-xs-12 col-md-6">
+            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" onclick="addAsItem(this)"> + </a><label for="addAsItem"> Add as item</label>
+          </div>
+        </div>
+
       </div>
+
+
 
 
 
@@ -507,10 +551,14 @@
 </div>
 <style>
   .mandatory{
-    color: red;
+    color: #ff0000;
   }
   .view{
     color: #2199E8;
+  }
+
+  .marg-1{
+    margin-top: 1%;
   }
 </style>
 <script type="text/javascript">
@@ -591,12 +639,123 @@
 
     });
 
-    function addAsItem() {
+    function addAsItem(obj) {
+        $(obj).closest("div").prev("div").append(" <div class=\"view\">\n" +
+            "          <div class=\"col-xs-12 col-md-7\" style=\"padding-right: 20%;\" >\n" +
+            "            <input class=\"add\" type=\"text\"  style=\"\" name=\"subType\">\n" +
+            "          </div>\n" +
+            "            <div class=\"value\">\n" +
+            "              <input type=\"text\" value=\"0\" name=\"level\"  style=\"display: none\">\n" +
+            "            </div>\n" +
+            "          <div  class=\"col-xs-12 col-md-3\" >\n" +
+            "            <a class=\"btn  btn-secondary  view\" onclick=\"indents(this)\"   >indent</a>\n" +
+            "          </div>\n" +
+            "          <div  class=\"col-xs-12 col-md-2\">\n" +
+            "            <a class=\"btn  btn-secondary view\"  onclick=\"outdent(this)\" >outdent</a>\n" +
+            "          </div>\n" +
+            "          </div>");
 
-      alert(11);
     }
 
+    function indents(obj) {
+        let jQuery = $(obj).closest('div.view').children("div.col-md-7").children();
+        let jQuery2 = $(obj).closest('div.view').children("div.value").children();
+        var jQuery1 = jQuery.attr("style");
+        if(jQuery1!=""){
+            var length=jQuery1.split(":")[1];
+            var a;
+            if(length.length==5){
+                a=   jQuery1.split(":")[1].substring(0,3);
+            }else if(length.length==4){
+                a=   jQuery1.split(":")[1].substring(0,2);
+            }else if(length.length==3){
+                a=   jQuery1.split(":")[1].substring(0,1);
+            }
 
+            a= parseInt(a)+60;
+            if(a>=120){
+
+                $(jQuery).attr("style","margin-left:"+120+"px");
+
+                jQuery2.val(2);
+            }else {
+
+                $(jQuery).attr("style","margin-left:"+a+"px");
+
+                jQuery2.val(parseInt(jQuery2.val())+1);
+
+                ;
+            }
+
+
+        }else {
+            jQuery2.val(parseInt(jQuery2.val())+1);
+            $(jQuery).attr("style","margin-left:60px");
+
+        }
+
+
+
+
+    }
+
+    function outdent(obj) {
+        let jQuery = $(obj).closest('div.view').children("div.col-md-7").children();
+        let jQuery2 = $(obj).closest('div.view').children("div.value").children();
+        var jQuery1 = jQuery.attr("style");
+        if(jQuery1!=""){
+            var length=jQuery1.split(":")[1];
+            var a;
+            if(length.length==6){
+                a=   jQuery1.split(":")[1].substring(0,4);
+            }else if(length.length==5){
+                a=   jQuery1.split(":")[1].substring(0,3);
+            }else if(length.length==4){
+                a=   jQuery1.split(":")[1].substring(0,2);
+            }else if(length.length==3){
+                a=   jQuery1.split(":")[1].substring(0,1);
+            }
+            a= parseInt(a)-60;
+            if(a<=0){
+                $(jQuery).attr("style","margin-left:"+0+"px")
+                jQuery2.val(0);
+            }else {
+                $(jQuery).attr("style","margin-left:"+a+"px")
+                jQuery2.val(parseInt(jQuery2.val())-1);
+            }
+
+        }else {
+            $(jQuery).attr("style","")
+        }
+
+
+    }
+
+    $('#NumberDocumentMandatory').click(function () {
+        let jQuery = $("#NumberDocumentMandatory").prop("checked");
+        let jQuery1 = $("#DescriptionDocumentMandatory").prop("checked");
+        if(jQuery==true){
+            $("#DescriptionDocumentMandatory").prop("checked",true);
+            $("#NumberDocumentMandatory").prop("checked",true);
+        }else if(jQuery==false){
+            $("#DescriptionDocumentMandatory").prop("checked",false);
+            $("#NumberDocumentMandatory").prop("checked",false);
+        }
+    });
+    $('#DescriptionDocumentMandatory').click(function () {
+
+        let jQuery = $("#NumberDocumentMandatory").prop("checked");
+        let jQuery1 = $("#DescriptionDocumentMandatory").prop("checked");
+        if(jQuery1==true){
+            $("#DescriptionDocumentMandatory").prop("checked",true);
+            $("#NumberDocumentMandatory").prop("checked",true);
+        }else if(jQuery1==false){
+            $("#DescriptionDocumentMandatory").prop("checked",false);
+            $("#NumberDocumentMandatory").prop("checked",false);
+        }
+
+
+    });
 
 </script>
 </>
