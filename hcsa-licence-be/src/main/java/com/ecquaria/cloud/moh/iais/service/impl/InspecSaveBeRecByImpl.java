@@ -118,11 +118,11 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             for(File fil:files) {
                 for(ProcessFileTrackDto pDto : processFileTrackDtos){
                     if (fil.getName().endsWith(".zip") && fil.getName().equals(pDto.getFileName())) {
-                        try (ZipFile zipFile = new ZipFile(pDto.getFilePath())) {
-                            for (Enumeration<? extends ZipEntry> entries = zipFile.entries(); entries.hasMoreElements(); ) {
+                        try (ZipFile unZipFile = new ZipFile(pDto.getFilePath())) {
+                            for (Enumeration<? extends ZipEntry> entries = unZipFile.entries(); entries.hasMoreElements(); ) {
                                 ZipEntry zipEntry = entries.nextElement();
                                 String fileName = pDto.getFileName().substring(0,pDto.getFileName().lastIndexOf("."));
-                                unzipFile(zipEntry, zipFile, fileName);
+                                unzipFile(zipEntry, unZipFile, fileName);
                             }
                         } catch (IOException e) {
                             log.error(e.getMessage(), e);
@@ -183,8 +183,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                         pDto.setEventRefNo(eventRefNo);
                         String callbackUrl = systemParamConfig.getInterServerName()
                                 + "/hcsa-licence-web/eservice/INTRANET/MohInspecSaveRecRollBack";
-                        SubmitReq req = EventBusHelper.getSubmitReq(pDto, eventRefNo, "systemAdmin",
-                                "updateStatus", "", callbackUrl, "batchjob", false,
+                        SubmitReq req = EventBusHelper.getSubmitReq(pDto, eventRefNo, EventBusConsts.SERVICE_NAME_SYSTEM_ADMIN,
+                                EventBusConsts.OPERATION_BE_REC_DATA_COPY, "", callbackUrl, "batchjob", false,
                                 "INTRANET", "InspecSaveBeRecByFeBatchjob", "start");
                         SubmitResp submitResp = submissionClient.submit(AppConsts.REST_PROTOCOL_TYPE
                                 + RestApiUrlConsts.EVENT_BUS, req);
@@ -221,7 +221,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             }
             String callbackUrl = systemParamConfig.getInterServerName()
                     + "/hcsa-licence-web/eservice/INTRANET/MohInspecSaveRecRollBack";
-            SubmitReq req = EventBusHelper.getSubmitReq(eventInspRecItemNcDto, appPremCorrIds.get(0), EventBusConsts.SERVICE_NAME_LICENCESAVE,
+            SubmitReq req = EventBusHelper.getSubmitReq(eventInspRecItemNcDto, appPremCorrIds.get(0), EventBusConsts.SERVICE_NAME_APPSUBMIT,
                     EventBusConsts.OPERATION_BE_REC_DATA_COPY, "", callbackUrl, "batchjob",
                     false, "INTRANET",
                     "InspecSaveBeRecByFeBatchjob", "start");
@@ -287,8 +287,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 }
                 String callbackUrl = systemParamConfig.getInterServerName()
                         + "/hcsa-licence-web/eservice/INTRANET/MohInspecSaveRecRollBack";
-                SubmitReq req = EventBusHelper.getSubmitReq(list, submissionId, "fileRepoSave",
-                "save", "", callbackUrl, "batchjob", false, "INTRANET",
+                SubmitReq req = EventBusHelper.getSubmitReq(list, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
+                        EventBusConsts.OPERATION_BE_REC_DATA_COPY, "", callbackUrl, "batchjob", false, "INTRANET",
                         "InspecSaveBeRecByFeBatchjob", "start");
                 SubmitResp submitResp = submissionClient.submit(AppConsts.REST_PROTOCOL_TYPE
                         + RestApiUrlConsts.EVENT_BUS, req);
@@ -298,12 +298,16 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             log.error(e.getMessage(),e);
         } finally {
             try {
-                fileInputStream.close();
+                if(fileInputStream != null) {
+                    fileInputStream.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
-                by.close();
+                if(by != null) {
+                    by.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
