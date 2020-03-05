@@ -92,10 +92,17 @@ public class EventbusCallBackDelegate {
     private void handleDemoNext(String submissionId, String eventRefNum, String operation)
             throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         if (EventBusConsts.OPERATION_DEMO_CREATE_ORG.equals(operation)) {
-            Class cls = Class.forName("com.ecquaria.cloud.moh.iais.service.impl.OrgUserAccountSampleServiceImpl");
-            Object obj = SpringContextHelper.getContext().getBean(cls);
-            Method med = cls.getMethod("saveOrgUserEvent", new Class[]{String.class, String.class});
-            med.invoke(obj, new String[] {eventRefNum, submissionId});
+            invokeMethod(submissionId, eventRefNum,
+                    "com.ecquaria.cloud.moh.iais.service.impl.OrgUserAccountSampleServiceImpl",
+                    "saveOrgUserEvent");
         }
+    }
+
+    private void invokeMethod(String submissionId, String eventRefNum, String clsName, String methodName)
+            throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Class cls = Class.forName(clsName);
+        Object obj = SpringContextHelper.getContext().getBean(cls);
+        Method med = cls.getMethod(methodName, new Class[]{String.class, String.class});
+        med.invoke(obj, new String[] {eventRefNum, submissionId});
     }
 }
