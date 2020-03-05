@@ -112,8 +112,8 @@
           <td>
             <div class="text-right text-center-mobile">
               <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doCancel();">Cancel</a>
-              <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>
-              <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSave('${tabIndex}');">Draft</a>
+              <a class="btn btn-primary next" href="javascript:void(0);" onclick="doClear();">Clear</a>
+              <a class="btn btn-primary secondary" href="javascript:void(0);" onclick="javascript: doSave('${tabIndex}');">Draft</a>
               <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSubmit();">Submit</a>
             </div>
 
@@ -151,6 +151,11 @@
       function doSave(id){
           $("[name='tabIndex']").val(id);
           SOP.Crud.cfxSubmit("mainForm", "doSave", id);
+      }
+
+      function doClear() {
+        $("input[type='radio']").removeAttr('checked');
+        $("input[type='radio']").removeAttr('checked');
       }
 
   </script>

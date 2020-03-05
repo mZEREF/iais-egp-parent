@@ -7,7 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -232,7 +232,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
             QueryHelp.setMainSql("applicationQuery", "listSelfDesc", searchParam);
 
             if (grpPremId != null){
-                AppGrpPremisesDto addressDto = applicationClient.getAppGrpPremise(grpPremId).getEntity();
+                AppGrpPremisesEntityDto addressDto = applicationClient.getAppGrpPremise(grpPremId).getEntity();
                 SearchResult<ChecklistQuestionDto> searchResult = appConfigClient.listSelfDescConfig(searchParam).getEntity();
                 List<ChecklistQuestionDto> rows = searchResult.getRows();
                 for (ChecklistQuestionDto question : rows){
@@ -242,7 +242,9 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
                     premCheckItem.setChecklistItemId(question.getItemId());
 
                     if (addressDto != null){
-                        premCheckItem.setAddress(addressDto.getAddress());
+                        premCheckItem.setAddress(IaisCommonUtils.getPremisesAddress(addressDto.getBlkNo(),
+                                addressDto.getStreetName(),
+                                addressDto.getBuildingName(), addressDto.getFloorNo(), addressDto.getUnitNo(), addressDto.getPostalCode()));
                     }
 
                     String pkId = question.getId().substring(0, 10);   //from db section item id
