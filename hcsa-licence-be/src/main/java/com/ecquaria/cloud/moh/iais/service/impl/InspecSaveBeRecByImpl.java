@@ -90,7 +90,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     @Override
     public void deleteUnZipFile() {
         compressPath = sharedPath + "recUnZipFile";
-        download = compressPath + File.separator + "userRecFile";
+        download = compressPath + File.separator + "backupsRec";
         zipFile = sharedPath + "backupsRec";
         File file = new File(download);
         File b = new File(zipFile);
