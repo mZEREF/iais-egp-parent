@@ -20,20 +20,25 @@
     <iais:row>
         <iais:field value="Account Status:"/>
         <iais:value width="18">
-            <iais:select name="accountStatus" options="statusOption" firstOption="Please Select"
-                         value="${status}"></iais:select>
+            <div class="form-horizontal">
+            <iais:select id="accountStatus" name="accountStatus" options="statusOption" firstOption="Please Select"
+                         value="${status}"></iais:select></div>
         </iais:value>
     </iais:row>
     <iais:row>
         <iais:field value="Roles Assigned:"/>
         <iais:value width="18">
-            <input id="roleAssigned" type="text" name="roleAssigned">
+            <div class="form-horizontal">
+                <iais:select id="role" name="role" options="roleOption" firstOption="Please Select"
+                             value="${role}"></iais:select></div>
         </iais:value>
     </iais:row>
     <iais:row>
         <iais:field value="Privileges Assigned:"/>
         <iais:value width="18">
-            <input id="privilegeAssigned" type="text" name="privilegeAssigned">
+            <div class="form-horizontal">
+                <iais:select id="privilege" name="privilege" options="privilegeOption" firstOption="Please Select"
+                             value="${privilege}"></iais:select></div>
         </iais:value>
     </iais:row>
     <iais:action style="text-align:center;">

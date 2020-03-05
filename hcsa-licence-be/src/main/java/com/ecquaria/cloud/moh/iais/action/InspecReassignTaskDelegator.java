@@ -228,7 +228,6 @@ public class InspecReassignTaskDelegator {
                     taskDtoList.add(tDto);
                 }
             }
-
         }
         return taskDtoList;
     }

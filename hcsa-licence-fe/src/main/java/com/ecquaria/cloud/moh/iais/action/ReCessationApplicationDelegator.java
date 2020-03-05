@@ -93,13 +93,14 @@ public class ReCessationApplicationDelegator {
     }
 
     public void valiant(BaseProcessClass bpc){
-        List<AppCessLicDto> appCessDtosByLicIds = (List<AppCessLicDto>) ParamUtil.getSessionAttr(bpc.request, "appCessDtosByLicIds");
+        List<AppCessLicDto> appCessDtosByLicIds = (List<AppCessLicDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtos");
         int size = (int) ParamUtil.getSessionAttr(bpc.request, "size");
         List<AppCessLicDto> appCessHciDtos = prepareDataForValiant(bpc, size, appCessDtosByLicIds);
         List<AppCessLicDto> cloneAppCessHciDtos = new ArrayList<>();
         CopyUtil.copyMutableObjectList(appCessHciDtos, cloneAppCessHciDtos);
+        List<AppCessLicDto> confirmDtos = getConfirmDtos(cloneAppCessHciDtos);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable) appCessHciDtos);
-        if (appCessHciDtos.size() == 0) {
+        if (confirmDtos.size() == 0) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;
         }
@@ -120,7 +121,6 @@ public class ReCessationApplicationDelegator {
         }
 
         List<AppCessationDto> appCessationDtos = transformDto(cloneAppCessHciDtos);
-        List<AppCessLicDto> confirmDtos = getConfirmDtos(cloneAppCessHciDtos);
         ParamUtil.setSessionAttr(bpc.request, "confirmDtos", (Serializable)confirmDtos);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtosSave", (Serializable)appCessationDtos);

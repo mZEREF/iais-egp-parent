@@ -123,7 +123,7 @@
                                     <label class="col-xs-12 col-md-4 control-label" for="organization">Organization:</label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="organization" type="text" name="organization">
+                                            <input id="organization" type="text" name="organization" value="${orgUserDto.organization}">
                                         </div>
                                     </iais:value>
                                 </div>

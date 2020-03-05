@@ -72,7 +72,11 @@ public class MohIntranetUserDelegator {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         prepareOption(bpc);
         List<SelectOption> statusOption = getStatusOption();
+        List<SelectOption> roleOption = getRoleOption();
+        List<SelectOption> privilegeOption = getprivilegeOption();
         ParamUtil.setSessionAttr(bpc.request, "statusOption", (Serializable) statusOption);
+        ParamUtil.setSessionAttr(bpc.request, "roleOption", (Serializable) roleOption);
+        ParamUtil.setSessionAttr(bpc.request, "privilegeOption", (Serializable) privilegeOption);
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, null);
         Object requestAttr = ParamUtil.getRequestAttr(bpc.request, IntranetUserConstant.SEARCH_RESULT);
         if(requestAttr!=null){
@@ -134,7 +138,7 @@ public class MohIntranetUserDelegator {
 
     public void prepareEdit(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String id = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.CRUD_ACTION_VALUE);
+        String id = ParamUtil.getRequestString(request, IntranetUserConstant.CRUD_ACTION_VALUE);
         OrgUserDto orgUserDto = (OrgUserDto)ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
         if (id != null&&orgUserDto==null) {
             OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
@@ -213,10 +217,14 @@ public class MohIntranetUserDelegator {
         String userId = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_USERID);
         String email = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_EMAILADDR);
         String status = ParamUtil.getRequestString(request, "accountStatus");
+        String privilege = ParamUtil.getRequestString(request, "privilege");
+        String role = ParamUtil.getRequestString(request, "role");
         ParamUtil.setRequestAttr(request, "displayName", displayName);
         ParamUtil.setRequestAttr(request, "userId", userId);
         ParamUtil.setRequestAttr(request, "email", email);
         ParamUtil.setRequestAttr(request, "status", status);
+        ParamUtil.setRequestAttr(request, "privilege", privilege);
+        ParamUtil.setRequestAttr(request, "role", role);
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
         if (!StringUtil.isEmpty(userId)) {
@@ -369,6 +377,7 @@ public class MohIntranetUserDelegator {
         String mobileNo = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_MOBILENO);
         String officeNo = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_OFFICETELNO);
         String remarks = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_REMARKS);
+        String organization = ParamUtil.getRequestString(request, "organization");
 
         orgUserDto.setUserId(userId);
         orgUserDto.setFirstName(firstName);
@@ -378,6 +387,7 @@ public class MohIntranetUserDelegator {
         orgUserDto.setAccountDeactivateDatetime(endDate);
         orgUserDto.setOrgId(IntranetUserConstant.ORGANIZATION);
         orgUserDto.setDivision(division);
+        orgUserDto.setOrganization(organization);
         orgUserDto.setBranchUnit(branch);
         orgUserDto.setEmail(email);
         orgUserDto.setMobileNo(mobileNo);
@@ -410,7 +420,9 @@ public class MohIntranetUserDelegator {
         String mobileNo = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_MOBILENO);
         String officeNo = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_OFFICETELNO);
         String remarks = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_REMARKS);
+        String organization = ParamUtil.getRequestString(bpc.request, "organization");
 
+        orgUserDto.setOrganization(organization);
         orgUserDto.setFirstName(firstName);
         orgUserDto.setLastName(lastName);
         orgUserDto.setDisplayName(displayName);
@@ -622,6 +634,28 @@ public class MohIntranetUserDelegator {
         result.add(so3);
         result.add(so4);
         result.add(so5);
+        return result;
+    }
+
+    private List<SelectOption> getRoleOption() {
+        List<SelectOption> result = new ArrayList<>();
+        SelectOption so1 = new SelectOption("Admin", "Admin");
+        SelectOption so2 = new SelectOption("Professional", "Professional");
+        SelectOption so3 = new SelectOption("Inspector", "Inspector");
+        result.add(so1);
+        result.add(so2);
+        result.add(so3);
+        return result;
+    }
+
+    private List<SelectOption> getprivilegeOption() {
+        List<SelectOption> result = new ArrayList<>();
+        SelectOption so1 = new SelectOption("Admin Screening Task", "Admin Screening Task");
+        SelectOption so2 = new SelectOption("Approve a Particular Application Stage", "Approve a Particular Application Stage");
+        SelectOption so3 = new SelectOption("Access a Particular Online Enquiry or Report", "access a particular Online Enquiry or Report");
+        result.add(so1);
+        result.add(so2);
+        result.add(so3);
         return result;
     }
 

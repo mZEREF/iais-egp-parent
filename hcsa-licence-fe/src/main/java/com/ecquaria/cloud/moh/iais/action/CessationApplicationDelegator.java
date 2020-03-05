@@ -76,8 +76,9 @@ public class CessationApplicationDelegator {
         List<AppCessLicDto> appCessHciDtos = prepareDataForValiant(bpc, size, appCessDtosByLicIds);
         List<AppCessLicDto> cloneAppCessHciDtos = new ArrayList<>();
         CopyUtil.copyMutableObjectList(appCessHciDtos, cloneAppCessHciDtos);
+        List<AppCessLicDto> confirmDtos = getConfirmDtos(cloneAppCessHciDtos);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable) appCessHciDtos);
-        if (appCessHciDtos.size() == 0) {
+        if (confirmDtos.size() == 0) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;
         }
@@ -98,7 +99,7 @@ public class CessationApplicationDelegator {
         }
 
         List<AppCessationDto> appCessationDtos = transformDto(cloneAppCessHciDtos);
-        List<AppCessLicDto> confirmDtos = getConfirmDtos(cloneAppCessHciDtos);
+//        List<AppCessLicDto> confirmDtos = getConfirmDtos(cloneAppCessHciDtos);
         ParamUtil.setSessionAttr(bpc.request, "confirmDtos", (Serializable)confirmDtos);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtosSave", (Serializable)appCessationDtos);
