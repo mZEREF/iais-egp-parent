@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFi
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.InspecSaveBeRecByService;
@@ -129,7 +130,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     }
 
     private void unzipFile(ZipEntry zipEntry, ZipFile zipFile, String fileName)  {
-        try(OutputStream os = new FileOutputStream(compressPath + File.separator + zipEntry.getName());
+        File zipFile1 = MiscUtil.generateFile(compressPath, zipEntry.getName());
+        try(OutputStream os = new FileOutputStream(zipFile1);
             BufferedOutputStream bos = new BufferedOutputStream(os);
             InputStream is = zipFile.getInputStream(zipEntry);
             BufferedInputStream bis = new BufferedInputStream(is);
