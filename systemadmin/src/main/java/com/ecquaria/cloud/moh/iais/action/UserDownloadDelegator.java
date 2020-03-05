@@ -58,7 +58,7 @@ public class UserDownloadDelegator {
                 String endStr = DateUtil.formatDate(accountDeactivateDatetime, "yyyy-MM-dd");
                 String firstNameText = orgUserDto.getFirstName();
                 String lastNameText = orgUserDto.getLastName();
-                String organizationText = orgUserDto.getOrganzation();
+                String organizationText = orgUserDto.getOrganization();
                 String mobileNoText = orgUserDto.getMobileNo();
                 String officeTelNoText = orgUserDto.getOfficeTelNo();
                 String branchUnitText = orgUserDto.getBranchUnit();
