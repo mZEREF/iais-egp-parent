@@ -41,7 +41,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
@@ -191,12 +193,10 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             }
         }
         if(!IaisCommonUtils.isEmpty(appIds)){
-            for(String appId : appIds){
-                List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.listAppPremisesCorrelation(appId).getEntity();
-                if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){
-                    AppPremisesCorrelationDto appPremisesCorrelationDto = appPremisesCorrelationDtos.get(0);
-                    appPremCorrIds.add(appPremisesCorrelationDto.getId());
-                }
+            Set<String> appIdSet = new HashSet<>(appIds);
+            for(String appId : appIdSet){
+                AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
+                appPremCorrIds.add(appPremisesCorrelationDto.getId());
             }
         }
         if(!IaisCommonUtils.isEmpty(appPremCorrIds)){

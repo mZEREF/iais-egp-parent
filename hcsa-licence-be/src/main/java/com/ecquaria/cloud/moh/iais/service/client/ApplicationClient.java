@@ -137,8 +137,8 @@ public interface ApplicationClient {
     @PostMapping(path = "/iais-licence-view/app-edit-select",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppEditSelectDto> createAppEditSelectDto(@RequestBody AppEditSelectDto appEditSelectDto);
 
-    @GetMapping(path = "/iais-application/application/correlations/{appid}")
-    FeignResponseEntity<List<AppPremisesCorrelationDto>> listAppPremisesCorrelation(@PathVariable(name = "appid") String appId);
+    @GetMapping(value = "/iais-application-be/app-prem-corr/{appId}")
+    FeignResponseEntity<AppPremisesCorrelationDto> getAppPremisesCorrelationDtosByAppId(@PathVariable(name = "appId") String appId);
 
     @GetMapping(value = "/iais-application-be/appGrps-pay-success",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationGroupDto>> getAppGrpsPaySuc();
