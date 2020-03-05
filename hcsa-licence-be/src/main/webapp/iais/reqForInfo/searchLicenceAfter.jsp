@@ -38,13 +38,13 @@
                                         <iais:row>
                                             <iais:field value="Service Licence Type"/>
                                             <iais:value width="18">
-                                                <iais:select id="service_licence_type" name="service_licence_type" options="licSvcTypeOption" firstOption="Please select" value="${serviceLicenceType}" ></iais:select>
+                                                <iais:select  name="service_licence_type" options="licSvcTypeOption" firstOption="Please select" value="${serviceLicenceType}" ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Licence Status"/>
                                             <iais:value width="18">
-                                                <iais:select id="licence_status" name="licence_status" options="licStatusOption" firstOption="Please select" value="${SearchParam.filters['licence_status']}"  ></iais:select>
+                                                <iais:select  name="licence_status" options="licStatusOption" firstOption="Please select" value="${SearchParam.filters['licence_status']}"  ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -166,10 +166,9 @@
     }
     function doLicClear(){
         $('input[name="licence_no"]').val("");
-        $("#licence_type option:first").val("");
-        $("#licence_type option:first").prop("selected", 'selected');
-        $("#licence_status option:first").val("");
-        $("#licence_status option:first").prop("selected", 'selected');
+        $("#licence_type option[text = 'Please select']").val("selected", "selected");
+        $("#licence_status option[text = 'Please select']").val("selected", "selected");
+        $(".current").text("Please select");
         $('input[name="to_date"]').val("");
         $('input[name="sub_date"]').val("");
     }

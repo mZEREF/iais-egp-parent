@@ -37,13 +37,13 @@
                                         <iais:row>
                                             <iais:field value="Application Type"/>
                                             <iais:value width="18">
-                                                <iais:select id="application_type" name="application_type" options="appTypeOption" firstOption="Please select" value="${SearchParam.filters['appType']}" ></iais:select>
+                                                <iais:select  name="application_type" options="appTypeOption" firstOption="Please select" value="${SearchParam.filters['appType']}" ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Application Status"/>
                                             <iais:value width="18">
-                                                <iais:select id="application_status" name="application_status" options="appStatusOption" firstOption="Please select" value="${SearchParam.filters['appStatus']}" ></iais:select>
+                                                <iais:select  name="application_status" options="appStatusOption" firstOption="Please select" value="${SearchParam.filters['appStatus']}" ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -98,10 +98,9 @@
     }
     function doAppClear(){
         $('input[name="application_no"]').val("");
-        $("#application_type option:first").val("");
-        $("#application_type option:first").prop("selected", 'selected');
-        $("#application_status option:first").val("");
-        $("#application_status option:first").prop("selected", 'selected');
+        $("#application_type option[text = 'Please select']").val("selected", "selected");
+        $("#application_status option[text = 'Please select']").val("selected", "selected");
+        $(".current").text("Please select");
         $('input[name="to_date"]').val("");
         $('input[name="sub_date"]').val("");
     }
