@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -32,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
@@ -102,7 +104,7 @@ public class OfficerOnlineEnquiriesDelegator {
             .clz(RfiApplicationQueryDto.class)
             .searchAttr("appParam")
             .resultAttr("appResult")
-            .sortField("application_no").pageNo(0).pageSize(10).sortType(SearchParam.ASCENDING).build();
+            .sortField("application_no").pageNo(1).pageSize(10).sortType(SearchParam.ASCENDING).build();
 
     FilterParameter licenseeParameter = new FilterParameter.Builder()
             .clz(LicenseeQueryDto.class)
@@ -203,6 +205,7 @@ public class OfficerOnlineEnquiriesDelegator {
 
         applicationParameter.setFilters(filter);
         SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
+        CrudHelper.doPaging(appParam,bpc.request);
         QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
         if (appParam != null) {
             SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
@@ -349,13 +352,13 @@ public class OfficerOnlineEnquiriesDelegator {
                 SystemAdminBaseConstants.DATE_FORMAT);
         String appSubToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
-        String licStaDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
+        String licStaDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "start_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
-        String licStaToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
+        String licStaToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "start_to_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
-        String licExpDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
+        String licExpDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "expiry_start_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
-        String licExpToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
+        String licExpToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "expiry_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
 
         Map<String,Object> filters=new HashMap<>(10);
@@ -480,6 +483,7 @@ public class OfficerOnlineEnquiriesDelegator {
 
         applicationParameter.setFilters(filters);
         SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
+        CrudHelper.doPaging(appParam,bpc.request);
         QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
         if (appParam != null) {
             SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
@@ -547,8 +551,35 @@ public class OfficerOnlineEnquiriesDelegator {
                 ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
             }
         }
-
+        if(!StringUtil.isEmpty(licStaDate)){
+            appParam.getFilters().put("start_date",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
+                    AppConsts.DEFAULT_DATE_FORMAT));
+        }
+        if(!StringUtil.isEmpty(licStaToDate)){
+            appParam.getFilters().put("start_to_date",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
+                    AppConsts.DEFAULT_DATE_FORMAT));
+        }
+        if(!StringUtil.isEmpty(appSubDate)){
+            appParam.getFilters().put("subDate",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
+                    AppConsts.DEFAULT_DATE_FORMAT));
+        }
+        if(!StringUtil.isEmpty(appSubToDate)){
+            appParam.getFilters().put("toDate",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
+                    AppConsts.DEFAULT_DATE_FORMAT));
+        }
+        if(!StringUtil.isEmpty(licExpDate)){
+            appParam.getFilters().put("expiry_start_date",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
+                    AppConsts.DEFAULT_DATE_FORMAT));
+        }
+        if(!StringUtil.isEmpty(licExpToDate)){
+            appParam.getFilters().put("expiry_date",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
+                    AppConsts.DEFAULT_DATE_FORMAT));
+        }
+        if(!StringUtil.isEmpty(uenNo)){
+            appParam.getFilters().put("uen_no",uenNo);
+        }
         ParamUtil.setRequestAttr(request,"SearchParam", appParam);
+        ParamUtil.setRequestAttr(request,"serviceLicenceType",serviceLicenceType);
         ParamUtil.setRequestAttr(request,"licSvcTypeOption", licSvcTypeOption);
         ParamUtil.setRequestAttr(request,"licStatusOption", licStatusOption);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);

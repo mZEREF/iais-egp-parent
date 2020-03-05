@@ -72,7 +72,7 @@
                     <h3>
                         <span>Search Results</span>
                     </h3>
-<%--                    <iais:pagination  param="SearchParam" result="SearchResult"/>--%>
+                    <iais:pagination  param="SearchParam" result="SearchResult"/>
                     <div class="table-gp">
                         <table class="table">
                             <thead>
@@ -145,7 +145,9 @@
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "advSearch");
     }
-
+    function jumpToPagechangePage(){
+        doSearch()
+    }
     function doSearch(){
         var chkNum = 0;
         var checkBox = $('input[type = checkbox]');
