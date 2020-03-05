@@ -542,7 +542,7 @@ public class AppealServiceImpl implements AppealService {
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo);
         applicationGroupDto.setLicenseeId(licenseeId);
         StringBuilder stringBuilder =new StringBuilder(appNo);
-        String s = stringBuilder.append("-1").toString();
+        String s = stringBuilder.append("-01").toString();
         List<AppGrpPremisesDto> premisesDtos=new ArrayList<>();
                 for(PremisesDto every:premisess){
                     AppGrpPremisesDto appGrpPremisesDto = MiscUtil.transferEntityDto(every, AppGrpPremisesDto.class);
@@ -603,7 +603,7 @@ public class AppealServiceImpl implements AppealService {
         if(entity1!=null){
             String status = entity1.getStatus();
             if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
-                appealDto.setAppealType("RFI");
+                appealDto.setAppealType("APPEAL006");
             }
         }
 
@@ -629,7 +629,7 @@ public class AppealServiceImpl implements AppealService {
         ApplicationGroupDto applicationGroupDto=new ApplicationGroupDto();
         applicationGroupDto.setSubmitDt(new Date());
         applicationGroupDto.setGroupNo(appNo);
-        applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_APPEAL_APPROVE);
+        applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
         applicationGroupDto.setAmount(0.0);
         applicationGroupDto.setIsPreInspection(1);
         applicationGroupDto.setIsInspectionNeeded(1);
@@ -653,7 +653,7 @@ public class AppealServiceImpl implements AppealService {
         ApplicationGroupDto entity = applicationClient.getApplicationGroup(grpId).getEntity();
         String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
         StringBuilder stringBuilder =new StringBuilder(appNo);
-        String s = stringBuilder.append("-1").toString();
+        String s = stringBuilder.append("-01").toString();
         //appealPageDto
         AppealPageDto appealDto=getAppealPageDto(request);
         String reasonSelect = appealDto.getAppealReason();
@@ -700,7 +700,7 @@ public class AppealServiceImpl implements AppealService {
             applicationGroupDto.setId(applicationDto.getId());
             applicationGroupDto.setGroupNo(applicationDto.getAppGrpId().substring(0,applicationDto.getApplicationNo().lastIndexOf("-")));
             applicationDto1.setApplicationNo(applicationDto.getApplicationNo());
-            appealDto.setAppealType("RFI");
+            appealDto.setAppealType("APPEAL006");
             applicationGroupDto.setStatus("AGST007");
             applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
             s=applicationDto.getApplicationNo();
