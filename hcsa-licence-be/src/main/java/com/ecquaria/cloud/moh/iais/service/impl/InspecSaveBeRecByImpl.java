@@ -231,6 +231,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             //update Fe application
             if(!IaisCommonUtils.isEmpty(eventInspRecItemNcDto.getApplicationDtos())){
                 for(ApplicationDto applicationDto : eventInspRecItemNcDto.getApplicationDtos()){
+                    applicationDto.setAuditTrailDto(intranet);
                     applicationService.updateFEApplicaiton(applicationDto);
                 }
             }
