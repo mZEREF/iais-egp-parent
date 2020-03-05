@@ -43,8 +43,8 @@ public class AppealApproveBatchjob {
     public void doBatchJob(BaseProcessClass bpc) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob is start ..."));
         List<AppealApproveGroupDto> appealApproveGroupDtos = appealService.getAppealApproveDtos();
+        log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealApproveGroupDtos length is -->:"+appealApproveGroupDtos.size()));
         if(!IaisCommonUtils.isEmpty(appealApproveGroupDtos)){
-          log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealApproveGroupDtos length is -->:"+appealApproveGroupDtos.size()));
           for (AppealApproveGroupDto appealApproveGroupDto :appealApproveGroupDtos ){
               ApplicationGroupDto applicationGroupDto = appealApproveGroupDto.getApplicationGroupDto();
               List<AppealApproveDto> appealApproveDtos = appealApproveGroupDto.getAppealApproveDtoList();
@@ -96,12 +96,17 @@ public class AppealApproveBatchjob {
                   AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
                   String eventRefNo = EventBusHelper.getEventRefNo();
                   //licence
-                  AppealLicenceDto appealLicenceDto = new AppealLicenceDto();
-                  appealLicenceDto.setEventRefNo(eventRefNo);
-                  appealLicenceDto.setAppealLicence(appealLicence);
-                  appealLicenceDto.setRollBackLicence(rollBackLicence);
-                  appealLicenceDto.setAuditTrailDto(auditTrailDto);
-                  appealService.createAppealLicenceDto(appealLicenceDto);
+                  if(!IaisCommonUtils.isEmpty(appealLicence)){
+                      AppealLicenceDto appealLicenceDto = new AppealLicenceDto();
+                      appealLicenceDto.setEventRefNo(eventRefNo);
+                      appealLicenceDto.setAppealLicence(appealLicence);
+                      appealLicenceDto.setRollBackLicence(rollBackLicence);
+                      appealLicenceDto.setAuditTrailDto(auditTrailDto);
+                      appealService.createAppealLicenceDto(appealLicenceDto);
+                  }else{
+                      log.info(StringUtil.changeForLog("The appealLicence is Empty."));
+                  }
+
                   //application
                   AppealApplicationDto appealApplicationDto = new  AppealApplicationDto();
                   appealApplicationDto.setEventRefNo(eventRefNo);
