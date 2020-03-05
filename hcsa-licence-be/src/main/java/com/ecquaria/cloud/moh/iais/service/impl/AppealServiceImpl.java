@@ -6,12 +6,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicEicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
+import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.AppealClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
@@ -19,6 +21,8 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +51,8 @@ public class AppealServiceImpl implements AppealService {
     private BeEicGatewayClient beEicGatewayClient;
     @Autowired
     private SystemParamConfig systemParamConfig;
+    @Autowired
+    private LicenceService licenceService;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -137,14 +143,34 @@ public class AppealServiceImpl implements AppealService {
     }
 
     @Override
-    public AppealLicenceDto updateFEAppealLicenceDto(AppealLicenceDto appealLicenceDto) {
+    public AppealLicenceDto updateFEAppealLicenceDto(String eventRefNum) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        return beEicGatewayClient.updateAppealLicence(appealLicenceDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
+        LicEicRequestTrackingDto licEicRequestTrackingDto = licenceService.getLicEicRequestTrackingDtoByRefNo(eventRefNum);
+        AppealLicenceDto appealLicenceDto = getObjectLic(licEicRequestTrackingDto,AppealLicenceDto.class);
+        if(appealLicenceDto!=null){
+            appealLicenceDto = beEicGatewayClient.updateAppealLicence(appealLicenceDto, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getEntity();
+        }else{
+            log.error(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
+        }
+
+        return appealLicenceDto;
     }
 
 
+    private <T> T getObjectLic(LicEicRequestTrackingDto licEicRequestTrackingDto, Class<T> cls){
+        T result = null;
+        if(licEicRequestTrackingDto!=null){
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                result = mapper.readValue(licEicRequestTrackingDto.getDtoObj(), cls);
+            } catch (IOException e) {
+                log.error(StringUtil.changeForLog(e.getMessage()),e);
+            }
+        }
+        return  result;
+    }
 
     private  LicenceDto getLicenceDto(List<LicenceDto> licenceDtos,String licenceId){
         LicenceDto result = null;

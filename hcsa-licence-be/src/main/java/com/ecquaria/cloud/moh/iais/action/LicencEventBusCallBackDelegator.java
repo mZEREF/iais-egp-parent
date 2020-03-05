@@ -4,10 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicEicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -115,28 +112,11 @@ public class LicencEventBusCallBackDelegator {
 //                        log.error(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
 //                    }
                     //step2 save licence to Fe DB
-                    EventBusLicenceGroupDtos eventBusLicenceGroupDtos1 =  licenceService.getEventBusLicenceGroupDtosByRefNo(eventRefNum);
-                    if(eventBusLicenceGroupDtos1!=null){
-                        licenceService.createFESuperLicDto(eventBusLicenceGroupDtos1);
-                    }else{
-                        log.error(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
-                    }
+                    licenceService.createFESuperLicDto(eventRefNum);
                 }else if(EventBusConsts.OPERATION_LICENCE_SAVE_APPEAL.equals(operation)){
-                    LicEicRequestTrackingDto licEicRequestTrackingDto = licenceService.getLicEicRequestTrackingDtoByRefNo(eventRefNum);
-                    AppealLicenceDto appealLicenceDto = getObjectLic(licEicRequestTrackingDto,AppealLicenceDto.class);
-                    if(appealLicenceDto!=null){
-                        appealService.updateFEAppealLicenceDto(appealLicenceDto);
-                    }else{
-                        log.error(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
-                    }
+                    appealService.updateFEAppealLicenceDto(eventRefNum);
                 }else if(EventBusConsts.OPERATION_APPLICATION_UPDATE_APPEAL.equals(operation)){
-                    AppEicRequestTrackingDto appEicRequestTrackingDto = appealApplicaionService.getAppEicRequestTrackingDtoByRefNo(eventRefNum);
-                    AppealApplicationDto appealApplicationDto = getObjectApp(appEicRequestTrackingDto,AppealApplicationDto.class);
-                    if(appealApplicationDto!=null){
-                        appealApplicaionService.updateFEAppealApplicationDto(appealApplicationDto);
-                    }else{
-                        log.error(StringUtil.changeForLog("This eventReo can not get the AppEicRequestTrackingDto -->:"+eventRefNum));
-                    }
+                    appealApplicaionService.updateFEAppealApplicationDto(eventRefNum);
                 }
             }
 

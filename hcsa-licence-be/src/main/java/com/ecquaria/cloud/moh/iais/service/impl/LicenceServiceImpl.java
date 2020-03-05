@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
@@ -27,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -42,6 +44,7 @@ import java.util.Map;
  * @date 11/29/2019
  */
 @Service
+@Slf4j
 public class LicenceServiceImpl implements LicenceService {
     @Autowired
     private ApplicationClient applicationClient;
@@ -154,11 +157,19 @@ public class LicenceServiceImpl implements LicenceService {
     }
 
     @Override
-    public EventBusLicenceGroupDtos createFESuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
+    public EventBusLicenceGroupDtos createFESuperLicDto(String eventRefNum) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        return beEicGatewayClient.createLicence(eventBusLicenceGroupDtos, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
+
+        EventBusLicenceGroupDtos eventBusLicenceGroupDtos =  getEventBusLicenceGroupDtosByRefNo(eventRefNum);
+        if(eventBusLicenceGroupDtos!=null){
+            eventBusLicenceGroupDtos =beEicGatewayClient.createLicence(eventBusLicenceGroupDtos, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getEntity();
+        }else{
+            log.error(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
+        }
+
+        return eventBusLicenceGroupDtos;
     }
 
     @Override

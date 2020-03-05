@@ -16,6 +16,6 @@ public interface AppealService {
     public List<AppealApproveGroupDto> getAppealApproveDtos();
     public AppealLicenceDto createAppealLicenceDto(AppealLicenceDto appealLicenceDto);
     public AppealApplicationDto createAppealApplicationDto(AppealApplicationDto appealApplicationDto);
-    public AppealLicenceDto updateFEAppealLicenceDto(AppealLicenceDto appealLicenceDto);
+    public AppealLicenceDto updateFEAppealLicenceDto(String eventRefNum);
 
 }
