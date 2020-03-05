@@ -11,83 +11,86 @@
 %>
 
 <div class="main-content">
-  <form id="mainForm" enctype="multipart/form-data"  class="__egovform" method="post" action=<%=process.runtime.continueURL()%>>
+  <form id="mainForm" enctype="multipart/form-data" style="margin-left: 15%" class="__egovform" method="post" action=<%=process.runtime.continueURL()%> >
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
 
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
-    <div>
+    <div style="margin-top: 20px;margin-left: 2%" >
       <h1>Appeal Form</h1>
     </div>
   <div class="form-group">
-    <div class="col-xs-12 col-md-10">
+    <div class="col-xs-12 col-md-10" style="margin-left: 1%">
       <label style="font-size: 25px">You are appealing for:</label>
     </div>
 
-    <div class="col-xs-12 col-md-5">
-      <input type="text" name="appealingFor" disabled  value="${appealingFor}" >
+    <div  class="col-xs-12 col-md-10">
+      <div class="col-xs-12 col-md-6">
+        <input type="text" name="appealingFor" disabled  value="${appealingFor}" >
+      </div>
     </div>
   </div>
 
     <div class="form-group">
-      <div class="col-xs-12 col-md-8" >
-      <label style="font-size: 25px">Reason for Appeal<span class="mandatory">*</span></label>
-      <select id="reasonSelect" name="reasonSelect">
-        <option value="">please select an appeal reason</option>
-        <option value="MS001"<c:if test="${type=='licence'}">disabled</c:if> <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option>
-        <option value="MS002" <c:if test="${type=='licence'}">disabled</c:if><c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option>
-        <option value="MS003"<c:if test="${type=='licence'}">disabled</c:if> <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option>
-        <option value="MS008"<c:if test="${type=='licence'}">disabled</c:if> <c:if test="${appPremiseMiscDto.reason=='MS008'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option>
-        <option value="MS004"<c:if test="${type=='application'}">disabled</c:if>  <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option>
-       <%-- <option value="MS005" <c:if test="${appPremiseMiscDto.reason=='MS005'}">selected="selected"</c:if>>Appeal against suspension</option>
-        <option value="MS006" <c:if test="${appPremiseMiscDto.reason=='MS006'}">selected="selected"</c:if>>Appeal against revocation</option>--%>
-      </select>
+      <div class="col-xs-12 col-md-10">
+        <div class="col-xs-12 col-md-6" style="margin-bottom: 20px">
+          <label style="font-size: 25px">Reason for Appeal<span class="mandatory"> *</span></label>
+          <select id="reasonSelect" name="reasonSelect">
+            <option value="">Please select an appeal reason</option>
+            <option value="MS001"<c:if test="${type=='licence'}">disabled</c:if> <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option>
+            <option value="MS002" <c:if test="${type=='licence'}">disabled</c:if><c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option>
+            <option value="MS003"<c:if test="${type=='licence'}">disabled</c:if> <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option>
+            <option value="MS008"<c:if test="${type=='licence'}">disabled</c:if> <c:if test="${appPremiseMiscDto.reason=='MS008'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option>
+            <option value="MS004"<c:if test="${type=='application'}">disabled</c:if>  <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option>
+            <%-- <option value="MS005" <c:if test="${appPremiseMiscDto.reason=='MS005'}">selected="selected"</c:if>>Appeal against suspension</option>
+             <option value="MS006" <c:if test="${appPremiseMiscDto.reason=='MS006'}">selected="selected"</c:if>>Appeal against revocation</option>--%>
+          </select>
 
-        <div> <span  class="error-msg" name="iaisErrorMsg" id="error_reason"></span></div>
+          <div> <span  class="error-msg" name="iaisErrorMsg" id="error_reason"></span></div>
 
-      <div class="col-xs-12 col-md-10" id="licenceYear"  style="display: none">
-        <label style="font-size: 20px;">Licence year</label>
-        <input type="number" name="licenceYear" value="${appPremiseMiscDto.newLicYears}">
+          <div class="col-xs-12 col-md-5" id="licenceYear"  style="display: none">
+            <label style="font-size: 20px;">Licence year</label>
+            <input type="number" name="licenceYear" value="${appPremiseMiscDto.newLicYears}">
 
-      </div>
-      <div style="display: none;margin-top: 10px" id="cgo" >
+          </div>
+          <div style="display: none;margin-top: 10px" id="cgo" class="col-xs-12 col-md-12" >
 
-        <%@include file="cgo.jsp"%>
+            <%@include file="cgo.jsp"%>
 
-      </div>
-
-      <div class="form-check-gp" id="selectHciNameAppeal" style="display: none">
-        <label style="font-size: 20px">Select HCI Name To Appeal</label>
-        <c:forEach items="${hciNames}" var="hciName" >
-
-        <div >
-          <div class="form-check" >
-            <input class="form-check-input"  onclick="isCheck(this)" type="checkbox" <c:if test="${fn:length(hciNames)==1}">checked="checked" </c:if> name="selectHciName" aria-invalid="false" value="${hciName}">
-            <label class="form-check-label"><span class="check-square"></span>${hciName}</label>
           </div>
 
-          <div class="col-xs-12 col-md-10" id="proposedHciName" style="display: none" >
-            <label style="font-size: 20px">Proposed  HCI Name</label>
-            <input type="text" maxlength="100" name="proposedHciName" value="${appPremiseMiscDto.newHciName}">
-            <span ></span>
+          <div class="form-check-gp" id="selectHciNameAppeal" style="display: none" class="col-xs-12 col-md-6">
+            <label style="font-size: 20px">Select HCI Name To Appeal</label>
+            <c:forEach items="${hciNames}" var="hciName" >
+              <div >
+                <div class="form-check" >
+                  <input class="form-check-input"  onclick="isCheck(this)" type="checkbox" <c:if test="${fn:length(hciNames)==1}">checked="checked" </c:if> name="selectHciName" aria-invalid="false" value="${hciName}">
+                  <label class="form-check-label"><span class="check-square"></span>${hciName}</label>
+                </div>
+
+                <div class="col-xs-12 col-md-10" id="proposedHciName" style="display: none" >
+                  <label style="font-size: 20px">Proposed  HCI Name</label>
+                  <input type="text" maxlength="100" name="proposedHciName" value="${appPremiseMiscDto.newHciName}">
+                  <span ></span>
+                </div>
+              </div>
+
+            </c:forEach>
           </div>
+
         </div>
 
-        </c:forEach>
+      </div>
       </div>
 
-     </div>
+      <div class="col-xs-12 col-md-10" style="margin-left: 1%">
 
-    </div>
-
-      <div class="col-xs-12 col-md-10">
-
-        <label style="font-size: 25px">Any supporting remarks<span class="mandatory">*</span></label>
+        <label style="font-size: 25px">Any supporting remarks<span class="mandatory"> *</span></label>
 
       </div >
-    <div  class="col-xs-12 col-md-10">
+    <div  class="col-xs-12 col-md-10" style="margin-left: 1%" >
 
-      <textarea cols="50" style="font-size: 20px" rows="10" name="remarks" maxlength="300" >${appPremiseMiscDto.remarks}</textarea>
+      <textarea cols="120" style="font-size: 20px" rows="10" name="remarks" maxlength="300" >${appPremiseMiscDto.remarks}</textarea>
 
       <div> <span class="error-msg" id="error_remarks" name="iaisErrorMsg"></span></div>
 
