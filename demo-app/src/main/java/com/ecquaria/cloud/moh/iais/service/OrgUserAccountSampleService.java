@@ -32,4 +32,5 @@ public interface OrgUserAccountSampleService {
  public OrgUserAccountSampleDto getOrgUserAccountByRowguId(String rowguId);
  public OrgUserAccountSampleDto getOrgUserAccountByNircNo(String nircNo);
  public SearchResult<DemoQueryDto> doQuery(SearchParam param);
+ void saveOrgUserEvent(String eventNum, String submissionId);
 }

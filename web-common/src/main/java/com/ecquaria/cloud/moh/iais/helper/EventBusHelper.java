@@ -25,10 +25,10 @@ public class EventBusHelper {
         req.setProject(project);
         req.setProcess(process);
         req.setStep(step);
-        req.setCallbackUrl(AppConsts.REQUEST_TYPE_HTTPS + callBackUrl);
+        req.setCallbackUrl(AppConsts.REST_PROTOCOL_TYPE + callBackUrl);
         req.setService(service);
         req.setOperation(operation);
-        req.setSopUrl(AppConsts.REQUEST_TYPE_HTTPS + sopUrl);
+        req.setSopUrl(AppConsts.REST_PROTOCOL_TYPE + sopUrl);
         req.setData(JsonUtil.parseToJson(dto));
 
         req.setUserId(userId);
