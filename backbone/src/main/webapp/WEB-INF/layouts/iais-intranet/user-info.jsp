@@ -45,7 +45,7 @@
 		<%=currentUser==null?"":currentUser.getDisplayName() %></span>
 	</div>
 		</a>
-		<a href="/egov/process/EGPCLOUD/IdentityProviderLogout">
+		<a href="${pageContext.request.contextPath}/eservice/INTRANET/IntraLogout">
 			<div class="sidebar-profile-details">
 		    <span style="text-align: center"><small>Logout</small></span>
 			</div></a>

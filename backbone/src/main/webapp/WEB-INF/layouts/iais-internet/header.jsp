@@ -1,10 +1,9 @@
-<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
     String webrooth=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
 %>
-<webui:setAttribute name="title">HALP</webui:setAttribute>
 <header>
+    <title>HALP</title>
     <div class="container">
         <div class="row">
             <div class="col-xs-10 col-lg-6">
