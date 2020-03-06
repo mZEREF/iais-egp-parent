@@ -111,8 +111,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                         try (ZipFile unZipFile = new ZipFile(sharedPath + pDto.getFilePath())) {
                             for (Enumeration<? extends ZipEntry> entries = unZipFile.entries(); entries.hasMoreElements(); ) {
                                 ZipEntry zipEntry = entries.nextElement();
-                                String fileName = pDto.getFileName().substring(0,pDto.getFileName().lastIndexOf("."));
-                                unzipFile(zipEntry, unZipFile, fileName);
+                                unzipFile(zipEntry, unZipFile);
                             }
                         } catch (IOException e) {
                             log.error(e.getMessage(), e);
@@ -123,11 +122,14 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         }
     }
 
-    private void unzipFile(ZipEntry zipEntry, ZipFile zipFile, String fileName)  {
-        String realPath = compressPath + zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator) + 1);
+    private void unzipFile(ZipEntry zipEntry, ZipFile zipFile)  {
+        String realPath = compressPath + File.separator + zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator) + 1);
         String saveFileName = zipEntry.getName().substring(zipEntry.getName().lastIndexOf(File.separator) + 1);
         log.debug(StringUtil.changeForLog("realPath:" + realPath));
         log.debug(StringUtil.changeForLog("saveFileName:" + saveFileName));
+        log.debug(StringUtil.changeForLog("zipEntryName:" + zipEntry.getName()));
+        log.debug(StringUtil.changeForLog("zipFileName:" + zipFile.getName()));
+
         File uploadRecFile = MiscUtil.generateFile(realPath, saveFileName);
         try(OutputStream os = new FileOutputStream(uploadRecFile);
             BufferedOutputStream bos = new BufferedOutputStream(os);
