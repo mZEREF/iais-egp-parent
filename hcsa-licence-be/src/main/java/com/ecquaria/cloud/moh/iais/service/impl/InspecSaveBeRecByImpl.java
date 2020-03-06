@@ -123,32 +123,35 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     }
 
     private void unzipFile(ZipEntry zipEntry, ZipFile zipFile)  {
-        String realPath = compressPath + File.separator + zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator) + 1);
-        String saveFileName = zipEntry.getName().substring(zipEntry.getName().lastIndexOf(File.separator) + 1);
-        log.debug(StringUtil.changeForLog("realPath:" + realPath));
-        log.debug(StringUtil.changeForLog("saveFileName:" + saveFileName));
-        log.debug(StringUtil.changeForLog("zipEntryName:" + zipEntry.getName()));
-        log.debug(StringUtil.changeForLog("zipFileName:" + zipFile.getName()));
+        if(!zipEntry.getName().endsWith(File.separator)) {
+            String realPath = compressPath + File.separator + zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator) + 1);
+            String saveFileName = zipEntry.getName().substring(zipEntry.getName().lastIndexOf(File.separator) + 1);
+            log.debug(StringUtil.changeForLog("realPath:" + realPath));
+            log.debug(StringUtil.changeForLog("saveFileName:" + saveFileName));
+            log.debug(StringUtil.changeForLog("zipEntryName:" + zipEntry.getName()));
+            log.debug(StringUtil.changeForLog("zipFileName:" + zipFile.getName()));
 
-        File uploadRecFile = MiscUtil.generateFile(realPath, saveFileName);
-        try(OutputStream os = new FileOutputStream(uploadRecFile);
-            BufferedOutputStream bos = new BufferedOutputStream(os);
-            InputStream is = zipFile.getInputStream(zipEntry);
-            BufferedInputStream bis = new BufferedInputStream(is);
-            CheckedInputStream cos = new CheckedInputStream(bis, new CRC32())) {
-            if(!zipEntry.getName().endsWith(File.separator)){
+            File uploadRecFile = MiscUtil.generateFile(realPath, zipEntry.getName());
+            try(OutputStream os = new FileOutputStream(uploadRecFile);
+                BufferedOutputStream bos = new BufferedOutputStream(os);
+                InputStream is = zipFile.getInputStream(zipEntry);
+                BufferedInputStream bis = new BufferedInputStream(is);
+                CheckedInputStream cos = new CheckedInputStream(bis, new CRC32())) {
+
                 byte[] b = new byte[1024];
                 int count = cos.read(b);
                 while(count != -1){
                     bos.write(b,0, count);
                     count = cos.read(b);
                 }
-            }else {
-                new File(compressPath + File.separator + zipEntry.getName()).mkdirs();
+
+            }catch (IOException e){
+                log.error(e.getMessage(), e);
             }
-        }catch (IOException e){
-            log.error(e.getMessage(), e);
+        } else {
+            new File(compressPath + File.separator + zipEntry.getName()).mkdirs();
         }
+
     }
 
     @Override
