@@ -482,6 +482,7 @@
         var appendHtml = '<hr/> <table class="testTable">'+ assignContent+'</table>';
         $('.assignContent:last').after(appendHtml);*/
         $('.hideen-div').addClass('hidden');
+        $('.addListBtn').addClass('hidden');
         $.ajax({
             'url':'${pageContext.request.contextPath}/governance-officer',
             'dataType':'text',

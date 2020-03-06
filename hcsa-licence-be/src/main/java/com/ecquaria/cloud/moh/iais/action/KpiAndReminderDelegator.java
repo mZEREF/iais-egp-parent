@@ -63,9 +63,26 @@ public class KpiAndReminderDelegator {
                 break;
             }
         }
+        for(HcsaSvcRoutingStageDto every:entity){
+            String stageCode = every.getStageCode();
+            if("ASO".equals(stageCode)){
+                every.setStageName("Admin Screening Process");
+            }
+            else if("".equals(stageCode)){
+                every.setStageName("Professional Screening Process");
+            }else if("AO1".equals(stageCode)){
+                every.setStageName("Approval Officer Level 1");
+            }else if("AO2".equals(stageCode)){
+                every.setStageName("Approval Officer Level 2");
+            }
+            else if("AO3".equals(stageCode)){
+                every.setStageName("Approval Officer Level 3");
+            }
+        }
+
         bpc.request.getSession().setAttribute("hcsaSvcRoutingStageDtos",entity);
         Date date=new Date();
-        String format = new SimpleDateFormat("dd/MM/yyyy hh:mm:ssa", Locale.ENGLISH).format(date);
+        String format = new SimpleDateFormat("dd/MM/yyyy ", Locale.ENGLISH).format(date);
         bpc.request.setAttribute("date",format);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();

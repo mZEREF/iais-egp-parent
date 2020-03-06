@@ -237,17 +237,17 @@ public class ConfigServiceImpl implements ConfigService {
         String serviceId = request.getParameter("crud_action_value");
         if(!StringUtil.isEmpty(serviceId)){
             Boolean flag = hcsaConfigClient.serviceIdIsUsed(serviceId).getEntity();
-       /*     HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+            HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
             List<LicenceDto> entity = hcsaLicenceClient.getLicenceDtosBySvcName(hcsaServiceDto.getSvcName()).getEntity();
             if(!entity.isEmpty()){
                 return;
-            }*/
+            }
             if(flag){
 
                 return;
             }
             //todo delete send email
-            hcsaConfigClient.updateService(serviceId);
+          /*  hcsaConfigClient.updateService(serviceId);*/
         }
 
     }
@@ -537,7 +537,7 @@ public class ConfigServiceImpl implements ConfigService {
                 hcsaConfigPageDto.setWorkloadId(workloadId);
                 if (!StringUtil.isEmpty(stageId)) {
                     //todo delete
-                    hcsaSvcSpeRoutingSchemeDto.setId(stageId);
+                 /*   hcsaSvcSpeRoutingSchemeDto.setId(stageId);*/
                     hcsaConfigPageDto.setRoutingSchemeId(stageId);
                 }
                 hcsaSvcSpeRoutingSchemeDto.setStageId(id);
@@ -549,7 +549,7 @@ public class ConfigServiceImpl implements ConfigService {
                 if(!StringUtil.isEmpty(workstageId)){
                     hcsaSvcStageWorkingGroupDto.setId(workstageId);
                     //todo delete
-                    hcsaSvcSpecificStageWorkloadDto.setId(workloadId);
+                  /*  hcsaSvcSpecificStageWorkloadDto.setId(workloadId);*/
                 }
                 if ("optional".equals(isMandatory)) {
                     hcsaConfigPageDto.setIsMandatory(isMandatory);
@@ -572,16 +572,12 @@ public class ConfigServiceImpl implements ConfigService {
         }
 
 
-        String[] steps = request.getParameterValues("step");
-
-
-        String parameter = request.getParameter("Sub-Types");
         String startDate = request.getParameter("StartDate");
         String endDate = request.getParameter("EndDate");
 
         //todo delete
         if (!StringUtil.isEmpty(serviceId)) {
-            hcsaServiceDto.setId(serviceId);
+       /*     hcsaServiceDto.setId(serviceId);*/
         }
         hcsaServiceDto.setSvcName(serviceName);
         hcsaServiceDto.setSvcCode(serviceCode);

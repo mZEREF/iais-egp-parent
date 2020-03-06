@@ -24,44 +24,50 @@
         </div>
 
       <div class="form-group">
-            <label class="col-xs-12 col-md-4 control-label">Module:</label>
-         <div class="col-xs-8 col-sm-6 col-md-5">
+        <div>
+          <label class="col-xs-12 col-md-4 control-label">Module:</label>
+          <div class="col-xs-8 col-sm-6 col-md-5">
             <select  name="module"  id="module" >
-               <option  value="">Select one</option>
-
-               <option   value="APTY002" >New</option>
-               <option   value="APTY004"  >Renewal</option>
-               <option   value="APTY005">Request for Change</option>
-               <option   value="APTY001">Appeal</option>
-               <option   value="APTY006" >Withdrawal</option>
-               <option   value="APTY003">Revocation</option>
+              <option  value="">Select one</option>
+              <option   value="APTY002" >New</option>
+              <option   value="APTY004"  >Renewal</option>
+              <option   value="APTY005">Request for Change</option>
+              <option   value="APTY001">Appeal</option>
+              <option   value="APTY006" >Withdrawal</option>
+              <option   value="APTY003">Revocation</option>
+              <option   value="APTY008">Cessation</option>
+              <option   value="APTY007">Suspension</option>
             </select>
+            <span name="iaisErrorMsg" id="error_module" class="error-msg"></span>
+          </div>
+        </div>
 
-           <span name="iaisErrorMsg" id="error_module" class="error-msg"></span>
-         </div>
       </div>
 
            <div class="form-group">
+             <div style="margin-top: 1%;margin-bottom: 1%">
                <label class="col-xs-12 col-md-4 control-label">Service</label>
-                <div class="col-xs-8 col-sm-6 col-md-5">
-                  <select name="service"  id="service">
-                    <option value="" >Select one</option>
-                    <c:forEach items="${hcsaServiceDtos}" var="hcsaServiceDto">
+               <div class="col-xs-8 col-sm-6 col-md-5" style="margin-top: 1%;margin-bottom: 1%">
+                 <select name="service"  id="service">
+                   <option value="" >Select one</option>
+                   <c:forEach items="${hcsaServiceDtos}" var="hcsaServiceDto">
 
-                      <option value="${hcsaServiceDto.svcCode}"   <c:if test="${service==hcsaServiceDto.svcCode}">selected="selected" </c:if>>${hcsaServiceDto.svcDesc}</option>
-                    </c:forEach>
-                  </select>
-                  <span name="iaisErrorMsg" id="error_service" class="error-msg"></span>
-                </div>
+                     <option value="${hcsaServiceDto.svcCode}"   <c:if test="${service==hcsaServiceDto.svcCode}">selected="selected" </c:if>>${hcsaServiceDto.svcDesc}</option>
+                   </c:forEach>
+                 </select>
+                 <span name="iaisErrorMsg" id="error_service" class="error-msg"></span>
+               </div>
+             </div>
+
            </div>
 
-  <div class="table-gp">
-    <table class="table" border="1px">
+  <div >
+    <table class="table"  border="1px" style="border-collapse: collapse;">
 
       <tr>
-        <td rowspan="9" width="20%" style="text-align: center;vert-align: middle" >Processing Time for different stages</td>
-        <td style="text-align: center;vert-align: middle">Reminder Threshold:</td>
-        <td style="text-align: center;vert-align: middle">
+        <td rowspan="9" width="20%" style="text-align:center;vertical-align:middle;" >Processing Time for different stages</td>
+        <td style="text-align:center;vertical-align:middle;">Reminder Threshold</td>
+        <td style="text-align:center;vertical-align:middle;">
           <input name="reminderThreshold" type="text" value="${reminderThreshold}" placeholder="Enter required man-days" maxlength="5" style="width: 50% ;height: 10%"/>
           man-days
           <span name="iaisErrorMsg" id="error_reminderThreshold" class="error-msg"></span>
@@ -73,8 +79,8 @@
 
       <tr>
 
-        <td style="text-align: center;vert-align: middle">${hcsaSvcRoutingStageDto.stageName}</td>
-        <td style="text-align: center;vert-align: middle">
+        <td style="text-align:center;vertical-align:middle;">${hcsaSvcRoutingStageDto.stageName}</td>
+        <td style="text-align:center;vertical-align:middle;">
           <input name="${hcsaSvcRoutingStageDto.stageCode}" type="text"  placeholder="Enter required man-days" value="" maxlength="5" style="width: 50% ;height: 10%"/>
           man-days
           <span name="iaisErrorMsg" id="error_${hcsaSvcRoutingStageDto.stageCode}" class="error-msg"></span>
@@ -200,10 +206,14 @@ $(document).ready(function () {
       $.getJSON("${pageContext.request.contextPath}/kpi-reminder-result",{"service":val,"module": select},function (data) {
           var remThreshold= data.remThreshold;
           var aso=  data.ASO;
+
           var pso=  data.PSO;
           var ao1= data.AO1;
+
           var ao2= data.AO2;
+
           var ao3= data.AO3;
+
           var pre= data.PRE;
           var inp= data.INP;
           var pot= data.POT;

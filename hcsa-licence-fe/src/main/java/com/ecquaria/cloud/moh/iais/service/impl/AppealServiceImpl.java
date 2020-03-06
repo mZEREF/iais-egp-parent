@@ -486,6 +486,8 @@ public class AppealServiceImpl implements AppealService {
                     map.put("newLicYears","ERR008");
                 }else if(newLicYears<0){
                     map.put("newLicYears","ERR008");
+                }else if(newLicYears>100){
+                    map.put("newLicYears","Years are too long");
                 }
             }
         }
@@ -565,7 +567,7 @@ public class AppealServiceImpl implements AppealService {
                     applicationGroupDto.setId(entity1.getAppGrpId());
                     applicationGroupDto.setGroupNo(entity1.getApplicationNo().substring(0,entity1.getApplicationNo().lastIndexOf("-")));
                     applicationDto.setApplicationNo(entity1.getApplicationNo());
-                    applicationGroupDto.setStatus("AGST007");
+                    applicationGroupDto.setStatus("AGST001");
                     applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
                     s=entity1.getApplicationNo();
                 }
@@ -638,6 +640,7 @@ public class AppealServiceImpl implements AppealService {
         applicationGroupDto.setIsCharitable(0);
         applicationGroupDto.setIsByGiro(0);
         applicationGroupDto.setIsGrpLic(0);
+        applicationGroupDto.setPmtStatus("PMT05");
         applicationGroupDto.setDeclStmt("N");
         applicationGroupDto.setSubmitBy("C55C9E62-750B-EA11-BE7D-000C29F371DC");
         applicationGroupDto.setAppType(ApplicationConsts.APPLICATION_TYPE_APPEAL);
@@ -701,7 +704,7 @@ public class AppealServiceImpl implements AppealService {
             applicationGroupDto.setGroupNo(applicationDto.getAppGrpId().substring(0,applicationDto.getApplicationNo().lastIndexOf("-")));
             applicationDto1.setApplicationNo(applicationDto.getApplicationNo());
             appealDto.setAppealType("APPEAL006");
-            applicationGroupDto.setStatus("AGST007");
+            applicationGroupDto.setStatus("AGST001");
             applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
             s=applicationDto.getApplicationNo();
         }
