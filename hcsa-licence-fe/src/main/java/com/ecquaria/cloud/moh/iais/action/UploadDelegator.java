@@ -1,17 +1,14 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
-import com.ecquaria.cloud.moh.iais.service.impl.UploadFileServiceImpl;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.util.List;
 
 
 /**
@@ -35,34 +32,29 @@ public class UploadDelegator {
 
     public void preparetionData (BaseProcessClass bpc){
         logAbout("preparetionData");
+        //get all data of need Carry from DB
         String data = uploadFileService.getData();
         log.info("------------------- getData  end --------------");
+        //Parse the
         List<ApplicationListFileDto> parse = uploadFileService.parse(data);
         for(ApplicationListFileDto applicationListFileDto :parse){
-
             String s = JsonUtil.parseToJson(applicationListFileDto);
-            Boolean aBoolean = uploadFileService.saveFile(s);
-            if(!aBoolean){
+            boolean saveFileSuccess = uploadFileService.saveFile(s);
+            if(!saveFileSuccess){
                 continue;
             }
             log.info("------------------- saveFile  end --------------");
-            boolean b = uploadFileService.compressFile();
+            boolean compressFileSuccess = uploadFileService.compressFile();
             log.info("------------------- compressFile  end --------------");
             try {
-                if(b){
-
+                if(compressFileSuccess){
                     uploadFileService.changeStatus(applicationListFileDto);
                 }
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
-
-
         }
-
-
     }
-
 
     /**********************************/
 
