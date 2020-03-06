@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
@@ -30,16 +31,15 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
         String userId = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_USERID);
         String startDateStr = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_STARTDATE);
         String endDateStr = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_ENDDATE);
-        String userDomain = "intranet";
         //userId
         if(!StringUtil.isEmpty(userId)){
             if(!userId.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(.{1,64})$")){
                 errorMap.put("userId","USER_ERR002");
             }else{
-                ClientUser userByIdentifier = intranetUserService.getUserByIdentifier(userId,userDomain);
-                if(userByIdentifier!=null){
-                    String userid = userByIdentifier.getUserIdentifier().getId();
-                    if(userId.equals(userid)){
+                OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
+                if(intranetUserByUserId!=null){
+                    String valiuserId = intranetUserByUserId.getUserId();
+                    if(userId.equals(valiuserId)){
                         errorMap.put("userId","USER_ERR003");
                     }
                 }

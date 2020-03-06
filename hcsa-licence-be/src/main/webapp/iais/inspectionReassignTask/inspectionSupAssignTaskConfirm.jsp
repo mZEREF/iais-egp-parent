@@ -45,7 +45,7 @@
                     </c:if>
                     <iais:section title="" id = "assign_Task">
                       <iais:row>
-                        <iais:field value="Application Number"/>
+                        <iais:field value="Application No"/>
                         <iais:value width="7">
                           <label><c:out value="${inspectionTaskPoolListDto.applicationNo}"/></label>
                         </iais:value>
@@ -87,13 +87,13 @@
                         </iais:value>
                       </iais:row>
                       <iais:row>
-                        <iais:field value="Inspection Lead"/>
+                        <iais:field value="Admin Screening Supervisor"/>
                         <iais:value width="7">
                           <label><c:out value="${inspectionTaskPoolListDto.inspectorLeads}"/></label>
                         </iais:value>
                       </iais:row>
                       <iais:row>
-                        <iais:field value="Inspector"/>
+                        <iais:field value="Admin Screening Officer"/>
                         <iais:value width="10">
                           <c:forEach items="${inspectionReassignTaskDto.inspectorCheck}" var="name">
                             <label><c:out value="${name.text}"/></label>

@@ -64,19 +64,23 @@
                       <iais:row>
                         <iais:field value="Application Type"/>
                         <iais:value width="18">
-                          <iais:select name="application_type" options="appTypeOption" firstOption="Please select" value="${supTaskSearchParam.filters['application_type']}" ></iais:select>
+                          <div class="form-horizontal">
+                            <iais:select name="application_type" options="appTypeOption" firstOption="Please select" value="${supTaskSearchParam.filters['application_type']}" ></iais:select>
+                          </div>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Application Status"/>
                         <iais:value width="18">
-                          <iais:select name="application_status" options="appStatusOption" firstOption="Please select" value="${supTaskSearchParam.filters['application_status']}" ></iais:select>
+                          <div class="form-horizontal">
+                            <iais:select name="application_status" options="appStatusOption" firstOption="Please select" value="${supTaskSearchParam.filters['application_status']}" ></iais:select>
+                          </div>
                         </iais:value>
                       </iais:row>
                       <iais:row>
-                        <iais:field value="Inspector Name"/>
+                        <iais:field value="Professional Screening Officer Name"/>
                         <iais:value width="18">
-                          <div onload="inspectorSearchTask_optionNameAuto(${inspectorValue})">
+                          <div onload="inspectorSearchTask_optionNameAuto(${inspectorValue})" class="form-horizontal">
                             <select name = "inspectorSearchTask_inspectorName" id="inspectorSearchTask_inspectorName" onclick="javascript:doInspectorSearchTaskSelect()">
                               <option value="-">Please select</option>
                               <c:if test="${inspectorOption != null}">
@@ -105,7 +109,7 @@
         <div class="col-xs-12">
           <div class="components">
             <h3>
-              <span>Search Result</span>
+              <span>Search Results</span>
             </h3>
             <div class="table-gp">
               <table class="table">
@@ -120,8 +124,8 @@
                   <iais:sortableHeader needSort="false" field="END_DATE" value="Licence Expiry Date (dd/mm/yyyy)"></iais:sortableHeader>
                   <iais:sortableHeader needSort="false" field="" value="Inspection Date (dd/mm/yyyy)"></iais:sortableHeader>
                   <iais:sortableHeader needSort="false" field="Status" value="Application Status"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="false" field="" value="Inspector"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="false" field="" value="Inspection Lead"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false" field="" value="Professional Screening Officer"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false" field="" value="Professional Screening Supervisor"></iais:sortableHeader>
                   <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
                 </tr>
                 </thead>
@@ -130,7 +134,7 @@
                   <c:when test="${empty supTaskSearchResult.rows}">
                     <tr>
                       <td colspan="12">
-                        <iais:message key="No Result!" escape="true"></iais:message>
+                        <iais:message key="No record found." escape="true"></iais:message>
                         <!--No Record!!-->
                       </td>
                     </tr>
@@ -168,38 +172,39 @@
   </form>
 </div>
 <script type="text/javascript">
-    function inspectorSearchTask_optionNameAuto(value){
-      if(value != null && value != null){
-          $("#inspectorSearchTask_inspectorName").val(value);
-      }
-        doInspectorSearchTaskSelect();
+  function inspectorSearchTask_optionNameAuto(value){
+    if(value != null && value != null){
+      $("#inspectorSearchTask_inspectorName").val(value);
     }
+    doInspectorSearchTaskSelect();
+  }
 
-    function doInspectorSearchTaskSelect(){
-        var options=$("#inspectorSearchTask_inspectorName option:selected");
-        $("#inspector_name").val(options);
-    }
+  function doInspectorSearchTaskSelect(){
+    var options=$("#inspectorSearchTask_inspectorName option:selected");
+    $("#inspector_name").val(options);
+  }
 
-    function doInspectorSearchTaskAssign(taskId) {
-        $("#taskId").val(taskId);
-        submit('assign');
-    }
+  function doInspectorSearchTaskAssign(taskId) {
+    $("#taskId").val(taskId);
+    submit('assign');
+  }
 
-    function doInspectorSearchTaskClear() {
-        $('input[name="application_no"]').val("");
-        $("#application_type option:first").prop("selected", 'selected');
-        $("#application_status option:first").prop("selected", 'selected');
-        $("#inspector_name option:first").prop("selected", 'selected');
-        $('input[name="hci_code"]').val("");
-        $('input[name="hci_name"]').val("");
-        $('input[name="hci_address"]').val("");
-    }
-    function submit(action){
-        $("[name='InspectionSupSearchSwitchType']").val(action);
-        var mainPoolForm = document.getElementById('mainSupForm');
-        mainPoolForm.submit();
-    }
-    function doInspectorSearchTaskSearch() {
-        submit('search');
-    }
+  function doInspectorSearchTaskClear() {
+    $('input[name="application_no"]').val("");
+    $("#application_type option:first").prop("selected", 'selected');
+    $("#application_status option:first").prop("selected", 'selected');
+    $("#inspector_name option:first").prop("selected", 'selected');
+    $('input[name="hci_code"]').val("");
+    $('input[name="hci_name"]').val("");
+    $('input[name="hci_address"]').val("");
+    $(".form-horizontal .current").text("Please Select");
+  }
+  function submit(action){
+    $("[name='InspectionSupSearchSwitchType']").val(action);
+    var mainPoolForm = document.getElementById('mainSupForm');
+    mainPoolForm.submit();
+  }
+  function doInspectorSearchTaskSearch() {
+    submit('search');
+  }
 </script>

@@ -30,6 +30,8 @@ import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -191,7 +193,7 @@ public class MohIntranetUserDelegator {
         CommonsMultipartFile sessionFile =(CommonsMultipartFile)request.getFile("xmlFile");
         File file = File.createTempFile("temp","xml");
         File file1 = inputStreamToFile(sessionFile.getInputStream(), file);
-        importXML(file1);
+        importXML(file1,bpc);
         return;
     }
 
@@ -202,60 +204,12 @@ public class MohIntranetUserDelegator {
             ParamUtil.setRequestAttr(request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
         }
-//        byte[] xml = createXML(bpc, ids);
         ParamUtil.setSessionAttr(bpc.request, "ids", ids);
         String s = "https://egp.sit.intra.iais.com/system-admin-web/eservice/INTRANET/IntranetUserDownload";
         String url = RedirectUtil.changeUrlToCsrfGuardUrlUrl(s, request);
         bpc.response.sendRedirect(url);
         return;
     }
-
-
-    public void doSearch(BaseProcessClass bpc) {
-        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String displayName = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_DISPLAYNAME);
-        String userId = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_USERID);
-        String email = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_EMAILADDR);
-        String status = ParamUtil.getRequestString(request, "accountStatus");
-        String privilege = ParamUtil.getRequestString(request, "privilege");
-        String role = ParamUtil.getRequestString(request, "role");
-        ParamUtil.setRequestAttr(request, "displayName", displayName);
-        ParamUtil.setRequestAttr(request, "userId", userId);
-        ParamUtil.setRequestAttr(request, "email", email);
-        ParamUtil.setRequestAttr(request, "status", status);
-        ParamUtil.setRequestAttr(request, "privilege", privilege);
-        ParamUtil.setRequestAttr(request, "role", role);
-
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
-        if (!StringUtil.isEmpty(userId)) {
-            searchParam.addFilter("userId", userId, true);
-        }
-        if (!StringUtil.isEmpty(displayName)) {
-            searchParam.addFilter("displayName", displayName, true);
-        }
-        if (!StringUtil.isEmpty(email)) {
-            searchParam.addFilter("email", email, true);
-        }
-        if (!StringUtil.isEmpty(status)) {
-            searchParam.addFilter("status", status, true);
-        }
-        QueryHelp.setMainSql("systemAdmin", "IntranetUserQuery", searchParam);
-        SearchResult searchResult = intranetUserService.doQuery(searchParam);
-        ParamUtil.setSessionAttr(request, IntranetUserConstant.SEARCH_PARAM, searchParam);
-        ParamUtil.setRequestAttr(request, IntranetUserConstant.SEARCH_RESULT, searchResult);
-
-    }
-
-    public void doSorting(BaseProcessClass bpc) {
-        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        SearchResultHelper.doSort(request, filterParameter);
-    }
-
-    public void doPaging(BaseProcessClass bpc) {
-        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        SearchResultHelper.doPage(request, filterParameter);
-    }
-
 
     public void changeStatus(BaseProcessClass bpc) {
 
@@ -278,7 +232,7 @@ public class MohIntranetUserDelegator {
             orgUserDto = intranetUserService.findIntranetUserByUserId(userId);
             if(orgUserDto!=null){
                 if (IntranetUserConstant.DEACTIVATE.equals(actionType)) {
-                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_IACTIVE);
+                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
                     intranetUserService.updateOrgUser(orgUserDto);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
                     errorMap.put("userId", "This user has been deactivated");
@@ -302,7 +256,7 @@ public class MohIntranetUserDelegator {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
                     intranetUserService.updateOrgUser(orgUserDto);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "This user has been deactivated");
+                    errorMap.put("userId", "This user has been active");
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
                 }
@@ -356,7 +310,55 @@ public class MohIntranetUserDelegator {
 //        }
     }
 
+    public void doSearch(BaseProcessClass bpc) {
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String displayName = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_DISPLAYNAME);
+        String userId = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_USERID);
+        String email = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_EMAILADDR);
+        String status = ParamUtil.getRequestString(request, "accountStatus");
+        String privilege = ParamUtil.getRequestString(request, "privilege");
+        String role = ParamUtil.getRequestString(request, "role");
+        ParamUtil.setRequestAttr(request, "displayName", displayName);
+        ParamUtil.setRequestAttr(request, "userId", userId);
+        ParamUtil.setRequestAttr(request, "email", email);
+        ParamUtil.setRequestAttr(request, "status", status);
+        ParamUtil.setRequestAttr(request, "privilege", privilege);
+        ParamUtil.setRequestAttr(request, "role", role);
 
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
+        if (!StringUtil.isEmpty(userId)) {
+            searchParam.addFilter("userId", userId, true);
+        }
+        if (!StringUtil.isEmpty(displayName)) {
+            searchParam.addFilter("displayName", displayName, true);
+        }
+        if (!StringUtil.isEmpty(email)) {
+            searchParam.addFilter("email", email, true);
+        }
+        if (!StringUtil.isEmpty(status)) {
+            searchParam.addFilter("status", status, true);
+        }
+        QueryHelp.setMainSql("systemAdmin", "IntranetUserQuery", searchParam);
+        SearchResult searchResult = intranetUserService.doQuery(searchParam);
+        ParamUtil.setSessionAttr(request, IntranetUserConstant.SEARCH_PARAM, searchParam);
+        ParamUtil.setRequestAttr(request, IntranetUserConstant.SEARCH_RESULT, searchResult);
+
+    }
+
+    public void doSorting(BaseProcessClass bpc) {
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        SearchResultHelper.doSort(request, filterParameter);
+    }
+    public void doPaging(BaseProcessClass bpc) {
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        SearchResultHelper.doPage(request, filterParameter);
+    }
+
+
+
+    /*
+    utils
+     */
     private OrgUserDto prepareOrgUserDto(HttpServletRequest request) {
         OrgUserDto orgUserDto = new OrgUserDto();
         String userId = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_USERID);
@@ -575,7 +577,7 @@ public class MohIntranetUserDelegator {
     }
 
 
-    private void importXML(File file) throws DocumentException {
+    private void importXML(File file,BaseProcessClass bpc) throws DocumentException {
         SAXReader saxReader=new SAXReader();
         CommonsMultipartFile sessionFile;
         Document document=saxReader.read(file);
@@ -604,6 +606,7 @@ public class MohIntranetUserDelegator {
             String status=element.element("status").getText();
             OrgUserDto orgUserDto = new OrgUserDto();
             orgUserDto.setUserId(userId);
+            orgUserDto.setUserDomain(userDomain);
             orgUserDto.setFirstName(firstName);
             orgUserDto.setLastName(lastName);
             orgUserDto.setDisplayName(displayName);
@@ -611,14 +614,87 @@ public class MohIntranetUserDelegator {
             orgUserDto.setAccountDeactivateDatetime(endDate);
             orgUserDto.setOrgId(IntranetUserConstant.ORGANIZATION);
             orgUserDto.setBranchUnit(branchUnit);
+            orgUserDto.setSalutation(salutation);
+            orgUserDto.setOrganization(organization);
             orgUserDto.setEmail(email);
             orgUserDto.setMobileNo(mobileNo);
             orgUserDto.setOfficeTelNo(officeNo);
             orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
             orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
+            orgUserDto.setStatus(status);
             orgUserDtos.add(orgUserDto);
         }
+        for(OrgUserDto orgUserDto :orgUserDtos){
+            Map<String, String> errorMap = valiant(orgUserDto);
+            if (!errorMap.isEmpty()) {
+                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                return;
+            }
+        }
+
         intranetUserService.createIntranetUsers(orgUserDtos);
+    }
+
+
+    private Map<String, String> valiant(OrgUserDto orgUserDto){
+        Map<String, String> errorMap = new HashMap<>();
+        String userId = orgUserDto.getUserId();
+        if(!StringUtil.isEmpty(userId)){
+            if(!userId.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(.{1,64})$")){
+                errorMap.put("userId","userId must be not empty ");
+            }else{
+                OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
+                if(intranetUserByUserId!=null){
+                    String valiuserId = intranetUserByUserId.getUserId();
+                    if(userId.equals(valiuserId)){
+                        errorMap.put("userId","USER_ERR003");
+                    }
+                }
+            }
+        }else {
+            errorMap.put("userId","userId must be not empty");
+        }
+        String userDomain = orgUserDto.getUserDomain();
+        if(StringUtil.isEmpty(userDomain)){
+            errorMap.put("userDomain","userDomain must be not empty");
+        }
+        String displayName = orgUserDto.getDisplayName();
+        if(StringUtil.isEmpty(displayName)){
+            errorMap.put("displayName","displayName must be not empty");
+        }
+        Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
+        if(accountActivateDatetime==null){
+            errorMap.put("accountActivateDatetime","accountActivateDatetime must be not empty");
+        }
+        Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
+        if(accountDeactivateDatetime==null){
+            errorMap.put("accountDeactivateDatetime","accountDeactivateDatetime must be not empty");
+        }
+        if(accountDeactivateDatetime!=null&&accountActivateDatetime!=null){
+            Date date = new Date();
+            boolean after1 = date.after(accountActivateDatetime);
+            boolean after = accountActivateDatetime.after(accountDeactivateDatetime);
+            if(!after){
+                errorMap.put("accountDeactivateDatetime", "USER_ERR006");
+            }else if(!after1){
+                errorMap.put("accountDeactivateDatetime", "accountActivateDatetime must be after today");
+            }
+        }
+        String lastName = orgUserDto.getLastName();
+        if(StringUtil.isEmpty(lastName)){
+            errorMap.put("lastName","lastName must be not empty");
+        }
+        String firstName = orgUserDto.getFirstName();
+        if(StringUtil.isEmpty(firstName)){
+            errorMap.put("firstName","firstName must be not empty");
+        }
+        String email = orgUserDto.getEmail();
+        if(StringUtil.isEmpty(email)){
+            errorMap.put("email","email must be not empty");
+        }
+
+        return errorMap;
+
     }
 
 

@@ -40,7 +40,7 @@
                                     <div class="panel-main-content">
                                         <iais:section title="" id="assign_Task">
                                             <iais:row>
-                                                <iais:field value="Application Number"/>
+                                                <iais:field value="Application No"/>
                                                 <iais:value width="7">
                                                     <label><c:out
                                                             value="${inspectionTaskPoolListDto.applicationNo}"/></label>
@@ -87,7 +87,7 @@
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
-                                                <iais:field value="Inspection Lead"/>
+                                                <iais:field value="Admin Screening Supervisor"/>
                                                 <iais:value width="7">
                                                     <label><c:out value="${inspectionTaskPoolListDto.inspectorLeads}"/></label>
                                                 </iais:value>
@@ -95,7 +95,7 @@
 
 
                                                 <iais:row>
-                                                    <iais:field value="Inspector" required="true"/>
+                                                    <iais:field value="Admin Screening Officer" required="true"/>
                                                     <iais:value width="10">
                                                         <c:if test="${inspectionReassignTaskDto.inspectorCheck == null}">
                                                         <iais:select name="inspectorCheck" options="inspectorOption" firstOption="Please select" value="${inspectorOption}"></iais:select>
@@ -114,7 +114,7 @@
 
 
                                             <iais:row>
-                                                <iais:field value="Reassign Reason"/>
+                                                <iais:field value="Reassign Reason" required="true"/>
                                                 <iais:value width="10">
                                                     <iais:input type="text" name="reassignRemarks" value="${inspectionReassignTaskDto.reassignRemarks}"/>
                                                     <br><span class="error-msg" name="iaisErrorMsg" id="error_reassignRemarks"></span>

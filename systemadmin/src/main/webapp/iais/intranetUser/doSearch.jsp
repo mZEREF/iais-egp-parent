@@ -21,8 +21,8 @@
         <iais:field value="Account Status:"/>
         <iais:value width="18">
             <div class="form-horizontal">
-            <iais:select id="accountStatus" name="accountStatus" options="statusOption" firstOption="Please Select"
-                         value="${status}"></iais:select></div>
+                <iais:select id="accountStatus" name="accountStatus" options="statusOption" firstOption="Please Select"
+                             value="${status}"></iais:select></div>
         </iais:value>
     </iais:row>
     <iais:row>
@@ -64,13 +64,21 @@
 <div class="col-xs-3">
     <div class="components">
         <a class="btn btn-primary" onclick="doExport()">Export</a>
+        <span id="error_export" name="iaisErrorMsg" class="error-msg"></span>
     </div>
 </div>
 <div class="col-xs-3">
     <div class="components">
         <input type="file" id="inputFile" name="xmlFile" style="display:none" onchange="javascirpt:doImport();"/>
-        <input type="button" class="btn btn-primary" onclick="document.getElementById('inputFile').click()"
-               value="Import"/>
+        <input type="button" class="btn btn-primary" onclick="document.getElementById('inputFile').click()" value="Import"/>
+        <span id="error_import" name="iaisErrorMsg" class="error-msg"></span>
+        <span id="error_userId" name="iaisErrorMsg" class="error-msg"></span>
+        <span id="error_displayName" name="iaisErrorMsg" class="error-msg"></span>
+        <span id="error_accountActivateDatetime" name="iaisErrorMsg" class="error-msg"></span>
+        <span id="error_accountDeactivateDatetime" name="iaisErrorMsg" class="error-msg"></span>
+        <span id="error_firstName" name="iaisErrorMsg" class="error-msg"></span>
+        <span id="error_lastName" name="iaisErrorMsg" class="error-msg"></span>
+        <span id="error_email" name="iaisErrorMsg" class="error-msg"></span>
     </div>
 </div>
-
+<%@include file="/include/validation.jsp" %>
