@@ -29,25 +29,40 @@
                                             <iais:field value="Search No:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text"  style="width:180%; font-weight:normal;" name="searchNo"  />
+                                                    <input type="text"  style="width:180%; font-weight:normal;" name="searchNo" value="${searchNo}" />
                                                 </label>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:value width="18">
-                                                <input type="checkbox" name="hci" /> HCI Name
+                                                <c:choose>
+                                                    <c:when test="${count==1}"><input type="checkbox" name="hci" checked /> HCI Name</c:when>
+                                                    <c:otherwise><input type="checkbox" name="hci"  /> HCI Name</c:otherwise>
+                                                </c:choose>
                                             </iais:value>
                                             <iais:value width="18">
-                                                <input type="checkbox" name="application"  /> Application No
+                                                <c:choose>
+                                                    <c:when test="${count==2}"><input type="checkbox" name="application" checked /> Application No</c:when>
+                                                    <c:otherwise><input type="checkbox" name="application"  /> Application No</c:otherwise>
+                                                </c:choose>
                                             </iais:value>
                                             <iais:value width="18">
-                                                <input type="checkbox" name="licence" /> Licence No
+                                                <c:choose>
+                                                    <c:when test="${count==3}"><input type="checkbox" name="licence" checked /> Licence No</c:when>
+                                                    <c:otherwise><input type="checkbox" name="licence"  /> Licence No</c:otherwise>
+                                                </c:choose>
                                             </iais:value>
                                             <iais:value width="18">
-                                                <input type="checkbox" name="licensee"  /> Licensee Name
+                                                <c:choose>
+                                                    <c:when test="${count==4}"><input type="checkbox" name="licensee" checked /> Licensee Name</c:when>
+                                                    <c:otherwise><input type="checkbox" name="licensee"  /> Licensee Name</c:otherwise>
+                                                </c:choose>
                                             </iais:value>
                                             <iais:value width="18">
-                                                <input type="checkbox" name="servicePersonnel"  /> Service Personnel Name
+                                                <c:choose>
+                                                    <c:when test="${count==5}"><input type="checkbox" name="servicePersonnel" checked /> Service Personnel Name</c:when>
+                                                    <c:otherwise><input type="checkbox" name="servicePersonnel"  /> Service Personnel Name</c:otherwise>
+                                                </c:choose>
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">

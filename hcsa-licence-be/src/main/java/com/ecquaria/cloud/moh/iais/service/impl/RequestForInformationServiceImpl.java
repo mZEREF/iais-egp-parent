@@ -355,7 +355,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     private void saveFileRepo(String fileNames){
         boolean aBoolean=false;
-        File file =new File(sharedPath+File.separator+"userRecFile"+File.separator+"files");
+        File file =new File(downZip+File.separator+fileNames+File.separator+"userRecFile"+File.separator+"files");
         if(!file.exists()){
             file.mkdirs();
         }
@@ -391,7 +391,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                     fileRepoDto.setId(split[0]);
                     fileRepoDto.setAuditTrailDto(intranet);
                     fileRepoDto.setFileName(fileName.toString());
-                    fileRepoDto.setRelativePath(sharedPath+File.separator+"userRecFile"+File.separator+"files");
+                    fileRepoDto.setRelativePath(compressPath+File.separator+fileNames+File.separator+"userRecFile"+File.separator+"files");
                     aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
 
                     if(aBoolean){

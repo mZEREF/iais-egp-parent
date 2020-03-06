@@ -49,11 +49,21 @@
                                         <iais:row>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="checkbox" name="reqType" checked/>Information
+                                                    <input type="checkbox" readonly name="reqType" checked/>Information
                                                 </label>
-                                                <label>
-                                                    <input type="checkbox" name="reqType" />Supporting Documents
-                                                </label>
+                                                <c:choose>
+                                                    <c:when test="${licPreReqForInfoDto.needDocument}">
+                                                        <label>
+                                                            <input type="checkbox" readonly name="reqType" checked />Supporting Documents
+                                                        </label>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <label>
+                                                            <input type="checkbox" readonly name="reqType" />Supporting Documents
+                                                        </label>
+                                                    </c:otherwise>
+                                                </c:choose>
+
                                             </iais:value>
                                         </iais:row>
                                         <H3></H3>

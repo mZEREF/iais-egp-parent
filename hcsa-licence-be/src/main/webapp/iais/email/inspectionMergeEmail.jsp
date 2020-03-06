@@ -232,7 +232,7 @@
                                     <tr height="1">
                                         <td class="col-xs-2" >
                                             <p >
-                                                Processing Decision:<b style="color:#ff0000;">*</b>
+                                                Processing Decision:<b style="color:#ff0000;"> *</b>
                                             </p>
                                         </td>
                                         <td>
@@ -260,7 +260,7 @@
                                     <tr height="1" style="display: none" id="selectReviseNc">
                                         <td class="col-xs-2" >
                                             <p >
-                                                Need Revise:
+                                                Need Revise:<b style="color:#ff0000;"> *</b>
                                             </p>
                                         </td>
                                         <td>
@@ -277,7 +277,7 @@
                                         <td>
                                             <div class="col-sm-9">
                                                 <p style="color:#ff0000;">
-                                                    Need Revise.
+                                                    The field is mandatory.
                                                 </p>
                                             </div>
                                         </td>

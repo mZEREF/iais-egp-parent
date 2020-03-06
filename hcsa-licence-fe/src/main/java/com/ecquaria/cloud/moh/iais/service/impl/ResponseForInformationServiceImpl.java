@@ -147,6 +147,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     private String compress(){
         log.info("------------ start compress() -----------------------");
         long l=   System.currentTimeMillis();
+        new File(backups+File.separator);
         try (OutputStream is=new FileOutputStream(backups+File.separator+ l+".zip");
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos)) {
@@ -232,7 +233,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     }
 
     private void deleteFile(){
-        File file =new File(download);
+        File file =new File(download+File.separator+"files");
         File fileRepPath=new File(download+File.separator);
         MiscUtil.checkDirs(fileRepPath);
         MiscUtil.checkDirs(file);
@@ -244,7 +245,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                 }
             }
         }
-        if(file.isDirectory()){
+        {
             File[] files = file.listFiles((dir, name) -> {
                 if (name.endsWith(fileFormat)) {
                     return true;

@@ -46,7 +46,7 @@
                                     <div class="panel-main-content">
                                         <iais:section title="" id = "supPoolList">
                                             <iais:row>
-                                                <iais:field value="Application No:"/>
+                                                <iais:field value="Application No."/>
                                                 <iais:value width="18">
                                                     <label>
                                                         <input type="text" style="width:180%; font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
@@ -76,7 +76,7 @@
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
-                                                <iais:field value="Licence No:"/>
+                                                <iais:field value="Licence No."/>
                                                 <iais:value width="18">
                                                     <label>
                                                         <input type="text" style="width:180%; font-weight:normal;" name="licence_no" value="${SearchParam.filters['licence_no']}" />
@@ -84,7 +84,7 @@
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
-                                                <iais:field value="UEN No:"/>
+                                                <iais:field value="UEN No."/>
                                                 <iais:value width="18">
                                                     <label>
                                                         <input type="text" style="width:180%; font-weight:normal;" name="uen_no" value="${SearchParam.filters['uen_no']}" />
@@ -236,7 +236,7 @@
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
-                                                <iais:field value="Licensee Professional Regn No:"/>
+                                                <iais:field value="Licensee Professional Regn No."/>
                                                 <iais:value width="18">
                                                     <label>
                                                         <input type="text" style="width:180%; font-weight:normal;" name="licensee_regn_no" value="${SearchParam.filters['licensee_regn_no']}" />
@@ -289,7 +289,7 @@
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
-                                                <iais:field value="Service Professional Regn No:"/>
+                                                <iais:field value="Service Professional Regn No."/>
                                                 <iais:value width="18">
                                                     <label>
                                                         <input type="text" style="width:180%; font-weight:normal;" name="service_regn_no" value="${SearchParam.filters['service_regn_no']}" />

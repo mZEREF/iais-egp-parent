@@ -35,7 +35,6 @@
             <#if licence_no??>AND :licence_no = :licence_no</#if>
             <#if app_id??>AND :app_id = :app_id</#if>
             <#if org_ids??>AND :org_ids = :org_ids</#if>
-
             <#if licenseeId??>AND :licenseeId = :licenseeId</#if>
             <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
             <#if licenseeRegnNo??>AND :licenseeRegnNo = :licenseeRegnNo</#if>
