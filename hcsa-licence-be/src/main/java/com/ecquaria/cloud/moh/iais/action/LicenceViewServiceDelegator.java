@@ -217,7 +217,7 @@ public class LicenceViewServiceDelegator {
                      successMsg = "save success";
                      ParamUtil.setSessionAttr(bpc.request,"isSaveRfiSelect",AppConsts.YES);
                  }else{
-                     errorMsg = "do not select save success!!!";
+                     errorMsg = "Please select at least a section";
                  }
              }else{
                errorMsg = "Data Error!!!";
