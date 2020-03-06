@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import java.util.ArrayList;
@@ -94,11 +93,10 @@ public class AppealApproveBatchjob {
                   appealApplicationGroupDtos.add(appealApplicationGroupDto);
                   //event bus
                   AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
-                  String eventRefNo = EventBusHelper.getEventRefNo();
                   //licence
                   if(!IaisCommonUtils.isEmpty(appealLicence)){
                       AppealLicenceDto appealLicenceDto = new AppealLicenceDto();
-                      appealLicenceDto.setEventRefNo(eventRefNo);
+                      appealLicenceDto.setEventRefNo("eventRefNo");
                       appealLicenceDto.setAppealLicence(appealLicence);
                       appealLicenceDto.setRollBackLicence(rollBackLicence);
                       appealLicenceDto.setAuditTrailDto(auditTrailDto);
@@ -109,7 +107,7 @@ public class AppealApproveBatchjob {
 
                   //application
                   AppealApplicationDto appealApplicationDto = new  AppealApplicationDto();
-                  appealApplicationDto.setEventRefNo(eventRefNo);
+                  appealApplicationDto.setEventRefNo("eventRefNo");
                   appealApplicationDto.setAppealApplicationDto(appealApplicaiton);
                   appealApplicationDto.setRollBackApplicationDto(rollBackApplication);
                   appealApplicationDto.setAppealPersonnel(appealPersonnel);

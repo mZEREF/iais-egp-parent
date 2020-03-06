@@ -48,7 +48,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
@@ -133,9 +132,8 @@ public class LicenceApproveBatchjob {
                     if(success.size() > 0){
                     //
                     AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
-                    String eventRefNo = EventBusHelper.getEventRefNo();
                     EventBusLicenceGroupDtos eventBusLicenceGroupDtos = new EventBusLicenceGroupDtos();
-                    eventBusLicenceGroupDtos.setEventRefNo(eventRefNo);
+                    eventBusLicenceGroupDtos.setEventRefNo("eventRefNo");
                     eventBusLicenceGroupDtos.setLicenceGroupDtos(licenceGroupDtos);
                     eventBusLicenceGroupDtos.setAuditTrailDto(auditTrailDto);
                     //step1 create Licence to BE DB
@@ -147,7 +145,7 @@ public class LicenceApproveBatchjob {
                     List<ApplicationDto> applicationDtos =getApplications(licenceGroupDtos);
                     //
                     EventApplicationGroupDto eventApplicationGroupDto = new EventApplicationGroupDto();
-                    eventApplicationGroupDto.setEventRefNo(eventRefNo);
+                    eventApplicationGroupDto.setEventRefNo("eventRefNo");
                     eventApplicationGroupDto.setRollBackApplicationGroupDtos(success);
                     success = updateStatusToGenerated(success);
                     eventApplicationGroupDto.setApplicationGroupDtos(success);

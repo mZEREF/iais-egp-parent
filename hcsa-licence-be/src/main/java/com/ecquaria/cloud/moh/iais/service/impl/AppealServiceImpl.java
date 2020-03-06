@@ -1,11 +1,13 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicEicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -18,9 +20,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppealClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
-import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,13 +46,13 @@ public class AppealServiceImpl implements AppealService {
     @Autowired
     private GenerateIdClient generateIdClient;
     @Autowired
-    private SubmissionClient client;
-    @Autowired
     private BeEicGatewayClient beEicGatewayClient;
     @Autowired
     private SystemParamConfig systemParamConfig;
     @Autowired
     private LicenceService licenceService;
+    @Autowired
+    private EventBusHelper eventBusHelper;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -105,22 +105,13 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public AppealLicenceDto createAppealLicenceDto(AppealLicenceDto appealLicenceDto) {
-        String callBackUrl = systemParamConfig.getIntraServerName()+"/hcsa-licence-web/eservice/INTRANET/LicenceEventBusCallBack";
-        String sopUrl = systemParamConfig.getIntraServerName()+"/hcsa-licence-web/eservice/INTRANET/ApplicationView";
-        String project ="hcsaLicenceBe";
-        String processName = "generateLicenceAppeal";
-        String step = "start";
-
-        SubmitReq req =EventBusHelper.getSubmitReq(appealLicenceDto, generateIdClient.getSeqId().getEntity(),
+        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appealLicenceDto, generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_LICENCESAVE,
                 EventBusConsts.OPERATION_LICENCE_SAVE_APPEAL,
-                sopUrl,
-                callBackUrl, EventBusConsts.SOP_USER_ID,false,project,processName,step);
-        req.addCallbackParam("eventRefNo", appealLicenceDto.getEventRefNo());
-        //
-        SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
+                appealLicenceDto.getEventRefNo(),
+                null);
 
-        return   null;
+        return appealLicenceDto;
     }
 
     @Override
@@ -131,15 +122,12 @@ public class AppealServiceImpl implements AppealService {
         String processName = "generateLicenceAppeal";
         String step = "start";
 
-        SubmitReq req =EventBusHelper.getSubmitReq(appealApplicationDto, generateIdClient.getSeqId().getEntity(),
+        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appealApplicationDto, generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_APPLICATION_UPDATE_APPEAL,
-                sopUrl,
-                callBackUrl, EventBusConsts.SOP_USER_ID,false,project,processName,step);
-        req.addCallbackParam("eventRefNo", appealApplicationDto.getEventRefNo());
-        //
-        SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
-        return null;
+                appealApplicationDto.getEventRefNo(), null);
+
+        return appealApplicationDto;
     }
 
     @Override

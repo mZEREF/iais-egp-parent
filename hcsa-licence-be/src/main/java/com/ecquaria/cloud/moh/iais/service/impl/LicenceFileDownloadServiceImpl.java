@@ -35,7 +35,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
@@ -701,9 +700,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
             broadcastOrganizationDto.setAuditTrailDto(intranet);
             broadcastApplicationDto.setAuditTrailDto(intranet);
-            String eventRefNo = EventBusHelper.getEventRefNo();
-            broadcastOrganizationDto.setEventRefNo(eventRefNo);
-            broadcastApplicationDto.setEventRefNo(eventRefNo);
+            broadcastOrganizationDto.setEventRefNo("eventRefNo");
+            broadcastApplicationDto.setEventRefNo("eventRefNo");
 
             List<TaskDto> onSubmitTaskList = new ArrayList<>();
             List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = new ArrayList<>();

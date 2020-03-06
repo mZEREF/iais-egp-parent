@@ -1,17 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
@@ -21,14 +18,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
-import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
-import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -45,6 +35,10 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Shicheng
@@ -67,9 +61,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     private SystemBeLicClient systemBeLicClient;
 
     @Autowired
-    private SubmissionClient submissionClient;
-
-    @Autowired
     private ApplicationClient applicationClient;
 
     @Autowired
@@ -80,6 +71,9 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     @Autowired
     private ApplicationService applicationService;
+
+    @Autowired
+    private EventBusHelper eventBusHelper;
 
     @Override
     public List<ProcessFileTrackDto> getFileTypeAndStatus(String applicationStatusFeToBeRectification, String commonStatusActive) {
@@ -188,11 +182,9 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                         pDto.setEventRefNo(eventRefNo);
                         String callbackUrl = systemParamConfig.getInterServerName()
                                 + "/hcsa-licence-web/eservice/INTRANET/MohInspecSaveRecRollBack";
-                        SubmitReq req = EventBusHelper.getSubmitReq(pDto, eventRefNo, EventBusConsts.SERVICE_NAME_SYSTEM_ADMIN,
-                                EventBusConsts.OPERATION_BE_REC_DATA_COPY, "", callbackUrl, "batchjob", false,
-                                "INTRANET", "InspecSaveBeRecByFeBatchjob", "start");
-                        SubmitResp submitResp = submissionClient.submit(AppConsts.REST_PROTOCOL_TYPE
-                                + RestApiUrlConsts.EVENT_BUS, req);
+                        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(pDto, eventRefNo, EventBusConsts.SERVICE_NAME_SYSTEM_ADMIN,
+                                EventBusConsts.OPERATION_BE_REC_DATA_COPY, pDto.getEventRefNo(), null);
+
                     }
                 }
             }
@@ -262,7 +254,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                             by.write(size,0, count);
                             count = fileInputStream.read(size);
                         }
-                        fileToDto(by.toString(), intranet, submissionId);
                         textJson.add(by.toString());
 
                     }
@@ -281,7 +272,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                             fileRepoDto.setFileName(fileReport.getName());
                             String relativePath = fileReport.getPath().replaceFirst(sharedPath, "");
                             fileRepoDto.setRelativePath(relativePath);
-                            fileRepoDto.setEventRefNo(submissionId);
                             fileList.add(fileRepoDto);
                         }
                         if(!IaisCommonUtils.isEmpty(fileList)) {
@@ -290,13 +280,11 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
                     }
                 }
-                String callbackUrl = systemParamConfig.getInterServerName()
-                        + "/hcsa-licence-web/eservice/INTRANET/MohInspecSaveRecRollBack";
-                SubmitReq req = EventBusHelper.getSubmitReq(list, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
-                        EventBusConsts.OPERATION_BE_REC_DATA_COPY, "", callbackUrl, "batchjob", false, "INTRANET",
-                        "InspecSaveBeRecByFeBatchjob", "start");
-                SubmitResp submitResp = submissionClient.submit(AppConsts.REST_PROTOCOL_TYPE
-                        + RestApiUrlConsts.EVENT_BUS, req);
+                FileRepoEventDto eventDto = new FileRepoEventDto();
+                eventDto.setFileRepoList(list);
+                eventDto.setEventRefNo(submissionId);
+                SubmitResp submitResp = eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
+                        EventBusConsts.OPERATION_BE_REC_DATA_COPY, eventDto.getEventRefNo(), null);
 
             }
         } catch(Exception e) {
@@ -319,16 +307,4 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         }
     }
 
-    private void fileToDto(String toString, AuditTrailDto intranet, String submissionId) {
-        ApplicationListFileDto applicationListFileDto = JsonUtil.parseToObject(toString, ApplicationListFileDto.class);
-        applicationListFileDto.setAuditTrailDto(intranet);
-        String callbackUrl = systemParamConfig.getInterServerName()
-                + "/hcsa-licence-web/eservice/INTRANET/MohInspecSaveRecRollBack";
-        SubmitReq req = EventBusHelper.getSubmitReq(applicationListFileDto, submissionId, "licenceSave",
-                EventBusConsts.OPERATION_BE_REC_DATA_COPY, "", callbackUrl, "batchjob",
-                false, "INTRANET",
-                "InspecSaveBeRecByFeBatchjob", "start");
-        SubmitResp submitResp = submissionClient.submit(AppConsts.REST_PROTOCOL_TYPE
-                + RestApiUrlConsts.EVENT_BUS, req);
-    }
 }

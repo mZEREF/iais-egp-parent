@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
@@ -18,7 +17,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -29,16 +27,13 @@ import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
-import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
-import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sop.webflow.rt.api.Process;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * AppSubmisionServiceImpl
@@ -53,8 +48,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     String submission = RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.HCSA_APP_SUBMISSION;
 
     @Autowired
-    private SubmissionClient client;
-    @Autowired
     private ApplicationClient applicationClient;
     @Autowired
     private AppConfigClient appConfigClient;
@@ -62,7 +55,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private SystemParamConfig systemParamConfig;
     @Autowired
     private LicenceClient licenceClient;
-
+    @Autowired
+    private EventBusHelper eventBusHelper;
     @Autowired
     private HcsaLicenClient hcsaLicenClient;
 
@@ -243,72 +237,31 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
    private void  informationEventBus(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process){
        //prepare request parameters
-       appSubmissionRequestInformationDto.setEventRefNo(EventBusHelper.getEventRefNo());
-       String callBackUrl = systemParamConfig.getInterServerName()+"/hcsa-licence-web/eservice/INTERNET/HcsaApplicationEventBusCallBack";
-       String sopUrl = systemParamConfig.getInterServerName()+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication";
-       String project ="hcsaApplicationFe";
-       String processName = "requestInfromationSubmit";
-       String step = "start";
-       if(process!=null){
-           project= process.getCurrentProject();
-           processName = process.getCurrentProcessName();
-           step = process.getCurrentComponentName();
-           callBackUrl =  process.getHttpRequest().getServerName()
-                   +process.getHttpRequest().getContextPath()
-                   +"/eservice/INTERNET/HcsaApplicationEventBusCallBack";
-       }
-       SubmitReq req = EventBusHelper.getSubmitReq(appSubmissionRequestInformationDto, generateIdClient.getSeqId().getEntity(),
-               EventBusConsts.SERVICE_NAME_APPSUBMIT,
-               EventBusConsts.OPERATION_REQUEST_INFORMATION,
-               sopUrl, callBackUrl, "sop",false,project,processName,step);
-       //
-       SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
+       appSubmissionRequestInformationDto.setEventRefNo(appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpNo());
+       SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
+               generateIdClient.getSeqId().getEntity(),
+               EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_REQUEST_INFORMATION,
+               appSubmissionRequestInformationDto.getEventRefNo(), process);
    }
 
-   private void premisesListInformationEventBus(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process){
-        appSubmissionRequestInformationDto.setEventRefNo(EventBusHelper.getEventRefNo());
-        String callBackUrl = systemParamConfig.getInterServerName()+"/hcsa-licence-web/eservice/INTERNET/HcsaApplicationEventBusCallBack";
-        String sopUrl = systemParamConfig.getInterServerName()+"/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList";
-        String project ="hcsaApplicationFe";
-        String processName = "requestInfromationSubmit";
-        String step = "start";
-       if(process!=null){
-           project= process.getCurrentProject();
-           processName = process.getCurrentProcessName();
-           step = process.getCurrentComponentName();
-           callBackUrl =  process.getHttpRequest().getServerName()
-                   +process.getHttpRequest().getContextPath()
-                   +"/eservice/INTERNET/HcsaApplicationEventBusCallBack";
-       }
-       SubmitReq req = EventBusHelper.getSubmitReq(appSubmissionRequestInformationDto, generateIdClient.getSeqId().getEntity(),
+   private void premisesListInformationEventBus(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
+                                                Process process){
+        appSubmissionRequestInformationDto.setEventRefNo(appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpNo());
+        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
+               generateIdClient.getSeqId().getEntity(),
                EventBusConsts.SERVICE_NAME_APPSUBMIT,
                EventBusConsts.OPERATION_REQUEST_INFORMATION,
-               sopUrl, callBackUrl, "sop",false,project,processName,step);
-       //
-       SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
+               appSubmissionRequestInformationDto.getEventRefNo(), process);
    }
 
     private  void eventBus(AppSubmissionDto appSubmissionDto, Process process){
         //prepare request parameters
         appSubmissionDto.setEventRefNo(appSubmissionDto.getAppGrpNo());
-        SubmitReq req = new SubmitReq();
-        req.setSubmissionId(applicationClient.getSubmissionId().getEntity());
-        req.setProject(process.getCurrentProject());
-        req.setProcess(process.getCurrentProcessName());
-        req.setStep(process.getCurrentComponentName());
-        req.setService(EventBusConsts.SERVICE_NAME_APPSUBMIT);
-        req.setOperation(EventBusConsts.OPERATION_NEW_APP_SUBMIT);
-        req.setSopUrl("https://" + systemParamConfig.getInterServerName()
-                +  "/hcsa-licence-web/eservice/INTERNET/MohNewApplication");
-        req.setData(JsonUtil.parseToJson(appSubmissionDto));
-        req.setCallbackUrl("https://"
-                + systemParamConfig.getInterServerName()
-                + "/hcsa-licence-web/eservice/INTERNET/HcsaApplicationEventBusCallBack");
-        req.setUserId("SOP");
-        req.setWait(false);
-        req.addCallbackParam("token", IaisEGPHelper.genTokenForCallback(req.getSubmissionId(), req.getService()));
-        //
-        SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
+
+        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appSubmissionDto, generateIdClient.getSeqId().getEntity(),
+                EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                EventBusConsts.OPERATION_NEW_APP_SUBMIT,
+                appSubmissionDto.getEventRefNo(), process);
     }
 
     @Override
