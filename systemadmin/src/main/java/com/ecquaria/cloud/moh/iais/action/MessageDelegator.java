@@ -59,7 +59,7 @@ public class MessageDelegator {
         List<SelectOption> domainOptionList = new ArrayList<>();
         domainOptionList.add(new SelectOption("Internet", "Internet"));
         domainOptionList.add(new SelectOption("Intranet", "Intranet"));
-        domainOptionList.add(new SelectOption("Mobil", "Mobil"));
+        domainOptionList.add(new SelectOption("Mobile", "Mobile"));
         ParamUtil.setRequestAttr(request, "domainTypeSelect", domainOptionList);
 
         List<SelectOption> msgOptionList = new ArrayList<>();

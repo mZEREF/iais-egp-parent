@@ -10,9 +10,14 @@ import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.*;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +32,9 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
     @Autowired
     private HcsaChklClient chklClient;
+
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -125,10 +133,15 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
         try {
             //sync to fe
-            List<HcsaChklSvcRegulationDto> allRegulation = chklClient.getAllRegulation().getEntity();
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 
-        }catch (IaisRuntimeException e){
-            log.error("encounter failure when sync regulation to fe" + e.getMessage());
+            List<HcsaChklSvcRegulationDto> allRegulation = chklClient.getAllRegulation().getEntity();
+            beEicGatewayClient.syncRegulationToFe(allRegulation, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization());
+
+        }catch (Exception e){
+            log.error("encounter failure when sync regulation to fe " + e.getMessage());
         }
 
         return retJson;

@@ -84,7 +84,7 @@
 
                         </c:when>
                         <c:otherwise>
-                            <input name="value" type="text" maxlength="3" value="${parameterRequestDto.value}">
+                            <input name="value" type="text" maxlength="5" value="${parameterRequestDto.value}">
                         </c:otherwise>
                     </c:choose>
                     <span id="error_value" name="iaisErrorMsg" class="error-msg"></span>
