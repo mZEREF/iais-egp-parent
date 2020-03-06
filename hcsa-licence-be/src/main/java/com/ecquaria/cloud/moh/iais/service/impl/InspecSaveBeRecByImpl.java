@@ -8,10 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventInspRecItemNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -43,9 +40,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
@@ -136,8 +131,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     }
 
     private void unzipFile(ZipEntry zipEntry, ZipFile zipFile, String fileName)  {
-        String realPath = compressPath + fileName.substring(0, fileName.lastIndexOf(File.separator) + 1);
-        String saveFileName = fileName.substring(fileName.lastIndexOf(File.separator) + 1);
+        String realPath = compressPath + zipFile.getName().substring(0, zipFile.getName().lastIndexOf(File.separator) + 1);
+        String saveFileName = zipFile.getName().substring(zipFile.getName().lastIndexOf(File.separator) + 1);
         log.debug(StringUtil.changeForLog("realPath:" + realPath));
         log.debug(StringUtil.changeForLog("saveFileName:" + saveFileName));
         File zipFile1 = MiscUtil.generateFile(realPath, saveFileName);
@@ -147,7 +142,9 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             BufferedInputStream bis = new BufferedInputStream(is);
             CheckedInputStream cos = new CheckedInputStream(bis, new CRC32())) {
             if(!zipEntry.getName().endsWith(File.separator)){
-                File file = new File(compressPath + File.separator + zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(File.separator)) + File.separator + fileName);
+                String coUrl = compressPath + File.separator + zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(File.separator)) + File.separator + fileName;
+                log.debug(StringUtil.changeForLog("coUrl:" + coUrl));
+                File file = new File(compressPath + File.separator + zipEntry.getName());
                 if(!file.exists()){
                     file.mkdirs();
                 }
@@ -179,6 +176,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             for(ProcessFileTrackDto pDto:processFileTrackDtos){
                 appIds.add(pDto.getRefId());
                 String fileName = pDto.getFileName().substring(0,pDto.getFileName().lastIndexOf("."));
+                log.debug(StringUtil.changeForLog("coUrlFileName:" + fileName));
                 for(File file2:files){
                     //file2 is zip
                     if(file2.getName().equals(fileName)){
@@ -199,7 +197,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 }
             }
         }
-        if(!IaisCommonUtils.isEmpty(appIds)){
+        /*if(!IaisCommonUtils.isEmpty(appIds)){
             Set<String> appIdSet = new HashSet<>(appIds);
             for(String appId : appIdSet){
                 AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
@@ -242,7 +240,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                     applicationService.updateFEApplicaiton(applicationDto);
                 }
             }
-        }
+        }*/
 
         return saveFlag;
     }
