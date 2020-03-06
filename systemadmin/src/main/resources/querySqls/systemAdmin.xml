@@ -7,6 +7,7 @@
                    (SELECT category_description FROM cm_master_code_category where code_category = mc.code_category) as code_category,
                    code_value,
                    code_description,
+                   sequence,
                    remarks,
                    status,
                    effective_from,

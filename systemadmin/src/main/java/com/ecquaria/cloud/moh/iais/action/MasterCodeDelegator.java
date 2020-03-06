@@ -84,7 +84,6 @@ public class MasterCodeDelegator {
     public void prepareData(BaseProcessClass bpc){
         logAboutStart("prepareData");
         HttpServletRequest request = bpc.request;
-
         SearchParam searchParam = SearchResultHelper.getSearchParam(request,filterParameter);
         QueryHelp.setMainSql(MasterCodeConstants.MSG_TEMPLATE_FILE, MasterCodeConstants.MSG_TEMPLATE_SQL,searchParam);
         SearchResult searchResult = masterCodeService.doQuery(searchParam);
@@ -253,8 +252,7 @@ public class MasterCodeDelegator {
         MasterCodeCategoryDto masterCodeCategoryDto = new MasterCodeCategoryDto();
         String categoryDescription = ParamUtil.getString(request,"codeKey");
         String isEditable = ParamUtil.getString(request,"editable");
-        String codeCategory = masterCodeService.findCodeCategoryByDescription(categoryDescription);
-        masterCodeCategoryDto.setCategoryDescription(codeCategory);
+        masterCodeCategoryDto.setCategoryDescription(categoryDescription);
         masterCodeCategoryDto.setIsEditable(isEditable == null?null:Integer.valueOf(isEditable));
         masterCodeCategoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         ValidationResult validationResult = WebValidationHelper.validateProperty(masterCodeCategoryDto,SystemAdminBaseConstants.SAVE_ACTION);
@@ -264,8 +262,11 @@ public class MasterCodeDelegator {
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
             return;
         }
-        if (StringUtil.isEmpty(codeCategory)){
-            masterCodeService.saveMasterCodeCategory(masterCodeCategoryDto);
+        if (!StringUtil.isEmpty(categoryDescription)){
+            String codeCategory = masterCodeService.findCodeCategoryByDescription(categoryDescription);
+            if (codeCategory == null){
+                masterCodeService.saveMasterCodeCategory(masterCodeCategoryDto);
+            }
         }
         ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
         ParamUtil.setRequestAttr(request, "codeCategory",categoryDescription);

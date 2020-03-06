@@ -127,6 +127,12 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ackPage" stageIndicator="" x="1000" y="480">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Conditions>
@@ -157,7 +163,7 @@
  </Switches>
  <Branches/>
  <Merges>
-  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="960" y="420">
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1060" y="420">
    <Description/>
   </Merge>
  </Merges>
@@ -191,16 +197,16 @@
    <position>{(660,20)(830,180)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSearch" style="oblique">
-   <position>{(550,180)(980,440)}</position>
+   <position>{(550,180)(1080,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSorting" style="oblique">
-   <position>{(650,180)(980,440)}</position>
+   <position>{(650,180)(1080,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPaging" style="oblique">
-   <position>{(720,180)(980,440)}</position>
+   <position>{(720,180)(1080,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doDelete" style="oblique">
-   <position>{(830,180)(980,440)}</position>
+   <position>{(830,180)(1080,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareCreate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(660,20)(320,180)}</position>
@@ -230,13 +236,13 @@
    <position>{(610,340)(440,180)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
-   <position>{(980,440)(190,674)(200,20)}</position>
+   <position>{(1080,440)(190,674)(200,20)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doUpload" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(660,20)(960,190)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doUpload" style="oblique">
-   <position>{(960,190)(980,440)}</position>
+   <position>{(960,190)(1080,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doCreateCode" linkstyle="Direct" name="" sourceName="/Pages/WebPage/doCreateCodePage" style="oblique">
    <position>{(670,500)(780,500)}</position>
@@ -244,8 +250,8 @@
   <SynchronousLink destinationName="/Conditions/Condition/codeCond" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doCreateCode" style="rectanular">
    <position>{(780,500)(900,500)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/codeCond" style="oblique">
-   <position>{(900,500)(980,440)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/ackPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/codeCond" style="oblique">
+   <position>{(900,500)(1020,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareCode" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/categoryCond" style="rectanular">
    <position>{(320,500)(450,500)}</position>
@@ -263,10 +269,10 @@
    <position>{(550,500)(670,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/backCond" style="oblique">
-   <position>{(550,500)(557,439)(980,440)}</position>
+   <position>{(550,500)(557,439)(1080,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
-   <position>{(610,340)(980,440)}</position>
+   <position>{(610,340)(1080,440)}</position>
   </SynchronousLink>
  </Links>
 </Application>

@@ -59,7 +59,7 @@
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Sequence</p>
-                                                <p>${masterCodeResult.codeDescription}</p>
+                                                <p>${masterCodeResult.sequence}</p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Status</p>
@@ -69,12 +69,12 @@
                                                 <p class="visible-xs visible-sm table-row-title">Effective Start
                                                     Date</p>
                                                 <p><fmt:formatDate value="${masterCodeResult.effectiveStartDate}"
-                                                                   pattern="MM/dd/yyyy HH:mm:ss"/></p>
+                                                                   pattern="MM/dd/yyyy"/></p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Effective End Date</p>
                                                 <p><fmt:formatDate value="${masterCodeResult.effectiveEndDate}"
-                                                                   pattern="MM/dd/yyyy HH:mm:ss"/></p>
+                                                                   pattern="MM/dd/yyyy"/></p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Remarks</p>
