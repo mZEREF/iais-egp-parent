@@ -19,11 +19,14 @@ import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,10 +38,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Shicheng
@@ -125,23 +124,17 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     }
 
     private void unzipFile(ZipEntry zipEntry, ZipFile zipFile, String fileName)  {
-        String realPath = compressPath + zipFile.getName().substring(0, zipFile.getName().lastIndexOf(File.separator) + 1);
-        String saveFileName = zipFile.getName().substring(zipFile.getName().lastIndexOf(File.separator) + 1);
+        String realPath = compressPath + zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator) + 1);
+        String saveFileName = zipEntry.getName().substring(zipEntry.getName().lastIndexOf(File.separator) + 1);
         log.debug(StringUtil.changeForLog("realPath:" + realPath));
         log.debug(StringUtil.changeForLog("saveFileName:" + saveFileName));
-        File zipFile1 = MiscUtil.generateFile(realPath, saveFileName);
-        try(OutputStream os = new FileOutputStream(zipFile1);
+        File uploadRecFile = MiscUtil.generateFile(realPath, saveFileName);
+        try(OutputStream os = new FileOutputStream(uploadRecFile);
             BufferedOutputStream bos = new BufferedOutputStream(os);
             InputStream is = zipFile.getInputStream(zipEntry);
             BufferedInputStream bis = new BufferedInputStream(is);
             CheckedInputStream cos = new CheckedInputStream(bis, new CRC32())) {
             if(!zipEntry.getName().endsWith(File.separator)){
-                String coUrl = compressPath + File.separator + zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(File.separator)) + File.separator + fileName;
-                log.debug(StringUtil.changeForLog("coUrl:" + coUrl));
-                File file = new File(compressPath + File.separator + zipEntry.getName());
-                if(!file.exists()){
-                    file.mkdirs();
-                }
                 byte[] b = new byte[1024];
                 int count = cos.read(b);
                 while(count != -1){
@@ -159,33 +152,25 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     @Override
     public Boolean saveData(AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos) {
         Boolean saveFlag = false;
-        List<String> textJson = new ArrayList<>();
-        Boolean fileBoolean = false;
-        Boolean aBoolean = false;
         File file = new File(download);
         List<String> appPremCorrIds = new ArrayList<>();
         List<String> appIds = new ArrayList<>();
+        //file is backupsRec
         if(file.isDirectory()){
             File[] files = file.listFiles();
             for(ProcessFileTrackDto pDto:processFileTrackDtos){
                 appIds.add(pDto.getRefId());
-                String fileName = pDto.getFileName().substring(0,pDto.getFileName().lastIndexOf("."));
-                log.debug(StringUtil.changeForLog("coUrlFileName:" + fileName));
                 for(File file2:files){
-                    //file2 is zip
-                    if(file2.getName().equals(fileName)){
-                        String eventRefNo = pDto.getRefId();
-                        saveDataDtoAndFile(file2, intranet, aBoolean, textJson,
-                                fileBoolean, eventRefNo);
-                        pDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SAVE_SUCCESSFUL);
-                        pDto.setAuditTrailDto(intranet);
-                        pDto.setEventRefNo(eventRefNo);
-                        String callbackUrl = systemParamConfig.getInterServerName()
-                                + "/hcsa-licence-web/eservice/INTRANET/MohInspecSaveRecRollBack";
-                        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(pDto, eventRefNo, EventBusConsts.SERVICE_NAME_SYSTEM_ADMIN,
-                                EventBusConsts.OPERATION_BE_REC_DATA_COPY, pDto.getEventRefNo(), null);
-
-                    }
+                    //file2 is upload Directory, name is file report id
+                    String eventRefNo = pDto.getRefId();
+                    saveDataDtoAndFile(file2, intranet, eventRefNo);
+                    pDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SAVE_SUCCESSFUL);
+                    pDto.setAuditTrailDto(intranet);
+                    pDto.setEventRefNo(eventRefNo);
+                    String callbackUrl = systemParamConfig.getInterServerName()
+                            + "/hcsa-licence-web/eservice/INTRANET/MohInspecSaveRecRollBack";
+                    SubmitResp submitResp = eventBusHelper.submitAsyncRequest(pDto, eventRefNo, EventBusConsts.SERVICE_NAME_SYSTEM_ADMIN,
+                            EventBusConsts.OPERATION_BE_REC_DATA_COPY, pDto.getEventRefNo(), null);
                 }
             }
         }
@@ -237,47 +222,26 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         return saveFlag;
     }
 
-    private void saveDataDtoAndFile(File file2, AuditTrailDto intranet, boolean aBoolean, List<String> textJson,
-                                       boolean fileBoolean, String submissionId) {
-        FileInputStream fileInputStream = null;
-        ByteArrayOutputStream by = null;
+    private void saveDataDtoAndFile(File file2, AuditTrailDto intranet, String submissionId) {
         try {
             if(file2.isDirectory()){
                 File[] files2 = file2.listFiles();
-                for(File file3:files2){
-                    if(file3.isFile() && file3.getName().endsWith(fileFormat)){
-                        fileInputStream = new FileInputStream(file3);
-                        by = new ByteArrayOutputStream();
-                        byte[] size = new byte[1024];
-                        int count = fileInputStream.read(size);
-                        while(count != -1){
-                            by.write(size,0, count);
-                            count = fileInputStream.read(size);
-                        }
-                        textJson.add(by.toString());
-
-                    }
-                }
                 List<FileRepoDto> list = new ArrayList<>();
                 for (File file3:files2) {
-                    //file3 is file Directory
-                    if (file3.isDirectory()) {
-                        String fileReportId = file3.getName();
-                        File[] files = file3.listFiles();
-                        List<FileRepoDto> fileList = new ArrayList<>();
-                        for (File fileReport : files) {
-                            FileRepoDto fileRepoDto = new FileRepoDto();
-                            fileRepoDto.setId(fileReportId);
-                            fileRepoDto.setAuditTrailDto(intranet);
-                            fileRepoDto.setFileName(fileReport.getName());
-                            String relativePath = fileReport.getPath().replaceFirst(sharedPath, "");
-                            fileRepoDto.setRelativePath(relativePath);
-                            fileList.add(fileRepoDto);
-                        }
-                        if(!IaisCommonUtils.isEmpty(fileList)) {
-                            list.addAll(fileList);
-                        }
-
+                    //file3 is not Directory, need save
+                    String fileReportId = file2.getName();
+                    List<FileRepoDto> fileList = new ArrayList<>();
+                    FileRepoDto fileRepoDto = new FileRepoDto();
+                    fileRepoDto.setId(fileReportId);
+                    fileRepoDto.setAuditTrailDto(intranet);
+                    fileRepoDto.setFileName(file3.getName());
+                    log.debug(StringUtil.changeForLog("saveDtoFileName:" + file3.getName()));
+                    String relativePath = file3.getPath().replaceFirst(sharedPath, "");
+                    log.debug(StringUtil.changeForLog("relativePath:" + relativePath));
+                    fileRepoDto.setRelativePath(relativePath);
+                    fileList.add(fileRepoDto);
+                    if(!IaisCommonUtils.isEmpty(fileList)) {
+                        list.addAll(fileList);
                     }
                 }
                 FileRepoEventDto eventDto = new FileRepoEventDto();
@@ -289,22 +253,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             }
         } catch(Exception e) {
             log.error(e.getMessage(),e);
-        } finally {
-            try {
-                if(fileInputStream != null) {
-                    fileInputStream.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                if(by != null) {
-                    by.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
-
 }
