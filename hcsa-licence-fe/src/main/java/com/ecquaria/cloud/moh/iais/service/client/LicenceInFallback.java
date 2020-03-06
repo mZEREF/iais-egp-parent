@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
@@ -9,9 +9,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 
 @Component
@@ -111,6 +112,14 @@ public class LicenceInFallback implements LicenceClient {
 
     @Override
     public FeignResponseEntity<List<AppSubmissionDto>> getAppSubmissionDtos(List<String> licenceIds) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppGrpPremisesDto>> getDistinctPremisesByLicenseeId(String licenseeId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

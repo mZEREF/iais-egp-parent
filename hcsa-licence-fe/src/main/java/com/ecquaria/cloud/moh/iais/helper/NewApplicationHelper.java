@@ -23,6 +23,8 @@ import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import sop.util.CopyUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -563,6 +565,37 @@ public class NewApplicationHelper {
         }
 
         return reloadDisciplineAllocationMap;
+    }
+
+    public static AppGrpPremisesDto setWrkTimeFromTo(AppGrpPremisesDto appGrpPremisesDto){
+        if(appGrpPremisesDto == null){
+            return appGrpPremisesDto;
+        }
+        String premType = appGrpPremisesDto.getPremisesType();
+        Time wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
+        Time wrkTimeTo = appGrpPremisesDto.getWrkTimeTo();
+        if(!StringUtil.isEmpty(wrkTimeFrom)){
+            LocalTime localTimeFrom = wrkTimeFrom.toLocalTime();
+            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
+                appGrpPremisesDto.setOnsiteStartHH(String.valueOf(localTimeFrom.getHour()));
+                appGrpPremisesDto.setOnsiteStartMM(String.valueOf(localTimeFrom.getMinute()));
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
+                appGrpPremisesDto.setConStartHH(String.valueOf(localTimeFrom.getHour()));
+                appGrpPremisesDto.setConStartMM(String.valueOf(localTimeFrom.getMinute()));
+            }
+        }
+        if(!StringUtil.isEmpty(wrkTimeTo)){
+            LocalTime localTimeTo = wrkTimeTo.toLocalTime();
+            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
+                appGrpPremisesDto.setOnsiteEndHH(String.valueOf(localTimeTo.getHour()));
+                appGrpPremisesDto.setOnsiteEndMM(String.valueOf(localTimeTo.getMinute()));
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
+                appGrpPremisesDto.setConEndHH(String.valueOf(localTimeTo.getHour()));
+                appGrpPremisesDto.setConEndMM(String.valueOf(localTimeTo.getMinute()));
+            }
+
+        }
+        return appGrpPremisesDto;
     }
 
 

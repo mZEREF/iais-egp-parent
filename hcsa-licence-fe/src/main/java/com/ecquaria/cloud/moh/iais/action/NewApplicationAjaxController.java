@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -427,6 +428,26 @@ public class NewApplicationAjaxController {
     }
 
 
+    @RequestMapping(value = "/lic-premises", method = RequestMethod.GET)
+    public @ResponseBody AppGrpPremisesDto getLicPremisesInfo(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the getLicPremisesInfo start ...."));
+        String premIndexNo = ParamUtil.getString(request,"premIndexNo");
+        if(StringUtil.isEmpty(premIndexNo)){
+            return null;
+        }
+        Map<String,AppGrpPremisesDto> appGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request,NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP);
+        AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoMap.get(premIndexNo);
+        appGrpPremisesDto = NewApplicationHelper.setWrkTimeFromTo(appGrpPremisesDto);
+        log.debug(StringUtil.changeForLog("the getLicPremisesInfo end ...."));
+        return appGrpPremisesDto;
+    }
+
+
+
+
+    //=============================================================================
+    //private method
+    //=============================================================================
     private AppSvcCgoDto isExistIdNo(List<AppSvcCgoDto> appSvcCgoDtoList, String idNo){
         for (AppSvcCgoDto appSvcCgoDto:appSvcCgoDtoList){
             if(idNo.equals(appSvcCgoDto.getIdNo())){

@@ -209,7 +209,7 @@
                             </iais:row>
                             <iais:row>
                               <iais:field value="Address Type " mandatory="true" width="12"/>
-                              <iais:value id="onSiteAddressType${premValue}" cssClass="col-xs-7 col-sm-4 col-md-5">
+                              <iais:value id="onSiteAddressType${premValue}" cssClass="col-xs-7 col-sm-4 col-md-5 addressType">
                                 <iais:select cssClass="siteAddressType" name="onSiteAddressType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Please Select" value="${appGrpPremisesDto.addrType}"></iais:select>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_addrType${status.index}"></span>
                               </iais:value>
@@ -421,7 +421,7 @@
                             </iais:row>
                             <iais:row>
                               <iais:field value="Address Type " mandatory="true" width="12"/>
-                              <iais:value id="conveyanceAddrType${premValue}" cssClass="col-xs-7 col-sm-4 col-md-5">
+                              <iais:value id="conveyanceAddrType${premValue}" cssClass="col-xs-7 col-sm-4 col-md-5 addressType">
                                 <iais:select name="conveyanceAddrType" cssClass="conveyanceAddressType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Please Select" value="${appGrpPremisesDto.conveyanceAddressType}"></iais:select>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceAddressType${status.index}"></span>
                               </iais:value>
@@ -618,7 +618,7 @@
 
         $('.premTypeValue').each(function (k,v) {
             checkedType = $(this).val();
-            $premCountEle = $(this).closest('div.premContent');
+            var $premCountEle = $(this).closest('div.premContent');
             if('ONSITE'==checkedType){
                 $premCountEle.find('.onSiteSelect').removeClass('hidden');
                 $premCountEle.find('.conveyanceSelect').addClass('hidden');
@@ -685,8 +685,8 @@
     var premType = function () {
         $('.premTypeRadio').click(function () {
             var checkedType = $(this).val();
-            $premSelect = $(this).closest('div.premContent');
-            $premSelctDivEle = $(this).closest('div.premisesTypeDiv');
+            var $premSelect = $(this).closest('div.premContent');
+            var $premSelctDivEle = $(this).closest('div.premisesTypeDiv');
             if('ONSITE'==checkedType){
                 $premSelect.find('.onSiteSelect').removeClass('hidden');
                 $premSelect.find('.conveyanceSelect').addClass('hidden');
@@ -713,7 +713,7 @@
     var premSelect = function(){
         $('.premSelect').change(function () {
             var premSelectVal = $(this).val();
-            $premSelect = $(this).closest('div.premContent');
+            var $premSelect = $(this).closest('div.premContent');
             var thisId = $(this).attr('id');
             if("newPremise" == premSelectVal){
                 $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
@@ -721,13 +721,55 @@
                 if("onSiteSel" == thisId){
                     $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
                     $premSelect.find('.new-premise-form-conv').addClass('hidden');
+                    var data = {};
+                    fillForm('onSite',data,$premSelect);
+                    setAddress('',$premSelect);
                 }else if ("conveyanceSel" == thisId) {
                     $premSelect.find('.new-premise-form-conv').removeClass('hidden');
                     $premSelect.find('.new-premise-form-on-site').addClass('hidden');
+                    var data = {};
+                    fillForm('conveyanceSel',data,$premSelect);
+                    setAddress('',$premSelect);
                 }
             }else if("-1" == premSelectVal){
                 $premSelect.find('.new-premise-form-conv').addClass('hidden');
                 $premSelect.find('.new-premise-form-on-site').addClass('hidden');
+                var data = {};
+                fillForm('onSite',data,$premSelect);
+                fillForm('conveyanceSel',data,$premSelect);
+            }else{
+                <!--choose already exist premises -->
+                var jsonData = {
+                    'premIndexNo':premSelectVal
+                };
+                $.ajax({
+                    'url':'${pageContext.request.contextPath}/lic-premises',
+                    'dataType':'json',
+                    'data':jsonData,
+                    'type':'GET',
+                    'success':function (data) {
+                        if(data == null){
+                            return;
+                        }
+                        var premisesType = '';
+                        if("onSiteSel" == thisId){
+                            premisesType = 'onSite';
+                            $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
+                            $premSelect.find('.new-premise-form-conv').addClass('hidden');
+                        }else if ("conveyanceSel" == thisId) {
+                            premisesType = 'conveyance';
+                            $premSelect.find('.new-premise-form-conv').removeClass('hidden');
+                            $premSelect.find('.new-premise-form-on-site').addClass('hidden');
+                        }
+                        if(premisesType != ''){
+                            fillForm(premisesType,data,$premSelect);
+                            setAddress(data.addrType,$premSelect);
+                        }
+                    },
+                    'error':function () {
+
+                    }
+                });
             }
 
 
@@ -736,8 +778,8 @@
 
     var retrieveAddr = function(){
         $('.retrieveAddr').click(function(){
-            $postalCodeEle = $(this).closest('div.postalCodeDiv');
-            $premContent = $(this).closest('div.premContent');
+            var $postalCodeEle = $(this).closest('div.postalCodeDiv');
+            var $premContent = $(this).closest('div.premContent');
             var postalCode = $postalCodeEle.find('.sitePostalCode').val();
             var thisId = $(this).attr('id');
             //alert(postalCode);
@@ -842,7 +884,7 @@
 
     var removePremises = function () {
         $('.removeBtn').click(function () {
-            $removeEle= $(this).closest('div.premContent');
+            var $removeEle= $(this).closest('div.premContent');
             $removeEle.remove();
         });
 
@@ -859,7 +901,7 @@
     var otherLic = function () {
         $('.other-lic').click(function () {
             var val = $(this).val();
-            $otherLicEle = $(this).closest('div.other-lic-content');
+            var $otherLicEle = $(this).closest('div.other-lic-content');
             $otherLicEle.find('input[name="onSiteIsOtherLic"]').val(val);
         });
 
@@ -906,7 +948,7 @@
                 + "</div>"
                 + "</div>"
                 + "</div>";
-            $contentDivEle = $(this).closest('div.form-horizontal');
+            var $contentDivEle = $(this).closest('div.form-horizontal');
             $contentDivEle.find('div.pubHolidayContent:last').after(pubHolDayHtml);
 
             $('.date_picker').datepicker({
@@ -926,9 +968,9 @@
 
     var removePH = function () {
         $('.removePhBtn').click(function () {
-            $pubHolidayContentEle = $(this).closest('div.pubHolidayContent');
-            $contentDivEle = $(this).closest('div.form-horizontal');
-            $premContentEle = $(this).closest('div.premContent');
+            var $pubHolidayContentEle = $(this).closest('div.pubHolidayContent');
+            var $contentDivEle = $(this).closest('div.form-horizontal');
+            var $premContentEle = $(this).closest('div.premContent');
             $pubHolidayContentEle.remove();
             <!--change hidden length value -->
             var length =  $contentDivEle.find('div.pubHolidayContent').length;
@@ -960,6 +1002,42 @@
             });
         });
     }
+
+
+    var setAddress = function(data,$Ele){
+        var $AddrEle = $Ele;
+        $AddrEle.find('select[name="onSiteAddressType"]').val(data);
+        var addressVal = $AddrEle.find('option[value="' + data + '"]').html();
+        $AddrEle.find('select[name="onSiteAddressType"]').next().find('.current').html(addressVal);
+    }
+
+    var fillForm = function (premisesType,data,$Ele) {
+        var $premSelect = $Ele;
+        $premSelect.find('input[name="'+premisesType+'HciName"]').val(data.hciName);
+        $premSelect.find('input[name="'+premisesType+'PostalCode"]').val(data.postalCode);
+        $premSelect.find('input[name="'+premisesType+'BlkNo"]').val(data.blkNo);
+        $premSelect.find('input[name="'+premisesType+'FloorNo"]').val(data.floorNo);
+        $premSelect.find('input[name="'+premisesType+'UnitNo"]').val(data.unitNo);
+        $premSelect.find('input[name="'+premisesType+'BuildingName"]').val(data.buildingName);
+        $premSelect.find('input[name="'+premisesType+'StreetName"]').val(data.streetName);
+        $premSelect.find('input[name="'+premisesType+'ScdfRefNo"]').val(data.scdfRefNo);
+        $premSelect.find('input[name="'+premisesType+'FireSafetyCertIssuedDate"]').val(data.certIssuedDtStr);
+        $premSelect.find('input[name="'+premisesType+'OffTelNo"]').val(data.offTelNo);
+        $premSelect.find('input[name="'+premisesType+'IsOtherLic"]').val(data.locateWithOthers);
+        $premSelect.find('input[name="'+premisesType+'StartHH"]').val(data.onsiteStartHH);
+        $premSelect.find('input[name="'+premisesType+'StartMM"]').val(data.onsiteStartMM);
+        $premSelect.find('input[name="'+premisesType+'EndHH"]').val(data.onsiteEndHH);
+        $premSelect.find('input[name="'+premisesType+'EndMM"]').val(data.onsiteEndMM);
+
+    }
+
+    var fillPhForm = function () {
+
+
+
+
+    }
+
 
 </script>
 

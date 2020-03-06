@@ -25,7 +25,7 @@ public interface ServiceConfigService {
     Set<String> getAppGrpPremisesTypeBySvcId(List<String> svcIds);
     PostCodeDto getPremisesByPostalCode(String postalCode);
     String getSvcIdBySvcCode(String svcCode);
-    List<AppGrpPremisesDto> getAppGrpPremisesDtoByLoginId(String loginId);
+    Map<String,AppGrpPremisesDto> getAppGrpPremisesDtoByLoginId(String loginId);
     String saveFileToRepo(MultipartFile file) throws IOException;
     List<HcsaSvcDocConfigDto> getAllHcsaSvcDocs(String serviceId);
     List<HcsaSvcSubtypeOrSubsumedDto> loadLaboratoryDisciplines(String serviceId);

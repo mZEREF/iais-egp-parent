@@ -97,6 +97,7 @@ public class NewApplicationDelegator {
     public static final String ACKMESSAGE = "AckMessage";
     public static final String SERVICEALLPSNCONFIGMAP = "ServiceAllPsnConfigMap";
     public static final String FIRESTOPTION = "Please Select";
+    public static final String LICAPPGRPPREMISESDTOMAP = "LicAppGrpPremisesDtoMap";
 
     //page name
     public static final String APPLICATION_PAGE_NAME_PREMISES                       = "APPPN01";
@@ -191,30 +192,33 @@ public class NewApplicationDelegator {
             hcsaServiceDtoList.forEach(item -> svcIds.add(item.getId()));
         }
         List premisesSelect = new ArrayList<SelectOption>();
-
-        String loginId = AccessUtil.getLoginId(bpc.request);;
+        List conveyancePremSel = new ArrayList<SelectOption>();
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+        //todo:
+        String licenseeId = "36F8537B-FE17-EA11-BE78-000C29D29DB0";
+        String loginId = AccessUtil.getLoginId(bpc.request);
         log.info(StringUtil.changeForLog("The preparePremises loginId is -->:"+loginId));
-        //?
-        List<AppGrpPremisesDto> list = serviceConfigService.getAppGrpPremisesDtoByLoginId(loginId);
+
+        Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
         SelectOption sp0 = new SelectOption("-1", FIRESTOPTION);
         premisesSelect.add(sp0);
         SelectOption sp1 = new SelectOption("newPremise", "Add a new premises");
         premisesSelect.add(sp1);
-        if (list != null) {
-            for (AppGrpPremisesDto item : list) {
-                if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())) {
-                    SelectOption sp2 = new SelectOption(item.getId(), item.getAddress());
-                    premisesSelect.add(sp2);
-                    //todo:1231
-                }
-            }
-        }
-        //his to do
-        List conveyancePremSel = new ArrayList<SelectOption>();
         SelectOption cps1 = new SelectOption("-1", FIRESTOPTION);
         SelectOption cps2 = new SelectOption("newPremise", "Add a new premises");
         conveyancePremSel.add(cps1);
         conveyancePremSel.add(cps2);
+        if (licAppGrpPremisesDtoMap != null && !licAppGrpPremisesDtoMap.isEmpty()) {
+            for (AppGrpPremisesDto item : licAppGrpPremisesDtoMap.values()) {
+                SelectOption sp2 = new SelectOption(item.getPremisesIndexNo(), item.getAddress());
+                if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())) {
+                    premisesSelect.add(sp2);
+                }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())){
+                    conveyancePremSel.add(sp2);
+                }
+            }
+        }
+        ParamUtil.setSessionAttr(bpc.request, LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);
         ParamUtil.setSessionAttr(bpc.request, "premisesSelect", (Serializable) premisesSelect);
         ParamUtil.setSessionAttr(bpc.request, "conveyancePremSel", (Serializable) conveyancePremSel);
         //get premises type
@@ -232,29 +236,7 @@ public class NewApplicationDelegator {
         if(!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)){
             for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
                 String premType = appGrpPremisesDto.getPremisesType();
-                Time wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
-                Time wrkTimeTo = appGrpPremisesDto.getWrkTimeTo();
-                if(!StringUtil.isEmpty(wrkTimeFrom)){
-                    LocalTime localTimeFrom = wrkTimeFrom.toLocalTime();
-                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                        appGrpPremisesDto.setOnsiteStartHH(String.valueOf(localTimeFrom.getHour()));
-                        appGrpPremisesDto.setOnsiteStartMM(String.valueOf(localTimeFrom.getMinute()));
-                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                        appGrpPremisesDto.setConStartHH(String.valueOf(localTimeFrom.getHour()));
-                        appGrpPremisesDto.setConStartMM(String.valueOf(localTimeFrom.getMinute()));
-                    }
-                }
-                if(!StringUtil.isEmpty(wrkTimeTo)){
-                    LocalTime localTimeTo = wrkTimeTo.toLocalTime();
-                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                        appGrpPremisesDto.setOnsiteEndHH(String.valueOf(localTimeTo.getHour()));
-                        appGrpPremisesDto.setOnsiteEndMM(String.valueOf(localTimeTo.getMinute()));
-                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                        appGrpPremisesDto.setConEndHH(String.valueOf(localTimeTo.getHour()));
-                        appGrpPremisesDto.setConEndMM(String.valueOf(localTimeTo.getMinute()));
-                    }
-
-                }
+                appGrpPremisesDto = NewApplicationHelper.setWrkTimeFromTo(appGrpPremisesDto);
 
                 List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = appGrpPremisesDto.getAppPremPhOpenPeriodList();
                 if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriods)){
@@ -420,7 +402,7 @@ public class NewApplicationDelegator {
         if(isGetDataFromPage ){
             List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-            if(requestInformationConfig != null){
+            if(appSubmissionDto.isNeedEditController()){
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null? new HashSet<>() :appSubmissionDto.getClickEditPage();
                 clickEditPages.add(APPLICATION_PAGE_NAME_PREMISES);
                 appSubmissionDto.setClickEditPage(clickEditPages);
@@ -490,7 +472,7 @@ public class NewApplicationDelegator {
             List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = new ArrayList<>();
             Map<String,String> errorMap = new HashMap<>();
             Map<String,AppGrpPrimaryDocDto> beforeReloadDocMap = (Map<String, AppGrpPrimaryDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP);
-            if(requestInformationConfig != null){
+            if(appSubmissionDto.isNeedEditController()){
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
                 clickEditPages.add(NewApplicationDelegator.APPLICATION_PAGE_NAME_PRIMARY);
                 appSubmissionDto.setClickEditPage(clickEditPages);

@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +62,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     private SystemAdminClient systemAdminClient;
     @Autowired
     private ApplicationClient applicationClient;
-
+    @Autowired
+    private LicenceClient licenceClient;
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
 
@@ -91,18 +93,15 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     }
 
     @Override
-    public List<AppGrpPremisesDto> getAppGrpPremisesDtoByLoginId(String loginId) {
-        List<AppGrpPremisesDto> result = new ArrayList<>();
-        AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-        appGrpPremisesDto.setId("123");
-        appGrpPremisesDto.setPostalCode("019191");
-        appGrpPremisesDto.setBlkNo("123");
-        appGrpPremisesDto.setBuildingName("building Name");
-        appGrpPremisesDto.setStreetName("String Name");
-        appGrpPremisesDto.setFloorNo("6");
-        appGrpPremisesDto.setUnitNo("3");
-        appGrpPremisesDto.setPremisesType(ApplicationConsts.PREMISES_TYPE_ON_SITE);
-        return result;
+    public Map<String,AppGrpPremisesDto> getAppGrpPremisesDtoByLoginId(String loginId) {
+        List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getDistinctPremisesByLicenseeId(loginId).getEntity();
+        Map<String,AppGrpPremisesDto> appGrpPremisesDtoMap = new HashMap<>();
+        for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+            if(!StringUtil.isEmpty(appGrpPremisesDto.getPremisesIndexNo())){
+                appGrpPremisesDtoMap.put(appGrpPremisesDto.getPremisesIndexNo(),appGrpPremisesDto);
+            }
+        }
+        return appGrpPremisesDtoMap;
     }
 
     @Override
