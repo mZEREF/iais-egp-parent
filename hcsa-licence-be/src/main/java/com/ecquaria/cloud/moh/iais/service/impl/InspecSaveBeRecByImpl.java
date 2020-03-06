@@ -235,6 +235,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 for (File file3:files2) {
                     //file3 is not Directory, need save
                     String fileReportId = file2.getName();
+                    log.debug(StringUtil.changeForLog("fileReportId:" + fileReportId));
                     List<FileRepoDto> fileList = new ArrayList<>();
                     FileRepoDto fileRepoDto = new FileRepoDto();
                     fileRepoDto.setId(fileReportId);
