@@ -54,7 +54,6 @@ public class EventbusCallBackDelegate {
                         + RestApiUrlConsts.EVENT_BUS, submissionId, operation);
         log.info("The status map size: ===========> " + map.size());
         if (map.size() >= 1) {
-            boolean completed = true;
             boolean success = true;
             boolean pending = false;
             for (Map.Entry<String, List<ServiceStatus>> ent : map.entrySet()) {
