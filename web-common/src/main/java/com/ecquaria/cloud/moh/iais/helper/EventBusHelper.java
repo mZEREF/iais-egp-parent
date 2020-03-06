@@ -42,13 +42,19 @@ public class EventBusHelper {
                                      String eventRefNo, boolean wait, int waitTime, Process process) {
         SubmitReq req = new SubmitReq();
         req.setSubmissionId(submissionId);
-        req.setProject(process.getCurrentProject());
-        req.setProcess(process.getCurrentProcessName());
+        if (process != null) {
+            req.setProject(process.getCurrentProject());
+            req.setProcess(process.getCurrentProcessName());
+            req.setSopUrl(process.continueURL());
+        } else {
+            req.setProject("IAIS");
+            req.setProcess("Batchjob");
+            req.setSopUrl(callBackUrl);
+        }
         req.setStep("eventBusSubmit");
         req.setCallbackUrl(callBackUrl);
         req.setService(service);
         req.setOperation(operation);
-        req.setSopUrl(process.continueURL());
         req.setData(JsonUtil.parseToJson(dto));
         req.setUserId("iaisSubmission");
         req.setWait(wait);
