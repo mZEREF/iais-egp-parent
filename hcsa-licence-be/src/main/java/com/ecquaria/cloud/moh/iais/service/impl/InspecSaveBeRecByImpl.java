@@ -140,6 +140,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             log.debug(StringUtil.changeForLog("saveFileName:" + saveFileName));
             log.debug(StringUtil.changeForLog("zipEntryName:" + zipEntry.getName()));
             log.debug(StringUtil.changeForLog("zipFileName:" + zipFile.getName()));
+            log.debug(StringUtil.changeForLog("reportFilePath:" + reportFilePath));
+            log.debug(StringUtil.changeForLog("reportId:" + reportId));
 
             File uploadRecFile = MiscUtil.generateFile(realPath, saveFileName);
             try(OutputStream os = new FileOutputStream(uploadRecFile);
