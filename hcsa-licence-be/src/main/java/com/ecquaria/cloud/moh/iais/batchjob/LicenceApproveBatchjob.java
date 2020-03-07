@@ -44,6 +44,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SuperLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -308,8 +310,8 @@ public class LicenceApproveBatchjob {
                     break;
                 }
                 //create licence
-                //todo:get the yearLenth.
                 String licenceNo = null;
+                //get the yearLenth.
                 int yearLength = getYearLength(appPremisesRecommendationDto);
                 //create licence
                 if(applicationListDtos.get(0).getApplicationDto().isNeedNewLicNo()) {
@@ -349,7 +351,7 @@ public class LicenceApproveBatchjob {
                     List<PremisesGroupDto> premisesGroupDtos1 = getPremisesGroupDto(appGrpPremisesEntityDtos,appPremisesCorrelationDtos,appSvcPremisesScopeDtos,
                             appSvcPremisesScopeAllocationDtos, hcsaServiceDto,organizationId,isPostInspNeeded);
                     if(!IaisCommonUtils.isEmpty(premisesGroupDtos1)){
-                        PremisesGroupDto premisesGroupDto =premisesGroupDtos1.get(0);
+                        PremisesGroupDto premisesGroupDto = premisesGroupDtos1.get(0);
                         if(premisesGroupDto.isHasError()){
                             errorMessage = premisesGroupDto.getErrorMessage();
                             break;
@@ -674,6 +676,17 @@ public class LicenceApproveBatchjob {
                 licPremisesDto.setTcuDate(appPremisesRecommendationDto.getRecomInDate());
             }
             premisesGroupDto.setLicPremisesDto(licPremisesDto);
+             if(1==isPostInspNeeded){
+                 //create the LicInspectionGroupDto
+                 LicInspectionGroupDto licInspectionGroupDto = new LicInspectionGroupDto();
+                 licInspectionGroupDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                 premisesGroupDto.setLicInspectionGroupDto(licInspectionGroupDto);
+                 //create the LicPremInspGrpCorrelationDto
+                 LicPremInspGrpCorrelationDto licPremInspGrpCorrelationDto = new LicPremInspGrpCorrelationDto();
+                 licPremInspGrpCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                 premisesGroupDto.setLicPremInspGrpCorrelationDto(licPremInspGrpCorrelationDto);
+             }
+
             //create LicPremisesScopeDto
             List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtoList = getAppSvcPremisesScopeDtoByCorrelationId(appSvcPremisesScopeDtos,appPremCorrecId);
             if(!IaisCommonUtils.isEmpty(appSvcPremisesScopeDtoList)){
