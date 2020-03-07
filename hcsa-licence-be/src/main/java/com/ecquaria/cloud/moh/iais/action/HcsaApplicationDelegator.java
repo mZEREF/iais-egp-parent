@@ -138,7 +138,7 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareData start ..."));
         //get the task
        String  taskId = ParamUtil.getString(bpc.request,"taskId");
-        TaskDto taskDto = taskService.getTaskById(taskId);
+       TaskDto taskDto = taskService.getTaskById(taskId);
 //        String loginID=(String) ParamUtil.getSessionAttr(bpc.request,"loginID");
 //        if(!(loginID.equals(taskDto.getUserId()))){
 //            throw new Exception();
@@ -159,8 +159,7 @@ public class HcsaApplicationDelegator {
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
         Map<String,String> routingStage=new HashMap<>();
 
-        for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage:hcsaSvcRoutingStageDtoList
-             ) {
+        for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage:hcsaSvcRoutingStageDtoList) {
             routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
 //            verified.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
         }
