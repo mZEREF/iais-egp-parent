@@ -32,9 +32,9 @@
 </head>
 <body>
 <div class="wrapper">
-		<jsp:include page="header.jsp" />
+		<jsp:include page="header.jsp" flush="true"/>
 	<nav id="sidebar">
-	  <jsp:include page="user-info.jsp" />
+	  <jsp:include page="user-info.jsp" flush="true"/>
 		<jsp:include page="left-menu.jsp" />
 	</nav>
 	<tiles:insertAttribute name="body" ignore="true" />
