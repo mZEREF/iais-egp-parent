@@ -36,14 +36,14 @@ public interface InspecSaveBeRecByService {
       * @return: void
       * @Descripation: compress File
       */
-    void compressFile(List<ProcessFileTrackDto> processFileTrackDtos);
+    List<String> compressFile(List<ProcessFileTrackDto> processFileTrackDtos);
 
     /**
       * @author: shicheng
       * @Date 2019/12/27
-      * @Param: intranet, processFileTrackDtos
+      * @Param: intranet, processFileTrackDtos, reportIds
       * @return: Boolean
       * @Descripation: save Data
       */
-    Boolean saveData(AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos);
+    Boolean saveData(AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos, List<String> reportIds);
 }

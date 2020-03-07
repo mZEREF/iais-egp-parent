@@ -51,8 +51,10 @@ public class InspecSaveBeRecByFeBatchjob {
         inspecSaveBeRecByService.deleteUnZipFile();
         Boolean saveDataFlag = false;
         if(!(IaisCommonUtils.isEmpty(processFileTrackDtos))) {
-            inspecSaveBeRecByService.compressFile(processFileTrackDtos);
-            saveDataFlag = inspecSaveBeRecByService.saveData(intranet, processFileTrackDtos);
+            List<String> reportIds = inspecSaveBeRecByService.compressFile(processFileTrackDtos);
+            if(!IaisCommonUtils.isEmpty(reportIds)) {
+                inspecSaveBeRecByService.saveData(intranet, processFileTrackDtos, reportIds);
+            }
         }
 
     }

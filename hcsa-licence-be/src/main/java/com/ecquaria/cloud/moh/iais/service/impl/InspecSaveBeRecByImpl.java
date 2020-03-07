@@ -105,7 +105,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     }
 
     @Override
-    public void compressFile(List<ProcessFileTrackDto> processFileTrackDtos) {
+    public List<String> compressFile(List<ProcessFileTrackDto> processFileTrackDtos) {
+        List<String> reportIds = new ArrayList<>();
         if(new File(zipFile).isDirectory()){
             File[] files = new File(zipFile).listFiles();
             for(File fil:files) {
@@ -114,7 +115,10 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                         try (ZipFile unZipFile = new ZipFile(sharedPath + pDto.getFilePath())) {
                             for (Enumeration<? extends ZipEntry> entries = unZipFile.entries(); entries.hasMoreElements(); ) {
                                 ZipEntry zipEntry = entries.nextElement();
-                                unzipFile(zipEntry, unZipFile);
+                                String reportId = unzipFile(zipEntry, unZipFile);
+                                if(!StringUtil.isEmpty(reportId)) {
+                                    reportIds.add(reportId);
+                                }
                             }
                         } catch (IOException e) {
                             log.error(e.getMessage(), e);
@@ -123,11 +127,14 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 }
             }
         }
+        return reportIds;
     }
 
-    private void unzipFile(ZipEntry zipEntry, ZipFile zipFile)  {
+    private String unzipFile(ZipEntry zipEntry, ZipFile zipFile)  {
         if(!zipEntry.getName().endsWith(File.separator)) {
             String realPath = compressPath + File.separator + zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator) + 1);
+            String reportFilePath = realPath.substring(realPath.lastIndexOf(File.separator,realPath.lastIndexOf(File.separator) - 1) + 1);
+            String reportId = reportFilePath.substring(0, reportFilePath.lastIndexOf(File.separator));
             String saveFileName = zipEntry.getName().substring(zipEntry.getName().lastIndexOf(File.separator) + 1);
             log.debug(StringUtil.changeForLog("realPath:" + realPath));
             log.debug(StringUtil.changeForLog("saveFileName:" + saveFileName));
@@ -151,14 +158,15 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             }catch (IOException e){
                 log.error(e.getMessage(), e);
             }
+            return reportId;
         } else {
             new File(compressPath + File.separator + zipEntry.getName()).mkdirs();
         }
-
+        return null;
     }
 
     @Override
-    public Boolean saveData(AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos) {
+    public Boolean saveData(AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos, List<String> reportIds) {
         Boolean saveFlag = false;
         File file = new File(download);
         List<String> appPremCorrIds = new ArrayList<>();
@@ -171,15 +179,17 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 appIds.add(pDto.getRefId());
                 for(File file2:files){
                     //file2 is upload Directory, name is file report id
-                    String eventRefNo = pDto.getRefId();
-                    saveDataDtoAndFile(file2, intranet, submissionId);
-                    pDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SAVE_SUCCESSFUL);
-                    pDto.setAuditTrailDto(intranet);
-                    pDto.setEventRefNo(eventRefNo);
-                    String callbackUrl = systemParamConfig.getInterServerName()
-                            + "/hcsa-licence-web/eservice/INTRANET/MohInspecSaveRecRollBack";
-                    SubmitResp submitResp = eventBusHelper.submitAsyncRequest(pDto, submissionId, EventBusConsts.SERVICE_NAME_SYSTEM_ADMIN,
-                            EventBusConsts.OPERATION_BE_REC_DATA_COPY, pDto.getEventRefNo(), null);
+                    String reportId = file2.getName();
+                    if(reportIds.contains(reportId)) {
+                        String eventRefNo = pDto.getRefId();
+                        saveDataDtoAndFile(file2, intranet, submissionId, reportIds);
+                        pDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SAVE_SUCCESSFUL);
+                        pDto.setAuditTrailDto(intranet);
+                        pDto.setEventRefNo(eventRefNo);
+
+                        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(pDto, submissionId, EventBusConsts.SERVICE_NAME_SYSTEM_ADMIN,
+                                EventBusConsts.OPERATION_BE_REC_DATA_COPY, pDto.getEventRefNo(), null);
+                    }
                 }
             }
         }
@@ -221,7 +231,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         return saveFlag;
     }
 
-    private void saveDataDtoAndFile(File file2, AuditTrailDto intranet, String submissionId) {
+    private void saveDataDtoAndFile(File file2, AuditTrailDto intranet, String submissionId, List<String> reportIds) {
         try {
             if(file2.isDirectory()){
                 File[] files2 = file2.listFiles();
