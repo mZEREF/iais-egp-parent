@@ -39,7 +39,7 @@ public class AppealApplicaionServiceImpl implements AppealApplicaionService {
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
     @Override
-    public AppealApplicationDto updateFEAppealApplicationDto(String eventRefNum) {
+    public AppealApplicationDto updateFEAppealApplicationDto(String eventRefNum,String submissionId) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         AppEicRequestTrackingDto appEicRequestTrackingDto = getAppEicRequestTrackingDtoByRefNo(eventRefNum);

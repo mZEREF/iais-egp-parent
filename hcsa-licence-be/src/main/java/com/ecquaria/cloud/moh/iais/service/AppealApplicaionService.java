@@ -11,7 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEicRequestTrac
  */
 
 public interface AppealApplicaionService {
-    public AppealApplicationDto updateFEAppealApplicationDto(String eventRefNum);
+    public AppealApplicationDto updateFEAppealApplicationDto(String eventRefNum,String submissionId);
 
     public AppEicRequestTrackingDto getAppEicRequestTrackingDtoByRefNo(String refNo);
 }

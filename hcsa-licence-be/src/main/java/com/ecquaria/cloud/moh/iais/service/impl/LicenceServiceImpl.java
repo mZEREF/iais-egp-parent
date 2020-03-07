@@ -146,7 +146,7 @@ public class LicenceServiceImpl implements LicenceService {
     }
 
     @Override
-    public EventBusLicenceGroupDtos createFESuperLicDto(String eventRefNum) {
+    public EventBusLicenceGroupDtos createFESuperLicDto(String eventRefNum,String submissionId) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 

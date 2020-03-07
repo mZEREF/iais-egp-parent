@@ -131,7 +131,7 @@ public class AppealServiceImpl implements AppealService {
     }
 
     @Override
-    public AppealLicenceDto updateFEAppealLicenceDto(String eventRefNum) {
+    public AppealLicenceDto updateFEAppealLicenceDto(String eventRefNum,String submissionId) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         LicEicRequestTrackingDto licEicRequestTrackingDto = licenceService.getLicEicRequestTrackingDtoByRefNo(eventRefNum);
