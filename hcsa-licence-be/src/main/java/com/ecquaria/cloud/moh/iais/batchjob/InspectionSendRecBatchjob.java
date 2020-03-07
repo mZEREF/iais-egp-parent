@@ -114,7 +114,7 @@ public class InspectionSendRecBatchjob {
             if(jobRemindMsgTrackingDto2 == null) {
                 InterMessageDto interMessageDto = new InterMessageDto();
                 interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-                interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION);
+                interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_APPLICANT_RECTIFIES_NC);
                 interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
                 String mesNO = inboxMsgService.getMessageNo();
                 interMessageDto.setRefNo(mesNO);
