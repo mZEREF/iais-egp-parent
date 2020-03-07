@@ -40,7 +40,7 @@ public class FileRepoClientFallback implements FileRepoClient {
     }
 
     @Override
-    public FeignResponseEntity removeFileById(String fileId) {
+    public FeignResponseEntity<String> removeFileById(String fileId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
