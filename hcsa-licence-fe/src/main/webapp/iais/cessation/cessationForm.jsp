@@ -15,7 +15,7 @@
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <div class="main-content">
-        <div class="panel-heading"><h2><strong>Cessation Form</strong></h2></div>
+        <div class="panel-heading"><h2><strong>Cessation Form</strong></h2> <span id="readInfo" class="error-msg" hidden>Please agree to the declaration statement</span></div>
         <div class="panel-heading"><h4><strong>Please key in to cessation information</strong></h4></div>
         <div class="row">
             <div class="col-xs-12">
@@ -28,7 +28,7 @@
                             <th style="text-align:center;">Service Name</th>
                             <th style="text-align:center;">HCI Name</th>
                             <th style="text-align:center;width: 15%">HCI Address</th>
-                            <th style="text-align:center;width: 10%">Effective Date <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" data-original-title="<p>The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">i</a></th>
+                            <th style="text-align:center;width: 10%">Effective Date<a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" data-original-title="<p>The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">i</a></th>
                             <th style="text-align:center;">Cessation Reasons</th>
                             <th style="text-align:center;">Patients' Record will be transferred</th>
                             <th></th>
@@ -141,8 +141,7 @@
                                                   class="error-msg"></span>
                                         </tr>
                                         <tr id="${num.count}patNo${uid.count}" hidden align="center">
-                                            <td>Reamrksssssssss</td>
-                                            <td><textarea
+                                            <td colspan="2"><textarea
                                                     name="${num.count}patNoRemarks${uid.count}"
                                                     cols="30" rows="3" maxlength="8000"
                                                     title="content"><c:out
@@ -196,15 +195,15 @@
                                                  class="error-msg"></span>
                                        </div></td>
                                    <td style="padding-left: 4%;width: 30em;"><table>
-                                       <tr style="text-align:center;">
-                                           <td>
+                                       <tr>
+                                           <td style="padding-left: 4%;width: 10%;">
                                                <input type="radio"
                                                       name="${num.count}patRadio${uid.count+1}"
                                                       value="yes"
                                                       id="${num.count}radioYes${uid.count+1}"
                                                       <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if>
-                                                      onchange="javascirpt:changePatSelect(this.value);">Yes
-                                               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                      onchange="javascirpt:changePatSelect(this.value);">Yes</td>
+                                           <td style="padding-left: 2%;width: 10%;">
                                                <input type="radio"
                                                       name="${num.count}patRadio${uid.count+1}"
                                                       value="no"
@@ -263,7 +262,7 @@
                                                  class="error-msg"></span>
                                        </tr>
                                        <tr id="${num.count}patNo${uid.count+1}" hidden style="text-align:center;">
-                                           <td><textarea
+                                           <td colspan="2"><textarea
                                                    name="${num.count}patNoRemarks${uid.count+1}"
                                                    cols="30" rows="3" maxlength="8000"
                                                    title="content"><c:out
@@ -276,28 +275,25 @@
                                    </table></td>
                                    <td><input type="checkbox" name="${num.count}whichTodo${uid.count+1}" value="${appCess.licenceId}"
                                               <c:if test="${appCessHci.whichTodo != null}">checked</c:if>>
-<%--                                       <span id="error_whichTodo" name="iaisErrorMsg"--%>
-<%--                                             class="error-msg"></span>--%>
+
                                    </td>
                                </tr>
                            </c:forEach>
 <%--                            </c:if>--%>
                         </c:forEach>
-                        <tr>
-                            <td colspan="9"><c:out value="${text1}"/></td>
-                        </tr>
-                        <tr>
-                            <td colspan="9"><c:out value="${text2}"/></td>
-                        </tr>
-                        <tr>
-                            <td colspan="9"><input type="checkbox" name="readInfo" id="confirmInfo">
-                                <label for="confirmInfo">I have read the information</label>
-                            </td>
-                        </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
+        </div>
+
+
+        <div style="width: 70%"><c:out value="${text1}"/></div>
+        <br/>
+        <div style="width: 70%"><c:out value="${text2}"/></div>
+        <br/>
+        <div><input type="checkbox" name="readInfo" id="confirmInfo">
+                <label for="confirmInfo">I have read the information</label>
         </div>
         <div align="right">
             <button id="backButton" type="button" class="btn btn-primary">
@@ -367,6 +363,9 @@
     function submitSure() {
         if ($('#confirmInfo').is(':checked')) {
             $("#mainForm").submit();
+            $("#readInfo").hide();
+        }else{
+            $("#readInfo").show();
         }
     }
 

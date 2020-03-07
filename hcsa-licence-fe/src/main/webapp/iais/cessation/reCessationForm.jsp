@@ -28,7 +28,7 @@
                             <th style="text-align:center;">Service Name</th>
                             <th style="text-align:center;">HCI Name</th>
                             <th style="text-align:center;width: 15%">HCI Address</th>
-                            <th style="text-align:center;width: 10%">Effective Date <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" data-original-title="<p>The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">i</a></th>
+                            <th style="text-align:center;width: 10%">Effective Date<a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" data-original-title="<p>The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">i</a></th>
                             <th style="text-align:center;">Cessation Reasons</th>
                             <th style="text-align:center;">Patients' Record will be transferred</th>
                             <th></th>
@@ -38,7 +38,7 @@
                         <c:forEach items="${appCessationDtos}" var="appCess" varStatus="num">
                             <c:set var="hciDtoNum" value="${fn:length(appCess.appCessHciDtos)}"/>
                             <%--                           <c:if test="${hciDtoNum > 1}">--%>
-                            <tr style="text-align:center;">
+                            <tr style="text-align:center;height: 13em">
                                 <td rowspan="${hciDtoNum}">
                                     <p><c:out value="${num.count}"></c:out></p>
                                 </td>
@@ -73,16 +73,16 @@
                                                   name="iaisErrorMsg"
                                                   class="error-msg"></span>
                                         </div></td>
-                                    <td><table>
+                                    <td style="padding-left: 4%;width: 30em;"><table>
                                         <tr>
-                                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <td style="padding-left: 4%;width: 10%;">
                                                 <input type="radio"
                                                        name="${num.count}patRadio${uid.count}"
                                                        value="yes"
                                                        id="${num.count}radioYes${uid.count}"
                                                        <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if>
-                                                       onchange="javascirpt:changePatSelect(this.value);">Yes
-                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                       onchange="javascirpt:changePatSelect(this.value);">Yes</td>
+                                            <td style="padding-left: 2%;width: 10%;">
                                                 <input type="radio"
                                                        name="${num.count}patRadio${uid.count}"
                                                        value="no"
@@ -141,9 +141,9 @@
                                                   class="error-msg"></span>
                                         </tr>
                                         <tr id="${num.count}patNo${uid.count}" hidden align="center">
-                                            <td><textarea
+                                            <td colspan="2"><textarea
                                                     name="${num.count}patNoRemarks${uid.count}"
-                                                    cols="40" rows="4" maxlength="8000"
+                                                    cols="30" rows="3" maxlength="8000"
                                                     title="content"><c:out
                                                     value="${appCessHci.patNoRemarks}"/></textarea>
                                             </td>
@@ -152,14 +152,24 @@
                                                   class="error-msg"></span>
                                         </tr>
                                     </table></td>
-                                    <td><input type="checkbox" name="${num.count}whichTodo${uid.count}"
+                                    <td><input type="checkbox" name="${num.count}whichTodo${uid.count}" value="${appCess.licenceId}"
                                                <c:if test="${appCessHci.whichTodo != null}">checked</c:if>>
                                         <span id="error_whichTodo" name="iaisErrorMsg"
                                               class="error-msg"></span></td>
                                 </c:forEach>
                             </tr>
+
+
+
+
+
+
+
+
+
+
                             <c:forEach items="${appCess.appCessHciDtos}" var="appCessHci" varStatus="uid" begin="1">
-                                <tr style="text-align:center;">
+                                <tr style="text-align:center;height: 13em">
                                     <td><p><c:out value="${appCessHci.hciName}"></c:out></p></td>
                                     <td><p><c:out value="${appCessHci.hciAddress}"></c:out></p></td>
                                     <td><iais:datePicker id="effectiveDate"
@@ -184,16 +194,16 @@
                                                   name="iaisErrorMsg"
                                                   class="error-msg"></span>
                                         </div></td>
-                                    <td><table>
-                                        <tr style="text-align:center;">
-                                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <td style="padding-left: 4%;width: 30em;"><table>
+                                        <tr>
+                                            <td style="padding-left: 4%;width: 10%;">
                                                 <input type="radio"
                                                        name="${num.count}patRadio${uid.count+1}"
                                                        value="yes"
                                                        id="${num.count}radioYes${uid.count+1}"
                                                        <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if>
-                                                       onchange="javascirpt:changePatSelect(this.value);">Yes
-                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                       onchange="javascirpt:changePatSelect(this.value);">Yes</td>
+                                            <td style="padding-left: 2%;width: 10%;">
                                                 <input type="radio"
                                                        name="${num.count}patRadio${uid.count+1}"
                                                        value="no"
@@ -252,9 +262,9 @@
                                                   class="error-msg"></span>
                                         </tr>
                                         <tr id="${num.count}patNo${uid.count+1}" hidden style="text-align:center;">
-                                            <td><textarea
+                                            <td colspan="2"><textarea
                                                     name="${num.count}patNoRemarks${uid.count+1}"
-                                                    cols="40" rows="4" maxlength="8000"
+                                                    cols="30" rows="3" maxlength="8000"
                                                     title="content"><c:out
                                                     value="${appCessHci.patNoRemarks}"/></textarea>
                                             </td>
@@ -263,7 +273,7 @@
                                                   class="error-msg"></span>
                                         </tr>
                                     </table></td>
-                                    <td><input type="checkbox" name="${num.count}whichTodo${uid.count+1}"
+                                    <td><input type="checkbox" name="${num.count}whichTodo${uid.count+1}" value="${appCess.licenceId}"
                                                <c:if test="${appCessHci.whichTodo != null}">checked</c:if>>
                                             <%--                                       <span id="error_whichTodo" name="iaisErrorMsg"--%>
                                             <%--                                             class="error-msg"></span>--%>
@@ -272,21 +282,19 @@
                             </c:forEach>
                             <%--                            </c:if>--%>
                         </c:forEach>
-                        <tr>
-                            <td colspan="9"><c:out value="${text1}"/></td>
-                        </tr>
-                        <tr>
-                            <td colspan="9"><c:out value="${text2}"/></td>
-                        </tr>
-                        <tr>
-                            <td colspan="9"><input type="checkbox" name="readInfo" id="confirmInfo">
-                                <label for="confirmInfo">I have read the information</label>
-                            </td>
-                        </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
+        </div>
+
+
+        <div style="width: 70%"><c:out value="${text1}"/></div>
+        <br/>
+        <div style="width: 70%"><c:out value="${text2}"/></div>
+        <br/>
+        <div><input type="checkbox" name="readInfo" id="confirmInfo">
+            <label for="confirmInfo">I have read the information</label>
         </div>
         <div align="right">
             <button id="backButton" type="button" class="btn btn-primary">
