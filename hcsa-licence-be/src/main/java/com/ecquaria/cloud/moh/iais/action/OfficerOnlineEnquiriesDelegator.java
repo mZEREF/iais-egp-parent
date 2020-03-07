@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
@@ -38,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
@@ -90,7 +92,8 @@ public class OfficerOnlineEnquiriesDelegator {
     private LicenceViewService licenceViewService;
     @Autowired
     InsRepClient insRepClient;
-
+    @Autowired
+    InsepctionNcCheckListService insepctionNcCheckListService;
 
     private final String SEARCH_NO="searchNo";
     private final String RFI_QUERY="ReqForInfoQuery";
@@ -746,6 +749,18 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setUnitNo(rfiApplicationQueryDto.getUnitNo());
         reqForInfoSearchListDto.setStreetName(rfiApplicationQueryDto.getStreetName());
         reqForInfoSearchListDto.setFloorNo(rfiApplicationQueryDto.getFloorNo());
+        try{
+            reqForInfoSearchListDto.setPastComplianceHistory("Full");
+            List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = insepctionNcCheckListService.getNcItemDtoByAppCorrId(rfiApplicationQueryDto.getAppCorrId());
+            for (AppPremisesPreInspectionNcItemDto nc:appPremisesPreInspectionNcItemDtos
+            ) {
+                if(nc.getIsRecitfied()==0){
+                    reqForInfoSearchListDto.setPastComplianceHistory("Partial");
+                }
+            }
+        }catch (Exception e){
+            reqForInfoSearchListDto.setPastComplianceHistory("-");
+        }
         String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getRiskLevel()}).get(0).getText();
         reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
         log.debug(StringUtil.changeForLog("licenseeId start ...."+rfiApplicationQueryDto.getLicenseeId()));
