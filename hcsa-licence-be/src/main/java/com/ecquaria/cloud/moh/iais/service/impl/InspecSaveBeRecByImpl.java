@@ -195,12 +195,14 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 }
             }
         }
+        log.debug(StringUtil.changeForLog("appIds:" + appIds.toString()));
         if(!IaisCommonUtils.isEmpty(appIds)){
             Set<String> appIdSet = new HashSet<>(appIds);
             for(String appId : appIdSet){
                 AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
                 appPremCorrIds.add(appPremisesCorrelationDto.getId());
             }
+            log.debug(StringUtil.changeForLog("appPremCorrIds:" + appPremCorrIds.toString()));
         }
         if(!IaisCommonUtils.isEmpty(appPremCorrIds)){
             EventInspRecItemNcDto eventInspRecItemNcDto = new EventInspRecItemNcDto();
