@@ -96,7 +96,8 @@ public class AppealApproveBatchjob {
                   //licence
                   if(!IaisCommonUtils.isEmpty(appealLicence)){
                       AppealLicenceDto appealLicenceDto = new AppealLicenceDto();
-                      appealLicenceDto.setEventRefNo("eventRefNo");
+                      String evenRefNum = String.valueOf(System.currentTimeMillis());
+                      appealLicenceDto.setEventRefNo(evenRefNum);
                       appealLicenceDto.setAppealLicence(appealLicence);
                       appealLicenceDto.setRollBackLicence(rollBackLicence);
                       appealLicenceDto.setAuditTrailDto(auditTrailDto);
@@ -107,7 +108,8 @@ public class AppealApproveBatchjob {
 
                   //application
                   AppealApplicationDto appealApplicationDto = new  AppealApplicationDto();
-                  appealApplicationDto.setEventRefNo("eventRefNo");
+                  String eventRefNo = String.valueOf(System.currentTimeMillis());
+                  appealApplicationDto.setEventRefNo(eventRefNo);
                   appealApplicationDto.setAppealApplicationDto(appealApplicaiton);
                   appealApplicationDto.setRollBackApplicationDto(rollBackApplication);
                   appealApplicationDto.setAppealPersonnel(appealPersonnel);

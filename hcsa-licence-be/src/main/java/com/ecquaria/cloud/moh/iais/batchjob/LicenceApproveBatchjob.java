@@ -135,7 +135,8 @@ public class LicenceApproveBatchjob {
                     //
                     AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
                     EventBusLicenceGroupDtos eventBusLicenceGroupDtos = new EventBusLicenceGroupDtos();
-                    eventBusLicenceGroupDtos.setEventRefNo("eventRefNo");
+                    String evenRefNum = String.valueOf(System.currentTimeMillis());
+                    eventBusLicenceGroupDtos.setEventRefNo(evenRefNum);
                     eventBusLicenceGroupDtos.setLicenceGroupDtos(licenceGroupDtos);
                     eventBusLicenceGroupDtos.setAuditTrailDto(auditTrailDto);
                     //step1 create Licence to BE DB
@@ -147,7 +148,7 @@ public class LicenceApproveBatchjob {
                     List<ApplicationDto> applicationDtos =getApplications(licenceGroupDtos);
                     //
                     EventApplicationGroupDto eventApplicationGroupDto = new EventApplicationGroupDto();
-                    eventApplicationGroupDto.setEventRefNo("eventRefNo");
+                    eventApplicationGroupDto.setEventRefNo(evenRefNum);
                     eventApplicationGroupDto.setRollBackApplicationGroupDtos(success);
                     success = updateStatusToGenerated(success);
                     eventApplicationGroupDto.setApplicationGroupDtos(success);

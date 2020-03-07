@@ -394,8 +394,9 @@ public class BackendInboxDelegator {
         //save the broadcast
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        broadcastOrganizationDto.setEventRefNo("eventRefNo");
-        broadcastApplicationDto.setEventRefNo("eventRefNo");
+        String evenRefNum = String.valueOf(System.currentTimeMillis());
+        broadcastOrganizationDto.setEventRefNo(evenRefNum);
+        broadcastApplicationDto.setEventRefNo(evenRefNum);
         broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,true);
         broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,true);
 

@@ -700,8 +700,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
             broadcastOrganizationDto.setAuditTrailDto(intranet);
             broadcastApplicationDto.setAuditTrailDto(intranet);
-            broadcastOrganizationDto.setEventRefNo("eventRefNo");
-            broadcastApplicationDto.setEventRefNo("eventRefNo");
+            String evenRefNum = String.valueOf(System.currentTimeMillis());
+            broadcastOrganizationDto.setEventRefNo(evenRefNum);
+            broadcastApplicationDto.setEventRefNo(evenRefNum);
 
             List<TaskDto> onSubmitTaskList = new ArrayList<>();
             List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = new ArrayList<>();

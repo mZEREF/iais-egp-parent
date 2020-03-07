@@ -789,8 +789,9 @@ public class HcsaApplicationDelegator {
         //save the broadcast
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        broadcastOrganizationDto.setEventRefNo("eventRefNo");
-        broadcastApplicationDto.setEventRefNo("eventRefNo");
+        String evenRefNum = String.valueOf(System.currentTimeMillis());
+        broadcastOrganizationDto.setEventRefNo(evenRefNum);
+        broadcastApplicationDto.setEventRefNo(evenRefNum);
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process);
         //0062460 update FE  application status.
@@ -832,8 +833,9 @@ public class HcsaApplicationDelegator {
         //save the broadcast
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        broadcastOrganizationDto.setEventRefNo("eventRefNo");
-        broadcastApplicationDto.setEventRefNo("eventRefNo");
+        String evenRefNum = String.valueOf(System.currentTimeMillis());
+        broadcastOrganizationDto.setEventRefNo(evenRefNum);
+        broadcastApplicationDto.setEventRefNo(evenRefNum);
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process);
 
