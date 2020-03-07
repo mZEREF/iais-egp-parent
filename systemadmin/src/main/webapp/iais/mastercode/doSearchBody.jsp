@@ -29,7 +29,7 @@
                 <iais:value>
                     <label class="col-xs-12 col-md-4 control-label" for="codeCategory">Code Category.</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                        <textarea name="codeCategory" id="codeCategory" cols="30" rows="5" maxlength="25"></textarea>
+                        <input id="codeCategory" type="text" name="codeCategory" maxlength="25">
                     </div>
                 </iais:value>
             </div>
@@ -37,7 +37,7 @@
                 <iais:value>
                     <label class="col-xs-12 col-md-4 control-label">Code Description.</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                        <textarea name="description" id="description" cols="30" rows="5" maxlength="255"></textarea>
+                        <input id="codeDescription" type="text" name="codeDescription" maxlength="255">
                     </div>
                 </iais:value>
             </div>
