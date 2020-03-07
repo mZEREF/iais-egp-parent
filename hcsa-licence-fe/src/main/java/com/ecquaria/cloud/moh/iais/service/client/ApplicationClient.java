@@ -201,7 +201,7 @@ public interface ApplicationClient  {
     FeignResponseEntity<List<AppSvcCgoDto>> getAppGrpPersonnelByGrpId(@RequestParam("grpId") String grpId);
 
     @PostMapping(value = "/iais-application/apps-by-licId/{licId}")
-    FeignResponseEntity<List<ApplicationDto>> getApplicationByLicId(@PathVariable(name = "licId") String licId);
+    FeignResponseEntity<ApplicationDto> getApplicationByLicId(@PathVariable(name = "licId") String licId);
 
     @GetMapping(value = "/appeal/list-of-application-group-personnel",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppGrpPersonnelDto>> getAppGrpPersonnelDtosByGrpId(@RequestParam("grpId") String grpId);

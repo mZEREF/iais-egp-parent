@@ -144,14 +144,14 @@ public class ReCessationApplicationDelegator {
             String licId = appCessationDto.getWhichTodo();
             List<String> licIds = new ArrayList<>();
             licIds.add(licId);
-            List<ApplicationDto> entity = applicationClient.getApplicationByLicId(licId).getEntity();
+            ApplicationDto applicationDto = applicationClient.getApplicationByLicId(licId).getEntity();
             List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
             String licenceNo = appCessLicDto.getLicenceNo();
             String svcName = appCessLicDto.getSvcName();
             String hciName = appCessLicDto.getAppCessHciDtos().get(0).getHciName();
             String hciAddress = appCessLicDto.getAppCessHciDtos().get(0).getHciAddress();
-            String applicationNo = entity.get(0).getApplicationNo();
+            String applicationNo = applicationDto.getApplicationNo();
             Date effectiveDate = appCessationDto.getEffectiveDate();
             AppCessatonConfirmDto appCessatonConfirmDto = new AppCessatonConfirmDto();
             appCessatonConfirmDto.setAppNo(applicationNo);

@@ -107,12 +107,12 @@ public class CessationServiceImpl implements CessationService {
             List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
             appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);
             ApplicationDto applicationDto = new ApplicationDto();
-            applicationDto.setApplicationType("cessation");
+            applicationDto.setApplicationType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
             applicationDto.setApplicationNo(appNo);
-            applicationDto.setStatus(ApplicationConsts.APPLICATION_TYPE_CESSATION);
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_PENDING_APPROVE);
             applicationDto.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
+            applicationDto.setLicenceId(licId);
             applicationDto.setVersion(1);
-            //applicationDto.setLicenceId(licId);
             List<ApplicationDto> applicationDtos = new ArrayList<>();
             applicationDtos.add(applicationDto);
             appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
@@ -153,12 +153,10 @@ public class CessationServiceImpl implements CessationService {
             AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
             String licId = appCessationDto.getWhichTodo();
             ApplicationGroupDto applicationGroupDto = new ApplicationGroupDto();
-            List<ApplicationDto> appDtos = applicationClient.getApplicationByLicId(licId).getEntity();
-            String appGrpId = appDtos.get(0).getAppGrpId();
+            ApplicationDto applicationDto = applicationClient.getApplicationByLicId(licId).getEntity();
+            String appGrpId = applicationDto.getAppGrpId();
             applicationGroupDto.setId(appGrpId);
             List<ApplicationDto> applicationDtoList = new ArrayList<>();
-            List<ApplicationDto> applicationDtos = applicationClient.getApplicationByLicId(licId).getEntity();
-            ApplicationDto applicationDto = applicationDtos.get(0);
             String applicationNo = applicationDto.getApplicationNo();
             applicationDto.setStatus("APST009");
             applicationDtoList.add(applicationDto);
@@ -198,6 +196,7 @@ public class CessationServiceImpl implements CessationService {
         applicationGroupDto.setDeclStmt("N");
         applicationGroupDto.setSubmitBy("C55C9E62-750B-EA11-BE7D-000C29F371DC");
         applicationGroupDto.setAppType(appType);
+        //applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         return applicationGroupDto;
 
     }
