@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -435,9 +436,12 @@ public class NewApplicationAjaxController {
         if(StringUtil.isEmpty(premIndexNo)){
             return null;
         }
-        Map<String,AppGrpPremisesDto> appGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request,NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP);
-        AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoMap.get(premIndexNo);
-        appGrpPremisesDto = NewApplicationHelper.setWrkTimeFromTo(appGrpPremisesDto);
+        Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request,NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP);
+        AppGrpPremisesDto appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premIndexNo);
+        appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+
+        licAppGrpPremisesDtoMap.put(premIndexNo,appGrpPremisesDto);
+        ParamUtil.setSessionAttr(request, NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);
         log.debug(StringUtil.changeForLog("the getLicPremisesInfo end ...."));
         return appGrpPremisesDto;
     }

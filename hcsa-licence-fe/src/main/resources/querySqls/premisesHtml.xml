@@ -108,7 +108,7 @@
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label" for="siteSafefyNo">Fire Safety Shelter Bureau Ref. No. <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true">i</a></label>
             <div class="col-xs-9 col-sm-5 col-md-5">
-              <input id="scdfRefNo" name="onSiteScdfRefNo" type="text" value="">
+              <input id="scdfRefNo" maxlength="66" name="onSiteScdfRefNo" type="text" value="">
             </div>
           </div>
           <div class="form-group">
@@ -157,6 +157,8 @@
               :
               <input type="text" value="" maxlength="2" name="onSiteEndMM" style="width: 60px">(MM)
             </div>
+          </div>
+          <div class="phFormMarkPoint">
           </div>
           <div class="pubHolidayContent">
             <div class="form-group">
@@ -274,6 +276,8 @@
               <input type="text" value="" maxlength="2" name="conveyanceEndMM" style="width: 60px">(MM)
             </div>
           </div>
+          <div class="phFormMarkPoint">
+          </div>
           <div class="pubHolidayContent">
             <div class="form-group">
               <label class="col-xs-12 col-md-4 control-label">Select Public Holiday</label>
@@ -316,7 +320,7 @@
 </div>
         ]]>
     </sql>
-
+    <!--now dont used -->
     <sql key="premises-ph" cached="no" remarks="generate Governance Officer Html">
         <![CDATA[
             <div class="pubHolidayContent">

@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
@@ -16,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -567,7 +569,7 @@ public class NewApplicationHelper {
         return reloadDisciplineAllocationMap;
     }
 
-    public static AppGrpPremisesDto setWrkTimeFromTo(AppGrpPremisesDto appGrpPremisesDto){
+    public static AppGrpPremisesDto setWrkTime(AppGrpPremisesDto appGrpPremisesDto){
         if(appGrpPremisesDto == null){
             return appGrpPremisesDto;
         }
@@ -595,8 +597,43 @@ public class NewApplicationHelper {
             }
 
         }
+
+        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+        if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriods)){
+            for(AppPremPhOpenPeriodDto appPremPhOpenPeriod:appPremPhOpenPeriods){
+                if(appPremPhOpenPeriod.getPhDate() != null){
+                    appPremPhOpenPeriod.setPhDateStr(Formatter.formatDate(appPremPhOpenPeriod.getPhDate()));
+                }
+                Time start = appPremPhOpenPeriod.getStartFrom();
+                Time end = appPremPhOpenPeriod.getEndTo();
+                if(!StringUtil.isEmpty(start)){
+                    LocalTime localTimeStart = start.toLocalTime();
+                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
+                        appPremPhOpenPeriod.setOnsiteStartFromHH(String.valueOf(localTimeStart.getHour()));
+                        appPremPhOpenPeriod.setOnsiteStartFromMM(String.valueOf(localTimeStart.getMinute()));
+                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
+                        appPremPhOpenPeriod.setConvStartFromHH(String.valueOf(localTimeStart.getHour()));
+                        appPremPhOpenPeriod.setConvStartFromMM(String.valueOf(localTimeStart.getMinute()));
+                    }
+                }
+                if(!StringUtil.isEmpty(end)){
+                    LocalTime localTimeEnd = end.toLocalTime();
+                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
+                        appPremPhOpenPeriod.setOnsiteEndToHH(String.valueOf(localTimeEnd.getHour()));
+                        appPremPhOpenPeriod.setOnsiteEndToMM(String.valueOf(localTimeEnd.getMinute()));
+                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
+                        appPremPhOpenPeriod.setConvEndToHH(String.valueOf(localTimeEnd.getHour()));
+                        appPremPhOpenPeriod.setConvEndToMM(String.valueOf(localTimeEnd.getMinute()));
+                    }
+                }
+            }
+        }
+
+
         return appGrpPremisesDto;
     }
+
+
 
 
     //=============================================================================

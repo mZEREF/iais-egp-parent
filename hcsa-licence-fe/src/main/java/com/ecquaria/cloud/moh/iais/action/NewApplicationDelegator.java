@@ -235,36 +235,7 @@ public class NewApplicationDelegator {
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         if(!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)){
             for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
-                String premType = appGrpPremisesDto.getPremisesType();
-                appGrpPremisesDto = NewApplicationHelper.setWrkTimeFromTo(appGrpPremisesDto);
-
-                List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = appGrpPremisesDto.getAppPremPhOpenPeriodList();
-                if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriods)){
-                    for(AppPremPhOpenPeriodDto appPremPhOpenPeriod:appPremPhOpenPeriods){
-                        Time start = appPremPhOpenPeriod.getStartFrom();
-                        Time end = appPremPhOpenPeriod.getEndTo();
-                        if(!StringUtil.isEmpty(start)){
-                            LocalTime localTimeStart = start.toLocalTime();
-                            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                                appPremPhOpenPeriod.setOnsiteStartFromHH(String.valueOf(localTimeStart.getHour()));
-                                appPremPhOpenPeriod.setOnsiteStartFromMM(String.valueOf(localTimeStart.getMinute()));
-                            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                                appPremPhOpenPeriod.setConvStartFromHH(String.valueOf(localTimeStart.getHour()));
-                                appPremPhOpenPeriod.setConvStartFromMM(String.valueOf(localTimeStart.getMinute()));
-                            }
-                        }
-                        if(!StringUtil.isEmpty(end)){
-                            LocalTime localTimeEnd = end.toLocalTime();
-                            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                                appPremPhOpenPeriod.setOnsiteEndToHH(String.valueOf(localTimeEnd.getHour()));
-                                appPremPhOpenPeriod.setOnsiteEndToMM(String.valueOf(localTimeEnd.getMinute()));
-                            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                                appPremPhOpenPeriod.setConvEndToHH(String.valueOf(localTimeEnd.getHour()));
-                                appPremPhOpenPeriod.setConvEndToMM(String.valueOf(localTimeEnd.getMinute()));
-                            }
-                        }
-                    }
-                }
+                appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
             }
         }
 
@@ -1350,9 +1321,7 @@ public class NewApplicationDelegator {
 
                 }
             }
-            //todo:Grandfather Rights
-
-
+            //todo:Grandfather Rights(RFC)
         }
         if(premisesType != null){
             count = premisesType.length;
@@ -1393,8 +1362,20 @@ public class NewApplicationDelegator {
         //every prem's ph length
         String [] phLength = ParamUtil.getStrings(request,"phLength");
         String [] premValue = ParamUtil.getStrings(request, "premValue");
+
+        Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request, LICAPPGRPPREMISESDTOMAP);
         for(int i =0 ; i<count;i++){
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
+            String premisesSel = premisesSelect[i];
+            if(!StringUtil.isEmpty(premisesSel) && !premisesSel.equals("-1") && !premisesSel.equals(ApplicationConsts.NEW_PREMISES)){
+                if(appGrpPremisesDto != null){
+                    appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premisesSel);
+                    appGrpPremisesDtoList.add(appGrpPremisesDto);
+                }
+                break;
+            }
+
+
             appGrpPremisesDto.setPremisesType(premisesType[i]);
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = new ArrayList<>();
             int length = 0;

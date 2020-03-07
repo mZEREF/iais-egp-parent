@@ -109,4 +109,21 @@
         $('div.nice-select').addClass('disabled');
     }
 
+    function disabledPartPage($Ele) {
+        $Ele.find('input[type="radio"]').prop('disabled',true);
+        $Ele.find('input[type="text"]').prop('disabled',true);
+        $Ele.find('input[type="file"]').prop('disabled',true);
+        $Ele.find('input[type="checkbox"]').prop('disabled',true);
+        $Ele.find('div.nice-select').addClass('disabled');
+    }
+
+    function undisabledPartPage($Ele) {
+        $Ele.find('input[type="radio"]').prop('disabled',false);
+        $Ele.find('input[type="text"]').prop('disabled',false);
+        $Ele.find('input[type="file"]').prop('disabled',false);
+        $Ele.find('input[type="checkbox"]').prop('disabled',false);
+        $Ele.find('div.nice-select').removeClass('disabled');
+    }
+
+
 </script>
