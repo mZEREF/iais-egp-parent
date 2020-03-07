@@ -100,16 +100,9 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         FileUtils.deleteTempFile(zipFiles);
         FileUtils.deleteTempFile(compressPathFile);
         //create new
-        if(!downloadFile.exists()){
-            downloadFile.mkdirs();
-        }
-        if(!zipFiles.exists()){
-            zipFiles.mkdirs();
-        }
-
-        if(!compressPathFile.mkdirs()){
-            compressPathFile.mkdirs();
-        }
+        MiscUtil.checkDirs(downloadFile);
+        MiscUtil.checkDirs(zipFiles);
+        MiscUtil.checkDirs(compressPathFile);
     }
 
     @Override
