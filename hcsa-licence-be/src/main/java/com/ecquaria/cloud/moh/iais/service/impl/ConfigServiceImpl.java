@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecific
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -73,6 +74,7 @@ public class ConfigServiceImpl implements ConfigService {
                 i--;
             }
         }
+
         request.setAttribute("hcsaServiceDtos", entity);
         return entity;
     }
@@ -97,11 +99,20 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public void saveOrUpdate(HttpServletRequest request) {
         Map<String, String> errorMap = new HashMap<>();
-        String crud_action_value = request.getParameter("crud_action_value");
         HcsaServiceConfigDto hcsaServiceConfigDto = getDateOfHcsaService(request);
         doValidate(hcsaServiceConfigDto, errorMap);
+        HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
+        Map<String, Boolean> entity = hcsaConfigClient.isExistHcsaService(hcsaServiceDto).getEntity();
+        Boolean svcCode = entity.get("svcCode");
+        if(svcCode!=null&&svcCode){
+            errorMap.put("code","This Service Code is already in use , please select another Service Code");
+        }
+        Boolean svcName = entity.get("svcName");
+        if(svcName!=null&&svcName){
+            errorMap.put("Name","This Service Name is already in use , Please select another Service Name");
+        }
+
         if (!errorMap.isEmpty()) {
-            HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
             hcsaServiceConfigDto.getHcsaSvcSpecificStageWorkloadDtos();
             List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = hcsaServiceConfigDto.getHcsaSvcSpePremisesTypeDtos();
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
@@ -122,21 +133,23 @@ public class ConfigServiceImpl implements ConfigService {
             request.setAttribute("crud_action_type", "dovalidate");
             Map<String, List<HcsaConfigPageDto>> map = new HashMap<>();
 
-
             map.put("APTY002",hcsaConfigPageDtos);
             request.setAttribute("routingStagess", map);
             request.setAttribute("errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             return;
         }
 
-        if ("update".equals(crud_action_value)) {
-            HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
-            Integer i = Integer.valueOf(hcsaServiceDto.getVersion()) + 1;
-            hcsaServiceDto.setVersion(i.toString());
-            hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto);
-
-        }
         hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto);
+        // todo send email
+      /*  request.setAttribute("option","added");
+        request.setAttribute("serviceName",hcsaServiceDto.getSvcName());
+        try {
+            sendEmail(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TemplateException e) {
+            e.printStackTrace();
+        }*/
         request.setAttribute("crud_action_type", "save");
     }
 
@@ -207,6 +220,19 @@ public class ConfigServiceImpl implements ConfigService {
             hcsaServiceDto.setVersion(i.toString());
             hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto);
             //todo send email update (if start date or end date change need send  Effective Start/End )
+
+
+
+         /*   request.setAttribute("option","updated");
+            request.setAttribute("serviceName",hcsaServiceDto.getSvcName());
+            try {
+                sendEmail(request);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (TemplateException e) {
+                e.printStackTrace();
+            }
+*/
         }
 //        hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto);
         request.setAttribute("crud_action_type", "save");
@@ -247,7 +273,17 @@ public class ConfigServiceImpl implements ConfigService {
                 return;
             }
             //todo delete send email
-          /*  hcsaConfigClient.updateService(serviceId);*/
+
+         /*   request.setAttribute("option","deleted ");
+            request.setAttribute("serviceName",hcsaServiceDto.getSvcName());
+            try {
+                sendEmail(request);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (TemplateException e) {
+                e.printStackTrace();
+            }
+            hcsaConfigClient.updateService(serviceId);*/
         }
 
     }
@@ -318,11 +354,12 @@ public class ConfigServiceImpl implements ConfigService {
 
 
         List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = new ArrayList<>();
+
         if("SVTP002".equals(serviceType)){
+            hcsaServiceDto.setCategoryId(subsumption);
 
         } else if ("SVTP003".equals(serviceType)) {
-
-
+            hcsaServiceDto.setCategoryId(preRequisite);
         }
 
         if (premisesTypes != null) {
@@ -341,12 +378,21 @@ public class ConfigServiceImpl implements ConfigService {
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = new ArrayList<>();
         HcsaSvcPersonnelDto poDto = new HcsaSvcPersonnelDto();
         poDto.setPsnType("PO");
-        if (!StringUtil.isEmpty(manprincipalOfficer)) {
-            poDto.setMandatoryCount(Integer.parseInt(manprincipalOfficer));
+        try {
+            if (!StringUtil.isEmpty(manprincipalOfficer)) {
+                poDto.setMandatoryCount(Integer.parseInt(manprincipalOfficer));
+            }
+        }catch (NumberFormatException e){
+            poDto.setMandatoryCount(-1);
         }
-        if (!StringUtil.isEmpty(mixprincipalOfficer)) {
-            poDto.setMaximumCount(Integer.parseInt(mixprincipalOfficer));
+        try {
+            if (!StringUtil.isEmpty(mixprincipalOfficer)) {
+                poDto.setMaximumCount(Integer.parseInt(mixprincipalOfficer));
+            }
+        }catch (NumberFormatException e){
+            poDto.setMaximumCount(-1);
         }
+
         if (!StringUtil.isEmpty(poId)) {
             poDto.setServiceId(poId);
         }
@@ -361,11 +407,19 @@ public class ConfigServiceImpl implements ConfigService {
             dpoDto.setId(dpoId);
         }
         dpoDto.setPsnType("DPO");
-        if (!StringUtil.isEmpty(mandeputyPrincipalOfficer)) {
-            dpoDto.setMandatoryCount(Integer.parseInt(mandeputyPrincipalOfficer));
+        try {
+            if (!StringUtil.isEmpty(mandeputyPrincipalOfficer)) {
+                dpoDto.setMandatoryCount(Integer.parseInt(mandeputyPrincipalOfficer));
+            }
+        }catch (NumberFormatException e){
+            dpoDto.setMandatoryCount(-1);
         }
-        if (!StringUtil.isEmpty(mixdeputyPrincipalOfficer)) {
-            dpoDto.setMaximumCount(Integer.parseInt(mixdeputyPrincipalOfficer));
+        try {
+            if (!StringUtil.isEmpty(mixdeputyPrincipalOfficer)) {
+                dpoDto.setMaximumCount(Integer.parseInt(mixdeputyPrincipalOfficer));
+            }
+        }catch (NumberFormatException e){
+            dpoDto.setMaximumCount(-1);
         }
 
 
@@ -380,12 +434,26 @@ public class ConfigServiceImpl implements ConfigService {
             cgoDto.setId(cgoId);
         }
         cgoDto.setPsnType("CGO");
-        if (!StringUtil.isEmpty(manclinicalGovernanceOfficer)) {
-            cgoDto.setMandatoryCount(Integer.parseInt(manclinicalGovernanceOfficer));
+        try {
+            if (!StringUtil.isEmpty(manclinicalGovernanceOfficer)) {
+                cgoDto.setMandatoryCount(Integer.parseInt(manclinicalGovernanceOfficer));
+            }
+        }catch (NumberFormatException e){
+            cgoDto.setMandatoryCount(-1);
         }
-        if (!StringUtil.isEmpty(mixclinicalGovernanceOfficer)) {
-            cgoDto.setMaximumCount(Integer.parseInt(mixclinicalGovernanceOfficer));
+        try {
+            if (!StringUtil.isEmpty(mixclinicalGovernanceOfficer)) {
+                cgoDto.setMaximumCount(Integer.parseInt(mixclinicalGovernanceOfficer));
+            }
+        }catch (NumberFormatException e){
+            cgoDto.setMaximumCount(-1);
         }
+
+        //todo is mandatory ,cannot
+        String poMandatory = request.getParameter("POMandatory");
+        String dpoMandatory = request.getParameter("DPOMandatory");
+        String cgoMandatory = request.getParameter("CGOMandatory");
+
         int count=1;
 
         if(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
@@ -396,6 +464,9 @@ public class ConfigServiceImpl implements ConfigService {
             hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
             count++;
         }
+        if(cgoMandatory!=null){
+
+        }
         if(cgoDto.getMandatoryCount()>0&&cgoDto.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
             hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
@@ -403,6 +474,9 @@ public class ConfigServiceImpl implements ConfigService {
             hcsaServiceStepSchemeDto.setSeqNum(count);
             hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
             count++;
+        }
+        if(dpoMandatory!=null){
+
         }
         if(dpoDto.getMandatoryCount()>0&&dpoDto.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
@@ -412,7 +486,9 @@ public class ConfigServiceImpl implements ConfigService {
             hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
             count++;
         }
+        if(poMandatory!=null){
 
+        }
         if(poDto.getMandatoryCount()>0&&poDto.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
             hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
@@ -436,14 +512,18 @@ public class ConfigServiceImpl implements ConfigService {
             if (!StringUtil.isEmpty(manservicePersonnel)) {
                 svcPersonnelDto.setMandatoryCount(Integer.valueOf(manservicePersonnel));
             }
-            if (!StringUtil.isEmpty(mixservicePersonnel)) {
-                svcPersonnelDto.setMaximumCount(Integer.valueOf(mixservicePersonnel));
-            }
         } catch (Exception e) {
 
             svcPersonnelDto.setMaximumCount(-1);
+        }
+        try {
+            if (!StringUtil.isEmpty(mixservicePersonnel)) {
+                svcPersonnelDto.setMaximumCount(Integer.valueOf(mixservicePersonnel));
+            }
+        }catch (NumberFormatException e){
             svcPersonnelDto.setMandatoryCount(-1);
         }
+
 
         svcPersonnelDto.setStatus("CMSTAT001");
         hcsaSvcPersonnelDtos.add(svcPersonnelDto);
@@ -566,6 +646,7 @@ public class ConfigServiceImpl implements ConfigService {
                     hcsaSvcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto);
                 }
                 hcsaConfigPageDto.setWorkStageId(workstageId);
+                hcsaConfigPageDto.setRoutingSchemeName(routingScheme);
                 hcsaConfigPageDto.setAppType(every);
                 hcsaConfigPageDtos.add(hcsaConfigPageDto);
             }
@@ -586,6 +667,11 @@ public class ConfigServiceImpl implements ConfigService {
             Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(startDate);
             String format = new SimpleDateFormat("yyyy-MM-dd").format(parse);
             hcsaServiceDto.setEffectiveDate(format);
+            if(parse.after(new Date())){
+                hcsaServiceDto.setStatus("CMSTAT003");
+            }else {
+                hcsaServiceDto.setStatus("CMSTAT001");
+            }
         } catch (Exception e) {
             hcsaServiceDto.setEffectiveDate(startDate);
         }
@@ -595,14 +681,13 @@ public class ConfigServiceImpl implements ConfigService {
             try {
                 hcsaServiceDto.setEndDate(new SimpleDateFormat("dd/MM/yyyy").parse(endDate));
             } catch (ParseException e) {
-                hcsaServiceDto.setEndDate(new Date("1976-01-01"));
+                hcsaServiceDto.setEndDate(new Date(99,1,1));
             }
         }
 
         hcsaServiceDto.setSvcDisplayDesc(displayDescription);
         hcsaServiceDto.setSvcDesc(description);
         hcsaServiceDto.setSvcType(serviceType);
-        hcsaServiceDto.setStatus("CMSTAT003");
         if (StringUtil.isEmpty(version)) {
             hcsaServiceDto.setVersion("1");
         } else {
@@ -667,6 +752,18 @@ public class ConfigServiceImpl implements ConfigService {
         }
         if (StringUtil.isEmpty(svcType)) {
             errorMap.put("svcType", "UC_CHKLMD001_ERR001");
+        }else if("SVTP002".equals(svcType)){
+            String categoryId = hcsaServiceDto.getCategoryId();
+            if(StringUtil.isEmpty(categoryId)){
+                errorMap.put("Subsumption","UC_CHKLMD001_ERR001");
+            }
+        }else if("SVTP003".equals(svcType)){
+            String categoryId = hcsaServiceDto.getCategoryId();
+            if(StringUtil.isEmpty(categoryId)){
+                errorMap.put("Prerequisite","UC_CHKLMD001_ERR001");
+
+            }
+
         }
         List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = hcsaServiceConfigDto.getHcsaSvcSpePremisesTypeDtos();
         if (hcsaSvcSpePremisesTypeDtos.isEmpty()) {
@@ -682,9 +779,18 @@ public class ConfigServiceImpl implements ConfigService {
             }
             if (StringUtil.isEmpty(mandatoryCount)) {
                 errorMap.put("mandatoryCount" + i, "UC_CHKLMD001_ERR001");
+            }else  if(mandatoryCount<0){
+                errorMap.put("mandatoryCount"+i,"Please enter a valid number (greater than or equal to 0)");
             }
             if (StringUtil.isEmpty(maximumCount)) {
                 errorMap.put("maximumCount" + i, "UC_CHKLMD001_ERR001");
+            }else if(maximumCount<0){
+                errorMap.put("maximumCount"+i,"Please enter a valid number (greater than or equal to 0)");
+            }
+            if(!StringUtil.isEmpty(mandatoryCount)&&!StringUtil.isEmpty(maximumCount)){
+                if(mandatoryCount>maximumCount){
+                    errorMap.put("maximumCount"+i,"Incorrect format");
+                }
             }
         }
 
@@ -701,13 +807,11 @@ public class ConfigServiceImpl implements ConfigService {
             Integer manhourCount = hcsaSvcSpecificStageWorkloadDtos.get(i).getManhourCount();
             if (StringUtil.isEmpty(manhourCount)) {
                 errorMap.put("manhourCount" + i, "UC_CHKLMD001_ERR001");
-            }
+            }else if(manhourCount<0) {
+
+            }   errorMap.put("manhourCount" + i, "Please enter a valid number (greater than or equal to 0)");
         }
 
-        Boolean entity = hcsaConfigClient.isExistHcsaService(hcsaServiceDto).getEntity();
-        if (!entity) {
-
-        }
     }
 
     private   Map<String, List<HcsaConfigPageDto>> getHcsaConfigPageDtos(HcsaServiceDto hcsaServiceDto) {
@@ -820,12 +924,19 @@ public class ConfigServiceImpl implements ConfigService {
                         hcsaConfigPageDto.setManhours(manhourCount);
                         hcsaConfigPageDto.setAppType(type);
                         if("APTY001".equals(type)){
-                            hcsaConfigPageDto.setAppTypeName("renew");
-                        }
-                        else if("APTY002".equals(type)){
+                            hcsaConfigPageDto.setAppTypeName("appeal");
+                        } else if("APTY002".equals(type)){
                             hcsaConfigPageDto.setAppTypeName("new application");
                         }else if("APTY005".equals(type)){
-                            hcsaConfigPageDto.setAppTypeName("appeal");
+                            hcsaConfigPageDto.setAppTypeName("request for change");
+                        }else if("APTY004".equals(type)){
+                            hcsaConfigPageDto.setAppTypeName("renew");
+                        }else if("APTY008".equals(type)){
+                            hcsaConfigPageDto.setAppTypeName("cessation");
+                        }else  if("APTY007".equals(type)){
+                            hcsaConfigPageDto.setAppTypeName("suspension");
+                        }else if("APTY006".equals(type)){
+                            hcsaConfigPageDto.setAppTypeName("withdrawal");
                         }
                         hcsaConfigPageDto.setWorkloadId(hcsaSvcStageWorkloadDtos.get(i).getId());
                         hcsaConfigPageDto.setRoutingSchemeId(hcsaSvcStageWorkloadDtos.get(i).getId());
@@ -916,10 +1027,17 @@ public class ConfigServiceImpl implements ConfigService {
                 if("APTY002".equals(type)){
                     hcsaConfigPageDto.setAppTypeName("new Application");
                 }else if("APTY001".equals(type)){
-                    hcsaConfigPageDto.setAppTypeName("renew");
-                } else if ("APTY005".equals(type)) {
-
                     hcsaConfigPageDto.setAppTypeName("appeal");
+                } else if ("APTY005".equals(type)) {
+                    hcsaConfigPageDto.setAppTypeName("request for change");
+                }else if("APTY004".equals(type)){
+                    hcsaConfigPageDto.setAppTypeName("renew");
+                }else if("APTY008".equals(type)){
+                    hcsaConfigPageDto.setAppTypeName("cessation");
+                }else  if("APTY007".equals(type)){
+                    hcsaConfigPageDto.setAppTypeName("suspension");
+                }else if("APTY006".equals(type)){
+                    hcsaConfigPageDto.setAppTypeName("withdrawal");
                 }
                 getWorkingGroupDto(workingGroup,hcsaSvcRoutingStageDto,hcsaConfigPageDto);
                 hcsaConfigPageDtos.add(hcsaConfigPageDto);
@@ -958,10 +1076,26 @@ public class ConfigServiceImpl implements ConfigService {
     private void view(HttpServletRequest request, String crud_action_value) {
 
         HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(crud_action_value).getEntity();
+
         List<HcsaServiceCategoryDto> hcsaServiceCategoryDto = getHcsaServiceCategoryDto();
         request.setAttribute("hcsaServiceCategoryDtos",hcsaServiceCategoryDto);
         request.setAttribute("hcsaServiceDto", hcsaServiceDto);
         String id = hcsaServiceDto.getId();
+
+        List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = hcsaConfigClient.getHcsaSvcDocConfigDto(id).getEntity();
+        StringBuilder stringBuilder=new StringBuilder();
+        for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocConfigDtos){
+            stringBuilder.append(",");
+            stringBuilder.append(hcsaSvcDocConfigDto.getDocTitle());
+        }
+        if(!hcsaSvcDocConfigDtos.isEmpty()){
+            Boolean isMandatory = hcsaSvcDocConfigDtos.get(0).getIsMandatory();
+            if(isMandatory){
+                request.setAttribute("documentMandatory",isMandatory);
+            }
+            request.setAttribute("NumberDocument",hcsaSvcDocConfigDtos.size());
+            request.setAttribute("DescriptionDocument",stringBuilder.toString().substring(1));
+        }
         List<HcsaSvcSubtypeOrSubsumedDto> entity = hcsaConfigClient.listSubtype(id).getEntity();
         request.setAttribute("hcsaSvcSubtypeOrSubsumedDto",entity);
         List<String> ids = new ArrayList<>();
@@ -1055,11 +1189,12 @@ public class ConfigServiceImpl implements ConfigService {
 
     private List<String> getType(){
         List<String> list=new ArrayList<>();
-        list.add("APTY002");
+        list.add("APTY002");//new
        /* list.add("APTY003");
-        list.add("APTY004");*/
-        list.add("APTY005");
-        list.add("APTY001");
+        list.add("APTY004");//renew
+        list.add("APTY007")*/ //SUSPENSION
+        list.add("APTY005"); //request for change
+        list.add("APTY001"); //appeal
         return list;
     }
 
@@ -1069,9 +1204,11 @@ public class ConfigServiceImpl implements ConfigService {
                 Integer manhours = hcsaConfigPageDtos1.get(i).getManhours();
                 String stage = hcsaConfigPageDtos1.get(i).getStage();
                 String workingGroupId = hcsaConfigPageDtos1.get(i).getWorkingGroupId();
+                String routingSchemeName = hcsaConfigPageDtos1.get(i).getRoutingSchemeName();
                 hcsaConfigPageDtos.get(i).setManhours(manhours);
                 hcsaConfigPageDtos.get(i).setStage(stage);
                 hcsaConfigPageDtos.get(i).setWorkingGroupId(workingGroupId);
+                hcsaConfigPageDtos.get(i).setRoutingSchemeName(routingSchemeName);
             }
         }
     }
@@ -1098,11 +1235,19 @@ public class ConfigServiceImpl implements ConfigService {
             List<HcsaConfigPageDto> hcsaConfigPageDto = hcsaConfigPageDtos.get(type);
             List<HcsaConfigPageDto> appeal=new ArrayList<>();
             if("APTY001".equals(type)){
-                appeal= getWorkGrop(type,"renew");
+                appeal= getWorkGrop(type,"appeal");
             }else if("APTY002".equals(type)){
                 appeal=  getWorkGrop(type,"new application");
             }else if("APTY005".equals(type)){
-               appeal = getWorkGrop(type, "appeal");
+               appeal = getWorkGrop(type, "request for change");
+            }else if("APTY004".equals(type)){
+                getWorkGrop(type,"renew");
+            }else if("APTY008".equals(type)){
+                getWorkGrop(type,"cessation");
+            }else  if("APTY007".equals(type)){
+                getWorkGrop(type,"suspension");
+            }else if("APTY006".equals(type)){
+                getWorkGrop(type,"withdrawal");
             }
             setValueOfhcsaConfigPageDtos(hcsaConfigPageDto,appeal);
             map.put(type,appeal);
@@ -1114,10 +1259,15 @@ public class ConfigServiceImpl implements ConfigService {
 
     //neend to send
     private void  sendEmail(HttpServletRequest request) throws IOException, TemplateException {
-        request.getSession().getAttribute("AdministratorId");
+        OrgUserDto orgUserDto=(OrgUserDto)request.getSession().getAttribute("orgUserDto");
         String option = (String) request.getAttribute("option");
         Map<String,Object> map=new HashMap<>();
-        String serviceName = request.getParameter("serviceName");
+        String userId = orgUserDto.getUserId();
+        String serviceName =(String) request.getAttribute("serviceName");
+        map.put("serviceName",serviceName);
+        map.put("option",option);
+        map.put("SystemAdministratorID",userId);
+        //todo
         MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("").getEntity();
         String messageContent = entity.getMessageContent();
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
@@ -1128,9 +1278,13 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     private void sendStartOrEndDateChangeEmail(HttpServletRequest request) throws IOException, TemplateException {
-        request.getSession().getAttribute("AdministratorId");
+        OrgUserDto orgUserDto=(OrgUserDto)request.getSession().getAttribute("orgUserDto");
         Map<String,Object> map=new HashMap<>();
+        String userId = orgUserDto.getUserId();
         String serviceName = request.getParameter("serviceName");
+        map.put("serviceName",serviceName);
+        map.put("SystemAdministratorID",userId);
+        //todo
         MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("").getEntity();
         String messageContent = entity.getMessageContent();
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);

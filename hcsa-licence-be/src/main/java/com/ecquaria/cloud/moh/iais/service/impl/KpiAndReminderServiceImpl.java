@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -128,7 +129,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
         for(HcsaSvcRoutingStageDto every:entity){
             String stageCode = every.getStageCode();
             String stageCode1 = request.getParameter(stageCode);
-            request.getSession().setAttribute(stageCode,stageCode1);
+          request.setAttribute(stageCode,stageCode1);
             if(StringUtil.isEmpty(stageCode1)){
                 errorMap.put(stageCode,"UC_CHKLMD001_ERR001");
             }else {
@@ -141,6 +142,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
         if(StringUtil.isEmpty(module)){
             errorMap.put("module","UC_CHKLMD001_ERR001");
         }
+        request.setAttribute("module",module);
         if(StringUtil.isEmpty(service)){
             errorMap.put("service","UC_CHKLMD001_ERR001");
         }
@@ -151,64 +153,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
                 errorMap.put("reminderThreshold","UC_CHKLMD001_ERR002");
             }
         }
-       /* if(StringUtil.isEmpty(adminScreening)){
-            errorMap.put("adminScreening","UC_CHKLMD001_ERR001");
-        }else {
-            if(!adminScreening.matches("^[0-9]*$")){
-                errorMap.put("adminScreening","UC_CHKLMD001_ERR002");
-            }
-        }
-        if(StringUtil.isEmpty(professionalScreening)){
-            errorMap.put("professionalScreening","UC_CHKLMD001_ERR001");
-        }else {
-            if(!professionalScreening.matches("^[0-9]*$")){
-                errorMap.put("professionalScreening","UC_CHKLMD001_ERR002");
-            }
-        }
-        if(StringUtil.isEmpty(preInspection)){
-            errorMap.put("preInspection","UC_CHKLMD001_ERR001");
-        }else {
-            if(!preInspection.matches("^[0-9]*$")){
-                errorMap.put("preInspection","UC_CHKLMD001_ERR002");
-            }
-        }
-        if(StringUtil.isEmpty(inspection)){
-            errorMap.put("inspection","UC_CHKLMD001_ERR001");
-        }else {
-            if(!inspection.matches("^[0-9]*$")){
-                errorMap.put("inspection","UC_CHKLMD001_ERR002");
-            }
-        }
-        if(StringUtil.isEmpty(postInspection)){
-            errorMap.put("postInspection","UC_CHKLMD001_ERR001");
-        }
-        else {
-            if(!postInspection.matches("^[0-9]*$")){
-                errorMap.put("postInspection","UC_CHKLMD001_ERR002");
-            }
-        }
-        if(StringUtil.isEmpty(levelOne)){
-            errorMap.put("levelOne","UC_CHKLMD001_ERR001");
-        }else {
-            if(!levelOne.matches("^[0-9]*$")){
-                errorMap.put("levelOne","UC_CHKLMD001_ERR002");
-            }
-        }
-        if(StringUtil.isEmpty(levelTwo)){
-            errorMap.put("levelTwo","UC_CHKLMD001_ERR001");
-        }else {
-            if(!levelTwo.matches("^[0-9]*$")){
-                errorMap.put("levelTwo","UC_CHKLMD001_ERR002");
-            }
-        }
-            if(StringUtil.isEmpty(levelThree)){
-            errorMap.put("levelThree","UC_CHKLMD001_ERR001");
-        }else {
-            if(!levelThree.matches("^[0-9]*$")){
-                errorMap.put("levelThree","UC_CHKLMD001_ERR002");
-            }
-        }
-*/
+
         return errorMap;
     }
 

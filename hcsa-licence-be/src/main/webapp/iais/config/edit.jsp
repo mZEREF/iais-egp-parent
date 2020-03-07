@@ -121,6 +121,7 @@
                 <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
               </c:forEach>
             </select>
+            <span id="error_Subsumption" class="error-msg" name="iaisErrorMsg" ></span>
           </div>
         </div>
       </div>
@@ -137,6 +138,7 @@
                 <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
               </c:forEach>
             </select>
+            <span id="error_Prerequisite" class="error-msg" name="iaisErrorMsg" ></span>
           </div>
         </div>
       </div>
@@ -226,9 +228,9 @@
           <label class="col-xs-12 col-md-6 control-label" for="NumberDocument">Number of Service-Related Document to be
             uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="NumberDocument" type="text" name="NumberDocument" maxlength="2">
+            <input id="NumberDocument" type="text" value="${NumberDocument}" name="NumberDocument" maxlength="2">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" id="NumberDocumentMandatory"  type="checkbox"  name="NumberDocumentMandatory" aria-invalid="false">
+          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" <c:if test="${documentMandatory==true}"> checked="checked"</c:if> id="NumberDocumentMandatory"  type="checkbox"  name="NumberDocumentMandatory" aria-invalid="false">
             <label for="NumberDocumentMandatory" class="form-check-label" ><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
@@ -239,9 +241,9 @@
           <label class="col-xs-12 col-md-6 control-label" for="DescriptionDocument">Description of each Service-Related Document to
             be Uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="DescriptionDocument" type="text" name="DescriptionDocument" maxlength="255">
+            <input id="DescriptionDocument" type="text" value="${DescriptionDocument}" name="DescriptionDocument" maxlength="255">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" id="DescriptionDocumentMandatory" type="checkbox" name="DescriptionDocumentMandatory" aria-invalid="false">
+          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" <c:if test="${documentMandatory==true}"> checked="checked"</c:if> id="DescriptionDocumentMandatory" type="checkbox" name="DescriptionDocumentMandatory" aria-invalid="false">
             <label for="DescriptionDocumentMandatory" class="form-check-label"><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
@@ -329,27 +331,59 @@
       </div>
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8 marg-1">
-          <div class="col-xs-10 col-md-4">
+        <div class="col-xs-12 col-md-12" style="margin-top: 1%">
+          <div class="col-xs-10 col-md-3">
             <div class="components">
               <a class="btn btn-secondary " onclick="showNEW()"><span class="view">NEW APPLICATION</span></a>
-
             </div>
           </div>
-          <div class="col-xs-10 col-md-4">
+          <div class="col-xs-10 col-md-3">
             <div class="components">
               <a class="btn btn-secondary " onclick="showRENEW()"><span class="view">RENEW</span></a>
             </div>
           </div>
-
-          <div class="col-xs-10 col-md-4">
+          <div class="col-xs-10 col-md-3">
             <div class="components">
               <a class="btn btn-secondary " onclick="showAPPEAL()"><span class="view">APPEAL</span></a>
+            </div>
+          </div>
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showRFC()"><span class="view">REQUEST FOR CHANGE</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div  class="form-group">
+        <div class="col-xs-12 col-md-12" style="margin-top: 1%">
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showCESSATION()"><span class="view">CESSATION</span></a>
+            </div>
+          </div>
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showSUSPENSION()"><span class="view">SUSPENSION</span></a>
+            </div>
+          </div>
+
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showWITHDRAWAL()"><span class="view">WITHDRAWAL</span></a>
+            </div>
+          </div>
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showREVOCATION()"><span class="view">REVOCATION</span></a>
             </div>
           </div>
 
         </div>
       </div>
+
+
       <c:forEach items="${routingStagess}" var="routingStages" varStatus="sta">
 
       <div class="form-group" style="display: none" id="${routingStages.key}" >
@@ -592,7 +626,11 @@
     function showNEW() {
         let jQuery = $('#APTY002').attr("style");
         $('#APTY001').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
         $('#APTY005').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
         if(jQuery=='display: block'){
             $('#APTY002').attr("style","display: none");
         }else if(jQuery=='display: none'){
@@ -601,19 +639,44 @@
     }
 
     function showRENEW() {
+        let jQuery = $('#APTY004').attr("style");
+        $('#APTY001').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY004').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY004').attr("style","display: block");
+        }
+    }
+
+    function showAPPEAL(){
         let jQuery = $('#APTY001').attr("style");
         $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
         $('#APTY005').attr("style","display: none");
         if(jQuery=='display: block'){
             $('#APTY001').attr("style","display: none");
         }else if(jQuery=='display: none'){
             $('#APTY001').attr("style","display: block");
         }
+
     }
 
-    function showAPPEAL(){
+
+    function showRFC(){
         let jQuery = $('#APTY005').attr("style");
         $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
         $('#APTY001').attr("style","display: none");
         if(jQuery=='display: block'){
             $('#APTY005').attr("style","display: none");
@@ -622,6 +685,57 @@
         }
 
     }
+
+    function showCESSATION(){
+        let jQuery = $('#APTY008').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        $('#APTY001').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY008').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY008').attr("style","display: block");
+        }
+    }
+
+    function showSUSPENSION(){
+        let jQuery = $('#APTY007').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        $('#APTY001').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY007').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY007').attr("style","display: block");
+        }
+    }
+
+    function  showWITHDRAWAL(){
+        let jQuery = $('#APTY006').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        $('#APTY001').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY006').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY006').attr("style","display: block");
+        }
+    }
+
+    function showREVOCATION(){
+
+    }
+
+
 
     $('#ServiceType').change(function () {
         let val = $('#ServiceType').val();

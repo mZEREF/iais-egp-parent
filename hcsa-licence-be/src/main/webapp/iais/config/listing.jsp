@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <webui:setLayout name="iais-intranet"/>
 
 <%
@@ -43,7 +44,7 @@
           <c:if test="${hcsaServiceDto.status=='CMSTAT003'}">NonActive</c:if></td>
 
         <td  style="text-align: center">${hcsaServiceDto.effectiveDate}</td>
-        <td  style="text-align: center">${hcsaServiceDto.endDate}</td>
+        <td  style="text-align: center"><fmt:formatDate value="${hcsaServiceDto.endDate}" pattern="yyyy-MM-dd"/></td>
         <td  style="text-align: center"><button onclick="edit(this)" value="${hcsaServiceDto.id}">edit</button><button value="${hcsaServiceDto.id}" onclick="del(this)">delete</button></td>
 
       </tr>

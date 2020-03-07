@@ -58,6 +58,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -275,7 +276,7 @@ public interface HcsaConfigClient {
     @GetMapping(value = "/iais-hcsa-service/svc-personnel-by-service-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcPersonnelDto>> getSvcPersonnelByServiceId(@RequestParam("serviceId") String serviceId);
     @PostMapping(value = "/hcsa-config/existence-of-hcsa-service",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Boolean> isExistHcsaService(@RequestBody HcsaServiceDto hcsaServiceDto );
+    FeignResponseEntity<Map<String,Boolean>> isExistHcsaService(@RequestBody HcsaServiceDto hcsaServiceDto );
     @GetMapping(value = "/hcsa-config/hcsa-routing-scheme-of-service-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcStageWorkloadDto>> getHcsaSvcSpeRoutingSchemeByServiceId(@RequestParam("serviceId") String serviceId);
     @GetMapping(value = "/hcsa-config/hcsa-working-group-service-id",produces = MediaType.APPLICATION_JSON_VALUE)
@@ -299,4 +300,8 @@ public interface HcsaConfigClient {
     FeignResponseEntity updateService(@RequestParam("serviceId") String serviceId);
     @GetMapping(value = "/iais-hcsa-service/subtype/{svcId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubtype(@PathVariable(name = "svcId")String serviceId);
+
+    @GetMapping(value = "/hcsa-config/hcsa-svc-doc-config-service-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaSvcDocConfigDto>> getHcsaSvcDocConfigDto(@RequestParam("serviceId") String serviceId);
+
 }

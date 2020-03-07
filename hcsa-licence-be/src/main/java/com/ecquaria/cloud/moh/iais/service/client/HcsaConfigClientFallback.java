@@ -47,6 +47,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -608,7 +609,7 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
     }
 
     @Override
-    public FeignResponseEntity<Boolean> isExistHcsaService(HcsaServiceDto hcsaServiceDto) {
+    public FeignResponseEntity<Map<String,Boolean>> isExistHcsaService(HcsaServiceDto hcsaServiceDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -691,6 +692,14 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
 
     @Override
     public FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubtype(String serviceId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<HcsaSvcDocConfigDto>> getHcsaSvcDocConfigDto(String serviceId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

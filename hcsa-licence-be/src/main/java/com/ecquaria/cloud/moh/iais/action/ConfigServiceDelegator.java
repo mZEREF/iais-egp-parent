@@ -1,7 +1,12 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -17,8 +22,16 @@ import java.util.Stack;
 public class ConfigServiceDelegator {
     @Autowired
     private ConfigService configService;
+    @Autowired
+    private OrganizationClient organizationClient;
+    private OrgUserDto entity;
     public void start(BaseProcessClass bpc){
         log.info("*********startt***********");
+      /*  LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String userId = loginContext.getUserId();
+        this.entity = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
+        bpc.request.getSession().setAttribute("orgUserDto",entity);*/
+
     }
     private Stack stack=new Stack();
     public void switchOr(BaseProcessClass bpc){
@@ -30,6 +43,7 @@ public class ConfigServiceDelegator {
         log.info("*********prepare  start***********");
 
     }
+
     public void list(BaseProcessClass bpc){
         log.info("*********list  start***********");
         configService.getAllHcsaServices(bpc.request);

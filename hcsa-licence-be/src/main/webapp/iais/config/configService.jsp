@@ -31,6 +31,7 @@
           <div class="col-xs-12 col-md-4">
             <input id="serviceName" type="text" name="serviceName" value="${hcsaServiceDto.svcName}">
             <span name="iaisErrorMsg" class="error-msg" id="error_svcName"></span>
+            <span name="iaisErrorMsg" class="error-msg" id="error_Name"></span>
           </div>
         </div>
       </div>
@@ -59,6 +60,7 @@
           <div class="col-xs-12 col-md-4">
             <input id="serviceCode" type="text" name="serviceCode" maxlength="3" value="${hcsaServiceDto.svcCode}">
             <span class="error-msg" name="iaisErrorMsg" id="error_svcCode"></span>
+            <span name="iaisErrorMsg" class="error-msg" id="error_code"></span>
           </div>
         </div>
       </div>
@@ -70,9 +72,16 @@
 
             <select id="ServiceType" name="ServiceType">
               <option value="">Select one</option>
-              <option value="SVTP001" selected="selected">Base</option>
-              <option value="SVTP002">Subsumed</option>
-              <option value="SVTP003">Specified</option>
+              <option value="SVTP001"
+                      <c:choose>
+                        <c:when test="${hcsaServiceDto.svcType=='SVTP001'}"> selected="selected"</c:when>
+                        <c:otherwise>
+                          selected="selected"
+                        </c:otherwise>
+                      </c:choose>
+                     >Base</option>
+              <option <c:if test="${hcsaServiceDto.svcType=='SVTP002'}">selected="selected"</c:if> value="SVTP002">Subsumed</option>
+              <option <c:if test="${hcsaServiceDto.svcType=='SVTP003'}">selected="selected"</c:if> value="SVTP003">Specified</option>
             </select>
             <span class="error-msg" name="iaisErrorMsg" id="error_svcType"></span>
           </div>
@@ -108,6 +117,8 @@
                 <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
               </div>
             </div>
+
+
           </div>
         </div>
       </div>
@@ -118,11 +129,14 @@
           <label class="col-xs-12 col-md-6 control-label" >Subsumption Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <select  name="Subsumption">
-              <option >Select one</option>
+              <option value="">Select one</option>
               <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
-                <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
+                <option value="${hcsaServiceCategoryDto.id}"
+                        <c:if test="${hcsaServiceDto.svcType=='SVTP002'&&hcsaServiceDto.categoryId==hcsaServiceCategoryDto.id}">selected="selected"</c:if>
+                >${hcsaServiceCategoryDto.name}</option>
               </c:forEach>
             </select>
+            <span id="error_Subsumption" class="error-msg" name="iaisErrorMsg" ></span>
           </div>
         </div>
       </div>
@@ -134,11 +148,14 @@
           <label class="col-xs-12 col-md-6 control-label" >Pre-requisite Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <select  name="Subsumption">
-              <option >Select one</option>
+              <option value="">Select one</option>
               <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
-                <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
+                <option value="${hcsaServiceCategoryDto.id}"
+                        <c:if test="${hcsaServiceDto.svcType=='SVTP002'&&hcsaServiceDto.categoryId==hcsaServiceCategoryDto.id}">selected="selected"</c:if>
+                >${hcsaServiceCategoryDto.name}</option>
               </c:forEach>
             </select>
+            <span id="error_Prerequisite" class="error-msg" name="iaisErrorMsg" ></span>
           </div>
         </div>
       </div>
@@ -160,11 +177,13 @@
           <label class="col-xs-12 col-md-6 control-label" >Principal Officer (PO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input type="text" name="man-principalOfficer" maxlength="2" placeholder="minimum count" value="${PO.mandatoryCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount0"></span>
           </div>
           <div class="col-xs-12 col-md-2">
             <input type="text" name="mix-principalOfficer" maxlength="2" placeholder="maximum count" value="${PO.maximumCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount0"></span>
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
+          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="POMandatory" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
           </div>
           <span class="error-msg" name="iaisErrorMsg" id="error_psnType1"></span>
@@ -177,12 +196,14 @@
           <label class="col-xs-12 col-md-6 control-label" >Deputy Principal Officer (DPO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" placeholder="minimum count" value="${DPO.mandatoryCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount1"></span>
           </div>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-DeputyPrincipalOfficer" maxlength="2" placeholder="maximum count" value="${DPO.maximumCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount1"></span>
           </div>
 
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
+          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="DPOMandatory" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
           </div>
           <span class="error-msg" name="iaisErrorMsg" id="error_psnType2"></span>
@@ -195,11 +216,13 @@
           <label class="col-xs-12 col-md-6 control-label" >Clinical Governance Officer (CGO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2" placeholder="minimum count" value="${CGO.mandatoryCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount2"></span>
           </div>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2"  placeholder="maximum count" value="${CGO.maximumCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount2"></span>
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
+          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="CGOMandatory" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
           </div>
           <span class="error-msg" name="iaisErrorMsg" id="error_psnType3"></span>
@@ -212,11 +235,13 @@
           <label class="col-xs-12 col-md-6 control-label" >Service Personnel<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="man-ServicePersonnel" maxlength="2" placeholder="minimum count" value="${SVCPSN.mandatoryCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount3"></span>
           </div>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-ServicePersonnel" maxlength="2"  placeholder="maximum count" value="${SVCPSN.maximumCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount3"></span>
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
+          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="SVCPSNMandatory" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
@@ -329,26 +354,57 @@
       </div>
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8" style="margin-top: 1%">
-          <div class="col-xs-10 col-md-4">
+        <div class="col-xs-12 col-md-12" style="margin-top: 1%">
+          <div class="col-xs-10 col-md-3">
             <div class="components">
               <a class="btn btn-secondary " onclick="showNEW()"><span class="view">NEW APPLICATION</span></a>
-
             </div>
           </div>
-          <div class="col-xs-10 col-md-4">
+          <div class="col-xs-10 col-md-3">
             <div class="components">
               <a class="btn btn-secondary " onclick="showRENEW()"><span class="view">RENEW</span></a>
             </div>
           </div>
-          <div class="col-xs-10 col-md-4">
+          <div class="col-xs-10 col-md-3">
             <div class="components">
               <a class="btn btn-secondary " onclick="showAPPEAL()"><span class="view">APPEAL</span></a>
+            </div>
+          </div>
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showRFC()"><span class="view">REQUEST FOR CHANGE</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div  class="form-group">
+        <div class="col-xs-12 col-md-12" style="margin-top: 1%">
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showCESSATION()"><span class="view">CESSATION</span></a>
+            </div>
+          </div>
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showSUSPENSION()"><span class="view">SUSPENSION</span></a>
+            </div>
+          </div>
+
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showWITHDRAWAL()"><span class="view">WITHDRAWAL</span></a>
+            </div>
+          </div>
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showREVOCATION()"><span class="view">REVOCATION</span></a>
             </div>
           </div>
 
         </div>
       </div>
+
 
 
       <c:set var="index" value="0"></c:set>
@@ -373,14 +429,31 @@
             <select  name="RoutingScheme${routingStage.stageCode}${routingStages.key}"  >
               <option value="" >Select one</option>
               <option value="common"
-                      <c:if test="${routingStage.stageCode=='PSO'}">selected="selected" </c:if>
+                      <c:choose>
+                        <c:when test="${routingStage.routingSchemeName=='common'}">
+                          selected="selected"
+                        </c:when>
+                        <c:otherwise>
+                          <c:if test="${routingStage.stageCode=='PSO'}">selected="selected" </c:if>
+                        </c:otherwise>
+                      </c:choose>
               >Common Pool</option>
-              <option value="assign">Supervisor Assign</option>
+              <option value="assign"
+                      <c:if test="${routingStage.routingSchemeName=='assign'}">selected="selected" </c:if>
+              >Supervisor Assign</option>
               <option value="round"
-                      <c:if test="${routingStage.stageCode=='ASO'||routingStage.stageCode=='AO1'||routingStage.stageCode=='AO2'||routingStage.stageCode=='AO3'}">selected="selected"  </c:if>
+                      <c:choose>
+                        <c:when test="${routingStage.routingSchemeName=='round'}">
+                          selected="selected"
+                        </c:when>
+                        <c:otherwise>
+                          <c:if test="${routingStage.stageCode=='ASO'||routingStage.stageCode=='AO1'||routingStage.stageCode=='AO2'||routingStage.stageCode=='AO3'}">selected="selected"  </c:if>
+                        </c:otherwise>
+                      </c:choose>
+
               >Round Robin</option>
            </select>
-            <span name="iaisErrorMsg" class="iais-msg" id="error_schemeType${status.index}"></span>
+            <span name="iaisErrorMsg" class="error-msg" id="error_schemeType${status.index}"></span>
           </div>
           <div class="col-xs-12 col-md-6" >
             <select name="isMandatory${routingStage.stageCode}${routingStages.key}">
@@ -388,10 +461,11 @@
               <option value="mandatory" selected="selected">Mandatory</option>
               <option value="optional">Optional</option>
             </select>
+          </div>
         </td>
         <td>
           <div class="col-xs-12 col-md-12">
-            <input  type="text" maxlength="2" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
+            <input style="margin: 8px 0px 8px" type="text" maxlength="2" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
             <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${status.index}"></span>
           </div>
 
@@ -568,10 +642,32 @@
         SOP.Crud.cfxSubmit("mainForm","save");
     }
 
+    $(document).ready(function () {
+        let val = $('#ServiceType').val();
+        if("SVTP002"==val){
+            $('#Subsumption').attr("style","display:block");
+            $('#Pre-requisite').attr("style","display:none");
+        }else  if("SVTP003"==val){
+            $('#Pre-requisite').attr("style","display:block")
+            $('#Subsumption').attr("style","display:none");
+
+        }else {
+            $('#Subsumption').attr("style","display:none");
+            $('#Pre-requisite').attr("style","display:none");
+        }
+    });
+
+
+
+
   function showNEW() {
       let jQuery = $('#APTY002').attr("style");
       $('#APTY001').attr("style","display: none");
+      $('#APTY004').attr("style","display: none");
       $('#APTY005').attr("style","display: none");
+      $('#APTY006').attr("style","display: none");
+      $('#APTY007').attr("style","display: none");
+      $('#APTY008').attr("style","display: none");
       if(jQuery=='display: block'){
           $('#APTY002').attr("style","display: none");
       }else if(jQuery=='display: none'){
@@ -580,21 +676,43 @@
   }
 
   function showRENEW() {
-      let jQuery = $('#APTY001').attr("style");
-      $('#APTY002').attr("style","display: none");
+      let jQuery = $('#APTY004').attr("style");
+      $('#APTY001').attr("style","display: none");
       $('#APTY005').attr("style","display: none");
+      $('#APTY006').attr("style","display: none");
+      $('#APTY007').attr("style","display: none");
+      $('#APTY002').attr("style","display: none");
+      $('#APTY008').attr("style","display: none");
       if(jQuery=='display: block'){
-          $('#APTY001').attr("style","display: none");
+          $('#APTY004').attr("style","display: none");
       }else if(jQuery=='display: none'){
-          $('#APTY001').attr("style","display: block");
+          $('#APTY004').attr("style","display: block");
       }
   }
 
     function showAPPEAL(){
+        let jQuery = $('#APTY001').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY001').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY001').attr("style","display: block");
+        }
+    }
+
+    function showRFC(){
         let jQuery = $('#APTY005').attr("style");
         $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
         $('#APTY001').attr("style","display: none");
-
         if(jQuery=='display: block'){
             $('#APTY005').attr("style","display: none");
         }else if(jQuery=='display: none'){
@@ -603,6 +721,54 @@
 
     }
 
+    function showCESSATION(){
+        let jQuery = $('#APTY008').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        $('#APTY001').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY008').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY008').attr("style","display: block");
+        }
+    }
+
+    function showSUSPENSION(){
+        let jQuery = $('#APTY007').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        $('#APTY001').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY007').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY007').attr("style","display: block");
+        }
+    }
+
+    function  showWITHDRAWAL(){
+        let jQuery = $('#APTY006').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        $('#APTY001').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY006').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY006').attr("style","display: block");
+        }
+    }
+
+    function showREVOCATION(){
+
+    }
 
     $('#ServiceType').change(function () {
 
@@ -737,7 +903,6 @@
             $("#DescriptionDocumentMandatory").prop("checked",false);
             $("#NumberDocumentMandatory").prop("checked",false);
         }
-
 
     });
 

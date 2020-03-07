@@ -54,7 +54,7 @@
 
           </div>
           <div style="display: none;margin-top: 10px" id="cgo" class="col-xs-12 col-md-12" >
-
+       <%--     <a class="btn  btn-secondary" onclick="deletes()" style="margin-left: 20px;"  >delete</a>--%>
             <%@include file="cgo.jsp"%>
 
           </div>
@@ -101,7 +101,7 @@
   <div >
     <div>
       <div class="col-xs-12 col-md-10" >
-        <label style="font-size: 25px;margin-top: 25px">File Upload for Appeal Reasons</label>
+        <label style="font-size: 25px;margin-top: 25px;" >File Upload for Appeal Reasons</label>
       </div>
 
       <div class="col-xs-12">
@@ -109,7 +109,7 @@
           <div class="file-upload-gp">
             <div class="fileContent col-xs-2">
               ${upFile.originalFilename}
-              <input class="selectedFile" id="selectedFile" name = "selectedFile"  type="file" style="display: none;" aria-label="selectedFile1">
+              <input class="selectedFile"  id="selectedFile" name = "selectedFile"  type="file" style="display: none;" aria-label="selectedFile1">
               <a class="btn btn-file-upload btn-secondary" >Upload</a>
 
             </div>
@@ -257,7 +257,11 @@ $('.selectedFile').change(function () {
       return o.substring(pos + 1);
   };
 
+  function deletes() {
 
+      $('#control--runtime--1').attr("hidden");
+
+  }
 </script>
 
 </>

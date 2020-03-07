@@ -29,14 +29,14 @@
           <div class="col-xs-8 col-sm-6 col-md-5">
             <select  name="module"  id="module" >
               <option  value="">Select one</option>
-              <option   value="APTY002" >New</option>
-              <option   value="APTY004"  >Renewal</option>
-              <option   value="APTY005">Request for Change</option>
-              <option   value="APTY001">Appeal</option>
-              <option   value="APTY006" >Withdrawal</option>
-              <option   value="APTY003">Revocation</option>
-              <option   value="APTY008">Cessation</option>
-              <option   value="APTY007">Suspension</option>
+              <option <c:if test="${module=='APTY002'}">selected="selected"</c:if>  value="APTY002" >New</option>
+              <option <c:if test="${module=='APTY004'}">selected="selected"</c:if>  value="APTY004"  >Renewal</option>
+              <option  <c:if test="${module=='APTY005'}">selected="selected"</c:if> value="APTY005">Request for Change</option>
+              <option   <c:if test="${module=='APTY001'}">selected="selected"</c:if> value="APTY001">Appeal</option>
+              <option   <c:if test="${module=='APTY006'}">selected="selected"</c:if> value="APTY006" >Withdrawal</option>
+              <option  <c:if test="${module=='APTY003'}">selected="selected"</c:if>  value="APTY003">Revocation</option>
+              <option  <c:if test="${module=='APTY008'}">selected="selected"</c:if> value="APTY008">Cessation</option>
+              <option   <c:if test="${module=='APTY007'}">selected="selected"</c:if> value="APTY007">Suspension</option>
             </select>
             <span name="iaisErrorMsg" id="error_module" class="error-msg"></span>
           </div>
@@ -51,7 +51,6 @@
                  <select name="service"  id="service">
                    <option value="" >Select one</option>
                    <c:forEach items="${hcsaServiceDtos}" var="hcsaServiceDto">
-
                      <option value="${hcsaServiceDto.svcCode}"   <c:if test="${service==hcsaServiceDto.svcCode}">selected="selected" </c:if>>${hcsaServiceDto.svcDesc}</option>
                    </c:forEach>
                  </select>
@@ -76,17 +75,26 @@
       </tr>
 
   <c:forEach items="${hcsaSvcRoutingStageDtos}" var="hcsaSvcRoutingStageDto">
-
       <tr>
-
         <td style="text-align:center;vertical-align:middle;">${hcsaSvcRoutingStageDto.stageName}</td>
         <td style="text-align:center;vertical-align:middle;">
-          <input name="${hcsaSvcRoutingStageDto.stageCode}" type="text"  placeholder="Enter required man-days" value="" maxlength="5" style="width: 50% ;height: 10%"/>
+          <input name="${hcsaSvcRoutingStageDto.stageCode}" type="text"  placeholder="Enter required man-days"
+                  <c:choose>
+                    <c:when test="${hcsaSvcRoutingStageDto.stageCode=='PSO'}"> value="${PSO}" </c:when>
+                    <c:when test="${hcsaSvcRoutingStageDto.stageCode=='ASO'}">value="${ASO}" </c:when>
+                    <c:when test="${hcsaSvcRoutingStageDto.stageCode=='AO1'}">value="${AO1}" </c:when>
+                    <c:when test="${hcsaSvcRoutingStageDto.stageCode=='AO2'}">value="${AO2}" </c:when>
+                    <c:when test="${hcsaSvcRoutingStageDto.stageCode=='AO3'}">value="${AO3}" </c:when>
+                    <c:when test="${hcsaSvcRoutingStageDto.stageCode=='PRE'}">value="${PRE}" </c:when>
+                    <c:when test="${hcsaSvcRoutingStageDto.stageCode=='INP'}">value="${INP}" </c:when>
+                    <c:when test="${hcsaSvcRoutingStageDto.stageCode=='POT'}">value="${POT}" </c:when>
+                  </c:choose>
+                maxlength="5" style="width: 50% ;height: 10%"/>
           man-days
           <span name="iaisErrorMsg" id="error_${hcsaSvcRoutingStageDto.stageCode}" class="error-msg"></span>
         </td>
-
       </tr>
+
   </c:forEach>
     <%--  <tr>
 
