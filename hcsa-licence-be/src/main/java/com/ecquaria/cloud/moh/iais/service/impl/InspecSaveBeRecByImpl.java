@@ -56,7 +56,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     private String sharedPath;
     private String download;
     private String zipFile;
-    private String fileFormat = ".text";
     private String compressPath;
 
     @Autowired
