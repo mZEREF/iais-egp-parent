@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.InspecSaveBeRecByService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -91,18 +92,21 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         compressPath = sharedPath + "recUnZipFile";
         download = compressPath + File.separator + "backupsRec";
         zipFile = sharedPath + "backupsRec";
-        File file = new File(download);
-        File b = new File(zipFile);
-        File c = new File(compressPath);
-        if(!c.exists()){
-            c.mkdirs();
+        File downloadFile = new File(download);
+        File zipFiles = new File(zipFile);
+        File compressPathFile = new File(compressPath);
+        FileUtils.deleteTempFile(downloadFile);
+        FileUtils.deleteTempFile(zipFiles);
+        FileUtils.deleteTempFile(compressPathFile);
+        if(!downloadFile.exists()){
+            downloadFile.mkdirs();
         }
-        if(!b.exists()){
-            b.mkdirs();
+        if(!zipFiles.exists()){
+            zipFiles.mkdirs();
         }
 
-        if(!file.mkdirs()){
-            file.mkdirs();
+        if(!compressPathFile.mkdirs()){
+            compressPathFile.mkdirs();
         }
     }
 
