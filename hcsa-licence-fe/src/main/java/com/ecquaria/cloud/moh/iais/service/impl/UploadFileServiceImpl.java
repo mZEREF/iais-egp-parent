@@ -88,7 +88,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     private FileRepositoryClient fileRepositoryClient;
 
     @Override
-    public Boolean saveFile(String  str) {
+    public boolean saveFile(String  str) {
         List<ApplicationListFileDto> parse = parse(str);
         if(parse.isEmpty()){
            return false;
