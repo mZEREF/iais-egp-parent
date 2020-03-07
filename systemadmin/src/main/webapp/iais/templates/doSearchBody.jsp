@@ -47,12 +47,9 @@
                     </div>
                 </iais:value>
             </div>
-
-            <div class="application-tab-footer">
-                <div class="row">
-                    <div class="col-xs-12 col-md-12">
-                        <div class="text-right"><a class="btn btn-primary" id="ANT_Search">Search</a></div>
-                    </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <div class="text-right"><a class="btn btn-primary" id="ANT_Search">Search</a></div>
                 </div>
             </div>
         </div>
