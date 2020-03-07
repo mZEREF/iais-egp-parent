@@ -147,13 +147,17 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     private String compress(){
         log.info("------------ start compress() -----------------------");
         long l=   System.currentTimeMillis();
-        new File(backups+File.separator);
+        File c= new File(backups+File.separator);
+        if(!c.exists()){
+            c.mkdirs();
+        }
         try (OutputStream is=new FileOutputStream(backups+File.separator+ l+".zip");
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos)) {
 
             log.info("------------zip file name is"+backups+File.separator+ l+".zip"+"--------------------");
             File file = new File(download+File.separator);
+
             MiscUtil.checkDirs(file);
             zipFile(zos, file);
             log.info("----------------end zipFile ---------------------");
