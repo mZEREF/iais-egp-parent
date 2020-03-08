@@ -15,7 +15,7 @@
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <div class="main-content">
-        <div class="panel-heading"><h2><strong>Cessation Form</strong></h2></div>
+        <div class="panel-heading"><h2><strong>Cessation Form</strong></h2> <span id="readInfo" class="error-msg" hidden>Please agree to the declaration statement</span></div>
         <div class="panel-heading"><h4><strong>Please key in to cessation information</strong></h4></div>
         <div class="row">
             <div class="col-xs-12">
@@ -275,8 +275,7 @@
                                     </table></td>
                                     <td><input type="checkbox" name="${num.count}whichTodo${uid.count+1}" value="${appCess.licenceId}"
                                                <c:if test="${appCessHci.whichTodo != null}">checked</c:if>>
-                                            <%--                                       <span id="error_whichTodo" name="iaisErrorMsg"--%>
-                                            <%--                                             class="error-msg"></span>--%>
+
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -364,6 +363,9 @@
     function submitSure() {
         if ($('#confirmInfo').is(':checked')) {
             $("#mainForm").submit();
+            $("#readInfo").hide();
+        }else{
+            $("#readInfo").show();
         }
     }
 

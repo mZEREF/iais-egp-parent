@@ -54,22 +54,7 @@ public class ReCessationApplicationDelegator {
             licIds.add("7ECAE165-534A-EA11-BE7F-000C29F371DC");
             licIds.add("CFCAC193-6F4D-EA11-BE7F-000C29F371DC");
         }
-        List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
-//        List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
-//        AppCessationDto appCessationDto = new AppCessationDto();
-//        appCessationDto.setEffectiveDate(new Date());
-//        appCessationDto.setPatientSelect("hciName");
-//        appCessationDto.setReason("Low");
-//        appCessationDto.setPatHciName("sss");
-//        AppCessationDto appCessationDto1 = new AppCessationDto();
-//        appCessationDto1.setEffectiveDate(new Date());
-//        appCessationDto1.setPatientSelect("hciName");
-//        appCessationDto1.setReason("Low");
-//        appCessationDto1.setPatHciName("sss");
-//        List<AppCessationDto> cessationByIds= new ArrayList<>();
-//        cessationByIds.add(appCessationDto);
-//        cessationByIds.add(appCessationDto1);
-
+        List<AppCessLicDto> appCessDtosByLicIds = cessationService.getOldCessationByIds(licIds);
 
         int size = appCessDtosByLicIds.size();
         List<SelectOption> reasonOption = getReasonOption();

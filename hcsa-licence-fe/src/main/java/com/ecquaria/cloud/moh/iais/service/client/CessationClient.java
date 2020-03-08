@@ -6,6 +6,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
  */
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -34,6 +35,6 @@ import java.util.List;
     @PostMapping(value = "/appeal/application-fe-withdrawal",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> saveWithdrawn(@RequestBody WithdrawnDto withdrawnDto);
 
-    @GetMapping(value = "/appeal/application-cessation-list/{type}/{status}/{licId}")
-    FeignResponseEntity<AppCessMiscDto> getCessationByLicId(@PathVariable(name = "type") String type, @PathVariable(name = "status") String status, @PathVariable(name = "licId") String licId);
+    @PostMapping(value = "/appeal/application-cessation-list",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity <List<AppCessLicDto>> getCessationByLicIds(@RequestBody List<String> licIds);
 }

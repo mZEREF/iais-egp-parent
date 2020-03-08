@@ -77,14 +77,34 @@ public class CessationServiceImpl implements CessationService {
     }
 
     @Override
-    public List<AppCessationDto> getCessationByIds(List<String> licIds) {
-        List<AppCessationDto> appCessationDtos = new ArrayList<>();
-        String type = ApplicationConsts.APPLICATION_TYPE_CESSATION;
-        String status = ApplicationConsts.APPLICATION_STATUS_CESSATION_PENDING_APPROVE;
-        for(String licId :licIds){
-            AppCessMiscDto appCessMiscDto = cessationClient.getCessationByLicId(type, status, licId).getEntity();
+    public List<AppCessLicDto> getOldCessationByIds(List<String> licIds) {
+        List<AppCessLicDto> appCessLicDtos = cessationClient.getCessationByLicIds(licIds).getEntity();
+        if(appCessLicDtos!=null&&!appCessLicDtos.isEmpty()){
+            for(AppCessLicDto appCessLicDto :appCessLicDtos){
+                String licenceId = appCessLicDto.getLicenceId();
+                LicenceDto licenceDto = licenceClient.getLicBylicId(licenceId).getEntity();
+                List<PremisesDto> premisesDtos = licenceClient.getPremisesDto(licenceId).getEntity();
+                String svcName = licenceDto.getSvcName();
+                String licenceNo = licenceDto.getLicenceNo();
+                appCessLicDto.setLicenceNo(licenceNo);
+                appCessLicDto.setSvcName(svcName);
+                String hciName = null;
+                String hciAddress = null;
+                if (premisesDtos != null && !premisesDtos.isEmpty()) {
+                    for (PremisesDto premisesDto : premisesDtos) {
+                         hciName = premisesDto.getHciName();
+                         hciAddress = premisesDto.getHciName() + "/" + premisesDto.getStreetName() + " " + premisesDto.getUnitNo() + "," + premisesDto.getBuildingName() +
+                                " " + premisesDto.getBlkNo() + ",#" + premisesDto.getFloorNo() + "Singapore " + premisesDto.getPostalCode();
+                    }
+                    List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
+                    for(AppCessHciDto appCessHciDto :appCessHciDtos){
+                        appCessHciDto.setHciName(hciName);
+                        appCessHciDto.setHciAddress(hciAddress);
+                    }
+                }
+            }
         }
-        return appCessationDtos;
+        return appCessLicDtos;
     }
 
     @Override
@@ -187,7 +207,7 @@ public class CessationServiceImpl implements CessationService {
         applicationGroupDto.setDeclStmt("N");
         applicationGroupDto.setSubmitBy("C55C9E62-750B-EA11-BE7D-000C29F371DC");
         applicationGroupDto.setAppType(appType);
-        //applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+        applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         return applicationGroupDto;
 
     }
