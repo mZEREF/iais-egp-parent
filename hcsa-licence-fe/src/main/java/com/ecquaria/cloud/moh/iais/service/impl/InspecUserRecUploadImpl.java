@@ -179,6 +179,8 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                 for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtos){
                     appPremisesPreInspectionNcItemDto.setPreNcId(appPremPreInspectionNcDto.getId());
                     appPremisesPreInspectionNcItemDto.setId(null);
+                    appPremisesPreInspectionNcItemDto.setIsRecitfied(0);
+                    appPremisesPreInspectionNcItemDto.setFeRectifiedFlag(0);
                     appPremisesPreInspectionNcItemDto.setAuditTrailDto(auditTrailDto);
                     appPremisesPreInspectionNcItemDto = applicationClient.createAppNcItemDto(appPremisesPreInspectionNcItemDto).getEntity();
                     if(appPremisesPreInspectionNcItemDto.getItemId().equals(inspecUserRecUploadDto.getItemId())){
