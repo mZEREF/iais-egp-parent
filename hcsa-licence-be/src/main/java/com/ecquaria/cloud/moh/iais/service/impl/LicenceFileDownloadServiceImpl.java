@@ -422,11 +422,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 List<ApplicationDto> list = this.listApplication();
                 this. requestForInfList(requestForInfList);
 
-
                 listApplicationDto.addAll(list);
-
-
-
+                
             }
 
         }catch (Exception e){

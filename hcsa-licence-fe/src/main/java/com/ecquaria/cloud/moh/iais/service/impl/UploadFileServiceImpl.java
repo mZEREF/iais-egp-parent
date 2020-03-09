@@ -363,9 +363,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 
 
         List<ApplicationListFileDto> applicationListFileDtoList=new ArrayList<>();
-        Set<ApplicationGroupDto> applicationGroupDtoSet=new HashSet<>();
-        applicationGroupDtoSet.addAll(applicationGroup);
-        for(ApplicationGroupDto every :applicationGroupDtoSet){
+
+        for(ApplicationGroupDto every :applicationGroup){
 
             Set<String > appGrpIds=new HashSet<>();
             Set<String> appGrpPersonIds=new HashSet<>();
@@ -376,65 +375,50 @@ public class UploadFileServiceImpl implements UploadFileService {
             ApplicationListFileDto applicationListFileDto=new ApplicationListFileDto();
             List<ApplicationGroupDto> groupDtos=new ArrayList<>();
             List<ApplicationDto> applicationDtos=new ArrayList<>();
-            Set<ApplicationDto> applicationDtoSet=new HashSet<>();
 
             List<AppGrpPremisesEntityDto> appGrpPremisesDtos=new ArrayList<>();
-            Set<AppGrpPremisesEntityDto> appliGrpPremisesDtoSet=new HashSet<>();
 
             List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos=new ArrayList<>();
-            Set<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoSet =new HashSet<>();
 
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=new ArrayList<>();
-            Set<AppPremisesCorrelationDto> appPremisesCorrelationDtoSet =new HashSet<>();
 
             List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos=new ArrayList<>();
-            Set<AppSvcPremisesScopeDto> appSvcPremisesScopeDtoSet =new HashSet<>();
 
             List<AppGrpPersonnelDto> appGrpPersonnelDtos=new ArrayList<>();
-            Set<AppGrpPersonnelDto> appGrpPersonnelDtoSet =new HashSet<>();
 
             List<AppGrpPersonnelExtDto> appGrpPersonnelExtDtos=new ArrayList<>();
-            Set<AppGrpPersonnelExtDto> appGrpPersonnelExtDtoSet=new HashSet<>();
 
             List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos=new ArrayList<>();
-            Set<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtoSet=new HashSet<>();
+
 
             List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos=new ArrayList<>();
-            Set<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtoSet=new HashSet<>();
 
             List<AppSvcPersonnelDto >  appSvcPersonnelDtos=new ArrayList<>();
-            Set<AppSvcPersonnelDto> appSvcPersonnelDtoSet =new HashSet<>();
 
             List<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklDtos=new ArrayList<>();
-            Set<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklDtoSet =new HashSet<>();
 
             List<AppSvcDocDto> appSvcDocDtos=new ArrayList<>();
-            Set<AppSvcDocDto> appSvcDocDtoSet=new HashSet<>();
 
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtoList=new ArrayList<>();
-            Set<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtoSet=new HashSet<>();
 
             List<AppPremiseMiscDto> appPremiseMiscDtoList=new ArrayList<>();
-            Set<AppPremiseMiscDto> appPremiseMiscDtoSet=new HashSet<>();
 
             List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList=new ArrayList<>();
-            Set<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoSet=new HashSet<>();
 
             List<AppEditSelectDto> appEditSelectDtos=new ArrayList<>();
-            Set<AppEditSelectDto> appEditSelectDtoSet=new HashSet<>();
 
             groupDtos.add(every);
             String groupId = every.getId();
             for(AppGrpPremisesEntityDto appliGrpPremisesDto:appGrpPremises){
                 String grpPremisesDtoAppGrpId = appliGrpPremisesDto.getAppGrpId();
                 if(groupId.equals(grpPremisesDtoAppGrpId)){
-                    appliGrpPremisesDtoSet.add(appliGrpPremisesDto);
+                    appGrpPremisesDtos.add(appliGrpPremisesDto);
                     appGrpIds.add(appliGrpPremisesDto.getId());
                     String appliGrpPremisesDtoId = appliGrpPremisesDto.getId();
                     for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto :appPremPhOpenPeriodDtos){
                         String premId = appPremPhOpenPeriodDto.getPremId();
                         if(appliGrpPremisesDtoId.equals(premId)){
-                            appPremPhOpenPeriodDtoSet.add(appPremPhOpenPeriodDto);
+                            appPremPhOpenPeriodDtos.add(appPremPhOpenPeriodDto);
                         }
 
                     }
@@ -443,13 +427,13 @@ public class UploadFileServiceImpl implements UploadFileService {
             for (AppGrpPersonnelDto appGrpPersonnelDto:appGrpPersonnel){
                 String appGrpId = appGrpPersonnelDto.getAppGrpId();
                 if(groupId.equals(appGrpId)){
-                    appGrpPersonnelDtoSet.add(appGrpPersonnelDto);
+                    appGrpPersonnelDtos.add(appGrpPersonnelDto);
                     String appGrpPersonnelDtoId = appGrpPersonnelDto.getId();
                     appGrpPersonIds.add(appGrpPersonnelDtoId);
                     for(AppGrpPersonnelExtDto appGrpPersonnelExtDto: appGrpPersonnelExt){
                         String appGrpPsnId = appGrpPersonnelExtDto.getAppGrpPsnId();
                         if(appGrpPersonnelDtoId.equals(appGrpPsnId)){
-                            appGrpPersonnelExtDtoSet.add(appGrpPersonnelExtDto);
+                            appGrpPersonnelExtDtos.add(appGrpPersonnelExtDto);
                             appGrpPersonExtIds.add(appGrpPersonnelExtDto.getId());
                         }
 
@@ -461,19 +445,19 @@ public class UploadFileServiceImpl implements UploadFileService {
                 String applicationDtoId = applicationDto.getId();
                 String appGrpId = applicationDto.getAppGrpId();
                 if(groupId.equals(appGrpId)){
-                    applicationDtoSet.add(applicationDto);
+                    applicationDtos.add(applicationDto);
                     for(AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelation){
                         String applicationId = appPremisesCorrelationDto.getApplicationId();
                         String appGrpPremId = appPremisesCorrelationDto.getAppGrpPremId();
                         String premisesCorrelationDtoId = appPremisesCorrelationDto.getId();
 
                         if(applicationDtoId.equals(applicationId) && appGrpIds.contains(appGrpPremId)){
-                            appPremisesCorrelationDtoSet.add(appPremisesCorrelationDto);
+                            appPremisesCorrelationDtos.add(appPremisesCorrelationDto);
                             for (AppSvcPremisesScopeDto appSvcPremisesScopeDto:appSvcPremisesScope){
                                 String appPremCorreId = appSvcPremisesScopeDto.getAppPremCorreId();
 
                                 if(premisesCorrelationDtoId.equals(appPremCorreId)){
-                                    appSvcPremisesScopeDtoSet.add(appSvcPremisesScopeDto);
+                                    appSvcPremisesScopeDtos.add(appSvcPremisesScopeDto);
                                     appSvcPremisesScopeIds.add(appSvcPremisesScopeDto.getId());
                                 }
 
@@ -482,7 +466,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                             for (AppPremisesSelfDeclChklDto appPremisesSelfDeclChklDto :appPremisesSelfDeclChklEntity){
                                 String appPremCorreId = appPremisesSelfDeclChklDto.getAppPremCorreId();
                                 if(premisesCorrelationDtoId.equals(appPremCorreId)){
-                                    appPremisesSelfDeclChklDtoSet.add(appPremisesSelfDeclChklDto);
+                                    appPremisesSelfDeclChklDtos.add(appPremisesSelfDeclChklDto);
 
                                 }
                             }
@@ -490,7 +474,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                             for(AppSvcDocDto appSvcDocDto:appSvcDoc){
                                 String appPremCorreId = appSvcDocDto.getAppPremCorreId();
                                 if(premisesCorrelationDtoId.equals(appPremCorreId)){
-                                    appSvcDocDtoSet.add(appSvcDocDto);
+                                    appSvcDocDtos.add(appSvcDocDto);
                                 }
 
                             }
@@ -498,14 +482,14 @@ public class UploadFileServiceImpl implements UploadFileService {
                             for(AppPremiseMiscDto appPremiseMiscDto:appPremiseMiscEntities){
                                 String appPremCorreId = appPremiseMiscDto.getAppPremCorreId();
                                 if(premisesCorrelationDtoId.equals(appPremCorreId)){
-                                    appPremiseMiscDtoSet.add(appPremiseMiscDto);
+                                    appPremiseMiscDtoList.add(appPremiseMiscDto);
                                 }
                             }
 
                             for(AppPremisesSpecialDocDto appPremisesSpecialDocDto:appPremisesSpecialDocEntities){
                                 String appPremCorreId = appPremisesSpecialDocDto.getAppPremCorreId();
                                 if(premisesCorrelationDtoId.equals(appPremCorreId)){
-                                    appPremisesSpecialDocDtoSet.add(appPremisesSpecialDocDto);
+                                    appPremisesSpecialDocDtoList.add(appPremisesSpecialDocDto);
                                 }
                             }
                         }
@@ -515,7 +499,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                         String applicationId = appSvcKeyPersonnelDto.getApplicationId();
                         String appGrpPsnId = appSvcKeyPersonnelDto.getAppGrpPsnId();
                         if(applicationDtoId.equals(applicationId) &&appGrpPersonIds.contains(appGrpPsnId)){
-                            appSvcKeyPersonnelDtoSet.add(appSvcKeyPersonnelDto);
+                            appSvcKeyPersonnelDtos.add(appSvcKeyPersonnelDto);
                             appSvcKeyPersonIds.add(appSvcKeyPersonnelDto.getId());
                         }
 
@@ -526,14 +510,14 @@ public class UploadFileServiceImpl implements UploadFileService {
                         String appSvcPremScopeId = appSvcPremisesScopeAllocationDto.getAppSvcPremScopeId();
                         if(applicationDtoId.equals(applicationId)&&appSvcKeyPersonIds.contains(appSvcKeyPsnId)
                                 &&appSvcPremisesScopeIds.contains(appSvcPremScopeId)){
-                            appSvcPremisesScopeAllocationDtoSet.add(appSvcPremisesScopeAllocationDto);
+                            appSvcPremisesScopeAllocationDtos.add(appSvcPremisesScopeAllocationDto);
 
                         }
                     }
                     for(AppSvcPersonnelDto appSvcPersonnelDto:appSvcPersonnel){
                         String applicationId = appSvcPersonnelDto.getApplicationId();
                         if(applicationDtoId.equals(applicationId)){
-                            appSvcPersonnelDtoSet.add(appSvcPersonnelDto);
+                            appSvcPersonnelDtos.add(appSvcPersonnelDto);
 
                         }
                     }
@@ -542,7 +526,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                             String applicationId = appEditSelectDto.getApplicationId();
                             String editType = appEditSelectDto.getEditType();
                             if(applicationDto.getId().equals(applicationId)&&ApplicationConsts.APPLICATION_EDIT_TYPE_RFC.equals(editType)){
-                                appEditSelectDtoSet.add(appEditSelectDto);
+                                appEditSelectDtos.add(appEditSelectDto);
 
                             }
                         }
@@ -556,28 +540,10 @@ public class UploadFileServiceImpl implements UploadFileService {
             for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDoc){
                 String appGrpId = appGrpPrimaryDocDto.getAppGrpId();
                 if(groupId.equals(appGrpId)){
-                    appGrpPrimaryDocDtoSet.add(appGrpPrimaryDocDto);
+                    appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
 
                 }
             }
-
-
-            applicationDtos.addAll(applicationDtoSet);
-            appGrpPremisesDtos.addAll(appliGrpPremisesDtoSet);
-            appGrpPrimaryDocDtos.addAll(appGrpPrimaryDocDtoSet);
-            appPremisesCorrelationDtos.addAll(appPremisesCorrelationDtoSet);
-            appSvcPremisesScopeDtos.addAll(appSvcPremisesScopeDtoSet);
-            appGrpPersonnelDtos.addAll(appGrpPersonnelDtoSet);
-            appGrpPersonnelExtDtos.addAll(appGrpPersonnelExtDtoSet);
-            appSvcKeyPersonnelDtos.addAll(appSvcKeyPersonnelDtoSet);
-            appSvcPremisesScopeAllocationDtos.addAll(appSvcPremisesScopeAllocationDtoSet);
-            appSvcPersonnelDtos.addAll(appSvcPersonnelDtoSet);
-            appPremisesSelfDeclChklDtos.addAll(appPremisesSelfDeclChklDtoSet);
-            appSvcDocDtos.addAll(appSvcDocDtoSet);
-            appPremPhOpenPeriodDtoList.addAll(appPremPhOpenPeriodDtoSet);
-            appPremiseMiscDtoList.addAll(appPremiseMiscDtoSet);
-            appPremisesSpecialDocDtoList.addAll(appPremisesSpecialDocDtoSet);
-            appEditSelectDtos.addAll(appEditSelectDtoSet);
 
             applicationListFileDto.setApplicationGroup(groupDtos);
             applicationListFileDto.setApplication( applicationDtos);
