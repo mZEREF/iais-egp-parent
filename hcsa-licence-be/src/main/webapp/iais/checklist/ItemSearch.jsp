@@ -139,7 +139,7 @@
                                 <button type="button" class="btn btn-default btn-sm"
                                         onclick="javascript:prepareEditItem('${item.itemId}');">Edit
                                 </button>
-                                  <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" data-target="#DeleteTemplateModal" >Disable</button>
+                                  <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" data-target="#DeleteTemplateModal" >Delete</button>
 
                                   <div class="modal fade" id="DeleteTemplateModal" tabindex="-1" role="dialog" aria-labelledby="DeleteTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                                     <div class="modal-dialog" role="document">
