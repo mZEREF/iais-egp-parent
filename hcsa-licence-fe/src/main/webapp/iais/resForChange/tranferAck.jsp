@@ -20,11 +20,13 @@
                 <br>
                 <br>
                 <br>
-                <h2>Tranfer Success!</h2>
+                <h2>Tranfer Success!${tranferPayment.appGrpNo}</h2>
                 <br>
                 <br>
                 <br>
             </div>
+            <div align="left"><span><a href="/main-web/eservice/INTRANET/MohBackendInbox">Back</a></span></div>
+
         </div>
     </div>
 </form>

@@ -4,11 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -312,7 +308,33 @@ public class RequestForChangeDelegator {
                 FeeDto feeDto=appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
                 Double amount=feeDto.getTotal();
                 appSubmissionDto.setAmount(amount);
-                appSubmissionDto.setIsNeedNewLicNo("1");
+                String[] selectCheakboxs=ParamUtil.getStrings(bpc.request,"premisesInput");
+                int a=selectCheakboxs.length;
+                int b=appSubmissionDto.getAppGrpPremisesDtoList().size();
+                if(a==b){
+                    appSubmissionDto.setIsNeedNewLicNo("0");
+                    for (AppGrpPremisesDto e:appSubmissionDto.getAppGrpPremisesDtoList()
+                         ) {
+                        e.setNeedNewLicNo(false);
+                        e.setGroupLicenceFlag("1");
+                    }
+                }else {
+                    appSubmissionDto.setIsNeedNewLicNo("1");
+                    for (int i = 0; i < selectCheakboxs.length; i++) {
+                        String selectInput=selectCheakboxs[i];
+                        for (AppGrpPremisesDto e:appSubmissionDto.getAppGrpPremisesDtoList()
+                             ) {
+                            String premise=e.getPremisesIndexNo();
+                            if(premise.equals(selectInput)){
+                                e.setNeedNewLicNo(true);
+                                e.setGroupLicenceFlag("1");
+                            }else{
+                                e.setNeedNewLicNo(false);
+                                e.setGroupLicenceFlag("2");
+                            }
+                        }
+                    }
+                }
                 String grpNo=appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                 appSubmissionDto.setAppGrpNo(grpNo);
                 List<String> names=new ArrayList<>();
@@ -325,8 +347,24 @@ public class RequestForChangeDelegator {
                 NewApplicationHelper.setSubmissionDtoSvcData(bpc.request,appSubmissionDto);
                 appSubmissionService.setRiskToDto(appSubmissionDto);
                 requestForChangeService.submitChange(appSubmissionDto);
+
             }
+        ParamUtil.setRequestAttr(bpc.request, "tranferPayment", appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do tranfer end ....111111111111111"));
+    }
+
+
+    /**
+     * @param bpc
+     * @Decription submitPayment
+     */
+    public void submitPayment(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do submitPayment start ....111111111111111"));
+        AppSubmissionDto appSubmissionDto=(AppSubmissionDto) ParamUtil.getRequestAttr(bpc.request, "tranferPayment");
+
+        ParamUtil.setRequestAttr(bpc.request, "tranferPayment", appSubmissionDto);
+        log.debug(StringUtil.changeForLog("the do submitPayment end ....111111111111111"));
+
     }
 
     private boolean iftranfer(String UNID,String licenceId,String pageType){

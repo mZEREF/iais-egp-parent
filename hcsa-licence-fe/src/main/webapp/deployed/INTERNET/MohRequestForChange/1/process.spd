@@ -1,117 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohRequestForChange" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
- <WebServices/>
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="25" minorVersion="0" name="MohRequestForChange" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="130" y="50">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0" />
    </OnStepProcess>
   </StartStep>
   <AutomaticStep defClass="" executor="" icon="" name="prepare" x="250" y="50">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepare_OnStepProcess_0" name="prepare_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepare_OnStepProcess_0" name="prepare_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="doChoose" x="400" y="140">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doChoose_OnStepProcess_0" name="doChoose_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doChoose_OnStepProcess_0" name="doChoose_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="jump" x="410" y="240">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="jump_OnStepProcess_0" name="jump_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="jump_OnStepProcess_0" name="jump_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="compareChangePercentage" x="550" y="580">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="step2_OnStepProcess_0" name="step2_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="step2_OnStepProcess_0" name="step2_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="MohNewApplication" processname="MohNewApplication" project="INTERNET" version="-1" x="240" y="710">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <AutomaticStep defClass="" executor="" icon="" name="doFirstView" x="140" y="580">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doChooseInfo_OnStepProcess_0" name="doChooseInfo_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doChooseInfo_OnStepProcess_0" name="doChooseInfo_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="prepareFirstView" x="230" y="420">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareAmend_OnStepProcess_0" name="prepareAmend_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareAmend_OnStepProcess_0" name="prepareAmend_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="doBack" x="160" y="710">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="step3_OnStepProcess_0" name="step3_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="step3_OnStepProcess_0" name="step3_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="prepareTranfer" x="490" y="420">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="step2_OnStepProcess_1" name="step2_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="step2_OnStepProcess_1" name="step2_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="prepareDraft" x="550" y="250">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareDraft_OnStepProcess_0" name="prepareDraft_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareDraft_OnStepProcess_0" name="prepareDraft_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="payment" x="710" y="670">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="payment_OnStepProcess_0" name="payment_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="chooseAmendPage" stageIndicator="" x="370" y="50">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="tranferAck" stageIndicator="" x="710" y="670">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="tranferAck" stageIndicator="" x="790" y="670">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="firstView" stageIndicator="" x="140" y="480">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="tranferPage" stageIndicator="" x="560" y="490">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ack" stageIndicator="" x="410" y="540">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="tranferPayment" stageIndicator="" x="600" y="670">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
  </Pages>
- <Forms/>
+ <Forms />
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Step1" style="rectanular">
    <position>{(150,70)(270,70)}</position>
@@ -130,9 +143,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(430,370)(263,372)(270,70)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/tranferAck" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/compareChangePercentage" style="oblique">
-   <position>{(570,600)(730,690)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doFirstView" linkstyle="Direct" name="" sourceName="/Pages/WebPage/firstView" style="oblique">
    <position>{(160,500)(160,600)}</position>
@@ -176,28 +186,37 @@
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareDraft" style="oblique">
    <position>{(570,270)(430,370)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/tranferPayment" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/compareChangePercentage" style="rectanular">
+   <position>{(570,600)(620,690)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/payment" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/tranferPayment" style="rectanular">
+   <position>{(620,690)(730,690)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/tranferAck" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/payment" style="rectanular">
+   <position>{(730,690)(810,690)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/prepareFirstView" componentIfTrue="/Steps/InvokeStep/MohNewApplication" defClass="" executor="" icon="" leftOperand="isSuccess" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="290" y="590">
-   <Description/>
+   <Description />
   </Condition>
  </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_form" name="Switch1" x="410" y="350">
-   <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/prepare" value="&quot;prepare&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/prepareFirstView" value="&quot;doAmend&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/prepareTranfer" value="&quot;doTranfer&quot;"/>
-   <SwitchCase component="/Pages/WebPage/ack" value="&quot;error&quot;"/>
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/prepare" value="&quot;prepare&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/prepareFirstView" value="&quot;doAmend&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/prepareTranfer" value="&quot;doTranfer&quot;" />
+   <SwitchCase component="/Pages/WebPage/ack" value="&quot;error&quot;" />
   </Switch>
  </Switches>
- <Branches/>
+ <Branches />
  <Merges>
   <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="10" y="700">
-   <Description/>
+   <Description />
   </Merge>
  </Merges>
- <StudioLabels/>
- <StageIndicator/>
- <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
 </Application>
