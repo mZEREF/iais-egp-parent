@@ -61,11 +61,11 @@
                                                         <c:forEach items="${renewDto.appSubmissionDtos}"
                                                                    var="appSubmissionDtos">
                                                         <tr>
-                                                            <td>${appSubmissionDtoList}</td>
-                                                            <td>${appSubmissionDtoList.appType}</td>
-                                                            <td></td>
-                                                            <td>${appSubmissionDtoList.licStartDate}</td>
-                                                            <td>${appSubmissionDtoList.licExpiryDate}</td>
+                                                            <td>${appSubmissionDtos.licenceNo}</td>
+                                                            <td>${appSubmissionDtos.serviceName}</td>
+                                                            <td><c:forEach items="${appSubmissionDtos.appGrpPremisesDtoList}" var="appGrpPremisesDtoList"><span>${appGrpPremisesDtoList.address}</span><br/></c:forEach></td>
+                                                            <td>${appSubmissionDtos.licStartDate}</td>
+                                                            <td>${appSubmissionDtos.licExpiryDate}</td>
                                                         </tr>
                                                         </c:forEach>
                                                         </tbody>
@@ -73,9 +73,11 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div>
-                                            <span><a>&lt Back</a></span>
-                                            <input class="button" value="Proceed" align="center">
+                                        <div class="col-xs-12 col-md-4">
+                                            <a class="back" href="https://egp.sit.inter.iais.com/hcsa-licence-web/eservice/INTERNET/MohRequestForChange?licenceId=${prepareTranfer.licenceId}"><em class="fa fa-angle-left"></em> Back</a>
+                                        </div>
+                                        <div class="col-xs-12 col-md-3">
+                                            <a class="btn btn-primary next premiseId" id="Next">Proceed</a>
                                         </div>
                                     </div>
                                 </div>
@@ -83,7 +85,7 @@
                                 <div class="tab-pane active" id="tabLicRe" role="tabpanel">
                                     <c:forEach items="${renewDto.appSubmissionDtos}"
                                                var="appSubmissionDtos">
-                                        <h3>Clinical Laboratory;Licence No${appSubmissionDtos.}</h3>
+                                        <h3>Clinical Laboratory;Licence No${appSubmissionDtos.licenceNo}</h3>
                                     </c:forEach>
                                 </div>
 
@@ -114,7 +116,7 @@
                                                             <c:forEach var="svc" items="${appSubmissionDtos.appSvcRelatedInfoDtoList}">
                                                                 <tr>
                                                                     <td>
-                                                                        <p><c:out value="${svc.serviceName}"></c:out></p>
+                                                                        <p><c:out value="${AppSubmissionDto.serviceName}"></c:out></p>
                                                                     </td>
                                                                     <td>
                                                                         <p>Amendment</p>

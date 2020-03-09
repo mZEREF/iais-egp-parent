@@ -45,10 +45,19 @@ public class WithOutRenewalDelegator {
     public void prepare(BaseProcessClass bpc)throws Exception{
         log.info("**** the  auto renwal  prepare start  ******");
 //      String  licenceId = ParamUtil.getString(bpc.request,"licNo");
-        String licenceId="7ECAE165-534A-EA11-BE7F-000C29F371DC";
-        AppSubmissionDto appSubmissionDto=appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
+        String licenceId1="4083B3AD-B04D-EA11-BE7F-000C29F371DC";
+        String licenceId2="4083B3AD-B04D-EA11-BE7F-000C29F371DC";
         List<AppSubmissionDto> appSubmissionDtoList=new ArrayList<>();
-        appSubmissionDtoList.add(appSubmissionDto);
+        List<String> licenceIds=new ArrayList<>();
+        licenceIds.add(licenceId1);
+        licenceIds.add(licenceId2);
+        for (String licenceId:licenceIds
+             ) {
+            AppSubmissionDto appSubmissionDto=appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
+            String serviceName=appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
+            appSubmissionDto.setServiceName(serviceName);
+            appSubmissionDtoList.add(appSubmissionDto);
+        }
         RenewDto renewDto=new RenewDto();
         renewDto.setAppSubmissionDtos(appSubmissionDtoList);
         ParamUtil.setSessionAttr(bpc.request,"renewDto", renewDto);
