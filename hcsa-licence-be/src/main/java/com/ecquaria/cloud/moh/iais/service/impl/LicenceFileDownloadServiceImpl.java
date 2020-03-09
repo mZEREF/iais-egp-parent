@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
@@ -85,10 +86,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadService {
     @Value("${iais.syncFileTracking.shared.path}")
     private     String sharedPath;
-    private     String download;
-    private     String backups;
-    private     String fileFormat=".text";
-    private     String compressPath;
 
 
     @Value("${iais.hmac.keyId}")
@@ -119,14 +116,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     @Override
     public boolean compress() throws Exception{
         log.info("-------------compress start ---------");
-        if(new File(backups).isDirectory()){
-            File[] files = new File(backups).listFiles();
+        if(new File(sharedPath+File.separator+AppServicesConsts.BACKUPS+File.separator).isDirectory()){
+            File[] files = new File(sharedPath+File.separator+AppServicesConsts.BACKUPS+File.separator).listFiles();
             for(File fil:files){
-                if(fil.getName().endsWith(".zip")){
+                if(fil.getName().endsWith(AppServicesConsts.ZIP_NAME)){
 
                     String name = fil.getName();
                     String path = fil.getPath();
-                    String relPath="backups"+File.separator+name;
+                    String relPath= AppServicesConsts.BACKUPS+File.separator+name;
                     HashMap<String,String> map=new HashMap<>();
                     map.put("fileName",name);
                     map.put("filePath",relPath);
@@ -206,22 +203,19 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     @Override
     public void initPath() {
-        download= sharedPath+File.separator+"compress"+File.separator+"folder";
-        backups=sharedPath+File.separator+"backups"+File.separator;
-        compressPath=sharedPath+File.separator+"compress";
 
-        File file =new File(download);
-        File b=new File(backups);
-        File c=new File(compressPath);
-        if(!c.exists()){
-            c.mkdirs();
+        File compress =new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+AppServicesConsts.FILE_NAME);
+        File backups=new File(sharedPath+File.separator+AppServicesConsts.BACKUPS+File.separator);
+        File compressPath=new File(sharedPath+File.separator+AppServicesConsts.COMPRESS);
+        if(!compressPath.exists()){
+            compressPath.mkdirs();
         }
-        if(!b.exists()){
-            b.mkdirs();
+        if(!backups.exists()){
+            backups.mkdirs();
         }
 
-        if(!file.exists()){
-            file.mkdirs();
+        if(!compress.exists()){
+            compress.mkdirs();
         }
 
     }
@@ -231,14 +225,16 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         Boolean flag=false;
 
-            File file =new File(compressPath+File.separator+fileName+File.separator+groupPath+File.separator+"folder"+File.separator+groupPath);
+            File file =new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+
+                    File.separator+groupPath+File.separator+AppServicesConsts.FILE_NAME+File.separator+groupPath);
+            log.info(file.getPath()+"**********************");
             if(!file.exists()){
                 file.mkdirs();
             }
             if(file.isDirectory()){
                 File[] files = file.listFiles();
                 for(File  filzz:files){
-                    if(filzz.isFile() &&filzz.getName().endsWith(fileFormat)){
+                    if(filzz.isFile() &&filzz.getName().endsWith(AppServicesConsts.FILE_FORMAT)){
                         try (  FileInputStream  fileInputStream =new FileInputStream(filzz);
                                 ByteArrayOutputStream by=new ByteArrayOutputStream();) {
 
@@ -297,11 +293,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 if(!zipEntry.getName().endsWith(File.separator)){
 
                     String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
-                    File file =new File(compressPath+File.separator+fileName+File.separator+groupPath+File.separator+substring);
+                    File file =new File( sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring);
                     if(!file.exists()){
                         file.mkdirs();
                     }
-                    os=new FileOutputStream(compressPath+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName());
+                    os=new FileOutputStream(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName());
                     bos=new BufferedOutputStream(os);
                     InputStream is=zipFile.getInputStream(zipEntry);
                     bis=new BufferedInputStream(is);
@@ -316,7 +312,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                 }else {
 
-                    new File(compressPath+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName()).mkdirs();
+                    new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName()).mkdirs();
                 }
             }catch (IOException e){
 
@@ -447,7 +443,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     * save file to fileRepro*/
     private void saveFileRepo(String fileNames,String groupPath){
         boolean aBoolean=false;
-        File file =new File(compressPath+File.separator+fileNames+File.separator+groupPath+File.separator+"folder"+File.separator+"files");
+        File file =new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileNames+File.separator+groupPath+File.separator+"folder"+File.separator+"files");
         if(!file.exists()){
             file.mkdirs();
         }
@@ -483,7 +479,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         fileRepoDto.setId(split[0]);
                         fileRepoDto.setAuditTrailDto(intranet);
                         fileRepoDto.setFileName(fileName.toString());
-                        fileRepoDto.setRelativePath(compressPath+File.separator+fileNames+File.separator+"folder"+File.separator+"files");
+                        fileRepoDto.setRelativePath(sharedPath+File.separator+AppServicesConsts.COMPRESS
+                                +File.separator+fileNames+File.separator+AppServicesConsts.FILE_NAME+File.separator+AppServicesConsts.FILES);
                         aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
 
                         if(aBoolean){

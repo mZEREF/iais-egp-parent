@@ -34,7 +34,6 @@ public class LicenceFileDownloadDelegator {
 
     public  void prepareData(BaseProcessClass bpc) throws Exception {
          logAbout("preparetionData");
-        licenceFileDownloadService.initPath();
 
         licenceFileDownloadService.compress();
 
