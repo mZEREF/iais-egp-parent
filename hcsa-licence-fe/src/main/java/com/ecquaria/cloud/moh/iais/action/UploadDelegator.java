@@ -41,13 +41,13 @@ public class UploadDelegator {
         for(ApplicationListFileDto applicationListFileDto :parse){
             String s = JsonUtil.parseToJson(applicationListFileDto);
             uploadFileService. getRelatedDocuments(s);
-            boolean saveFileSuccess = uploadFileService.saveFile(s);
-            if(!saveFileSuccess){
+            String grpId = uploadFileService.saveFile(s);
+            if(StringUtil.isEmpty(grpId)){
                 continue;
             }
             log.info("------------------- saveFile  end --------------");
-            String compressFileName = uploadFileService.compressFile();
-            boolean rename = uploadFileService.renameAndSave(compressFileName);
+            String compressFileName = uploadFileService.compressFile(grpId);
+            boolean rename = uploadFileService.renameAndSave(compressFileName,grpId);
             log.info("------------------- compressFile  end --------------");
             try {
                 if(rename){

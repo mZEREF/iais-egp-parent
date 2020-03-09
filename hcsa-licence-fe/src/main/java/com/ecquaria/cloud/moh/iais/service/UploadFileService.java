@@ -10,14 +10,14 @@ import java.util.List;
  * @date 2019/11/6 20:55
  */
 public interface UploadFileService {
-    boolean saveFile(String  str);
+    String saveFile(String  str);
     String getData();
     String  changeStatus(ApplicationListFileDto applicationListDto);
-    String compressFile();
+    String compressFile(String grpId);
 
     List<ApplicationListFileDto> parse(String data);
 
     void  getRelatedDocuments(String entity);
     void initFilePath();
-    boolean renameAndSave(String file);
+    boolean renameAndSave(String file,String groupId);
 }

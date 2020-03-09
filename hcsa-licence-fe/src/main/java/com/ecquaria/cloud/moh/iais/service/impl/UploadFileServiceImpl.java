@@ -68,8 +68,6 @@ public class UploadFileServiceImpl implements UploadFileService {
     private String fileFormat = ".text";
     private String backups;
 
-    private String groupId;
-    private Boolean flag=true;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -89,19 +87,19 @@ public class UploadFileServiceImpl implements UploadFileService {
 
 
     @Override
-    public boolean saveFile(String  str) {
+    public String saveFile(String  str) {
         List<ApplicationListFileDto> parse = parse(str);
         if(parse.isEmpty()){
-           return false;
+           return null;
         }
         ApplicationListFileDto applicationListFileDto = parse.get(0);
         List<ApplicationGroupDto> applicationGroup = applicationListFileDto.getApplicationGroup();
         List<AppPremisesCorrelationDto> appPremisesCorrelation = applicationListFileDto.getAppPremisesCorrelation();
         if(appPremisesCorrelation.isEmpty()){
             log.info("appPremisesCorrelation is empty data is not ");
-            return false;
+            return null;
         }
-        groupId="";
+      String  groupId="";
         String s = FileUtil.genMd5FileChecksum(str.getBytes());
         if(!applicationGroup.isEmpty()){
              groupId = applicationGroup.get(0).getId();
@@ -127,9 +125,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 
         } catch (Exception e) {
             log.error(e.getMessage(),e);
-            return false;
+            return null;
         }
-        return true;
+        return groupId;
     }
 
     @Override
@@ -142,7 +140,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     @Override
     public String  changeStatus(ApplicationListFileDto applicationListDto) {
-        if(flag){
+
             List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
             Map<String,List<String>> map =new HashMap<>();
             List<String> oldStatus=new ArrayList<>();
@@ -159,13 +157,13 @@ public class UploadFileServiceImpl implements UploadFileService {
             map.put("newStatus",newStatus);
             map.put("groupIds",groupIds);
              applicationClient.updateStatus(map).getEntity();
-         }
+
 
         return "";
     }
     @Override
-    public String compressFile(){
-        String compress = compress();
+    public String compressFile(String grpId){
+        String compress = compress(grpId);
         log.info("-------------compress() end --------------");
         return compress;
     }
@@ -174,7 +172,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 *
 *
 * file id */
-    private void appSvcDoc( List<AppSvcDocDto> appSvcDoc, List<AppGrpPrimaryDocDto> appGrpPrimaryDoc,List<AppPremisesSpecialDocDto> appPremisesSpecialDocEntities){
+    private void appSvcDoc( List<AppSvcDocDto> appSvcDoc, List<AppGrpPrimaryDocDto> appGrpPrimaryDoc,List<AppPremisesSpecialDocDto> appPremisesSpecialDocEntities,String groupId){
         //if path is not exists create path
         File fileRepPath=new File(download+File.separator+groupId+File.separator+"files");
         if(!fileRepPath.exists()){
@@ -223,7 +221,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         }
     }
 
-    private String compress(){
+    private String compress(String groupId){
         log.info("------------ start compress() -----------------------");
         long l=   System.currentTimeMillis();
         try (OutputStream is=new FileOutputStream(backups+File.separator+ l+".zip");
@@ -270,9 +268,9 @@ public class UploadFileServiceImpl implements UploadFileService {
     }
 
     @Override
-    public boolean renameAndSave(String fileNamesss)  {
+    public boolean renameAndSave(String fileNamesss,String groupId)  {
         log.info("--------------rename start ---------------------");
-        flag = true;
+        boolean flag = true;
         File zipFile =new File(backups);
         MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
@@ -298,7 +296,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                    File curFile = MiscUtil.generateFile(backups, s + ".zip");
                    file.renameTo(curFile);
                    log.info("----------- new zip file name is"+backups+File.separator+s+".zip");
-                   String s1 = saveFileName(s+".zip","backups" + File.separator+s+".zip");
+                   String s1 = saveFileName(s+".zip","backups" + File.separator+s+".zip",groupId);
                    if(!s1.equals("SUCCESS")){
                        MiscUtil.deleteFile(curFile);
                        flag=false;
@@ -312,7 +310,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         return flag;
     }
 
-    private String saveFileName(String fileName ,String filePath){
+    private String saveFileName(String fileName ,String filePath,String groupId){
         ProcessFileTrackDto processFileTrackDto =new ProcessFileTrackDto();
         processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         processFileTrackDto.setFileName(fileName);
@@ -581,10 +579,10 @@ public class UploadFileServiceImpl implements UploadFileService {
                 log.info("************* this grp is empty**************");
               return;
             }
-            groupId=applicationGroup.get(0).getId();
+        String   groupId=applicationGroup.get(0).getId();
             List<AppGrpPrimaryDocDto> appGrpPrimaryDoc = applicationListFileDto.getAppGrpPrimaryDoc();
             List<AppPremisesSpecialDocDto> appPremisesSpecialDocEntities = applicationListFileDto.getAppPremisesSpecialDocEntities();
-            appSvcDoc(appSvcDoc,appGrpPrimaryDoc,appPremisesSpecialDocEntities);
+            appSvcDoc(appSvcDoc,appGrpPrimaryDoc,appPremisesSpecialDocEntities,groupId);
         }catch (Exception e){
             log.error("***************** there have a error is "+e+"***************");
             log.error(e.getMessage(),e);
