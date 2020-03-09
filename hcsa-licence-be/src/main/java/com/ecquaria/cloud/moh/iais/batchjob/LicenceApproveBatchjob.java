@@ -953,7 +953,7 @@ public class LicenceApproveBatchjob {
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())&&originLicenceDto!=null){
             licenceDto.setStartDate(originLicenceDto.getStartDate());
             licenceDto.setExpiryDate(originLicenceDto.getExpiryDate());
-            licenceDto.setEndDate(originLicenceDto.getEndDate());
+            //licenceDto.setEndDate(originLicenceDto.getEndDate());
             licenceDto.setGrpLic(originLicenceDto.isGrpLic());
             licenceDto.setOriginLicenceId(originLicenceDto.getId());
             licenceDto.setMigrated(originLicenceDto.isMigrated());
@@ -984,7 +984,7 @@ public class LicenceApproveBatchjob {
                 }
                 licenceDto.setStartDate(startDate);
                 licenceDto.setExpiryDate(LicenceUtil.getExpiryDate(licenceDto.getStartDate(),yearLength));
-                licenceDto.setEndDate(licenceDto.getExpiryDate());
+                //licenceDto.setEndDate(licenceDto.getExpiryDate());
                 licenceDto.setGrpLic(applicationGroupDto.getIsGrpLic() == 1);
                 licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
             }
