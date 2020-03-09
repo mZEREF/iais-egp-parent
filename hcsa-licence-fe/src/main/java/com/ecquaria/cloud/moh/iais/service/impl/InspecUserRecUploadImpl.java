@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -121,8 +122,8 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
     }
 
     @Override
-    public InspecUserRecUploadDto saveFileReportGetFileId(InspecUserRecUploadDto inspecUserRecUploadDto, String auditTrailStr) {
-        String fileReportId = fileRepoClient.saveFiles(inspecUserRecUploadDto.getRecFile(), auditTrailStr).getEntity();
+    public InspecUserRecUploadDto saveFileReportGetFileId(InspecUserRecUploadDto inspecUserRecUploadDto, String auditTrailStr, CommonsMultipartFile file) {
+        String fileReportId = fileRepoClient.saveFiles(file, auditTrailStr).getEntity();
         List<String> ids = new ArrayList<>();
         ids.add(fileReportId);
         FileRepoDto fileRepoDto = fileRepoClient.getFilesByIds(ids).getEntity().get(0);
@@ -203,7 +204,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                 inspecUserRecUploadDto.setAppPremPreInspectionNcDocDtos(appPremPreInspectionNcDocDtos);
             }
 
-        //first rectification
+            //first rectification
         } else {
             inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDtos(appPremisesPreInspectionNcItemDtos);
             for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtos){

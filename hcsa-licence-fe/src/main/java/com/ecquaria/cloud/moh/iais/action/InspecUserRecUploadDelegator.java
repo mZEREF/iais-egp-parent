@@ -133,38 +133,42 @@ public class InspecUserRecUploadDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String actionValue = mulReq.getParameter("actionValue");
         ParamUtil.setRequestAttr(bpc.request, "inspecUserRecUploadType", actionValue);
+        //get file from page
+        CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("selectedFile");
+        //do validate
         Map<String,String> errorMap = new HashMap<>();
         if(InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue) || InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)){
-            errorMap = doValidateByRecFile(inspecUserRecUploadDto, mulReq, errorMap, actionValue);
+            log.info("The dto we checked is null ===>" + (inspecUserRecUploadDto == null));
+            errorMap = doValidateByRecFile(inspecUserRecUploadDto, mulReq, errorMap, actionValue, file);
             if(errorMap != null && !(errorMap.isEmpty())){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
             } else {
                 if(InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue)) {
-                    CommonsMultipartFile commonsMultipartFile = inspecUserRecUploadDto.getRecFile();
                     FileRepoDto fileRepoDto = new FileRepoDto();
-                    fileRepoDto.setFileName(commonsMultipartFile.getOriginalFilename());
+                    fileRepoDto.setFileName(file.getOriginalFilename());
                     fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     fileRepoDto.setRelativePath(AppConsts.FALSE);
                     String auditTrailStr = JsonUtil.parseToJson(fileRepoDto);
-                    inspecUserRecUploadDto = inspecUserRecUploadService.saveFileReportGetFileId(inspecUserRecUploadDto, auditTrailStr);
+                    inspecUserRecUploadDto = inspecUserRecUploadService.saveFileReportGetFileId(inspecUserRecUploadDto, auditTrailStr, file);
                 }
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);
             }
         } else {
             ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.TRUE);
         }
+        log.info("The dto we checked is null ===>" + (inspecUserRecUploadDto == null));
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
     }
 
     private Map<String, String> doValidateByRecFile(InspecUserRecUploadDto inspecUserRecUploadDto, MultipartHttpServletRequest mulReq,
-                                                    Map<String, String> errorMap, String actionValue) {
+                                                    Map<String, String> errorMap, String actionValue, CommonsMultipartFile file) {
         String uploadRemarks = mulReq.getParameter("recFileUpload");
         inspecUserRecUploadDto.setUploadRemarks(uploadRemarks);
         String errorKey = "recFile";
-        CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("selectedFile");
+
         if(InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)) {
             if (IaisCommonUtils.isEmpty(inspecUserRecUploadDto.getFileRepoDtos())) {
                 errorMap.put(errorKey, "ERR0009");
@@ -189,7 +193,6 @@ public class InspecUserRecUploadDelegator {
                 errorMap.put(errorKey, "The file type is incorrect.");
                 return errorMap;
             }
-            inspecUserRecUploadDto.setRecFile(file);
             if (file.getSize() / 1024 > 0) {
                 if (file.getSize() / 1024 < 1) {
                     inspecUserRecUploadDto.setFileSize(1);
@@ -222,6 +225,7 @@ public class InspecUserRecUploadDelegator {
                     }
                 }
             }
+            log.info("The dto we checked is null ===>" + (inspecUserRecUploadDto == null));
             ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
         }
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
@@ -251,6 +255,7 @@ public class InspecUserRecUploadDelegator {
         InspecUserRecUploadDto inspecUserRecUploadDto = (InspecUserRecUploadDto)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDto");
         ParamUtil.setRequestAttr(bpc.request, "inspecUserRecUploadType", "confirm");
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
+        log.info("The dto we checked is null ===>" + (inspecUserRecUploadDto == null));
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
     }
 
@@ -270,6 +275,7 @@ public class InspecUserRecUploadDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request, "inspecUserRecUploadType", "confirm");
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
+        log.info("The dto we checked is null ===>" + (inspecUserRecUploadDto == null));
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
     }
 
@@ -292,6 +298,7 @@ public class InspecUserRecUploadDelegator {
         }
         inspecUserRecUploadDto.setButtonFlag(AppConsts.SUCCESS);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
+        log.info("The dto we checked is null ===>" + (inspecUserRecUploadDto == null));
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
     }
 }
