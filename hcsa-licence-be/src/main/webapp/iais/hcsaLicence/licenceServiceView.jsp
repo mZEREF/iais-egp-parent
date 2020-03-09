@@ -137,27 +137,15 @@
                                                 </wrms:value></span>
                                         </span>
                                       <p>
-                                        <p><strong>AuthoriseD Person 1(po)</strong>&nbsp;&nbsp;&nbsp;&nbsp;
-                                          <c:if test="${appEdit.serviceEdit || appEdit.poEdit}" >
-                                          <input class="form-check-input" type="checkbox" name="editCheckbox" aria-invalid="false" value="po">
-                                          </c:if>
-                                        </p>
+                                        <p><strong>AuthoriseD Person 1</strong></p>
                                         <p><strong>Name:</strong></p>
                                         <p><strong>ID:</strong></p>
                                         <br>
-                                        <p><strong>AuthoriseD Person 2(dpo)</strong>&nbsp;&nbsp;&nbsp;&nbsp;
-                                          <c:if test="${appEdit.serviceEdit ||appEdit.dpoEdit}" >
-                                          <input class="form-check-input"  type="checkbox" name="editCheckbox" aria-invalid="false" value="dpo">
-                                          </c:if>
-                                        </p>
+                                        <p><strong>AuthoriseD Person 2</strong></p>
                                           <p><strong>Name:</strong></p>
                                         <p><strong>ID:</strong></p>
                                         <br>
-                                        <p><strong>MedAlert Contact Person</strong>&nbsp;&nbsp;&nbsp;&nbsp;
-                                          <c:if test="${appEdit.medAlertEdit || appEdit.serviceEdit}">
-                                          <input class="form-check-input"  type="checkbox" name="editCheckbox" aria-invalid="false" value="medAlert">
-                                          </c:if>
-                                        </p>
+                                        <p><strong>MedAlert Contact Person</strong></p>
                                       </div>
 
                                       <c:forEach var="appGrpPrimaryDocDto" items="${appSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
