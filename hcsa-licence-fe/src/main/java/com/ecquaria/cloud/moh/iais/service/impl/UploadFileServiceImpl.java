@@ -366,7 +366,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
         for(ApplicationGroupDto every :applicationGroup){
 
-            Set<String > appGrpIds=new HashSet<>();
+            Set<String> appliGrpPremisesIds=new HashSet<>();
             Set<String> appGrpPersonIds=new HashSet<>();
             Set<String> appGrpPersonExtIds=new HashSet<>();
             Set<String> appSvcKeyPersonIds=new HashSet<>();
@@ -413,7 +413,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                 String grpPremisesDtoAppGrpId = appliGrpPremisesDto.getAppGrpId();
                 if(groupId.equals(grpPremisesDtoAppGrpId)){
                     appGrpPremisesDtos.add(appliGrpPremisesDto);
-                    appGrpIds.add(appliGrpPremisesDto.getId());
+                    appliGrpPremisesIds.add(appliGrpPremisesDto.getId());
                     String appliGrpPremisesDtoId = appliGrpPremisesDto.getId();
                     for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto :appPremPhOpenPeriodDtos){
                         String premId = appPremPhOpenPeriodDto.getPremId();
@@ -451,7 +451,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                         String appGrpPremId = appPremisesCorrelationDto.getAppGrpPremId();
                         String premisesCorrelationDtoId = appPremisesCorrelationDto.getId();
 
-                        if(applicationDtoId.equals(applicationId) && appGrpIds.contains(appGrpPremId)){
+                        if(applicationDtoId.equals(applicationId) && appliGrpPremisesIds.contains(appGrpPremId)){
                             appPremisesCorrelationDtos.add(appPremisesCorrelationDto);
                             for (AppSvcPremisesScopeDto appSvcPremisesScopeDto:appSvcPremisesScope){
                                 String appPremCorreId = appSvcPremisesScopeDto.getAppPremCorreId();
