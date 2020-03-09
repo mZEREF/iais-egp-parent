@@ -11,6 +11,7 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohOnlineEnquiries___1 extends BaseProcessClass {
@@ -55,6 +56,11 @@ public class INTRANET___MohOnlineEnquiries___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "preAppDetails", this); 
 	// 		preAppDetails->OnStepProcess
 	}
+
+	public void callCessation_OnStepProcess_0() throws Exception {
+			EngineHelper.delegate(DELEGATOR, "callCessation", this); 
+		// 		callCessation->OnStepProcess
+		}
 
 
 

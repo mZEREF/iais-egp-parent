@@ -35,6 +35,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -131,6 +133,7 @@ public class RequestForInformationDelegator {
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
+        AccessUtil.initLoginUserInfo(bpc.request);
         ParamUtil.setSessionAttr(request,"id",null);
         ParamUtil.setSessionAttr(request, "licenceNo", null);
         ParamUtil.setSessionAttr(request, "reqInfoId", null);
@@ -746,12 +749,31 @@ public class RequestForInformationDelegator {
     public void preReqForInfo(BaseProcessClass bpc) {
         log.info("=======>>>>>preReqForInfo>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String  id=(String) ParamUtil.getSessionAttr(request, "id");
-        if(id==null){
-            id = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        String  licPremId = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        if(licPremId==null|| "undefined".equals(licPremId)){
+            licPremId=(String) ParamUtil.getSessionAttr(request, "id");
         }
-        ParamUtil.setSessionAttr(request,"id",id);
-        List<LicPremisesReqForInfoDto>licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(id);
+        ParamUtil.setSessionAttr(request,"id",licPremId);
+        List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licPremId);
+        for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
+             ) {
+            OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licPreRfi.getLicenseeId()).getEntity();
+            if(organizationLicDto.getLicenseeEntityDto()!=null){
+                licPreRfi.setEmail(organizationLicDto.getLicenseeEntityDto().getEntityType());
+            }
+        }
+
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String userId = loginContext.getUserId();
+        //ParamUtil.setRequestAttr(request, "isValid", "Y");
+        ParamUtil.setRequestAttr(request, "isValid", "N");
+        List<String> userIds=requestForInformationService.getActionBysByLicPremCorrId(licPremId);
+        for (String id:userIds
+             ) {
+            if (userId.equals(id)){
+                ParamUtil.setRequestAttr(request, "isValid", "Y");
+            }
+        }
 
         if(!licPremisesReqForInfoDtoList.isEmpty()) {
             ParamUtil.setSessionAttr(request, "licenceNo", licPremisesReqForInfoDtoList.get(0).getLicenceNo());

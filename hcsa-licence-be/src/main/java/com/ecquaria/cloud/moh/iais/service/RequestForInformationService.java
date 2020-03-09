@@ -22,6 +22,7 @@ public interface RequestForInformationService {
     List<SelectOption> getLicSvcTypeOption();
     List<SelectOption> getLicSvcSubTypeOption();
     List<SelectOption> getLicStatusOption();
+    List<String> getActionBysByLicPremCorrId(String licPremCorrId);
     SearchResult<RfiApplicationQueryDto> appDoQuery(SearchParam searchParam);
     SearchResult<RfiLicenceQueryDto> licenceDoQuery(SearchParam searchParam);
     List<String> getSvcNamesByType(String type);

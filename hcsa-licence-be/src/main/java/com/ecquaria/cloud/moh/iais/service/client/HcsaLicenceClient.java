@@ -186,7 +186,7 @@ public interface HcsaLicenceClient {
     @GetMapping(value = "hcsa-licence/audittculist",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AuditTaskDataFillterDto>> getAuditTcuList();
 
-    @GetMapping(value = "/iais-inspection-lic/inspection-email/{licPremCorrId}")
+    @GetMapping(value = "/iais-inspection-lic/inspection-email/{licPremCorrId}",produces = MediaType.APPLICATION_JSON_VALUE, consumes =  MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<InspectionEmailTemplateDto> getInspectionEmail(@PathVariable("licPremCorrId") String licPremCorrId);
 
     @PutMapping(value = "/iais-inspection-lic/insert-email-draft", consumes =  MediaType.APPLICATION_JSON_VALUE)
@@ -195,7 +195,7 @@ public interface HcsaLicenceClient {
     @PostMapping(value = "/iais-inspection-lic/update-email-draft", consumes =  MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> updateEmailDraft(@RequestBody InspectionEmailTemplateDto inspectionEmailTemplateDto);
 
-    @GetMapping(value = "/licenceViewDto/{licPremCorrId}")
+    @GetMapping(value = "/iais-inspection-lic/licenceViewDto/{licPremCorrId}",produces = MediaType.APPLICATION_JSON_VALUE, consumes =  MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceViewDto> getLicenceViewDtoByLicPremCorrId(@PathVariable("licPremCorrId") String licPremCorrId);
 
 

@@ -42,8 +42,9 @@
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Due Date :"/>
-                                            <iais:value width="18">
-                                                <iais:datePicker  name = "Due_date" dateVal="${licPreReqForInfoDto.dueDateSubmission}"></iais:datePicker>
+                                            <iais:value width="18" >
+                                                <span>${licPreReqForInfoDto.dueDateSubmission}</span>
+<%--                                                <iais:datePicker  name = "Due_date" dateVal="${licPreReqForInfoDto.dueDateSubmission}" ></iais:datePicker>--%>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>

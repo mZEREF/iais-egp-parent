@@ -384,10 +384,12 @@ public class OfficerOnlineEnquiriesDelegator {
     public void doSearchLicence(BaseProcessClass bpc) throws ParseException {
         log.info("=======>>>>>doSearchLicence>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request = bpc.request;
+        List<SelectOption> licSvcTypeOption =requestForInformationService.getLicSvcTypeOption();
+        List<SelectOption> licSvcSubTypeOption=requestForInformationService.getLicSvcSubTypeOption();
+        List<SelectOption> licStatusOption = requestForInformationService.getLicStatusOption();
         List<SelectOption> appTypeOption = requestForInformationService.getAppTypeOption();
         List<SelectOption> appStatusOption =requestForInformationService.getAppStatusOption();
-        List<SelectOption> licSvcTypeOption =requestForInformationService.getLicSvcTypeOption();
-        List<SelectOption> licStatusOption = requestForInformationService.getLicStatusOption();
+
 
 
         String applicationNo = ParamUtil.getString(bpc.request, "application_no");
@@ -724,9 +726,8 @@ public class OfficerOnlineEnquiriesDelegator {
         }
 
 
-
-        ParamUtil.setRequestAttr(request,"serviceLicenceType",serviceLicenceType);
         ParamUtil.setRequestAttr(request,"licSvcTypeOption", licSvcTypeOption);
+        ParamUtil.setRequestAttr(request,"licSvcSubTypeOption", licSvcSubTypeOption);
         ParamUtil.setRequestAttr(request,"licStatusOption", licStatusOption);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setRequestAttr(request,"appStatusOption", appStatusOption);
@@ -781,11 +782,20 @@ public class OfficerOnlineEnquiriesDelegator {
         log.info("=======>>>>>doSearchLicenceAfter>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String id = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        SearchResultHelper.doPage(request,applicationParameter);
         ParamUtil.setSessionAttr(request,"id",id);
         // 		doSearchLicenceAfter->OnStepProcess
     }
 
+    public void callCessation(BaseProcessClass bpc) {
+        log.info("=======>>>>>callCessation>>>>>>>>>>>>>>>>requestForInformation");
+        HttpServletRequest request=bpc.request;
+        String licId = (String) ParamUtil.getSessionAttr(request, "id");
+        List<String> licIds=new ArrayList<>();
+        licIds.add(licId);
+        ParamUtil.setSessionAttr(request,"licIds", (Serializable) licIds);
+
+        // 		callCessation->OnStepProcess
+    }
 
     public void preLicDetails(BaseProcessClass bpc) {
         log.info("=======>>>>>preAppInfo>>>>>>>>>>>>>>>>requestForInformation");

@@ -7,18 +7,25 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.RequestForInformationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +48,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -68,7 +76,12 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     HcsaConfigClient hcsaConfigClient;
     @Autowired
     FileRepoClient fileRepoClient;
-
+    @Autowired
+    HcsaLicenceClient hcsaLicenceClient;
+    @Autowired
+    private EventBusHelper eventBusHelper;
+    @Autowired
+    private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
     @Value("${iais.syncFileTracking.shared.path}")
     private     String sharedPath;
     private     String download;
@@ -137,6 +150,23 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     public List<SelectOption> getLicStatusOption() {
         return MasterCodeUtil.retrieveOptionsByCodes(licStatus);
     }
+
+    @Override
+    public List<String> getActionBysByLicPremCorrId(String licPremCorrId) {
+        LicenceViewDto licenceViewDto= hcsaLicenceClient.getLicenceViewDtoByLicPremCorrId(licPremCorrId).getEntity();
+        List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
+        List<String> actionBys=new ArrayList<>();
+        for (LicAppCorrelationDto licApp:licAppCorrelationDtos
+             ) {
+            ApplicationDto applicationDto=applicationClient.getApplicationById(licApp.getApplicationId()).getEntity();
+            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNo(applicationDto.getApplicationNo());
+            for(AppPremisesRoutingHistoryDto appHis:appPremisesRoutingHistoryDtos){
+                actionBys.add(appHis.getActionby());
+            }
+        }
+        return actionBys;
+    }
+
 
     @Override
     public SearchResult<RfiApplicationQueryDto> appDoQuery(SearchParam searchParam) {
@@ -391,7 +421,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                     fileRepoDto.setId(split[0]);
                     fileRepoDto.setAuditTrailDto(intranet);
                     fileRepoDto.setFileName(fileName.toString());
-                    fileRepoDto.setRelativePath(compressPath+File.separator+fileNames+File.separator+"userRecFile"+File.separator+"files");
+                    fileRepoDto.setRelativePath("compress"+File.separator+fileNames+File.separator+"userRecFile"+File.separator+"files");
                     aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
 
                     if(aBoolean){

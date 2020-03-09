@@ -237,13 +237,27 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     }
 
     private void deleteFile(){
-        File file =new File(download+File.separator+"files");
-        File fileRepPath=new File(download+File.separator);
+        File file =new File(backups+File.separator);
+        File fileRepPath=new File(download+File.separator+"files");
+        File filePath=new File(download+File.separator);
         MiscUtil.checkDirs(fileRepPath);
         MiscUtil.checkDirs(file);
         if(fileRepPath.isDirectory()){
             File[] files = fileRepPath.listFiles();
             for(File f :files){
+                if(f.exists()&&f.isFile()){
+                    MiscUtil.deleteFile(f);
+                }
+            }
+        }
+        {
+            File[] files = filePath.listFiles((dir, name) -> {
+                if (name.endsWith(fileFormat)) {
+                    return true;
+                }
+                return false;
+            });
+            for(File f:files){
                 if(f.exists()&&f.isFile()){
                     MiscUtil.deleteFile(f);
                 }

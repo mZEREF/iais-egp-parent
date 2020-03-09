@@ -58,6 +58,19 @@
     <JavaCode defClass="" executor="" methodName="preAppDetails_OnStepProcess_0" name="preAppDetails_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="Cessation" processname="MohCessationApplication" project="INTRANET" version="-1" x="1100" y="440">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="callCessation" x="970" y="430">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="callCessation_OnStepProcess_0" name="callCessation_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="BasicSearchPage" stageIndicator="" x="400" y="220">
@@ -163,10 +176,22 @@
    <position>{(1170,370)(560,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Branches/BranchSource/Branch1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(280,250)(225,390)}</position>
+   <position>{(280,250)(200,360)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicenceAfter" linkstyle="Rectangle" name="" sourceName="/Branches/BranchSource/Branch1" style="rectanular">
-   <position>{(225,390)(880,380)}</position>
+   <position>{(200,360)(880,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/callCessation" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(920,250)(990,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Branches/BranchSource/Branch2" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(280,250)(370,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicenceAfter" linkstyle="Rectangle" name="" sourceName="/Branches/BranchSource/Branch2" style="rectanular">
+   <position>{(370,440)(880,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Cessation" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/callCessation" style="oblique">
+   <position>{(990,450)(1120,460)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -182,6 +207,7 @@
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSearchLicence" value="&quot;search&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preAppDetails" value="&quot;appDetails&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/callCessation" value="&quot;cessation&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preBasicSearch" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="260" y="230">
    <Description/>
@@ -189,10 +215,14 @@
    <SwitchCase component="/Steps/AutomaticStep/preBasicSearch" value="&quot;basicSearch&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSearchLicenceAfter" value="&quot;details&quot;"/>
    <SwitchCase component="/Branches/BranchSource/Branch1" value="&quot;appDetails&quot;"/>
+   <SwitchCase component="/Branches/BranchSource/Branch2" value="&quot;cessation&quot;"/>
   </Switch>
  </Switches>
  <Branches>
   <BranchSource defClass="" executor="" icon="" name="Branch1" x="180" y="340">
+   <Description/>
+  </BranchSource>
+  <BranchSource defClass="" executor="" icon="" name="Branch2" x="350" y="420">
    <Description/>
   </BranchSource>
  </Branches>

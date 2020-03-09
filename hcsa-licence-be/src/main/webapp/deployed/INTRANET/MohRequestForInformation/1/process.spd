@@ -273,8 +273,8 @@
   <SynchronousLink destinationName="/Pages/WebPage/appInfoPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preAppInfo" style="oblique">
    <position>{(1240,310)(1100,190)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/RFIPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preReqForInfo" style="oblique">
-   <position>{(1450,430)(1580,300)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/RFIPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(1495,330)(1580,300)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge3" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(1320,450)(850,120)}</position>
@@ -408,8 +408,18 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/preReqForInfo" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(280,450)(1450,430)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preReqForInfo" style="oblique">
+   <position>{(1450,430)(1495,330)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicence" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(1495,330)(720,380)}</position>
+  </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/doSearchLicence" componentIfTrue="/Pages/WebPage/RFIPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="1450" y="280">
+   <Description/>
+  </Condition>
+ </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preSearchLicence" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="260" y="430">
    <Description/>
