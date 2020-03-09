@@ -30,25 +30,39 @@
     <JavaCode defClass="" executor="" methodName="editTemplate_OnStepProcess_0" name="editTemplate_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="searchTemplate" x="820" y="250">
+  <AutomaticStep defClass="" executor="" icon="" name="searchTemplate" x="670" y="250">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="searchTemplate_OnStepProcess_0" name="searchTemplate_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doEdit" x="310" y="480">
+  <AutomaticStep defClass="" executor="" icon="" name="doEdit" x="310" y="460">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doEdit_OnStepProcess_0" name="doEdit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preViewTemplate" x="590" y="290">
+  <AutomaticStep defClass="" executor="" icon="" name="preViewTemplate" x="560" y="250">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="preViewTemplate_OnStepProcess_0" name="preViewTemplate_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doPage" x="800" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doPage_OnStepProcess_0" name="doPage_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doSort" x="900" y="260">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doSort_OnStepProcess_0" name="doSort_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -59,13 +73,19 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="editTemplateView" stageIndicator="" x="290" y="370">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="editTemplateView" stageIndicator="" x="290" y="360">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="preView" stageIndicator="" x="620" y="640">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="preView" stageIndicator="" x="610" y="670">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ackPage" stageIndicator="" x="310" y="620">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -90,38 +110,56 @@
    <position>{(630,120)(320,280)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/searchTemplate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(630,120)(840,270)}</position>
+   <position>{(630,120)(690,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/editTemplateView" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/editTemplate" style="rectanular">
-   <position>{(320,280)(310,390)}</position>
+   <position>{(320,280)(310,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doEdit" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/editTemplateView" style="rectanular">
-   <position>{(310,390)(330,500)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/searchTemplate" style="oblique">
-   <position>{(840,270)(859,71)(239,73)(220,120)}</position>
+   <position>{(310,380)(330,480)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/editTemplate" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(330,600)(546,594)(548,280)(320,280)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(330,600)(232,596)(220,120)}</position>
+   <position>{(330,570)(548,572)(548,280)(320,280)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doEdit" style="rectanular">
-   <position>{(330,500)(330,600)}</position>
+   <position>{(330,480)(330,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preViewTemplate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(630,120)(610,310)}</position>
+   <position>{(630,120)(580,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/preView" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preViewTemplate" style="oblique">
-   <position>{(610,310)(640,660)}</position>
+   <position>{(580,270)(630,690)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Direct" name="" sourceName="/Pages/WebPage/preView" style="oblique">
-   <position>{(640,660)(232,667)(220,120)}</position>
+   <position>{(630,690)(231,695)(220,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(630,120)(820,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSort" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(630,120)(920,280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/searchTemplate" style="oblique">
+   <position>{(690,270)(760,660)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPage" style="oblique">
+   <position>{(820,270)(760,660)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSort" style="oblique">
+   <position>{(920,280)(760,660)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(760,660)(177,721)(220,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ackPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(330,570)(330,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ackPage" style="rectanular">
+   <position>{(330,640)(235,641)(220,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/editTemplate" componentIfTrue="/Steps/AutomaticStep/prepareDate" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="310" y="580">
+  <Condition componentIfFalse="/Steps/AutomaticStep/editTemplate" componentIfTrue="/Steps/AutomaticStep/prepareDate" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="310" y="550">
    <Description/>
   </Condition>
  </Conditions>
@@ -131,10 +169,16 @@
    <SwitchCase component="/Steps/AutomaticStep/editTemplate" value="&quot;edit&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/searchTemplate" value="&quot;search&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preViewTemplate" value="&quot;preview&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doPage" value="&quot;page&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doSort" value="&quot;sort&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
- <Merges/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="740" y="640">
+   <Description/>
+  </Merge>
+ </Merges>
  <StudioLabels/>
  <StageIndicator/>
  <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
