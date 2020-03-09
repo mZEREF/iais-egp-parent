@@ -76,6 +76,20 @@ public class TemplatesDelegator {
             ParamUtil.setSessionAttr(request,MsgTemplateConstants.MSG_SEARCH_PARAM, searchParam);
             ParamUtil.setRequestAttr(request,MsgTemplateConstants.MSG_SEARCH_RESULT, searchResult);
         }
+        List<SelectOption> messageTypeSelectList = new ArrayList<>();
+        messageTypeSelectList.add(new SelectOption("", "Select"));
+        messageTypeSelectList.add(new SelectOption("MTTP001", "Alert"));
+        messageTypeSelectList.add(new SelectOption("MTTP002", "Banner Alert"));
+        messageTypeSelectList.add(new SelectOption("MTTP003", "Letter"));
+        messageTypeSelectList.add(new SelectOption("MTTP004", "Notification"));
+        ParamUtil.setRequestAttr(bpc.request, "msgType", messageTypeSelectList);
+
+        List<SelectOption> deliveryModeSelectList = new ArrayList<>();
+        deliveryModeSelectList.add(new SelectOption("", "Select"));
+        deliveryModeSelectList.add(new SelectOption("DEMD001", "Mail"));
+        deliveryModeSelectList.add(new SelectOption("DEMD002", "SMS"));
+        deliveryModeSelectList.add(new SelectOption("DEMD003", "System Inbox"));
+        ParamUtil.setRequestAttr(bpc.request, "deliveryMode", deliveryModeSelectList);
     }
 
     public void prepareSwitch(BaseProcessClass bpc){
@@ -94,12 +108,15 @@ public class TemplatesDelegator {
             msgTemplateDto.setMessageType(messageType);
             msgTemplateDto.setDeliveryMode(deliveryMode);
             ParamUtil.setSessionAttr(request,MsgTemplateConstants.MSG_TEMPLATE_DTO, msgTemplateDto);
+
+
             List<SelectOption> messageTypeSelectList = new ArrayList<>();
             messageTypeSelectList.add(new SelectOption(messageType, messageTypeTxt));
             messageTypeSelectList.add(new SelectOption("MTTP001", "Alert"));
             messageTypeSelectList.add(new SelectOption("MTTP002", "Banner Alert"));
             messageTypeSelectList.add(new SelectOption("MTTP003", "Letter"));
             messageTypeSelectList.add(new SelectOption("MTTP004", "Notification"));
+            messageTypeSelectList.add(new SelectOption("MTTP005", "Scheduled Maintenance"));
             ParamUtil.setRequestAttr(bpc.request, "messageTypeSelect", messageTypeSelectList);
 
             List<SelectOption> deliveryModeSelectList = new ArrayList<>();
@@ -119,16 +136,18 @@ public class TemplatesDelegator {
             return;
         }
         MsgTemplateDto msgTemplateDto = (MsgTemplateDto) ParamUtil.getSessionAttr(request, MsgTemplateConstants.MSG_TEMPLATE_DTO);
-        getValueFromPage(msgTemplateDto, request);
+
         ValidationResult validationResult =WebValidationHelper.validateProperty(msgTemplateDto, "edit");
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
             return;
+        }else {
+            getValueFromPage(msgTemplateDto, request);
+            templatesService.updateMsgTemplate(msgTemplateDto);
+            ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ISVALID,SystemAdminBaseConstants.YES);
         }
-        templatesService.updateMsgTemplate(msgTemplateDto);
-        ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ISVALID,SystemAdminBaseConstants.YES);
     }
 
 
@@ -143,11 +162,9 @@ public class TemplatesDelegator {
                 SystemAdminBaseConstants.DATE_FORMAT);
         Map<String,Object> templateMap = new HashMap<>();
         if (!StringUtil.isEmpty(msgType)){
-            msgType = masterCodeService.findCodeKeyByDescription(msgType);
             templateMap.put(MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE,msgType);
         }
         if(!StringUtil.isEmpty(deliveryMode)){
-            deliveryMode = masterCodeService.findCodeKeyByDescription(deliveryMode);
             templateMap.put(MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE,deliveryMode);
         }
         if(!StringUtil.isEmpty(templateName)){
@@ -160,6 +177,16 @@ public class TemplatesDelegator {
             templateMap.put( SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO,templateEndDate);
         }
         filterParameter.setFilters(templateMap);
+    }
+
+    public void doPage(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        SearchResultHelper.doPage(request,filterParameter);
+    }
+
+    public void doSort(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        SearchResultHelper.doSort(request,filterParameter);
     }
 
     public void preView(BaseProcessClass bpc){

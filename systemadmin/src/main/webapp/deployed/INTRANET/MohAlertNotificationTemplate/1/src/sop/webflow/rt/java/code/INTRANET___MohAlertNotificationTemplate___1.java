@@ -34,4 +34,12 @@ public class INTRANET___MohAlertNotificationTemplate___1 extends BaseProcessClas
 		EngineHelper.delegate(DELEGATOR, "doEdit", this);
 	}
 
+	public void doPage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doPage", this);
+	}
+
+	public void doSort_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doSort", this);
+	}
+
 }

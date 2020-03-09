@@ -1,11 +1,11 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
-            (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+            (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <%
     String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT;
@@ -26,82 +26,68 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="msgType">Message Type:</label>
 
-                            <div class="col-xs-8 col-sm-6 col-md-3">
+                            <div class="col-xs-8 col-sm-6 col-md-4">
                                 <iais:select name="msgType" id="msgType" options="messageTypeSelect"></iais:select>
+                                <span id="error_msgTypeErr" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="templateName">Template Name</label>
                             <div class="col-xs-8 col-sm-6 col-md-6">
-                                <input id="templateName" type="text"  value="${MsgTemplateDto.templateName}" name="templateName">
+                                <input id="templateName" type="text" value="${MsgTemplateDto.templateName}"
+                                       name="templateName">
                                 <span id="error_templateName" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Delivery Mode:</label>
-                                <div class="col-xs-8 col-sm-6 col-md-3">
-                                    <iais:select name="deliveryMode" id="deliveryMode" options="deliveryModeSelect"></iais:select>
-                                </div>
+                            <div class="col-xs-8 col-sm-6 col-md-4">
+                                <iais:select name="deliveryMode" id="deliveryMode"
+                                             options="deliveryModeSelect"></iais:select>
+                                <span id="error_deliveryModeErr" name="iaisErrorMsg"
+                                      class="error-msg"></span>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="esd">Effective Start Date.</label>
                             <div class="col-xs-8 col-sm-6 col-md-6">
-                                <iais:datePicker id="esd" name="esd" dateVal="${MsgTemplateDto.effectiveFrom}" />
+                                <iais:datePicker id="esd" name="esd" dateVal="${MsgTemplateDto.effectiveFrom}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="eed">Effective End Date.</label>
                             <div class="col-xs-8 col-sm-6 col-md-6">
-                                <iais:datePicker id="eed" name="eed" dateVal="${MsgTemplateDto.effectiveTo}" ></iais:datePicker>
+                                <iais:datePicker id="eed" name="eed"
+                                                 dateVal="${MsgTemplateDto.effectiveTo}"></iais:datePicker>
                                 <span id="error_effectiveFrom" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-12 control-label" >Message Content:</label>
+                            <label class="col-xs-12 col-md-12 control-label">Message Content:</label>
                         </div>
                         <div class="form-group">
-                            <textarea cols="120" rows="40" name="messageContent" class="textarea" id="htmlEditor" title="content">
+                            <textarea cols="120" rows="40" name="messageContent" class="textarea" id="htmlEditor"
+                                      title="content">
                                 ${MsgTemplateDto.messageContent}
                             </textarea>
                         </div>
-                    </div>
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="row">
-                                <div class="col-xs-2 col-sm-2">
-                                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('back')">BACK</a></div>
-                                </div>
-                                <div class="col-xs-10 col-sm-10">
-                                    <div class="text-right text-center-mobile"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#EditTemplateModal">SUBMIT</button></div>
-                                </div>
+                        <div class="form-group" >
+                            <div class="col-xs-2 col-sm-2 col-sm-offset-8">
+                                <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#"
+                                                                              onclick="submit('back')">BACK</a></div>
+                            </div>
+                            <div class="col-xs-2 col-sm-2">
+                                <button type="button" class="btn btn-primary" onclick="doEdit('${MsgTemplateDto.id}')">
+                                    SUBMIT
+                                </button>
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade" id="EditTemplateModal" tabindex="-1" role="dialog" aria-labelledby="EditTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the modification ?</span></div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="doEdit('${MsgTemplateDto.id}')">Confirm</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
     </form>
-    <%@include file="/include/validation.jsp"%>
+    <%@include file="/include/validation.jsp" %>
 </div>
 
 
@@ -109,12 +95,12 @@
 <script src="<%=webroot%>js/initTinyMce.js"></script>
 <script>
 
-    function submit(action){
+    function submit(action) {
         $("[name='crud_action_type']").val(action);
         $("#TemplateEditForm").submit();
     }
 
-    function doEdit(mcId){
+    function doEdit(mcId) {
         $("[name='crud_action_value']").val(mcId);
         submit("edit");
     }

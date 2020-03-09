@@ -31,6 +31,15 @@
         $("[name='crud_action_value']").val(msgId);
         submit('edit');
     }
+    function jumpToPagechangePage() {
+        submit('page');
+    }
+
+    function sortRecords(sortFieldName, sortType) {
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        submit('sort');
+    }
 
 </script>
 

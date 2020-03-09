@@ -11,7 +11,7 @@
                 <iais:value>
                     <label class="col-xs-12 col-md-4 control-label" for="msgType">Message Type:</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                        <input id="msgType" name="msgType" type="text">
+                        <iais:select name="msgType" id="msgType" options="msgType"></iais:select>
                     </div>
                 </iais:value>
             </div>
@@ -19,7 +19,7 @@
                 <iais:value>
                     <label class="col-xs-12 col-md-4 control-label" for="templateName">Template Name:</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                        <input id="templateName" name="templateName" type="text">
+                        <input id="templateName" name="templateName" type="text" maxlength="500">
                     </div>
                 </iais:value>
             </div>
@@ -27,7 +27,7 @@
                 <iais:value>
                     <label class="col-xs-12 col-md-4 control-label" for="deliveryMode">Delivery Mode:</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                        <input id="deliveryMode" type="text" name="deliveryMode">
+                        <iais:select name="deliveryMode" id="deliveryMode" options="deliveryMode"></iais:select>
                     </div>
                 </iais:value>
             </div>

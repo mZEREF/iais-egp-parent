@@ -1,5 +1,5 @@
 <div class="main-content">
-    <form class="form-horizontal" method="post" id="TemplatesForm" action=<%=process.runtime.continueURL()%>>
+    <form method="post" id="TemplatesForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/include/formHidden.jsp" %>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
@@ -12,14 +12,15 @@
                         </div>
                         <%@ include file="doSearchBody.jsp" %>
                         <table class="table">
+                            <iais:pagination  param="MsgTemplateSearchParam" result="MsgTemplateSearchResult"/>
                             <thead>
                             <tr>
-                                <th>No.</th>
-                                <th>Message Type</th>
-                                <th>Template Name</th>
-                                <th>Delivery Mode</th>
-                                <th>Effective Start Date</th>
-                                <th>Effective End Date</th>
+                                <iais:sortableHeader needSort="false" field="subject" value="No."></iais:sortableHeader>
+                                <iais:sortableHeader needSort="true" field="message_type" value="Message Type"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="true" field="template_name" value="Template Name"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="true" field="delivery_mode" value="Delivery Mode"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="true" field="effective_from" value="Effective Start Date"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="true" field="effective_to" value="Effective End Date"></iais:sortableHeader>
                                 <th>Action</th>
                             </tr>
                             </thead>
