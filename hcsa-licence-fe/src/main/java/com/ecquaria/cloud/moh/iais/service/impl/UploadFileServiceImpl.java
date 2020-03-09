@@ -106,9 +106,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
         File groupPath=new File(sharedPath+ AppServicesConsts.FILE_NAME+File.separator+groupId);
 
-        if(!groupPath.exists()){
-            groupPath.mkdirs();
-        }
+        MiscUtil.checkDirs(groupPath);
 
         try (FileOutputStream fileInputStream = new FileOutputStream(sharedPath+AppServicesConsts.BACKUPS+File.separator+file.getName());
              FileOutputStream fileOutputStream  =new FileOutputStream(file);) {
@@ -198,7 +196,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
             log.info("------------zip file name is"+sharedPath+AppServicesConsts.BACKUPS+File.separator+ l+".zip"+"--------------------");
             File file = new File(sharedPath+ AppServicesConsts.FILE_NAME+File.separator+groupId);
-            MiscUtil.checkDirs(file);
+
             zipFile(zos, file);
             log.info("----------------end zipFile ---------------------");
         } catch (IOException e) {
