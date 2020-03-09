@@ -212,8 +212,8 @@ public class InspecUserRecUploadDelegator {
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadConfirm start ...."));
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
         String itemId = ParamUtil.getMaskedString(bpc.request, "itemId");
+        log.info(StringUtil.changeForLog("The item is ===>" + itemId));
         if(!StringUtil.isEmpty(itemId)) {
-            ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", null);
             InspecUserRecUploadDto inspecUserRecUploadDto = null;
             for (InspecUserRecUploadDto iuruDto : inspecUserRecUploadDtos) {
                 if (!StringUtil.isEmpty(itemId)) {
