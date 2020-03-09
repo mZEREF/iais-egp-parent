@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -27,7 +28,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Hc
@@ -376,7 +380,7 @@ public class InterInboxDelegator {
 
     public void licToView(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
-        String licId = ParamUtil.getMaskedString(bpc.request, InboxConst.ACTION_ID_VALUE);
+        String licId = ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
         StringBuilder url = new StringBuilder();
         url.append("https://").append(bpc.request.getServerName())
                 .append("/hcsa-licence-web/eservice/INTERNET/MohLicenceView")
@@ -427,7 +431,6 @@ public class InterInboxDelegator {
                 for(String item:licIds){
                     licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
                 }
-
                 boolean isAmendmentRenewal = licIdValue.size() == 1 ? true : false;
                 if(isAmendmentRenewal){
                     StringBuilder url = new StringBuilder();
@@ -448,6 +451,7 @@ public class InterInboxDelegator {
             }
         }
     }
+
     public void licDoCease(BaseProcessClass bpc) throws IOException {
         String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
         if(licIds != null) {
