@@ -87,6 +87,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Autowired
     private FileRepositoryClient fileRepositoryClient;
 
+
     @Override
     public boolean saveFile(String  str) {
         List<ApplicationListFileDto> parse = parse(str);

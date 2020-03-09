@@ -89,7 +89,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private     String backups;
     private     String fileFormat=".text";
     private     String compressPath;
-    private     String downZip;
+
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -100,10 +100,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
-    @Autowired
-    private InboxMsgService inboxMsgService;
-    @Autowired
-    private SystemParamConfig systemParamConfig;
     @Autowired
     private TaskService taskService;
     @Autowired
@@ -120,17 +116,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private ApplicationService applicationService;
     @Autowired
     private OrganizationClient organizationClient;
-    @Autowired
-    private BeEicGatewayClient beEicGatewayClient;
     @Override
-    public boolean compress(List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList) throws Exception{
+    public boolean compress() throws Exception{
         log.info("-------------compress start ---------");
         if(new File(backups).isDirectory()){
             File[] files = new File(backups).listFiles();
             for(File fil:files){
                 if(fil.getName().endsWith(".zip")){
-                    listApplicationDto.clear();
-                    requestForInfList.clear();
+
                     String name = fil.getName();
                     String path = fil.getPath();
                     String relPath="backups"+File.separator+name;
@@ -156,6 +149,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         }
 
                         try {
+                            List<ApplicationDto> listApplicationDto =new ArrayList();
+                            List<ApplicationDto> requestForInfList=new ArrayList();
+                            //need event bus
 
                             this.download(processFileTrackDto,listApplicationDto, requestForInfList,name,refId);
                             sendTask(listApplicationDto,requestForInfList);
@@ -167,9 +163,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         }
 
                     }
-                 /*   if(fil.exists()&&aBoolean){
-                        fil.delete();
-                    }*/
 
                 }
 
@@ -212,11 +205,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     @Override
-    public void delete() {
+    public void initPath() {
         download= sharedPath+File.separator+"compress"+File.separator+"folder";
         backups=sharedPath+File.separator+"backups"+File.separator;
         compressPath=sharedPath+File.separator+"compress";
-        downZip=sharedPath+File.separator+"compress";
+
         File file =new File(download);
         File b=new File(backups);
         File c=new File(compressPath);
@@ -227,7 +220,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             b.mkdirs();
         }
 
-        if(!file.mkdirs()){
+        if(!file.exists()){
             file.mkdirs();
         }
 
@@ -238,7 +231,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         Boolean flag=false;
 
-            File file =new File(downZip+File.separator+fileName+File.separator+groupPath+File.separator+"folder"+File.separator+groupPath);
+            File file =new File(compressPath+File.separator+fileName+File.separator+groupPath+File.separator+"folder"+File.separator+groupPath);
             if(!file.exists()){
                 file.mkdirs();
             }
@@ -258,14 +251,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             }
 
                             Boolean aBoolean = fileToDto(by.toString(), listApplicationDto, requestForInfList,processFileTrackDto);
-                            flag=aBoolean;
-                            /*  Boolean backups = backups(flag, filzz);*/
+
+                           flag=aBoolean;
                             if(aBoolean){
                                 if(processFileTrackDto!=null){
 
                                     changeStatus(processFileTrackDto);
-
-                                    /*     Boolean aBoolean1 = changeFeApplicationStatus();*/
 
                                     saveFileRepo( fileName,groupPath);
                                 }
@@ -288,7 +279,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     * to update fe data
     * */
     private void changeStatus( ProcessFileTrackDto processFileTrackDto){
-      /*  applicationClient.updateStatus().getEntity();*/
         processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         AuditTrailDto batchJobDto = AuditTrailHelper.getBatchJobDto("INTRANET");
         processFileTrackDto.setAuditTrailDto(batchJobDto);
@@ -431,47 +421,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 log.info("-----------getDownloadFile-------");
                 List<ApplicationDto> list = this.listApplication();
                 this. requestForInfList(requestForInfList);
-                Map<String,List<String>> map=new HashMap<>();
-                List<String> oldStauts=new ArrayList<>();
-                oldStauts.add(ApplicationConsts.APPLICATION_SUCCESS_ZIP);
-                List<String > newStatus=new ArrayList<>();
-                newStatus.add(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+
+
                 listApplicationDto.addAll(list);
-                List<String> applicationGroupIds=new ArrayList<>();
-                for(ApplicationGroupDto every:applicationGroup){
-                    String id = every.getId();
-                    applicationGroupIds.add(id);
-                }
-                map.put("oldStatus",oldStauts);
-                map.put("newStatus",newStatus);
-                map.put("groupIds",applicationGroupIds);
-                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-          /*  int statusCode = beEicGatewayClient.updateStatus(map, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getStatusCode();
-            *//* requeOrNew(applicationGroup,application,listApplicationDto,requestForInfList);*//*
-            if(statusCode==200){
 
-                for(ApplicationGroupDto every:applicationGroup){
-                    String submitBy = every.getSubmitBy();
-                    //send message to FE user.
-                    InterMessageDto interMessageDto = new InterMessageDto();
-                    interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_SRC_ID);
-                    interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION);
-                    interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
-                    String mesNO = inboxMsgService.getMessageNo();
-                    interMessageDto.setRefNo(mesNO);
-                  *//*  interMessageDto.setService_id(applicationDto.getServiceId());*//*
-                    String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION+every.getGroupNo();
-                    interMessageDto.setProcessUrl(url);
-                    interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                    interMessageDto.setUserId(submitBy);
-                    interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    inboxMsgService.saveInterMessage(interMessageDto);
 
-                }
-
-            }*/
 
             }
 
@@ -490,44 +444,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
 
-    private void requeOrNew( List<ApplicationGroupDto> applicationGroup,List<ApplicationDto> dtoList,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList) {
-        Map<String,List<ApplicationDto>> map=new HashMap<>();
-        for (ApplicationGroupDto applicationGroupDto : applicationGroup) {
-            List<ApplicationDto> list=new ArrayList<>();
-            for (ApplicationDto applicationDto : dtoList) {
-                if (applicationGroupDto.getId().equals(applicationDto.getAppGrpId())) {
-                    list.add(applicationDto);
-                }
 
-            }
-            map.put(applicationGroupDto.getId(),list);
-        }
-
-        map.forEach((k,v)->{
-                         int j=0;
-                        for(ApplicationDto applicationDto :v){
-                            int i=v.size();
-                            if(applicationDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING)){
-                                j++;
-                            }
-                            if(applicationDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION)){
-                                requestForInfList.add(applicationDto);
-                            }
-                            if(j==i){ listApplicationDto.addAll(v); }
-
-                        }
-
-
-               });
-
-
-    }
     /*
     *
     * save file to fileRepro*/
     private void saveFileRepo(String fileNames,String groupPath){
         boolean aBoolean=false;
-        File file =new File(downZip+File.separator+fileNames+File.separator+groupPath+File.separator+"folder"+File.separator+"files");
+        File file =new File(compressPath+File.separator+fileNames+File.separator+groupPath+File.separator+"folder"+File.separator+"files");
         if(!file.exists()){
             file.mkdirs();
         }
@@ -548,7 +471,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        try ( InputStream input = new FileInputStream(f);){
+                        try ( InputStream input = new FileInputStream(f)){
                             if(fileItem!=null){
                                 OutputStream os = fileItem.getOutputStream();
                                 IOUtils.copy(input, os);
@@ -563,7 +486,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         fileRepoDto.setId(split[0]);
                         fileRepoDto.setAuditTrailDto(intranet);
                         fileRepoDto.setFileName(fileName.toString());
-                        fileRepoDto.setRelativePath(downZip+File.separator+fileNames+File.separator+"folder"+File.separator+"files");
+                        fileRepoDto.setRelativePath(compressPath+File.separator+fileNames+File.separator+"folder"+File.separator+"files");
                         aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
 
                         if(aBoolean){
@@ -581,40 +504,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     }
 
-    /*
-    * copy file to other folder
-    * */
-    private void  removeFilePath(File file){
-        File f=new File(download);
-        if(!f.exists()){
-            f.mkdirs();
-        }
-        if(file.isFile()){
-            String path = file.getPath();
-            String name = file.getName();
-            File newFile=new File(download+File.separator+name);
 
-            try (  FileInputStream  fileInputStream=new FileInputStream(file);
-                   FileOutputStream  fileOutputStream=new FileOutputStream(newFile); ) {
-
-                byte[] length=new byte[1024];
-                int count =0;
-                count=fileInputStream.read(length);
-                while(count!=-1){
-                    fileOutputStream.write(length,0,count);
-                    count=fileInputStream.read(length);
-                }
-
-            }  catch (IOException e) {
-                log.error(e.getMessage(),e);
-            }
-
-        }
-        if(file.exists()){
-            file.delete();
-        }
-
-    }
 
     private TaskHistoryDto getRoutingTaskForRequestForInformation(List<ApplicationDto> applicationDtos,AuditTrailDto auditTrailDto) throws Exception {
         log.debug(StringUtil.changeForLog("the do getRoutingTaskForRequestForInformation start ...."));
@@ -688,7 +578,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
 
     private void  sendTask(List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList) throws  Exception{
-        licenceFileDownloadService.delete();
+        licenceFileDownloadService.initPath();
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
 
         TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(listApplicationDto, HcsaConsts.ROUTING_STAGE_ASO, RoleConsts.USER_ROLE_ASO,intranet);

@@ -10,11 +10,11 @@ import java.util.List;
  * @date 2019/11/9 16:08
  */
 public interface LicenceFileDownloadService {
-    void delete();
+    void initPath();
 
-    boolean compress(List<ApplicationDto> list,List<ApplicationDto> requestForInfList) throws Exception;
+    boolean compress() throws Exception;
     List<ApplicationDto> listApplication();
     void requestForInfList(List<ApplicationDto> list);
     Boolean changeFeApplicationStatus();
-    public List<TaskDto> getTasksByRefNo(String refNo);
+     List<TaskDto> getTasksByRefNo(String refNo);
 }
