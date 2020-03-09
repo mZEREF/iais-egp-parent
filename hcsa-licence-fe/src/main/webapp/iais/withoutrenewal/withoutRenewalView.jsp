@@ -9,4 +9,4 @@
     String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-internet"/>
-<%@ include file="../autoRenewal/mainContent.jsp" %>
+<%@ include file="../withoutrenewal/mainContent.jsp" %>

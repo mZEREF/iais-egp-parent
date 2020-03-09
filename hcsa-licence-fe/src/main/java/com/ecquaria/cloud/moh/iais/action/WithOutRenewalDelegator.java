@@ -6,7 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.AutoRenewalViewService;
+import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -21,11 +21,12 @@ import java.util.List;
  * @date 2020/1/6
  */
 
-@Delegator("autoRenwalDelegator")
+@Delegator("withOutRenewalDelegator")
 @Slf4j
-public class AutoRenewalDelegator {
+public class WithOutRenewalDelegator {
     @Autowired
-    AutoRenewalViewService autoRenewalViewService;
+    WithOutRenewalService outRenewalService;
+
     @Autowired
     AppSubmissionService appSubmissionService;
 

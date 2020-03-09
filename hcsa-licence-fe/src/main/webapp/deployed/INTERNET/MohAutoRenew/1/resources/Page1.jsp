@@ -1,1 +1,1 @@
-<%@include file="/iais/autoRenewal/autoRenewalView.jsp"%>
+<%@include file="/iais/autoRenewal/withoutRenewalView.jsp"%>
