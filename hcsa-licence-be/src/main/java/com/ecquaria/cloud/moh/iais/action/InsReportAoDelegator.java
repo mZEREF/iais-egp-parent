@@ -50,17 +50,7 @@ public class InsReportAoDelegator {
     @Autowired
     private TaskService taskService;
     @Autowired
-    private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
-    @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
-    @Autowired
-    private HcsaConfigClient hcsaConfigClient;
-    @Autowired
-    private AppPremisesCorrClient appPremisesCorrClient;
-    @Autowired
-    AppInspectionStatusClient appInspectionStatusClient;
-    @Autowired
-    private AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
 
     private final String RECOMMENDATION_DTO= "appPremisesRecommendationDto";
     private final String RECOMMENDATION="recommendation";
@@ -69,8 +59,8 @@ public class InsReportAoDelegator {
     private final String OTHERS="Others";
     private final String APPROVAL="Approval";
     private final String REJECT="Reject";
-    public void start(BaseProcessClass bpc) {
 
+    public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
         AuditTrailHelper.auditFunction("Inspection Report", "Assign Report");
     }

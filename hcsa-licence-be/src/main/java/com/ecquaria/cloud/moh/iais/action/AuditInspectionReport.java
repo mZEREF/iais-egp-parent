@@ -250,8 +250,6 @@ public class AuditInspectionReport {
             licPremisesRecommendationDtos.add(licPremisesRecommendationDto);
         }
         return licPremisesRecommendationDtos;
-
-
     }
 
     private List<SelectOption> getChronoOption() {
