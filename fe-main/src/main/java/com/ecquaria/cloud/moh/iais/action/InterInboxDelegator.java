@@ -333,7 +333,6 @@ public class InterInboxDelegator {
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }
-        String a = ParamUtil.getMaskedString(request, InboxConst.ACTION_TYPE_VALUE);
         if("APTY005".equals(ParamUtil.getMaskedString(request, InboxConst.ACTION_TYPE_VALUE))){
             String appNo = ParamUtil.getMaskedString(request, InboxConst.ACTION_NO_VALUE);
             StringBuffer url = new StringBuffer();

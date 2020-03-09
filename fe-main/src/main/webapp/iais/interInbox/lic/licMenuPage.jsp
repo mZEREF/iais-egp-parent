@@ -27,20 +27,42 @@
                 <c:choose>
                 <c:when test="${item.depth > 1}">
                     <c:if test="${nextDepth == currDepth}">
-                        <li>
-                            <a href="<c:out value="${item.url}" />">
-                                <egov-smc:commonLabel><c:out
-                                        value="${item.displayLabel}"/></egov-smc:commonLabel>
-                            </a>
-                        </li>
+                        <c:choose>
+                            <c:when test="${fn:contains(item.url,'INTERNET')}">
+                                <li>
+                                    <a href="<c:out value="${item.url}" />">
+                                        <egov-smc:commonLabel><c:out
+                                                value="${item.displayLabel}"/></egov-smc:commonLabel>
+                                    </a>
+                                </li>
+                            </c:when>
+                            <c:otherwise>
+                                <li>
+                                    <a href="#" id="${item.displayLabel}">
+                                        <egov-smc:commonLabel><c:out value="${item.displayLabel}"/></egov-smc:commonLabel>
+                                    </a>
+                                </li>
+                            </c:otherwise>
+                        </c:choose>
                     </c:if>
                     <c:if test="${nextDepth < currDepth}">
-                        <li>
-                            <a href="<c:out value="${item.url}" />">
-                                <egov-smc:commonLabel><c:out
-                                        value="${item.displayLabel}"/></egov-smc:commonLabel>
-                            </a>
-                        </li>
+                        <c:choose>
+                            <c:when test="${fn:contains(item.url,'INTERNET')}">
+                                <li>
+                                    <a href="<c:out value="${item.url}" />">
+                                        <egov-smc:commonLabel><c:out
+                                                value="${item.displayLabel}"/></egov-smc:commonLabel>
+                                    </a>
+                                </li>
+                            </c:when>
+                            <c:otherwise>
+                                <li>
+                                    <a href="#">
+                                        <egov-smc:commonLabel><c:out value="${item.displayLabel}"/></egov-smc:commonLabel>
+                                    </a>
+                                </li>
+                            </c:otherwise>
+                        </c:choose>
                         <li class="divider" role="separator"></li>
                         <li><a href="#">Step-by-step guide to eServices</a></li>
                         </ul>
