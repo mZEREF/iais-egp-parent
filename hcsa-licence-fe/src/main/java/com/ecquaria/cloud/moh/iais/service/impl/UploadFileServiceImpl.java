@@ -87,12 +87,10 @@ public class UploadFileServiceImpl implements UploadFileService {
 
 
     @Override
-    public String saveFile(String  str) {
-        List<ApplicationListFileDto> parse = parse(str);
-        if(parse.isEmpty()){
-           return null;
-        }
-        ApplicationListFileDto applicationListFileDto = parse.get(0);
+    public String saveFile(ApplicationListFileDto applicationListFileDto ) {
+
+        String str = JsonUtil.parseToJson(applicationListFileDto);
+
         List<ApplicationGroupDto> applicationGroup = applicationListFileDto.getApplicationGroup();
         List<AppPremisesCorrelationDto> appPremisesCorrelation = applicationListFileDto.getAppPremisesCorrelation();
         if(appPremisesCorrelation.isEmpty()){

@@ -10,7 +10,7 @@ import java.util.List;
  * @date 2019/11/6 20:55
  */
 public interface UploadFileService {
-    String saveFile(String  str);
+    String saveFile(ApplicationListFileDto applicationListFileDto );
     String getData();
     String  changeStatus(ApplicationListFileDto applicationListDto);
     String compressFile(String grpId);
