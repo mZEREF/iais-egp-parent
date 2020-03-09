@@ -23,7 +23,7 @@ public class InboxFallback implements InboxClient {
     }
 
     @Override
-    public FeignResponseEntity<Integer> searchUnreadAndUnresponseNum() {
+    public FeignResponseEntity<Integer> searchUnreadAndUnresponseNum(String userId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

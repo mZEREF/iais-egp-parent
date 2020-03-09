@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDraftD
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 
 import java.util.List;
 
@@ -19,11 +20,12 @@ public interface InboxService {
 
     String getServiceNameById(String serviceId);
     String getDraftNumber(String appNo);
+    InterInboxUserDto getUserInfoByUserId(String userId);
     List<ApplicationDraftDto> getDraftList();
     SearchResult<InboxAppQueryDto> appDoQuery(SearchParam searchParam);
     SearchResult<InboxQueryDto> inboxDoQuery(SearchParam searchParam);
     SearchResult<InboxLicenceQueryDto> licenceDoQuery(SearchParam searchParam);
     Integer licActiveStatusNum();
     Integer appDraftNum();
-    Integer unreadAndUnresponseNum();
+    Integer unreadAndUnresponseNum(String userId);
 }

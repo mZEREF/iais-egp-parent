@@ -17,7 +17,7 @@ public interface InboxClient {
     FeignResponseEntity<SearchResult<InboxQueryDto>> searchInbox(SearchParam searchParam);
 
     @GetMapping(path = "/iais-inter-inbox/inbox/unread-unresponse-num", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Integer> searchUnreadAndUnresponseNum();
+    FeignResponseEntity<Integer> searchUnreadAndUnresponseNum(String userId);
 
 
 }

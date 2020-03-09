@@ -6,11 +6,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDraftD
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
-import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
-import com.ecquaria.cloud.moh.iais.service.client.ConfigInboxClient;
-import com.ecquaria.cloud.moh.iais.service.client.InboxClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +31,9 @@ public class InboxServiceImpl implements InboxService {
     @Autowired
     private LicenceInboxClient licenceInboxClient;
 
+    @Autowired
+    private FeUserClient feUserClient;
+
     @Override
     public String getServiceNameById(String serviceId) {
         return configInboxClient.getServiceNameById(serviceId).getEntity();
@@ -41,6 +42,11 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public String getDraftNumber(String appNo) {
         return appInboxClient.getDraftNumber(appNo).getEntity();
+    }
+
+    @Override
+    public InterInboxUserDto getUserInfoByUserId(String userId) {
+        return  feUserClient.findUserInfoByUserId(userId).getEntity();
     }
 
     @Override
@@ -74,7 +80,7 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
-    public Integer unreadAndUnresponseNum() {
-        return inboxClient.searchUnreadAndUnresponseNum().getEntity();
+    public Integer unreadAndUnresponseNum(String userId) {
+        return inboxClient.searchUnreadAndUnresponseNum(userId).getEntity();
     }
 }

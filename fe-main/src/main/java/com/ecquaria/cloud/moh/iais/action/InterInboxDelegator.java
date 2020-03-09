@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -51,6 +52,8 @@ public class InterInboxDelegator {
 
     }
 
+    private InterInboxUserDto interInboxUserDto;
+
     private FilterParameter appParameter = new FilterParameter.Builder()
             .clz(InboxAppQueryDto.class)
             .searchAttr(InboxConst.APP_PARAM)
@@ -73,6 +76,8 @@ public class InterInboxDelegator {
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
         IaisEGPHelper.clearSessionAttr(bpc.request,InboxConst.class);
         AccessUtil.initLoginUserInfo(bpc.request);
+        LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        interInboxUserDto = inboxService.getUserInfoByUserId(loginContext.getUserId());
         AuditTrailHelper.auditFunction("main-web", "main web");
     }
 
@@ -117,15 +122,17 @@ public class InterInboxDelegator {
     public void prepareDate(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
-        LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        String userId = interInboxUserDto.getUserId();
+        Map<String,Object> inboxSearchMap = new HashMap<>();
+        inboxSearchMap.put("userId",userId);
+        inboxParameter.setFilters(inboxSearchMap);
         SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter,true);
-//        inboxParam.addFilter("userId", loginContext.getUserId(),true);
+//        inboxParam.addFilter("userId",interInboxUserDto.getUserId());
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
         SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
         List<InboxQueryDto> inboxQueryDtoList = inboxResult.getRows();
         for (InboxQueryDto inboxQueryDto:inboxQueryDtoList
                 ) {
-            String msgType = MasterCodeUtil.getCodeDesc(inboxQueryDto.getMessageType());
             String serviceName = inboxService.getServiceNameById(inboxQueryDto.getServiceId());
             inboxQueryDto.setProcessUrl(RedirectUtil.changeUrlToCsrfGuardUrlUrl(inboxQueryDto.getProcessUrl(), request));
             inboxQueryDto.setServiceId(serviceName);
@@ -135,7 +142,7 @@ public class InterInboxDelegator {
             ParamUtil.setRequestAttr(request,InboxConst.INBOX_RESULT, inboxResult);
             cleanParameter("MSG");
         }
-        setNumInfoToRequest(request);
+        setNumInfoToRequest(request,interInboxUserDto);
     }
 
     public void prepareSwitch(BaseProcessClass bpc){
@@ -167,7 +174,7 @@ public class InterInboxDelegator {
             ParamUtil.setRequestAttr(request,InboxConst.LIC_RESULT, licResult);
             cleanParameter("LIC");
         }
-        setNumInfoToRequest(request);
+        setNumInfoToRequest(request,interInboxUserDto);
     }
 
     public void licSwitch(BaseProcessClass bpc){
@@ -255,7 +262,7 @@ public class InterInboxDelegator {
             ParamUtil.setRequestAttr(request,InboxConst.APP_RESULT, appResult);
             cleanParameter("APP");
         }
-        setNumInfoToRequest(request);
+        setNumInfoToRequest(request,interInboxUserDto);
     }
 
     public void appSwitch(BaseProcessClass bpc){
@@ -468,10 +475,10 @@ public class InterInboxDelegator {
         }
     }
 
-    private void setNumInfoToRequest(HttpServletRequest request){
+    private void setNumInfoToRequest(HttpServletRequest request,InterInboxUserDto interInboxUserDto){
         Integer licActiveNum = inboxService.licActiveStatusNum();
         Integer appDraftNum = inboxService.appDraftNum();
-        Integer unreadAndresponseNum = inboxService.unreadAndUnresponseNum();
+        Integer unreadAndresponseNum = inboxService.unreadAndUnresponseNum(interInboxUserDto.getUserId());
         ParamUtil.setRequestAttr(request,"unreadAndresponseNum", unreadAndresponseNum);
         ParamUtil.setRequestAttr(request,"licActiveNum", licActiveNum);
         ParamUtil.setRequestAttr(request,"appDraftNum", appDraftNum);

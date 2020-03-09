@@ -11,11 +11,13 @@
                 inbox.service_id,
                 inbox.process_url,
                 inbox.status,
+                inbox.user_id,
                 inbox.created_dt
             FROM INBOX_MSG AS inbox
             WHERE 1=1
             <#if id??> AND CHARINDEX(:id, inbox.id) >0</#if>
             <#if msgSubject??> AND inbox.subject = :msgSubject</#if>
+            <#if userId??> AND inbox.user_id = :userId</#if>
             <#if messageType??> AND inbox.message_type = :messageType</#if>
             <#if interService??> AND inbox.service_id = :interService</#if>
         ]]>
