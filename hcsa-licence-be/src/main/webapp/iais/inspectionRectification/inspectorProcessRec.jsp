@@ -31,6 +31,7 @@
     <input type="hidden" name="InspectorProRectificationType" value="">
     <input type="hidden" id="actionValue" name="actionValue" value="">
     <input type="hidden" id="processDec" name="processDec" value="">
+    <input type="hidden" id="validateShowPage" name="validateShowPage" value="${validateShowPage}">
 
     <iais:body >
       <div class="container">
@@ -58,7 +59,7 @@
 
                 <div class="swiper-slide"><a id="inspRectification" href="#tabInspection" aria-controls="tabInspection"
                                              role="tab" data-toggle="tab">Rectification</a></div>
-                <div class="swiper-slide"><a href="#tabProcessing" aria-controls="tabProcessing"
+                <div class="swiper-slide"><a id="recInspTabProcessingClick" href="#tabProcessing" aria-controls="tabProcessing"
                                              role="tab" data-toggle="tab">Processing</a></div>
               </div>
               <div class="swiper-button-prev"></div>
@@ -112,9 +113,6 @@
                       View Application
                     </button>
                   </a>
-                  <button type="button" class="btn btn-primary" onclick="javascript:doInspectionPreTaskSelfBack()">
-                    Self-Assessment Checklists
-                  </button>
                 </div>
                 <div>&nbsp</div>
                 <div class="panel panel-default">
@@ -332,6 +330,7 @@
                             <iais:action style="text-align:center;">
                               <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doInspectorProRecSubmit()">Submit</button>
                             </iais:action>
+                            <br>
                             <div class="alert alert-info" role="alert">
                               <strong>
                                 <h4>Processing History</h4>
@@ -400,20 +399,25 @@
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
     $(document).ready(function() {
-        $("#indicateCondRemarks").hidden;
-        var actionValue = $("#actionValue").val();
-        if(actionValue == "view"){
+        var selectValue = $("#selectValue").val();
+        if(selectValue != "REDECI007") {
+            $("#indicateCondRemarks").hide();
+        } else {
+            $("#indicateCondRemarks").show();
+        }
+        var validateShowPage = $("#validateShowPage").val();
+        if(validateShowPage == "ack"){
             inspectorProRecJump();
         }
     })
 
     function inspectorProRecJump(){
-        $("#inspRectification").click();
+        $("#recInspTabProcessingClick").click();
         $("#recInspTabInfo").removeClass('active');
         $("#recInspTabDocuments").removeClass('active');
         $("#recInspTabInspection").removeClass('active');
         $("#recInspTabProcessing").removeClass('active');
-        $("#recInspTabInspection").addClass('active');
+        $("#recInspTabProcessing").addClass('active');
 
     }
     function inspectorProRecSubmit(action){
@@ -427,7 +431,7 @@
         if("REDECI007" == value){
             $("#indicateCondRemarks").show();
         } else if ("REDECI007" != value){
-            $("#indicateCondRemarks").hidden;
+            $("#indicateCondRemarks").hide();
         }
     }
 
