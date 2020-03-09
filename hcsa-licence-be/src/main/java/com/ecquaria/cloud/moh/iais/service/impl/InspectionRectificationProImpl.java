@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -191,11 +192,12 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             String mesNO = inboxMsgService.getMessageNo();
             interMessageDto.setRefNo(mesNO);
             interMessageDto.setService_id(applicationDto1.getServiceId());
-            String url = systemParamConfig.getInterServerName() +
+            String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
                     MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION +
                     taskDto.getRefNo() + "&recVersion=" + version;
             interMessageDto.setProcessUrl(url);
             interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            interMessageDto.setUserId(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
             interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             inboxMsgService.saveInterMessage(interMessageDto);
 
