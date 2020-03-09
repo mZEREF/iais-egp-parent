@@ -570,9 +570,9 @@ public class UploadFileServiceImpl implements UploadFileService {
     }
 
     @Override
-    public void getRelatedDocuments(String entity) {
+    public void getRelatedDocuments(  ApplicationListFileDto applicationListFileDto) {
         try{
-            ApplicationListFileDto applicationListFileDto = JsonUtil.parseToObject(entity, ApplicationListFileDto.class);
+
             List<AppSvcDocDto> appSvcDoc = applicationListFileDto.getAppSvcDoc();
             List<ApplicationGroupDto> applicationGroup = applicationListFileDto.getApplicationGroup();
             if(applicationGroup.isEmpty()){

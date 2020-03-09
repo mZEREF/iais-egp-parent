@@ -40,7 +40,7 @@ public class UploadDelegator {
         List<ApplicationListFileDto> parse = uploadFileService.parse(data);
         for(ApplicationListFileDto applicationListFileDto :parse){
             String s = JsonUtil.parseToJson(applicationListFileDto);
-            uploadFileService. getRelatedDocuments(s);
+            uploadFileService. getRelatedDocuments(applicationListFileDto);
             String grpId = uploadFileService.saveFile(s);
             if(StringUtil.isEmpty(grpId)){
                 continue;
