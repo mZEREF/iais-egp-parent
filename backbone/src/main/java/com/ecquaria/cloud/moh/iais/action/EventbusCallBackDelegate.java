@@ -71,11 +71,9 @@ public class EventbusCallBackDelegate {
                         submissionId, operation, "");
                 for (Map.Entry<String, List<ServiceStatus>> ent : map.entrySet()) {
                     for (ServiceStatus status : ent.getValue()) {
-                        if (status.getServiceStatus().contains(GlobalConstants.STATUS_SUCCESS)) {
-                            submissionClient.submitCompensation(AppConsts.REST_PROTOCOL_TYPE
-                                    + RestApiUrlConsts.EVENT_BUS,
-                                    submissionId, status.getServiceName(), operation);
-                        }
+                        submissionClient.submitCompensation(AppConsts.REST_PROTOCOL_TYPE
+                                + RestApiUrlConsts.EVENT_BUS,
+                                submissionId, status.getServiceName(), operation);
                     }
                 }
             } else if (!pending) {
