@@ -11,10 +11,11 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTERNET___MohAutoRenew___1 extends BaseProcessClass {
-	private static final String DELEGATOR ="autoRenwalDelegator";
+public class INTERNET___MohWithOutRenewal___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="withOutRenewalDelegator";
 	public void preparatData_OnStepProcess_0() throws Exception {
 	// 		preparatData->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepare", this);
