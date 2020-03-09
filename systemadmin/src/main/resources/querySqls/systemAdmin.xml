@@ -86,7 +86,7 @@
             select pid, domain_type , module, description, units,  value, param_type, is_mandatory,  can_update , max_length, status, properties_key
             from
             cm_system_parameters
-            where 1=1
+            where 1=1 and value != 'CMSTAT002'
             <#if domainType??> and domain_type = :domainType</#if>
             <#if module??> and module = :module</#if>
             <#if description??> and charindex(:description, description) >0</#if>
