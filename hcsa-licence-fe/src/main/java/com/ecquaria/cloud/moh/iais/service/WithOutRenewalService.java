@@ -1,6 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.WithOutRenewalDto;
+
+import java.util.List;
 
 /**
  * WithOutRenewalService
@@ -11,4 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.WithOutRenewalDto;
 
 public interface WithOutRenewalService {
     WithOutRenewalDto getRenewalViewByLicNo(String licenceNo);
+
+    List<AppSubmissionDto> getAppSubmissionDtos(List<String> licenceIds);
 }

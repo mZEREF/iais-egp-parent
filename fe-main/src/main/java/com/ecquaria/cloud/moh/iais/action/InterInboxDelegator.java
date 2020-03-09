@@ -438,7 +438,7 @@ public class InterInboxDelegator {
                     StringBuilder url = new StringBuilder();
                     url.append("https://").append(bpc.request.getServerName())
                             .append("/hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal");
-                    ParamUtil.setRequestAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, licIdValue);
+                    ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licIdValue);
                     String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
                     bpc.response.sendRedirect(tokenUrl);
                 }

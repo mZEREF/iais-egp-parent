@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
@@ -11,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,22 +46,18 @@ public class WithOutRenewalDelegator {
     public void prepare(BaseProcessClass bpc)throws Exception{
         log.info("**** the  auto renwal  prepare start  ******");
 //      String  licenceId = ParamUtil.getString(bpc.request,"licNo");
-        String licenceId1="4083B3AD-B04D-EA11-BE7F-000C29F371DC";
-        String licenceId2="4083B3AD-B04D-EA11-BE7F-000C29F371DC";
-        List<AppSubmissionDto> appSubmissionDtoList=new ArrayList<>();
-        List<String> licenceIds=new ArrayList<>();
-        licenceIds.add(licenceId1);
-        licenceIds.add(licenceId2);
-        for (String licenceId:licenceIds
-             ) {
-            AppSubmissionDto appSubmissionDto=appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
-            String serviceName=appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
-            appSubmissionDto.setServiceName(serviceName);
-            appSubmissionDtoList.add(appSubmissionDto);
+        List<String> licenceIDList = (List<String>) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR);
+
+        if (licenceIDList == null || IaisCommonUtils.isEmpty(licenceIDList)){
+            log.info("can not find licence id for without renewal");
+            return;
         }
-        RenewDto renewDto=new RenewDto();
+
+        List<AppSubmissionDto> appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList);
+        RenewDto renewDto = new RenewDto();
+
         renewDto.setAppSubmissionDtos(appSubmissionDtoList);
-        ParamUtil.setSessionAttr(bpc.request,"renewDto", renewDto);
+        ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
         log.info("**** the  auto renwal  prepare  end ******");
     }
 
