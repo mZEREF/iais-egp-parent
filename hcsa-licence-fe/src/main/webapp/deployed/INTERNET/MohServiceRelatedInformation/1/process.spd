@@ -7,7 +7,7 @@
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
-   </OnStepProcess>
+   </OnStepProcess>doLaboratoryDisciplines
   </StartStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareJumpPage" x="240" y="260">
    <Description/>

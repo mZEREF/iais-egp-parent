@@ -60,7 +60,7 @@
           <iais:field value="Status"/>
           <iais:value width="18">
             <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
-                         firstOption="Please Select" filterValue="CMSTAT002" value="${status}"></iais:select>
+                         firstOption="Please Select" filterValue="CMSTAT002,CMSTAT004" value="${status}"></iais:select>
           </iais:value>
         </iais:row>
 

@@ -79,7 +79,7 @@
             <label class="col-xs-2">Status</label>
             <div class="col-md-3">
               <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
-                           firstOption="Select Status" filterValue="CMSTAT002" value="${status}"></iais:select>
+                           firstOption="Select Status" filterValue="CMSTAT002,CMSTAT004" value="${status}"></iais:select>
             </div>
           </div>
 
