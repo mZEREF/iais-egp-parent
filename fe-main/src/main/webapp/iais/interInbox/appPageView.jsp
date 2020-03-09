@@ -80,16 +80,17 @@
     }
 
     function doAppAction(appId,appNo,actionName) {
-        showWaiting();
-        $("[name='action_type_value']").val(actionName);
         if ("Withdraw" == actionName) {
+            showWaiting();
             $("[name='action_no_value']").val(appNo);
             $("[name='action_id_value']").val(appId);
-        }
-        if ("Appeal" == actionName) {
+            submit("appRenew");
+        }if ("Appeal" == actionName) {
+            showWaiting();
             $("[name='action_no_value']").val(appNo);
+            $("[name='action_id_value']").val(appId);
+            submit("appDoAppeal");
         }
-        submit('appDraft');
     };
 
     function doDraftAction(appNo, val) {

@@ -69,7 +69,6 @@
 
     function doLicAmend() {
         showWaiting();
-        $("[name='crud_action_additional']").val("doLicAmend");
         submit('licDoAmend');
     }
 
@@ -80,25 +79,26 @@
 
     function doLicCease(){
         showWaiting();
-        $("[name='crud_action_additional']").val("cease");
-        submit('licDoRenew');
+        submit('licDoCease');
     }
 
-    function doLicAction(licNo,actionName){
+    function doLicAction(licNo){
         showWaiting();
         $("[name='crud_action_value']").val(licNo);
-        $("[name='crud_action_additional']").val(actionName);
         submit('licDoAmend');
     }
 
     function toLicView(licId){
         showWaiting();
         $("[name='action_id_value']").val(licId);
-        $("[name='crud_action_additional']").val("toLicView");
-        submit('licDoAmend');
+        submit('licToView');
     }
-
-
+    
+    function doLicAppeal(licNo) {
+        showWaiting();
+        $("[name='crud_action_value']").val(licNo);
+        submit('licDoAppeal');
+    }
     
     function sortRecords(sortFieldName,sortType){
         $("[name='crud_action_value']").val(sortFieldName);

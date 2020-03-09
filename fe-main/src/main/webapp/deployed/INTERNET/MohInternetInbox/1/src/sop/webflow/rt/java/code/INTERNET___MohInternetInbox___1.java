@@ -92,6 +92,15 @@ public class INTERNET___MohInternetInbox___1 extends BaseProcessClass {
 	public void licDoRenew_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "licDoRenew", this);
 	}
+	public void licDoAppeal_OnStepProcess_0() throws Exception {
+		// 		licDoAppeal->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "licDoAppeal", this);
+	}
+
+	public void licToView_OnStepProcess_0() throws Exception {
+	// 		licToView->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "licToView", this);
+	}
 	/**
 	 * 
 	 * @throws Exception
@@ -119,13 +128,21 @@ public class INTERNET___MohInternetInbox___1 extends BaseProcessClass {
 	}
 
 	public void appDoRenew_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "appDoRenew", this);
+		EngineHelper.delegate(DELEGATOR, "appDoWithDraw", this);
 	}
 
 	public void appDoDraft_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "appDoDraft", this);
 	}
 
-	
+	public void appDoAppeal_OnStepProcess_0() throws Exception {
+	// 		appDoAppeal->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "appDoAppeal", this);
+	}
+
+	public void appDoRecall_OnStepProcess_0() throws Exception {
+	// 		appDoRecall->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "appDoRecall", this);
+	}
 
 }

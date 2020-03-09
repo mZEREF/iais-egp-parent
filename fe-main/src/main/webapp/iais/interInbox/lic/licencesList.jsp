@@ -157,7 +157,7 @@
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Actions</p>
                                         <iais:select name="licActions" id="licActions" options="licActions"
-                                                     firstOption="Select"  onchange="doLicAction('${licenceQuery.licenceNo}','licence')"></iais:select>
+                                                     firstOption="Select"  onchange="doLicAppeal('${licenceQuery.licenceNo}')"></iais:select>
                                     </td>
                                 </tr>
                             </c:forEach>

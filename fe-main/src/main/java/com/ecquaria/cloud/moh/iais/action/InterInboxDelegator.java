@@ -4,7 +4,6 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -18,12 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.InboxConst;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author: Hc
@@ -315,33 +306,38 @@ public class InterInboxDelegator {
         SearchResultHelper.doSort(request,appParameter);
     }
 
+    public void appDoAppeal(BaseProcessClass bpc) throws IOException {
+        HttpServletRequest request = bpc.request;
+        String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
+        StringBuffer url = new StringBuffer();
+        url.append("https://").append(bpc.request.getServerName())
+                .append("/hcsa-licence-web/eservice/INTERNET/MohAppealApplication")
+                .append("?appealingFor=")
+                .append(appNo)
+                .append("&type=application");
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        bpc.response.sendRedirect(tokenUrl);
+    }
+
+    public void appDoWithDraw(BaseProcessClass bpc) throws IOException {
+        HttpServletRequest request = bpc.request;
+        String appId = ParamUtil.getString(request, InboxConst.ACTION_ID_VALUE);
+        String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
+        StringBuffer url = new StringBuffer();
+        url.append("https://").append(bpc.request.getServerName())
+                .append("/hcsa-licence-web/eservice/INTERNET/MohWithdrawalApplication")
+                .append("?appId=")
+                .append(appId)
+                .append("&appNo=")
+                .append(appNo);
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        bpc.response.sendRedirect(tokenUrl);
+    }
+
     public void appDoDraft(BaseProcessClass bpc) throws IOException {
         log.debug("The prepareEdit start ...");
         HttpServletRequest request = bpc.request;
-        if ("Appeal".equals(ParamUtil.getString(request, InboxConst.ACTION_TYPE_VALUE))){
-            String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
-            StringBuffer url = new StringBuffer();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohAppealApplication")
-                    .append("?appealingFor=")
-                    .append(appNo)
-                    .append("&type=application");
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
-        }
-        if ("Withdraw".equals(ParamUtil.getString(request, InboxConst.ACTION_TYPE_VALUE))){
-            String appId = ParamUtil.getString(request, InboxConst.ACTION_ID_VALUE);
-            String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
-            StringBuffer url = new StringBuffer();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohWithdrawalApplication")
-                    .append("?appId=")
-                    .append(appId)
-                    .append("&appNo=")
-                    .append(appNo);
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
-        }
+
         if("APTY005".equals(ParamUtil.getMaskedString(request, InboxConst.ACTION_TYPE_VALUE))){
             String appNo = ParamUtil.getMaskedString(request, InboxConst.ACTION_NO_VALUE);
             StringBuffer url = new StringBuffer();
@@ -364,40 +360,45 @@ public class InterInboxDelegator {
             bpc.response.sendRedirect(tokenUrl);}
     }
 
+    public void licDoAppeal(BaseProcessClass bpc) throws IOException {
+        HttpServletRequest request = bpc.request;
+        String licNo = ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_VALUE);
+        StringBuffer url = new StringBuffer();
+        url.append("https://").append(bpc.request.getServerName())
+                .append("/hcsa-licence-web/eservice/INTERNET/MohAppealApplication")
+                .append("?appealingFor=")
+                .append(licNo)
+                .append("&type=licence");
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        bpc.response.sendRedirect(tokenUrl);
+
+    }
+
+    public void licToView(BaseProcessClass bpc) throws IOException {
+        HttpServletRequest request = bpc.request;
+        String licId = ParamUtil.getMaskedString(bpc.request, InboxConst.ACTION_ID_VALUE);
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(bpc.request.getServerName())
+                .append("/hcsa-licence-web/eservice/INTERNET/MohLicenceView")
+                .append("?licenceId=").append(licId);
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        bpc.response.sendRedirect(tokenUrl);
+    }
+
     /**
      *
      * @param bpc
      *
      */
     public void licDoAmend(BaseProcessClass bpc) throws IOException {
-        if ("toLicView".equals(ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_ADDITIONAL))){
-            String licId = ParamUtil.getMaskedString(bpc.request, InboxConst.ACTION_ID_VALUE);
-            StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohLicenceView")
-                    .append("?licenceId=").append(licId);
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
-        }if ("licence".equals(ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_ADDITIONAL))){
-            String licNo = ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_VALUE);
-            StringBuffer url = new StringBuffer();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohAppealApplication")
-                    .append("?appealingFor=")
-                    .append(licNo)
-                    .append("&type=licence");
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
-        }if ("doLicAmend".equals(ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_ADDITIONAL))){
-            String licId = ParamUtil.getString(bpc.request, "licenceNo");
-            String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
-            StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohRequestForChange")
-                    .append("?licenceId=").append(licIdValue);
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
-        }
+        String licId = ParamUtil.getString(bpc.request, "licenceNo");
+        String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(bpc.request.getServerName())
+                .append("/hcsa-licence-web/eservice/INTERNET/MohRequestForChange")
+                .append("?licenceId=").append(licIdValue);
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        bpc.response.sendRedirect(tokenUrl);
     }
 
     /**
@@ -409,14 +410,16 @@ public class InterInboxDelegator {
         String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
         if(licIds != null){
             List<String> licIdValue = new ArrayList<>();
-            if ("cease".equals(ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_ADDITIONAL))){
-                for(String item:licIds){
-                    licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
-                }
-                ParamUtil.setSessionAttr(bpc.request,"licIds", (Serializable) licIdValue);
+            for(String item:licIds){
+                licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
+            }
+            boolean auto = false;
+            if(licIdValue.size() == 1 && !auto){
                 StringBuilder url = new StringBuilder();
                 url.append("https://").append(bpc.request.getServerName())
-                        .append("/hcsa-licence-web/eservice/INTERNET/MohCessationApplication");
+                        .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication")
+                        .append("?licenceId=").append(licIdValue.get(0))
+                        .append("&type=").append(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
                 String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
                 bpc.response.sendRedirect(tokenUrl);
             }
@@ -443,7 +446,21 @@ public class InterInboxDelegator {
                     bpc.response.sendRedirect(tokenUrl);
                 }
             }
-
+        }
+    }
+    public void licDoCease(BaseProcessClass bpc) throws IOException {
+        String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
+        if(licIds != null) {
+            List<String> licIdValue = new ArrayList<>();
+            for (String item : licIds) {
+                licIdValue.add(ParamUtil.getMaskedString(bpc.request, item));
+            }
+            ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
+            StringBuilder url = new StringBuilder();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohCessationApplication");
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
         }
     }
 
