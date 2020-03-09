@@ -33,7 +33,7 @@ public class UploadDelegator {
     public void preparetionData (BaseProcessClass bpc){
         logAbout("preparetionData");
         //get all data of need Carry from DB
-        uploadFileService. initFilePath();
+
         String data = uploadFileService.getData();
         log.info("------------------- getData  end --------------");
         //Parse the

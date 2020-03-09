@@ -559,7 +559,6 @@ public class UploadFileServiceImpl implements UploadFileService {
     }
 
 
-
     private void getFileRep(String id,String docName,String groupId){
         byte[] entity = fileRepositoryClient.getFileFormDataBase(id).getEntity();
         File file=MiscUtil.generateFile(sharedPath+AppServicesConsts.FILE_NAME+File.separator+groupId+ File.separator + AppServicesConsts.FILES,
