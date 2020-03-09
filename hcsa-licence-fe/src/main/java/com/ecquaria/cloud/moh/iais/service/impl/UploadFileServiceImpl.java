@@ -63,7 +63,7 @@ import org.springframework.stereotype.Service;
 public class UploadFileServiceImpl implements UploadFileService {
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
-    private String download;
+    private String download ;
     private String fileName;
     private String fileFormat = ".text";
     private String backups;
@@ -133,23 +133,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     @Override
     public String getData() {
-        fileName = "folder";
-        download = sharedPath + "folder";
-        backups = sharedPath + "backups";
-        String entity = applicationClient.fileAll().getEntity();
-        try{
-            ApplicationListFileDto applicationListFileDto = JsonUtil.parseToObject(entity, ApplicationListFileDto.class);
-            List<AppSvcDocDto> appSvcDoc = applicationListFileDto.getAppSvcDoc();
-            List<ApplicationGroupDto> applicationGroup = applicationListFileDto.getApplicationGroup();
 
-            groupId=applicationGroup.get(0).getId();
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDoc = applicationListFileDto.getAppGrpPrimaryDoc();
-            List<AppPremisesSpecialDocDto> appPremisesSpecialDocEntities = applicationListFileDto.getAppPremisesSpecialDocEntities();
-            appSvcDoc(appSvcDoc,appGrpPrimaryDoc,appPremisesSpecialDocEntities);
-        }catch (Exception e){
-            log.error("***************** there have a error is "+e+"***************");
-            log.error(e.getMessage(),e);
-        }
+        String entity = applicationClient.fileAll().getEntity();
 
         return    entity;
     }
@@ -178,13 +163,10 @@ public class UploadFileServiceImpl implements UploadFileService {
         return "";
     }
     @Override
-    public boolean compressFile(){
+    public String compressFile(){
         String compress = compress();
         log.info("-------------compress() end --------------");
-        boolean rename = rename(compress);
-
-        deleteFile();
-        return rename;
+        return compress;
     }
     /*****************compress*********/
 /*
@@ -286,7 +268,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     }
 
-    private boolean rename(String fileNamesss)  {
+    @Override
+    public boolean renameAndSave(String fileNamesss)  {
         log.info("--------------rename start ---------------------");
         flag = true;
         File zipFile =new File(backups);
@@ -312,10 +295,6 @@ public class UploadFileServiceImpl implements UploadFileService {
                    byte[] bytes = by.toByteArray();
                    String s = FileUtil.genMd5FileChecksum(bytes);
                    File curFile = MiscUtil.generateFile(backups, s + ".zip");
-                 /*  File curFile = new File(backups, s + ".zip");
-                   if (!curFile.exists()){
-                       curFile.createNewFile();
-                   }*/
                    file.renameTo(curFile);
                    log.info("----------- new zip file name is"+backups+File.separator+s+".zip");
                    String s1 = saveFileName(s+".zip","backups" + File.separator+s+".zip");
@@ -330,34 +309,6 @@ public class UploadFileServiceImpl implements UploadFileService {
            }
         }
         return flag;
-    }
-
-    private void deleteFile(){
-        File file =new File(download);
-        File fileRepPath=new File(download+File.separator+groupId);
-        MiscUtil.checkDirs(fileRepPath);
-        MiscUtil.checkDirs(file);
-        if(fileRepPath.isDirectory()){
-            File[] files = fileRepPath.listFiles();
-            for(File f :files){
-                if(f.exists()&&f.isFile()){
-                    MiscUtil.deleteFile(f);
-                }
-            }
-        }
-        if(file.isDirectory()){
-            File[] files = file.listFiles((dir, name) -> {
-                if (name.endsWith(fileFormat)) {
-                    return true;
-                }
-                return false;
-            });
-            for(File f:files){
-                if(f.exists()&&f.isFile()){
-                    MiscUtil.deleteFile(f);
-                }
-            }
-        }
     }
 
     private String saveFileName(String fileName ,String filePath){
@@ -653,7 +604,33 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     }
 
-    private static void parseApplication() {
+    @Override
+    public void getRelatedDocuments(String entity) {
+        try{
+            ApplicationListFileDto applicationListFileDto = JsonUtil.parseToObject(entity, ApplicationListFileDto.class);
+            List<AppSvcDocDto> appSvcDoc = applicationListFileDto.getAppSvcDoc();
+            List<ApplicationGroupDto> applicationGroup = applicationListFileDto.getApplicationGroup();
+            if(applicationGroup.isEmpty()){
+                log.info("************* this grp is empty**************");
+              return;
+            }
+            groupId=applicationGroup.get(0).getId();
+            List<AppGrpPrimaryDocDto> appGrpPrimaryDoc = applicationListFileDto.getAppGrpPrimaryDoc();
+            List<AppPremisesSpecialDocDto> appPremisesSpecialDocEntities = applicationListFileDto.getAppPremisesSpecialDocEntities();
+            appSvcDoc(appSvcDoc,appGrpPrimaryDoc,appPremisesSpecialDocEntities);
+        }catch (Exception e){
+            log.error("***************** there have a error is "+e+"***************");
+            log.error(e.getMessage(),e);
+        }
 
     }
+
+    @Override
+    public void initFilePath() {
+        fileName = "folder";
+        download = sharedPath + fileName;
+        backups = sharedPath + "backups";
+    }
+
+
 }

@@ -13,8 +13,11 @@ public interface UploadFileService {
     boolean saveFile(String  str);
     String getData();
     String  changeStatus(ApplicationListFileDto applicationListDto);
-    boolean compressFile();
+    String compressFile();
 
     List<ApplicationListFileDto> parse(String data);
 
+    void  getRelatedDocuments(String entity);
+    void initFilePath();
+    boolean renameAndSave(String file);
 }

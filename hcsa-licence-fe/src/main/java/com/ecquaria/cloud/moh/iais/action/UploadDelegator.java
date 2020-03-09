@@ -33,21 +33,24 @@ public class UploadDelegator {
     public void preparetionData (BaseProcessClass bpc){
         logAbout("preparetionData");
         //get all data of need Carry from DB
+        uploadFileService. initFilePath();
         String data = uploadFileService.getData();
         log.info("------------------- getData  end --------------");
         //Parse the
         List<ApplicationListFileDto> parse = uploadFileService.parse(data);
         for(ApplicationListFileDto applicationListFileDto :parse){
             String s = JsonUtil.parseToJson(applicationListFileDto);
+            uploadFileService. getRelatedDocuments(s);
             boolean saveFileSuccess = uploadFileService.saveFile(s);
             if(!saveFileSuccess){
                 continue;
             }
             log.info("------------------- saveFile  end --------------");
-            boolean compressFileSuccess = uploadFileService.compressFile();
+            String compressFileName = uploadFileService.compressFile();
+            boolean rename = uploadFileService.renameAndSave(compressFileName);
             log.info("------------------- compressFile  end --------------");
             try {
-                if(compressFileSuccess){
+                if(rename){
                     uploadFileService.changeStatus(applicationListFileDto);
                 }
             }catch (Exception e){
