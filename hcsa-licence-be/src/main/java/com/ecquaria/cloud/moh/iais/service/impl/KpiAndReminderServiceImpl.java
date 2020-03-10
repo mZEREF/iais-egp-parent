@@ -134,7 +134,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
                 errorMap.put(stageCode,"UC_CHKLMD001_ERR001");
             }else {
                 if(!stageCode1.matches("^[0-9]{0,5}$")){
-                    errorMap.put(stageCode,"UC_CHKLMD001_ERR002");
+                    errorMap.put(stageCode,"UC_CHKLMD001_ERR001");
                 }
             }
         }

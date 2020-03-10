@@ -37,11 +37,11 @@
           <label style="font-size: 25px">Reason for Appeal<span class="mandatory"> *</span></label>
           <select id="reasonSelect" name="reasonSelect">
             <option value="">Please select an appeal reason</option>
-            <option value="MS001"<c:if test="${type=='licence'}">disabled</c:if> <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option>
-            <option value="MS002" <c:if test="${type=='licence'}">disabled</c:if><c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option>
-            <option value="MS003"<c:if test="${type=='licence'}">disabled</c:if> <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option>
-            <option value="MS008"<c:if test="${type=='licence'}">disabled</c:if> <c:if test="${appPremiseMiscDto.reason=='MS008'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option>
-            <option value="MS004"<c:if test="${type=='application'}">disabled</c:if>  <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option>
+          <c:if test="${type=='application'}"><option value="MS001" <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option></c:if>
+          <c:if test="${type=='application'}"><option value="MS002" <c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option></c:if>
+          <c:if test="${type=='application'}"><option value="MS003" <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option></c:if>
+          <c:if test="${type=='application'}"><option value="MS008" <c:if test="${appPremiseMiscDto.reason=='MS008'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option></c:if>
+          <c:if test="${type=='licence'}"> <option value="MS004" <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option></c:if>
             <%-- <option value="MS005" <c:if test="${appPremiseMiscDto.reason=='MS005'}">selected="selected"</c:if>>Appeal against suspension</option>
              <option value="MS006" <c:if test="${appPremiseMiscDto.reason=='MS006'}">selected="selected"</c:if>>Appeal against revocation</option>--%>
           </select>

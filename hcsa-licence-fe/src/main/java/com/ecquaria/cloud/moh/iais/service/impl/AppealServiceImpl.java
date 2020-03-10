@@ -323,7 +323,7 @@ public class AppealServiceImpl implements AppealService {
         if(file!=null&&file.getSize()>0){
             long size = file.getSize()/1024;
             req.getSession().setAttribute("file",file);
-            if(size>5*1024*1024){
+            if(size>5*1024){
                 map.put("file","File is too large");
             }
             String filename = file.getOriginalFilename();
@@ -338,7 +338,7 @@ public class AppealServiceImpl implements AppealService {
         else if(sessionFile!=null&&sessionFile.getSize()>0){
             if ("Y".equals(isDelete)) {
                 long size = sessionFile.getSize()/1024;
-                if(size>5*1024*1024){
+                if(size>5*1024){
                     map.put("file","File is too large");
                 }
 
@@ -371,11 +371,11 @@ public class AppealServiceImpl implements AppealService {
                     StringBuilder stringBuilder1=new StringBuilder();
                     String assignSelect = appSvcCgoList.get(i).getAssignSelect();
                     if("-1".equals(assignSelect)){
-                        map.put("assignSelect"+i, "UC_CHKLMD001_ERR002");
+                        map.put("assignSelect"+i, "UC_CHKLMD001_ERR001");
                     }else {
                         String idTyp = appSvcCgoList.get(i).getIdType();
                         if("-1".equals(idTyp)){
-                            map.put("idTyp"+i, "UC_CHKLMD001_ERR002");
+                            map.put("idTyp"+i, "UC_CHKLMD001_ERR001");
                         }
                         String salutation = appSvcCgoList.get(i).getSalutation();
                         if(StringUtil.isEmpty(salutation)){
@@ -383,11 +383,11 @@ public class AppealServiceImpl implements AppealService {
                         }
                         String speciality = appSvcCgoList.get(i).getSpeciality();
                         if("-1".equals(speciality)){
-                            map.put("speciality"+i,"UC_CHKLMD001_ERR002");
+                            map.put("speciality"+i,"UC_CHKLMD001_ERR001");
                         }
                         String professionType = appSvcCgoList.get(i).getProfessionType();
                         if(StringUtil.isEmpty(professionType)){
-                            map.put("professionType"+i,"UC_CHKLMD001_ERR002");
+                            map.put("professionType"+i,"UC_CHKLMD001_ERR001");
                         }
                         String designation = appSvcCgoList.get(i).getDesignation();
                         if(StringUtil.isEmpty(designation)){
@@ -409,8 +409,7 @@ public class AppealServiceImpl implements AppealService {
                                 }
                                 stringBuilder1.append(idTyp).append(idNo);
 
-                            }
-                            if("NRIC".equals(idTyp)){
+                            }else if("NRIC".equals(idTyp)){
                                 boolean b1 = SgNoValidator.validateNric(idNo);
                                 if(!b1){
                                     map.put("idNo"+i,"CHKLMD001_ERR005");
@@ -424,7 +423,7 @@ public class AppealServiceImpl implements AppealService {
 
                         String Specialty = appSvcCgoList.get(i).getSpeciality();
                         if (StringUtil.isEmpty(Specialty)) {
-                            map.put("speciality"+i, "UC_CHKLMD001_ERR002");
+                            map.put("speciality"+i, "UC_CHKLMD001_ERR001");
                         }
 
                         String specialty = appSvcCgoList.get(i).getSpeciality();

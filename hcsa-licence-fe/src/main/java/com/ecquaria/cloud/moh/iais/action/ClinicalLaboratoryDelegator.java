@@ -1352,7 +1352,7 @@ public class ClinicalLaboratoryDelegator {
         for(int i=0;i< daList.size();i++){
             String idNo = daList.get(i).getIdNo();
             if(StringUtil.isEmpty(idNo)){
-                map.put("disciplineAllocation"+i,"UC_CHKLMD001_ERR002");
+                map.put("disciplineAllocation"+i,"UC_CHKLMD001_ERR001");
             }
         }
     }

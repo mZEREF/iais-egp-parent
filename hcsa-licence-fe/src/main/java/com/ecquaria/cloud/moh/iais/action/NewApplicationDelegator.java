@@ -2094,11 +2094,11 @@ public class NewApplicationDelegator {
         for(int i=0;i<appGrpPremisesDtoList.size();i++){
             String premiseType = appGrpPremisesDtoList.get(i).getPremisesType();
             if (StringUtil.isEmpty(premiseType)) {
-                errorMap.put("premisesType"+i, "UC_CHKLMD001_ERR002");
+                errorMap.put("premisesType"+i, "UC_CHKLMD001_ERR001");
             }else {
                 String premisesSelect = appGrpPremisesDtoList.get(i).getPremisesSelect();
                 if (StringUtil.isEmpty(premisesSelect) || "-1".equals(premisesSelect)) {
-                    errorMap.put("premisesSelect"+i, "UC_CHKLMD001_ERR002");
+                    errorMap.put("premisesSelect"+i, "UC_CHKLMD001_ERR001");
                 } else if ("newPremise".equals(premisesSelect)) {
                     if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
                         String onsiteStartHH = appGrpPremisesDtoList.get(i).getOnsiteStartHH();
@@ -2188,11 +2188,11 @@ public class NewApplicationDelegator {
                         }
                         String hciName = appGrpPremisesDtoList.get(i).getHciName();
                         if(StringUtil.isEmpty(hciName)){
-                            errorMap.put("hciName"+i,"UC_CHKLMD001_ERR002");
+                            errorMap.put("hciName"+i,"UC_CHKLMD001_ERR001");
                         }
                         String offTelNo = appGrpPremisesDtoList.get(i).getOffTelNo();
                         if(StringUtil.isEmpty(offTelNo)){
-                            errorMap.put("offTelNo"+i,"UC_CHKLMD001_ERR002");
+                            errorMap.put("offTelNo"+i,"UC_CHKLMD001_ERR001");
                         }else {
                             boolean matches = offTelNo.matches("^[6][0-9]{7}$");
                             if(!matches) {
@@ -2202,12 +2202,12 @@ public class NewApplicationDelegator {
 
                         String streetName = appGrpPremisesDtoList.get(i).getStreetName();
                         if(StringUtil.isEmpty(streetName)){
-                            errorMap.put("streetName"+i,"UC_CHKLMD001_ERR002");
+                            errorMap.put("streetName"+i,"UC_CHKLMD001_ERR001");
                         }
 
                         String addrType = appGrpPremisesDtoList.get(i).getAddrType();
                         if(StringUtil.isEmpty(addrType)){
-                            errorMap.put("addrType"+i, "UC_CHKLMD001_ERR002");
+                            errorMap.put("addrType"+i, "UC_CHKLMD001_ERR001");
                         }else {
                             if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
                                 boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getFloorNo());
@@ -2343,7 +2343,7 @@ public class NewApplicationDelegator {
                         }
                         String conveyanceAddressType = appGrpPremisesDtoList.get(i).getConveyanceAddressType();
                         if(StringUtil.isEmpty(conveyanceAddressType)){
-                            errorMap.put("conveyanceAddressType"+i, "UC_CHKLMD001_ERR002");
+                            errorMap.put("conveyanceAddressType"+i, "UC_CHKLMD001_ERR001");
                         }else {
                             if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(conveyanceAddressType)) {
                                 boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceFloorNo());

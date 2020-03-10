@@ -425,7 +425,7 @@ public class RequestForChangeMenuDelegator {
             }
         }
         if(StringUtil.isEmpty(professionType)){
-            errMap.put("professionType","UC_CHKLMD001_ERR002");
+            errMap.put("professionType","UC_CHKLMD001_ERR001");
         }
         if(StringUtil.isEmpty(designation)){
             errMap.put("designation","UC_CHKLMD001_ERR001");
@@ -831,12 +831,12 @@ public class RequestForChangeMenuDelegator {
 
             String streetName = appGrpPremisesDto.getStreetName();
             if(StringUtil.isEmpty(streetName)){
-                errorMap.put("streetName","UC_CHKLMD001_ERR002");
+                errorMap.put("streetName","UC_CHKLMD001_ERR001");
             }
 
             String addrType = appGrpPremisesDto.getAddrType();
             if(StringUtil.isEmpty(addrType)){
-                errorMap.put("addrType", "UC_CHKLMD001_ERR002");
+                errorMap.put("addrType", "UC_CHKLMD001_ERR001");
             }else {
                 boolean empty = StringUtil.isEmpty(appGrpPremisesDto.getFloorNo());
                 boolean empty1 = StringUtil.isEmpty(appGrpPremisesDto.getBlkNo());
@@ -887,7 +887,7 @@ public class RequestForChangeMenuDelegator {
             }
             String conveyanceAddressType = appGrpPremisesDto.getConveyanceAddressType();
             if(StringUtil.isEmpty(conveyanceAddressType)){
-                errorMap.put("conveyanceAddressType", "UC_CHKLMD001_ERR002");
+                errorMap.put("conveyanceAddressType", "UC_CHKLMD001_ERR001");
             }else {
                 if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(conveyanceAddressType)) {
                     boolean empty = StringUtil.isEmpty(appGrpPremisesDto.getConveyanceFloorNo());

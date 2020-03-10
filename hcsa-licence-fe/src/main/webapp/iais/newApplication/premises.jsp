@@ -288,7 +288,7 @@
                                 Operating Hours (Start) <span class="mandatory">*</span>
                               </label>
 
-                              <div class="col-xs-9 col-sm-5 col-md-4">
+                              <div class="col-xs-9 col-sm-5 col-md-6">
                                 <input type="text" value="${appGrpPremisesDto.onsiteStartHH}" maxlength="2" style="width: 60px" name="onSiteStartHH"/>(HH)
                                 :
                                 <input type="text" value="${appGrpPremisesDto.onsiteStartMM}" maxlength="2" style="width: 60px"  name="onSiteStartMM"/>(MM)
@@ -300,7 +300,7 @@
                                 Operating Hours (End) <span class="mandatory">*</span>
                               </label>
 
-                              <div class="col-xs-9 col-sm-5 col-md-4">
+                              <div class="col-xs-9 col-sm-5 col-md-6">
                                 <input type="text" value="${appGrpPremisesDto.onsiteEndHH}" maxlength="2" style="width: 60px" name="onSiteEndHH"/>(HH)
                                 :
                                 <input type="text" value="${appGrpPremisesDto.onsiteEndMM}" maxlength="2" style="width: 60px" name="onSiteEndMM"/>(MM)

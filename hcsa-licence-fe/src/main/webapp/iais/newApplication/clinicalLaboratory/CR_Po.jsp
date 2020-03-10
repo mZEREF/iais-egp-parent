@@ -72,6 +72,7 @@
                               <div class="">
                                 <iais:select cssClass="poSelect"  name="assignSelect" options="PrincipalOfficersAssignSelect"  value="${principalOfficer.assignSelect}" ></iais:select>
                                 <div id="control--runtime--2--errorMsg_right" style="display: none;" class="error_placements"></div>
+                                <span id="error_assignSelect${suffix}" name="iaisErrorMsg" class="error-msg"></span>
                               </div>
                             </div>
                           </div>

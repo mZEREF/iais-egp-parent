@@ -92,16 +92,16 @@ public class NewApplicationHelper {
         }
 
         Map<String,String> errMap = new HashMap<>();
-        StringBuilder stringBuilder =new StringBuilder();
+        List<String> stringList=new ArrayList<>();
         for(int i=0;i<appSvcCgoList.size();i++ ){
             StringBuilder stringBuilder1=new StringBuilder();
             String assignSelect = appSvcCgoList.get(i).getAssignSelect();
             if("-1".equals(assignSelect)){
-                errMap.put("assignSelect"+i, "UC_CHKLMD001_ERR002");
+                errMap.put("assignSelect"+i, "UC_CHKLMD001_ERR001");
             }else {
                 String idTyp = appSvcCgoList.get(i).getIdType();
                 if("-1".equals(idTyp)){
-                    errMap.put("idTyp"+i, "UC_CHKLMD001_ERR002");
+                    errMap.put("idTyp"+i, "UC_CHKLMD001_ERR001");
                 }
                 String salutation = appSvcCgoList.get(i).getSalutation();
                 if(StringUtil.isEmpty(salutation)){
@@ -109,11 +109,11 @@ public class NewApplicationHelper {
                 }
                 String speciality = appSvcCgoList.get(i).getSpeciality();
                 if("-1".equals(speciality)){
-                    errMap.put("speciality"+i,"UC_CHKLMD001_ERR002");
+                    errMap.put("speciality"+i,"UC_CHKLMD001_ERR001");
                 }
                 String professionType = appSvcCgoList.get(i).getProfessionType();
                 if(StringUtil.isEmpty(professionType)){
-                    errMap.put("professionType"+i,"UC_CHKLMD001_ERR002");
+                    errMap.put("professionType"+i,"UC_CHKLMD001_ERR001");
                 }
                 String designation = appSvcCgoList.get(i).getDesignation();
                 if(StringUtil.isEmpty(designation)){
@@ -145,12 +145,13 @@ public class NewApplicationHelper {
 
                     }
 
+
                 }
                 //to do
 
                 String Specialty = appSvcCgoList.get(i).getSpeciality();
                 if (StringUtil.isEmpty(Specialty)) {
-                    errMap.put("speciality"+i, "UC_CHKLMD001_ERR002");
+                    errMap.put("speciality"+i, "UC_CHKLMD001_ERR001");
                 }
 
                 String specialty = appSvcCgoList.get(i).getSpeciality();
@@ -178,12 +179,13 @@ public class NewApplicationHelper {
                         errMap.put("emailAddr"+i, "CHKLMD001_ERR006");
                     }
                 }
-                String s = stringBuilder.toString();
+
+
                 if(!StringUtil.isEmpty(stringBuilder1.toString())){
-                    if(s.contains(stringBuilder1.toString())){
+                    if(stringList.contains(stringBuilder1.toString())){
                         errMap.put("idNo","UC_CHKLMD001_ERR002");
                     }else {
-                        stringBuilder.append(stringBuilder1.toString());
+                        stringList.add( stringBuilder1.toString());
                     }
                 }
 
@@ -257,8 +259,8 @@ public class NewApplicationHelper {
             String psnType = poDto.get(i).getPsnType();
             if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)){
                 String assignSelect = poDto.get(i).getAssignSelect();
-                if (StringUtil.isEmpty(assignSelect)) {
-                    oneErrorMap.put("assignSelect", "UC_CHKLMD001_ERR002");
+                if ("-1".equals(assignSelect)) {
+                    oneErrorMap.put("assignSelect"+i, "UC_CHKLMD001_ERR001");
                 } else {
                     //do by wenkang
                     String mobileNo = poDto.get(i).getMobileNo();
