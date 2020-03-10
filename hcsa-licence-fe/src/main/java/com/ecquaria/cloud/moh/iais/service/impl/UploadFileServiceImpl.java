@@ -94,28 +94,17 @@ public class UploadFileServiceImpl implements UploadFileService {
             log.info("appPremisesCorrelation is empty data is not ");
             return null;
         }
-      String  groupId="";
+        String groupId="";
         String s = FileUtil.genMd5FileChecksum(str.getBytes());
         if(!applicationGroup.isEmpty()){
              groupId = applicationGroup.get(0).getId();
-
         }
-
-
-        File file=MiscUtil.generateFile(sharedPath+ AppServicesConsts.FILE_NAME+File.separator+groupId, s+AppServicesConsts.FILE_FORMAT);
-
-        File groupPath=new File(sharedPath+ AppServicesConsts.FILE_NAME+File.separator+groupId);
-
-        MiscUtil.checkDirs(groupPath);
-
-        try (FileOutputStream fileInputStream = new FileOutputStream(sharedPath+AppServicesConsts.BACKUPS+File.separator+file.getName());
-             FileOutputStream fileOutputStream  =new FileOutputStream(file);) {
-            if(!file.exists()){
+        File file = MiscUtil.generateFile(sharedPath+ AppServicesConsts.FILE_NAME+File.separator+groupId, s+AppServicesConsts.FILE_FORMAT);
+        try (FileOutputStream fileOutputStream  = new FileOutputStream(file);) {
+             if(!file.exists()){
                 file.createNewFile();
-            }
+             }
             fileOutputStream.write(str.getBytes());
-            fileInputStream.write(str.getBytes());
-
         } catch (Exception e) {
             log.error(e.getMessage(),e);
             return null;
@@ -171,16 +160,11 @@ public class UploadFileServiceImpl implements UploadFileService {
         if(!fileRepPath.exists()){
             fileRepPath.mkdirs();
         }
-
         for(AppPremisesSpecialDocDto every:appPremisesSpecialDocEntities){
-
             getFileRep(every.getFileRepoId(),every.getDocName(),groupId);
         }
-
-
         for(AppSvcDocDto every:appSvcDoc){
             getFileRep(every.getFileRepoId(),every.getDocName(),groupId);
-
         }
         for(AppGrpPrimaryDocDto every:appGrpPrimaryDoc){
             getFileRep(every.getFileRepoId(),every.getDocName(),groupId);
@@ -536,16 +520,15 @@ public class UploadFileServiceImpl implements UploadFileService {
     }
 
     @Override
-    public void getRelatedDocuments(  ApplicationListFileDto applicationListFileDto) {
+    public void getRelatedDocuments(ApplicationListFileDto applicationListFileDto) {
         try{
-
-            List<AppSvcDocDto> appSvcDoc = applicationListFileDto.getAppSvcDoc();
             List<ApplicationGroupDto> applicationGroup = applicationListFileDto.getApplicationGroup();
             if(applicationGroup.isEmpty()){
                 log.info("************* this grp is empty**************");
               return;
             }
-        String   groupId=applicationGroup.get(0).getId();
+            String groupId = applicationGroup.get(0).getId();
+            List<AppSvcDocDto> appSvcDoc = applicationListFileDto.getAppSvcDoc();
             List<AppGrpPrimaryDocDto> appGrpPrimaryDoc = applicationListFileDto.getAppGrpPrimaryDoc();
             List<AppPremisesSpecialDocDto> appPremisesSpecialDocEntities = applicationListFileDto.getAppPremisesSpecialDocEntities();
             appSvcDoc(appSvcDoc,appGrpPrimaryDoc,appPremisesSpecialDocEntities,groupId);

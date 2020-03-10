@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
 import java.util.List;
@@ -33,13 +32,12 @@ public class UploadDelegator {
     public void preparetionData (BaseProcessClass bpc){
         logAbout("preparetionData");
         //get all data of need Carry from DB
-
         String data = uploadFileService.getData();
         log.info("------------------- getData  end --------------");
         //Parse the
         List<ApplicationListFileDto> parse = uploadFileService.parse(data);
         for(ApplicationListFileDto applicationListFileDto :parse){
-            uploadFileService. getRelatedDocuments(applicationListFileDto);
+            uploadFileService.getRelatedDocuments(applicationListFileDto);
             String grpId = uploadFileService.saveFile(applicationListFileDto);
             if(StringUtil.isEmpty(grpId)){
                 continue;
