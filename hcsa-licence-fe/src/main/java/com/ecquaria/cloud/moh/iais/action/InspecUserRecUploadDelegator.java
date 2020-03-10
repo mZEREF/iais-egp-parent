@@ -165,7 +165,7 @@ public class InspecUserRecUploadDelegator {
 
     private Map<String, String> doValidateByRecFile(InspecUserRecUploadDto inspecUserRecUploadDto, MultipartHttpServletRequest mulReq,
                                                     Map<String, String> errorMap, String actionValue, CommonsMultipartFile file) {
-        String uploadRemarks = mulReq.getParameter("recFileUpload");
+        String uploadRemarks = mulReq.getParameter("uploadRemarks");
         inspecUserRecUploadDto.setUploadRemarks(uploadRemarks);
         String errorKey = "recFile";
 
