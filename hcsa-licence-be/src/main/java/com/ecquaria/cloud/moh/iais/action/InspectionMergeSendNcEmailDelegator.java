@@ -345,17 +345,16 @@ public class InspectionMergeSendNcEmailDelegator {
                 for(int i=0;i<appPremCorrIds.size();i++){
                     ApplicationViewDto applicationViewDto1=applicationViewService.searchByCorrelationIdo(appPremCorrIds.get(i));
                     applicationViewDto1.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_CREATE_MESG);
-                    applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
+                    applicationViewService.updateApplicaiton(applicationViewDto1.getApplicationDto());
                     AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
                     appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_NC_RECTIFICATION_EMAIL);
                     appInspectionStatusDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     appInspectionStatusClient.update(appInspectionStatusDto1);
+                    taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
+                    taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
+                    completedTask(taskDto);
+                    createAppPremisesRoutingHistory(applicationViewDto1.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId);
                 }
-                taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
-                taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
-                completedTask(taskDto);
-                createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId);
-
             }
 
             EmailDto emailDto=new EmailDto();
