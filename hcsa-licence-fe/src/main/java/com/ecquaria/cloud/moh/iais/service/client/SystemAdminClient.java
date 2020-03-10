@@ -30,4 +30,5 @@ public interface SystemAdminClient  {
 
     @GetMapping(path = "/iais-messageTemplate/template/{msgId}")
     FeignResponseEntity<MsgTemplateDto> getMsgTemplate(@PathVariable("msgId") String id);
+
 }

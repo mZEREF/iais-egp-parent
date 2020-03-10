@@ -16,4 +16,6 @@ public interface WithOutRenewalService {
     WithOutRenewalDto getRenewalViewByLicNo(String licenceNo);
 
     List<AppSubmissionDto> getAppSubmissionDtos(List<String> licenceIds);
+
+    String getAppGrpNoByAppType(String appType);
 }
