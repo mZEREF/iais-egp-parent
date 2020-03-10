@@ -39,7 +39,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach items="${appCessationDtos}" var="appCess" varStatus="num">
+                        <c:forEach items="${confirmDtos}" var="appCess" varStatus="num">
                             <c:set var="hciDtoNum" value="${fn:length(appCess.appCessHciDtos)}"/>
                             <%--                           <c:if test="${hciDtoNum > 1}">--%>
                             <tr style="text-align:center;height: 13em">

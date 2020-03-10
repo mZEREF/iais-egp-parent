@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -295,14 +296,14 @@ public class CessationApplicationDelegator {
             errorMap.put(i + "readInfo" + j, "ERR0009");
         }
 
-        String cessationReason = ParamUtil.getRequestString(httpServletRequest, i + "cessationReason" + j);
+        String cessationReason = ParamUtil.getRequestString(httpServletRequest, i + "reason" + j);
         String otherReason = ParamUtil.getRequestString(httpServletRequest, i + "otherReason" + j);
         String patientSelect = ParamUtil.getRequestString(httpServletRequest, i + "patientSelect" + j);
         String patNoRemarks = ParamUtil.getRequestString(httpServletRequest, i + "patNoRemarks" + j);
         String patHciName = ParamUtil.getRequestString(httpServletRequest, i + "patHciName" + j);
         String patRegNo = ParamUtil.getRequestString(httpServletRequest, i + "patRegNo" + j);
         String patOthers = ParamUtil.getRequestString(httpServletRequest, i + "patOthers" + j);
-        if ("OtherReasons".equals(cessationReason)) {
+        if (ApplicationConsts.CESSATION_REASON_OTHER.equals(cessationReason)) {
             if (StringUtil.isEmpty(otherReason)) {
                 errorMap.put(i + "otherReason" + j, "ERR0009");
             }
@@ -311,15 +312,15 @@ public class CessationApplicationDelegator {
             if (StringUtil.isEmpty(patientSelect)) {
                 errorMap.put(i + "patientSelect" + j, "ERR0009");
             } else {
-                if ("hciName".equals(patientSelect)) {
+                if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect)) {
                     if (StringUtil.isEmpty(patHciName)) {
                         errorMap.put(i + "patHciName" + j, "ERR0009");
                     }
-                } else if ("regNo".equals(patientSelect)) {
+                } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect)) {
                     if (StringUtil.isEmpty(patRegNo)) {
                         errorMap.put(i + "patRegNo" + j, "ERR0009");
                     }
-                } else if ("Others".equals(patientSelect)) {
+                } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patientSelect)) {
                     if (StringUtil.isEmpty(patOthers)) {
                         errorMap.put(i + "patOthers" + j, "ERR0009");
                     }
