@@ -397,7 +397,7 @@ public class RequestForChangeMenuDelegator {
         for(PersonnelListQueryDto item:personnelEditList){
             String licenceId = item.getLicenceId();
             if(!StringUtil.isEmpty(licenceId)){
-                List<ApplicationDto> applicationDtos = requestForChangeService.getOngoingApplicationByLicenceId(licenceId);
+                List<ApplicationDto> applicationDtos = requestForChangeService.getApplicationByLicIdAndAppTypeNotNewApp(licenceId);
                 if(!IaisCommonUtils.isEmpty(applicationDtos)){
                     ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"preAck");
@@ -622,14 +622,14 @@ public class RequestForChangeMenuDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
         String licenceId = appSubmissionDto.getLicenceId();
-       /* if(!StringUtil.isEmpty(licenceId)){
-            List<ApplicationDto> applicationDtos = requestForChangeService.getOngoingApplicationByLicenceId(licenceId);
+        if(!StringUtil.isEmpty(licenceId)){
+            List<ApplicationDto> applicationDtos = requestForChangeService.getApplicationByLicIdAndAppTypeNotNewApp(licenceId);
             if(!IaisCommonUtils.isEmpty(applicationDtos)){
                 ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
                 ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "There is  ongoing application for the licence");
                 return;
             }
-        }*/
+        }
 
 
         String appType = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;

@@ -172,7 +172,7 @@
                             <iais:value id="conveyanceSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                               <c:choose>
                                 <c:when test="${appGrpPremisesDto.premisesType == conv}">
-                                  <iais:select cssClass="premSelect" id="conveyanceSel" name="conveyanceSelect"  options="conveyancePremSel" value="${appGrpPremisesDto.conveyancePremSel}"></iais:select>
+                                  <iais:select cssClass="premSelect" id="conveyanceSel" name="conveyanceSelect"  options="conveyancePremSel" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
                                 </c:when>
                                 <c:otherwise>
                                   <iais:select cssClass="premSelect" id="conveyanceSel" name="conveyanceSelect"  options="conveyancePremSel" value=""></iais:select>
@@ -580,7 +580,7 @@
                 </div>
                 <div class="application-tab-footer">
                     <c:choose>
-                        <c:when test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
+                        <c:when test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
                             <%@include file="../common/rfcFooter.jsp"%>
                         </c:when>
                         <c:otherwise>

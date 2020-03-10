@@ -169,7 +169,7 @@ public interface ApplicationClient  {
     FeignResponseEntity<AppSubmissionDto> saveAppsForRequestForChange(@RequestBody AppSubmissionDto appSubmissionDto);
     
     @GetMapping(path = "/iais-application/application-licenceId", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity< List<ApplicationDto>> getApplicaitonByLicenceId(@RequestParam(name = "licenceId")String licenceId);
+    FeignResponseEntity< List<ApplicationDto>> getApplicationByLicIdAndAppTypeNotNewApp(@RequestParam(name = "licenceId")String licenceId);
 
     @PostMapping(value = "/iais-application/appGrps-by-ids", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationGroupDto>>getApplicationGroupsByIds(@RequestBody List<String> appGrpIds);

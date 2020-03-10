@@ -1,6 +1,5 @@
 <div class="main-content">
     <form class="form-horizontal" method="post" id="MasterCodeForm" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/include/formHidden.jsp" %>
         <div class="main-content">
             <div class="container">
                 <div class="row">
@@ -12,7 +11,7 @@
                             <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                                 <li class="active" role="presentation"><a href="#tabIns" aria-controls="tabIns" role="tab"
                                                                           data-toggle="tab">Instructions</a></li>
-                                <li class="complete" role="presentation"><a href="#tabLicRe"
+                                <li id="licReLi" class="complete" role="presentation"><a id="licReA" href="#tabLicRe"
                                                                             aria-controls="tabLicRe" role="tab"
                                                                             data-toggle="tab">Licence Review</a></li>
                                 <li class="complete" role="presentation"><a href="#tabPay"
@@ -82,12 +81,18 @@
                                     </div>
                                 </div>
 
+                                <form class="form-inline" method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
+                                    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+                                    <input id="EditValue" type="hidden" name="EditValue" value="" />
+                                </form>
                                 <div class="tab-pane active" id="tabLicRe" role="tabpanel">
                                     <c:forEach items="${renewDto.appSubmissionDtos}"
                                                var="appSubmissionDtos" >
                                         <h3>Clinical Laboratory;Licence No${appSubmissionDtos.licenceNo}</h3>
                                         <c:forEach items="${appSubmissionDtos.appGrpPremisesDtoList}"
                                                    var="appGrpPremisesDtoList" varStatus="status">
+                                            <!--todo:wait caijing complete -->
+                                            <p class="text-right"><a href="#" id="premisesEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                                             <STRONG>Premises${status.index+1}</STRONG><br/>
                                             <div>${appGrpPremisesDtoList.address}</div>
                                             <br/>
@@ -181,3 +186,18 @@
         </div>
     </form>
 </div>
+
+<script>
+    $(document).ready(function () {
+        if("Y" == '${jumpEdit}'){
+            $('#licReA').click();
+        }
+
+    });
+
+    $('#premisesEdit').click(function () {
+        $('#EditValue').val('premises');
+        $('#MasterCodeForm').submit();
+    });
+
+</script>

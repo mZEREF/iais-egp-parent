@@ -157,7 +157,7 @@ public class RequestForChangeDelegator {
      */
     public void prepareFirstView(BaseProcessClass bpc)  {
         log.debug(StringUtil.changeForLog("the do prepareFirstView start ...."));
-        ParamUtil.setRequestAttr(bpc.request,"FirstView",AppConsts.TRUE);
+//        ParamUtil.setRequestAttr(bpc.request,"FirstView",AppConsts.TRUE);
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
 
 

@@ -12,7 +12,7 @@
                     <div class="dashboard-page-title">
                         <c:choose>
                             <c:when test="${'APTY004' == AppSubmissionDto.appType}">
-                                <h1>Renewal Licence Application</h1>
+                                <%@include file="../withoutrenewal/renewalHeader.jsp"%>
                             </c:when>
                             <c:when test="${'APTY005' == AppSubmissionDto.appType}">
                                 <%@include file="../resForChange/amendHeader.jsp"%>

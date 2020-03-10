@@ -16,7 +16,7 @@ public interface RequestForChangeService {
 
     AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId);
 
-    List<ApplicationDto> getOngoingApplicationByLicenceId(String licenceId);
+    List<ApplicationDto> getApplicationByLicIdAndAppTypeNotNewApp(String licenceId);
 
     AppSubmissionDto submitChange(AppSubmissionDto appSubmissionDto);
 

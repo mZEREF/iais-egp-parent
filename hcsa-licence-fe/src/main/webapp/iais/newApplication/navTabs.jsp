@@ -56,7 +56,8 @@
             submit('payment',null,null);
         });
 
-        <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
+        <!--todo:according edit type to unbind -->
+        <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType}">
             $('#premises').unbind();
             $('#premisesli').unbind();
             $('#documents').unbind();

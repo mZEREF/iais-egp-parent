@@ -69,8 +69,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
 
     @Override
-    public  List<ApplicationDto> getOngoingApplicationByLicenceId(String licenceId) {
-        return applicationClient.getApplicaitonByLicenceId(licenceId).getEntity();
+    public  List<ApplicationDto> getApplicationByLicIdAndAppTypeNotNewApp(String licenceId) {
+        return applicationClient.getApplicationByLicIdAndAppTypeNotNewApp(licenceId).getEntity();
     }
     
 

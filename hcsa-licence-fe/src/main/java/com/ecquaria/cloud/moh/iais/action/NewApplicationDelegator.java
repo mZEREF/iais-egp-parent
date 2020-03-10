@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -714,7 +715,7 @@ public class NewApplicationDelegator {
     public void doRenewSubmit(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do doRenewSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        List<ApplicationDto> applicationDtos = requestForChangeService.getOngoingApplicationByLicenceId(appSubmissionDto.getLicenceId());
+        List<ApplicationDto> applicationDtos = requestForChangeService.getApplicationByLicIdAndAppTypeNotNewApp(appSubmissionDto.getLicenceId());
         if(!IaisCommonUtils.isEmpty(applicationDtos)){
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "error");
@@ -725,12 +726,12 @@ public class NewApplicationDelegator {
 
         boolean isAutoRfc = compareAndSendEmail(appSubmissionDto, oldAppSubmissionDto);
         appSubmissionDto.setAutoRfc(isAutoRfc);
-        /*Map<String, String> map = doPreviewAndSumbit(bpc);
+        Map<String, String> map = doPreviewAndSumbit(bpc);
         if(!map.isEmpty()){
-            ParamUtil.setRequestAttr(bpc.request,"Msg",map);
+            ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","N");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
             return;
-        }*/
+        }
 
         String draftNo = appSubmissionDto.getDraftNo();
         if(StringUtil.isEmpty(draftNo)){
@@ -762,18 +763,10 @@ public class NewApplicationDelegator {
 
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto, bpc.process);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        String isrfiSuccess = "N";
-        if(isAutoRfc){
-            //change pmt status for carry file
-            String appGrpId = appSubmissionDto.getAppGrpId();
-            ApplicationGroupDto appGrp = new ApplicationGroupDto();
-            appGrp.setId(appGrpId);
-            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-            serviceConfigService.updatePaymentStatus(appGrp);
-            isrfiSuccess = "Y";
-            ParamUtil.setRequestAttr(bpc.request,ACKMESSAGE," renew save success");
-        }
-        ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess",isrfiSuccess);
+
+        //back to renewal view page
+        ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","N");
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"jump");
 
         log.info(StringUtil.changeForLog("the do doRenewSubmit end ...."));
     }
@@ -790,7 +783,7 @@ public class NewApplicationDelegator {
     public void doRequestForChangeSubmit(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        List<ApplicationDto> applicationDtos = requestForChangeService.getOngoingApplicationByLicenceId(appSubmissionDto.getLicenceId());
+        List<ApplicationDto> applicationDtos = requestForChangeService.getApplicationByLicIdAndAppTypeNotNewApp(appSubmissionDto.getLicenceId());
         //todo chnage edit
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         appEditSelectDto.setServiceEdit(true);
@@ -1918,7 +1911,7 @@ public class NewApplicationDelegator {
         String appType = (String) ParamUtil.getRequestAttr(bpc.request,"appType");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTORFCATTR);
         String currentEdit = (String) ParamUtil.getRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT);
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
+        if((ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType))
                 && appSubmissionDto!= null && !StringUtil.isEmpty(currentEdit)){
             AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
             if(RfcConst.EDIT_PREMISES.equals(currentEdit)){
@@ -2442,8 +2435,31 @@ public class NewApplicationDelegator {
                     appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                 }
             }
-
             //todo:set AppSvcLaboratoryDisciplinesDto
+            /*String currentSvcId = "";
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            Map<String,AppSvcRelatedInfoDto> svcScopeConfigMap = NewApplicationHelper.
+            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                    List<AppSvcLaboratoryDisciplinesDto> scopeList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+                    if(!IaisCommonUtils.isEmpty(scopeList)){
+                        for(AppSvcLaboratoryDisciplinesDto scope:scopeList){
+                            List<AppSvcChckListDto> checkedBoxs = scope.getAppSvcChckListDtoList();
+                            if(!IaisCommonUtils.isEmpty(checkedBoxs)){
+                                for(AppSvcChckListDto appSvcChckListDto:checkedBoxs){
+                                    if(StringUtil.isEmpty(appSvcChckListDto.getChkName())){
+                                        break;
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            List<HcsaSvcSubtypeOrSubsumedDto> checkList= serviceConfigService.loadLaboratoryDisciplines(currentSvcId);*/
+
 
             //todo:set personnel info
 
