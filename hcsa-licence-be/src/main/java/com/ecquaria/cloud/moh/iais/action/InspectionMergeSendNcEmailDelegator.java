@@ -342,12 +342,15 @@ public class InspectionMergeSendNcEmailDelegator {
                 }
             }
             else {
-                applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_CREATE_MESG);
-                applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
-                AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
-                appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_NC_RECTIFICATION_EMAIL);
-                appInspectionStatusDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                appInspectionStatusClient.update(appInspectionStatusDto1);
+                for(int i=0;i<appPremCorrIds.size();i++){
+                    ApplicationViewDto applicationViewDto1=applicationViewService.searchByCorrelationIdo(appPremCorrIds.get(i));
+                    applicationViewDto1.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_CREATE_MESG);
+                    applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
+                    AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
+                    appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_NC_RECTIFICATION_EMAIL);
+                    appInspectionStatusDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    appInspectionStatusClient.update(appInspectionStatusDto1);
+                }
                 taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
                 taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
                 completedTask(taskDto);
