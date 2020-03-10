@@ -28,6 +28,14 @@ public class AppInboxFallback implements AppInboxClient {
     }
 
     @Override
+    public FeignResponseEntity<List<String>> getAppGrpIdsByLicenseeIs(String licenseeId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<String> getDraftNumber(String appNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -60,7 +68,7 @@ public class AppInboxFallback implements AppInboxClient {
     }
 
     @Override
-    public FeignResponseEntity<Integer> getAppDraftNum() {
+    public FeignResponseEntity<Integer> getAppDraftNum(List<String> appOrgIds) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

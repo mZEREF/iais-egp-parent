@@ -97,7 +97,7 @@
         var action = val;
         if ("Reload" == action) {
             $("[name='action_no_value']").val(appNo);
-            submit('appDraft');
+            // submit('appDraft');
         }
 
         if ("Delete" == action) {

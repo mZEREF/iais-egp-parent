@@ -9,13 +9,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 
 /**
@@ -38,7 +39,7 @@ public interface LicenceInboxClient {
     FeignResponseEntity<List<PersonnelListQueryDto>> getPersonnel(@RequestParam(value = "licenceId")String licenseeId);
 
     @GetMapping(path= "/hcsa-licence-transport/licence-active-num")
-    FeignResponseEntity<Integer> getLicActiveStatusNum();
+    FeignResponseEntity<Integer> getLicActiveStatusNum(@RequestParam("licenseeId")String licenseeId);
 
     @GetMapping(path= "/hcsa-licence-rfc/licence-bylicence-byNo/{licenceNo}")
     FeignResponseEntity<LicenceDto> getLicBylicNo();

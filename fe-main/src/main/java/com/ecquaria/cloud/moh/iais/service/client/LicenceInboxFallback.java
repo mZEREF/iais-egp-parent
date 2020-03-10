@@ -54,7 +54,7 @@ public class LicenceInboxFallback implements LicenceInboxClient {
     }
 
     @Override
-    public FeignResponseEntity<Integer> getLicActiveStatusNum() {
+    public FeignResponseEntity<Integer> getLicActiveStatusNum(String licenseeId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

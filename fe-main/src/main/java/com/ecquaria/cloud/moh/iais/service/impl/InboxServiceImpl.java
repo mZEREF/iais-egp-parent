@@ -46,7 +46,10 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public InterInboxUserDto getUserInfoByUserId(String userId) {
-        return  feUserClient.findUserInfoByUserId(userId).getEntity();
+        InterInboxUserDto interInboxUserDto = feUserClient.findUserInfoByUserId(userId).getEntity();
+        List<String> appGrpIdList = appInboxClient.getAppGrpIdsByLicenseeIs(interInboxUserDto.getLicenseeId()).getEntity();
+        interInboxUserDto.setAppGrpIds(appGrpIdList);
+        return  interInboxUserDto;
     }
 
     @Override
@@ -70,13 +73,13 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
-    public Integer licActiveStatusNum() {
-        return licenceInboxClient.getLicActiveStatusNum().getEntity();
+    public Integer licActiveStatusNum(String licenseeId) {
+        return licenceInboxClient.getLicActiveStatusNum(licenseeId).getEntity();
     }
 
     @Override
-    public Integer appDraftNum() {
-        return appInboxClient.getAppDraftNum().getEntity();
+    public Integer appDraftNum(List<String> appOrgIds) {
+        return appInboxClient.getAppDraftNum(appOrgIds).getEntity();
     }
 
     @Override

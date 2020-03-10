@@ -163,6 +163,9 @@ public class InterInboxDelegator {
         log.debug(StringUtil.changeForLog("Step ---> toLicencePage"));
         HttpServletRequest request = bpc.request;
         prepareLicSelectOption(request);
+        Map<String,Object> licSearchMap = new HashMap<>();
+        licSearchMap.put("licenseeId",interInboxUserDto.getLicenseeId());
+        licenceParameter.setFilters(licSearchMap);
         SearchParam licParam = SearchResultHelper.getSearchParam(request,licenceParameter,true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.LICENCE_QUERY_KEY,licParam);
         SearchResult licResult = inboxService.licenceDoQuery(licParam);
@@ -249,6 +252,9 @@ public class InterInboxDelegator {
         /**
          * Application SearchResult
          */
+        Map<String,Object> appSearchMap = new HashMap<>();
+        appSearchMap.put("appGrpId",interInboxUserDto.getAppGrpIds());
+        appParameter.setFilters(appSearchMap);
         SearchParam appParam = SearchResultHelper.getSearchParam(request,appParameter,true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.APPLICATION_QUERY_KEY,appParam);
         SearchResult appResult = inboxService.appDoQuery(appParam);
@@ -352,7 +358,6 @@ public class InterInboxDelegator {
     public void appDoDraft(BaseProcessClass bpc) throws IOException {
         log.debug("The prepareEdit start ...");
         HttpServletRequest request = bpc.request;
-
         if("APTY005".equals(ParamUtil.getMaskedString(request, InboxConst.ACTION_TYPE_VALUE))){
             String appNo = ParamUtil.getMaskedString(request, InboxConst.ACTION_NO_VALUE);
             StringBuffer url = new StringBuffer();
@@ -455,8 +460,8 @@ public class InterInboxDelegator {
     }
 
     private void setNumInfoToRequest(HttpServletRequest request,InterInboxUserDto interInboxUserDto){
-        Integer licActiveNum = inboxService.licActiveStatusNum();
-        Integer appDraftNum = inboxService.appDraftNum();
+        Integer licActiveNum = inboxService.licActiveStatusNum(interInboxUserDto.getLicenseeId());
+        Integer appDraftNum = inboxService.appDraftNum(interInboxUserDto.getAppGrpIds());
         Integer unreadAndresponseNum = inboxService.unreadAndUnresponseNum(interInboxUserDto.getUserId());
         ParamUtil.setRequestAttr(request,"unreadAndresponseNum", unreadAndresponseNum);
         ParamUtil.setRequestAttr(request,"licActiveNum", licActiveNum);

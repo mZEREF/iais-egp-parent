@@ -29,6 +29,7 @@
         FROM (SELECT
                 app.id,
                 app.application_no,
+                app.app_grp_id,
                 app.app_type,
                 app.status,
                 app.service_id,
@@ -39,13 +40,15 @@
             on app.APPLICATION_NO = app2.application_no and app.version = app2.version
             union
             select
-                A.ID,A.DRAFT_NO AS application_no,A.APP_TYPE,'APST008' as status,NULL as service_id, A.CREATED_DT,1
+                A.ID,A.DRAFT_NO AS application_no,A.app_grp_id,A.APP_TYPE,'APST008' as status,NULL as service_id, A.CREATED_DT,1
             from
                 app_grp_submission_draft AS A
             where  A.status = 'CMSTAT001') AS B
          WHERE B.STATUS != 'CMSTAT002' AND B.STATUS !='APST009'
             <#if id??> AND CHARINDEX(:id, app.id) >0</#if>
             <#if appType??> AND B.app_type = :appType</#if>
+            <#if appType??> AND B.app_type = :appType</#if>
+            <#if appGrpId??> AND B.app_grp_id in (:appGrpId)</#if>
             <#if serviceType??> AND B.service_id = :serviceType</#if>
             <#if appNo??> AND B.application_no like :appNo</#if>
             <#if appStatus??> AND B.status = :appStatus</#if>
@@ -60,6 +63,7 @@
                 lic.id,
                 lic.licence_no,
                 lic.svc_name,
+                lic.licensee_id,
                 lic.status,
                 lic.start_date,
                 lic.expiry_date,
@@ -71,6 +75,7 @@
             <#if id??> AND CHARINDEX(:id, lic.id) >0</#if>
             <#if serviceType??> AND lic.svc_name = :serviceType</#if>
             <#if licStatus??> AND lic.status = :licStatus</#if>
+            <#if licenseeId??> AND lic.licensee_id = :licenseeId</#if>
             <#if fStartDate??> AND lic.start_date >= :fStartDate</#if>
             <#if eStartDate??> AND lic.start_date <= :eStartDate</#if>
             <#if fExpiryDate??> AND lic.expiry_date >= :fExpiryDate</#if>
