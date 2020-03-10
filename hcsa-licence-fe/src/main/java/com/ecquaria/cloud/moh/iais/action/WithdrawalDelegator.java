@@ -43,6 +43,8 @@ public class WithdrawalDelegator {
     @Autowired
     private ServiceConfigService serviceConfigService;
 
+    private String appId;
+
     public void start(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("****The Start Step****"));
         AccessUtil.initLoginUserInfo(bpc.request);
@@ -52,12 +54,12 @@ public class WithdrawalDelegator {
     public void prepareDate(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("****The prepareDate Step****"));
         List<SelectOption> withdrawalReason = new ArrayList<>();
-        String appId = ParamUtil.getRequestString(bpc.request, "applicationId");
         withdrawalReason.add(new SelectOption("WDR001", "Duplicate Application"));
         withdrawalReason.add(new SelectOption("WDR002", "Wrong Application"));
         withdrawalReason.add(new SelectOption("WDR003", "Failure to obtain pre requisite licence from other agency(ies)"));
         withdrawalReason.add(new SelectOption("WDR004", "No longer wish to provide the service"));
         withdrawalReason.add(new SelectOption("WDR005", "Others"));
+        appId = ParamUtil.getString(bpc.request, "appId");
         ParamUtil.setSessionAttr(bpc.request, "appNo", ParamUtil.getRequestString(bpc.request, "appNo"));
         ParamUtil.setRequestAttr(bpc.request, "withdrawalReasonList", withdrawalReason);
     }
@@ -66,8 +68,7 @@ public class WithdrawalDelegator {
         WithdrawnDto withdrawnDto = new WithdrawnDto();
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
-        String appId = ParamUtil.getRequestString(mulReq, "appId");
-//        String appId = "7BCC5724-A469-47A6-A75B-07BE2AF88E3D";
+//        String appId = ParamUtil.getString(bpc.request, "appId");
         String withdrawnReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
         CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
         withdrawnDto.setApplicationId(appId);
