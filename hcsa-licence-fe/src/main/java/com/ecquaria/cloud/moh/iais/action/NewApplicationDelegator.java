@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -680,6 +681,8 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
 
+        log.info("appSubmissionDto:"+appSubmissionDto.toString());
+        log.info("oldAppSubmissionDto:"+oldAppSubmissionDto.toString());
         Map<String, String> doComChangeMap = doComChange(appSubmissionDto,oldAppSubmissionDto);
         if(!doComChangeMap.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"Msg",doComChangeMap);
@@ -687,7 +690,7 @@ public class NewApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","N");
             return;
         }
-
+        log.info("doComChange is ok ...");
         Map<String, String> map = doPreviewAndSumbit(bpc);
         if(!map.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"Msg",map);
@@ -829,7 +832,12 @@ public class NewApplicationDelegator {
         appSubmissionDto.setAppGrpNo(appGroupNo);
         AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(appSubmissionDto, oldAppSubmissionDto);
         if(!amendmentFeeDto.getChangeInHCIName() && !amendmentFeeDto.getChangeInLocation()){
-            appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
+            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+            if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+                for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                    appGrpPremisesDto.setNeedNewLicNo(false);
+                }
+            }
         }
         FeeDto  feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         double amount = feeDto.getTotal();
@@ -1494,31 +1502,39 @@ public class NewApplicationDelegator {
         Map<String, String> premissMap = doValidatePremiss(bpc);
         if(!premissMap.isEmpty()){
             previewAndSubmitMap.put("premiss","UC_CHKLMD001_ERR001");
+            String premissMapStr = JsonUtil.parseToJson(premissMap);
+            log.info("premissMap json str:"+premissMapStr);
         }
         //
         List<AppSvcPrincipalOfficersDto> poDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto");
         Map<String, String> poMap = NewApplicationHelper.doValidatePo(poDto);
         if(!poMap.isEmpty()){
             previewAndSubmitMap.put("po","UC_CHKLMD001_ERR001");
+            String poMapStr = JsonUtil.parseToJson(poMap);
+            log.info("poMap json str:"+poMapStr);
         }
         //
         List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, ClinicalLaboratoryDelegator.GOVERNANCEOFFICERSDTOLIST);
         Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoList);
         if(!govenMap.isEmpty()){
             previewAndSubmitMap.put("goven","UC_CHKLMD001_ERR001");
-
+            String govenMapStr = JsonUtil.parseToJson(govenMap);
+            log.info("govenMap json str:"+govenMapStr);
         }
         //
         Map<String, String> map = doCheckBox(bpc,sB);
         if(!map.isEmpty()){
             previewAndSubmitMap.putAll(map);
-
+            String mapStr = JsonUtil.parseToJson(map);
+            log.info("map json str:"+mapStr);
         }
 
         Map<String,String> documentMap=new HashMap<>();
         documentValid(bpc.request,documentMap);
         if(!documentMap.isEmpty()){
             previewAndSubmitMap.put("document","UC_CHKLMD001_ERR001");
+            String documentMapStr = JsonUtil.parseToJson(documentMap);
+            log.info("documentMap json str:"+documentMapStr);
         }
 
         if(!StringUtil.isEmpty(sB.toString())){
@@ -1950,7 +1966,9 @@ public class NewApplicationDelegator {
         String appNo = ParamUtil.getString(bpc.request,"appNo");
         if(!StringUtil.isEmpty(appNo)){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
-            appSubmissionDto.setNeedEditController(true);
+            if(appSubmissionDto != null){
+                appSubmissionDto.setNeedEditController(true);
+            }
             AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             //ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
@@ -2415,6 +2433,26 @@ public class NewApplicationDelegator {
                     }
                 }
                 ParamUtil.setSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) oneHcsaServiceDto);
+            }
+
+            //set premises info
+            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+            if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+                for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                    appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                }
+            }
+
+            //todo:set AppSvcLaboratoryDisciplinesDto
+
+            //todo:set personnel info
+
+            //set oldAppSubmission when rfi,rfc,renew
+            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
+                    ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
+                    || rfi != null){
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
+                ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
             }
 
         }

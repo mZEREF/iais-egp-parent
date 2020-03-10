@@ -305,7 +305,7 @@ public class RequestForChangeMenuDelegator {
 
         if(errorMap.size() >0){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg",WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, "prePremisesEdit");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
             return;
         }
         ParamUtil.setRequestAttr(bpc.request,RfcConst.SWITCH_VALUE,"dosubmit");
@@ -470,7 +470,12 @@ public class RequestForChangeMenuDelegator {
             appSubmissionDto.setAppGrpNo(appGroupNo);
             appSubmissionDto.setAmount(0.0);
             appSubmissionDto.setAutoRfc(true);
-            appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
+            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+            if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+                for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                    appGrpPremisesDto.setNeedNewLicNo(false);
+                }
+            }
             //judge is the preInspection
             PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
             if (preOrPostInspectionResultDto == null) {
@@ -641,7 +646,12 @@ public class RequestForChangeMenuDelegator {
         amendmentFeeDto.setChangeInHCIName(false);
         boolean isSame = compareLocation(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
         if(isSame){
-            appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
+            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+            if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+                for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                    appGrpPremisesDto.setNeedNewLicNo(false);
+                }
+            }
         }
         amendmentFeeDto.setChangeInLocation(!isSame);
         //

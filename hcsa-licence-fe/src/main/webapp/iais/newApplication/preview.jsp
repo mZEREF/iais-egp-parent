@@ -142,11 +142,6 @@
 
     });
 
-    $('.test-btn').click(function () {
-        alert(123);
-        showWaiting();
-
-    });
 
 
 

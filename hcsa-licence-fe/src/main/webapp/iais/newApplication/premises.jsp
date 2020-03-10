@@ -172,10 +172,10 @@
                             <iais:value id="conveyanceSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                               <c:choose>
                                 <c:when test="${appGrpPremisesDto.premisesType == conv}">
-                                  <iais:select cssClass="premSelect" id="conveyanceSel" name="conveyanceSelect"  options="conveyancePremSel" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
+                                  <iais:select cssClass="premSelect" id="conveyanceSel" name="conveyanceSelect"  options="conveyancePremSel" value="${appGrpPremisesDto.conveyancePremSel}"></iais:select>
                                 </c:when>
                                 <c:otherwise>
-                                  <iais:select cssClass="premSelect" id="conveyanceSel" name="conveyanceSelect"  options="conveyancePremSel" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
+                                  <iais:select cssClass="premSelect" id="conveyanceSel" name="conveyanceSelect"  options="conveyancePremSel" value=""></iais:select>
                                 </c:otherwise>
                               </c:choose>
                             </iais:value>
