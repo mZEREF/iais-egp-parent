@@ -33,7 +33,26 @@ public class WithOutRenewalDelegator {
 
     public void start(BaseProcessClass bpc){
         log.info("**** the non auto renwal  start ******");
+        //init session
+        ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, null);
 
+        //init data
+        List<String> licenceIDList = (List<String>) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR);
+        if (licenceIDList == null || IaisCommonUtils.isEmpty(licenceIDList)){
+            log.info("can not find licence id for without renewal");
+            return;
+        }
+        List<AppSubmissionDto> appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList);
+        for (AppSubmissionDto appSubmissionDto: appSubmissionDtoList) {
+            if(!appSubmissionDto.getAppSvcRelatedInfoDtoList().isEmpty()) {
+                String serviceName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
+                appSubmissionDto.setServiceName(serviceName);
+            }
+        }
+        RenewDto renewDto = new RenewDto();
+
+        renewDto.setAppSubmissionDtos(appSubmissionDtoList);
+        ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
         log.info("**** the non auto renwal  end ******");
     }
 
@@ -45,32 +64,7 @@ public class WithOutRenewalDelegator {
      */
     public void prepare(BaseProcessClass bpc)throws Exception{
         log.info("**** the  auto renwal  prepare start  ******");
-//      String  licenceId = ParamUtil.getString(bpc.request,"licNo");
-        List<String> licenceIDList = (List<String>) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR);
 
-        if (licenceIDList == null || IaisCommonUtils.isEmpty(licenceIDList)){
-            log.info("can not find licence id for without renewal");
-            return;
-        }
-
-
-        List<AppSubmissionDto> appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList);
-        for (AppSubmissionDto appSubmissionDto: appSubmissionDtoList) {
-            if(!appSubmissionDto.getAppSvcRelatedInfoDtoList().isEmpty()) {
-                String serviceName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
-                appSubmissionDto.setServiceName(serviceName);
-            }
-
-        }
-
-
-
-
-
-        RenewDto renewDto = new RenewDto();
-
-        renewDto.setAppSubmissionDtos(appSubmissionDtoList);
-        ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
         log.info("**** the  auto renwal  prepare  end ******");
     }
 
@@ -112,5 +106,13 @@ public class WithOutRenewalDelegator {
         }
         log.info("**** the markPostInspection end ******");
     }
+
+    //=============================================================================
+    //private method
+    //=============================================================================
+
+
+
+
 
 }
