@@ -4,13 +4,11 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.JsonKeyConstants;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
@@ -18,8 +16,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Map;
 
 @Delegator(value = "croppassLandingDelegator")
 @Slf4j
@@ -31,14 +27,7 @@ public class FECorppassLandingDelegator {
     @Autowired
     private OrgUserManageService orgUserManageService;
 
-    private void sendRedirect(HttpServletRequest request, HttpServletResponse response, String url){
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url, request);
-        try {
-            response.sendRedirect(tokenUrl);
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-    }
+
 
     /**
      * StartStep: callCroppass
@@ -70,7 +59,7 @@ public class FECorppassLandingDelegator {
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
 
-        String uen = ParamUtil.getRequestString(request, "");
+        /*String uen = ParamUtil.getRequestString(request, "");
         String nric =  ParamUtil.getRequestString(request, "");
 
         Map<String, Object> userInfo =  orgUserManageService.getUserByNricAndUen(uen, nric);
@@ -92,7 +81,8 @@ public class FECorppassLandingDelegator {
         }
 
         // a key appointment holder
-        boolean isKeyAppointment = orgUserManageService.isKeyappointment(uen, nric);
+        boolean isKeyAppointment = orgUserManageService.isKeyappointment(uen, nric);*/
+        boolean isKeyAppointment = true;
         if (isKeyAppointment){
             ParamUtil.setRequestAttr(request, FECorppassLandingDelegator.IS_KEY_APPOINTMENT, "Y");
         }else {
@@ -110,29 +100,36 @@ public class FECorppassLandingDelegator {
      */
     public void createCropUser(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        HttpServletResponse response = bpc.response;
         ParamUtil.setSessionAttr(bpc.request, "uenList", null);
 
         String uen = ParamUtil.getString(request, "");
         String nric = ParamUtil.getString(request, "");
-
+/*
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("uen", uen);
         jsonObject.put("nric", nric);
         jsonObject.put(JsonKeyConstants.USER_ID, AppConsts.USER_DOMAIN_INTERNET);
 
-        orgUserManageService.createCropUser(jsonObject.toString());
+        orgUserManageService.createCropUser(jsonObject.toString());*/
 
         User user = new User();
         user.setDisplayName("");
         user.setMobileNo("888888");
         user.setEmail("88888@ecquaria.com");
         user.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
+        user.setPassword("password$2");
         user.setId(AppConsts.USER_DOMAIN_INTERNET);
 
         SessionManager.getInstance(bpc.request).imitateLogin(user, true, true);
         SessionManager.getInstance(bpc.request).initSopLoginInfo(bpc.request);
 
-        sendRedirect(request, bpc.response, "/main-web");
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(bpc.request.getServerName())
+                .append("/main-web/eservice/INTERNET/MohInternetInbox");
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+
+       IaisEGPHelper.sendRedirect(request, response, tokenUrl);
     }
 
     /**

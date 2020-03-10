@@ -2,25 +2,19 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.helper.EngineHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.IaisApiStatusCode;
-import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
 
 @Delegator(value = "singpassLandingDelegator")
 @Slf4j
@@ -52,8 +46,6 @@ public class FESingpassLandingDelegator {
     public void callSingpass(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
-
-
     }
 
     /**
@@ -66,7 +58,7 @@ public class FESingpassLandingDelegator {
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
 
-        String nric = ParamUtil.getString(request, FESingpassLandingDelegator.NRIC);
+       /* String nric = ParamUtil.getString(request, FESingpassLandingDelegator.NRIC);
 
         IaisApiResult<List<String>> apiResult = orgUserManageService.createSingpassAccount(nric);
         if (apiResult.isHasError()){
@@ -85,15 +77,24 @@ public class FESingpassLandingDelegator {
 
             }
 
-        }
+        }*/
 
         User user = new User();
-        user.setDisplayName(nric);
-        user.setMobileNo("99999999");
-        user.setEmail("internet@ecquaria.com");
+        user.setDisplayName("");
+        user.setMobileNo("888888");
+        user.setEmail("88888@ecquaria.com");
         user.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
-        user.setId(nric);
+        user.setPassword("password$2");
+        user.setId(AppConsts.USER_DOMAIN_INTERNET);
 
-        LoginHelper.login(request, response, user, "/main-web");
+        SessionManager.getInstance(bpc.request).imitateLogin(user, true, true);
+        SessionManager.getInstance(bpc.request).initSopLoginInfo(bpc.request);
+
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(bpc.request.getServerName())
+                .append("/main-web/eservice/INTERNET/MohInternetInbox");
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+
+        IaisEGPHelper.sendRedirect(request, response, tokenUrl);
     }
 }

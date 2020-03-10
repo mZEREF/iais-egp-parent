@@ -13,6 +13,7 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -31,7 +32,9 @@ import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -222,6 +225,15 @@ public final class IaisEGPHelper extends EGPHelper {
         String corrToken = StringUtil.digestStrSha256(serviceName + secKey);
 
         return token.equals(corrToken);
+    }
+
+    public static void sendRedirect(HttpServletRequest request, HttpServletResponse response, String url){
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url, request);
+        try {
+            response.sendRedirect(tokenUrl);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
     }
 
     private IaisEGPHelper() {throw new IllegalStateException("Utility class");}

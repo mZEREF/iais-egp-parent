@@ -242,7 +242,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
                     premCheckItem.setChecklistItemId(question.getItemId());
 
                     if (addressDto != null){
-                        premCheckItem.setAddress(IaisCommonUtils.getPremisesAddress(addressDto.getBlkNo(),
+                        premCheckItem.setAddress(IaisCommonUtils.appendPremisesAddress(addressDto.getBlkNo(),
                                 addressDto.getStreetName(),
                                 addressDto.getBuildingName(), addressDto.getFloorNo(), addressDto.getUnitNo(), addressDto.getPostalCode()));
                     }
