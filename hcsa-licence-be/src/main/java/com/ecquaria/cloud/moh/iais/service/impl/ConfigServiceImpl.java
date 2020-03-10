@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCate
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
@@ -293,9 +294,9 @@ public class ConfigServiceImpl implements ConfigService {
         HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = getHcsaSvcRoutingStageDtos();
         //if service type is sub must to chose
-        String subsumption = request.getParameter("Subsumption");
+        String[] subsumption = request.getParameterValues("Subsumption");
         // if service type is pre must be Choice
-        String preRequisite = request.getParameter("Pre-requisite");
+        String[] preRequisite = request.getParameterValues("Pre-requisite");
         String serviceId = request.getParameter("serviceId");
         String serviceName = request.getParameter("serviceName");
         String description = request.getParameter("description");
@@ -354,14 +355,31 @@ public class ConfigServiceImpl implements ConfigService {
 
 
         List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = new ArrayList<>();
-
+        List<HcsaServiceSubTypeDto> list=new ArrayList<>();
         if("SVTP002".equals(serviceType)){
-            hcsaServiceDto.setCategoryId(subsumption);
+
+            if(subsumption!=null){
+
+                for(String str:subsumption){
+                    HcsaServiceSubTypeDto hcsaServiceSubTypeDto=new HcsaServiceSubTypeDto();
+                    hcsaServiceSubTypeDto.setServiceId(str);
+                    list.add(hcsaServiceSubTypeDto);
+                }
+            }
+
 
         } else if ("SVTP003".equals(serviceType)) {
-            hcsaServiceDto.setCategoryId(preRequisite);
-        }
 
+            if (preRequisite != null){
+                for(String str : preRequisite){
+                    HcsaServiceSubTypeDto hcsaServiceSubTypeDto=new HcsaServiceSubTypeDto();
+                    hcsaServiceSubTypeDto.setServiceId(str);
+                    list.add(hcsaServiceSubTypeDto);
+                }
+            }
+
+        }
+        hcsaServiceDto.setServiceSubTypeDtos(list);
         if (premisesTypes != null) {
             for (String str : premisesTypes) {
                 HcsaSvcSpePremisesTypeDto hcsaSvcSpePremisesTypeDto = new HcsaSvcSpePremisesTypeDto();
@@ -779,14 +797,14 @@ public class ConfigServiceImpl implements ConfigService {
             }
             if (StringUtil.isEmpty(mandatoryCount)) {
                 errorMap.put("mandatoryCount" + i, "UC_CHKLMD001_ERR001");
-            }else  if(mandatoryCount<0){
+            }/*else  if(mandatoryCount<0){
                 errorMap.put("mandatoryCount"+i,"Please enter a valid number (greater than or equal to 0)");
-            }
+            }*/
             if (StringUtil.isEmpty(maximumCount)) {
                 errorMap.put("maximumCount" + i, "UC_CHKLMD001_ERR001");
-            }else if(maximumCount<0){
+            }/*else if(maximumCount<0){
                 errorMap.put("maximumCount"+i,"Please enter a valid number (greater than or equal to 0)");
-            }
+            }*/
             if(!StringUtil.isEmpty(mandatoryCount)&&!StringUtil.isEmpty(maximumCount)){
                 if(mandatoryCount>maximumCount){
                     errorMap.put("maximumCount"+i,"Incorrect format");

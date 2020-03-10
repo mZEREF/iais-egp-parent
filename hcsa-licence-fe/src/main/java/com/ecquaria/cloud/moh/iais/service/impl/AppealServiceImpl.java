@@ -121,14 +121,10 @@ public class AppealServiceImpl implements AppealService {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String saveDraftId =(String) req.getSession().getAttribute("saveDraftNo");
         String appealingFor =  request.getParameter("appealingFor");
-        String sessionFileName =(String) req.getSession().getAttribute("filename");
-        AppPremisesSpecialDocDto appPremisesSpecialDocDto =(AppPremisesSpecialDocDto)req.getSession().getAttribute("appPremisesSpecialDocDto");
         String isDelete = request.getParameter("isDelete");
         String reasonSelect = request.getParameter("reasonSelect");
-        String[] selectHciNames = request.getParameterValues("selectHciName");
         String proposedHciName = request.getParameter("proposedHciName");
         String remarks = request.getParameter("remarks");
-        String licenceYear = request.getParameter("licenceYear");
         CommonsMultipartFile selectedFile =(CommonsMultipartFile) request.getFile("selectedFile");
         if(selectedFile!=null&&selectedFile.getSize()>0){
             String filename = selectedFile.getOriginalFilename();
@@ -162,11 +158,7 @@ public class AppealServiceImpl implements AppealService {
             applicationClient.saveDraft(entity).getEntity();
             appPremiseMiscDto.setRemarks(remarks);
             appPremiseMiscDto.setReason(reasonSelect);
-            if ("MS004".equals(reasonSelect)) {
-                if(!StringUtil.isEmpty(licenceYear)){
-                    appPremiseMiscDto.setNewLicYears(Integer.valueOf(licenceYear));
-                }
-            }
+
             if ("MS008".equals(reasonSelect)) {
                 appPremiseMiscDto.setNewHciName(proposedHciName);
             }
@@ -181,14 +173,11 @@ public class AppealServiceImpl implements AppealService {
         appSubmissionDto.setAppGrpId(groupId);
         appSubmissionDto.setAmountStr(s);
         appSubmissionDto.setDraftStatus("CMSTAT001");
-        appSubmissionDto.setAppType("APTY002");
+        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_APPEAL);
         AppSubmissionDto entity = applicationClient.saveDraft(appSubmissionDto).getEntity();
         String draftNo = entity.getDraftNo();
         appPremiseMiscDto.setRemarks(remarks);
         appPremiseMiscDto.setReason(reasonSelect);
-        if(!StringUtil.isEmpty(licenceYear)){
-            appPremiseMiscDto.setNewLicYears(Integer.valueOf(licenceYear));
-        }
         appPremiseMiscDto.setNewHciName(proposedHciName);
         req.setAttribute("appPremiseMiscDto",appPremiseMiscDto);
         req.setAttribute("appealingFor",appealingFor);
@@ -340,9 +329,9 @@ public class AppealServiceImpl implements AppealService {
             String filename = file.getOriginalFilename();
             String fileType=  filename.substring(filename.lastIndexOf(".")+1);
             //todo change
-             if(!"PDF".equalsIgnoreCase(fileType)||!"PNG".equalsIgnoreCase(fileType)||
-                !"JPG".equalsIgnoreCase(fileType)||!"DOC".equalsIgnoreCase(fileType)||!"DOCX".equalsIgnoreCase(fileType)){
-            map.put("file","Wrong file type");
+             if(!"PDF".equalsIgnoreCase(fileType)&&!"PNG".equalsIgnoreCase(fileType)&&
+                    !"JPG".equalsIgnoreCase(fileType)&&!"DOC".equalsIgnoreCase(fileType)&&!"DOCX".equalsIgnoreCase(fileType)){
+                map.put("file","Wrong file type");
             }
 
         }
@@ -356,8 +345,8 @@ public class AppealServiceImpl implements AppealService {
                 String filename = sessionFile.getOriginalFilename();
                 String fileType=  filename.substring(filename.lastIndexOf(".")+1);
                 //todo change
-                if(!"PDF".equalsIgnoreCase(fileType)||!"PNG".equalsIgnoreCase(fileType)||
-                        !"JPG".equalsIgnoreCase(fileType)||!"DOC".equalsIgnoreCase(fileType)||!"DOCX".equalsIgnoreCase(fileType)){
+                if(!"PDF".equalsIgnoreCase(fileType)&&!"PNG".equalsIgnoreCase(fileType)&&
+                        !"JPG".equalsIgnoreCase(fileType)&&!"DOC".equalsIgnoreCase(fileType)&&!"DOCX".equalsIgnoreCase(fileType)){
                     map.put("file","Wrong file type");
                 }
 
@@ -476,19 +465,6 @@ public class AppealServiceImpl implements AppealService {
 
                 }
 
-            } else if ("MS004".equals(appealReason)) {
-
-                Integer newLicYears = appealPageDto.getNewLicYears();
-                if(newLicYears==null){
-                    map.put("newLicYears","UC_CHKLMD001_ERR001");
-                }
-                else  if(-1==newLicYears){
-                    map.put("newLicYears","ERR008");
-                }else if(newLicYears<0){
-                    map.put("newLicYears","ERR008");
-                }else if(newLicYears>100){
-                    map.put("newLicYears","Years are too long");
-                }
             }
         }
 
@@ -499,9 +475,8 @@ public class AppealServiceImpl implements AppealService {
         AppealPageDto appealPageDto=new AppealPageDto();
         List<AppSvcCgoDto> appSvcCgoDtos = reAppSvcCgo(request);
 
-        String appealingFor =  request.getParameter("appealingFor");
         String reasonSelect = request.getParameter("reasonSelect");
-        String licenceYear = request.getParameter("licenceYear");
+
         String selectHciNames = request.getParameter("selectHciName");
         String proposedHciName = request.getParameter("proposedHciName");
         String remarks = request.getParameter("remarks");
@@ -510,17 +485,6 @@ public class AppealServiceImpl implements AppealService {
         if ("MS008".equals(reasonSelect)) {
             appealPageDto.setNewHciName(proposedHciName);
 
-        }
-        if("MS004".equals(reasonSelect)){
-            if(!StringUtil.isEmpty(licenceYear)){
-                try {
-                    appealPageDto.setNewLicYears(Integer.parseInt(licenceYear));
-
-                }catch (NumberFormatException e){
-                    appealPageDto.setNewLicYears(-1);
-                }
-
-            }
         }
         appealPageDto.setRemarks(remarks);
 

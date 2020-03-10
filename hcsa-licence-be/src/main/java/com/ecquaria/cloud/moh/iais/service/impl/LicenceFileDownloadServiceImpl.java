@@ -66,6 +66,8 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
@@ -114,51 +116,73 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     @Autowired
     private OrganizationClient organizationClient;
     @Override
-    public boolean compress() throws Exception{
-        log.info("-------------compress start ---------");
-        if(new File(sharedPath+File.separator+AppServicesConsts.BACKUPS+File.separator).isDirectory()){
-            File[] files = new File(sharedPath+File.separator+AppServicesConsts.BACKUPS+File.separator).listFiles();
-            for(File fil:files){
-                if(fil.getName().endsWith(AppServicesConsts.ZIP_NAME)){
+    public boolean decompression() throws Exception{
+        log.info("-------------decompression start ---------");
 
-                    String name = fil.getName();
-                    String path = fil.getPath();
-                    String relPath= AppServicesConsts.BACKUPS+File.separator+name;
-                    HashMap<String,String> map=new HashMap<>();
-                    map.put("fileName",name);
-                    map.put("filePath",relPath);
+        File[] files = new File(sharedPath+File.separator+AppServicesConsts.BACKUPS+File.separator).listFiles();
+        for(File fil:files){
+            if(fil.getName().endsWith(AppServicesConsts.ZIP_NAME)){
+                String name = fil.getName();
+                String path = fil.getPath();
+                String relPath= AppServicesConsts.BACKUPS+File.separator+name;
+                HashMap<String,String> map=new HashMap<>();
+                map.put("fileName",name);
+                map.put("filePath",relPath);
 
-                    ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
-                    if(processFileTrackDto!=null){
-                        String refId = processFileTrackDto.getRefId();
-                        CheckedInputStream cos=null;
-                        BufferedInputStream bis=null;
-                        BufferedOutputStream bos=null;
-                        OutputStream os=null;
-                        try (ZipFile zipFile=new ZipFile(path);)  {
-                            for( Enumeration<? extends ZipEntry> entries = zipFile.entries();entries.hasMoreElements();){
-                                ZipEntry zipEntry = entries.nextElement();
-                                zipFile(zipEntry,os,bos,zipFile,bis,cos,name,refId);
-                            }
-
-                        } catch (IOException e) {
-                            log.error(e.getMessage(),e);
+                ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
+                if(processFileTrackDto!=null){
+                    //check file is changed
+                    try (FileInputStream is=new FileInputStream(fil);
+                         ByteArrayOutputStream by=new ByteArrayOutputStream();) {
+                        int count;
+                        byte [] size=new byte[1024];
+                        count=is.read(size);
+                        while(count!=-1){
+                            by.write(size,0,count);
+                            count= is.read(size);
                         }
 
-                        try {
-                            List<ApplicationDto> listApplicationDto =new ArrayList();
-                            List<ApplicationDto> requestForInfList=new ArrayList();
-                            //need event bus
-
-                            this.download(processFileTrackDto,listApplicationDto, requestForInfList,name,refId);
-                            sendTask(listApplicationDto,requestForInfList);
-                            //save success
-                        }catch (Exception e){
-                            //save bad
-                            log.error(e.getMessage(),e);
+                        byte[] bytes = by.toByteArray();
+                        String s = FileUtil.genMd5FileChecksum(bytes);
+                        s = s + AppServicesConsts.ZIP_NAME;
+                        if( !s.equals(name)){
                             continue;
                         }
+                    }catch (Exception e){
+                        log.error(e.getMessage(),e);
+                        continue;
+                    }
+                    /**************/
+                    String refId = processFileTrackDto.getRefId();
+                    CheckedInputStream cos=null;
+                    BufferedInputStream bis=null;
+                    BufferedOutputStream bos=null;
+                    OutputStream os=null;
+                    try (ZipFile zipFile=new ZipFile(path);)  {
+                        for( Enumeration<? extends ZipEntry> entries = zipFile.entries();entries.hasMoreElements();){
+                            ZipEntry zipEntry = entries.nextElement();
+                            zipFile(zipEntry,os,bos,zipFile,bis,cos,name,refId);
+                        }
 
+                    } catch (IOException e) {
+                        log.error(e.getMessage(),e);
+                    }
+
+                    try {
+
+                        List<ApplicationDto> listApplicationDto =new ArrayList();
+                        List<ApplicationDto> requestForInfList=new ArrayList();
+                        //need event bus
+
+                        this.download(processFileTrackDto,listApplicationDto, requestForInfList,name,refId);
+                        sendTask(listApplicationDto,requestForInfList);
+
+                        moveFile(fil);
+                        //save success
+                    }catch (Exception e){
+                        //save bad
+                        log.error(e.getMessage(),e);
+                        continue;
                     }
 
                 }
@@ -166,6 +190,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }
 
         }
+
         return true;
     }
     //todo  delete file
@@ -207,6 +232,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         File compress =new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+AppServicesConsts.FILE_NAME);
         File backups=new File(sharedPath+File.separator+AppServicesConsts.BACKUPS+File.separator);
         File compressPath=new File(sharedPath+File.separator+AppServicesConsts.COMPRESS);
+        File movePath=new File(sharedPath+File.separator+"move");
         if(!compressPath.exists()){
             compressPath.mkdirs();
         }
@@ -217,7 +243,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         if(!compress.exists()){
             compress.mkdirs();
         }
-
+        if(!movePath.exists()){
+            movePath.mkdirs();
+        }
     }
 
     public Boolean  download( ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,String fileName
@@ -572,7 +600,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
 
     private void  sendTask(List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList) throws  Exception{
-        licenceFileDownloadService.initPath();
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
 
         TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(listApplicationDto, HcsaConsts.ROUTING_STAGE_ASO, RoleConsts.USER_ROLE_ASO,intranet);
@@ -616,4 +643,30 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
 
     }
+
+
+    private void  moveFile(File file){
+        String name = file.getName();
+        File moveFile=new File(sharedPath+File.separator+"move"+File.separator+name);
+        try (FileOutputStream fileOutputStream=new FileOutputStream(moveFile);
+        FileInputStream fileInputStream=new FileInputStream(file)) {
+            int count;
+            byte []size=new byte[1024];
+            count= fileInputStream.read(size);
+            while(count!=-1){
+                fileOutputStream.write(size,0,count);
+                count= fileInputStream.read(size);
+            }
+
+        }catch (Exception e){
+
+            log.error(e.getMessage(),e);
+
+            return;
+        }
+
+        file.delete();
+
+    }
+
 }

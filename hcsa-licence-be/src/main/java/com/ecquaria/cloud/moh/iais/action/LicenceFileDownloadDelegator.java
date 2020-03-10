@@ -9,8 +9,15 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -35,7 +42,9 @@ public class LicenceFileDownloadDelegator {
     public  void prepareData(BaseProcessClass bpc) throws Exception {
          logAbout("preparetionData");
 
-        licenceFileDownloadService.compress();
+        licenceFileDownloadService.initPath();
+
+        licenceFileDownloadService.decompression();
 
     }
 /*******************************/

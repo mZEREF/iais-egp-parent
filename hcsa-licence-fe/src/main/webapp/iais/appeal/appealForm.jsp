@@ -48,11 +48,6 @@
 
           <div> <span  class="error-msg" name="iaisErrorMsg" id="error_reason"></span></div>
 
-          <div class="col-xs-12 col-md-5" id="licenceYear"  style="display: none">
-            <label style="font-size: 20px;">Licence year</label>
-            <input type="number" name="licenceYear" value="${appPremiseMiscDto.newLicYears}">
-
-          </div>
           <div style="display: none;margin-top: 10px" id="cgo" class="col-xs-12 col-md-12" >
        <%--     <a class="btn  btn-secondary" onclick="deletes()" style="margin-left: 20px;"  >delete</a>--%>
             <%@include file="cgo.jsp"%>
@@ -262,6 +257,10 @@ $('.selectedFile').change(function () {
       $('#control--runtime--1').attr("hidden");
 
   }
+  $('#cancel').click(function () {
+    location.href="https://egp.sit.inter.iais.com/main-web/eservice/INTERNET/MohInternetInbox";
+  });
+
 </script>
 
 </>

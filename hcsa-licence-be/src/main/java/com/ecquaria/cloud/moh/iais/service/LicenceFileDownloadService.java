@@ -12,9 +12,9 @@ import java.util.List;
 public interface LicenceFileDownloadService {
     void initPath();
 
-    boolean compress() throws Exception;
+    boolean decompression() throws Exception;
     List<ApplicationDto> listApplication();
     void requestForInfList(List<ApplicationDto> list);
     Boolean changeFeApplicationStatus();
-     List<TaskDto> getTasksByRefNo(String refNo);
+    List<TaskDto> getTasksByRefNo(String refNo);
 }
