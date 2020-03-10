@@ -305,6 +305,8 @@ public class InspectReviseNcEmailDelegator {
         log.info("=======>>>>>preProcess>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, TASK_DTO);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String userId = loginContext.getUserId();
         String correlationId = taskDto.getRefNo();
         InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail(correlationId);
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);
@@ -332,7 +334,7 @@ public class InspectReviseNcEmailDelegator {
         log.info("=====>AO1 history "+appPremisesRoutingHistoryDto1.getId());
         log.info("=====>INSP leader history "+appPremisesRoutingHistoryDto.getId());
         if(appPremisesRoutingHistoryDto==null){ appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW});}
-            else if(appPremisesRoutingHistoryDto1!=null&&appPremisesRoutingHistoryDto.getUpdatedDt().compareTo(appPremisesRoutingHistoryDto1.getUpdatedDt())<0) {
+            else if(appPremisesRoutingHistoryDto1!=null&&appPremisesRoutingHistoryDto.getUpdatedDt().compareTo(appPremisesRoutingHistoryDto1.getUpdatedDt())<0||appPremisesRoutingHistoryDto.getActionby().equals(userId)) {
                      appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW});
                 }
 

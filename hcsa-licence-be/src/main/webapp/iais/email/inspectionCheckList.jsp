@@ -314,8 +314,8 @@
                                                             <div id="<c:out value="${item.id}"/>ck"<c:if test="${item.adAnswer != 'No'}">hidden</c:if>>
                                                                 <input name="<c:out value="${item.id}"/>adhocrec" id="<c:out value="${item.id}"/>adhocrec" type="checkbox" <c:if test="${item.rectified}">checked</c:if> value="rec"/>
                                                             </div>
-                                                            <c:set value = "error_${item.id}adhoc" var = "err"/>
-                                                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+<%--                                                            <c:set value = "error_${item.id}adhoc" var = "err"/>--%>
+<%--                                                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>--%>
                                                         </td>
                                                     </tr>
                                                 </c:forEach>

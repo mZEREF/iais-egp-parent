@@ -91,7 +91,7 @@ public class InspectionMergeSendNcEmailDelegator {
         HttpServletRequest request=bpc.request;
         AccessUtil.initLoginUserInfo(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, null);
-        ParamUtil.setSessionAttr(request,"appPremCorrId",null);
+        ParamUtil.setSessionAttr(request,"appPremCorrIds",null);
         ParamUtil.setSessionAttr(request,MSG_CON, null);
         ParamUtil.setSessionAttr(request,"applicationViewDto",null);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
@@ -201,7 +201,7 @@ public class InspectionMergeSendNcEmailDelegator {
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,"messageContent"));
         String decision=ParamUtil.getString(request,"decision");
-        if(decision.equals("Select")){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
+        if("Select".equals(decision)){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
         List<String>appPremCorrIds= (List<String>) ParamUtil.getSessionAttr(request,"appPremCorrIds");
 
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=inspEmailService.getAppPremisesCorrelationsByPremises(applicationViewDto.getAppPremisesCorrelationId());

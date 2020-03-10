@@ -35,7 +35,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         }
         tcuVad(serListDto,errMap);
         commonVad(request,errMap);
-        ahocVad(request,errMap);
+        //ahocVad(request,errMap);
         fillUpVad(request,errMap);
         otherinfoVad(serListDto,errMap);
         return errMap;
@@ -240,19 +240,19 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             }
         }
     }
-    public void ahocVad(HttpServletRequest request,Map<String, String> errMap){
-        AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
-        if(showDto!=null){
-            List<AdhocNcCheckItemDto> itemDtoList = showDto.getAdItemList();
-            if(itemDtoList!=null && !itemDtoList.isEmpty()){
-                for(AdhocNcCheckItemDto temp:itemDtoList){
-                    if(StringUtil.isEmpty(temp.getAdAnswer())){
-                        errMap.put(temp.getId()+"adhoc",ERR0010);
-                    }
-                }
-            }
-        }
-    }
+//    public void ahocVad(HttpServletRequest request,Map<String, String> errMap){
+//        AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
+//        if(showDto!=null){
+//            List<AdhocNcCheckItemDto> itemDtoList = showDto.getAdItemList();
+//            if(itemDtoList!=null && !itemDtoList.isEmpty()){
+//                for(AdhocNcCheckItemDto temp:itemDtoList){
+//                    if(StringUtil.isEmpty(temp.getAdAnswer())){
+//                        errMap.put(temp.getId()+"adhoc",ERR0010);
+//                    }
+//                }
+//            }
+//        }
+//    }
     public void tcuVad(InspectionFDtosDto icDto,Map<String, String> errMap){
         try {
             String dateStr = icDto.getTuc();
