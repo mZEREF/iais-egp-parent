@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-xs-12 col-md-9">
+    <div class="col-xs-12 col-md-10">
         <div class="navigation">
             <div class="nav nav-tabs nav-menu">
                 <li class="active"><a href="#"><span>Dashboard</span></a></li>
@@ -92,7 +92,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xs-10 col-xs-offset-1 col-lg-offset-0 col-lg-3">
+    <div class="col-xs-10 col-xs-offset-1 col-lg-offset-0 col-lg-2">
         <div class="dropdown profile-dropdown"><a class="profile-btn btn" id="profileBtn" data-toggle="dropdown"
                                                   aria-haspopup="true" aria-expanded="false" href="javascript:;">${iais_Login_User_Info_Attr.loginId}</a>
             <ul class="dropdown-menu" aria-labelledby="profileBtn">
