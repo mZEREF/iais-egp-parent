@@ -91,7 +91,7 @@ public class InspectionMergeSendNcEmailDelegator {
         HttpServletRequest request=bpc.request;
         AccessUtil.initLoginUserInfo(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, null);
-        ParamUtil.setSessionAttr(request,"appPremCorrIds",null);
+        ParamUtil.setSessionAttr(request,"appPremCorrId",null);
         ParamUtil.setSessionAttr(request,MSG_CON, null);
         ParamUtil.setSessionAttr(request,"applicationViewDto",null);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
@@ -278,12 +278,12 @@ public class InspectionMergeSendNcEmailDelegator {
         else {
             boolean isNoNc=true;
             for (String appPremCorrId:appPremCorrIds
-                 ) {
+            ) {
                 List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = insepctionNcCheckListService.getNcItemDtoByAppCorrId(appPremCorrId);
                 for (AppPremisesPreInspectionNcItemDto nc:appPremisesPreInspectionNcItemDtos
-                     ) {
-                        if(nc.getIsRecitfied()==0){
-                            isNoNc=false;
+                ) {
+                    if(nc.getIsRecitfied()==0){
+                        isNoNc=false;
                     }
                 }
             }
@@ -353,8 +353,9 @@ public class InspectionMergeSendNcEmailDelegator {
                     taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
                     taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
                     completedTask(taskDto);
-                    createAppPremisesRoutingHistory(applicationViewDto1.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId);
+                    createAppPremisesRoutingHistory(applicationViewDto1.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_CREATE_MESG,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId);
                 }
+
             }
 
             EmailDto emailDto=new EmailDto();
