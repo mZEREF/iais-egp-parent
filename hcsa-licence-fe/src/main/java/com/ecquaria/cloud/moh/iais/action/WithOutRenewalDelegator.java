@@ -53,7 +53,20 @@ public class WithOutRenewalDelegator {
             return;
         }
 
+
         List<AppSubmissionDto> appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList);
+        for (AppSubmissionDto appSubmissionDto: appSubmissionDtoList) {
+            if(!appSubmissionDto.getAppSvcRelatedInfoDtoList().isEmpty()) {
+                String serviceName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
+                appSubmissionDto.setServiceName(serviceName);
+            }
+
+        }
+
+
+
+
+
         RenewDto renewDto = new RenewDto();
 
         renewDto.setAppSubmissionDtos(appSubmissionDtoList);

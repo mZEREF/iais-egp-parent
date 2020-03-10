@@ -84,8 +84,17 @@
 
                                 <div class="tab-pane active" id="tabLicRe" role="tabpanel">
                                     <c:forEach items="${renewDto.appSubmissionDtos}"
-                                               var="appSubmissionDtos">
+                                               var="appSubmissionDtos" >
                                         <h3>Clinical Laboratory;Licence No${appSubmissionDtos.licenceNo}</h3>
+                                        <c:forEach items="${appSubmissionDtos.appGrpPremisesDtoList}"
+                                                   var="appGrpPremisesDtoList" varStatus="status">
+                                            <STRONG>Premises${status.index+1}</STRONG><br/>
+                                            <div>${appGrpPremisesDtoList.address}</div>
+                                            <br/>
+                                            <br/>
+                                            <STRONG>Primary Documents${status.index+1}</STRONG>
+                                            <div></div>
+                                        </c:forEach>
                                     </c:forEach>
                                 </div>
 
@@ -116,16 +125,16 @@
                                                             <c:forEach var="svc" items="${appSubmissionDtos.appSvcRelatedInfoDtoList}">
                                                                 <tr>
                                                                     <td>
-                                                                        <p><c:out value="${AppSubmissionDto.serviceName}"></c:out></p>
+                                                                        <p>${svc.serviceName}</p>
                                                                     </td>
                                                                     <td>
                                                                         <p>Amendment</p>
                                                                     </td>
                                                                     <td>
-                                                                        <p><c:out value="${AppSubmissionDto.appGrpNo}"></c:out></p>
+                                                                        <p></p>
                                                                     </td>
                                                                     <td>
-                                                                        <p><c:out value="${AppSubmissionDto.amountStr}"></c:out></p>
+                                                                        <p></p>
                                                                     </td>
                                                                 </tr>
                                                             </c:forEach>
