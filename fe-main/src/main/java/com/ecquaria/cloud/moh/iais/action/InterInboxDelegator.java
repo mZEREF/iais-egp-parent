@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -19,7 +18,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.InboxConst;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -424,38 +428,13 @@ public class InterInboxDelegator {
             for(String item:licIds){
                 licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
             }
-            boolean auto = false;
-            if(licIdValue.size() == 1 && !auto){
-                StringBuilder url = new StringBuilder();
-                url.append("https://").append(bpc.request.getServerName())
-                        .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication")
-                        .append("?licenceId=").append(licIdValue.get(0))
-                        .append("&type=").append(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
-                String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-                bpc.response.sendRedirect(tokenUrl);
-            }
-            else{
-                for(String item:licIds){
-                    licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
-                }
-                boolean isAmendmentRenewal = licIdValue.size() == 1 ? true : false;
-                if(isAmendmentRenewal){
-                    StringBuilder url = new StringBuilder();
-                    url.append("https://").append(bpc.request.getServerName())
-                            .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication")
-                            .append("?licenceId=").append(licIdValue.get(0))
-                            .append("&type=").append(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
-                    String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-                    bpc.response.sendRedirect(tokenUrl);
-                }else {
-                    StringBuilder url = new StringBuilder();
-                    url.append("https://").append(bpc.request.getServerName())
-                            .append("/hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal");
-                    ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licIdValue);
-                    String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-                    bpc.response.sendRedirect(tokenUrl);
-                }
-            }
+            StringBuilder url = new StringBuilder();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal");
+            ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licIdValue);
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+
         }
     }
 
