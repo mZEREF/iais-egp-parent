@@ -99,19 +99,19 @@ public class HcsaApplicationDelegator {
     @Autowired
     private InsRepService insRepService;
 
-    public void routingTask(BaseProcessClass bpc) throws FeignException {
-        log.debug(StringUtil.changeForLog("the do routingTask start ...."));
-        AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence");
-        List<ApplicationDto> applicationDtos = new ArrayList();
-        ApplicationDto applicationDto0 = new ApplicationDto();
-        applicationDto0.setApplicationNo("test applicaitonNo");
-        applicationDto0.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
-        applicationDto0.setApplicationType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-        applicationDtos.add(applicationDto0);
-       // taskService.routingAdminScranTask(applicationDtos);
-        //taskService.routingTask(applicationDto0,HcsaConsts.ROUTING_STAGE_PSO);
-        log.debug(StringUtil.changeForLog("the do routingTask end ...."));
-    }
+//    public void routingTask(BaseProcessClass bpc) throws FeignException {
+//        log.debug(StringUtil.changeForLog("the do routingTask start ...."));
+//        AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence");
+//        List<ApplicationDto> applicationDtos = new ArrayList();
+//        ApplicationDto applicationDto0 = new ApplicationDto();
+//        applicationDto0.setApplicationNo("test applicaitonNo");
+//        applicationDto0.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
+//        applicationDto0.setApplicationType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+//        applicationDtos.add(applicationDto0);
+//       // taskService.routingAdminScranTask(applicationDtos);
+//        //taskService.routingTask(applicationDto0,HcsaConsts.ROUTING_STAGE_PSO);
+//        log.debug(StringUtil.changeForLog("the do routingTask end ...."));
+//    }
 
     /**
      * StartStep: doStart
@@ -139,38 +139,24 @@ public class HcsaApplicationDelegator {
         //get the task
        String  taskId = ParamUtil.getString(bpc.request,"taskId");
        TaskDto taskDto = taskService.getTaskById(taskId);
-//        String loginID=(String) ParamUtil.getSessionAttr(bpc.request,"loginID");
-//        if(!(loginID.equals(taskDto.getUserId()))){
-//            throw new Exception();
-//        }
-//        if(TaskConsts.TASK_STATUS_COMPLETED.equals(taskDto.getTaskStatus())){
-//            throw new Exception();
-//        }
 
         String correlationId = taskDto.getRefNo();
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
         appPremisesCorrelationDto.setOldCorrelationId(correlationId);
         String newCorrelationId = appPremisesCorrelationDto.getId();
-        ApplicationViewDto applicationViewDto=applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
-//        get routing stage dropdown send to page.
-
+        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
-
+//        get routing stage dropdown send to page.
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
-        Map<String,String> routingStage=new HashMap<>();
 
+        Map<String,String> routingStage=new HashMap<>();
         for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage:hcsaSvcRoutingStageDtoList) {
             routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
-//            verified.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
         }
-//        applicationViewDto.setVerified(verified)
-//        History
-
         //   rollback
-        Map<String,String> rollBackMap=new HashMap<>();
+        Map<String,String> rollBackMap = new HashMap<>();
         if(applicationViewDto.getRollBackHistroyList()!=null){
-        for (AppPremisesRoutingHistoryDto e:applicationViewDto.getRollBackHistroyList()
-             ) {
+        for (AppPremisesRoutingHistoryDto e:applicationViewDto.getRollBackHistroyList()) {
             String stageName=applicationViewService.getStageById(e.getStageId()).getStageName();
             String userId=e.getActionby();
             String wrkGrpId=e.getWrkGrpId();
@@ -178,7 +164,7 @@ public class HcsaApplicationDelegator {
             String actionBy=user.getDisplayName();
 
             rollBackMap.put(actionBy+"("+stageName+")",e.getStageId()+","+wrkGrpId+","+userId);
-         }
+          }
         }
         applicationViewDto.setRollBack(rollBackMap);
 
@@ -203,13 +189,9 @@ public class HcsaApplicationDelegator {
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Route To DMS");
         }else if(HcsaConsts.ROUTING_STAGE_AO2.equals(taskDto.getTaskKey())
                 ||HcsaConsts.ROUTING_STAGE_AO1.equals(taskDto.getTaskKey())){
-        }else if(HcsaConsts.ROUTING_STAGE_PSO.equals(taskDto.getTaskKey())){
+        }else if(HcsaConsts.ROUTING_STAGE_PSO.equals(taskDto.getTaskKey()) || HcsaConsts.ROUTING_STAGE_ASO.equals(taskDto.getTaskKey()) ){
             if(rfiCount==0){
                 routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
-            }
-        }else if(HcsaConsts.ROUTING_STAGE_ASO.equals(taskDto.getTaskKey())) {
-            if(rfiCount==0) {
-                routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION, "Request For Information");
             }
         }
         applicationViewDto.setVerified(routingStage);
@@ -254,8 +236,6 @@ public class HcsaApplicationDelegator {
                 applicationViewDto.setAppEditSelectDto(appEditSelectDto);
             }
         }
-
-
 
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);

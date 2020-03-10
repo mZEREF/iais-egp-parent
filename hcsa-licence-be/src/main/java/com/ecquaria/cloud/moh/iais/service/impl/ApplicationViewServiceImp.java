@@ -107,7 +107,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(appCorId);
         List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
         List<OrgUserDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
-        List<AppSupDocDto> appSupDocDtos=applicationViewDto.getAppSupDocDtoList();
+        List<AppSupDocDto> appSupDocDtos = applicationViewDto.getAppSupDocDtoList();
         for (int i = 0; i <appSupDocDtos.size(); i++) {
             for (int j = 0; j <docTitleList.size() ; j++) {
                 if ((appSupDocDtos.get(i).getFile()).equals(docTitleList.get(j).getId())){
