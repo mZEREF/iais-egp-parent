@@ -87,7 +87,6 @@ public class UploadFileServiceImpl implements UploadFileService {
     public String saveFile(ApplicationListFileDto applicationListFileDto ) {
 
         String str = JsonUtil.parseToJson(applicationListFileDto);
-
         List<ApplicationGroupDto> applicationGroup = applicationListFileDto.getApplicationGroup();
         List<AppPremisesCorrelationDto> appPremisesCorrelation = applicationListFileDto.getAppPremisesCorrelation();
         if(appPremisesCorrelation.isEmpty()){
@@ -114,15 +113,12 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     @Override
     public String getData() {
-
         String entity = applicationClient.fileAll().getEntity();
-
-        return    entity;
+        return entity;
     }
 
     @Override
     public String  changeStatus(ApplicationListFileDto applicationListDto) {
-
             List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
             Map<String,List<String>> map =new HashMap<>();
             List<String> oldStatus=new ArrayList<>();
@@ -138,7 +134,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             map.put("oldStatus",oldStatus);
             map.put("newStatus",newStatus);
             map.put("groupIds",groupIds);
-             applicationClient.updateStatus(map).getEntity();
+            applicationClient.updateStatus(map).getEntity();
 
 
         return "";
@@ -173,20 +169,19 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     private String compress(String groupId){
         log.info("------------ start compress() -----------------------");
-        long l=   System.currentTimeMillis();
-        try (OutputStream is=new FileOutputStream(sharedPath+AppServicesConsts.BACKUPS+File.separator+ l+AppServicesConsts.ZIP_NAME);
-               CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
+        long l =   System.currentTimeMillis();
+        try (OutputStream outputStream = new FileOutputStream(sharedPath + AppServicesConsts.BACKUPS + File.separator + l + AppServicesConsts.ZIP_NAME);
+               CheckedOutputStream cos=new CheckedOutputStream(outputStream,new CRC32());
                ZipOutputStream zos=new ZipOutputStream(cos)) {
 
             log.info("------------zip file name is"+sharedPath+AppServicesConsts.BACKUPS+File.separator+ l+".zip"+"--------------------");
-            File file = new File(sharedPath+ AppServicesConsts.FILE_NAME+File.separator+groupId);
+            File file = new File(sharedPath + AppServicesConsts.FILE_NAME + File.separator + groupId);
 
             zipFile(zos, file);
             log.info("----------------end zipFile ---------------------");
         } catch (IOException e) {
             log.error(e.getMessage(),e);
         }
-
         return l+"";
     }
 
@@ -200,11 +195,11 @@ public class UploadFileServiceImpl implements UploadFileService {
             }
         } else {
             try (
-                 BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
+                BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(AppServicesConsts.FILE_NAME))));
                 int count ;
                 byte [] b =new byte[1024];
-                count=bis.read(b);
+                count = bis.read(b);
                 while(count!=-1){
                     zos.write(b,0,count);
                     count=bis.read(b);
@@ -265,12 +260,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         processFileTrackDto.setFileName(fileName);
         processFileTrackDto.setFilePath(filePath);
-        if("".equals(groupId)){
-            processFileTrackDto.setRefId("BE30AB5D-A92A-EA11-BE7D-000C29F371DC");
-        }else {
-            processFileTrackDto.setRefId(groupId);
-        }
-
+        processFileTrackDto.setRefId(groupId);
         processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
         AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
         processFileTrackDto.setAuditTrailDto(intenet);
