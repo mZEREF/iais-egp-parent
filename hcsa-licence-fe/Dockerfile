@@ -1,4 +1,4 @@
-FROM 192.168.7.88/ecq/tomcat:9.0.21-adoptopenjdk8-alpine3.10
+FROM tomcat:9.0.31-jdk8-adoptopenjdk-hotspot
 
 COPY target/hcsa-licence-web.war /usr/local/tomcat/webapps/hcsa-licence-web.war
 
