@@ -83,4 +83,11 @@ public class AppInboxFallback implements AppInboxClient {
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<String> updateDraftStatus(String draftNo, String status) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

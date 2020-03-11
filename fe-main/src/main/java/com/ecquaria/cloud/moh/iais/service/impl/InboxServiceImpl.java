@@ -86,4 +86,9 @@ public class InboxServiceImpl implements InboxService {
     public Integer unreadAndUnresponseNum(String userId) {
         return inboxClient.searchUnreadAndUnresponseNum(userId).getEntity();
     }
+
+    @Override
+    public void updateDraftStatus(String draftNo, String status) {
+        appInboxClient.updateDraftStatus(draftNo,status).getEntity();
+    }
 }

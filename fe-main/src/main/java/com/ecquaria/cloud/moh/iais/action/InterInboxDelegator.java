@@ -381,8 +381,12 @@ public class InterInboxDelegator {
     }
 
     public void appDoDelete(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("Step ---> appDoDelete"));
-        HttpServletRequest request = bpc.request;
+        log.debug(StringUtil.changeForLog("Step ---> appDoDelete start..."));
+        String draft = ParamUtil.getString(bpc.request,"action_no_value");
+        if(!StringUtil.isEmpty(draft)){
+            inboxService.updateDraftStatus(draft,AppConsts.COMMON_STATUS_DELETED);
+        }
+        log.debug(StringUtil.changeForLog("Step ---> appDoDelete end..."));
     }
 
     public void appDoReload(BaseProcessClass bpc){

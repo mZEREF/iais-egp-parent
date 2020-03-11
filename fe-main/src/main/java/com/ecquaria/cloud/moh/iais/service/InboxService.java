@@ -28,4 +28,5 @@ public interface InboxService {
     Integer licActiveStatusNum(String licenseeId);
     Integer appDraftNum(List<String> appOrgIds);
     Integer unreadAndUnresponseNum(String userId);
+    void updateDraftStatus(String draftNo, String status);
 }
