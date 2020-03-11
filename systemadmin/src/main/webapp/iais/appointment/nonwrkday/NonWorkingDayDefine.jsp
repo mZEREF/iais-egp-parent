@@ -96,7 +96,6 @@
       <p><a class="back" onclick="doCancel();"><em class="fa fa-angle-left"></em> Back</a></p>
     </div>
     <div class="text-right text-center-mobile">
-      <a class="btn btn-primary next" id="clearBtn">Clear</a>
       <a class="btn btn-primary next" id="submitBtn">Submit</a>
     </div>
 
