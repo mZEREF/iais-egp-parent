@@ -145,13 +145,14 @@ public class LicenceApproveBatchjob {
                     //if create licence success
                     //todo:update the success application group.
                     //get the application
-                    List<ApplicationDto> applicationDtos =getApplications(licenceGroupDtos);
+                    List<ApplicationDto> applicationDtos = getApplications(licenceGroupDtos);
                     //
                     EventApplicationGroupDto eventApplicationGroupDto = new EventApplicationGroupDto();
                     eventApplicationGroupDto.setEventRefNo(evenRefNum);
                     eventApplicationGroupDto.setRollBackApplicationGroupDtos(success);
-                    success = updateStatusToGenerated(success);
-                    eventApplicationGroupDto.setApplicationGroupDtos(success);
+                    eventApplicationGroupDto.setApplicationGroupDtos(updateStatusToGenerated(success));
+                    eventApplicationGroupDto.setRollBackApplicationDto(applicationDtos);
+                    eventApplicationGroupDto.setApplicationDto(updateApplicationStatusToGenerated(applicationDtos));
                     eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
                     applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
                         //step2 save licence to Fe DB
@@ -171,6 +172,17 @@ public class LicenceApproveBatchjob {
         //else{roll back step1 and step 2}
 
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is end ..."));
+    }
+    private List<ApplicationDto> updateApplicationStatusToGenerated(List<ApplicationDto> applicationDtos){
+        List<ApplicationDto> result = new ArrayList<>();
+        if(IaisCommonUtils.isEmpty(applicationDtos)){
+            return result;
+        }
+        for(ApplicationDto applicationDto : applicationDtos){
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+            result.add(applicationDto);
+        }
+        return  result;
     }
     private void deleteRejectApplication(List<ApplicationListDto> applicationListDtoList){
         if(!IaisCommonUtils.isEmpty(applicationListDtoList)){
