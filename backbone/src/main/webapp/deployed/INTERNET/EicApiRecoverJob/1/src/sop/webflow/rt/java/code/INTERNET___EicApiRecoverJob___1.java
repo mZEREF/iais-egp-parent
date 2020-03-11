@@ -11,9 +11,10 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTRANET___EicApiRecoverJob___1 extends BaseProcessClass {
+public class INTERNET___EicApiRecoverJob___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="eicSelfRecoveDelegator";
 	public void step1_OnStepProcess_0() throws Exception {
 	// 		Step1->OnStepProcess
