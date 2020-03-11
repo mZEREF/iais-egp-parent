@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 
-import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -114,11 +113,11 @@ public class FECorppassLandingDelegator {
         orgUserManageService.createCropUser(jsonObject.toString());*/
 
         User user = new User();
-        user.setDisplayName("");
+        user.setDisplayName("Internet User");
         user.setMobileNo("888888");
-        user.setEmail("88888@ecquaria.com");
+        user.setEmail("sop6_internet@ecquaria.com");
         user.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
-        user.setPassword("password$2");
+        user.setPassword("$2a$12$BaTEVyvwaRuop2SdFoK5jOZvK8tnycxVNx1MYVGjbd1vPEQLcaK4K");
         user.setId(AppConsts.USER_DOMAIN_INTERNET);
 
         SessionManager.getInstance(bpc.request).imitateLogin(user, true, true);
@@ -127,9 +126,8 @@ public class FECorppassLandingDelegator {
         StringBuilder url = new StringBuilder();
         url.append("https://").append(bpc.request.getServerName())
                 .append("/main-web/eservice/INTERNET/MohInternetInbox");
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
 
-       IaisEGPHelper.sendRedirect(request, response, tokenUrl);
+        IaisEGPHelper.sendRedirect(request, response, url.toString());
     }
 
     /**
