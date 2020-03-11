@@ -28,7 +28,7 @@
           <iais:section title="" id = "demoList">
 
              <iais:row>
-                <iais:field value="Working Group"/>
+                <iais:field value="Working Group:"/>
                 <iais:value width="18">
                   <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  options = "wrlGrpNameOpt" firstOption="Please Select" value="${shortName}" ></iais:select>
                   <span id="error_groupName" name="iaisErrorMsg" class="error-msg"></span>
@@ -39,7 +39,7 @@
 
               <c:if test="${isGroupLead == 'Y'}">
               <iais:row>
-                <iais:field value="Inspector ID."/>
+                <iais:field value="Inspector ID:"/>
                 <iais:value width="18">
                   <input type="text" name="userName" value="${userName}" />
                   <span id="error_userName" name="iaisErrorMsg" class="error-msg"></span>
@@ -48,7 +48,7 @@
               </c:if>
 
             <iais:row>
-              <iais:field value="Year."/>
+              <iais:field value="Year:"/>
               <iais:value width="18">
                 <iais:select name="dropYearOpt" id="dropYearOpt"
                              options = "dropYearOpt" firstOption="Please Select" value="${dropYear}" ></iais:select>
