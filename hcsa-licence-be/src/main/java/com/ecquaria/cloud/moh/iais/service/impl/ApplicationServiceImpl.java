@@ -78,7 +78,7 @@ public class ApplicationServiceImpl implements ApplicationService {
           for (Map.Entry<String,List<ApplicationDto>> entry : applicationMap.entrySet()){
               String key = entry.getKey();
               List<ApplicationDto> value = entry.getValue();
-              if(appNo.equals(key)){
+              if(appNo.equals(key) || value.get(0).isFastTracking()){
                   continue;
               }else if(!containStatus(value,status)){
                   result = false;

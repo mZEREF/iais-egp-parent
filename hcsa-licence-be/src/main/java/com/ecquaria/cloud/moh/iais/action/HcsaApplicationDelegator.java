@@ -292,10 +292,9 @@ public class HcsaApplicationDelegator {
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())){
             String[] fastTracking =  ParamUtil.getStrings(bpc.request,"fastTracking");
             if(fastTracking!=null){
-
+                applicationViewDto.getApplicationDto().setFastTracking(true);
             }
         }
-
         log.debug(StringUtil.changeForLog("the do chooseStage end ...."));
     }
 
@@ -600,10 +599,6 @@ public class HcsaApplicationDelegator {
         routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION,null);
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        //update FE Application Status
-//        applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
-//        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-//        applicationService.updateFEApplicaiton(applicationDto);
         //send message to FE user.
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
@@ -729,7 +724,7 @@ public class HcsaApplicationDelegator {
                 }else{
                     throw new IaisRuntimeException("This getAppPremisesCorrelationId can not get the broadcast -- >:"+applicationViewDto.getAppPremisesCorrelationId());
                 }
-            }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)){
+            }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)&&!applicationDto.isFastTracking()){
                 List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
                         ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
@@ -762,18 +757,18 @@ public class HcsaApplicationDelegator {
                         taskDto.getWkGrpId(),null,null,roleId);
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             }
-        }else{
-            List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
-            boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
-                    ApplicationConsts.APPLICATION_STATUS_APPROVED);
-            if(isAllSubmit){
-                //update application Group status
-                ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-                broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
-                applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
-                applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
-            }
+        }else if(!applicationDto.isFastTracking()){
+                List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+                boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
+                        ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                if(isAllSubmit){
+                    //update application Group status
+                    ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+                    broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
+                    applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+                    applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
+                }
         }
         //save the broadcast
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());

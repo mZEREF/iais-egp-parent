@@ -547,16 +547,23 @@
                                                             </select>
                                                         </td>
                                                     </tr>
-                                                    <c:if test="${applicationViewDto.applicationDto.status=='APST007'}">
+
                                                         <tr>
                                                             <td>
                                                                 <span>Fast Tracking:</span>
                                                             </td>
-                                                            <td >
-                                                                <input type="checkbox" name = "fastTracking" value="Y"/>
-                                                            </td>
+                                                           <c:choose>
+                                                               <td >
+                                                                <c:when test="${applicationViewDto.applicationDto.status=='APST007'}">
+                                                                    <input type="checkbox" name = "fastTracking" value="Y"/>
+                                                                </c:when>
+                                                               <c:otherwise>
+                                                                   <p>${applicationViewDto.applicationDto.fastTracking}</p>
+                                                               </c:otherwise>
+                                                               </td>
+                                                           </c:choose>
                                                         </tr>
-                                                    </c:if>
+
                                                     <tr id="rfiSelect">
                                                         <td>
                                                             <span>Sections Allowed for Change:</span>
