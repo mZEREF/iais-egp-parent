@@ -552,20 +552,16 @@
                                                             <td>
                                                                 <span>Fast Tracking:</span>
                                                             </td>
+                                                            <td >
                                                            <c:choose>
-                                                               <td >
                                                                 <c:when test="${applicationViewDto.applicationDto.status=='APST007'}">
-                                                                    <td >
                                                                     <input type="checkbox" name = "fastTracking" value="Y"/>
-                                                                    </td>
                                                                 </c:when>
                                                                <c:otherwise>
-                                                                   <td >
                                                                    <p>${applicationViewDto.applicationDto.fastTracking}</p>
-                                                                   </td>
                                                                </c:otherwise>
-
                                                            </c:choose>
+                                                            </td>
                                                         </tr>
 
                                                     <tr id="rfiSelect">
