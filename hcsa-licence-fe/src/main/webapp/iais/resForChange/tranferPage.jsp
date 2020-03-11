@@ -45,7 +45,7 @@
                              </tr>
                           </table>
                       </div>
-                     <p><span class="error-msg">${ErrorMsg}</span></p>
+<%--                     <p><span class="error-msg">${ErrorMsg}</span></p>--%>
                      <div class="col-xs-12 col-md-4">
                          <a class="back" href="https://egp.sit.inter.iais.com/hcsa-licence-web/eservice/INTERNET/MohRequestForChange?licenceId=${prepareTranfer.licenceId}"><em class="fa fa-angle-left"></em> Back</a>
                      </div>
@@ -59,16 +59,12 @@
             </div>
         <script>
             $(document).ready(function(){
-                var hci=${premises.hciName};
-                var vecNo=${premises.conveyanceVehicleNo};
-                if(hci=="onsite"){
-                    $('#rollBackDropdown').addClass('hidden');
-                }
+
             });
             $("#Next").click(function () {
                 showWaiting();
                 document.getElementById("mainForm").submit();
-            })
+            });
             function  showWaiting(){
                 $.blockUI({message: '<div style="padding:3px;">We are processing your request now, please do not click the Back or Refresh buttons in the browser.</div>',
                     css: {width: '25%', border: '1px solid #aaa'},

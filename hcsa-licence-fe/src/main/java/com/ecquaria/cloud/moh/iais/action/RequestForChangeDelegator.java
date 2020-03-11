@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -24,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -258,11 +260,12 @@ public class RequestForChangeDelegator {
      * @param bpc
      * @Decription compareChangePercentage
      */
-    public void compareChangePercentage(BaseProcessClass bpc) throws CloneNotSupportedException{
+    public void compareChangePercentage(BaseProcessClass bpc) throws CloneNotSupportedException,IOException {
         String licenceId= (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         //String licenseNo="L/20CLB0156/CLB/001/201";
         LicenceDto licenceDto=requestForChangeService.getLicenceDtoByLicenceId(licenceId);
         AppSubmissionDto appSubmissionDto=requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
+        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         String UNID=ParamUtil.getString(bpc.request, "UNID");
         String newLicenseeId=null;
         List<String> uenMemberIds=new ArrayList<>();
@@ -294,7 +297,7 @@ public class RequestForChangeDelegator {
                         }
                     }
                 }
-                if (count / oldMemberIds.size() < 0.5 && oldMemberIds.size() != 0) {
+                if (count / oldMemberIds.size() > 0.5 && oldMemberIds.size() != 0) {
                     result = true;
                 }
             }
@@ -307,6 +310,8 @@ public class RequestForChangeDelegator {
                 amendmentFeeDto.setChangeInLocation(false);
                 FeeDto feeDto=appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
                 Double amount=feeDto.getTotal();
+                String amountStr=amount.toString();
+                appSubmissionDto.setAmountStr(amountStr);
                 appSubmissionDto.setAmount(amount);
                 String[] selectCheakboxs=ParamUtil.getStrings(bpc.request,"premisesInput");
                 int a=selectCheakboxs.length;
@@ -346,10 +351,16 @@ public class RequestForChangeDelegator {
                 ParamUtil.setRequestAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST,hcsaServiceDtos);
                 NewApplicationHelper.setSubmissionDtoSvcData(bpc.request,appSubmissionDto);
                 appSubmissionService.setRiskToDto(appSubmissionDto);
-                requestForChangeService.submitChange(appSubmissionDto);
-
+                AppSubmissionDto tranferSub=requestForChangeService.submitChange(appSubmissionDto);
+                ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
+                StringBuffer url = new StringBuffer();
+                url.append("https://").append(bpc.request.getServerName())
+                        .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication/PreparePayment");
+                String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+                bpc.response.sendRedirect(tokenUrl);
             }
-        ParamUtil.setRequestAttr(bpc.request, "tranferPayment", appSubmissionDto);
+
+
         log.debug(StringUtil.changeForLog("the do tranfer end ....111111111111111"));
     }
 

@@ -62,7 +62,7 @@
                                                         <tr>
                                                             <td>${appSubmissionDtos.licenceNo}</td>
                                                             <td>${appSubmissionDtos.serviceName}</td>
-                                                            <td><c:forEach items="${appSubmissionDtos.appGrpPremisesDtoList}" var="appGrpPremisesDtoList"><span>${appGrpPremisesDtoList.address}</span><br/></c:forEach></td>
+                                                            <td><c:forEach items="${appSubmissionDtos.appGrpPremisesDtoList}" var="appGrpPremisesDtoList"><span>${appGrpPremisesDtoList.renewPremises}</span><br/></c:forEach></td>
                                                             <td>${appSubmissionDtos.licStartDate}</td>
                                                             <td>${appSubmissionDtos.licExpiryDate}</td>
                                                         </tr>
@@ -94,7 +94,7 @@
                                             <!--todo:wait caijing complete -->
                                             <p class="text-right"><a href="#" id="premisesEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                                             <STRONG>Premises${status.index+1}</STRONG><br/>
-                                            <div>${appGrpPremisesDtoList.address}</div>
+                                            <div>${appGrpPremisesDtoList.renewPremises}</div>
                                             <br/>
                                             <br/>
                                             <STRONG>Primary Documents${status.index+1}</STRONG>

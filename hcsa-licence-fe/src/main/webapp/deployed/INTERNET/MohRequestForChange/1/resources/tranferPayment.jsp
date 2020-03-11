@@ -1,1 +1,0 @@
-<%@include file="/iais/resForChange/tranferPayment.jsp"%>

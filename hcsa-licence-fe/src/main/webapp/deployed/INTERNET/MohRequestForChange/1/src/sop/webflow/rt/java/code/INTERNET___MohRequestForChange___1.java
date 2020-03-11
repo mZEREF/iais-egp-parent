@@ -10,8 +10,8 @@
  * reasons.
  */
 package sop.webflow.rt.java.code;
-import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
+import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTERNET___MohRequestForChange___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="requestForChangeDelegator";
@@ -59,11 +59,6 @@ public class INTERNET___MohRequestForChange___1 extends BaseProcessClass {
 	public void prepareDraft_OnStepProcess_0() throws Exception {
 	// 		prepareDraft->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareDraft", this);
-	}
-
-	public void payment_OnStepProcess_0() throws Exception {
-	// 		payment->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "submitPayment", this);
 	}
 
 }

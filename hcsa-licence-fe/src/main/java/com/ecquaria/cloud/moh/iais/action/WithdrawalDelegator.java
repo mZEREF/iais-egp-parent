@@ -100,4 +100,8 @@ public class WithdrawalDelegator {
     public void saveDateStep(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("****The saveDateStep Step****"));
     }
+
+    private void sendTaskToASO(){
+
+    }
 }

@@ -333,12 +333,16 @@ public class NewApplicationDelegator {
     public void preparePayment(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do preparePayment start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        AppSubmissionDto tranferSub = (AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request,"app-rfc-tranfer");
+        if(tranferSub!=null){
+            appSubmissionDto=tranferSub;
+        }
         if(!StringUtil.isEmpty(appSubmissionDto.getAmount())){
             String amountStr = Formatter.formatterMoney(appSubmissionDto.getAmount());
             log.info(StringUtil.changeForLog("The amountStr is -->:"+amountStr));
             appSubmissionDto.setAmountStr(amountStr);
         }
-
+        ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.info(StringUtil.changeForLog("the do preparePayment end ...."));
     }
 
@@ -972,6 +976,7 @@ public class NewApplicationDelegator {
             return;
         }
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String a=appSubmissionDto.getPaymentMethod();
         appSubmissionDto.setPaymentMethod(payMethod);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         if("Credit".equals(payMethod)){
