@@ -38,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -70,6 +71,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -759,7 +761,7 @@ public class RequestForInformationDelegator {
              ) {
             OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licPreRfi.getLicenseeId()).getEntity();
             if(organizationLicDto.getLicenseeEntityDto()!=null){
-                licPreRfi.setEmail(organizationLicDto.getLicenseeEntityDto().getEntityType());
+                licPreRfi.setEmail(Arrays.toString(organizationLicDto.getLicenseeEntityDto().getOfficeEmailAddr()));
             }
         }
 
@@ -836,13 +838,18 @@ public class RequestForInformationDelegator {
 
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.createLicPremisesReqForInfo(licPremisesReqForInfoDto);
 
-        String templateId="BEFC2AF0-250C-EA11-BE78-000C29D29DB0";
+        String templateId="BF0EFC2A-250C-EA11-BE78-000C29D29DB0";
         InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
         String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto1.getReqInfoId()).getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(bpc.request.getServerName())
+                .append("/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo")
+                .append("?licenseeId=").append(licenseeId);
         Map<String,Object> map=new HashMap<>();
         map.put("APPLICANT_NAME",StringUtil.viewHtml(licenseeDto.getName()));
         map.put("DETAILS",StringUtil.viewHtml(licPremisesReqForInfoDto1.getOfficerRemarks()));
+        map.put("A_HREF",url.toString());
         map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
         String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);
 
@@ -853,12 +860,20 @@ public class RequestForInformationDelegator {
         log.info("=======>>>>>Create Lic Request for Information licPremId "+licPremisesReqForInfoDto1.getReqInfoId());
         gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1,
                 signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
-        EmailDto emailDto=new EmailDto();
-        emailDto.setContent(mesContext);
-        emailDto.setSubject(rfiEmailTemplateDto.getSubject());
-        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
 
-        //String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
+        try {
+            EmailDto emailDto=new EmailDto();
+            emailDto.setContent(mesContext);
+            emailDto.setSubject(rfiEmailTemplateDto.getSubject());
+            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            List<String> licenseeIds=new ArrayList<>();
+            licenseeIds.add(licenseeId);
+            List<String> emailAddress = EmailHelper.getEmailAddressListByLicenseeId(licenseeIds);
+            emailDto.setReceipts(emailAddress);
+            String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
+        }catch (Exception e){
+            log.info(e.getMessage());
+        }
         // 		doCreateRequest->OnStepProcess
     }
 

@@ -3,48 +3,64 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComplianceHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
@@ -85,6 +101,8 @@ public class OfficerOnlineEnquiriesDelegator {
     @Autowired
     HcsaLicenceClient hcsaLicenceClient;
     @Autowired
+    private ApplicationClient applicationClient;
+    @Autowired
     OnlineEnquiriesService onlineEnquiriesService;
     @Autowired
     LicenceService licenceService;
@@ -94,6 +112,17 @@ public class OfficerOnlineEnquiriesDelegator {
     InsRepClient insRepClient;
     @Autowired
     InsepctionNcCheckListService insepctionNcCheckListService;
+    @Autowired
+    private TaskService taskService;
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+    @Autowired
+    private InsRepService insRepService;
+    private final String RECOMMENDATION_DTO= "appPremisesRecommendationDto";
+    private final String RECOMMENDATION="recommendation";
+    private final String CHRONO="chrono";
+    private final String NUMBER="number";
+    private final String REJECT="Reject";
 
     private final String SEARCH_NO="searchNo";
     private final String RFI_QUERY="ReqForInfoQuery";
@@ -798,7 +827,7 @@ public class OfficerOnlineEnquiriesDelegator {
     }
 
     public void preLicDetails(BaseProcessClass bpc) {
-        log.info("=======>>>>>preAppInfo>>>>>>>>>>>>>>>>requestForInformation");
+        log.info("=======>>>>>preLicDetails>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String licenceId = (String) ParamUtil.getSessionAttr(request, "id");
 
@@ -806,8 +835,71 @@ public class OfficerOnlineEnquiriesDelegator {
         OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licenceDto.getLicenseeId()).getEntity();
         List<PersonnelsDto> personnelsDto= hcsaLicenceClient.getPersonnelDtoByLicId(licenceId).getEntity();
 
-        ParamUtil.setRequestAttr(request,"organizationLicDto",organizationLicDto);
-        ParamUtil.setRequestAttr(request,"personnelsDto",personnelsDto);
+        for (LicenseeKeyApptPersonDto org:organizationLicDto.getLicenseeKeyApptPersonDtos()
+             ) {
+            org.setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{org.getSalutation()}).get(0).getText());
+        }
+        for (PersonnelsDto per:personnelsDto
+        ) {
+            try{
+                per.getKeyPersonnelDto().setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getSalutation()}).get(0).getText());
+                per.getKeyPersonnelDto().setDesignation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getDesignation()}).get(0).getText());
+                per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelExtDto().getProfessionType()}).get(0).getText());
+
+            }catch (NullPointerException e){
+                log.info(e.getMessage());
+            }
+        }
+
+        List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
+
+        List<ComplianceHistoryDto> complianceHistoryDtos=new ArrayList<>();
+        for(LicAppCorrelationDto licAppCorrelationDto : licAppCorrelationDtos){
+            ComplianceHistoryDto complianceHistoryDto=new ComplianceHistoryDto();
+            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(licAppCorrelationDto.getApplicationId()).getEntity();
+            ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDto.getApplicationId()).getEntity();
+            ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+            complianceHistoryDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? "Post":"Pre");
+            complianceHistoryDto.setAppPremCorrId(appPremisesCorrelationDto.getId());
+            complianceHistoryDto.setComplianceTag("Full");
+            try{
+                AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                complianceHistoryDto.setInspectionDateYear(appPremisesRecommendationDto.getRecomInDate().getYear());
+            }catch (Exception e){
+                log.info(e.getMessage());
+            }
+            try{
+                List<AdhocChecklistItemDto> adhocChecklistItemDtos=applicationClient.getAdhocByAppPremCorrId(appPremisesCorrelationDto.getId()).getEntity();
+                complianceHistoryDto.setRiskTag(adhocChecklistItemDtos.get(0).getRiskLvl());
+            }catch (Exception e){
+                log.info(e.getMessage());
+            }
+            complianceHistoryDtos.add(complianceHistoryDto);
+        }
+
+        ParamUtil.setSessionAttr(request,"complianceHistoryDtos", (Serializable) complianceHistoryDtos);
+        ParamUtil.setSessionAttr(request,"organizationLicDto",organizationLicDto);
+        ParamUtil.setSessionAttr(request,"personnelsDto", (Serializable) personnelsDto);
+        // 		preLicDetails->OnStepProcess
+    }
+
+    public void preInspReport(BaseProcessClass bpc) {
+        log.info("=======>>>>>preInspReport>>>>>>>>>>>>>>>>requestForInformation");
+        HttpServletRequest request=bpc.request;
+        String appPremCorrId = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String taskId = ParamUtil.getString(bpc.request,"taskId");
+        if(StringUtil.isEmpty(taskId)){
+            taskId = "BB8C47A3-9B37-EA11-BE7E-000C29F371DC";
+        }
+        TaskDto taskDto = taskService.getTaskById(taskId);
+        taskDto.setRefNo(appPremCorrId);
+        ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appPremCorrId);
+        InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
+        ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+        ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, appPremisesRecommendationDto);
         // 		preAppInfo->OnStepProcess
     }
 
@@ -994,7 +1086,6 @@ public class OfficerOnlineEnquiriesDelegator {
 
         return  appSvcRelatedInfoDto;
     }
-
 
 
 

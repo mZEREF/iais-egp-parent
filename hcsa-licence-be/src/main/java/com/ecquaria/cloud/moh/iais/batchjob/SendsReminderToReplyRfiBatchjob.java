@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -79,12 +81,19 @@ public class SendsReminderToReplyRfiBatchjob {
         map.put("DETAILS",StringUtil.viewHtml(licPremisesReqForInfoDto.getOfficerRemarks()));
         map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
         String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);
-        EmailDto emailDto=new EmailDto();
-        emailDto.setContent(mesContext);
-        emailDto.setSubject(rfiEmailTemplateDto.getSubject());
-        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-
-        String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
+        try{
+            EmailDto emailDto=new EmailDto();
+            emailDto.setContent(mesContext);
+            emailDto.setSubject(rfiEmailTemplateDto.getSubject());
+            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            List<String> licenseeIds=new ArrayList<>();
+            licenseeIds.add(licenseeId);
+            List<String> emailAddress = EmailHelper.getEmailAddressListByLicenseeId(licenseeIds);
+            emailDto.setReceipts(emailAddress);
+            String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
+        }catch (Exception e){
+            log.info(e.getMessage());
+        }
 
         licPremisesReqForInfoDto.setReminder(licPremisesReqForInfoDto.getReminder()+1);
         Calendar cal = Calendar.getInstance();

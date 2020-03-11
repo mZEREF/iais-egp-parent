@@ -305,26 +305,27 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <p>1</p>
-                                                        </td>
-                                                        <td>
-                                                            <p>Inspection Report</p>
-                                                        </td>
-                                                        <td>
-                                                            <p>Low</p>
-                                                        </td>
-                                                        <td>
-                                                            <p>Full Compliance</p>
-                                                        </td>
-                                                        <td>
-                                                            <p>Full Compliance</p>
-                                                        </td>
-                                                        <td>
-                                                            <p>2016</p>
-                                                        </td>
-                                                    </tr>
+                                                    <c:forEach var="compliance" items="${complianceHistoryDtos}" varStatus="status">
+                                                        <tr>
+                                                            <td class="row_no"><c:out value="${status.index + 1}"/></td>
+                                                            <td>
+                                                                <a onclick="doReportSearch('${compliance.appPremCorrId}')">Inspection Report</a>
+                                                            </td>
+                                                            <td>
+                                                                <p>${compliance.riskTag}</p>
+                                                            </td>
+                                                            <td>
+                                                                <p>${compliance.complianceTag} Compliance</p>
+                                                            </td>
+                                                            <td>
+                                                                <p>${compliance.inspectionTypeName}</p>
+                                                            </td>
+                                                            <td>
+                                                                <p>${compliance.inspectionDate}</p>
+                                                            </td>
+                                                        </tr>
+                                                    </c:forEach>
+
 
                                                     </tbody>
                                                 </table>
@@ -339,6 +340,15 @@
                 </div>
             </div>
         </div>
-        <input type="submit" class="btn btn-default" value="BACK">
+        <input type="button" class="btn btn-default" value="BACK" onclick="doBack()">
     </div>
 </form>
+<script type="text/javascript">
+    function doReportSearch(appPremCorrId){
+        showWaiting(); SOP.Crud.cfxSubmit("mainForm", "report",appPremCorrId);
+    }
+    function doBack(){
+        showWaiting(); SOP.Crud.cfxSubmit("mainForm", "back");
+    }
+
+</script>

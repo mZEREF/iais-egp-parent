@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
@@ -91,7 +92,7 @@ public class InspectionMergeSendNcEmailDelegator {
         HttpServletRequest request=bpc.request;
         AccessUtil.initLoginUserInfo(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, null);
-        ParamUtil.setSessionAttr(request,"appPremCorrId",null);
+        ParamUtil.setSessionAttr(request,"appPremCorrIds",null);
         ParamUtil.setSessionAttr(request,MSG_CON, null);
         ParamUtil.setSessionAttr(request,"applicationViewDto",null);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
@@ -185,7 +186,7 @@ public class InspectionMergeSendNcEmailDelegator {
         String content=ParamUtil.getString(request,MSG_CON);
         String subject=ParamUtil.getString(request,SUBJECT);
         ParamUtil.setRequestAttr(request,SUBJECT, subject);
-        ParamUtil.setRequestAttr(request,MSG_CON, content);
+        ParamUtil.setSessionAttr(request,MSG_CON, content);
     }
 
     public void sendEmail(BaseProcessClass bpc) throws FeignException {
@@ -357,13 +358,21 @@ public class InspectionMergeSendNcEmailDelegator {
                 }
 
             }
+            try {
+                EmailDto emailDto=new EmailDto();
+                emailDto.setContent(inspectionEmailTemplateDto.getMessageContent());
+                emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
+                emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                List<String> licenseeIds=new ArrayList<>();
+                String licenseeId=inspEmailService.getAppInsRepDto(appPremCorrIds.get(0)).getLicenseeId();
+                licenseeIds.add(licenseeId);
+                List<String> emailAddress = EmailHelper.getEmailAddressListByLicenseeId(licenseeIds);
+                emailDto.setReceipts(emailAddress);
+                String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
+            }catch (Exception e){
+                log.info(e.getMessage());
+            }
 
-            EmailDto emailDto=new EmailDto();
-            emailDto.setContent(inspectionEmailTemplateDto.getMessageContent());
-            emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-
-            //String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
         }
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
 
