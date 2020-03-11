@@ -13,6 +13,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator("eicSelfRecoveDelegator")
 @Slf4j
 public class EicSelfRecoveJob {
+
     public void selfRecover(BaseProcessClass bpc) {
 
     }
