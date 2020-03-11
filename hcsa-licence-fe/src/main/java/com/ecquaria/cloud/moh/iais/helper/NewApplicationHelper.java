@@ -471,7 +471,7 @@ public class NewApplicationHelper {
         }
         return isNewApp || isOther;
     }
-
+    //just for one svc
     public static void setLaboratoryDisciplinesInfo(AppSubmissionDto appSubmissionDto,List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos){
        Map<String, HcsaSvcSubtypeOrSubsumedDto> map = new HashMap<>();
        turn(hcsaSvcSubtypeOrSubsumedDtos, map);
@@ -481,23 +481,18 @@ public class NewApplicationHelper {
        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-               List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtos =appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
-               if(!IaisCommonUtils.isEmpty(appSvcLaboratoryDisciplinesDtos)){
-                   for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtos){
-                       if(!IaisCommonUtils.isEmpty(appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList())){
-                           for(AppSvcChckListDto appSvcChckListDto:appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList()){
-                               HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto = map.get(appSvcChckListDto.getChkLstConfId());
-                               if(hcsaSvcSubtypeOrSubsumedDto != null){
-                                   appSvcChckListDto.setChkName(hcsaSvcSubtypeOrSubsumedDto.getName());
-                                   appSvcChckListDto.setChkLstType(hcsaSvcSubtypeOrSubsumedDto.getType());
-                                   appSvcChckListDto.setChkCode(hcsaSvcSubtypeOrSubsumedDto.getCode());
-                               }
-                           }
-                       }
-                   }
-               }
+               setSvcScopeInfo(appSvcRelatedInfoDto,map);
            }
        }
+    }
+    //
+    public static void setLaboratoryDisciplinesInfo(AppSvcRelatedInfoDto appSvcRelatedInfoDto,List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos){
+        Map<String, HcsaSvcSubtypeOrSubsumedDto> map = new HashMap<>();
+        turn(hcsaSvcSubtypeOrSubsumedDtos, map);
+        if(appSvcRelatedInfoDto == null){
+            return;
+        }
+        setSvcScopeInfo(appSvcRelatedInfoDto,map);
     }
 
 
@@ -673,5 +668,23 @@ public class NewApplicationHelper {
             }
         }
 
+    }
+
+    private static void setSvcScopeInfo(AppSvcRelatedInfoDto appSvcRelatedInfoDto,Map<String, HcsaSvcSubtypeOrSubsumedDto> map){
+        List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtos =appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcLaboratoryDisciplinesDtos)){
+            for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtos){
+                if(!IaisCommonUtils.isEmpty(appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList())){
+                    for(AppSvcChckListDto appSvcChckListDto:appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList()){
+                        HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto = map.get(appSvcChckListDto.getChkLstConfId());
+                        if(hcsaSvcSubtypeOrSubsumedDto != null){
+                            appSvcChckListDto.setChkName(hcsaSvcSubtypeOrSubsumedDto.getName());
+                            appSvcChckListDto.setChkLstType(hcsaSvcSubtypeOrSubsumedDto.getType());
+                            appSvcChckListDto.setChkCode(hcsaSvcSubtypeOrSubsumedDto.getCode());
+                        }
+                    }
+                }
+            }
+        }
     }
 }

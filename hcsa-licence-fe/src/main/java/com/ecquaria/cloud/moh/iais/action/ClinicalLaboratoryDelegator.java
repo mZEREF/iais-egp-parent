@@ -507,6 +507,9 @@ public class ClinicalLaboratoryDelegator {
                         Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
                         clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_LABORATORY);
                         appSubmissionDto.setClickEditPage(clickEditPages);
+                        AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
+                        appEditSelectDto.setServiceEdit(true);
+                        appSubmissionDto.setChangeSelectDto(appEditSelectDto);
                     }
                     ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
                 }
@@ -572,6 +575,9 @@ public class ClinicalLaboratoryDelegator {
                     Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_GOVERNANCE_OFFICERS);
                     appSubmissionDto.setClickEditPage(clickEditPages);
+                    AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
+                    appEditSelectDto.setServiceEdit(true);
+                    appSubmissionDto.setChangeSelectDto(appEditSelectDto);
                 }
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
             }
@@ -659,6 +665,9 @@ public class ClinicalLaboratoryDelegator {
                     Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DISCIPLINE_ALLOCATION);
                     appSubmissionDto.setClickEditPage(clickEditPages);
+                    AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
+                    appEditSelectDto.setServiceEdit(true);
+                    appSubmissionDto.setChangeSelectDto(appEditSelectDto);
                 }
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
             }
@@ -729,6 +738,9 @@ public class ClinicalLaboratoryDelegator {
                         clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DISCIPLINE_ALLOCATION);
                     }
                     appSubmissionDto.setClickEditPage(clickEditPages);
+                    AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
+                    appEditSelectDto.setServiceEdit(true);
+                    appSubmissionDto.setChangeSelectDto(appEditSelectDto);
                 }
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
             }
@@ -802,6 +814,9 @@ public class ClinicalLaboratoryDelegator {
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
                 clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DOCUMENT);
                 appSubmissionDto.setClickEditPage(clickEditPages);
+                AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
+                appEditSelectDto.setServiceEdit(true);
+                appSubmissionDto.setChangeSelectDto(appEditSelectDto);
             }
 
             if(svcDocConfigDtos != null && !svcDocConfigDtos.isEmpty()){

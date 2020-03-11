@@ -31,6 +31,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -132,7 +134,7 @@ public class NewApplicationDelegator {
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the do Start start ...."));
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
-        AuditTrailDto auditTrailDto =IaisEGPHelper.getCurrentAuditTrailDto();
+
         //clear Session
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
 
@@ -382,6 +384,9 @@ public class NewApplicationDelegator {
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null? new HashSet<>() :appSubmissionDto.getClickEditPage();
                 clickEditPages.add(APPLICATION_PAGE_NAME_PREMISES);
                 appSubmissionDto.setClickEditPage(clickEditPages);
+                AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
+                appEditSelectDto.setPremisesEdit(true);
+                appSubmissionDto.setChangeSelectDto(appEditSelectDto);
             }
 
 
@@ -452,6 +457,9 @@ public class NewApplicationDelegator {
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
                 clickEditPages.add(NewApplicationDelegator.APPLICATION_PAGE_NAME_PRIMARY);
                 appSubmissionDto.setClickEditPage(clickEditPages);
+                AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
+                appEditSelectDto.setDpoEdit(true);
+                appSubmissionDto.setChangeSelectDto(appEditSelectDto);
             }
 
             Map<String,CommonsMultipartFile> commonsMultipartFileMap = new HashMap<>();
@@ -880,9 +888,9 @@ public class NewApplicationDelegator {
      */
     public void doSubmit(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do doSubmit start ...."));
-        //do validate
-        // Map<String, Map<String, String>> validateResult = doValidate(bpc);
-        //save the app and appGroup
+
+        String isGroupLic = ParamUtil.getString(bpc.request,"isGroupLic");
+
         Map<String, String> map = doPreviewAndSumbit(bpc);
         if(!map.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"Msg",map);
@@ -890,6 +898,10 @@ public class NewApplicationDelegator {
             return;
         }
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+
+        if(AppConsts.YES.equals(isGroupLic)){
+            appSubmissionDto.setGroupLic(true);
+        }
         String draftNo = appSubmissionDto.getDraftNo();
         if(StringUtil.isEmpty(draftNo)){
             draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
@@ -2476,6 +2488,15 @@ public class NewApplicationDelegator {
             }
 
         }
+        //set licenseeId
+        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
+        if(interInboxUserDto != null){
+            appSubmissionDto.setLicenseeId(interInboxUserDto.getLicenseeId());
+        }else{
+            appSubmissionDto.setLicenseeId("");
+            log.info(StringUtil.changeForLog("user info is empty....."));
+        }
+
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "IndexNoCount", 0);
 
@@ -2487,7 +2508,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, ERRORMAP_PREMISES, null);
         ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, null);
 
-        //init svc conifg
+        //init svc psn conifg
         Map<String,List<HcsaSvcPersonnelDto>> svcConfigInfo =  null;
         ParamUtil.setSessionAttr(bpc.request, SERVICEALLPSNCONFIGMAP, (Serializable) svcConfigInfo);
 

@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -172,8 +173,9 @@ public class RequestForChangeMenuDelegator {
      */
     public void preparePremisesList(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePremisesList start ...."));
-        //todo
-        String licenseeId = "111";
+        //set licenseeId
+        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
+        String licenseeId = interInboxUserDto.getLicenseeId();
         List<PremisesListQueryDto> premisesDtos = requestForChangeService.getPremisesList(licenseeId);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, (Serializable) premisesDtos);
 
@@ -322,7 +324,8 @@ public class RequestForChangeMenuDelegator {
      */
     public void preparePersonnelList(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePersonnelList start ...."));
-        String licenseeId = "123";
+        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
+        String licenseeId = interInboxUserDto.getLicenseeId();
         List<PersonnelListQueryDto> licenseeKeyApptPersonDtoList =  requestForChangeService.getLicencePersonnelListQueryDto(licenseeId);
         Map<String,List<PersonnelListQueryDto>> personnelListMap = new HashMap<>();
         for(PersonnelListQueryDto personnelListQueryDto:licenseeKeyApptPersonDtoList){
