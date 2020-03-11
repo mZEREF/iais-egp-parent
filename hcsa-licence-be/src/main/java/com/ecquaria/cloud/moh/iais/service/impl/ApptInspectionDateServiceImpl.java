@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -36,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -117,6 +119,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
+    @Autowired
+    private AppPremisesCorrClient appPremisesCorrClient;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -130,16 +135,19 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     @Override
     public ApptInspectionDateDto getInspectionDate(String taskId, ApptInspectionDateDto apptInspectionDateDto) {
         TaskDto taskDto = taskService.getTaskById(taskId);
+        List<String> premCorrIds = getCorrIdsByCorrIdFromPremises(taskDto.getRefNo());
+        //get Applicant set start date and end date from appGroup
         AppointmentDto appointmentDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(taskDto.getRefNo()).getEntity();
-        List<TaskDto> taskDtoList = organizationClient.getCurrTaskByRefNo(taskDto.getRefNo()).getEntity();
+        List<TaskDto> taskDtoList = getAllTaskFromSamePremises(premCorrIds);
         List<String> systemCorrIds = new ArrayList<>();
         if(!IaisCommonUtils.isEmpty(taskDtoList)){
             for(TaskDto tDto : taskDtoList){
                 systemCorrIds = getSystemCorrIdByUserId(tDto.getUserId(), systemCorrIds);
             }
         }
-        //appointmentDto.setUserId(systemCorrIds);
         if(appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null){
+            List<String> serviceIds = getServiceIdsByCorrIdsFromPremises(premCorrIds);
+            appointmentDto.setServiceIds(serviceIds);
             appointmentDto = hcsaConfigClient.getApptStartEndDateByService(appointmentDto).getEntity();
         }
         List<List<ApptUserCalendarDto>> apptUserCalendarDtoList = appointmentClient.getUserCalendarByUserId(appointmentDto).getEntity();
@@ -147,6 +155,41 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         apptInspectionDateDto.setTaskDto(taskDto);
         apptInspectionDateDto.setTaskDtos(taskDtoList);
         return apptInspectionDateDto;
+    }
+
+    private List<String> getServiceIdsByCorrIdsFromPremises(List<String> premCorrIds) {
+        List<String> serviceIds = applicationClient.getServiceIdsByCorrIdsFromPremises(premCorrIds).getEntity();
+        return serviceIds;
+    }
+
+    private List<TaskDto> getAllTaskFromSamePremises(List<String> premCorrIds) {
+        List<TaskDto> taskDtoList = new ArrayList<>();
+        if(!IaisCommonUtils.isEmpty(premCorrIds)){
+            for(String appPremCorrId : premCorrIds){
+                List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremCorrId).getEntity();
+                if(!IaisCommonUtils.isEmpty(taskDtos)){
+                    for(TaskDto taskDto : taskDtos){
+                        taskDtoList.add(taskDto);
+                    }
+                }
+            }
+        }
+        return taskDtoList;
+    }
+
+    private List<String> getCorrIdsByCorrIdFromPremises(String appPremCorrId) {
+        List<String> appPremCorrIds = new ArrayList<>();
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = getAppPremisesCorrelationsByPremises(appPremCorrId);
+        if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){
+            for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
+                appPremCorrIds.add(appPremisesCorrelationDto.getId());
+            }
+        }
+        return appPremCorrIds;
+    }
+
+    private List<AppPremisesCorrelationDto> getAppPremisesCorrelationsByPremises(String appPremCorrId) {
+        return appPremisesCorrClient.getAppPremisesCorrelationsByPremises(appPremCorrId).getEntity();
     }
 
     private ApptInspectionDateDto getShowTimeStringList(List<List<ApptUserCalendarDto>> apptUserCalendarDtoList, ApptInspectionDateDto apptInspectionDateDto) {
