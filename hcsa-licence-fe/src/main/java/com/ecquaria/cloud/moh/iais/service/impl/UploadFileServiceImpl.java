@@ -356,7 +356,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                     for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto :appPremPhOpenPeriodDtos){
                         String premId = appPremPhOpenPeriodDto.getPremId();
                         if(appliGrpPremisesDtoId.equals(premId)){
-                            appPremPhOpenPeriodDtos.add(appPremPhOpenPeriodDto);
+                            appPremPhOpenPeriodDtoList.add(appPremPhOpenPeriodDto);
                         }
 
                     }
