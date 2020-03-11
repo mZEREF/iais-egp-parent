@@ -3401,7 +3401,7 @@ span.error-msg {
   margin-right: 25px;
 }
 .table-gp table.table > tbody > tr > td p a[data-toggle=collapse]:after { 
-  content: "\f106";
+  content: "\f106";
   position: absolute;
   font-family: fontawesome;
   font-size: 2.4rem;
@@ -3417,7 +3417,7 @@ span.error-msg {
   }
 }
 .table-gp table.table > tbody > tr > td p a[data-toggle=collapse].collapsed:after {
-  content: "\f107";
+  content: "\f107";
 }
 .table-gp table.table > tbody > tr > td p a[data-toggle=collapse]:active, .table-gp table.table > tbody > tr > td p a[data-toggle=collapse]:focus {
   color: #2199E8;
