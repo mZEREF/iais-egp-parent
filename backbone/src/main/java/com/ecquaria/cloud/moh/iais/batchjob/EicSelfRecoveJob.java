@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import lombok.extern.slf4j.Slf4j;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * RestBridgeSelfRecoveJob
@@ -12,5 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Delegator("eicSelfRecoveDelegator")
 @Slf4j
 public class EicSelfRecoveJob {
+    public void selfRecover(BaseProcessClass bpc) {
 
+    }
 }
