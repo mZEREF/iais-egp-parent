@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
@@ -40,21 +39,11 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
-    public String getDraftNumber(String appNo) {
-        return appInboxClient.getDraftNumber(appNo).getEntity();
-    }
-
-    @Override
     public InterInboxUserDto getUserInfoByUserId(String userId) {
         InterInboxUserDto interInboxUserDto = feUserClient.findUserInfoByUserId(userId).getEntity();
         List<String> appGrpIdList = appInboxClient.getAppGrpIdsByLicenseeIs(interInboxUserDto.getLicenseeId()).getEntity();
         interInboxUserDto.setAppGrpIds(appGrpIdList);
         return  interInboxUserDto;
-    }
-
-    @Override
-    public List<ApplicationDraftDto> getDraftList() {
-        return appInboxClient.getDraftList().getEntity();
     }
 
     @Override
@@ -70,6 +59,10 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public SearchResult<InboxLicenceQueryDto> licenceDoQuery(SearchParam searchParam) {
         return licenceInboxClient.searchResultFromLicence(searchParam).getEntity();
+    }
+
+    @Override
+    public void recallApplication(String appNo) {
     }
 
     @Override

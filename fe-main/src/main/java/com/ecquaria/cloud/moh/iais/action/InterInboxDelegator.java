@@ -82,6 +82,7 @@ public class InterInboxDelegator {
         AccessUtil.initLoginUserInfo(bpc.request);
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         interInboxUserDto = inboxService.getUserInfoByUserId(loginContext.getUserId());
+        ParamUtil.setSessionAttr(bpc.request,"inter-inbox-user-info", interInboxUserDto);
         AuditTrailHelper.auditFunction("main-web", "main web");
     }
 
@@ -131,7 +132,6 @@ public class InterInboxDelegator {
         inboxSearchMap.put("userId",userId);
         inboxParameter.setFilters(inboxSearchMap);
         SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter,true);
-//        inboxParam.addFilter("userId",interInboxUserDto.getUserId());
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
         SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
         List<InboxQueryDto> inboxQueryDtoList = inboxResult.getRows();

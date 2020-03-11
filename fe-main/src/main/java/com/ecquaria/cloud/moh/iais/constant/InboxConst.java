@@ -24,7 +24,7 @@ public class InboxConst {
 
 
     public static final String CRUD_ACTION_VALUE            = "crud_action_value";
-    public static final String CRUD_ACTION_ADDITIONAL            = "crud_action_additional";
+    public static final String CRUD_ACTION_ADDITIONAL       = "crud_action_additional";
 
     public static final String SEARCH_INBOX                 = "doSearch";
 
@@ -41,9 +41,6 @@ public class InboxConst {
 
 
     public static final String SEARCH_ALL                 = "All";
-
-
-
 
     public static final String ASCENDING            = "ASC";
     public static final String DESCENDING           = "DESC";
