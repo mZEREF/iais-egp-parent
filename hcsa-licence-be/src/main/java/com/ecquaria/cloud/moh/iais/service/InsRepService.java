@@ -21,7 +21,6 @@ public interface InsRepService {
     InspectionReportDto getInsRepDto (TaskDto taskDto, ApplicationViewDto applicationViewDto , LoginContext loginContext);
 
     void saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
-    void updateTcuRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     void updateengageRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     void updateRiskRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     void updateFollowRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);

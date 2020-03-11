@@ -78,13 +78,29 @@ public class CessationApplicationDelegator {
         CopyUtil.copyMutableObjectList(appCessHciDtos, cloneAppCessHciDtos);
         List<AppCessLicDto> confirmDtos = getConfirmDtos(cloneAppCessHciDtos);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable) appCessHciDtos);
+        String readInfo = ParamUtil.getRequestString(bpc.request, "readInfo");
+        ParamUtil.setSessionAttr(bpc.request, "readInfo", readInfo);
+        Map<String, String> errorMap = new HashMap<>(34);
+        Boolean choose = false;
+        for (int i = 1; i <=size ; i++) {
+            for (int j = 1; j <= size; j++) {
+                String whichTodo = ParamUtil.getRequestString(bpc.request, i + "whichTodo" + j);
+                if(!StringUtil.isEmpty(whichTodo)){
+                    choose = true;
+                }
+            }
+        }
+        if(!choose){
+            errorMap.put("choose", "Please select at least one licence");
+        }
         if (confirmDtos.size() == 0) {
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;
         }
-        Map<String, String> errorMap = new HashMap<>(34);
+
         for (int i = 1; i <= size; i++) {
-            for (int j = 0; j <= size; j++) {
+            for (int j = 1; j <= size; j++) {
                 String whichTodo = ParamUtil.getRequestString(bpc.request, i + "whichTodo" + j);
                 if (!StringUtil.isEmpty(whichTodo)) {
                     Map<String, String> validate = validate(bpc,i,j);
@@ -342,7 +358,7 @@ public class CessationApplicationDelegator {
 
     private List<SelectOption> getPatientsOption() {
         List<SelectOption> riskLevelResult = new ArrayList<>();
-        SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, "HCI Name");
+        SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, "HCI");
         SelectOption so2 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, "Professional Regn No.");
         SelectOption so3 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER, "Others");
         riskLevelResult.add(so1);

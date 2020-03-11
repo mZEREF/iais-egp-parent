@@ -57,19 +57,15 @@ public class CessationServiceImpl implements CessationService {
                 List<AppCessHciDto> appCessHciDtos = new ArrayList<>();
                 if (premisesDtos != null && !premisesDtos.isEmpty()) {
                     for (PremisesDto premisesDto : premisesDtos) {
+                        String blkNo = premisesDto.getBlkNo();
+                        String streetName = premisesDto.getStreetName();
+                        String buildingName = premisesDto.getBuildingName();
+                        String floorNo = premisesDto.getFloorNo();
+                        String unitNo = premisesDto.getUnitNo();
+                        String postalCode = premisesDto.getPostalCode();
+                        String hciAddress = appendPremisesAddress(blkNo,streetName,buildingName,floorNo,unitNo,postalCode);
                         AppCessHciDto appCessHciDto = new AppCessHciDto();
                         String hciName = premisesDto.getHciName();
-                        String hciAddress = premisesDto.getHciName() + "/" + premisesDto.getStreetName() + " " + premisesDto.getUnitNo() + "," + premisesDto.getBuildingName() +
-                                " " + premisesDto.getBlkNo() + ",#" + premisesDto.getFloorNo() + "Singapore " + premisesDto.getPostalCode();
-                        appCessHciDto.setHciName(hciName);
-                        appCessHciDto.setHciAddress(hciAddress);
-                        appCessHciDtos.add(appCessHciDto);
-                    }
-                    for (PremisesDto premisesDto : premisesDtos) {
-                        AppCessHciDto appCessHciDto = new AppCessHciDto();
-                        String hciName = premisesDto.getHciName();
-                        String hciAddress = premisesDto.getHciName() + "/" + premisesDto.getStreetName() + " " + premisesDto.getUnitNo() + "," + premisesDto.getBuildingName() +
-                                " " + premisesDto.getBlkNo() + ",#" + premisesDto.getFloorNo() + "Singapore " + premisesDto.getPostalCode();
                         appCessHciDto.setHciName(hciName);
                         appCessHciDto.setHciAddress(hciAddress);
                         appCessHciDtos.add(appCessHciDto);
@@ -83,6 +79,24 @@ public class CessationServiceImpl implements CessationService {
             return null;
         }
 
+    }
+
+    public static String appendPremisesAddress(String... args){
+        if (args == null ||args.length > 6) {
+            return "";
+        }
+        String[] sign = {" ", " ", "#", "-", ","};
+        StringBuilder stb = new StringBuilder();
+        int i = 0;
+        for (String s : args){
+            if (i >= args.length - 1){
+                stb.append(s);
+            }else {
+                stb.append(s).append(sign[i]);
+            }
+            i++;
+        }
+        return stb.toString();
     }
 
     @Override

@@ -198,6 +198,8 @@ public class InsRepServiceImpl implements InsRepService {
             inspectionReportDto.setMarkedForAudit(false);
         }else if(NcRecommendationDto!=null&&NcRecommendationDto.getRecomInDate()!=null) {
             inspectionReportDto.setMarkedForAudit(true);
+            Date recomInDate = NcRecommendationDto.getRecomInDate();
+            inspectionReportDto.setTcuDate(recomInDate);
         }
         //checkList
         List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
@@ -259,29 +261,6 @@ public class InsRepServiceImpl implements InsRepService {
         insRepClient.saveRecommendationData(appPremisesRecommendationDto);
     }
 
-    @Override
-    public void updateTcuRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
-        String appPremCorreId = appPremisesRecommendationDto.getAppPremCorreId();
-        Integer version = 1;
-        AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, InspectionConstants.RECOM_TYPE_INSPCTION_TCU_NEEDED).getEntity();
-        if (oldAppPremisesRecommendationDto == null) {
-            appPremisesRecommendationDto.setVersion(version);
-            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            insRepClient.saveRecommendationData(appPremisesRecommendationDto);
-            return;
-        } else {
-            oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-            insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
-            version = oldAppPremisesRecommendationDto.getVersion() + 1;
-            oldAppPremisesRecommendationDto.setVersion(version);
-            oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            oldAppPremisesRecommendationDto.setRecomInDate(appPremisesRecommendationDto.getRecomInDate());
-            oldAppPremisesRecommendationDto.setId(null);
-            insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
-            return;
-        }
-
-    }
 
     @Override
     public void updateengageRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {

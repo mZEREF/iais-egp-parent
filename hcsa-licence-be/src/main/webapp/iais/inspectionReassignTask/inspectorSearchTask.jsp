@@ -32,9 +32,7 @@
             <h3>
               <span>Search Criteria</span>
             </h3>
-            <div class="panel panel-default">
-              <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
-                <div class="panel-body">
+
                   <div class="panel-main-content">
                     <iais:section title="" id = "supPoolList">
                       <iais:row>
@@ -78,7 +76,7 @@
                         </iais:value>
                       </iais:row>
                       <iais:row>
-                        <iais:field value="Professional Screening Officer Name"/>
+                        <iais:field value="${user}"/>
                         <iais:value width="18">
                           <div onload="inspectorSearchTask_optionNameAuto(${inspectorValue})" class="form-horizontal">
                             <select name = "inspectorSearchTask_inspectorName" id="inspectorSearchTask_inspectorName" onclick="javascript:doInspectorSearchTaskSelect()">
@@ -98,9 +96,6 @@
                       </iais:action>
                     </iais:section>
                   </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

@@ -87,7 +87,7 @@
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
-                                                <iais:field value="Admin Screening Supervisor"/>
+                                                <iais:field value="${lead}"/>
                                                 <iais:value width="7">
                                                     <label><c:out value="${inspectionTaskPoolListDto.inspectorLeads}"/></label>
                                                 </iais:value>
@@ -95,7 +95,7 @@
 
 
                                                 <iais:row>
-                                                    <iais:field value="Admin Screening Officer" required="true"/>
+                                                    <iais:field value="${user}" required="true"/>
                                                     <iais:value width="10">
                                                         <c:if test="${inspectionReassignTaskDto.inspectorCheck == null}">
                                                         <iais:select name="inspectorCheck" options="inspectorOption" firstOption="Please select" value="${inspectorOption}"></iais:select>

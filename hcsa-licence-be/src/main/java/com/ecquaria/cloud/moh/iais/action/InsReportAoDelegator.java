@@ -186,8 +186,6 @@ public class InsReportAoDelegator {
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         appPremisesRecommendationDto.setRecommendation(recommendation);
         appPremisesRecommendationDto.setPeriod(periods);
-        appPremisesRecommendationDto.setTcuNeeded(tcuNeeded);
-        appPremisesRecommendationDto.setTcuDate(tcuDate);
         appPremisesRecommendationDto.setEngageEnforcement(enforcement);
         appPremisesRecommendationDto.setEngageEnforcementRemarks(enforcementRemarks);
         appPremisesRecommendationDto.setRiskLevel(riskLevel);
@@ -240,7 +238,6 @@ public class InsReportAoDelegator {
 
     private void initAoRecommendation(String correlationId,BaseProcessClass bpc){
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-        AppPremisesRecommendationDto tcuRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_TCU_NEEDED).getEntity();
         AppPremisesRecommendationDto engageRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
         AppPremisesRecommendationDto riskRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity();
         AppPremisesRecommendationDto followRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
@@ -258,12 +255,6 @@ public class InsReportAoDelegator {
             inspectorRemarks = appPremisesRecommendationDto.getRemarks();
             ParamUtil.setSessionAttr(bpc.request, "option", option);
             ParamUtil.setSessionAttr(bpc.request, "inspectorRemarks", inspectorRemarks);
-        }
-        if(tcuRecommendationDto!=null){
-            Date recomInDate = tcuRecommendationDto.getRecomInDate();
-            String tcuNeed = "on";
-            ParamUtil.setSessionAttr(bpc.request, "recomInDate", recomInDate);
-            ParamUtil.setSessionAttr(bpc.request, "tcuNeed", tcuNeed);
         }
         if(engageRecommendationDto!=null){
             String remarks = engageRecommendationDto.getRemarks();
@@ -284,18 +275,9 @@ public class InsReportAoDelegator {
     private void saveAoRecommendation(String appPremisesCorrelationId,BaseProcessClass bpc,AppPremisesRecommendationDto preapreRecommendationDto){
         AppPremisesRecommendationDto recommendationDto = prepareSaveRecommendation(bpc, appPremisesCorrelationId);
         insRepService.updateRecommendation(recommendationDto);
-        String tcuNeeded = ParamUtil.getRequestString(bpc.request, "tcuNeeded");
-        Date tcuDate = preapreRecommendationDto.getTcuDate();
         String engageEnforcement = preapreRecommendationDto.getEngageEnforcement();
         String riskLevel = preapreRecommendationDto.getRiskLevel();
         String followUpAction = preapreRecommendationDto.getFollowUpAction();
-        if(!StringUtil.isEmpty(tcuNeeded)){
-            AppPremisesRecommendationDto recommendationDtoTcu = new AppPremisesRecommendationDto();
-            recommendationDtoTcu.setAppPremCorreId(appPremisesCorrelationId);
-            recommendationDtoTcu.setRecomInDate(tcuDate);
-            recommendationDtoTcu.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_TCU_NEEDED);
-            insRepService.updateTcuRecommendation(recommendationDtoTcu);
-        }
         if(!StringUtil.isEmpty(engageEnforcement)){
             AppPremisesRecommendationDto recommendationDtoEngage = new AppPremisesRecommendationDto();
             recommendationDtoEngage.setAppPremCorreId(appPremisesCorrelationId);

@@ -95,17 +95,24 @@ public class InspecReassignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appStatusOption", null);
         ParamUtil.setSessionAttr(bpc.request, "inspectorOption", null);
 
-//        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-//        List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
-//        getReassignPoolByGroupWordId(workGroupIds);
-//        SearchParam searchParam = getSearchParam(bpc);
-//        List<TaskDto> ReassignPools = getReassignPoolByGroupWordId(workGroupIds);
-//
-//        QueryHelp.setMainSql("inspectionQuery", "assignInspectorSupper", searchParam);
-//        SearchResult<InspectionSubPoolQueryDto> searchResult = inspectionService.getSupPoolByParam(searchParam);
-//        SearchResult<InspectionTaskPoolListDto> searchResult2 = inspectionService.getOtherDataForSr(searchResult, ReassignPools, loginContext);
-//        ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
-//        ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", searchResult2);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
+        SearchParam searchParam = getSearchParam(bpc);
+        List<TaskDto> ReassignPools = getReassignPoolByGroupWordId(workGroupIds);
+        List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(ReassignPools);
+        StringBuilder sb = new StringBuilder("(");
+        for(int i = 0; i < appCorrId_list.size(); i++){
+            sb.append(":appCorrId" + i).append(",");
+        }
+        String inSql = sb.substring(0, sb.length() - 1) + ")";
+        searchParam.addParam("appCorrId_list", inSql);
+        for(int i = 0; i < appCorrId_list.size(); i++){
+            searchParam.addFilter("appCorrId" + i, appCorrId_list.get(i));
+        }
+        QueryHelp.setMainSql("inspectionQuery", "assignInspectorSupper", searchParam);
+        SearchResult<InspectionSubPoolQueryDto> searchResult = inspectionService.getSupPoolByParam(searchParam);
+        SearchResult<InspectionTaskPoolListDto> searchResult2 = inspectionService.getOtherDataForSr(searchResult, ReassignPools, loginContext);
+        ParamUtil.setRequestAttr(bpc.request, "supTaskSearchResult", searchResult2);
     }
 
     /**
@@ -119,6 +126,24 @@ public class InspecReassignTaskDelegator {
         SearchParam searchParam = getSearchParam(bpc);
         SearchResult<InspectionSubPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "supTaskSearchResult");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String curRoleId = loginContext.getCurRoleId();
+        String user = null;
+        String lead = null;
+        if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(curRoleId)){
+            user = "Inspector";
+            lead = "Inspection Lead";
+        }else if(RoleConsts.USER_ROLE_AO1.equals(curRoleId)||RoleConsts.USER_ROLE_AO2.equals(curRoleId)||RoleConsts.USER_ROLE_AO3.equals(curRoleId)){
+            user = "Admin Screening Officer";
+            lead = "Admin Screening Supervisor";
+        }else if(RoleConsts.USER_ROLE_PSO.equals(curRoleId)){
+            user = "Professional Screening Officer";
+            lead = "Professional Screening Supervisor";
+        }else if(RoleConsts.USER_ROLE_ASO.equals(curRoleId)){
+            user = "Admin Screening Officer";
+            lead = "Admin Screening Supervisor";
+        }
+        ParamUtil.setSessionAttr(bpc.request, "user", user);
+        ParamUtil.setSessionAttr(bpc.request, "lead", lead);
         //get groupId by login id
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
         //select de option
@@ -176,11 +201,10 @@ public class InspecReassignTaskDelegator {
         String hci_code = ParamUtil.getRequestString(bpc.request, "hci_code");
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
         String hci_address = ParamUtil.getRequestString(bpc.request, "hci_address");
-        String inspectorValue = ParamUtil.getMaskedString(bpc.request, "inspector_name");
-
-
+        //String inspectorValue = ParamUtil.getMaskedString(bpc.request, "inspector_name");
+        String inspectorValue = ParamUtil.getMaskedString(bpc.request, "inspectorSearchTask_inspectorName");
         List<TaskDto> ReassignPools = getReassignPoolByGroupWordId(workGroupIds);
-
+        inspectorValue = "DF18318E-8137-EA11-BE78-000C29D29DB0";
         List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(ReassignPools);
         StringBuilder sb = new StringBuilder("(");
         for(int i = 0; i < appCorrId_list.size(); i++){
@@ -199,9 +223,9 @@ public class InspecReassignTaskDelegator {
             appCorIdStrs = inspectorValue.split(",");
             StringBuilder sb2 = new StringBuilder("(");
             for(int i = 0; i < appCorIdStrs.length; i++){
-                sb.append(":appCorId" + i).append(",");
+                sb2.append(":appCorId" + i).append(",");
             }
-            String inSql2 = sb.substring(0, sb2.length() - 1) + ")";
+            String inSql2 = sb2.substring(0, sb2.length() - 1) + ")";
             searchParam.addParam("appCorId_list", inSql2);
             for(int i = 0; i < appCorIdStrs.length; i++){
                 searchParam.addFilter("appCorId" + i, appCorIdStrs[i]);

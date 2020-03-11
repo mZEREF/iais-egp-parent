@@ -87,13 +87,13 @@
                         </iais:value>
                       </iais:row>
                       <iais:row>
-                        <iais:field value="Admin Screening Supervisor"/>
+                        <iais:field value="${lead}"/>
                         <iais:value width="7">
                           <label><c:out value="${inspectionTaskPoolListDto.inspectorLeads}"/></label>
                         </iais:value>
                       </iais:row>
                       <iais:row>
-                        <iais:field value="Admin Screening Officer"/>
+                        <iais:field value="${user}"/>
                         <iais:value width="10">
                           <c:forEach items="${inspectionReassignTaskDto.inspectorCheck}" var="name">
                             <label><c:out value="${name.text}"/></label>

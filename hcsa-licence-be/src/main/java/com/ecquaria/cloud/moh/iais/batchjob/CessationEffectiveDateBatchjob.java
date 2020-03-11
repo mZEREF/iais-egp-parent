@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -33,7 +34,7 @@ public class CessationEffectiveDateBatchjob {
         log.debug(StringUtil.changeForLog("The CessationEffectiveDateBatchjob is start ..."));
     }
     public void doBatchJob(BaseProcessClass bpc){
-        String type = "cessation";
+        String type = ApplicationConsts.CESSATION_TYPE_APPLICATION;
         Date date = new Date();
         String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
         //get misc corrId

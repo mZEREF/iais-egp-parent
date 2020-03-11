@@ -194,42 +194,6 @@
                         <td class="col-xs-8">
                             <p>${insRepDto.serviceName}</p>
                             <c:if test="${insRepDto.commonCheckList != null}">
-                                <div class="tab-pane active" id="General" role="tabpanel">
-                                    <h3>General</h3>
-                                    <div class="table-gp">
-                                        <c:forEach var ="section" items ="${insRepDto.commonCheckList.sectionDtoList}">
-                                            <br/>
-                                            <h4><c:out value="${section.sectionName}"></c:out></h4>
-                                            <table class="table">
-                                                <thead>
-                                                <tr>
-                                                    <th>No.</th>
-                                                    <th>Regulation Clause Number</th>
-                                                    <th>Item</th>
-                                                    <th>Rectified</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
-                                                    <tr>
-                                                        <td class="row_no">${(status.count) }</td>
-                                                        <td>${item.incqDto.regClauseNo}</td>
-                                                        <td>${item.incqDto.checklistItem}</td>
-                                                        <c:set value = "${item.incqDto.sectionNameSub}${item.incqDto.itemId}" var = "ckkId"/>
-                                                        <td>
-                                                            <div id="<c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>comck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
-                                                                <input name="<c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>comrec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameSub}"/>comrec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec" disabled/>
-                                                            </div>
-                                                            <c:set value = "error_${item.incqDto.sectionNameSub}${item.incqDto.itemId}com" var = "err"/>
-                                                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
-                                                        </td>
-                                                    </tr>
-                                                </c:forEach>
-                                                </tbody>
-                                            </table>
-                                        </c:forEach>
-                                    </div>
-                                </div>
                                 <div class="tab-pane" id="ServiceInfo" role="tabpanel">
                                     <c:forEach var ="cdto" items ="${insRepDto.subTypeCheckList.fdtoList}" varStatus="status">
                                         <h3>${cdto.subType}</h3>
@@ -276,7 +240,7 @@
                     <p><span>Part II: Findings</span></p>
                 </div>
                 <div class="table-gp">
-                    <table class="table">
+                    <table class="table" >
                         <tr>
                             <td class="col-xs-4">
                                 <p>Remarks:</p>
@@ -291,7 +255,7 @@
                             </td>
                             <td class="col-xs-8">
                                 <c:if test="${insRepDto.markedForAudit}">
-                                    <p>Yes</p>
+                                    <p>Yes <c:out value="${insRepDto.tcuDate}"/></p>
                                 </c:if>
                                 <c:if test="${!insRepDto.markedForAudit}">
                                     <p>No</p>
@@ -362,9 +326,11 @@
                                 <c:if test="${appPremisesRecommendationDto.riskLevel != null}"> <iais:select
                                         name="riskLevel" options="riskLevelOptions" firstOption="Please select"
                                         value="${appPremisesRecommendationDto.riskLevel}"/></c:if>
+
                                 <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
-                            <td class="col-xs-4"></td>
+                            <td class="col-xs-4">
+                            </td>
                         </tr>
                     </table>
                 </div>
@@ -423,10 +389,7 @@
                         </td>
                         <div>
                             <td class="col-xs-4">
-                                <p><textarea name="remarks" cols="50" rows="6" title="content" maxlength="8000">
-                                    <c:if test="${appPremisesRecommendationDto.remarks ==null}">${reportRemarks}</c:if>
-                                <c:if test="${appPremisesRecommendationDto.remarks !=null}">${appPremisesRecommendationDto.remarks}</c:if>
-                                    </textarea></p>
+                                <p><textarea name="remarks" cols="50" rows="6" title="content" maxlength="8000"><c:if test="${appPremisesRecommendationDto.remarks ==null}">${reportRemarks}</c:if><c:if test="${appPremisesRecommendationDto.remarks !=null}"><c:out value="${appPremisesRecommendationDto.remarks}"/></c:if></textarea></p>
                                 <span id="error_remarks" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                         </div>
@@ -458,59 +421,18 @@
                 <table class="table">
                     <tr>
                         <td class="col-xs-4">
-                            <p>TCU needed:</p>
-                        </td>
-                        <td class="col-xs-4">
-                            <input type="checkbox" id="tcuNeeded" name="tcuNeeded" onchange="javascirpt:changeTcu();"
-                                   <c:if test="${appPremisesRecommendationDto.tcuNeeded =='on'}">checked</c:if>
-                                   <c:if test="${tcuNeed =='on'}">checked</c:if>
-                            >
-                            <span id="error_tcuNeeded" name="iaisErrorMsg" class="error-msg"></span>
-                        </td>
-                        <td class="col-xs-4"></td>
-                    </tr>
-                    <tr id="tcuDate" hidden>
-                        <td class="col-xs-4">
-                            <p>TCU Date:</p>
-                        </td>
-                        <td class="col-xs-4">
-                            <c:if test="${appPremisesRecommendationDto.tcuDate == null}">
-                                <iais:datePicker id="tcuDate" name="tcuDate" dateVal="${recomInDate}"/>
-                            </c:if>
-                            <c:if test="${appPremisesRecommendationDto.tcuDate != null}">
-                                <iais:datePicker id="tcuDate" name="tcuDate"
-                                                 dateVal="${appPremisesRecommendationDto.tcuDate}"/>
-                            </c:if>
-                            <span id="error_tcuDate" name="iaisErrorMsg" class="error-msg"></span>
-                        </td>
-                        <td class="col-xs-4"></td>
-                    </tr>
-                    <tr>
-                        <td class="col-xs-4">
                             <p>Recommendation:</p>
                         </td>
                         <c:if test="${appPremisesRecommendationDto.recommendation==null}">
                             <td class="col-xs-4">
-                                <iais:select name="recommendation" options="recommendationOption" firstOption="Please select" onchange="javascirpt:changeRecommendation(this.value);"/>
+                                <iais:select name="recommendation" options="recommendationOption" firstOption="Please select" value="${recomDecision}" onchange="javascirpt:changeRecommendation(this.value);"/>
                             </td>
                         </c:if>
                         <c:if test="${appPremisesRecommendationDto.recommendation !=null}">
                             <td>
-                                <iais:select name="recommendation" options="recommendationOption"
-                                             firstOption="Please select"
-                                             value="${appPremisesRecommendationDto.recommendation}"
-                                             onchange="javascirpt:changeRecommendation(this.value);"/>
+                                <iais:select name="recommendation" options="recommendationOption" firstOption="Please select" value="${appPremisesRecommendationDto.recommendation}" onchange="javascirpt:changeRecommendation(this.value);"/>
                             </td>
                         </c:if>
-                        <c:if test="${recomDecision !=null}">
-                            <td>
-                                <iais:select name="recommendation" options="recommendationOption"
-                                             firstOption="Please select"
-                                             value="${recomDecision}"
-                                             onchange="javascirpt:changeRecommendation(this.value);"/>
-                            </td>
-                        </c:if>
-
                         <td class="col-xs-4"></td>
                     </tr>
                     <tr id="period" hidden>
@@ -541,16 +463,8 @@
                             <input id=recomInNumber type="text" name="number" <c:if test="${number ==null}">value="${recnumber}"</c:if>
                                    <c:if test="${number !=null}">value="${number}"</c:if>>
                             <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
-                            <c:if test="${chrono ==null}">
-                                <iais:select id="chronoUnit" name="chrono" options="chronoOption"
-                                             firstOption="Please select" value="${recchrono}"/>
-
-                            </c:if>
-                            <c:if test="${chrono !=null}">
-                                <iais:select id="chronoUnit" name="chrono" options="chronoOption"
-                                             firstOption="Please select" value="${chrono}"/>
-                            </c:if>
-
+                            <c:if test="${chrono ==null}"><iais:select id="chronoUnit" name="chrono" options="chronoOption" firstOption="Please select" value="${recchrono}"/></c:if>
+                            <c:if test="${chrono !=null}"><iais:select id="chronoUnit" name="chrono" options="chronoOption" firstOption="Please select" value="${chrono}"/></c:if>
                             <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
                         </td>
                         <td class="col-xs-4"></td>
@@ -570,15 +484,19 @@
                     <table class="table">
                         <tr>
                             <td class="col-xs-4">
+                                <p>Follow up Action:</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <p><textarea name="followUpAction" cols="50" rows="6" title="content" maxlength="8000"><c:if test="${appPremisesRecommendationDto.followUpAction == null}"><c:out value="${followRemarks}"/></c:if><c:if test="${appPremisesRecommendationDto.followUpAction != null}"><c:out value="${appPremisesRecommendationDto.followUpAction}"/></c:if></textarea></p>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-4">
                                 <p>To Engage Enforcement?:</p>
                             </td>
                             <td class="col-xs-4">
-                                <input type="checkbox" id="enforcement" name="engageEnforcement"
-                                       onchange="javascirpt:changeEngage();"
-                                       <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if>
-                                       <c:if test="${engage =='on'}">checked</c:if>
-
-                                >
+                                <input type="checkbox" id="enforcement" name="engageEnforcement" onchange="javascirpt:changeEngage();" <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if> <c:if test="${engage =='on'}">checked</c:if>>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
@@ -587,23 +505,8 @@
                                 <p>Enforcement Remarks</p>
                             </td>
                             <td class="col-xs-4">
-                                <p><textarea name="enforcementRemarks" cols="50" rows="6" title="content" MAXLENGTH="4000">
-                                <c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks ==null}">${remarks}</c:if>
-                                <c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks !=null}">${appPremisesRecommendationDto.engageEnforcementRemarks}</c:if>
-                                </textarea></p>
+                                <p><textarea name="enforcementRemarks" cols="50" rows="6" title="content" MAXLENGTH="4000"><c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks ==null}"><c:out value="${remarks}"/></c:if><c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks !=null}"><c:out value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></c:if></textarea></p>
                                 <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
-                            </td>
-                            <td class="col-xs-4"></td>
-                        </tr>
-                        <tr>
-                            <td class="col-xs-4">
-                                <p>Follow up Action:</p>
-                            </td>
-                            <td class="col-xs-4">
-                                <p><textarea name="followUpAction" cols="50" rows="6" title="content" maxlength="8000">
-                            <c:if test="${appPremisesRecommendationDto.followUpAction == null}">${followRemarks}</c:if>
-                                <c:if test="${appPremisesRecommendationDto.followUpAction != null}">${appPremisesRecommendationDto.followUpAction}</c:if>
-                            </textarea></p>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
@@ -617,7 +520,7 @@
 <script type="text/javascript">
 
     function insRepsubmit() {
-            $("#mainForm").submit();
+        $("#mainForm").submit();
     }
 
     function changePeriod(obj) {
@@ -638,14 +541,6 @@
         }
     }
 
-    function changeTcu() {
-        if ($('#tcuNeeded').is(':checked')) {
-            document.getElementById("tcuDate").style.display = "";
-            $("#tcuDate").show();
-        } else {
-            document.getElementById("tcuDate").style.display = "none";
-        }
-    }
 
     function changeEngage() {
         if ($('#enforcement').is(':checked')) {

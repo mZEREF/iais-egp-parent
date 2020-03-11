@@ -4,7 +4,7 @@
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<webui:setLayout name="iais-intranet"/>
+<webui:setLayout name="iais-internet"/>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -19,23 +19,21 @@
         <div class="panel-heading"><h2><strong>Cessation Confirm Form</strong></h2></div>
         <div class="panel-heading"><h4><strong>Please key in to cessation information</strong></h4></div>
         <div class="row">
-            <div class="col-xs-12">
-                <div>
                     <table border="1">
                         <thead>
                         <tr style="padding: 1%">
-                            <th style="text-align:center;">S/N</th>
-                            <th style="text-align:center;padding: 1%">Licence No.</th>
-                            <th style="text-align:center;padding: 1%">Service Name</th>
-                            <th style="text-align:center;padding: 1%">HCI Name</th>
-                            <th style="text-align:center;padding: 1%">HCI Address</th>
-                            <th style="text-align:center;padding: 1%">Effective Date<a
+                            <th style="text-align:center;padding: 1%;width: 5%">S/N</th>
+                            <th style="text-align:center;padding: 1%;width: 5%">Licence No.</th>
+                            <th style="text-align:center;padding: 1%;width: 10%">Service Name</th>
+                            <th style="text-align:center;padding: 1%;width: 10%">HCI Name</th>
+                            <th style="text-align:center;padding: 1%;width: 10%">HCI Address</th>
+                            <th style="text-align:center;padding: 1%;width: 12%">Effective Date <a
                                     class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true"
                                     data-original-title="<p>The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">i</a>
                             </th>
-                            <th style="text-align:center;padding: 1%;width: 13%">Cessation Reasons</th>
-                            <th style="text-align:center;padding: 1%">Patients' Record will be transferred</th>
-                            <th></th>
+                            <th style="text-align:center;padding: 1%;width: 15%">Cessation Reasons</th>
+                            <th style="text-align:center;padding: 1%;width: 28%">Patients' Record will be transferred</th>
+                            <th style="text-align:center;padding: 1%;width: 5%"></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -62,7 +60,7 @@
                                                                               onchange="javascirpt:changeReason(this.value);"
                                                                               value="${appCessHci.reason}" disabled="true"/>
 
-                                        <div id="${num.count}reason${uid.count}" hidden><input
+                                        <div style="margin-top: 25%" id="${num.count}reason${uid.count}" hidden><input
                                                 type="text"
                                                 name="${num.count}otherReason${uid.count}"
                                                 value="${appCessHci.otherReason}" disabled>
@@ -89,7 +87,7 @@
                                             </tr>
                                             <tr id="${num.count}patYes${uid.count}" hidden>
                                                 <td style="position: absolute;top: 30%;left: 3% ;width: 40%">
-                                                    <div>Patients'Record will be transferred to</div>
+                                                    <div>Who will take over your patients' case records?</div>
                                                 </td>
                                                 <td style="position: absolute;top: 30%;right: 3% ;width: 55%">
                                                     <iais:select
@@ -159,7 +157,7 @@
                                                      name="${num.count}reason${uid.count+1}"
                                                      options="reasonOption"
                                                      value="${appCessHci.reason}" disabled="true"/>
-                                        <div id="${num.count}reason${uid.count+1}" hidden><input
+                                        <div style="margin-top: 25%" id="${num.count}reason${uid.count+1}" hidden><input
                                                 type="text"
                                                 name="${num.count}otherReason${uid.count+1}"
                                                 value="${appCessHci.otherReason}" disabled>
@@ -174,19 +172,19 @@
                                                            value="yes"
                                                            id="${num.count}radioYes${uid.count+1}"
                                                            <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if>
-                                                           onchange="javascirpt:changePatSelect(this.value);" disabled>Yes
+                                                           onchange="javascirpt:changePatSelect(this.value);" disabled> Yes
                                                 </td>
                                                 <td style="padding-left: 2%;width: 10%;position: absolute;top: 10%;right: 30% ;width: 20%">
                                                     <input type="radio"
                                                            name="${num.count}patRadio${uid.count+1}"
                                                            value="no"
                                                            id="${num.count}radioNo${uid.count+1}"
-                                                           <c:if test="${appCessHci.patNeedTrans == false}">checked</c:if> onclick="return false">No
+                                                           <c:if test="${appCessHci.patNeedTrans == false}">checked</c:if> onclick="return false"> No
                                                 </td>
                                             </tr>
                                             <tr id="${num.count}patYes${uid.count+1}" hidden>
                                                 <td style="position: absolute;top: 30%;left: 3% ;width: 40%">
-                                                    <div>Patients'Record will be transferred to</div>
+                                                    <div>Who will take over your patients' case records?</div>
                                                 </td>
                                                 <td style="width: 57%;position: absolute;top: 30%;right: 3% ;width: 55%">
                                                     <iais:select
@@ -244,16 +242,14 @@
                         </c:forEach>
                         </tbody>
                     </table>
-                </div>
-            </div>
         </div>
 
-        <div style="width: 70%"><c:out value="${text1}"/></div>
+        <div style="width: 70%;margin-left: 1%;margin-right: 1%"><c:out value="${text1}"/></div>
         <br/>
-        <div style="width: 70%"><c:out value="${text2}"/></div>
+        <div style="width: 70%;margin-left: 1%;margin-right: 1%"><c:out value="${text2}"/></div>
         <br/>
-        <div><input type="checkbox" onclick="return false" checked name="sure" id="confirmInfo">
-            <label for="confirmInfo">I have read the information</label>
+        <div style="margin-left: 1%;margin-right: 1%"><input type="checkbox" onclick="return false" checked name="sure" id="confirmInfo">
+            <label style="font-weight: normal" for="confirmInfo">I have read the information</label>
         </div>
 
 
