@@ -547,6 +547,16 @@
                                                             </select>
                                                         </td>
                                                     </tr>
+                                                    <c:if test="${applicationViewDto.applicationDto.status=='APST007'}">
+                                                        <tr>
+                                                            <td>
+                                                                <span>Fast Tracking:</span>
+                                                            </td>
+                                                            <td >
+                                                                <input type="checkbox" name = "fastTracking" value="Y"/>
+                                                            </td>
+                                                        </tr>
+                                                    </c:if>
                                                     <tr id="rfiSelect">
                                                         <td>
                                                             <span>Sections Allowed for Change:</span>
