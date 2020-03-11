@@ -251,8 +251,11 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                     fileRepoDto.setFileName(file3.getName());
                     log.debug(StringUtil.changeForLog("saveDtoFileName:" + file3.getName()));
                     String relativePath = file3.getPath().replaceFirst(sharedPath, "");
+                    //remove file name
+                    String subRelativePath = relativePath.substring(0, relativePath.lastIndexOf(File.separator));
                     log.debug(StringUtil.changeForLog("relativePath:" + relativePath));
-                    fileRepoDto.setRelativePath(relativePath);
+                    log.debug(StringUtil.changeForLog("subRelativePath:" + subRelativePath));
+                    fileRepoDto.setRelativePath(subRelativePath);
                     fileList.add(fileRepoDto);
                     if(!IaisCommonUtils.isEmpty(fileList)) {
                         list.addAll(fileList);
