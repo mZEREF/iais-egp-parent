@@ -93,15 +93,16 @@
         }
     };
 
-    function doDraftAction(appNo, val) {
-        var action = val;
+    function doDraftAction(appNo, action) {
         if ("Reload" == action) {
             $("[name='action_no_value']").val(appNo);
-            // submit('appDraft');
+            submit('appDoReload');
         }
 
         if ("Delete" == action) {
+            showWaiting();
             $("[name='action_no_value']").val(appNo);
+            submit('appDoDelete');
         }
     }
 </script>

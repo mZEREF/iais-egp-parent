@@ -380,6 +380,17 @@ public class InterInboxDelegator {
             bpc.response.sendRedirect(tokenUrl);}
     }
 
+    public void appDoDelete(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("Step ---> appDoDelete"));
+        HttpServletRequest request = bpc.request;
+    }
+
+    public void appDoReload(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("Step ---> appDoReload"));
+        HttpServletRequest request = bpc.request;
+    }
+
+
     public void licDoAppeal(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
         String licNo = ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_VALUE);
