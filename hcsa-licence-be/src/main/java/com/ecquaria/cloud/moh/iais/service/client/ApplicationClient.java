@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * ApplicationClient
@@ -179,5 +180,5 @@ public interface ApplicationClient {
 
     @PostMapping(value = "/iais-application-be/app-service-ids", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<String>> getServiceIdsByCorrIdsFromPremises(@RequestBody List<String> appPremCorrIds);
+    FeignResponseEntity<Map<String, String>> getServiceIdsByCorrIdsFromPremises(@RequestBody List<String> appPremCorrIds);
 }

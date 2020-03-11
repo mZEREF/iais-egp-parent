@@ -24,6 +24,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * ApplicationClientFallback
@@ -394,7 +395,7 @@ public class ApplicationClientFallback implements ApplicationClient{
     }
 
     @Override
-    public FeignResponseEntity<List<String>> getServiceIdsByCorrIdsFromPremises(List<String> appPremCorrIds) {
+    public FeignResponseEntity<Map<String, String>> getServiceIdsByCorrIdsFromPremises(List<String> appPremCorrIds) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
