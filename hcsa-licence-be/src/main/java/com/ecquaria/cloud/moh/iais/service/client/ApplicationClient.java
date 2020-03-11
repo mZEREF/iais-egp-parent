@@ -177,4 +177,7 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-application-be/v1/self-decl/user-account/")
     FeignResponseEntity<List<ApplicationGroupDto>> getUserAccountByNotSubmittedSelfDecl();
 
+    @PostMapping(value = "/iais-application-be/app-service-ids", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getServiceIdsByCorrIdsFromPremises(@RequestBody List<String> appPremCorrIds);
 }
