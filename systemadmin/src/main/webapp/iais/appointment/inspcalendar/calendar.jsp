@@ -20,7 +20,7 @@
 <div class="main-content">
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <div class="bg-title"><h2>Non-Availability Page</h2></div>
+    <div class="bg-title"><h2>Define Non-Availability</h2></div>
 
     <form class="form-horizontal">
 
