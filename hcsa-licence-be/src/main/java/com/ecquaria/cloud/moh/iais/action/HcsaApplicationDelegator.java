@@ -8,9 +8,17 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -22,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -32,15 +41,32 @@ import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.BroadcastService;
+import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
+import com.ecquaria.cloud.moh.iais.service.InsRepService;
+import com.ecquaria.cloud.moh.iais.service.LicenseeService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloudfeign.FeignException;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.util.*;
 
 /**
  * HcsaApplicationDelegator
@@ -80,6 +106,13 @@ public class HcsaApplicationDelegator {
 
     @Autowired
     private InsRepService insRepService;
+
+    @Autowired
+    private MsgTemplateClient msgTemplateClient;
+
+    @Autowired
+    private LicenseeService licenseeService;
+
 
 //    public void routingTask(BaseProcessClass bpc) throws FeignException {
 //        log.debug(StringUtil.changeForLog("the do routingTask start ...."));
@@ -235,7 +268,7 @@ public class HcsaApplicationDelegator {
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
         String appPremCorreId=taskDto.getRefNo();
         //save recommendation
-        String recommendationStr = ParamUtil.getString(bpc.request,"recommendation");
+        String recommendationStr = ParamUtil.getString(bpc.request,"recomedation");
         if(("---select---").equals(recommendationStr)){
 
         }else if(("reject").equals(recommendationStr)){
@@ -576,7 +609,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void requestForInformation(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
+    public void requestForInformation(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do requestForInformation start ...."));
         routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION,null);
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
@@ -600,8 +633,16 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
-
-        interMessageDto.setProcessUrl(url);
+        MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
+        Map<String ,Object> map=new HashMap<>();
+        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
+        LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
+        map.put("APPLICANT_NAME",licenseeDto.getName());
+        map.put("DETAILS","");
+        map.put("A_HREF",url);
+        map.put("MOH_NAME",AppConsts.MOH_AGENCY_NAME);
+        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
+        interMessageDto.setMsgContent(templateMessageByContent);
         interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
         interMessageDto.setUserId(applicationViewDto.getSubmitBy());
         interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
