@@ -136,43 +136,59 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     @Override
     public ApptInspectionDateDto getInspectionDate(String taskId, ApptInspectionDateDto apptInspectionDateDto) {
         TaskDto taskDto = taskService.getTaskById(taskId);
-        List<String> premCorrIds = getCorrIdsByCorrIdFromPremises(taskDto.getRefNo());
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = getAppPremisesCorrelationsByPremises(taskDto.getRefNo());
+        //get application info show
+        List<ApplicationDto> applicationDtos = getApplicationInfoToShow(appPremisesCorrelationDtos);
+        apptInspectionDateDto.setApplicationInfoShow(applicationDtos);
         //get Applicant set start date and end date from appGroup
         AppointmentDto appointmentDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(taskDto.getRefNo()).getEntity();
+        //get Other Tasks From The Same Premises
+        List<String> premCorrIds = getCorrIdsByCorrIdFromPremises(appPremisesCorrelationDtos);
         List<TaskDto> taskDtoList = getAllTaskFromSamePremises(premCorrIds);
 
-        List<String> systemCorrIds = new ArrayList<>();
-        if(!IaisCommonUtils.isEmpty(taskDtoList)){
-            for(TaskDto tDto : taskDtoList){
-                systemCorrIds = getSystemCorrIdByUserId(tDto.getUserId(), systemCorrIds);
-            }
-        }
         Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
         List<String> serviceIds = new ArrayList<>();
         for(Map.Entry<String, String> map : corrIdServiceIdMap.entrySet()){
             serviceIds.add(map.getValue());
         }
+        //get Start date and End date when group no date
         if(appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null){
             appointmentDto.setServiceIds(serviceIds);
             appointmentDto = hcsaConfigClient.getApptStartEndDateByService(appointmentDto).getEntity();
 
         }
+        //get inspection date
         List<AppointmentUserDto> appointmentUserDtos = new ArrayList<>();
         for(TaskDto tDto : taskDtoList){
             AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
             appointmentUserDto.setLoginUserId(tDto.getUserId());
             appointmentUserDto.setWorkGrpName(tDto.getWkGrpId());
+            //get service id by task refno
             String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
+            //get manHours by service and stage
             int manHours = hcsaConfigClient.getManHour(serviceId, HcsaConsts.ROUTING_STAGE_INS).getEntity();
             appointmentUserDto.setWorkHours(manHours);
             appointmentUserDtos.add(appointmentUserDto);
         }
         appointmentDto.setUsers(appointmentUserDtos);
-        List<List<ApptUserCalendarDto>> apptUserCalendarDtoList = appointmentClient.getUserCalendarByUserId(appointmentDto).getEntity();
-        apptInspectionDateDto = getShowTimeStringList(apptUserCalendarDtoList, apptInspectionDateDto);
+        Map<String, List<ApptUserCalendarDto>> inspectionDateMap = appointmentClient.getUserCalendarByUserId(appointmentDto).getEntity();
+        apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
+
         apptInspectionDateDto.setTaskDto(taskDto);
         apptInspectionDateDto.setTaskDtos(taskDtoList);
+
         return apptInspectionDateDto;
+    }
+
+    private List<ApplicationDto> getApplicationInfoToShow(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos) {
+        List<ApplicationDto> applicationDtos = new ArrayList<>();
+        if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)) {
+            for (AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos) {
+                ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremisesCorrelationDto.getId()).getEntity();
+                applicationDtos.add(applicationDto);
+            }
+        }
+        return applicationDtos;
     }
 
     private Map<String, String> getServiceIdsByCorrIdsFromPremises(List<String> premCorrIds) {
@@ -195,9 +211,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         return taskDtoList;
     }
 
-    private List<String> getCorrIdsByCorrIdFromPremises(String appPremCorrId) {
+    private List<String> getCorrIdsByCorrIdFromPremises(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos) {
         List<String> appPremCorrIds = new ArrayList<>();
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = getAppPremisesCorrelationsByPremises(appPremCorrId);
         if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){
             for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
                 appPremCorrIds.add(appPremisesCorrelationDto.getId());
@@ -210,17 +225,12 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         return appPremisesCorrClient.getAppPremisesCorrelationsByPremises(appPremCorrId).getEntity();
     }
 
-    private ApptInspectionDateDto getShowTimeStringList(List<List<ApptUserCalendarDto>> apptUserCalendarDtoList, ApptInspectionDateDto apptInspectionDateDto) {
+    private ApptInspectionDateDto getShowTimeStringList(Map<String, List<ApptUserCalendarDto>> inspectionDateMap, ApptInspectionDateDto apptInspectionDateDto) {
         List<String> inspectionDates = new ArrayList<>();
-        if(!IaisCommonUtils.isEmpty(apptUserCalendarDtoList)){
+        if(inspectionDateMap != null){
             List<ApptUserCalendarDto> apptUserCalendarDtoListAll = new ArrayList<>();
-            for(List<ApptUserCalendarDto> apptUserCalendarDtos : apptUserCalendarDtoList){
-                apptUserCalendarDtoListAll.add(apptUserCalendarDtos.get(0));
-                if(!IaisCommonUtils.isEmpty(apptUserCalendarDtos)){
-
-                    /*String fullDate = getApptDateToShow(apptUserCalendarDtos.get(0).getTimeSlot());
-                    inspectionDates.add(fullDate);*/
-                }
+            for(Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()){
+                inspDateMap.getValue();
             }
             apptInspectionDateDto.setInspectionDate(inspectionDates);
             apptInspectionDateDto.setApptUserCalendarDtoListAll(apptUserCalendarDtoListAll);
@@ -255,16 +265,6 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String englishDate = format.format(date);
         String fullDate = week + ", " + englishDate + ", " + hours;
         return fullDate;
-    }
-
-    private List<String> getSystemCorrIdByUserId(String userId, List<String> systemCorrIds) {
-        List<String> systemCorrIdList = appointmentClient.getIdByAgencyUserId(userId).getEntity();
-        if(!IaisCommonUtils.isEmpty(systemCorrIdList)){
-            for(String sId : systemCorrIdList){
-                systemCorrIds.add(sId);
-            }
-        }
-        return systemCorrIds;
     }
 
     @Override
