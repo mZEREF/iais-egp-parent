@@ -181,12 +181,12 @@ public class AppealApproveBatchjob {
                 if(ApplicationConsts.APPLICATION_GROUP_STATUS_LICENCE_GENERATED.equals(applicationGroupDto.getStatus())){
                     rollBackApplication.add(appealApplicationDto);
                     ApplicationDto newAppealApplicaitonDto = (ApplicationDto) CopyUtil.copyMutableObject(appealApplicationDto);
-                    newAppealApplicaitonDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPEAL_APPROVE);
+                    newAppealApplicaitonDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                     appealApplicaiton.add(newAppealApplicaitonDto);
 
                     rollBackApplicationGroupDtos.add(applicationGroupDto);
                     ApplicationGroupDto newAppealApplicationGroupDto = (ApplicationGroupDto) CopyUtil.copyMutableObject(applicationGroupDto);
-                    newAppealApplicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_APPEAL_APPROVE);
+                    newAppealApplicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
                     appealApplicationGroupDtos.add(newAppealApplicationGroupDto);
                 }
                 rollBackAppPremisesRecommendationDtos.add(appPremisesRecommendationDto);
