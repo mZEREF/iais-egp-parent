@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -253,7 +254,7 @@ public class InspectionRectificationProDelegator {
      * @param bpc
      * @throws
      */
-    public void inspectorProRectificationReq(BaseProcessClass bpc){
+    public void inspectorProRectificationReq(BaseProcessClass bpc) throws IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the inspectorProRectificationReq start ...."));
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
@@ -270,7 +271,7 @@ public class InspectionRectificationProDelegator {
      * @param bpc
      * @throws
      */
-    public void inspectorProRectificationAcc(BaseProcessClass bpc){
+    public void inspectorProRectificationAcc(BaseProcessClass bpc) throws IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the inspectorProRectificationAcc start ...."));
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
@@ -287,7 +288,7 @@ public class InspectionRectificationProDelegator {
      * @param bpc
      * @throws
      */
-    public void inspectorProRectificationAccCond(BaseProcessClass bpc){
+    public void inspectorProRectificationAccCond(BaseProcessClass bpc) throws IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the inspectorProRectificationAccCond start ...."));
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
