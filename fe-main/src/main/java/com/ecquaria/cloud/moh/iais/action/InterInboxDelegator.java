@@ -357,8 +357,8 @@ public class InterInboxDelegator {
     public void appDoDraft(BaseProcessClass bpc) throws IOException {
         log.debug("The prepareEdit start ...");
         HttpServletRequest request = bpc.request;
+        String appNo = ParamUtil.getMaskedString(request, InboxConst.ACTION_NO_VALUE);
         if("APTY005".equals(ParamUtil.getMaskedString(request, InboxConst.ACTION_TYPE_VALUE))){
-            String appNo = ParamUtil.getMaskedString(request, InboxConst.ACTION_NO_VALUE);
             StringBuffer url = new StringBuffer();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohRequestForChange/prepareDraft")
@@ -366,10 +366,17 @@ public class InterInboxDelegator {
                     .append(appNo);
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
+        }else if("APTY004".equals(ParamUtil.getMaskedString(request, InboxConst.ACTION_TYPE_VALUE))){
+            StringBuffer url = new StringBuffer();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal")
+                    .append("?DraftNumber=")
+                    .append(appNo);
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+
         }
         else {
-            String appNo = ParamUtil.getMaskedString(request, InboxConst.ACTION_NO_VALUE);
-    //        String draftNo = inboxService.getDraftNumber(appNo);
             StringBuffer url = new StringBuffer();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication")
