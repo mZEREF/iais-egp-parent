@@ -6,8 +6,10 @@ import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
@@ -33,6 +35,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -51,7 +55,11 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.ecquaria.cloud.moh.iais.service.client.FeEmailClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -75,7 +83,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * NewApplicationDelegator
+ * egator
  *
  * @author suocheng
  * @date 9/23/2019
@@ -124,6 +132,13 @@ public class NewApplicationDelegator {
 
     @Autowired
     private RequestForChangeService requestForChangeService;
+
+    @Autowired
+    private SystemAdminClient systemAdminClient;
+
+    @Autowired
+    private FeEmailClient feEmailClient;
+
 
     /**
      * StartStep: Start
@@ -994,6 +1009,8 @@ public class NewApplicationDelegator {
         appSubmissionDto.setPaymentMethod(payMethod);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         if("Credit".equals(payMethod)){
+            //send email
+            inspectionDateSendNewApplicationPaymentOnlineEmail(appSubmissionDto,bpc);
             StringBuffer url = new StringBuffer();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/payment-web/eservice/INTERNET/PaymentRequest")
@@ -1084,6 +1101,41 @@ public class NewApplicationDelegator {
     //=============================================================================
     //private method
     //=============================================================================
+
+    private void inspectionDateSendNewApplicationPaymentOnlineEmail(AppSubmissionDto appSubmissionDto,BaseProcessClass bpc) {
+        MsgTemplateDto msgTemplateDto = systemAdminClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ONLINE_ID).getEntity();
+        if(msgTemplateDto != null) {
+            Double amount = appSubmissionDto.getAmount();
+            String licenseeId = appSubmissionDto.getLicenseeId();
+            List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST);
+            List<String> serviceNames = new ArrayList<String>();
+            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
+                String svcName = hcsaServiceDto.getSvcName();
+                if(!StringUtil.isEmpty(svcName)){
+                    serviceNames.add(svcName);
+                }
+            }
+            String appGrpNo = appSubmissionDto.getAppGrpNo();
+            Map<String, Object> map = new HashMap<>();
+            map.put("serviceNames", serviceNames);
+            map.put("paymentAmount",Formatter.formatNumber(amount));
+            map.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+            String mesContext = null;
+            try {
+                mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), map);
+            } catch (IOException | TemplateException e) {
+                log.error(e.getMessage(),e);
+            }
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(mesContext);
+            emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + appGrpNo);
+            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+
+            //String requestRefNum = feEmailClient.sendNotification(emailDto).getEntity();
+        }
+    }
+
     private Map<String,String> doComChange( AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto){
         StringBuilder sB=new StringBuilder();
         Map<String,String> result=new HashMap<>();
