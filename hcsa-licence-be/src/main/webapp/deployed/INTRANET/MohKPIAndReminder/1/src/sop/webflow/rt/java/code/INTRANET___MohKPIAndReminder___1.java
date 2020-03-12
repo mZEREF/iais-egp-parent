@@ -28,7 +28,6 @@ public class INTRANET___MohKPIAndReminder___1 extends BaseProcessClass {
 
     public void step1_OnStepProcess_0() throws Exception {
     // 		Step1->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "start", this);
     }
 
 }

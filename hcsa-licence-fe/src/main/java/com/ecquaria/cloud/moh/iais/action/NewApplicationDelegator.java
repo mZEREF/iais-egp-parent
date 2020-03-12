@@ -2526,7 +2526,7 @@ public class NewApplicationDelegator {
             }
             long length = appGrpPrimaryDocDto.getRealDocSize();
             if(length>4*1024*1024){
-                errorMap.put(keyName,"File size is too large!");
+                errorMap.put(keyName,"UC_CHKLMD001_ERR007");
                 continue;
             }
             Boolean flag=false;

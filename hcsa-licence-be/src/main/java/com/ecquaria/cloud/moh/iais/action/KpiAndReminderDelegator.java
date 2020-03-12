@@ -46,16 +46,16 @@ public class KpiAndReminderDelegator {
     private OrganizationClient organizationClient;
     public void  start(BaseProcessClass bpc){
         clearSession(bpc.request);
-       bpc.request.removeAttribute("errorMsg");
-        AccessUtil.initLoginUserInfo(bpc.request);
+        bpc.request.removeAttribute("errorMsg");
     }
 
 
     public void prepareData(BaseProcessClass bpc){
     log.info("-------------start prepareData  KpiAndReminderDelegator--------------");
-
-//        clearSession(bpc.request);
-//        bpc.request.removeAttribute("errorMsg");
+        String crud_action_type = (String)bpc.request.getAttribute("crud_action_type");
+        if("configKpi".equals(crud_action_type)){
+            bpc.request.getSession().setAttribute("configKpi","configKpi");
+        }
         List<HcsaSvcRoutingStageDto> entity = hcsaConfigClient.getAllHcsaSvcRoutingStage().getEntity();
         for(HcsaSvcRoutingStageDto every:entity){
             String stageCode = every.getStageCode();
@@ -81,14 +81,14 @@ public class KpiAndReminderDelegator {
             }
         }
 
-
+        AccessUtil.initLoginUserInfo(bpc.request);
         bpc.request.getSession().setAttribute("hcsaSvcRoutingStageDtos",entity);
         Date date=new Date();
         String format = new SimpleDateFormat("dd/MM/yyyy ", Locale.ENGLISH).format(date);
         bpc.request.setAttribute("date",format);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
-         this.entity = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
+        this.entity = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
         bpc.request.setAttribute("entity", this.entity.getDisplayName());
         kpiAndReminderService.getKpiAndReminder(bpc.request);
 
@@ -155,6 +155,7 @@ public class KpiAndReminderDelegator {
 
     public void  clearSession(HttpServletRequest request){
         request.getSession().removeAttribute("module");
+        request.getSession().removeAttribute("configKpi");
         request.getSession().removeAttribute("service");
         request.getSession().removeAttribute("reminderThreshold");
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = (List<HcsaSvcRoutingStageDto>)request.getSession().getAttribute("hcsaSvcRoutingStageDtos");

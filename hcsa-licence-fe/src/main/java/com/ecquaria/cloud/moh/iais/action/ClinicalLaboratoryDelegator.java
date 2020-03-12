@@ -1386,7 +1386,7 @@ public class ClinicalLaboratoryDelegator {
                             Integer docSize = appSvcDocDtoLit.get(i).getDocSize();
                             String docName = appSvcDocDtoLit.get(i).getDocName();
                             if(docSize>4*1024*1024){
-                                errorMap.put("file"+i,"File size is too large!");
+                                errorMap.put("file"+i,"UC_CHKLMD001_ERR007");
                             }
 
                             Boolean flag=false;

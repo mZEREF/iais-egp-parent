@@ -706,5 +706,13 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<List<HcsaServiceDto>> getServiceVersions(String serviceCode) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 
 }

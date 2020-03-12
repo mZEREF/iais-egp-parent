@@ -478,16 +478,19 @@
 
       <div class="col-xs-12 col-md-12" style="text-align: center">
         <div class="row">
-          <div class="col-xs-10 col-md-8">
+          <div class="col-xs-10 col-md-3">
             <div class="components">
               <button class="btn  btn-secondary"  value="${hcsaServiceDto.id}"  onclick="confirmDelete(this)" ><span class="mandatory">CONFIRM DELETE</span></button>
             </div>
           </div>
-          <div class="col-xs-10 col-md-8">
+          <div class="col-xs-10 col-md-3">
             <div class="components">
-
               <a class="btn  btn-secondary"  onclick="cancel()">Cancel</a>
-
+            </div>
+          </div>
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn  btn-secondary">Select</a>
             </div>
           </div>
         </div>

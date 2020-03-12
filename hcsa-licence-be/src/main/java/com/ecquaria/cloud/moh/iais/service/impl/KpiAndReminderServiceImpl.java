@@ -44,13 +44,17 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
     @Override
     public void saveKpiAndReminder(HttpServletRequest request) {
 
+        String crud_action_value = request.getParameter("crud_action_value");
+
+
         Map errorMap = doValidate(request);
             if(!errorMap.isEmpty()){
                 request.setAttribute("message","Please fill up all mandatory fields");
-                request.setAttribute("crud_action_type","cancel");
+                request.setAttribute("crud_action_type","validate");
                 request.setAttribute("errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 return;
             }
+
 
         HcsaSvcKpiDto parameter = null;
         try {
@@ -58,6 +62,12 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        if("servceiConfig".equals(crud_action_value)){
+            request.setAttribute("crud_action_type","servcieConfig");
+            request.setAttribute("parameter",parameter);
+            return;
+        }
+
         hcsaConfigClient.saveKpiAndReminder(parameter);
         request.setAttribute("message","You have successfully created required KPI");
         request.setAttribute("crud_action_type","submit");
@@ -118,10 +128,16 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
 
     private Map doValidate(HttpServletRequest request){
         Map<String,String> errorMap=new HashMap<>();
+        String configKpi = (String)request.getSession().getAttribute("configKpi");
+        if(!"configKpi".equals(configKpi)){
+            String service = request.getParameter("service");
+            request.getSession().setAttribute("service",service);
+            if(StringUtil.isEmpty(service)){
+                errorMap.put("service","UC_CHKLMD001_ERR001");
+            }
+        }
         String module = request.getParameter("module");
         request.getSession().setAttribute("module",module);
-        String service = request.getParameter("service");
-        request.getSession().setAttribute("service",service);
         String reminderThreshold = request.getParameter("reminderThreshold");
         request.getSession().setAttribute("reminderThreshold",reminderThreshold);
         List<HcsaSvcRoutingStageDto> entity = (List<HcsaSvcRoutingStageDto>) request.getSession().getAttribute("hcsaSvcRoutingStageDtos");
@@ -143,9 +159,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
             errorMap.put("module","UC_CHKLMD001_ERR001");
         }
         request.setAttribute("module",module);
-        if(StringUtil.isEmpty(service)){
-            errorMap.put("service","UC_CHKLMD001_ERR001");
-        }
+
         if(StringUtil.isEmpty(reminderThreshold)){
             errorMap.put("reminderThreshold","UC_CHKLMD001_ERR001");
         }else {

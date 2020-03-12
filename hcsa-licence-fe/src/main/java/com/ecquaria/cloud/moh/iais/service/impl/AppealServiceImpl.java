@@ -324,7 +324,7 @@ public class AppealServiceImpl implements AppealService {
             long size = file.getSize()/1024;
             req.getSession().setAttribute("file",file);
             if(size>5*1024){
-                map.put("file","File is too large");
+                map.put("file","UC_CHKLMD001_ERR007");
             }
             String filename = file.getOriginalFilename();
             String fileType=  filename.substring(filename.lastIndexOf(".")+1);
@@ -339,7 +339,7 @@ public class AppealServiceImpl implements AppealService {
             if ("Y".equals(isDelete)) {
                 long size = sessionFile.getSize()/1024;
                 if(size>5*1024){
-                    map.put("file","File is too large");
+                    map.put("file","UC_CHKLMD001_ERR007");
                 }
 
                 String filename = sessionFile.getOriginalFilename();

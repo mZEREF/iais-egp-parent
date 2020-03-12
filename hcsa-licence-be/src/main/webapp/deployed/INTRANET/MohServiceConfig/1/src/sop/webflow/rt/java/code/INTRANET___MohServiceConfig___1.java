@@ -73,5 +73,10 @@ public class INTRANET___MohServiceConfig___1 extends BaseProcessClass {
     // 		Step2->OnStepProcess
         EngineHelper.delegate(DELEGATOR, "update", this);
     }
+    public void selectVersionAsNewTem_OnStepProcess_0() throws Exception {
+    // 		selectVersionAsNewTem->OnStepProcess
+        
+        EngineHelper.delegate(DELEGATOR, "selectVersionAsNewTem", this);
+    }
 
 }

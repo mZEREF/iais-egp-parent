@@ -304,4 +304,6 @@ public interface HcsaConfigClient {
     @GetMapping(value = "/hcsa-config/hcsa-svc-doc-config-service-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcDocConfigDto>> getHcsaSvcDocConfigDto(@RequestParam("serviceId") String serviceId);
 
+    @GetMapping(value = "/hcsa-config/hcsa-service-versions-by-service-code",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaServiceDto>> getServiceVersions(@RequestParam("serviceCode") String serviceCode);
 }

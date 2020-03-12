@@ -13,7 +13,7 @@
 <div class="main-content">
 <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-<%--  <input type="hidden" name="crud_action_type" value="">--%>
+
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
   <div class="col-lg-12 col-xs-12">
@@ -26,7 +26,7 @@
       <div class="form-group">
         <div>
           <label class="col-xs-12 col-md-4 control-label">Module:</label>
-          <div class="col-xs-8 col-sm-6 col-md-5">
+          <div class="col-xs-8 col-sm-6 col-md-5" style="margin-bottom: 1%">
             <select  name="module"  id="module" >
               <option  value="">Select one</option>
               <option <c:if test="${module=='APTY002'}">selected="selected"</c:if>  value="APTY002" >New</option>
@@ -45,7 +45,7 @@
       </div>
 
            <div class="form-group">
-             <div style="margin-top: 1%;margin-bottom: 1%">
+             <div style="margin-top: 1%;margin-bottom: 1%" >
                <label class="col-xs-12 col-md-4 control-label">Service</label>
                <div class="col-xs-8 col-sm-6 col-md-5" style="margin-top: 1%;margin-bottom: 1%">
                  <select name="service"  id="service">
@@ -96,70 +96,6 @@
       </tr>
 
   </c:forEach>
-    <%--  <tr>
-
-        <td style="text-align: center;vert-align: middle">Professional Screening:</td>
-        <td style="text-align: center;vert-align: middle">
-          <input type="text" name="professionalScreening" value="${professionalScreening}" placeholder="Enter required man-days" maxlength="5" style="width: 50% ;height: 10%"/>
-          man-days
-          <span name="iaisErrorMsg" id="error_professionalScreening" class="error-msg"></span>
-        </td>
-
-      </tr>
-      <tr>
-
-        <td style="text-align: center;vert-align: middle">Pre-Inspection :</td>
-        <td style="text-align: center;vert-align: middle">
-          <input type="text" placeholder="Enter required man-days" value="${preInspection}"  name="preInspection" value="" maxlength="5" style="width: 50% ;height: 10%"/>
-          man-days
-          <span name="iaisErrorMsg" id="error_preInspection" class="error-msg"></span>
-        </td>
-
-      </tr>
-      <tr>
-
-        <td style="text-align: center;vert-align: middle">Inspection</td>
-        <td style="text-align: center;vert-align: middle">
-          <input type="text" placeholder="Enter required man-days"   value="${inspection}"  name="inspection" value="" maxlength="5" style="width: 50% ;height: 10%"/>
-          man-days
-          <span name="iaisErrorMsg" id="error_inspection" class="error-msg"></span>
-        </td>
-      </tr>
-      <tr>
-
-        <td style="text-align: center;vert-align: middle">Post-Inspection </td>
-        <td style="text-align: center;vert-align: middle">
-          <input type="text"  placeholder="Enter required man-days"  value="${postInspection}" name="postInspection" value="" maxlength="5" style="width: 50% ;height: 10%"/>
-          man-days
-          <span name="iaisErrorMsg" id="error_postInspection" class="error-msg"></span>
-        </td>
-      </tr>
-      <tr>
-
-        <td style="text-align: center;vert-align: middle">Approval Officer Level 1:</td>
-        <td style="text-align: center;vert-align: middle">
-          <input type="text" placeholder="Enter required man-days"  value="${levelOne}" maxlength="5" value="" name="levelOne" style="width: 50% ;height: 10%"/>
-          man-days
-          <span name="iaisErrorMsg" id="error_levelOne" class="error-msg"></span>
-        </td>
-      </tr>
-      <tr>
-        <td style="text-align: center;vert-align: middle">Approval Officer Level 2:</td>
-        <td style="text-align: center;vert-align: middle">
-          <input type="text" placeholder="Enter required man-days" value="${levelTwo}" maxlength="5" name="levelTwo" value="" style="width: 50% ;height: 10%"/>
-          man-days
-          <span name="iaisErrorMsg" id="error_levelTwo" class="error-msg"></span>
-        </td>
-      </tr>
-      <tr>
-
-        <td style="text-align: center;vert-align: middle">Approval Officer Level 3:</td>
-        <td style="text-align: center;vert-align: middle"><input type="text" name="levelThree"  value="${levelThree}" placeholder="Enter required man-days" value="" maxlength="5" style="width: 50% ;height: 10%"/>
-          man-days
-          <span name="iaisErrorMsg" id="error_levelThree" class="error-msg"></span>
-        </td>
-
-      </tr>--%>
 
     </table>
   </div>
@@ -184,9 +120,10 @@
 
        <div class="application-tab-footer">
          <div class="row">
-           <div class="col-xs-12 col-sm-12">
+           <div class="col-xs-12 col-sm-10">
              <div class="text-right text-center-mobile">
                   <a class="btn btn-primary" href="#" id="createRole">Submit</a>
+                 <a class="btn btn-primary" href="#" id="serviceConfig">Save</a>
                   <a class="btn btn-primary" href="#" id="cancel">Cancel</a>
              </div>
            </div>
@@ -205,6 +142,7 @@ $(document).ready(function () {
     $("input[name='createDate'] +p ").html($("input[name='createDate']").val());
     $("input[name='createBy'] +p ").html($("input[name='createBy']").val());
 });
+
 
   $("#module").change(function () {
       let val = $("#module").val();
@@ -244,7 +182,7 @@ $(document).ready(function () {
       }
 
   });
-$("#service").change(function () {
+  $("#service").change(function () {
     let val = $("#module").val();
     let select = $("#service").val();
 
@@ -277,24 +215,14 @@ $("#service").change(function () {
         });
     }
 });
-$('#createRole').click(function () {
+  $('#createRole').click(function () {
 
     SOP.Crud.cfxSubmit("mainForm", "submit");
+
 });
 
 $('#cancel').click(function () {
-    $("#service").val("");
-    $("#module").val("");
 
-    $("input[name='reminderThreshold']").val("");
-    $("input[name='adminScreening']").val("");
-    $("input[name='professionalScreening']").val("");
-    $("input[name='preInspection']").val("");
-    $("input[name='inspection']").val("");
-    $("input[name='levelOne']").val("");
-    $("input[name='levelTwo']").val("");
-    $("input[name='levelThree']").val("");
-    $("input[name='postInspection']").val("");
     location.href="https://egp.sit.intra.iais.com/egov/process/EGPCLOUD/Home";
    /* SOP.Crud.cfxSubmit("mainForm", "cancel");*/
 });

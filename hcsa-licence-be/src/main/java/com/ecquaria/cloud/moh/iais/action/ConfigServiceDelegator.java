@@ -103,6 +103,11 @@ public class ConfigServiceDelegator {
 
     }
 
+    public  void selectVersionAsNewTem(BaseProcessClass bpc){
+
+        log.info("*********selectVersionAsNewTem  start***********");
+
+    }
     public void deleteOrCancel(BaseProcessClass bpc){
 
         log.info("*********deleteOrCancel  start***********");

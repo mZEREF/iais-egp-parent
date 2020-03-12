@@ -16,13 +16,24 @@
     <JavaCode defClass="" executor="" methodName="step2_OnStepProcess_0" name="step2_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Step3" x="600" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="Step3" x="590" y="80">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="step3_OnStepProcess_0" name="step3_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="Step4" processname="MohBackendInbox" project="" version="-1" x="820" y="280">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="Step5" x="660" y="290">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </ReturnInvokeProcessStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="480" y="100">
@@ -31,7 +42,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page2" stageIndicator="" x="890" y="100">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page2" stageIndicator="" x="890" y="70">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -40,31 +51,39 @@
  </Pages>
  <Forms/>
  <Links>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Step2" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Step1" style="rectanular">
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step2" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1" style="oblique">
    <position>{(190,120)(330,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step2" style="rectanular">
+  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Step2" style="oblique">
    <position>{(330,120)(500,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Step3" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Page1" style="rectanular">
-   <position>{(500,120)(620,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step3" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Page1" style="oblique">
+   <position>{(500,120)(610,100)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step3" style="rectanular">
-   <position>{(620,120)(730,120)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Step3" style="oblique">
+   <position>{(610,100)(730,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Page2" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(730,120)(910,120)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/Page2" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(730,120)(910,90)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Step2" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(730,120)(390,361)(330,120)}</position>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Step4" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(730,120)(840,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Step5" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(730,120)(680,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(730,120)(597,273)(500,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
-  <Switch defClass="" defaultComponent="/Pages/WebPage/Page2" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="710" y="100">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="710" y="100">
    <Description/>
    <SwitchCase component="/Pages/WebPage/Page2" value="&quot;submit&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Step2" value="&quot;cancel&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/Step4" value="&quot;cancel&quot;"/>
+   <SwitchCase component="/Steps/ReturnInvokeProcessStep/Step5" value="&quot;servcieConfig&quot;"/>
+   <SwitchCase component="/Pages/WebPage/Page1" value="&quot;validate&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
