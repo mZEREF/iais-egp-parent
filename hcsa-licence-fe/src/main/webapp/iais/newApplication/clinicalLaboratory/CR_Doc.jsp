@@ -1,6 +1,7 @@
-
+<c:set var="isClickEdit" value="true"/>
 <c:if test="${AppSubmissionDto.needEditController}">
   <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
+    <c:set var="isClickEdit" value="false"/>
     <c:if test="${'APPSPN06' == clickEditPage}">
       <c:set var="isClickEdit" value="true"/>
     </c:if>

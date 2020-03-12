@@ -145,8 +145,8 @@ public class NewApplicationDelegator {
 
         //request For Information Loading
         ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,null);
-        requestForChangeLoading(bpc);
-        renewLicence(bpc);
+        requestForChangeOrRenewLoading(bpc);
+        //renewLicence(bpc);
         requestForInformationLoading(bpc);
         //for loading the draft by appId
         loadingDraft(bpc);
@@ -188,6 +188,7 @@ public class NewApplicationDelegator {
      */
     public void preparePremises(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do preparePremises start ...."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         //get svcCode to get svcId
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         List<String> svcIds = new ArrayList<>();
@@ -198,7 +199,7 @@ public class NewApplicationDelegator {
         List conveyancePremSel = new ArrayList<SelectOption>();
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         //todo:
-        String licenseeId = "36F8537B-FE17-EA11-BE78-000C29D29DB0";
+        String licenseeId = appSubmissionDto.getLicenseeId();
         String loginId = AccessUtil.getLoginId(bpc.request);
         log.info(StringUtil.changeForLog("The preparePremises loginId is -->:"+loginId));
 
@@ -234,7 +235,6 @@ public class NewApplicationDelegator {
         }
 
         //reload dateTime
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         if(!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)){
             for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
@@ -1389,7 +1389,7 @@ public class NewApplicationDelegator {
                     appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premisesSel);
                     appGrpPremisesDtoList.add(appGrpPremisesDto);
                 }
-                break;
+                continue;
             }
 
 
@@ -1922,7 +1922,7 @@ public class NewApplicationDelegator {
         }
         log.info(StringUtil.changeForLog("the do loadingDraft end ...."));
     }
-    private void requestForChangeLoading(BaseProcessClass bpc){
+    private void requestForChangeOrRenewLoading(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do requestForChangeLoading start ...."));
         String appType = (String) ParamUtil.getRequestAttr(bpc.request,"appType");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTORFCATTR);
@@ -1942,6 +1942,8 @@ public class NewApplicationDelegator {
             }
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setNeedEditController(true);
+            AppEditSelectDto changeSelectDto1 = appSubmissionDto.getChangeSelectDto()==null?new AppEditSelectDto():appSubmissionDto.getChangeSelectDto();
+            appSubmissionDto.setChangeSelectDto(changeSelectDto1);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
         log.info(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
@@ -2452,32 +2454,22 @@ public class NewApplicationDelegator {
                 }
             }
             //todo:set AppSvcLaboratoryDisciplinesDto
-           /* String currentSvcId = "";
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            Map<String,AppSvcRelatedInfoDto> svcScopeConfigMap = NewApplicationHelper.
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                    List<AppSvcLaboratoryDisciplinesDto> scopeList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
-                    if(!IaisCommonUtils.isEmpty(scopeList)){
-                        for(AppSvcLaboratoryDisciplinesDto scope:scopeList){
-                            List<AppSvcChckListDto> checkedBoxs = scope.getAppSvcChckListDtoList();
-                            if(!IaisCommonUtils.isEmpty(checkedBoxs)){
-                                for(AppSvcChckListDto appSvcChckListDto:checkedBoxs){
-                                    if(!StringUtil.isEmpty(appSvcChckListDto.getChkName())){
-                                        continue;
-                                    }
-
-                                }
-                            }
-                        }
+                    String currentSvcId = appSvcRelatedInfoDto.getServiceId();
+                    List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = null;
+                    if(!StringUtil.isEmpty(currentSvcId)){
+                        hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(currentSvcId);
                     }
+                    if(!IaisCommonUtils.isEmpty(hcsaSvcSubtypeOrSubsumedDtos)){
+                       NewApplicationHelper.setLaboratoryDisciplinesInfo(appSvcRelatedInfoDto,hcsaSvcSubtypeOrSubsumedDtos);
+                    }
+
                 }
             }
 
-            List<HcsaSvcSubtypeOrSubsumedDto> checkList= serviceConfigService.loadLaboratoryDisciplines(currentSvcId);*/
-
-
-            //todo:set personnel info
+            //todo:set allow
 
             //set oldAppSubmission when rfi,rfc,renew
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())

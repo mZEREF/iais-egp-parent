@@ -1030,7 +1030,7 @@
 
         <!--change hidden length value -->
         var length = $contentDivEle.find('div.pubHolidayContent').length;
-        $(this).closest('div.premContent').find('.phLength').val(length);
+        $premContentEle.find('.phLength').val(length);
 
         //Prevent duplicate binding
         $('.removePhBtn').unbind('click');
