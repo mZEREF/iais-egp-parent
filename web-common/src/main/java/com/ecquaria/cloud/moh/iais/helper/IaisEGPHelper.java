@@ -25,20 +25,21 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.egp.api.EGPHelper;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.sqlite.date.FastDateFormat;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @Slf4j
 public final class IaisEGPHelper extends EGPHelper {
@@ -234,6 +235,14 @@ public final class IaisEGPHelper extends EGPHelper {
         } catch (IOException e) {
             log.error(e.getMessage());
         }
+    }
+
+    public static List<String> getLicenseeEmailAddrs(String licenseeId) {
+        //TODO:
+        List<String> list = new ArrayList<>();
+        list.add("jinhua@ecqsz.com");
+
+        return list;
     }
 
     private IaisEGPHelper() {throw new IllegalStateException("Utility class");}
