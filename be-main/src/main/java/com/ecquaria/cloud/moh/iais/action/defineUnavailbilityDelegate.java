@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.UserRoleService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +27,8 @@ public class defineUnavailbilityDelegate {
     @Autowired
     UserRoleService userRoleService;
     public void doStart(BaseProcessClass bpc){
+        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("defineUnavailbilityDelegate", "defineUnavailbilityDelegate");
-
     }
 
     /**
