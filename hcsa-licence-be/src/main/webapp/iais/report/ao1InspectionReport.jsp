@@ -24,7 +24,7 @@
                             <li class="complete" role="presentation"><a href="#tabDocuments"
                                                                         aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
-                            <li class="complete" role="presentation"><a href="#tabInspectionReport"
+                            <li class="complete" role="presentation"><a id="report" href="#tabInspectionReport"
                                                                         aria-controls="tabProcessing" role="tab"
                                                                         data-toggle="tab">Inspection Report</a></li>
                             <li class="complete" role="presentation"><a href="#tabProcessing"
@@ -234,7 +234,7 @@
                                                 <tr height="1">
                                                     <td class="col-xs-2">
                                                         <p>
-                                                            Remarks:
+                                                            Internal Remarks:
                                                         </p>
                                                     </td>
                                                     <td>
@@ -322,5 +322,12 @@
     </div>
 </form>
 
+<script>
+    $(document).ready(function () {
+        if("Y"=='${report}'){
+            $('#report').click();
+        }
+    });
+</script>
 
 

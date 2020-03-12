@@ -34,9 +34,25 @@ public class CessationEffectiveDateBatchjob {
         log.debug(StringUtil.changeForLog("The CessationEffectiveDateBatchjob is start ..."));
     }
     public void doBatchJob(BaseProcessClass bpc){
-        String type = ApplicationConsts.CESSATION_TYPE_APPLICATION;
+
+        //licence
+        log.debug(StringUtil.changeForLog("The CessationLicenceBatchJob is doBatchJob ..."));
         Date date = new Date();
         String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
+        String status = ApplicationConsts.LICENCE_STATUS_ACTIVE;
+        List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(status, dateStr).getEntity();
+        List<LicenceDto> licenceDtosForSave = new ArrayList<>();
+        if(licenceDtos!=null&&!licenceDtos.isEmpty()){
+            for(LicenceDto licenceDto :licenceDtos){
+                licenceDto.setEndDate(date);
+                licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
+                licenceDtosForSave.add(licenceDto);
+            }
+        }
+        hcsaLicenceClient.updateLicences(licenceDtosForSave).getEntity();
+
+        //cessation application and licence
+        String type = ApplicationConsts.CESSATION_TYPE_APPLICATION;
         //get misc corrId
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getAppPreCorrDtos(type, dateStr).getEntity();
         List<String> appIds = new ArrayList<>();
@@ -58,11 +74,11 @@ public class CessationEffectiveDateBatchjob {
         }
         //update application
         List<ApplicationDto> updateStatusApplicationDtos = updateApplicationStatus(applicationDtos);
-        List<ApplicationDto> updateApplications = applicationClient.updateCessationApplications(updateStatusApplicationDtos).getEntity();
+        applicationClient.updateCessationApplications(updateStatusApplicationDtos).getEntity();
         //update licence
-        List<LicenceDto> licenceDtos = hcsaLicenceClient.retrieveLicenceDtos(licIds).getEntity();
-        List<LicenceDto> licenceDtos1 = updateLicenceStatus(licenceDtos);
-        List<LicenceDto> entity = hcsaLicenceClient.updateLicences(licenceDtos1).getEntity();
+        List<LicenceDto> licenceDtoApps = hcsaLicenceClient.retrieveLicenceDtos(licIds).getEntity();
+        List<LicenceDto> licenceDtos1 = updateLicenceStatus(licenceDtoApps);
+        hcsaLicenceClient.updateLicences(licenceDtos1).getEntity();
 
 
     }
@@ -70,7 +86,7 @@ public class CessationEffectiveDateBatchjob {
     private List<ApplicationDto> updateApplicationStatus(List<ApplicationDto> applicationDtos){
         List<ApplicationDto> updateApplications = new ArrayList<>();
         for(ApplicationDto applicationDto :applicationDtos){
-            applicationDto.setStatus("Iactive");
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
             updateApplications.add(applicationDto);
         }
         return updateApplications;
@@ -79,7 +95,7 @@ public class CessationEffectiveDateBatchjob {
     private List<LicenceDto> updateLicenceStatus(List<LicenceDto> licenceDtos){
         List<LicenceDto> updateLicenceDtos = new ArrayList<>();
         for(LicenceDto licenceDto :licenceDtos){
-            licenceDto.setStatus("ceased");
+            licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
             updateLicenceDtos.add(licenceDto);
         }
         return updateLicenceDtos;

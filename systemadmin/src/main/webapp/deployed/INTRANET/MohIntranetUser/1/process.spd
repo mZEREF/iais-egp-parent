@@ -139,6 +139,12 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="importPage" stageIndicator="" x="730" y="480">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Links>
@@ -244,14 +250,17 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/import" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(580,80)(760,210)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/import" style="rectanular">
-   <position>{(760,210)(580,640)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/importPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/import" style="oblique">
+   <position>{(760,210)(750,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond4" style="oblique">
    <position>{(700,310)(580,640)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/download" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond4" style="oblique">
    <position>{(700,310)(690,480)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/importPage" style="oblique">
+   <position>{(750,500)(580,640)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>

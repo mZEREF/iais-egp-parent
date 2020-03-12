@@ -118,6 +118,8 @@ public class InsReportDelegator {
         Map<String, String> errorMap = new HashMap<>(34);
         ValidationResult validationResult = WebValidationHelper.validateProperty(appPremisesRecommendationDto, "save");
         if (validationResult.isHasErrors()) {
+            String report = "Y";
+            ParamUtil.setRequestAttr(bpc.request, "report",report);
             errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);

@@ -54,110 +54,48 @@
                         <c:forEach items="${appCess.appCessHciDtos}" var="appCessHci" varStatus="uid" begin="0" end="0">
                             <td><p><c:out value="${appCessHci.hciName}"></c:out></p></td>
                             <td><p><c:out value="${appCessHci.hciAddress}"></c:out></p></td>
-                            <td style="padding: 1%"><iais:datePicker id="effectiveDate"
-                                                                     name="${num.count}effectiveDate${uid.count}"
-                                                                     dateVal="${appCessHci.effectiveDate}"/>
+                            <td style="padding: 1%"><iais:datePicker id="effectiveDate" name="${num.count}effectiveDate${uid.count}" dateVal="${appCessHci.effectiveDate}"/>
                                 <span id="error_${num.count}effectiveDate${uid.count}"
                                       name="iaisErrorMsg"
                                       class="error-msg"></span></td>
-                            <td style="margin-right: 1%"><iais:select id="${num.count}reasonId${uid.count}"
-                                                                      name="${num.count}reason${uid.count}"
-                                                                      options="reasonOption"
-                                                                      firstOption="Please select"
-                                                                      onchange="javascirpt:changeReason(this.value);"
-                                                                      value="${appCessHci.reason}"/>
-                                <span id="error_${num.count}reason${uid.count}" name="iaisErrorMsg"
-                                      class="error-msg"></span>
-                                <div style="margin-top: 25%" id="${num.count}reason${uid.count}" hidden><textarea type="text" name="${num.count}otherReason${uid.count}" rows="3" cols="30" maxlength="200"><c:out value="${appCessHci.otherReason}"/></textarea>
-                                    <span id="error_${num.count}otherReason${uid.count}"
-                                          name="iaisErrorMsg"
-                                          class="error-msg"></span>
+                            <td style="margin-right: 1%"><iais:select id="${num.count}reasonId${uid.count}" name="${num.count}reason${uid.count}" options="reasonOption" firstOption="Please select" onchange="javascirpt:changeReason(this.value);" value="${appCessHci.reason}"/>
+                                <div style="margin-top: 25%" id="${num.count}reason${uid.count}" hidden>
+                                    <textarea style="resize:none" type="text" name="${num.count}otherReason${uid.count}" rows="2" cols="30" maxlength="200" res><c:out value="${appCessHci.otherReason}"/></textarea>
+                                    <span id="error_${num.count}otherReason${uid.count}" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
+                                <span id="error_${num.count}reason${uid.count}" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td style="padding-left: 4%;width: 30em; position: relative">
                                 <table>
                                     <tr>
                                         <td style="padding-left: 4%;width: 10%;position: absolute;top: 5%;left: 30% ;width: 20%">
-                                            <input type="radio"
-                                                   name="${num.count}patRadio${uid.count}"
-                                                   value="yes"
-                                                   id="${num.count}radioYes${uid.count}"
-                                                   <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if>
-                                                   onchange="javascirpt:changePatSelect(this.value);"> Yes
-                                        </td>
+                                            <input type="radio" name="${num.count}patRadio${uid.count}" value="yes" id="${num.count}radioYes${uid.count}" <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if> onchange="javascirpt:changePatSelect(this.value);"> Yes</td>
                                         <td style="padding-left: 2%;width: 10%;position: absolute;top: 5%;right: 30% ;width: 20%">
-                                            <input type="radio"
-                                                   name="${num.count}patRadio${uid.count}"
-                                                   value="no"
-                                                   id="${num.count}radioNo${uid.count}"
-                                                   <c:if test="${appCessHci.patNeedTrans == false}">checked</c:if>
-                                                   onchange="javascirpt:changePatSelect(this.value);"> No
-                                        </td>
-                                        <span style="position: absolute;top: 70%;left: 3% ;width: 80%"
-                                              id="error_${num.count}patRadio${uid.count}"
-                                              name="iaisErrorMsg"
-                                              class="error-msg"></span>
+                                            <input type="radio" name="${num.count}patRadio${uid.count}" value="no" id="${num.count}radioNo${uid.count}" <c:if test="${appCessHci.patNeedTrans == false}">checked</c:if> onchange="javascirpt:changePatSelect(this.value);"> No</td>
+                                        <span style="position: absolute;top: 70%;left: 3% ;width: 80%" id="error_${num.count}patRadio${uid.count}" name="iaisErrorMsg" class="error-msg"></span>
                                     </tr>
                                     <tr id="${num.count}patYes${uid.count}" hidden>
-                                        <td style="position: absolute;top: 25%;left: 3% ;width: 40%">
-                                            <div>Who will take over your patients' case records?</div>
-                                        </td>
-                                        <td style="position: absolute;top: 25%;right: 3% ;width: 55%">
-                                            <iais:select
-                                                    name="${num.count}patientSelect${uid.count}"
-                                                    options="patientsOption"
-                                                    firstOption="Please select"
-                                                    id="${num.count}patientSelectId${uid.count}"
-                                                    onchange="javascirpt:changePatient(this.value);"
-                                                    value="${appCessHci.patientSelect}"/></td>
-                                        <span style="position: absolute;top: 85%;left: 10% ;width: 80%"
-                                              id="error_${num.count}patientSelect${uid.count}"
-                                              name="iaisErrorMsg"
-                                              class="error-msg"></span>
+                                        <td style="position: absolute;top: 25%;left: 3% ;width: 40%"><div>Who will take over your patients' case records?</div></td>
+                                        <td style="position: absolute;top: 25%;right: 3% ;width: 55%"><iais:select name="${num.count}patientSelect${uid.count}" options="patientsOption" firstOption="Please select" id="${num.count}patientSelectId${uid.count}" onchange="javascirpt:changePatient(this.value);" value="${appCessHci.patientSelect}"/></td>
+                                        <span style="position: absolute;top: 85%;left: 10% ;width: 80%" id="error_${num.count}patientSelect${uid.count}" name="iaisErrorMsg" class="error-msg"></span>
                                     </tr>
-                                    <tr id="${num.count}patHciName${uid.count}" hidden>
-                                        <td style="position: absolute;top: 55%;left: 3% ;width: 30%">HCI Name</td>
-                                        <td style="position: absolute;top: 55%;right: 3% ;width: 55%"><input type="text" maxlength="100" name="${num.count}patHciName${uid.count}" value="${appCessHci.patHciName}">
-                                        </td>
-                                        <span style="position: absolute;top: 85%;left: 10% ;width: 80%"
-                                              id="error_${num.count}patHciName${uid.count}"
-                                              name="iaisErrorMsg"
-                                              class="error-msg"></span>
+                                    <tr id="${num.count}patHciName${uid.count}" hidden><td style="position: absolute;top: 55%;left: 3% ;width: 30%">HCI Name</td><td style="position: absolute;top: 55%;right: 3% ;width: 55%"><textarea rows="2" cols="30" style="resize:none" maxlength="100" name="${num.count}patHciName${uid.count}"><c:out value="${appCessHci.patHciName}"/></textarea></td><span style="position: absolute;top: 85%;left: 10% ;width: 80%" id="error_${num.count}patHciName${uid.count}" name="iaisErrorMsg" class="error-msg"></span>
                                     </tr>
                                     <tr id="${num.count}patRegNo${uid.count}" hidden>
-                                        <td style="position: absolute;top: 55%;left: 3% ;width: 30%">
-                                            Professional Registered No.
-                                        </td>
-                                        <td style="position: absolute;top: 55%;right: 3% ;width: 55%"><input
-                                                type="text" maxlength="20"
-                                                name="${num.count}patRegNo${uid.count}"
-                                                value="${appCessHci.patRegNo}">
-                                        </td>
-                                        <span style="position: absolute;top: 85%;left: 10% ;width: 80%"
-                                              id="error_${num.count}patRegNo${uid.count}"
-                                              name="iaisErrorMsg"
-                                              class="error-msg"></span>
+                                        <td style="position: absolute;top: 55%;left: 3% ;width: 30%">Professional Registered No.</td>
+                                        <td style="position: absolute;top: 55%;right: 3% ;width: 55%"><textarea style="resize:none" rows="2" cols="30" maxlength="20" name="${num.count}patRegNo${uid.count}"><c:out value="${appCessHci.patRegNo}"/></textarea></td>
+                                        <span style="position: absolute;top: 85%;left: 10% ;width: 80%" id="error_${num.count}patRegNo${uid.count}" name="iaisErrorMsg" class="error-msg"></span>
                                     </tr>
                                     <tr id="${num.count}patOthers${uid.count}" hidden>
                                         <td style="position: absolute;top: 55%;left: 3% ;width: 30%">Others</td>
-                                        <td style="position: absolute;top: 55%;right: 3% ;width: 55%"><input
-                                                type="text" maxlength="100"
-                                                name="${num.count}patOthers${uid.count}"
-                                                value="${appCessHci.patOthers}">
-                                        </td>
-                                        <span style="position: absolute;top: 85%;left: 10% ;width: 80%"
-                                              id="error_${num.count}patOthers${uid.count}"
-                                              name="iaisErrorMsg"
-                                              class="error-msg"></span>
+                                        <td style="position: absolute;top: 55%;right: 3% ;width: 55%"><textarea style="resize:none" maxlength="100" rows="2" cols="30" name="${num.count}patOthers${uid.count}"><c:out value="${appCessHci.patOthers}"/></textarea></td>
+                                        <span style="position: absolute;top: 85%;left: 10% ;width: 80%" id="error_${num.count}patOthers${uid.count}" name="iaisErrorMsg" class="error-msg"></span>
                                     </tr>
                                     <tr id="${num.count}patNo${uid.count}" hidden align="center">
                                         <td style="position: absolute;top: 30%;left: 3% ;width: 40%">Reason for no
                                             patients' records transfer
                                         </td>
-                                        <td style="position: absolute;top: 30%;right: 3% ;width: 55%"><textarea
-                                                name="${num.count}patNoRemarks${uid.count}"
-                                                cols="30" rows="3" maxlength="200"
-                                                title="content"><c:out
+                                        <td style="position: absolute;top: 30%;right: 3% ;width: 55%"><textarea style="resize:none" name="${num.count}patNoRemarks${uid.count}" cols="30" rows="3" maxlength="200" title="content"><c:out
                                                 value="${appCessHci.patNoRemarks}"/></textarea>
                                         </td>
                                         <span style="position: absolute;top: 85%;left: 10% ;width: 80%"
@@ -316,7 +254,6 @@
         <div style="margin-left: 1%;margin-right: 1%"><input type="checkbox" name="readInfo" id="confirmInfo" <c:if test="${readInfo != null}">checked</c:if>>
             <label style="font-weight: normal" for="confirmInfo">I have read the information</label>
         </div>
-
         <div align="right">
             <button id="backButton" type="button" class="btn btn-primary">
                 Back
@@ -325,8 +262,6 @@
                 Next
             </button>
         </div>
-
-
     </div>
     <%@include file="/include/validation.jsp" %>
 </form>

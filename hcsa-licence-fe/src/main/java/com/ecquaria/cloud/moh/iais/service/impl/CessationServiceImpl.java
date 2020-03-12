@@ -13,12 +13,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -40,6 +39,29 @@ public class CessationServiceImpl implements CessationService {
     private SystemAdminClient systemAdminClient;
     @Autowired
     private ApplicationClient applicationClient;
+    @Autowired
+    private FeEicGatewayClient feEicGatewayClient;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
+
+    @Override
+    public List<String> getActiveLicence(List<String> licIds) {
+        List<String> activeLicIds = new ArrayList<>();
+        for(String licId :licIds){
+            LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
+            String status = licenceDto.getStatus();
+            if(ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)){
+                activeLicIds.add(licId);
+            }
+        }
+        return activeLicIds;
+    }
 
     @Override
     public List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds) {
@@ -131,6 +153,22 @@ public class CessationServiceImpl implements CessationService {
     }
 
     @Override
+    public void updateLicenceFe(List<String> licNos) {
+        List<LicenceDto> licenceDtos = licenceClient.getLicDtosByLicNos(licNos).getEntity();
+        if(licenceDtos!=null&&!licenceDtos.isEmpty()){
+            for(LicenceDto licenceDto : licenceDtos){
+                licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
+            }
+        }
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        feEicGatewayClient.updateLicenceStatus(licenceDtos,signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
+
+    }
+
+
+    @Override
     public void saveCessations(List<AppCessationDto> appCessationDtos) {
         List<AppCessMiscDto> appCessMiscDtos = new ArrayList<>();
         for (AppCessationDto appCessationDto : appCessationDtos) {
@@ -143,7 +181,7 @@ public class CessationServiceImpl implements CessationService {
             ApplicationDto applicationDto = new ApplicationDto();
             applicationDto.setApplicationType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
             applicationDto.setApplicationNo(appNo);
-            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_PENDING_APPROVE);
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
             applicationDto.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
             applicationDto.setLicenceId(licId);
             applicationDto.setVersion(1);

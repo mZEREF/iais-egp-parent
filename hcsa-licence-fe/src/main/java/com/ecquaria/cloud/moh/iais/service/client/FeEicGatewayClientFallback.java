@@ -3,10 +3,13 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
@@ -75,6 +78,17 @@ public class FeEicGatewayClientFallback {
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
+    }
+    FeignResponseEntity<String> updateLicenceStatus(@RequestBody List<LicenceDto> licenceDtos,
+                                                    @RequestHeader("date") String date,
+                                                    @RequestHeader("authorization") String authorization,
+                                                    @RequestHeader("date-Secondary") String dateSec,
+                                                    @RequestHeader("authorization-Secondary") String authorizationSec){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+
     }
 
 }

@@ -23,7 +23,7 @@
                             <li class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
                             <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
-                            <li class="complete" role="presentation"><a href="#tabInspectionReport" aria-controls="tabProcessing" role="tab"
+                            <li class="complete" role="presentation"><a id="report" href="#tabInspectionReport" aria-controls="tabProcessing" role="tab"
                                                                         data-toggle="tab">Inspection Report</a></li>
                             <li class="complete" role="presentation"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab"
                                                                         data-toggle="tab">Processing</a></li>
@@ -223,14 +223,9 @@
                                             </tr>
                                             <tr height="1">
                                                 <td class="col-xs-2" >
-                                                    <p >
-                                                        Remarks:
-                                                    </p>
+                                                    <p >Internal Remarks:</p>
                                                 </td>
-                                                <td>
-                                                    <div class="col-sm-9">
-                                                        <p><textarea name="processRemarks" cols="50" rows="6"  title="content" MAXLENGTH="8000"></textarea></p>
-                                                    </div>
+                                                <td><div class="col-sm-9"><p><textarea name="processRemarks" cols="50" rows="6"  title="content" MAXLENGTH="8000"></textarea></p></div>
                                                 </td>
                                             </tr>
 
@@ -312,5 +307,11 @@
     </div>
 </form>
 
-
+<script>
+    $(document).ready(function () {
+        if("Y"=='${report}'){
+            $('#report').click();
+        }
+    });
+</script>
 

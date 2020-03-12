@@ -136,6 +136,8 @@ public class InsReportAoDelegator {
         ParamUtil.setSessionAttr(bpc.request, "preapreRecommendationDto", preapreRecommendationDto);
         ValidationResult validationResult = WebValidationHelper.validateProperty(preapreRecommendationDto, "edit");
         if (validationResult.isHasErrors()) {
+            String report = "Y";
+            ParamUtil.setRequestAttr(bpc.request, "report",report);
             Map<String, String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.FALSE);

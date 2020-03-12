@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserCons
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -47,10 +48,11 @@ public class CessationApplicationDelegator {
         List<String> licIds = (List<String>)ParamUtil.getSessionAttr(bpc.request, "licIds");
         if(licIds==null){
             licIds = new ArrayList<>();
-            licIds.add("7ECAE165-534A-EA11-BE7F-000C29F371DC");
-            licIds.add("CFCAC193-6F4D-EA11-BE7F-000C29F371DC");
+            licIds.add("ACB51822-A656-EA11-BE7F-000C29F371DC");
+            licIds.add("4083B3AD-B04D-EA11-BE7F-000C29F371DC");
         }
-        List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
+        List<String> activeLicence = cessationService.getActiveLicence(licIds);
+        List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(activeLicence);
         int size = appCessDtosByLicIds.size();
         List<SelectOption> reasonOption = getReasonOption();
         List<SelectOption> patientsOption = getPatientsOption();
@@ -135,6 +137,7 @@ public class CessationApplicationDelegator {
         List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
         cessationService.saveCessations(appCessationDtos);
         List<AppCessatonConfirmDto> appCessationDtosConfirms = new ArrayList<>();
+        List<String> licNos = new ArrayList<>();
         for (AppCessationDto appCessationDto : appCessationDtos) {
             String licId = appCessationDto.getWhichTodo();
             List<String> licIds = new ArrayList<>();
@@ -143,6 +146,7 @@ public class CessationApplicationDelegator {
             List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
             String licenceNo = appCessLicDto.getLicenceNo();
+            licNos.add(licenceNo);
             String svcName = appCessLicDto.getSvcName();
             String hciName = appCessLicDto.getAppCessHciDtos().get(0).getHciName();
             String hciAddress = appCessLicDto.getAppCessHciDtos().get(0).getHciAddress();

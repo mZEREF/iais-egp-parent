@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -61,6 +62,23 @@ public interface FeEicGatewayClient {
                                                    @RequestHeader("authorization") String authorization,
                                                    @RequestHeader("date-Secondary") String dateSec,
                                                    @RequestHeader("authorization-Secondary") String authorizationSec);
+
+
+    /**
+     *@Author :weilu on 2020/3/12 17:03
+     *@param :
+     *@return :
+     *@Description :update licence when effective date <= new Date
+     */
+    @PutMapping(value = "",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> updateLicenceStatus(@RequestBody List<LicenceDto> licenceDtos,
+                                                   @RequestHeader("date") String date,
+                                                   @RequestHeader("authorization") String authorization,
+                                                   @RequestHeader("date-Secondary") String dateSec,
+                                                   @RequestHeader("authorization-Secondary") String authorizationSec);
+
+
+
 
     @PostMapping(value = "/v1/rfi-reply-bridge/",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicPremisesReqForInfoDto> routeRfiData(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto,

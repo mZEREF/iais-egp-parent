@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.client.rbac.UserClient;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -28,6 +29,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.management.relation.Role;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.time.LocalDate;
@@ -724,12 +727,14 @@ public class MohIntranetUserDelegator {
 
     private List<SelectOption> getRoleOption() {
         List<SelectOption> result = new ArrayList<>();
+        SelectOption so = new SelectOption("", "Please Select");
         SelectOption so1 = new SelectOption("Admin", "Admin");
         SelectOption so2 = new SelectOption("Professional", "Professional");
         SelectOption so3 = new SelectOption("Inspector", "Inspector");
         result.add(so1);
         result.add(so2);
         result.add(so3);
+        result.add(so);
         return result;
     }
 

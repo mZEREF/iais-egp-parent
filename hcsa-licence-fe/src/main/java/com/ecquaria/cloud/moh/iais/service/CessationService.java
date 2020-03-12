@@ -4,6 +4,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 
 import java.util.List;
@@ -14,8 +15,12 @@ import java.util.List;
  */
 public interface CessationService {
 
+
+    List<String> getActiveLicence(List<String> licIds);
     List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds);
     List<AppCessLicDto> getOldCessationByIds(List<String> licIds);
+
+    void updateLicenceFe(List<String> licNos);
 
 
     void saveCessations(List<AppCessationDto> appCessationDtos);

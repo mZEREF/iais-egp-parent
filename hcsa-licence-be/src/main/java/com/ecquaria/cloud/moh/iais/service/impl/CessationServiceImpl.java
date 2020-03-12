@@ -91,9 +91,9 @@ public class CessationServiceImpl implements CessationService {
             List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
             appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);
             ApplicationDto applicationDto = new ApplicationDto();
-            applicationDto.setApplicationType("cessation");
+            applicationDto.setApplicationType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
             applicationDto.setApplicationNo(appNo);
-            applicationDto.setStatus(ApplicationConsts.APPLICATION_TYPE_CESSATION);
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
             applicationDto.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
             applicationDto.setVersion(1);
             applicationDto.setLicenceId(licId);
