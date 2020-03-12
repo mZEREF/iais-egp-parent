@@ -53,7 +53,6 @@ public class InterInboxDelegator {
     @Autowired
     private InterInboxDelegator(InboxService inboxService){
         this.inboxService = inboxService;
-
     }
 
     private InterInboxUserDto interInboxUserDto;
@@ -138,7 +137,7 @@ public class InterInboxDelegator {
         for (InboxQueryDto inboxQueryDto:inboxQueryDtoList
                 ) {
             String serviceName = inboxService.getServiceNameById(inboxQueryDto.getServiceId());
-            inboxQueryDto.setProcessUrl(RedirectUtil.changeUrlToCsrfGuardUrlUrl(inboxQueryDto.getProcessUrl(), request));
+//            inboxQueryDto.setProcessUrl(RedirectUtil.changeUrlToCsrfGuardUrlUrl(inboxQueryDto.getProcessUrl(), request));
             inboxQueryDto.setServiceId(serviceName);
         }
         if(!StringUtil.isEmpty(inboxResult)){

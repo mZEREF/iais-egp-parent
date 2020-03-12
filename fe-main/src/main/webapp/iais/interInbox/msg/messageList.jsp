@@ -72,7 +72,7 @@
                                 </c:choose>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Subject</p>
-                                    <p><a href="${inboxQuery.processUrl}">${inboxQuery.subject}</a></p>
+                                    <p><a href="#">${inboxQuery.subject}</a></p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Message Type</p>
