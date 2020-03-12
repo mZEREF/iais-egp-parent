@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.List;
@@ -92,4 +93,13 @@ public interface ApptInspectionDateService {
       * @Descripation: save Specific Date Last
       */
     void saveSpecificDateLast(ApptInspectionDateDto apptInspectionDateDto, LoginContext loginContext);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/3/12
+      * @Param: premCorrIds
+      * @return: List<ApplicationDto>
+      * @Descripation: getApplicationInfoToShow
+      */
+    List<ApplicationDto> getApplicationInfoToShow(List<String> premCorrIds);
 }

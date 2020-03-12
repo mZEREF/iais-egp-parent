@@ -137,13 +137,14 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     public ApptInspectionDateDto getInspectionDate(String taskId, ApptInspectionDateDto apptInspectionDateDto) {
         TaskDto taskDto = taskService.getTaskById(taskId);
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = getAppPremisesCorrelationsByPremises(taskDto.getRefNo());
+        //get task refNo
+        List<String> premCorrIds = getCorrIdsByCorrIdFromPremises(appPremisesCorrelationDtos);
         //get application info show
-        List<ApplicationDto> applicationDtos = getApplicationInfoToShow(appPremisesCorrelationDtos);
+        List<ApplicationDto> applicationDtos = getApplicationInfoToShow(premCorrIds);
         apptInspectionDateDto.setApplicationInfoShow(applicationDtos);
         //get Applicant set start date and end date from appGroup
         AppointmentDto appointmentDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(taskDto.getRefNo()).getEntity();
         //get Other Tasks From The Same Premises
-        List<String> premCorrIds = getCorrIdsByCorrIdFromPremises(appPremisesCorrelationDtos);
         List<TaskDto> taskDtoList = getAllTaskFromSamePremises(premCorrIds);
 
         Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
@@ -173,18 +174,19 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         appointmentDto.setUsers(appointmentUserDtos);
         Map<String, List<ApptUserCalendarDto>> inspectionDateMap = appointmentClient.getUserCalendarByUserId(appointmentDto).getEntity();
         apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
-
+        apptInspectionDateDto.setRefNo(premCorrIds);
         apptInspectionDateDto.setTaskDto(taskDto);
         apptInspectionDateDto.setTaskDtos(taskDtoList);
 
         return apptInspectionDateDto;
     }
 
-    private List<ApplicationDto> getApplicationInfoToShow(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos) {
+    @Override
+    public List<ApplicationDto> getApplicationInfoToShow(List<String> premCorrIds) {
         List<ApplicationDto> applicationDtos = new ArrayList<>();
-        if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)) {
-            for (AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos) {
-                ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremisesCorrelationDto.getId()).getEntity();
+        if(!IaisCommonUtils.isEmpty(premCorrIds)) {
+            for (String appPremCorrId : premCorrIds) {
+                ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
                 applicationDtos.add(applicationDto);
             }
         }
