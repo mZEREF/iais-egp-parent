@@ -3,32 +3,46 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComplianceHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -40,17 +54,24 @@ import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
+import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.LicInspNcEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -108,6 +129,18 @@ public class RequestForInformationDelegator {
     private LicenceViewService licenceViewService;
     @Autowired
     InsepctionNcCheckListService insepctionNcCheckListService;
+    @Autowired
+    private ApplicationClient applicationClient;
+    @Autowired
+    private TaskService taskService;
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+    @Autowired
+    private InsRepService insRepService;
+    @Autowired
+    private InboxMsgService inboxMsgService;
+    @Autowired
+    LicInspNcEmailService licInspNcEmailService;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -740,11 +773,76 @@ public class RequestForInformationDelegator {
         log.info("=======>>>>>preAppInfo>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String licenceId = (String) ParamUtil.getSessionAttr(request, "id");
+
         LicenceDto licenceDto=licenceService.getLicenceDto(licenceId);
         OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licenceDto.getLicenseeId()).getEntity();
         List<PersonnelsDto> personnelsDto= hcsaLicenceClient.getPersonnelDtoByLicId(licenceId).getEntity();
-        ParamUtil.setRequestAttr(request,"organizationLicDto",organizationLicDto);
-        ParamUtil.setRequestAttr(request,"personnelsDto",personnelsDto);
+
+        for (LicenseeKeyApptPersonDto org:organizationLicDto.getLicenseeKeyApptPersonDtos()
+        ) {
+            org.setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{org.getSalutation()}).get(0).getText());
+        }
+        for (PersonnelsDto per:personnelsDto
+        ) {
+            try{
+                per.getKeyPersonnelDto().setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getSalutation()}).get(0).getText());
+                per.getKeyPersonnelDto().setDesignation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getDesignation()}).get(0).getText());
+                per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelExtDto().getProfessionType()}).get(0).getText());
+
+            }catch (NullPointerException e){
+                log.info(e.getMessage());
+            }
+        }
+
+        List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
+
+        List<ComplianceHistoryDto> complianceHistoryDtos=new ArrayList<>();
+        for(LicAppCorrelationDto licAppCorrelationDto : licAppCorrelationDtos){
+            ComplianceHistoryDto complianceHistoryDto=new ComplianceHistoryDto();
+            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(licAppCorrelationDto.getApplicationId()).getEntity();
+            ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDto.getApplicationId()).getEntity();
+            ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+            complianceHistoryDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? "Post":"Pre");
+            complianceHistoryDto.setAppPremCorrId(appPremisesCorrelationDto.getId());
+            complianceHistoryDto.setComplianceTag("Full");
+            try{
+                List<AdhocChecklistItemDto> adhocChecklistItemDtos=applicationClient.getAdhocByAppPremCorrId(appPremisesCorrelationDto.getId()).getEntity();
+                complianceHistoryDto.setRiskTag(adhocChecklistItemDtos.get(0).getRiskLvl());
+            }catch (Exception e){
+                log.info(e.getMessage());
+            }
+            try{
+                AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                complianceHistoryDto.setInspectionDateYear(appPremisesRecommendationDto.getRecomInDate().getYear());
+                complianceHistoryDtos.add(complianceHistoryDto);
+            }catch (Exception e){
+                log.info(e.getMessage());
+            }
+        }
+
+        ParamUtil.setSessionAttr(request,"complianceHistoryDtos", (Serializable) complianceHistoryDtos);
+        ParamUtil.setSessionAttr(request,"organizationLicDto",organizationLicDto);
+        ParamUtil.setSessionAttr(request,"personnelsDto", (Serializable) personnelsDto);
+        // 		preAppInfo->OnStepProcess
+    }
+
+    public void preInspReport(BaseProcessClass bpc) {
+        log.info("=======>>>>>preInspReport>>>>>>>>>>>>>>>>requestForInformation");
+        HttpServletRequest request=bpc.request;
+        String appPremCorrId = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String taskId = ParamUtil.getString(bpc.request,"taskId");
+        if(StringUtil.isEmpty(taskId)){
+            taskId = "BB8C47A3-9B37-EA11-BE7E-000C29F371DC";
+        }
+        TaskDto taskDto = taskService.getTaskById(taskId);
+        taskDto.setRefNo(appPremCorrId);
+        ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appPremCorrId);
+        InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
+        ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+        ParamUtil.setSessionAttr(bpc.request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         // 		preAppInfo->OnStepProcess
     }
 
@@ -810,6 +908,7 @@ public class RequestForInformationDelegator {
         log.info("=======>>>>>doCreateRequest>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String licPremId = (String) ParamUtil.getSessionAttr(request, "id");
+        LicenceViewDto licenceViewDto=licInspNcEmailService.getLicenceDtoByLicPremCorrId(licPremId);
         StringBuilder officerRemarks=new StringBuilder();
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=new LicPremisesReqForInfoDto();
         licPremisesReqForInfoDto.setReqType(RequestForInformationConstants.AD_HOC);
@@ -824,14 +923,14 @@ public class RequestForInformationDelegator {
             dueDate =calendar.getTime();
         }
         licPremisesReqForInfoDto.setDueDateSubmission(dueDate);
-        officerRemarks.append(ParamUtil.getString(request,"rfiTitle")+" ");
+        officerRemarks.append(ParamUtil.getString(request, "rfiTitle")).append(" ");
         licPremisesReqForInfoDto.setLicPremId(licPremId);
         String reqType=ParamUtil.getString(request,"reqType");
         boolean isNeedDoc=false;
         officerRemarks.append(" |Information");
         if(!StringUtil.isEmpty(reqType)&&"on".equals(reqType)) {
             isNeedDoc = true;
-            officerRemarks.append(" |Supporting documents");
+            officerRemarks.append(" |Supporting Documents");
         }
         licPremisesReqForInfoDto.setNeedDocument(isNeedDoc);
         licPremisesReqForInfoDto.setOfficerRemarks(officerRemarks.toString());
@@ -842,14 +941,13 @@ public class RequestForInformationDelegator {
         InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
         String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto1.getReqInfoId()).getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
-        StringBuilder url = new StringBuilder();
-        url.append("https://").append(bpc.request.getServerName())
-                .append("/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo")
-                .append("?licenseeId=").append(licenseeId);
         Map<String,Object> map=new HashMap<>();
         map.put("APPLICANT_NAME",StringUtil.viewHtml(licenseeDto.getName()));
         map.put("DETAILS",StringUtil.viewHtml(licPremisesReqForInfoDto1.getOfficerRemarks()));
-        map.put("A_HREF",url.toString());
+        String url = "https://" + bpc.request.getServerName() +
+                "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" +
+                "?licenseeId=" + licenseeId;
+        map.put("A_HREF", url);
         map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
         String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);
 
@@ -859,7 +957,23 @@ public class RequestForInformationDelegator {
         licPremisesReqForInfoDto1.setAction("create");
         log.info("=======>>>>>Create Lic Request for Information licPremId "+licPremisesReqForInfoDto1.getReqInfoId());
         gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1,
-                signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
+                signature.date(), signature.authorization(), signature2.date(), signature2.authorization());
+
+        //send message to FE user.
+        InterMessageDto interMessageDto = new InterMessageDto();
+        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+        interMessageDto.setSubject(rfiEmailTemplateDto.getSubject());
+        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
+        String mesNO = inboxMsgService.getMessageNo();
+        interMessageDto.setRefNo(mesNO);
+        HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
+        interMessageDto.setService_id(svcDto.getId());
+        interMessageDto.setMsgContent(mesContext);
+        interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
+        interMessageDto.setUserId(licenseeId);
+        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        inboxMsgService.saveInterMessage(interMessageDto);
+        log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
 
         try {
             EmailDto emailDto=new EmailDto();

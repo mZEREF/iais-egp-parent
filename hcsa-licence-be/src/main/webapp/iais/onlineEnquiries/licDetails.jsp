@@ -321,7 +321,7 @@
                                                                 <p>${compliance.inspectionTypeName}</p>
                                                             </td>
                                                             <td>
-                                                                <p>${compliance.inspectionDate}</p>
+                                                                <p>${compliance.inspectionDateYear}</p>
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
