@@ -126,8 +126,8 @@
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="apptInspectionDateType" name="apptInspectionDateSwitch" x="880" y="100">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/apptInspectionDateSuccess" value="&quot;success&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/apptInspectionDatePre" value=""/>
-   <SwitchCase component="/Steps/AutomaticStep/apptInspectionDateSpec" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/apptInspectionDatePre" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/apptInspectionDateSpec" value="&quot;confirm&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
