@@ -10,6 +10,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Hc
@@ -82,7 +83,7 @@ public class AppointmentClientFallback implements AppointmentClient{
     }
 
     @Override
-    public FeignResponseEntity<List<List<ApptUserCalendarDto>>> getUserCalendarByUserId(AppointmentDto appointmentDto) {
+    public FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> getUserCalendarByUserId(AppointmentDto appointmentDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

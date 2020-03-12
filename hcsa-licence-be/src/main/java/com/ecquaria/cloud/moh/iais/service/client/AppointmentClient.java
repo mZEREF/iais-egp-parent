@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Map;
 
 @FeignClient(name = "iais-appointment", configuration = FeignConfiguration.class,
         fallback = AppointmentClientFallback.class)
@@ -49,7 +50,7 @@ public interface AppointmentClient {
 
     @PostMapping(value = "/iais-appointment/user-calendar",produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<List<ApptUserCalendarDto>>> getUserCalendarByUserId(@RequestBody AppointmentDto appointmentDto);
+    FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> getUserCalendarByUserId(@RequestBody AppointmentDto appointmentDto);
 
     @GetMapping(value = "/iais-appointment/ava-appt-date/{strSpecDate}")
     FeignResponseEntity<String> isAvailableAppointmentDates(@PathVariable("strSpecDate") String strSpecDate);
