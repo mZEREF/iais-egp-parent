@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -10,9 +11,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -61,6 +65,7 @@ public class MassEmailDelegator {
      */
     public void prepare(BaseProcessClass bpc){
         searchParam.addFilter("status", AppConsts.COMMON_STATUS_ACTIVE,true);
+        searchParam.setSort("CREATED_DT", SearchParam.DESCENDING);
         CrudHelper.doPaging(searchParam,bpc.request);
         QueryHelp.setMainSql("systemAdmin", "queryMassDistributionList",searchParam);
         SearchResult<DistributionListDto> searchResult = distributionListService.distributionList(searchParam);
@@ -91,25 +96,35 @@ public class MassEmailDelegator {
         String service =  ParamUtil.getString(bpc.request, "service");
         String role =  ParamUtil.getString(bpc.request, "role");
         String dismode = "";
-        if(mode.length > 1){
-            dismode = BOTH;
-        }else{
-            dismode = mode[0];
+        if(mode != null ) {
+            if (mode.length > 1) {
+                dismode = BOTH;
+            } else {
+                dismode = mode[0];
+            }
         }
         DistributionListDto distributionListDto = new DistributionListDto();
         distributionListDto.setService(service);
         distributionListDto.setDisname(name);
         distributionListDto.setMode(dismode);
         distributionListDto.setRole(role);
-        if(id == null)
-        {
-            distributionListService.saveDistributionList(distributionListDto);
+        ValidationResult validationResult = WebValidationHelper.validateProperty(distributionListDto, "save");
+        if(validationResult != null && validationResult.isHasErrors()) {
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
+            ParamUtil.setRequestAttr(bpc.request,"distribution",distributionListDto);
         }else{
-            distributionListDto.setId(id);
-
+            if(id != null)
+            {
+                distributionListDto.setId(id);
+            }
+            distributionListService.saveDistributionList(distributionListDto);
+            ParamUtil.setRequestAttr(bpc.request, "firstOption", "Please select");
+            ParamUtil.setRequestAttr(bpc.request, "firstValue", " ");
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
         }
-        ParamUtil.setRequestAttr(bpc.request, "firstOption", "Please select");
-        ParamUtil.setRequestAttr(bpc.request, "firstValue", " ");
+
     }
 
     /**

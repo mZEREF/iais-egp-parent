@@ -25,7 +25,7 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="name" type="text" name="name" value="${distribution.getDisname()}">
-                                    <span id="error_name" name="iaisErrorMsg" class="error-msg"></span>
+                                    <span id="error_disname" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
@@ -50,6 +50,7 @@
                                         </iais:value>
                                     </iais:row>
                                 </iais:section>
+                            <span id="error_service" name="iaisErrorMsg" class="error-msg"></span>
                         </div>
 
                         <div class="form-group">
@@ -58,7 +59,7 @@
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <div class="form-check">
                                         <input class="form-check-input" name="mode"
-                                        <c:if test="${distribution.getMode() != null && distribution.getMode() != 'sms'}">
+                                        <c:if test="${distribution.getMode() != null && distribution.getMode() == 'email'}">
                                                checked="checked"
                                                </c:if>
                                                type="checkbox" value="email">
@@ -67,7 +68,7 @@
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox"
-                                        <c:if test="${distribution.getMode() != null && distribution.getMode() != 'email'}">
+                                        <c:if test="${distribution.getMode() != null && distribution.getMode() == 'sms'}">
                                                checked="checked"
                                         </c:if>
                                                name="mode" value="sms">

@@ -51,6 +51,22 @@ public class BlastManagementListClientFallback implements BlastManagementListCli
     }
 
     @Override
+    public FeignResponseEntity<List<BlastManagementDto>> getBlastBySendTime(String date) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Void> setActual(String id) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<Void> setSchedule(BlastManagementDto blastManagementDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

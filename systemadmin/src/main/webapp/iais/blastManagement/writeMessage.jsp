@@ -36,7 +36,7 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="subject" type="text" name="subject" value="${edit.getSubject()}">
-                                    <span id="error_name" name="iaisErrorMsg" class="error-msg"></span>
+                                    <span id="error_subject" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
@@ -47,6 +47,8 @@
                             <textarea name="messageContent" class="textarea" id="htmlEditor" title="content">
                                 ${edit.msgContent}
                             </textarea>
+                                <label class="col-xs-4 col-md-4 control-label"></label>
+                                <span id="error_msgContent" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
 

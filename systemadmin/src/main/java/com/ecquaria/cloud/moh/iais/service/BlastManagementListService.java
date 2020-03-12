@@ -2,12 +2,14 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.EmailAuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ResendListDto;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author guyin
@@ -21,4 +23,7 @@ public interface BlastManagementListService {
     void setSchedule(BlastManagementDto blastManagementDto);
     void deleteBlastList(List<String> list);
     BlastManagementDto getBlastById(String id);
+    List<BlastManagementDto> getBlastBySendTime(String date);
+    void setActual(String id);
+    void sendEmail(EmailDto emailDto, Map<String, byte[]> attachments);
 }

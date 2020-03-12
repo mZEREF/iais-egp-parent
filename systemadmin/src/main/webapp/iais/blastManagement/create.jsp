@@ -29,7 +29,7 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="name" type="text" name="name" value="${edit.getMsgName()}">
-                                    <span id="error_name" name="iaisErrorMsg" class="error-msg"></span>
+                                    <span id="error_msgName" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
@@ -51,8 +51,9 @@
                                     <input type="text" value="${hour}" maxlength="2" style="width: 60px" name="HH"/>(HH)
                                     :
                                     <input type="text" value="${minutes}" maxlength="2" style="width: 60px"  name="MM"/>(MM)
-
                                 </div>
+                                <br>
+                                <span id="error_date" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:value>
                         </div>
                         <div class="form-group">
@@ -60,6 +61,7 @@
                                 <iais:value width="10">
                                     <iais:select name="status" options="status" value=""></iais:select>
                                 </iais:value>
+                            <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
                         </div>
                     </div>
                     <div class="application-tab-footer">

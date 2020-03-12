@@ -28,9 +28,10 @@
                             <label class="col-xs-4 col-md-4 control-label" >Add Email Addresses:</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <textarea cols="30" rows="10" name="email" class="textarea" id="email" title="content">
+                                    <textarea cols="50" rows="10" name="email" class="textarea" id="email" title="content">
                                     ${emailAddress}
                                     </textarea>
+                                    <span id="error_addr" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>

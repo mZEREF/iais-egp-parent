@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -13,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.system.EmailAuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
@@ -36,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -93,6 +96,7 @@ public class BlastManagementDelegator {
         SearchResult<BlastManagementListDto> searchResult = blastManagementListService.blastList(searchParam);
         ParamUtil.setRequestAttr(bpc.request,"blastSearchResult",searchResult);
         ParamUtil.setRequestAttr(bpc.request,"blastSearchParam",searchParam);
+        ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDto);
 
     }
 
@@ -101,8 +105,6 @@ public class BlastManagementDelegator {
      * @param bpc
      */
     public void create(BaseProcessClass bpc){
-        blastManagementDto = new BlastManagementDto();
-        ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDto);
         ParamUtil.setSessionAttr(bpc.request,"emailAddress",null);
         ParamUtil.setSessionAttr(bpc.request,"schedule",null);
         setStatusSelection(bpc,null);
@@ -123,7 +125,7 @@ public class BlastManagementDelegator {
             selectOptions.add(new SelectOption(EMAIL,EMAIL));
             selectOptions.add(new SelectOption(SMS,SMS));
         }
-        ParamUtil.setRequestAttr(bpc.request, "mode",  selectOptions);
+        ParamUtil.setSessionAttr(bpc.request, "mode",  (Serializable) selectOptions);
     }
 
     private void setStatusSelection(BaseProcessClass bpc,String selected){
@@ -232,25 +234,53 @@ public class BlastManagementDelegator {
         String date = ParamUtil.getString(bpc.request, "date");
         String HH = ParamUtil.getString(bpc.request, "HH");
         String MM = ParamUtil.getString(bpc.request, "MM");
+        ParamUtil.setRequestAttr(bpc.request,"hour",HH);
+        ParamUtil.setRequestAttr(bpc.request,"minutes",MM);
         String status = ParamUtil.getString(bpc.request, "status");
         blastManagementDto.setMsgName(name);
         blastManagementDto.setMode(mode);
-        SimpleDateFormat newformat =  new SimpleDateFormat("dd/MM/yyyy");
-        Date schedule = new Date();
-        if(!StringUtil.isEmpty(date)){
-            try {
-                schedule = newformat.parse(date);
-                long time = schedule.getTime() + Long.parseLong(HH) * 60 * 60 * 1000 + Long.parseLong(MM) * 60 * 1000;
-                schedule.setTime(time);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-        blastManagementDto.setSchedule(schedule);
         blastManagementDto.setStatus(status);
+        if(!(MM != null && StringUtils.isNumeric(HH) &&  Integer.valueOf(MM) < 24)){
+            Map<String, String> errorMap = new HashMap<>();
+            errorMap.put("date","HH should be hours");
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
+            ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
+        }else if(!(HH != null && StringUtils.isNumeric(MM) &&  Integer.valueOf(MM) < 60)){
+            Map<String, String> errorMap = new HashMap<>();
+            errorMap.put("date","MM should be minutes");
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
+            ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
+        }else{
+            SimpleDateFormat newformat =  new SimpleDateFormat("dd/MM/yyyy");
+            Date schedule = new Date();
+            if(!StringUtil.isEmpty(date)){
+                try {
+                    schedule = newformat.parse(date);
+                    long time = schedule.getTime() + Long.parseLong(HH) * 60 * 60 * 1000 + Long.parseLong(MM) * 60 * 1000;
+                    schedule.setTime(time);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            blastManagementDto.setSchedule(schedule);
+            ParamUtil.setSessionAttr(bpc.request, "blastManagementDto", blastManagementDto);
+            ValidationResult validationResult =WebValidationHelper.validateProperty(blastManagementDto, "page1");
+            if(validationResult != null && validationResult.isHasErrors()) {
+                Map<String, String> errorMap = validationResult.retrieveAll();
+                ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
+                ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
+            }
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
+        }
 
     }
 
+    public void fillMessageSuccess(BaseProcessClass bpc){
+
+    }
     /**
      * writeMessage
      * @param bpc
@@ -264,6 +294,7 @@ public class BlastManagementDelegator {
         String messageContent = mulReq.getParameter( "messageContent");
         blastManagementDto.setSubject(subject);
         blastManagementDto.setMsgContent(messageContent);
+        ParamUtil.setSessionAttr(bpc.request, "blastManagementDto", blastManagementDto);
 
         Map<String, String> errorMap = validationFile(request, file);
         if (errorMap != null && !errorMap.isEmpty()){
@@ -282,21 +313,35 @@ public class BlastManagementDelegator {
                 log.info(e.getMessage());
             }
         }
-        List<DistributionListDto> distributionListDtos = distributionListService.getDistributionList();
-        List<SelectOption> selectOptions = new ArrayList<>();
-        if(blastManagementDto.getDistributionId() != null){
-            selectOptions.add(new SelectOption(blastManagementDto.getDistributionId(),blastManagementDto.getDistributionName()));
+        ValidationResult validationResult =WebValidationHelper.validateProperty(blastManagementDto, "page2");
+        if(validationResult != null && validationResult.isHasErrors()) {
+            Map<String, String> err = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(err));
+            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
         }else{
-            selectOptions.add(new SelectOption("","Pleast select"));
+            List<DistributionListDto> distributionListDtos = distributionListService.getDistributionList();
+            List<SelectOption> selectOptions = new ArrayList<>();
+            if(blastManagementDto.getDistributionId() != null){
+                selectOptions.add(new SelectOption(blastManagementDto.getDistributionId(),blastManagementDto.getDistributionName()));
+            }else{
+                selectOptions.add(new SelectOption("","Pleast select"));
+            }
+
+            for (DistributionListDto item :distributionListDtos
+            ) {
+                selectOptions.add(new SelectOption(item.getId(),item.getDisname()));
+            }
+            ParamUtil.setSessionAttr(bpc.request, "distribution",  (Serializable) selectOptions);
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
         }
 
-        for (DistributionListDto item :distributionListDtos
-        ) {
-            selectOptions.add(new SelectOption(item.getId(),item.getDisname()));
-        }
-        ParamUtil.setRequestAttr(bpc.request, "distribution",  selectOptions);
+
     }
 
+    public void writeMessageSuccess(BaseProcessClass bpc){
+
+    }
     /**
      * fillMessage
      * @param bpc
@@ -311,7 +356,18 @@ public class BlastManagementDelegator {
         if(emaillist != null){
             blastManagementDto.setEmailAddress(emaillist);
         }
-        blastManagementListService.saveBlast(blastManagementDto);
+        ParamUtil.setSessionAttr(bpc.request, "blastManagementDto", blastManagementDto);
+        ValidationResult validationResult =WebValidationHelper.validateProperty(blastManagementDto, "page3");
+        if(validationResult != null && validationResult.isHasErrors()) {
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
+            ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
+        }else{
+            blastManagementListService.saveBlast(blastManagementDto);
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
+        }
+
     }
 
     private Map<String, String> validationFile(HttpServletRequest request, MultipartFile file){
