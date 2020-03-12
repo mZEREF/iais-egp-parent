@@ -208,7 +208,7 @@ public class NewApplicationHelper {
 
     public static AppSubmissionDto setSubmissionDtoSvcData(HttpServletRequest request, AppSubmissionDto appSubmissionDto) throws CloneNotSupportedException {
         List<HcsaServiceDto> hcsaServiceDtoList = HcsaServiceCacheHelper.receiveAllHcsaService();
-        if(appSubmissionDto != null){
+        if(appSubmissionDto != null && hcsaServiceDtoList!=null){
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtoList){
@@ -630,6 +630,38 @@ public class NewApplicationHelper {
         return appGrpPremisesDto;
     }
 
+
+    public static void setDisciplineAllocationDtoInfo(AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+
+        if(appSvcRelatedInfoDto == null){
+            return;
+        }
+        List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtos = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+        List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+        List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtos = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcLaboratoryDisciplinesDtos)&&!IaisCommonUtils.isEmpty(appSvcCgoDtos) && !IaisCommonUtils.isEmpty(appSvcDisciplineAllocationDtos)){
+            for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto:appSvcDisciplineAllocationDtos){
+                String idNo = appSvcDisciplineAllocationDto.getIdNo();
+                String svcScopeConfigId = appSvcDisciplineAllocationDto.getChkLstConfId();
+                if(StringUtil.isEmpty(idNo) || StringUtil.isEmpty(svcScopeConfigId)){
+                    continue;
+                }
+
+                //set svc cgoNo
+                for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtos){
+                    String cgoIdNo = appSvcCgoDto.getIdNo();
+                    if(StringUtil.isEmpty(cgoIdNo)){
+                        continue;
+                    }
+                    if(idNo.equals(cgoIdNo)){
+                        appSvcDisciplineAllocationDto.setCgoSelName(appSvcCgoDto.getName());
+                    }
+                }
+            }
+        }
+
+
+    }
 
 
 

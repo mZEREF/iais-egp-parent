@@ -2507,7 +2507,7 @@ public class NewApplicationDelegator {
                     appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                 }
             }
-            //todo:set AppSvcLaboratoryDisciplinesDto
+
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
@@ -2516,14 +2516,18 @@ public class NewApplicationDelegator {
                     if(!StringUtil.isEmpty(currentSvcId)){
                         hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(currentSvcId);
                     }
+                    //todo:set AppSvcLaboratoryDisciplinesDto
                     if(!IaisCommonUtils.isEmpty(hcsaSvcSubtypeOrSubsumedDtos)){
                        NewApplicationHelper.setLaboratoryDisciplinesInfo(appSvcRelatedInfoDto,hcsaSvcSubtypeOrSubsumedDtos);
                     }
+                    //todo:set AppSvcDisciplineAllocationDto
+                    //NewApplicationHelper.setDisciplineAllocationDtoInfo(appSvcRelatedInfoDto);
 
                 }
             }
 
-            //todo:set allow
+
+
 
 
             //set oldAppSubmission when rfi,rfc,renew

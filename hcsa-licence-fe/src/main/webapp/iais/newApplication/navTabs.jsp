@@ -56,18 +56,46 @@
             submit('payment',null,null);
         });
 
-        <!--todo:according edit type to unbind -->
-        <c:if test="${'requestInformationConfig'==null&&('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
-            $('#premises').unbind();
-            $('#premisesli').unbind();
-            $('#documents').unbind();
-            $('#documentsli').unbind();
-            $('#serviceForms').unbind();
-            $('#serviceFormsli').unbind();
-            $('#preview').unbind();
-            $('#previewli').unbind();
-            $('#payment').unbind();
-            $('#paymentli').unbind();
+        <c:if test="${requestInformationConfig==null && ('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
+            <c:choose>
+                <c:when test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
+                    $('#documents').unbind();
+                    $('#documentsli').unbind();
+                    $('#serviceForms').unbind();
+                    $('#serviceFormsli').unbind();
+                    $('#payment').unbind();
+                    $('#paymentli').unbind();
+                </c:when>
+                <c:when test="${AppSubmissionDto.appEditSelectDto.docEdit}">
+                    $('#premises').unbind();
+                    $('#premisesli').unbind();
+                    $('#serviceForms').unbind();
+                    $('#serviceFormsli').unbind();
+                    $('#payment').unbind();
+                    $('#paymentli').unbind();
+                </c:when>
+                <c:when test="${AppSubmissionDto.appEditSelectDto.serviceEdit}">
+                    $('#premises').unbind();
+                    $('#premisesli').unbind();
+                    $('#documents').unbind();
+                    $('#documentsli').unbind();
+                    $('#payment').unbind();
+                    $('#paymentli').unbind();
+                </c:when>
+                <c:otherwise>
+                    $('#premises').unbind();
+                    $('#premisesli').unbind();
+                    $('#documents').unbind();
+                    $('#documentsli').unbind();
+                    $('#serviceForms').unbind();
+                    $('#serviceFormsli').unbind();
+                    $('#preview').unbind();
+                    $('#previewli').unbind();
+                    $('#payment').unbind();
+                    $('#paymentli').unbind();
+                </c:otherwise>
+            </c:choose>
+
 
         </c:if>
 
@@ -126,5 +154,17 @@
         $Ele.find('div.nice-select').removeClass('disabled');
     }
 
+    var unbindAllTabs = function () {
+        $('#premises').unbind();
+        $('#premisesli').unbind();
+        $('#documents').unbind();
+        $('#documentsli').unbind();
+        $('#serviceForms').unbind();
+        $('#serviceFormsli').unbind();
+        $('#preview').unbind();
+        $('#previewli').unbind();
+        $('#payment').unbind();
+        $('#paymentli').unbind();
+    }
 
 </script>
