@@ -202,8 +202,10 @@ public class NewApplicationDelegator {
         String licenseeId = appSubmissionDto.getLicenseeId();
         String loginId = AccessUtil.getLoginId(bpc.request);
         log.info(StringUtil.changeForLog("The preparePremises loginId is -->:"+loginId));
-
-        Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
+        Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = null;
+        if(StringUtil.isEmpty(loginId)){
+            licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
+        }
         SelectOption sp0 = new SelectOption("-1", FIRESTOPTION);
         premisesSelect.add(sp0);
         SelectOption sp1 = new SelectOption("newPremise", "Add a new premises");
@@ -2470,6 +2472,7 @@ public class NewApplicationDelegator {
             }
 
             //todo:set allow
+
 
             //set oldAppSubmission when rfi,rfc,renew
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
