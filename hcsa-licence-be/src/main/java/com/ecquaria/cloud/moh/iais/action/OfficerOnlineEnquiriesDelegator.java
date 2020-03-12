@@ -74,6 +74,7 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -866,7 +867,9 @@ public class OfficerOnlineEnquiriesDelegator {
             }
             try{
                 AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-                complianceHistoryDto.setInspectionDateYear(appPremisesRecommendationDto.getRecomInDate().getYear());
+                Calendar c = Calendar.getInstance();
+                c.setTime(appPremisesRecommendationDto.getRecomInDate());
+                complianceHistoryDto.setInspectionDateYear(c.get(Calendar.YEAR));
                 complianceHistoryDtos.add(complianceHistoryDto);
             }catch (Exception e){
                 log.info(e.getMessage());

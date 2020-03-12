@@ -54,7 +54,7 @@ public class UenManagementServiceImpl implements UenManagementService {
     public boolean generatesMohIssuedUen(MohUenDto mohUenDto) throws IOException, TemplateException {
         MohUenDto mohUenDto1= uenManagementClient.generatesMohIssuedUen(mohUenDto).getEntity();
         //等ACRA api
-        String templateId="BEFC2AF0-250C-EA11-BE78-000C29D29DB0";
+        String templateId="AC65C90C-3564-EA11-BE7F-000C29F371DC";
         InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
         Map<String,Object> map=new HashMap<>();
         map.put("UEN Number",StringUtil.viewHtml(mohUenDto1.getUenNo()));

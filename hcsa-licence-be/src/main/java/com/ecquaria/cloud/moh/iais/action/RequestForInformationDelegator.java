@@ -948,11 +948,11 @@ public class RequestForInformationDelegator {
         Map<String,Object> map=new HashMap<>();
         StringBuilder stringBuilder=new StringBuilder();
         stringBuilder.append("<p>   1. ").append("Information ").append(rfiTitle).append("</p>");
+        map.put("APPLICANT_NAME",StringUtil.viewHtml(licenseeDto.getName()));
         if(licPremisesReqForInfoDto1.isNeedDocument()){
             stringBuilder.append("<p>   2. ").append("Documentations  ").append(rfiTitle).append("</p>");
         }
-        map.put("DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
-        map.put("APPLICANT_NAME",StringUtil.viewHtml(licenseeDto.getName()));
+        map.put("DETAILS",StringUtil.viewHtml("<p>"+"</p>"));
         String url = "https://" + systemParamConfig.getInterServerName() +
                 "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" +
                 "?licenseeId=" + licenseeId;
