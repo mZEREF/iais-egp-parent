@@ -63,8 +63,8 @@
         -ms-transform: scale(1) translateY(0);
             transform: scale(1) translateY(0); }
   .nice-select.disabled {
-    border-color: #ededed;
-    color: #999;
+    /*border-color: #ededed;*/
+    /*color: #999;*/
     pointer-events: none; }
     .nice-select.disabled:after {
       border-color: #cccccc; }
