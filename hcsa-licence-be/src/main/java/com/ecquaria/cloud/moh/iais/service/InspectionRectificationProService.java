@@ -12,6 +12,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
+import freemarker.template.TemplateException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +47,7 @@ public interface InspectionRectificationProService {
       * @return: void
       * @Descripation: routing Task To Report
       */
-    void routingTaskToReport(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, ApplicationViewDto applicationViewDto, LoginContext loginContext);
+    void routingTaskToReport(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, ApplicationViewDto applicationViewDto, LoginContext loginContext) throws IOException, TemplateException;
 
     /**
       * @author: shicheng
