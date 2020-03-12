@@ -644,7 +644,7 @@ public class HcsaApplicationDelegator {
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
         interMessageDto.setMsgContent(templateMessageByContent);
         interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-        interMessageDto.setUserId(applicationViewDto.getSubmitBy());
+        interMessageDto.setUserId(applicationViewDto.getApplicationGroupDto().getSubmitBy());
         interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         inboxMsgService.saveInterMessage(interMessageDto);
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
