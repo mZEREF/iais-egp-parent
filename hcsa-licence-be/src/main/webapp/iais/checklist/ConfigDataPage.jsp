@@ -147,7 +147,7 @@
                           </div>
                           <div class="modal-body">
                             <div class="row">
-                              <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the disable ?</span></div>
+                              <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the delete ?</span></div>
                             </div>
                           </div>
                           <div class="modal-footer">
@@ -163,6 +163,7 @@
                       <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="javascript:loadEditData('${config.id}')" >Edit</button>
                       <button type="button" onclick="javascript:cloneConfig('${config.id}')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >Clone</button>
                       <button type="button" onclick="javascript:doView('${config.id}')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >View</button>
+                      <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" data-target="#DeleteTemplateModal" >Delete</button>
                     </td>
                   </tr>
                 </c:forEach>
