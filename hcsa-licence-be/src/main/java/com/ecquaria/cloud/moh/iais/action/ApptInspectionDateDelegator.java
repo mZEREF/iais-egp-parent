@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -64,6 +65,7 @@ public class ApptInspectionDateDelegator {
     public void apptInspectionDateInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptInspectionDateInit start ...."));
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "inspecProDec", null);
         ParamUtil.setSessionAttr(bpc.request, "hours", null);
         ParamUtil.setSessionAttr(bpc.request, "amPm", null);
     }
@@ -81,7 +83,12 @@ public class ApptInspectionDateDelegator {
             String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
             apptInspectionDateDto = new ApptInspectionDateDto();
             apptInspectionDateDto  = apptInspectionDateService.getInspectionDate(taskId, apptInspectionDateDto);
+        } else {
+            Map<ApplicationDto, List<String>> applicationInfoMap = apptInspectionDateService.getApplicationInfoToShow(apptInspectionDateDto.getRefNo(), apptInspectionDateDto.getTaskDtos());
+            apptInspectionDateDto.setApplicationInfoShow(applicationInfoMap);
         }
+        String actionButtonFlag = apptInspectionDateService.getActionButtonFlag(apptInspectionDateDto);
+        apptInspectionDateDto.setActionButtonFlag(actionButtonFlag);
         List<SelectOption> processDecList = apptInspectionDateService.getProcessDecList();
         List<SelectOption> hours = apptInspectionDateService.getInspectionDateHours();
         List<SelectOption> amPm = apptInspectionDateService.getAmPmOption();

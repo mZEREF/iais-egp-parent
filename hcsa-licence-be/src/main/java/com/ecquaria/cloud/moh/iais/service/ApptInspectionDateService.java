@@ -3,9 +3,11 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -97,9 +99,19 @@ public interface ApptInspectionDateService {
     /**
       * @author: shicheng
       * @Date 2020/3/12
-      * @Param: premCorrIds
+      * @Param: premCorrIds, taskDtoList
       * @return: List<ApplicationDto>
       * @Descripation: getApplicationInfoToShow
       */
-    List<ApplicationDto> getApplicationInfoToShow(List<String> premCorrIds);
+    Map<ApplicationDto, List<String>> getApplicationInfoToShow(List<String> premCorrIds, List<TaskDto> taskDtoList);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/3/12
+      * @Param: 
+      * @return: 
+      * @Descripation: All task(From The Same Premises) is go to inspection(some of them jump over Inspection),
+      *                can do get Inspection Date
+      */
+    String getActionButtonFlag(ApptInspectionDateDto apptInspectionDateDto);
 }
