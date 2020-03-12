@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
@@ -615,13 +616,7 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         //send message to FE user.
-        InterMessageDto interMessageDto = new InterMessageDto();
-        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-        interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION);
-        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
-        String mesNO = inboxMsgService.getMessageNo();
-        interMessageDto.setRefNo(mesNO);
-        interMessageDto.setService_id(applicationDto.getServiceId());
+        String messageNo = inboxMsgService.getMessageNo();
         String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION+applicationDto.getApplicationNo();
         //Request For Change
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())){
@@ -642,10 +637,9 @@ public class HcsaApplicationDelegator {
         map.put("A_HREF",url);
         map.put("MOH_NAME",AppConsts.MOH_AGENCY_NAME);
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
-        interMessageDto.setMsgContent(templateMessageByContent);
-        interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-        interMessageDto.setUserId(applicationViewDto.getApplicationGroupDto().getSubmitBy());
-        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+
+        InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
+                messageNo,applicationDto.getServiceId(),templateMessageByContent, applicationViewDto.getApplicationGroupDto().getSubmitBy(),IaisEGPHelper.getCurrentAuditTrailDto());
         inboxMsgService.saveInterMessage(interMessageDto);
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
     }
