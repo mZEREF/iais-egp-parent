@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -141,6 +142,8 @@ public class RequestForInformationDelegator {
     private InboxMsgService inboxMsgService;
     @Autowired
     LicInspNcEmailService licInspNcEmailService;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -944,7 +947,7 @@ public class RequestForInformationDelegator {
         Map<String,Object> map=new HashMap<>();
         map.put("APPLICANT_NAME",StringUtil.viewHtml(licenseeDto.getName()));
         map.put("DETAILS",StringUtil.viewHtml(licPremisesReqForInfoDto1.getOfficerRemarks()));
-        String url = "https://" + bpc.request.getServerName() +
+        String url = "https://" + systemParamConfig.getInterServerName() +
                 "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" +
                 "?licenseeId=" + licenseeId;
         map.put("A_HREF", url);
