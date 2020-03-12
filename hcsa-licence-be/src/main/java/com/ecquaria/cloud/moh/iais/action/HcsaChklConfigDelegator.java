@@ -286,7 +286,7 @@ public class HcsaChklConfigDelegator {
     private void setToSession(HttpServletRequest request, String value){
         if (!StringUtils.isEmpty(value)){
             ChecklistConfigDto configDto = hcsaChklService.getChecklistConfigById(value);
-
+            configDto.getSectionDtos().sort(Comparator.comparing(ChecklistSectionDto::getOrder));
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, configDto);
         }
     }
@@ -629,13 +629,8 @@ public class HcsaChklConfigDelegator {
         for (ChecklistSectionDto sec : sectionDtos){
             String section = sec.getSection();
             String orderStr = ParamUtil.getString(request, section);
-            try {
-                int order = Integer.valueOf(orderStr);
-                sec.setOrder(order);
-            }catch (NumberFormatException e){
-                log.debug(e.getMessage());
-                throw  new IaisRuntimeException(e.getMessage());
-            }
+            int order = Integer.valueOf(orderStr);
+            sec.setOrder(order);
 
             List<ChecklistItemDto> checklistItemDtos = sec.getChecklistItemDtos();
             if (checklistItemDtos != null && !checklistItemDtos.isEmpty()){
@@ -645,7 +640,7 @@ public class HcsaChklConfigDelegator {
                     item.setSectionItemOrder(Integer.valueOf(itemOrder));
                 }
             }
-
+            checklistItemDtos.sort(Comparator.comparing(ChecklistItemDto::getSectionItemOrder));
         }
     }
 
@@ -667,6 +662,7 @@ public class HcsaChklConfigDelegator {
         }else {
             ParamUtil.setSessionAttr(request, "actionBtn", "submitView");
             generateOrderIndex(request, preViewConfig.getSectionDtos());
+            preViewConfig.getSectionDtos().sort(Comparator.comparing(ChecklistSectionDto::getOrder));
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, preViewConfig);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         }

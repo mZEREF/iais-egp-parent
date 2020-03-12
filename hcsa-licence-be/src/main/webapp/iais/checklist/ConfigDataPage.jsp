@@ -163,7 +163,6 @@
                       <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="javascript:loadEditData('${config.id}')" >Edit</button>
                       <button type="button" onclick="javascript:cloneConfig('${config.id}')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >Clone</button>
                       <button type="button" onclick="javascript:doView('${config.id}')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >View</button>
-                      <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" data-target="#DeleteTemplateModal" >Disable</button>
                     </td>
                   </tr>
                 </c:forEach>
