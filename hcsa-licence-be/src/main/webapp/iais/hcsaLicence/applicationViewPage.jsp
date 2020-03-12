@@ -525,23 +525,23 @@
                                                             </select>
                                                         </td>
                                                     </tr>
-                                                    <tr id="lienceStartDate">
+                                                    <tr id="licenceStartDate">
                                                         <td>
-                                                            <span>Lience Start Date</span>
+                                                            <span>Licence Start Date</span>
                                                         </td>
                                                         <td>
-                                                            <iais:datePicker id = "lienceStartDate" name = "tuc" value=""></iais:datePicker>
+                                                            <iais:datePicker id = "licenceStartDate" name = "tuc" value=""></iais:datePicker>
                                                         </td>
                                                     </tr>
-                                                    <tr id="recomedationDropdown" class="hidden">
+                                                    <tr id="recommendationDropdown" class="hidden">
                                                         <td>
                                                             <span>Recommendation:</span>
                                                         </td>
                                                         <td>
-                                                            <select name="recomedation" class="table-select recommendation-type">
+                                                            <select name="recommendation" class="table-select recommendation-type">
                                                                 <option>---select---</option>
-                                                                   <c:forEach items="${applicationViewDto.recomeDation}" var="recomedation">
-                                                                       <option><c:out value="${recomedation}"></c:out></option>
+                                                                   <c:forEach items="${applicationViewDto.recomeDation}" var="recommendation">
+                                                                       <option><c:out value="${recommendation}"></c:out></option>
                                                                    </c:forEach>
                                                                 <option>reject</option>
                                                             </select>
@@ -647,13 +647,13 @@
     $(document).ready(function(){
         if('${taskDto.taskKey}' == '12848A70-820B-EA11-BE7D-000C29F371DC'||'${taskDto.taskKey}' == '13848A70-820B-EA11-BE7D-000C29F371DC'){
             $('#ApplicationViewInspection').css('display','none');
-            $('#recomedationDropdown').removeClass('hidden');
+            $('#recommendationDropdown').removeClass('hidden');
         }
         if('${applicationViewDto.applicationDto.status}' == 'APST000'){
             $('#processingDecision').addClass('hidden');
-            $('#recomedationDropdown').addClass('hidden');
+            $('#recommendationDropdown').addClass('hidden');
             $('#replytr').removeClass('hidden');
-            $('#lienceStartDate').addClass('hidden');
+            $('#licenceStartDate').addClass('hidden');
         }
         $('#rfiSelect').hide();
     });
@@ -742,9 +742,9 @@
     $('#verifiedDropdown').change(function verifiedChange() {
         //var verified= $("[name='verified']").val();
         // if(verified=="PROCLSD") {
-        //     $('#lienceStartDate').removeClass('hidden');
+        //     $('#licenceStartDate').removeClass('hidden');
         // }else{
-        //     $('#lienceStartDate').addClass('hidden');
+        //     $('#licenceStartDate').addClass('hidden');
         // }
     });
     function showWaiting() {
