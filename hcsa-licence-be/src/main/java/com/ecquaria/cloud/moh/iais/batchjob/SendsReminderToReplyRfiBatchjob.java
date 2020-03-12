@@ -78,6 +78,12 @@ public class SendsReminderToReplyRfiBatchjob {
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
         Map<String,Object> map=new HashMap<>();
         map.put("APPLICANT_NAME",StringUtil.viewHtml(licenseeDto.getName()));
+        StringBuilder stringBuilder=new StringBuilder();
+        stringBuilder.append("<p>   1. ").append("Information ").append(licPremisesReqForInfoDto.getOfficerRemarks().split("\\|")[0]).append("</p>");
+        if(licPremisesReqForInfoDto.isNeedDocument()){
+            stringBuilder.append("<p>   2. ").append("Documentations  ").append(licPremisesReqForInfoDto.getOfficerRemarks().split("\\|")[0]).append("</p>");
+        }
+        map.put("DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
         map.put("DETAILS",StringUtil.viewHtml(licPremisesReqForInfoDto.getOfficerRemarks()));
         map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
         String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);
