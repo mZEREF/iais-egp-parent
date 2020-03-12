@@ -134,7 +134,7 @@
                                                                 No</p>
                                                             <p>
                                                                     <c:out value="${pool.applicationGroupNo}"/>
-                                                                <a class="accordion-toggle" data-toggle="collapse"
+                                                                <a class="accordion-toggle  collapsed" data-toggle="collapse" aria-expanded="false"
                                                                    data-target="#advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"
                                                                    onclick="getAppByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}')">
                                                                 </a>
