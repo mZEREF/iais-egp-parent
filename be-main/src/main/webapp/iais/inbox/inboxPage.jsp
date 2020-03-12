@@ -41,6 +41,7 @@
                         </iais:value>
                     </iais:row>
                 </iais:section>
+                <div id="searchCondition">
                 <iais:section title="" id="supPoolList">
                     <iais:row>
                         <iais:field value="HCI Code"/>
@@ -87,6 +88,7 @@
                         </button>
                     </iais:action>
                 </iais:section>
+                </div>
             </div>
             <iais:pagination param="supTaskSearchParam" result="supTaskSearchResult"/>
 
@@ -227,13 +229,10 @@
 
     function doInspectorSearchTaskClear() {
         $('input[name="application_no"]').val("");
-        $("#application_type option:first").prop("selected", 'selected');
-        $("#application_status option:first").prop("selected", 'selected');
-        $("#inspector_name option:first").prop("selected", 'selected');
         $('input[name="hci_code"]').val("");
         $('input[name="hci_name"]').val("");
         $('input[name="hci_address"]').val("");
-        $(".current").text("Please select");
+        $("#searchCondition .current").text("Please select");
     }
 
     function submit(action) {
