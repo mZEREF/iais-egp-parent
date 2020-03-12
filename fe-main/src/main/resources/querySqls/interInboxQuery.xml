@@ -9,7 +9,7 @@
                 inbox.message_type,
                 inbox.ref_no,
                 inbox.service_id,
-                inbox.process_url,
+                inbox.msg_content,
                 inbox.status,
                 inbox.user_id,
                 inbox.created_dt
