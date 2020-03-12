@@ -186,6 +186,9 @@ public interface HcsaLicenceClient {
     @GetMapping(value = "hcsa-licence/audittculist",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AuditTaskDataFillterDto>> getAuditTcuList();
 
+    @PostMapping(value = "/hcsa-licence/saveAuditTcuList", consumes =  MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> saveAuditTcuList(@RequestBody List<LicPremisesRecommendationDto> licPremisesRecommendationDtos);
+
     @GetMapping(value = "/iais-inspection-lic/inspection-email/{licPremCorrId}",produces = MediaType.APPLICATION_JSON_VALUE, consumes =  MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<InspectionEmailTemplateDto> getInspectionEmail(@PathVariable("licPremCorrId") String licPremCorrId);
 

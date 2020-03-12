@@ -16,5 +16,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface EmailClient {
 
     @PostMapping(value = "/emails/mailNoAttach", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity <String> sendNotification(@RequestBody EmailDto email);
+    FeignResponseEntity<String> sendNotification(@RequestBody EmailDto email);
 }

@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.service.AuditTcuListService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import lombok.extern.slf4j.Slf4j;
@@ -21,5 +22,10 @@ public class AuditTcuListServiceImpl implements AuditTcuListService {
     @Override
     public List<AuditTaskDataFillterDto> getAuditTcuList() {
         return hcsaLicenceClient.getAuditTcuList().getEntity();
+    }
+
+    @Override
+    public void saveAuditTcuList(List<LicPremisesRecommendationDto> licPremisesRecommendationDtos){
+        hcsaLicenceClient.saveAuditTcuList(licPremisesRecommendationDtos);
     }
 }
