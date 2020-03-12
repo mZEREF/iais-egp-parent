@@ -362,6 +362,7 @@
                             <iais:action style="text-align:center;">
                               <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doInspectionPreTaskSubmit()">Submit</button>
                             </iais:action>
+                            <br>
                             <div class="alert alert-info" role="alert">
                               <strong>
                                 <h4>Processing History</h4>
