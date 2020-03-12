@@ -23,18 +23,32 @@
     <JavaCode defClass="" executor="" methodName="apptInspectionDatePre_OnStepProcess_0" name="apptInspectionDatePre_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="apptInspectionDateVali" x="660" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="apptInspectionDateVali" x="900" y="520">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="apptInspectionDateVali_OnStepProcess_0" name="apptInspectionDateVali_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="apptInspectionDateSuccess" x="880" y="220">
+  <AutomaticStep defClass="" executor="" icon="" name="apptInspectionDateSuccess" x="1070" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="apptInspectionDateSuccess_OnStepProcess_0" name="apptInspectionDateSuccess_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="apptInspectionDateStep1" x="680" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="apptInspectionDateStep1_OnStepProcess_0" name="apptInspectionDateStep1_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="apptInspectionDateSpec" x="890" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="apptInspectionDateSpec_OnStepProcess_0" name="apptInspectionDateSpec_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -45,7 +59,13 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="apptInspectionDateSuccessPage" stageIndicator="" x="860" y="350">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="apptInspectionDateSuccessPage" stageIndicator="" x="1270" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="apptInspectionDateSpecPage" stageIndicator="" x="880" y="370">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -63,34 +83,51 @@
   <SynchronousLink destinationName="/Pages/WebPage/apptInspectionDatePage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/apptInspectionDatePre" style="rectanular">
    <position>{(370,120)(520,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/apptInspectionDateVali" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/apptInspectionDatePage" style="rectanular">
-   <position>{(520,120)(680,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/apptInspectionDateVali" style="rectanular">
-   <position>{(680,120)(730,240)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/apptInspectionDatePre" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(730,240)(370,120)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/apptInspectionDateSwitch" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(730,240)(900,120)}</position>
+   <position>{(920,540)(970,690)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/apptInspectionDateSuccess" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/apptInspectionDateSwitch" style="rectanular">
-   <position>{(900,120)(900,240)}</position>
+   <position>{(900,120)(1090,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/apptInspectionDateSuccessPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/apptInspectionDateSuccess" style="rectanular">
-   <position>{(900,240)(880,370)}</position>
+   <position>{(1090,120)(1290,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/apptInspectionDateStep1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/apptInspectionDatePage" style="rectanular">
+   <position>{(520,120)(700,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/apptInspectionDateSwitch" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/apptInspectionDateStep1" style="rectanular">
+   <position>{(700,120)(900,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/apptInspectionDatePre" linkstyle="Direct" name="" sourceName="/Switches/Switch/apptInspectionDateSwitch" style="oblique">
+   <position>{(900,120)(955,34)(415,34)(370,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/apptInspectionDateSpec" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/apptInspectionDateSwitch" style="rectanular">
+   <position>{(900,120)(910,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/apptInspectionDateSpecPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/apptInspectionDateSpec" style="rectanular">
+   <position>{(910,250)(900,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/apptInspectionDateVali" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/apptInspectionDateSpecPage" style="rectanular">
+   <position>{(900,390)(920,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/apptInspectionDateSwitch" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(970,690)(709,689)(900,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/apptInspectionDateSpec" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(970,690)(1071,690)(1071,250)(910,250)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/apptInspectionDatePre" componentIfTrue="/Switches/Switch/apptInspectionDateSwitch" defClass="" executor="" icon="" leftOperand="flag" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="710" y="220">
+  <Condition componentIfFalse="/Steps/AutomaticStep/apptInspectionDateSpec" componentIfTrue="/Switches/Switch/apptInspectionDateSwitch" defClass="" executor="" icon="" leftOperand="flag" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="950" y="670">
    <Description/>
   </Condition>
  </Conditions>
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="" name="apptInspectionDateSwitch" x="880" y="100">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="apptInspectionDateType" name="apptInspectionDateSwitch" x="880" y="100">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/apptInspectionDateSuccess" value="&quot;success&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/apptInspectionDatePre" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/apptInspectionDateSpec" value=""/>
   </Switch>
  </Switches>
  <Branches/>
