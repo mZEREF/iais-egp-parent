@@ -240,7 +240,7 @@
                                     <tr height="1">
                                         <td class="col-xs-2" >
                                             <p >
-                                                Remarks:
+                                                Internal Remarks:
                                             </p>
                                         </td>
                                         <td>

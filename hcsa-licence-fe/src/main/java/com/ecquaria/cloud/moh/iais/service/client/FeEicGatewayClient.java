@@ -104,4 +104,6 @@ public interface FeEicGatewayClient {
                                                                            @RequestHeader("authorization") String authorization,
                                                                            @RequestHeader("date-Secondary") String dateSec,
                                                                            @RequestHeader("authorization-Secondary") String authorizationSec);
+
+
 }

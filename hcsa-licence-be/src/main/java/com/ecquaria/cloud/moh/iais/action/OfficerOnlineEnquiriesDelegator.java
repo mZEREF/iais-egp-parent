@@ -118,11 +118,7 @@ public class OfficerOnlineEnquiriesDelegator {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     private InsRepService insRepService;
-    private final String RECOMMENDATION_DTO= "appPremisesRecommendationDto";
-    private final String RECOMMENDATION="recommendation";
-    private final String CHRONO="chrono";
-    private final String NUMBER="number";
-    private final String REJECT="Reject";
+
 
     private final String SEARCH_NO="searchNo";
     private final String RFI_QUERY="ReqForInfoQuery";
@@ -863,18 +859,18 @@ public class OfficerOnlineEnquiriesDelegator {
             complianceHistoryDto.setAppPremCorrId(appPremisesCorrelationDto.getId());
             complianceHistoryDto.setComplianceTag("Full");
             try{
-                AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-                complianceHistoryDto.setInspectionDateYear(appPremisesRecommendationDto.getRecomInDate().getYear());
-            }catch (Exception e){
-                log.info(e.getMessage());
-            }
-            try{
                 List<AdhocChecklistItemDto> adhocChecklistItemDtos=applicationClient.getAdhocByAppPremCorrId(appPremisesCorrelationDto.getId()).getEntity();
                 complianceHistoryDto.setRiskTag(adhocChecklistItemDtos.get(0).getRiskLvl());
             }catch (Exception e){
                 log.info(e.getMessage());
             }
-            complianceHistoryDtos.add(complianceHistoryDto);
+            try{
+                AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                complianceHistoryDto.setInspectionDateYear(appPremisesRecommendationDto.getRecomInDate().getYear());
+                complianceHistoryDtos.add(complianceHistoryDto);
+            }catch (Exception e){
+                log.info(e.getMessage());
+            }
         }
 
         ParamUtil.setSessionAttr(request,"complianceHistoryDtos", (Serializable) complianceHistoryDtos);
@@ -899,7 +895,7 @@ public class OfficerOnlineEnquiriesDelegator {
         InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-        ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, appPremisesRecommendationDto);
+        ParamUtil.setSessionAttr(bpc.request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         // 		preAppInfo->OnStepProcess
     }
 
