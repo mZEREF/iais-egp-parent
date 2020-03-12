@@ -504,7 +504,7 @@
                                                             <span>Verified</span>
                                                         </td>
                                                         <td>
-                                                            <select name="verified" class="table-select">
+                                                            <select name="verified" class="table-select processing-Verified">
                                                                 <option>---select---</option>
                                                                 <c:forEach items="${applicationViewDto.verified}" var="verified">
                                                                     <option value="${verified.key}">${verified.value}</option>
@@ -517,7 +517,7 @@
                                                             <span>Roll Back</span>
                                                         </td>
                                                         <td>
-                                                            <select name="rollBack" class="table-select">
+                                                            <select name="rollBack" class="table-select processing-RollBack">
                                                                 <option>---select---</option>
                                                                 <c:forEach items="${applicationViewDto.rollBack}" var="rollBack">
                                                                     <option value="${rollBack.value}">${rollBack.key}</option>
@@ -538,7 +538,7 @@
                                                             <span>Recommendation:</span>
                                                         </td>
                                                         <td>
-                                                            <select name="recomedation" class="table-select recomedation-type">
+                                                            <select name="recomedation" class="table-select recommendation-type">
                                                                 <option>---select---</option>
                                                                    <c:forEach items="${applicationViewDto.recomeDation}" var="recomedation">
                                                                        <option><c:out value="${recomedation}"></c:out></option>
