@@ -25,13 +25,11 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <div class="form-check">
-                                        <input class="form-check-input" name="ava"
+                                        <input  name="ava"
                                         <c:if test="${ava != null && ava == 'true'}">
                                                checked="checked"
                                         </c:if>
-                                               type="checkbox" value="">
-                                        <label class="form-check-label"><span
-                                                class="check-square"></span></label>
+                                               type="checkbox" value="" >
                                     </div>
                                 </div>
                             </iais:value>
