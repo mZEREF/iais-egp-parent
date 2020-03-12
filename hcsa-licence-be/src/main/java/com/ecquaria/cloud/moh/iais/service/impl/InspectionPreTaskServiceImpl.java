@@ -182,7 +182,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         String url = systemParamConfig.getInterServerName() +
                 MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION +
                 applicationDto1.getApplicationNo();
-        interMessageDto.setProcessUrl(url);
+        //interMessageDto.setProcessUrl(url);
         interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         inboxMsgService.saveInterMessage(interMessageDto);
