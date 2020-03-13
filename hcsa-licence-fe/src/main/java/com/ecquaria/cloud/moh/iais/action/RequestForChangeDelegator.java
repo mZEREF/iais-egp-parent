@@ -262,104 +262,109 @@ public class RequestForChangeDelegator {
      */
     public void compareChangePercentage(BaseProcessClass bpc) throws CloneNotSupportedException,IOException {
         String licenceId= (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
-        //String licenseNo="L/20CLB0156/CLB/001/201";
         LicenceDto licenceDto=requestForChangeService.getLicenceDtoByLicenceId(licenceId);
         AppSubmissionDto appSubmissionDto=requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         String UNID=ParamUtil.getString(bpc.request, "UNID");
         String newLicenseeId=null;
         List<String> uenMemberIds=new ArrayList<>();
-
         List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoList=requestForChangeService.getLicenseeKeyApptPersonDtoListByUen(UNID);
-         if(licenseeKeyApptPersonDtoList!=null&&licenseeKeyApptPersonDtoList.size()>0){
-                for (LicenseeKeyApptPersonDto e:licenseeKeyApptPersonDtoList
-                        ) {
-                    uenMemberIds.add(e.getId());
-                    newLicenseeId=e.getLicenseeId();
-                }
-            }
-            //uen
-            List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoListFromLicenseeId=requestForChangeService.getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
-            List<String> oldMemberIds=new ArrayList<>();
-            if(licenseeKeyApptPersonDtoListFromLicenseeId!=null&&licenseeKeyApptPersonDtoListFromLicenseeId.size()>0) {
-                for (LicenseeKeyApptPersonDto e:licenseeKeyApptPersonDtoListFromLicenseeId
-                ) {
-                    oldMemberIds.add(e.getId());
-                }
-            }
-            int count = 0;
-            boolean result = false;
-            if(oldMemberIds.size()>0) {
-                for (int i = 0; i < oldMemberIds.size(); i++) {
-                    for (int j = 0; j < uenMemberIds.size(); j++) {
-                        if (oldMemberIds.get(i).equals(uenMemberIds.get(j))) {
-                            count++;
-                        }
-                    }
-                }
-                if (count / oldMemberIds.size() > 0.5 && oldMemberIds.size() != 0) {
-                    result = true;
-                }
-            }
-            if(result){
-                appSubmissionDto.setLicenseeId(newLicenseeId);
-                appSubmissionDto.setAutoRfc(true);
-                AmendmentFeeDto amendmentFeeDto=new AmendmentFeeDto();
-                amendmentFeeDto.setChangeInHCIName(false);
-                amendmentFeeDto.setChangeInLicensee(true);
-                amendmentFeeDto.setChangeInLocation(false);
-                FeeDto feeDto=appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
-                Double amount=feeDto.getTotal();
-                String amountStr=amount.toString();
-                appSubmissionDto.setAmountStr(amountStr);
-                appSubmissionDto.setAmount(amount);
-                String[] selectCheakboxs=ParamUtil.getStrings(bpc.request,"premisesInput");
-                int a=selectCheakboxs.length;
-                int b=appSubmissionDto.getAppGrpPremisesDtoList().size();
-                if(a==b){
-                    appSubmissionDto.setIsNeedNewLicNo("0");
-                    for (AppGrpPremisesDto e:appSubmissionDto.getAppGrpPremisesDtoList()
-                         ) {
-                        e.setNeedNewLicNo(false);
-                        e.setGroupLicenceFlag("1");
-                    }
-                }else {
-                    appSubmissionDto.setIsNeedNewLicNo("1");
-                    for (int i = 0; i < selectCheakboxs.length; i++) {
-                        String selectInput=selectCheakboxs[i];
-                        for (AppGrpPremisesDto e:appSubmissionDto.getAppGrpPremisesDtoList()
-                             ) {
-                            String premise=e.getPremisesIndexNo();
-                            if(premise.equals(selectInput)){
-                                e.setNeedNewLicNo(true);
-                                e.setGroupLicenceFlag("1");
-                            }else{
-                                e.setNeedNewLicNo(false);
-                                e.setGroupLicenceFlag("2");
-                            }
-                        }
-                    }
-                }
-                String grpNo=appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-                appSubmissionDto.setAppGrpNo(grpNo);
-                List<String> names=new ArrayList<>();
-                for (AppSvcRelatedInfoDto e:appSubmissionDto.getAppSvcRelatedInfoDtoList()
-                     ) {
-                    names.add(e.getServiceName());
-                }
-                List<HcsaServiceDto> hcsaServiceDtos=serviceConfigService.getHcsaServiceByNames(names);
-                ParamUtil.setRequestAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST,hcsaServiceDtos);
-                NewApplicationHelper.setSubmissionDtoSvcData(bpc.request,appSubmissionDto);
-                appSubmissionService.setRiskToDto(appSubmissionDto);
-                AppSubmissionDto tranferSub=requestForChangeService.submitChange(appSubmissionDto);
-                ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
-                StringBuffer url = new StringBuffer();
-                url.append("https://").append(bpc.request.getServerName())
-                        .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication/PreparePayment");
-                String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-                bpc.response.sendRedirect(tokenUrl);
-            }
+         if(licenseeKeyApptPersonDtoList!=null&&licenseeKeyApptPersonDtoList.size()>0) {
+             for (LicenseeKeyApptPersonDto e : licenseeKeyApptPersonDtoList
+             ) {
+                 uenMemberIds.add(e.getId());
+                 newLicenseeId = e.getLicenseeId();
+             }
 
+
+             //uen
+             List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoListFromLicenseeId = requestForChangeService.getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
+             List<String> oldMemberIds = new ArrayList<>();
+             if (licenseeKeyApptPersonDtoListFromLicenseeId != null && licenseeKeyApptPersonDtoListFromLicenseeId.size() > 0) {
+                 for (LicenseeKeyApptPersonDto e : licenseeKeyApptPersonDtoListFromLicenseeId
+                 ) {
+                     oldMemberIds.add(e.getId());
+                 }
+             }
+             int count = 0;
+             boolean result = false;
+             if (oldMemberIds.size() > 0) {
+                 for (int i = 0; i < oldMemberIds.size(); i++) {
+                     for (int j = 0; j < uenMemberIds.size(); j++) {
+                         if (oldMemberIds.get(i).equals(uenMemberIds.get(j))) {
+                             count++;
+                         }
+                     }
+                 }
+                 if (count / oldMemberIds.size() > 0.5 && oldMemberIds.size() != 0) {
+                     result = true;
+                 }
+             }
+             if (result) {
+                 appSubmissionDto.setLicenseeId(newLicenseeId);
+                 appSubmissionDto.setAutoRfc(true);
+                 AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
+                 amendmentFeeDto.setChangeInHCIName(false);
+                 amendmentFeeDto.setChangeInLicensee(true);
+                 amendmentFeeDto.setChangeInLocation(false);
+                 FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
+                 Double amount = feeDto.getTotal();
+                 String amountStr = amount.toString();
+                 appSubmissionDto.setAmountStr(amountStr);
+                 appSubmissionDto.setAmount(amount);
+                 String[] selectCheakboxs = ParamUtil.getStrings(bpc.request, "premisesInput");
+                 if(selectCheakboxs==null||selectCheakboxs.length==0){
+                     ParamUtil.setRequestAttr(bpc.request, "ErrorMsg", "Select Premises!");
+                     return;
+                 }
+                 int a = selectCheakboxs.length;
+                 int b = appSubmissionDto.getAppGrpPremisesDtoList().size();
+                 if (a == b) {
+                     appSubmissionDto.setIsNeedNewLicNo("0");
+                     for (AppGrpPremisesDto e : appSubmissionDto.getAppGrpPremisesDtoList()
+                     ) {
+                         e.setNeedNewLicNo(false);
+                         e.setGroupLicenceFlag("1");
+                     }
+                 } else {
+                     appSubmissionDto.setIsNeedNewLicNo("1");
+                     for (int i = 0; i < selectCheakboxs.length; i++) {
+                         String selectInput = selectCheakboxs[i];
+                         for (AppGrpPremisesDto e : appSubmissionDto.getAppGrpPremisesDtoList()
+                         ) {
+                             String premise = e.getPremisesIndexNo();
+                             if (premise.equals(selectInput)) {
+                                 e.setNeedNewLicNo(true);
+                                 e.setGroupLicenceFlag("1");
+                             } else {
+                                 e.setNeedNewLicNo(false);
+                                 e.setGroupLicenceFlag("2");
+                             }
+                         }
+                     }
+                 }
+                 String grpNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                 appSubmissionDto.setAppGrpNo(grpNo);
+                 List<String> names = new ArrayList<>();
+                 for (AppSvcRelatedInfoDto e : appSubmissionDto.getAppSvcRelatedInfoDtoList()
+                 ) {
+                     names.add(e.getServiceName());
+                 }
+                 List<HcsaServiceDto> hcsaServiceDtos = serviceConfigService.getHcsaServiceByNames(names);
+                 ParamUtil.setRequestAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, hcsaServiceDtos);
+                 NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
+                 appSubmissionService.setRiskToDto(appSubmissionDto);
+                 AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
+                 ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
+                 StringBuffer url = new StringBuffer();
+                 url.append("https://").append(bpc.request.getServerName())
+                         .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication/PreparePayment");
+                 String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+                 bpc.response.sendRedirect(tokenUrl);
+             }
+         }else{
+             ParamUtil.setRequestAttr(bpc.request, "ErrorMsg", "The user doesn't exist!");
+         }
 
         log.debug(StringUtil.changeForLog("the do tranfer end ....111111111111111"));
     }

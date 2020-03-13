@@ -45,7 +45,7 @@
                              </tr>
                           </table>
                       </div>
-<%--                     <p><span class="error-msg">${ErrorMsg}</span></p>--%>
+                     <p><span class="error-msg">${ErrorMsg}</span></p>
                      <div class="col-xs-12 col-md-4">
                          <a class="back" href="https://egp.sit.inter.iais.com/hcsa-licence-web/eservice/INTERNET/MohRequestForChange?licenceId=${prepareTranfer.licenceId}"><em class="fa fa-angle-left"></em> Back</a>
                      </div>

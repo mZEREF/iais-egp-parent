@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="27" minorVersion="0" name="MohRequestForChange" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohRequestForChange" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="130" y="50">
@@ -30,7 +30,7 @@
     <JavaCode defClass="" executor="" methodName="jump_OnStepProcess_0" name="jump_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="compareChangePercentage" x="550" y="580">
+  <AutomaticStep defClass="" executor="" icon="" name="compareChangePercentage" x="620" y="580">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -92,7 +92,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="tranferPage" stageIndicator="" x="560" y="490">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="tranferPage" stageIndicator="" x="490" y="580">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -154,12 +154,13 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareTranfer" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(430,370)(510,440)}</position>
+
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/tranferPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareTranfer" style="rectanular">
-   <position>{(510,440)(580,510)}</position>
+   <position>{(510,440)(510,600)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/compareChangePercentage" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/tranferPage" style="rectanular">
-   <position>{(580,510)(570,600)}</position>
+   <position>{(510,600)(640,600)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(430,370)(430,560)}</position>
@@ -167,8 +168,8 @@
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareDraft" style="oblique">
    <position>{(570,270)(430,370)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/InvokeStep/MohNewApplication" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/compareChangePercentage" style="rectanular">
-   <position>{(570,600)(260,730)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareTranfer" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/compareChangePercentage" style="rectanular">
+   <position>{(640,600)(510,440)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
