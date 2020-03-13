@@ -42,6 +42,8 @@
                       <iais:section title="" id = "ava_appt_date">
                         <iais:row>
                           <iais:field value="Available Appointment Dates"/>
+                        </iais:row>
+                        <iais:row>
                           <iais:value width="7">
                             <c:if test="${apptFeConfirmDateDto.inspectionDate != null}">
                               <c:forEach items="${apptFeConfirmDateDto.inspectionDate}" var="date">
