@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
 import java.io.IOException;
@@ -170,7 +171,7 @@ public final class CheckBoxTag extends DivTagSupport {
                         }
 
                         //re display
-                        if (request != null){
+                        if (request != null && request instanceof ServletRequest){
                             String[] selectVal = (String[]) ParamUtil.getRequestAttr(request, name);
                             if (selectVal != null && selectVal.length > 0){
                                 for (String s : selectVal){
