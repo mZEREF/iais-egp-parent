@@ -103,23 +103,7 @@ public class CessationServiceImpl implements CessationService {
 
     }
 
-    public static String appendPremisesAddress(String... args){
-        if (args == null ||args.length > 6) {
-            return "";
-        }
-        String[] sign = {" ", " ", "#", "-", ","};
-        StringBuilder stb = new StringBuilder();
-        int i = 0;
-        for (String s : args){
-            if (i >= args.length - 1){
-                stb.append(s);
-            }else {
-                stb.append(s).append(sign[i]);
-            }
-            i++;
-        }
-        return stb.toString();
-    }
+
 
     @Override
     public List<AppCessLicDto> getOldCessationByIds(List<String> licIds) {
@@ -162,8 +146,7 @@ public class CessationServiceImpl implements CessationService {
         }
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        feEicGatewayClient.updateLicenceStatus(licenceDtos,signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+        feEicGatewayClient.updateLicenceStatus(licenceDtos,signature.date(),signature.authorization(),signature2.date(),signature2.authorization());
 
     }
 
@@ -192,7 +175,7 @@ public class CessationServiceImpl implements CessationService {
             setMiscData(appCessationDto,appCessMiscDto);
             appCessMiscDtos.add(appCessMiscDto);
         }
-        String entity = cessationClient.saveCessation(appCessMiscDtos).getEntity();
+        cessationClient.saveCessation(appCessMiscDtos).getEntity();
     }
 
     @Override
@@ -310,5 +293,23 @@ public class CessationServiceImpl implements CessationService {
             appCessMiscDto.setPatTransTo(patOthers);
         }
         return appCessMiscDto;
+    }
+
+    public static String appendPremisesAddress(String... args){
+        if (args == null ||args.length > 6) {
+            return "";
+        }
+        String[] sign = {" ", " ", "#", "-", ","};
+        StringBuilder stb = new StringBuilder();
+        int i = 0;
+        for (String s : args){
+            if (i >= args.length - 1){
+                stb.append(s);
+            }else {
+                stb.append(s).append(sign[i]);
+            }
+            i++;
+        }
+        return stb.toString();
     }
 }

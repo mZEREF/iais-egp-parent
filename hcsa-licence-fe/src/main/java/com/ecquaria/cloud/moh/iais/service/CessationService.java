@@ -17,16 +17,19 @@ public interface CessationService {
 
 
     List<String> getActiveLicence(List<String> licIds);
+
     List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds);
+
     List<AppCessLicDto> getOldCessationByIds(List<String> licIds);
 
     void updateLicenceFe(List<String> licNos);
 
-
     void saveCessations(List<AppCessationDto> appCessationDtos);
+
     void updateCesation(List<AppCessationDto> appCessationDtos);
 
     void saveWithdrawn(WithdrawnDto withdrawnDto);
+
     AppPremisesCorrelationDto getAppPreCorDto(String appId);
 
 }

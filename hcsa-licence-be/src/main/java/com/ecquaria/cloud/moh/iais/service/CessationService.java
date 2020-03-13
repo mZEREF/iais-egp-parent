@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface CessationService {
 
-
+    List<String> getActiveLicence(List<String> licIds);
     List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds);
     void saveCessations(List<AppCessationDto> appCessationDtos);
     void updateCesation(List<AppCessationDto> appCessationDtos);

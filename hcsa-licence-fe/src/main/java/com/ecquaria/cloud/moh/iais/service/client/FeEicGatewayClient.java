@@ -58,7 +58,7 @@ public interface FeEicGatewayClient {
      *@Description :
      */
     @PutMapping(value = "/v1/payment-status/",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> routePaymentStatus(@RequestBody ApplicationGroupDto applicationGroupDto,
+    FeignResponseEntity<List<LicenceDto>> routePaymentStatus(@RequestBody ApplicationGroupDto applicationGroupDto,
                                                    @RequestHeader("date") String date,
                                                    @RequestHeader("authorization") String authorization,
                                                    @RequestHeader("date-Secondary") String dateSec,
@@ -71,8 +71,8 @@ public interface FeEicGatewayClient {
      *@return :
      *@Description :update licence when effective date <= new Date
      */
-    @PutMapping(value = "",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> updateLicenceStatus(@RequestBody List<LicenceDto> licenceDtos,
+    @PutMapping(value = "/v1/cessation-status/",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenceDto>> updateLicenceStatus(@RequestBody List<LicenceDto> licenceDtos,
                                                    @RequestHeader("date") String date,
                                                    @RequestHeader("authorization") String authorization,
                                                    @RequestHeader("date-Secondary") String dateSec,

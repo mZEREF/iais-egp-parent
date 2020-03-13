@@ -51,8 +51,8 @@ public class CessationApplicationDelegator {
         List<String> licIds = (List<String>)ParamUtil.getSessionAttr(bpc.request, "licIds");
         if(licIds==null){
             licIds = new ArrayList<>();
-            licIds.add("7ECAE165-534A-EA11-BE7F-000C29F371DC");
-            licIds.add("CFCAC193-6F4D-EA11-BE7F-000C29F371DC");
+            licIds.add("ACB51822-A656-EA11-BE7F-000C29F371DC");
+            licIds.add("4083B3AD-B04D-EA11-BE7F-000C29F371DC");
         }
         List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
         int size = appCessDtosByLicIds.size();
@@ -63,13 +63,13 @@ public class CessationApplicationDelegator {
         String text2 = "(2). Any licensee of a licensed healthcare institution (For e.g a medical clinic) who intends to cease operating the medical clinic" +
                 " shall take all measures as are reasonable and necessary to ensure that the medical records of every patient are " +
                 "properly transferred to the medical clinic or other healthcare institution to which such patient is to be transferred.";
-        ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable)appCessDtosByLicIds);
+        ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable) appCessDtosByLicIds);
         ParamUtil.setSessionAttr(bpc.request, "reasonOption", (Serializable) reasonOption);
         ParamUtil.setSessionAttr(bpc.request, "patientsOption", (Serializable) patientsOption);
         ParamUtil.setSessionAttr(bpc.request, "text1", text1);
         ParamUtil.setSessionAttr(bpc.request, "text2", text2);
         ParamUtil.setSessionAttr(bpc.request, "size", size);
-
+        ParamUtil.setSessionAttr(bpc.request, "readInfo", null);
     }
 
     public void prepareData(BaseProcessClass bpc){
@@ -82,14 +82,31 @@ public class CessationApplicationDelegator {
         List<AppCessLicDto> appCessHciDtos = prepareDataForValiant(bpc, size, appCessDtosByLicIds);
         List<AppCessLicDto> cloneAppCessHciDtos = new ArrayList<>();
         CopyUtil.copyMutableObjectList(appCessHciDtos, cloneAppCessHciDtos);
+        List<AppCessLicDto> confirmDtos = getConfirmDtos(cloneAppCessHciDtos);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable) appCessHciDtos);
-        if (appCessHciDtos.size() == 0) {
+        String readInfo = ParamUtil.getRequestString(bpc.request, "readInfo");
+        ParamUtil.setSessionAttr(bpc.request, "readInfo", readInfo);
+        Map<String, String> errorMap = new HashMap<>(34);
+        Boolean choose = false;
+        for (int i = 1; i <=size ; i++) {
+            for (int j = 1; j <= size; j++) {
+                String whichTodo = ParamUtil.getRequestString(bpc.request, i + "whichTodo" + j);
+                if(!StringUtil.isEmpty(whichTodo)){
+                    choose = true;
+                }
+            }
+        }
+        if(!choose){
+            errorMap.put("choose", "Please select at least one licence");
+        }
+        if (confirmDtos.size() == 0) {
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;
         }
-        Map<String, String> errorMap = new HashMap<>(34);
+
         for (int i = 1; i <= size; i++) {
-            for (int j = 0; j <= size; j++) {
+            for (int j = 1; j <= size; j++) {
                 String whichTodo = ParamUtil.getRequestString(bpc.request, i + "whichTodo" + j);
                 if (!StringUtil.isEmpty(whichTodo)) {
                     Map<String, String> validate = validate(bpc,i,j);
@@ -104,7 +121,7 @@ public class CessationApplicationDelegator {
         }
 
         List<AppCessationDto> appCessationDtos = transformDto(cloneAppCessHciDtos);
-        List<AppCessLicDto> confirmDtos = getConfirmDtos(cloneAppCessHciDtos);
+//        List<AppCessLicDto> confirmDtos = getConfirmDtos(cloneAppCessHciDtos);
         ParamUtil.setSessionAttr(bpc.request, "confirmDtos", (Serializable)confirmDtos);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtosSave", (Serializable)appCessationDtos);
@@ -122,20 +139,20 @@ public class CessationApplicationDelegator {
 
     public void saveData(BaseProcessClass bpc){
         List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
-        cessationService.saveCessations(appCessationDtos);
+        //cessationService.saveCessations(appCessationDtos);
         List<AppCessatonConfirmDto> appCessationDtosConfirms = new ArrayList<>();
         for (AppCessationDto appCessationDto : appCessationDtos) {
             String licId = appCessationDto.getWhichTodo();
             List<String> licIds = new ArrayList<>();
             licIds.add(licId);
-            List<ApplicationDto> entity = applicationClient.getApplicationByLicId(licId).getEntity();
+            ApplicationDto applicationDto = applicationClient.getApplicationByLicId(licId).getEntity();
             List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
             String licenceNo = appCessLicDto.getLicenceNo();
             String svcName = appCessLicDto.getSvcName();
             String hciName = appCessLicDto.getAppCessHciDtos().get(0).getHciName();
             String hciAddress = appCessLicDto.getAppCessHciDtos().get(0).getHciAddress();
-            String applicationNo = entity.get(0).getApplicationNo();
+            String applicationNo = applicationDto.getApplicationNo();
             Date effectiveDate = appCessationDto.getEffectiveDate();
             AppCessatonConfirmDto appCessatonConfirmDto = new AppCessatonConfirmDto();
             appCessatonConfirmDto.setAppNo(applicationNo);
@@ -274,7 +291,6 @@ public class CessationApplicationDelegator {
         return appCessLicDtos;
     }
 
-
     private Map<String, String> validate(BaseProcessClass bpc,int i,int j) {
         HttpServletRequest httpServletRequest = bpc.request;
         Map<String, String> errorMap = new HashMap<>(34);
@@ -347,7 +363,7 @@ public class CessationApplicationDelegator {
 
     private List<SelectOption> getPatientsOption() {
         List<SelectOption> riskLevelResult = new ArrayList<>();
-        SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, "HCI Name");
+        SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, "HCI");
         SelectOption so2 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, "Professional Regn No.");
         SelectOption so3 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER, "Others");
         riskLevelResult.add(so1);
@@ -355,5 +371,4 @@ public class CessationApplicationDelegator {
         riskLevelResult.add(so3);
         return riskLevelResult;
     }
-
 }

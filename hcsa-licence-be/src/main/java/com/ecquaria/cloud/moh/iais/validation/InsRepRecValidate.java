@@ -23,8 +23,6 @@ public class InsRepRecValidate implements CustomizeValidator {
         String remarks = ParamUtil.getRequestString(httpServletRequest, "remarks");
         String chrono = ParamUtil.getRequestString(httpServletRequest, CHRONO);
         String number = ParamUtil.getRequestString(httpServletRequest, NUMBER);
-        String tcuNeeded = ParamUtil.getRequestString(httpServletRequest, "tcuNeeded");
-        String tcuDate = ParamUtil.getRequestString(httpServletRequest, "tcuDate");
         String enforcement = ParamUtil.getRequestString(httpServletRequest, "engageEnforcement");
         String enforcementRemarks = ParamUtil.getRequestString(httpServletRequest, "enforcementRemarks");
         String periods = ParamUtil.getRequestString(httpServletRequest, "periods");
@@ -49,11 +47,6 @@ public class InsRepRecValidate implements CustomizeValidator {
         }
         if(!StringUtil.isEmpty(enforcement)&&StringUtil.isEmpty(enforcementRemarks)){
             errorMap.put("enforcementRemarks", "ERR0009");
-        }
-        if(!StringUtil.isEmpty(tcuNeeded)){
-            if(StringUtil.isEmpty(tcuDate)){
-                errorMap.put("tcuDate", "ERR0009");
-            }
         }
             return errorMap;
     }

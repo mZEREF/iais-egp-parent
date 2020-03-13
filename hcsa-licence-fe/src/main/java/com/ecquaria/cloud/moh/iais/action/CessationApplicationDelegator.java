@@ -67,6 +67,7 @@ public class CessationApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "text1", text1);
         ParamUtil.setSessionAttr(bpc.request, "text2", text2);
         ParamUtil.setSessionAttr(bpc.request, "size", size);
+        ParamUtil.setSessionAttr(bpc.request, "readInfo", null);
     }
 
     public void prepareData(BaseProcessClass bpc) {
@@ -137,7 +138,6 @@ public class CessationApplicationDelegator {
         List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
         cessationService.saveCessations(appCessationDtos);
         List<AppCessatonConfirmDto> appCessationDtosConfirms = new ArrayList<>();
-        List<String> licNos = new ArrayList<>();
         for (AppCessationDto appCessationDto : appCessationDtos) {
             String licId = appCessationDto.getWhichTodo();
             List<String> licIds = new ArrayList<>();
@@ -146,7 +146,6 @@ public class CessationApplicationDelegator {
             List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
             String licenceNo = appCessLicDto.getLicenceNo();
-            licNos.add(licenceNo);
             String svcName = appCessLicDto.getSvcName();
             String hciName = appCessLicDto.getAppCessHciDtos().get(0).getHciName();
             String hciAddress = appCessLicDto.getAppCessHciDtos().get(0).getHciAddress();
@@ -160,6 +159,14 @@ public class CessationApplicationDelegator {
             appCessatonConfirmDto.setLicenceNo(licenceNo);
             appCessatonConfirmDto.setHciName(hciName);
             appCessationDtosConfirms.add(appCessatonConfirmDto);
+        }
+        List<String> licNos = new ArrayList<>();
+        for(AppCessatonConfirmDto appCessatonConfirmDto :appCessationDtosConfirms){
+            String licenceNo = appCessatonConfirmDto.getLicenceNo();
+            licNos.add(licenceNo);
+        }
+        if(!licNos.isEmpty()){
+            cessationService.updateLicenceFe(licNos);
         }
         ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) appCessationDtosConfirms);
     }
