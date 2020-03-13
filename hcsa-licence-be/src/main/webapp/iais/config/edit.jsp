@@ -424,6 +424,7 @@
                               <c:if test="${routingStage.routingSchemeName=='round'}">selected="selected" </c:if>
                       >Round Robin</option>
                     </select>
+                    <span name="iaisErrorMsg" class="error-msg" id="error_schemeType${sta.index*6+status.index}"></span>
                   </div>
                   <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%">
                     <select name="isMandatory${routingStage.stageCode}${routingStages.key}">
@@ -443,6 +444,7 @@
                         <option <c:if test="${routingStage.workingGroupId==workingGroup.id}">selected="selected"</c:if> value="${workingGroup.id}">${workingGroup.groupName}</option>
                       </c:forEach>
                     </select>
+                    <span name="iaisErrorMsg" class="error-msg" id="error_stageWorkGroupId${sta.index*6+status.index}"></span>
                   </div>
                 </td>
               </tr>
@@ -497,7 +499,7 @@
                 <input type="text" value="1" name="level" style="display: none" >
               </div>
               <div  class="col-xs-12 col-md-3" >
-                <a class="btn  btn-secondary  view" onclick="indents(this)"   >indent</a>
+                <a class="btn  btn-secondary  view" onclick="indents(this)"  >indent</a>
               </div>
               <div  class="col-xs-12 col-md-2">
                 <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
@@ -616,7 +618,7 @@
 
 
     function kpi() {
-        var b = confirm("are you ");
+        var b = confirm("Are you sure you want to leave this page");
         if(b==true){
             config();
         }else {
@@ -629,7 +631,13 @@
     }
 
     function  checklists(){
-      location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohChecklistConfiguration";
+
+        var b = confirm("Are you sure you want to leave this page");
+        if(b==true){
+            location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohKPIAndReminder";
+        }else {
+
+        }
     }
     function manhours(){
         location.href="";

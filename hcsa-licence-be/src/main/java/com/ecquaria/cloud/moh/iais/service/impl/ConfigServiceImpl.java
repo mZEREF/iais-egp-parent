@@ -108,7 +108,7 @@ public class ConfigServiceImpl implements ConfigService {
     public void saveOrUpdate(HttpServletRequest request) {
         Map<String, String> errorMap = new HashMap<>();
         HcsaServiceConfigDto hcsaServiceConfigDto = getDateOfHcsaService(request);
-        doValidate(hcsaServiceConfigDto, errorMap);
+        doValidate(hcsaServiceConfigDto, errorMap,request);
         HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
         Map<String, Boolean> entity = hcsaConfigClient.isExistHcsaService(hcsaServiceDto).getEntity();
         Boolean svcCode = entity.get("svcCode");
@@ -177,7 +177,7 @@ public class ConfigServiceImpl implements ConfigService {
         Map<String, String> errorMap = new HashMap<>();
         String crud_action_value = request.getParameter("crud_action_value");
         HcsaServiceConfigDto hcsaServiceConfigDto = getDateOfHcsaService(request);
-        doValidate(hcsaServiceConfigDto, errorMap);
+        doValidate(hcsaServiceConfigDto, errorMap,request);
         if (!errorMap.isEmpty()) {
             HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
             List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = hcsaServiceConfigDto.getHcsaSvcSpePremisesTypeDtos();
@@ -752,17 +752,16 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
 
-    private void doValidate(HcsaServiceConfigDto hcsaServiceConfigDto, Map<String, String> errorMap) {
+    private void doValidate(HcsaServiceConfigDto hcsaServiceConfigDto, Map<String, String> errorMap,HttpServletRequest request) {
         HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = hcsaServiceConfigDto.getHcsaSvcStageWorkingGroupDtos();
         for (int i = 0; i < hcsaSvcStageWorkingGroupDtos.size(); i++) {
             String stageWorkGroupId = hcsaSvcStageWorkingGroupDtos.get(i).getStageWorkGroupId();
             if (StringUtil.isEmpty(stageWorkGroupId)) {
-
                 errorMap.put("stageWorkGroupId" + i, "UC_CHKLMD001_ERR001");
             }
-
         }
+
 
         List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = hcsaServiceConfigDto.getHcsaSvcSubtypeOrSubsumedDtos();
         List<String> subtypeName=new ArrayList<>();
@@ -848,6 +847,45 @@ public class ConfigServiceImpl implements ConfigService {
             errorMap.put("premieseType", "UC_CHKLMD001_ERR001");
         }
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
+        String poMandatory = request.getParameter("POMandatory");
+        String manprincipalOfficer = request.getParameter("man-principalOfficer");
+        String manDeputyPrincipalOfficer=request.getParameter("man-DeputyPrincipalOfficer");
+        String manClinicalGovernanceOfficer=request.getParameter("man-ClinicalGovernanceOfficer");
+        String dpoMandatory = request.getParameter("DPOMandatory");
+        String cgoMandatory = request.getParameter("CGOMandatory");
+        if(poMandatory!=null){
+            if(StringUtil.isEmpty(manprincipalOfficer)){
+                errorMap.put("mandatoryCount0", "UC_CHKLMD001_ERR001");
+            }else {
+                int i = Integer.parseInt(manprincipalOfficer);
+                if(i<1){
+                    errorMap.put("mandatoryCount0", "UC_CHKLMD001_ERR001");
+                }
+            }
+
+        }
+        if(dpoMandatory!=null){
+            if(StringUtil.isEmpty(manDeputyPrincipalOfficer)){
+                errorMap.put("mandatoryCount1", "UC_CHKLMD001_ERR001");
+            }else {
+                int i = Integer.parseInt(manDeputyPrincipalOfficer);
+                if(i<1){
+                    errorMap.put("mandatoryCount1", "UC_CHKLMD001_ERR001");
+                }
+            }
+
+        }
+        if(cgoMandatory!=null){
+            if(StringUtil.isEmpty(manClinicalGovernanceOfficer)){
+                errorMap.put("mandatoryCount2", "UC_CHKLMD001_ERR001");
+            }else {
+                int i = Integer.parseInt(manClinicalGovernanceOfficer);
+                if(i<1){
+                    errorMap.put("mandatoryCount2", "UC_CHKLMD001_ERR001");
+                }
+            }
+        }
+
         for (int i = 0; i < hcsaSvcPersonnelDtos.size(); i++) {
             String psnType = hcsaSvcPersonnelDtos.get(i).getPsnType();
             int mandatoryCount = hcsaSvcPersonnelDtos.get(i).getMandatoryCount();
@@ -1233,12 +1271,14 @@ public class ConfigServiceImpl implements ConfigService {
 
     private List<String> getType(){
         List<String> list=new ArrayList<>();
-        list.add("APTY002");//new
+        list.add("APTY002");
        /* list.add("APTY003");
-        list.add("APTY004");//renew
-        list.add("APTY007")*/ //SUSPENSION
-        list.add("APTY005"); //request for change
-        list.add("APTY001"); //appeal
+        list.add("APTY004");
+        list.add("APTY006") ;
+        list.add("APTY008") ;
+        list.add("APTY007") ;*/
+        list.add("APTY005");
+        list.add("APTY001");
         return list;
     }
 
@@ -1285,13 +1325,16 @@ public class ConfigServiceImpl implements ConfigService {
             }else if("APTY005".equals(type)){
                appeal = getWorkGrop(type, "request for change");
             }else if("APTY004".equals(type)){
-                getWorkGrop(type,"renew");
+                appeal=  getWorkGrop(type,"renew");
             }else if("APTY008".equals(type)){
-                getWorkGrop(type,"cessation");
+                appeal= getWorkGrop(type,"cessation");
             }else  if("APTY007".equals(type)){
-                getWorkGrop(type,"suspension");
+                appeal= getWorkGrop(type,"suspension");
             }else if("APTY006".equals(type)){
-                getWorkGrop(type,"withdrawal");
+                appeal= getWorkGrop(type,"withdrawal");
+            }
+            else if("APTY003".equals(type)){
+                appeal= getWorkGrop(type,"revocation");
             }
             setValueOfhcsaConfigPageDtos(hcsaConfigPageDto,appeal);
             map.put(type,appeal);

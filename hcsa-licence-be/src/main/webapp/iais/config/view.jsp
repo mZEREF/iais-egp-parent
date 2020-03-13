@@ -64,7 +64,7 @@
           <label class="col-xs-12 col-md-8 control-label" for="ServiceType">Service Type<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
 
-            <select  id="ServiceType"  name="ServiceType">
+            <select  id="ServiceType" disabled name="ServiceType">
               <option value="">Select one</option>
               <option value="SVTP001" <c:if test="${hcsaServiceDto.svcType=='SVTP001'}">selected="selected"</c:if>>Base</option>
               <option value="SVTP002" <c:if test="${hcsaServiceDto.svcType=='SVTP002'}">selected="selected"</c:if>>Subsumed</option>
@@ -216,7 +216,7 @@
           <div class="col-xs-12 col-md-4">
             <input id="NumberDocument"  readonly  type="text" value="${NumberDocument}">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input readonly class="form-check-input" <c:if test="${documentMandatory==true}"> checked="checked"</c:if>  type="checkbox" name="NumberDocumentMandatory" aria-invalid="false">
+          <div class="col-xs-12 col-md-2 form-check">   <input readonly class="form-check-input" disabled <c:if test="${documentMandatory==true}"> checked="checked"</c:if>  type="checkbox" name="NumberDocumentMandatory" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
@@ -229,7 +229,7 @@
           <div class="col-xs-12 col-md-4">
             <input id="DescriptionDocument"  value="${DescriptionDocument}" readonly type="text">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" <c:if test="${documentMandatory==true}"> checked="checked"</c:if> readonly  type="checkbox" name="DescriptionDocumentMandatory" aria-invalid="false">
+          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" <c:if test="${documentMandatory==true}"> checked="checked"</c:if> disabled  type="checkbox" name="DescriptionDocumentMandatory" aria-invalid="false">
             <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
@@ -242,7 +242,7 @@
           <div class="col-xs-12 col-md-4">
             <input id="Numberfields" readonly type="text">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" readonly type="checkbox" name="Conveyance" aria-invalid="false">
+          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" disabled type="checkbox" name="Conveyance" aria-invalid="false">
             <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
@@ -254,9 +254,6 @@
             field to be captured*<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="DescriptionGeneral" readonly type="text">
-          </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" readonly  type="checkbox" name="Conveyance" aria-invalid="false">
-            <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
       </div>
@@ -379,7 +376,6 @@
               <th style="width: 15% ;height: 40px;text-align: center"> application type<span class="mandatory" >*</span></th>
               <th  style="width: 20% ;height: 40px;text-align: center"> Service Workflow Routing Stages<span class="mandatory" >*</span></th>
               <th  style="width: 20% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
-              <th  style="width: 15% ;height: 40px;text-align: center">  Service Workload Manhours<span class="mandatory">*</span></th>
               <th  style="width: 30% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
             </tr>
             <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
@@ -387,7 +383,7 @@
                 <td >${routingStage.appTypeName}</td>
                 <td >${routingStage.stageName}</td>
                 <td>
-                  <div class="col-xs-12 col-md-12">
+                  <div class="col-xs-12 col-md-12" style="margin-top: 1%;margin-bottom: 1%">
                     <select  name="RoutingScheme${routingStage.stageCode}"  >
                       <option value="">Select one</option>
                       <option value="common"
@@ -404,14 +400,7 @@
                 </td>
                 <td>
                   <div class="col-xs-12 col-md-12">
-                    <input readonly type="text" name="WorkloadManhours${routingStage.stageCode}"  value="${routingStage.manhours}">
-                    <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${status.index}"></span>
-                  </div>
-
-                </td>
-                <td>
-                  <div class="col-xs-12 col-md-12">
-                    <div class="col-xs-12 col-md-12">
+                    <div class="col-xs-12 col-md-12" style="margin-top: 1%;margin-bottom: 1%">
                       <select  name="workingGroup${routingStage.stageCode}">
                         <option value="">Select one</option><c:forEach items="${routingStage.workingGroup}" var="workingGroup">
                         <option <c:if test="${routingStage.workingGroupId==workingGroup.id}">selected="selected"</c:if> value="${workingGroup.id}">${workingGroup.groupName}</option>

@@ -383,10 +383,10 @@
                   <td >${routingStage.appTypeName}</td>
                   <td >${routingStage.stageName}</td>
                   <td>
-                    <div class="col-xs-12 col-md-6" >
+                    <div class="col-xs-12 col-md-6"  style="margin-top: 1%;margin-bottom: 1%" >
                       <input type="text" name="stageId${routingStage.stageCode}${routingStages.key}" value="${routingStage.routingSchemeId}" style="display:none;">
 
-                      <select  name="RoutingScheme${routingStage.stageCode}${routingStages.key}"   >
+                      <select  disabled name="RoutingScheme${routingStage.stageCode}${routingStages.key}"   >
                         <option value="">Select one</option>
                         <option value="common"
                                 <c:if test="${routingStage.routingSchemeName=='common'}">selected="selected" </c:if>
@@ -399,8 +399,8 @@
                         >Round Robin</option>
                       </select>
                     </div>
-                    <div class="col-xs-12 col-md-6" >
-                      <select name="isMandatory${routingStage.stageCode}${routingStages.key}">
+                    <div class="col-xs-12 col-md-6"  style="margin-top: 1%;margin-bottom: 1%">
+                      <select disabled name="isMandatory${routingStage.stageCode}${routingStages.key}">
                         <option value="">Select one</option>
                         <option value="mandatory" selected="selected">Mandatory</option>
                         <option value="optional">Optional</option>
@@ -579,9 +579,43 @@
         location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohServiceConfig";
     }
 
+    function showNEW() {
+        let jQuery = $('#APTY002').attr("style");
+        $('#APTY001').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY002').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY002').attr("style","display: block");
+        }
+    }
+
     function showRENEW() {
+        let jQuery = $('#APTY004').attr("style");
+        $('#APTY001').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY004').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY004').attr("style","display: block");
+        }
+    }
+
+    function showAPPEAL(){
         let jQuery = $('#APTY001').attr("style");
         $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
         $('#APTY005').attr("style","display: none");
         if(jQuery=='display: block'){
             $('#APTY001').attr("style","display: none");
@@ -590,15 +624,69 @@
         }
     }
 
-    function showNEW() {
-        let jQuery = $('#APTY002').attr("style");
+    function showRFC(){
+        let jQuery = $('#APTY005').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
         $('#APTY001').attr("style","display: none");
-        $('#APTY005').attr("style","display: none");
         if(jQuery=='display: block'){
-            $('#APTY002').attr("style","display: none");
+            $('#APTY005').attr("style","display: none");
         }else if(jQuery=='display: none'){
-            $('#APTY002').attr("style","display: block");
+            $('#APTY005').attr("style","display: block");
         }
+
+    }
+
+    function showCESSATION(){
+        let jQuery = $('#APTY008').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        $('#APTY001').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY008').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY008').attr("style","display: block");
+        }
+    }
+
+    function showSUSPENSION(){
+        let jQuery = $('#APTY007').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        $('#APTY001').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY007').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY007').attr("style","display: block");
+        }
+    }
+
+    function  showWITHDRAWAL(){
+        let jQuery = $('#APTY006').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        $('#APTY001').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY006').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY006').attr("style","display: block");
+        }
+    }
+
+    function showREVOCATION(){
+
     }
 
 
