@@ -12,7 +12,7 @@
       <div class="center-content">
         <div class="intranet-content">
           <div class="bg-title">
-            <h2>The application has been submitted.</h2>
+            <h2>The appointment date has been submitted.</h2>
           </div>
         </div>
         <div align="left"><span><a href="/main-web/eservice/INTRANET/MohBackendInbox">Back</a></span></div>
