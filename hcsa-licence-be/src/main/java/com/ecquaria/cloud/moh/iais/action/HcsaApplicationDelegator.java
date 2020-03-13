@@ -205,6 +205,7 @@ public class HcsaApplicationDelegator {
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Route To DMS");
         }else if(HcsaConsts.ROUTING_STAGE_AO2.equals(taskDto.getTaskKey())
                 ||HcsaConsts.ROUTING_STAGE_AO1.equals(taskDto.getTaskKey())){
+
         }else if(HcsaConsts.ROUTING_STAGE_PSO.equals(taskDto.getTaskKey()) || HcsaConsts.ROUTING_STAGE_ASO.equals(taskDto.getTaskKey()) ){
             if(rfiCount==0){
                 routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");

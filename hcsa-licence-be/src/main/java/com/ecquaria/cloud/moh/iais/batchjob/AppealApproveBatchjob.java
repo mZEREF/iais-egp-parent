@@ -247,6 +247,7 @@ public class AppealApproveBatchjob {
                                List<LicenceDto> rollBackLicence,
                                LicenceDto licenceDto,int newLicYears) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence is start ..."));
+        log.info(StringUtil.changeForLog("The AppealApproveBatchjob newLicYears is -->:"+newLicYears));
         if(licenceDto!=null && newLicYears >0){
             rollBackLicence.add(licenceDto);
             LicenceDto appealLicenceDto = (LicenceDto) CopyUtil.copyMutableObject(licenceDto);
@@ -254,6 +255,8 @@ public class AppealApproveBatchjob {
             Date expiryDate = LicenceUtil.getExpiryDate(startDate,newLicYears);
             appealLicenceDto.setExpiryDate(expiryDate);
             appealLicence.add(appealLicenceDto);
+        }else{
+            log.error(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence licenceDto is null or newLicYears <0"));
         }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence is end ..."));
     }
