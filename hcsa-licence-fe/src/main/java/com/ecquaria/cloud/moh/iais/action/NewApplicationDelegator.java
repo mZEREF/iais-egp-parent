@@ -35,7 +35,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -218,7 +217,7 @@ public class NewApplicationDelegator {
         String loginId = AccessUtil.getLoginId(bpc.request);
         log.info(StringUtil.changeForLog("The preparePremises loginId is -->:"+loginId));
         Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = null;
-        if(StringUtil.isEmpty(loginId)){
+        if(!StringUtil.isEmpty(loginId)){
             licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
         }
         SelectOption sp0 = new SelectOption("-1", FIRESTOPTION);
@@ -833,13 +832,13 @@ public class NewApplicationDelegator {
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
 
         boolean isAutoRfc = compareAndSendEmail(appSubmissionDto, oldAppSubmissionDto);
-
-        if(!IaisCommonUtils.isEmpty(applicationDtos)){
+        //test
+        /*if(!IaisCommonUtils.isEmpty(applicationDtos)){
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "error");
             ParamUtil.setRequestAttr(bpc.request,"content","There is  ongoing application for the licence");
             return ;
-        }
+        }*/
         appSubmissionDto.setAutoRfc(isAutoRfc);
         String draftNo = appSubmissionDto.getDraftNo();
         if(StringUtil.isEmpty(draftNo)){
@@ -1438,12 +1437,16 @@ public class NewApplicationDelegator {
         for(int i =0 ; i<count;i++){
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
             String premisesSel = premisesSelect[i];
-            if(!StringUtil.isEmpty(premisesSel) && !premisesSel.equals("-1") && !premisesSel.equals(ApplicationConsts.NEW_PREMISES)){
-                if(appGrpPremisesDto != null){
-                    appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premisesSel);
-                    appGrpPremisesDtoList.add(appGrpPremisesDto);
+            String appType = appSubmissionDto.getAppType();
+            if(!ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
+                    && !ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                if(!StringUtil.isEmpty(premisesSel) && !premisesSel.equals("-1") && !premisesSel.equals(ApplicationConsts.NEW_PREMISES)){
+                    if(appGrpPremisesDto != null){
+                        appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premisesSel);
+                        appGrpPremisesDtoList.add(appGrpPremisesDto);
+                    }
+                    continue;
                 }
-                continue;
             }
 
 
@@ -2079,7 +2082,7 @@ public class NewApplicationDelegator {
             log.info(StringUtil.changeForLog("service id is empty"));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "errorAck");
             ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");
-            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "ou have encountered some problems, please contact the administrator !!!");
+            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "you have encountered some problems, please contact the administrator !!!");
 
             return false;
         }
