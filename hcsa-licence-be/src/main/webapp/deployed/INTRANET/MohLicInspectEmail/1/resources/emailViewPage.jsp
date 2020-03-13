@@ -1,1 +1,0 @@
-<%@include file="/iais/email/inspectionEmail.jsp"%>

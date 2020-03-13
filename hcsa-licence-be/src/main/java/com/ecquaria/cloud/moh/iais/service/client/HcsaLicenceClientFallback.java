@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditAdhocItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspectStatusDto;
@@ -362,29 +361,6 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
         return entity;
     }
 
-    @Override
-    public FeignResponseEntity<InspectionEmailTemplateDto> getInspectionEmail(String licPremCorrId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<String> insertEmailDraft(InspectionEmailTemplateDto inspectionEmailTemplateDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<String> updateEmailDraft(InspectionEmailTemplateDto inspectionEmailTemplateDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
 
     @Override
     public FeignResponseEntity<LicenceViewDto> getLicenceViewDtoByLicPremCorrId(String licPremCorrId) {

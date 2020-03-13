@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditAdhocItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspectStatusDto;
@@ -189,14 +188,6 @@ public interface HcsaLicenceClient {
     @PostMapping(value = "/hcsa-licence/saveAuditTcuList", consumes =  MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> saveAuditTcuList(@RequestBody List<LicPremisesRecommendationDto> licPremisesRecommendationDtos);
 
-    @GetMapping(value = "/iais-inspection-lic/inspection-email/{licPremCorrId}",produces = MediaType.APPLICATION_JSON_VALUE, consumes =  MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<InspectionEmailTemplateDto> getInspectionEmail(@PathVariable("licPremCorrId") String licPremCorrId);
-
-    @PutMapping(value = "/iais-inspection-lic/insert-email-draft", consumes =  MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> insertEmailDraft(@RequestBody InspectionEmailTemplateDto inspectionEmailTemplateDto);
-
-    @PostMapping(value = "/iais-inspection-lic/update-email-draft", consumes =  MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> updateEmailDraft(@RequestBody InspectionEmailTemplateDto inspectionEmailTemplateDto);
 
     @GetMapping(value = "/iais-inspection-lic/licenceViewDto/{licPremCorrId}",produces = MediaType.APPLICATION_JSON_VALUE, consumes =  MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceViewDto> getLicenceViewDtoByLicPremCorrId(@PathVariable("licPremCorrId") String licPremCorrId);
