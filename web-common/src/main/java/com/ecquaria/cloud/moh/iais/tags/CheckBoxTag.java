@@ -171,7 +171,7 @@ public final class CheckBoxTag extends DivTagSupport {
                         }
 
                         //re display
-                        if (request != null && request instanceof ServletRequest){
+                        if (request != null && request instanceof HttpServletRequest){
                             String[] selectVal = (String[]) ParamUtil.getRequestAttr(request, name);
                             if (selectVal != null && selectVal.length > 0){
                                 for (String s : selectVal){
