@@ -6,6 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -24,9 +26,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -47,6 +51,7 @@ import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -61,9 +66,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Shicheng
@@ -124,6 +131,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     @Autowired
     private AppPremisesCorrClient appPremisesCorrClient;
 
+    @Autowired
+    private MsgTemplateClient msgTemplateClient;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -140,40 +150,46 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         //get all application info from same premises
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = getAppPremisesCorrelationsByPremises(taskDto.getRefNo());
         List<String> premCorrIds = getCorrIdsByCorrIdFromPremises(appPremisesCorrelationDtos);
+        apptInspectionDateDto.setRefNo(premCorrIds);
         //get Other Tasks From The Same Premises
         List<TaskDto> taskDtoList = getAllTaskFromSamePremises(premCorrIds);
         //get application info show
         Map<ApplicationDto, List<String>> applicationInfoMap = getApplicationInfoToShow(premCorrIds, taskDtoList);
         apptInspectionDateDto.setApplicationInfoShow(applicationInfoMap);
-        //get Applicant set start date and end date from appGroup
-        AppointmentDto appointmentDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(taskDto.getRefNo()).getEntity();
-        Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
-        List<String> serviceIds = new ArrayList<>();
-        for(Map.Entry<String, String> map : corrIdServiceIdMap.entrySet()){
-            serviceIds.add(map.getValue());
+        //The All Tasks is go to inspection or (some of them jump over Inspection and some of them go to inspection)
+        String actionButtonFlag = getActionButtonFlag(apptInspectionDateDto);
+        if(AppConsts.SUCCESS.equals(actionButtonFlag)) {
+            //get Applicant set start date and end date from appGroup
+            AppointmentDto appointmentDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(taskDto.getRefNo()).getEntity();
+            Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
+            List<String> serviceIds = new ArrayList<>();
+            for (Map.Entry<String, String> map : corrIdServiceIdMap.entrySet()) {
+                serviceIds.add(map.getValue());
+            }
+            //get Start date and End date when group no date
+            if (appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null) {
+                appointmentDto.setServiceIds(serviceIds);
+                appointmentDto = hcsaConfigClient.getApptStartEndDateByService(appointmentDto).getEntity();
+            }
+            //get inspection date
+            List<AppointmentUserDto> appointmentUserDtos = new ArrayList<>();
+            for (TaskDto tDto : taskDtoList) {
+                AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
+                appointmentUserDto.setLoginUserId(tDto.getUserId());
+                appointmentUserDto.setWorkGrpName(tDto.getWkGrpId());
+                //get service id by task refno
+                String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
+                //get manHours by service and stage
+                int manHours = hcsaConfigClient.getManHour(serviceId, HcsaConsts.ROUTING_STAGE_INS).getEntity();
+                appointmentUserDto.setWorkHours(manHours);
+                appointmentUserDtos.add(appointmentUserDto);
+            }
+            appointmentDto.setUsers(appointmentUserDtos);
+            Map<String, List<ApptUserCalendarDto>> inspectionDateMap = appointmentClient.getUserCalendarByUserId(appointmentDto).getEntity();
+            apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
+        } else {
+
         }
-        //get Start date and End date when group no date
-        if(appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null){
-            appointmentDto.setServiceIds(serviceIds);
-            appointmentDto = hcsaConfigClient.getApptStartEndDateByService(appointmentDto).getEntity();
-        }
-        //get inspection date
-        List<AppointmentUserDto> appointmentUserDtos = new ArrayList<>();
-        for(TaskDto tDto : taskDtoList){
-            AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
-            appointmentUserDto.setLoginUserId(tDto.getUserId());
-            appointmentUserDto.setWorkGrpName(tDto.getWkGrpId());
-            //get service id by task refno
-            String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
-            //get manHours by service and stage
-            int manHours = hcsaConfigClient.getManHour(serviceId, HcsaConsts.ROUTING_STAGE_INS).getEntity();
-            appointmentUserDto.setWorkHours(manHours);
-            appointmentUserDtos.add(appointmentUserDto);
-        }
-        appointmentDto.setUsers(appointmentUserDtos);
-        Map<String, List<ApptUserCalendarDto>> inspectionDateMap = appointmentClient.getUserCalendarByUserId(appointmentDto).getEntity();
-        apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
-        apptInspectionDateDto.setRefNo(premCorrIds);
         apptInspectionDateDto.setTaskDto(taskDto);
         apptInspectionDateDto.setTaskDtos(taskDtoList);
 
@@ -193,8 +209,17 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                         ids.add(taskDto.getUserId());
                     }
                 }
+                Set<String> idSet = new HashSet<>(ids);
+                ids = new ArrayList<>(idSet);
                 List<OrgUserDto> orgUserDtos = organizationClient.retrieveOrgUserAccount(ids).getEntity();
-
+                if(!IaisCommonUtils.isEmpty(orgUserDtos)){
+                    for(OrgUserDto userDto : orgUserDtos){
+                        workerName.add(userDto.getDisplayName());
+                    }
+                } else {
+                    workerName.add("-");
+                }
+                applicationInfoMap.put(applicationDto, workerName);
             }
         }
         return applicationInfoMap;
@@ -205,10 +230,45 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String actionButtonFlag = AppConsts.SUCCESS;
         if(!IaisCommonUtils.isEmpty(apptInspectionDateDto.getRefNo())){
             for(String appPremCorrId : apptInspectionDateDto.getRefNo()){
-
+                List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremCorrId).getEntity();
+                actionButtonFlag = getActionButtonFlagByTasks(taskDtos);
+                if(AppConsts.FAIL.equals(actionButtonFlag)){
+                    return actionButtonFlag;
+                }
             }
         }
         return actionButtonFlag;
+    }
+
+    private String getActionButtonFlagByTasks(List<TaskDto> taskDtos) {
+        if(!IaisCommonUtils.isEmpty(taskDtos)){
+            int apSo = 0;
+            int insp = 0;
+            int ao = 0;
+            for(TaskDto taskDto : taskDtos){
+                if(RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_PSO.equals(taskDto.getRoleId())) {
+                    apSo = apSo + 1;
+                } else if(RoleConsts.USER_ROLE_INSPECTIOR.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(taskDto.getRoleId())) {
+                    insp = insp + 1;
+                } else if(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) ||
+                          RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) ||
+                          RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId())) {
+                    ao = ao + 1;
+                }
+
+            }
+            //task on ASO / PSO
+            if(apSo > 0 && insp == 0 && ao == 0) {
+                return AppConsts.FAIL;
+            //task on inspector / Lead / AO
+            } else if(apSo == 0 && (insp > 0 || ao > 0)) {
+                return AppConsts.SUCCESS;
+            //application RFI
+            } else {
+                return AppConsts.FAIL;
+            }
+        }
+        return AppConsts.FAIL;
     }
 
     private Map<String, String> getServiceIdsByCorrIdsFromPremises(List<String> premCorrIds) {
@@ -315,7 +375,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     }
 
     @Override
-    public void saveLeadSpecificDate(ApptInspectionDateDto apptInspectionDateDto) {
+    public void saveLeadSpecificDate(ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto) {
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = new ArrayList<>();
         String appPremCorrId = apptInspectionDateDto.getTaskDto().getRefNo();
         String serviceId = apptInspectionDateDto.getAppointmentDto().getServiceId();
@@ -331,16 +391,16 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
         appPremisesInspecApptDtoList = applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList).getEntity();
         createFeAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
-        String url = systemParamConfig.getInterServerName() +
-                MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE +
-                appPremCorrId;
-        createMessage(url, serviceId);
-        inspectionDateSendEmail(submitDt);
+        String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
+                MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE + appPremCorrId;
+        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
+        inspectionDateSendEmail(submitDt, url, licenseeId);
+        createMessage(url, serviceId, submitDt);
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_SPECIFIC_INSP_DATE, InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE);
     }
 
     @Override
-    public void saveSystemInspectionDate(ApptInspectionDateDto apptInspectionDateDto) {
+    public void saveSystemInspectionDate(ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto) {
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = new ArrayList<>();
         String appPremCorrId = apptInspectionDateDto.getTaskDto().getRefNo();
         String serviceId = apptInspectionDateDto.getAppointmentDto().getServiceId();
@@ -357,12 +417,12 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
         appPremisesInspecApptDtoList = applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList).getEntity();
         createFeAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
-        String url = systemParamConfig.getInterServerName() +
-                MessageConstants.MESSAGE_INBOX_URL_APPT_SYS_INSP_DATE +
-                appPremCorrId;
-        createMessage(url, serviceId);
+        String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
+                MessageConstants.MESSAGE_INBOX_URL_APPT_SYS_INSP_DATE + appPremCorrId;
         Date submitDt = apptInspectionDateDto.getAppointmentDto().getSubmitDt();
-        inspectionDateSendEmail(submitDt);
+        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
+        inspectionDateSendEmail(submitDt, url, licenseeId);
+        createMessage(url, serviceId, submitDt);
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_INSPECTION_DATE, InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE);
     }
 
@@ -538,13 +598,13 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         appInspectionStatusClient.update(appInspectionStatusDto);
     }
 
-    private void inspectionDateSendEmail(Date submitDt) {
-        InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate("DD00433B-924F-EA11-BE7F-000C29F371DC");
+    private void inspectionDateSendEmail(Date submitDt, String url, String licenseeId) {
+        InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION);
         if(inspectionEmailTemplateDto != null) {
-            SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy");
-            String strSubmitDt = format.format(submitDt);
+            String strSubmitDt = Formatter.formatDateTime(submitDt, "dd MMM yyyy");
             Map<String, Object> map = new HashMap<>();
             map.put("submitDt", StringUtil.viewHtml(strSubmitDt));
+            map.put("process_url", StringUtil.viewHtml(url));
             String mesContext = null;
             try {
                 mesContext = MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(), map);
@@ -557,12 +617,25 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             emailDto.setContent(mesContext);
             emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
             emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-
+            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
             //String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
         }
     }
 
-    private void createMessage(String url, String serviceId) {
+    private void createMessage(String url, String serviceId, Date submitDt) {
+        MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION).getEntity();
+        Map<String, Object> map = new HashMap<>();
+        String strSubmitDt = Formatter.formatDateTime(submitDt, "dd MMM yyyy");
+        map.put("submitDt", StringUtil.viewHtml(strSubmitDt));
+        map.put("process_url", StringUtil.viewHtml(url));
+        String templateMessageByContent = null;
+        try {
+            templateMessageByContent = MsgUtil.getTemplateMessageByContent(mtd.getMessageContent(), map);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TemplateException e) {
+            e.printStackTrace();
+        }
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
         interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_APPT_INSPECTION_DATE);
@@ -570,8 +643,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String mesNO = inboxMsgService.getMessageNo();
         interMessageDto.setRefNo(mesNO);
         interMessageDto.setService_id(serviceId);
-        //interMessageDto.setProcessUrl(url);
+        interMessageDto.setUserId(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
         interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        interMessageDto.setMsgContent(templateMessageByContent);
         interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         inboxMsgService.saveInterMessage(interMessageDto);
     }

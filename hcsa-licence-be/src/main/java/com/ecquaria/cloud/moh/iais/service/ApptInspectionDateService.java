@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -58,7 +59,7 @@ public interface ApptInspectionDateService {
       * @return: void
       * @Descripation: save Lead Specific Date
       */
-    void saveLeadSpecificDate(ApptInspectionDateDto apptInspectionDateDto);
+    void saveLeadSpecificDate(ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto);
 
     /**
       * @author: shicheng
@@ -67,7 +68,7 @@ public interface ApptInspectionDateService {
       * @return: void
       * @Descripation: save System Inspection Date
       */
-    void saveSystemInspectionDate(ApptInspectionDateDto apptInspectionDateDto);
+    void saveSystemInspectionDate(ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto);
 
     /**
       * @author: shicheng

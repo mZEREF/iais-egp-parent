@@ -239,7 +239,7 @@
                                 </thead>
                                 <tbody>
                                 <c:choose>
-                                  <c:when test="${empty inspectionPreTaskDto.inspecUserRecUploadDtos}">
+                                  <c:when test="${empty apptInspectionDateDto.applicationInfoShow}">
                                     <tr>
                                       <td colspan="7">
                                         <iais:message key="ACK018" escape="true"></iais:message>
@@ -247,14 +247,14 @@
                                     </tr>
                                   </c:when>
                                   <c:otherwise>
-                                    <c:forEach var="proRec" items="${inspectionPreTaskDto.inspecUserRecUploadDtos}">
+                                    <c:forEach var="appInfoShow" items="${apptInspectionDateDto.applicationInfoShow}">
                                       <tr>
-                                        <td><c:out value="${proRec.checkClause}"/></td>
-                                        <td><iais:code code="${proRec.checkQuestion}"/></td>
+                                        <td><c:out value="${appInfoShow.key.applicationNo}"/></td>
+                                        <td><iais:code code="${appInfoShow.key.status}"/></td>
                                         <td>
-                                          <c:if test="${proRec.fileRepoDtos != null}">
-                                            <c:forEach var="file" items="${proRec.fileRepoDtos}" varStatus="status">
-                                              <c:out value="${proRec.checkClause}"/><br>
+                                          <c:if test="${appInfoShow.value != null}">
+                                            <c:forEach var="worker" items="${appInfoShow.value}" varStatus="status">
+                                              <c:out value="${worker}"/><br>
                                             </c:forEach>
                                           </c:if>
                                         </td>
@@ -265,23 +265,25 @@
                                 </tbody>
                               </table>
                             </div>
-                            <iais:row>
-                              <iais:field value="Available Appointment Dates"/>
-                              <iais:value width="7">
-                                <c:if test="${apptInspectionDateDto.inspectionDate != null}">
-                                  <c:forEach items="${apptInspectionDateDto.inspectionDate}" var="inspectionDate">
-                                    <ul>
-                                      <li><c:out value="${inspectionDate}"/></li>
-                                    </ul>
-                                  </c:forEach>
-                                </c:if>
-                              </iais:value>
-                            </iais:row>
-                            <iais:action >
-                              <button class="btn btn-lg btn-login-submit" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
-                              <span style="float:right">&nbsp;</span>
-                              <button class="btn btn-lg btn-login-submit" style="float:right" type="button" onclick="javascript:apptInspectionDateConfirm()">Allow System to Propose Dates</button>
-                            </iais:action>
+                            <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag}">
+                              <iais:row>
+                                <iais:field value="Available Appointment Dates"/>
+                                <iais:value width="7">
+                                  <c:if test="${apptInspectionDateDto.inspectionDate != null}">
+                                    <c:forEach items="${apptInspectionDateDto.inspectionDate}" var="inspectionDate">
+                                      <ul>
+                                        <li><c:out value="${inspectionDate}"/></li>
+                                      </ul>
+                                    </c:forEach>
+                                  </c:if>
+                                </iais:value>
+                              </iais:row>
+                              <iais:action >
+                                <button class="btn btn-lg btn-login-submit" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
+                                <span style="float:right">&nbsp;</span>
+                                <button class="btn btn-lg btn-login-submit" style="float:right" type="button" onclick="javascript:apptInspectionDateConfirm()">Allow System to Propose Dates</button>
+                              </iais:action>
+                            </c:if>
                             <br>
                             <div class="alert alert-info" role="alert">
                               <strong>
