@@ -369,7 +369,7 @@ public class ApplicationClientFallback implements ApplicationClient {
     }
 
     @Override
-    public FeignResponseEntity<AppSubmissionDto> saveAppsForRequestForChangeByList(AppSubmissionDto appSubmissionDto) {
+    public FeignResponseEntity<AppSubmissionDto> saveAppsForRenew(AppSubmissionDto appSubmissionDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

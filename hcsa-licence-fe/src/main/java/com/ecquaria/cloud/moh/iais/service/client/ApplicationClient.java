@@ -188,8 +188,8 @@ public interface ApplicationClient  {
     @GetMapping(value = "/appeal/list-application-by-licene-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationsByLicenceId(@RequestParam("licenceId") String licenceId);
 
-    @PostMapping(value = "/application-renew",  consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppSubmissionDto> saveAppsForRequestForChangeByList(@RequestBody AppSubmissionDto appSubmissionDto);
+    @PostMapping(value = "/iais-submission/application-renew",  consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppSubmissionDto> saveAppsForRenew(@RequestBody AppSubmissionDto appSubmissionDto);
 
     @GetMapping(value = "/iais-application/app-one/{appPremCorrId}")
     FeignResponseEntity<ApplicationDto> getApplicationByCorreId(@PathVariable(name = "appPremCorrId")String appPremCorrId);

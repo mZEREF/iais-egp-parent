@@ -140,7 +140,7 @@
                               </div>
                             </c:forEach>
 
-                            <c:if test="${!status.first && requestInformationConfig==null}">
+                            <c:if test="${!status.first && requestInformationConfig==null && 'APTY004' !=AppSubmissionDto.appType && 'APTY005' !=AppSubmissionDto.appType}">
                               <div class="col-xs-5 col-md-1">
                                 <div class="form-check">
                                   <strong class="removeBtn">X</strong>
@@ -573,7 +573,7 @@
                 </div>
                 <div class="row">
                   <div class="col-xs-12">
-                    <c:if test="${requestInformationConfig==null && 'APTY005' !=AppSubmissionDto.appType && !multiBase}">
+                    <c:if test="${requestInformationConfig==null && 'APTY005' !=AppSubmissionDto.appType && !multiBase && 'APTY004' !=AppSubmissionDto.appType}">
                       <button id="addPremBtn" type="button">Add Premises</button>
                     </c:if>
                   </div>
@@ -1086,14 +1086,17 @@
 
 
     var setAddress = function(data,$Ele){
-        var $AddrEle = $Ele;
+        /*var $AddrEle = $Ele;
         $AddrEle.find('select[name="onSiteAddressType"]').val(data);
         var addressVal = $AddrEle.find('option[value="' + data + '"]').html();
         $AddrEle.find('select[name="onSiteAddressType"]').next().find('.current').html(addressVal);
+        $AddrEle.find('select[name="conveyanceAddressType"]').next().find('.current').html(addressVal);*/
     }
 
     var fillForm = function (premisesType,data,$Ele) {
         var $premSelect = $Ele;
+        $premSelect.find('input[name="'+premisesType+'VehicleNo"]').val(data.hciName);
+        $premSelect.find('input[name="'+premisesType+'BlockNo"]').val(data.blkNo);
         $premSelect.find('input[name="'+premisesType+'HciName"]').val(data.hciName);
         $premSelect.find('input[name="'+premisesType+'PostalCode"]').val(data.postalCode);
         $premSelect.find('input[name="'+premisesType+'BlkNo"]').val(data.blkNo);

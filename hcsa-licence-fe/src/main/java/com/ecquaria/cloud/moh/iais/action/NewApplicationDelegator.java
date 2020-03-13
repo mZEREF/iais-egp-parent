@@ -185,7 +185,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void prepare(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the do prepare start ...."));
+         log.info(StringUtil.changeForLog("the do prepare start ...."));
         //String action = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         String action = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if (StringUtil.isEmpty(action)) {
@@ -747,12 +747,12 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doRenewSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(appSubmissionDto.getLicenceId());
-        if(!IaisCommonUtils.isEmpty(applicationDtos)){
+       /* if(!IaisCommonUtils.isEmpty(applicationDtos)){
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "error");
             ParamUtil.setRequestAttr(bpc.request,"content","There is  ongoing application for the licence");
             return ;
-        }
+        }*/
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
 
         boolean isAutoRfc = compareAndSendEmail(appSubmissionDto, oldAppSubmissionDto);
@@ -792,12 +792,13 @@ public class NewApplicationDelegator {
         //set Risk Score
         appSubmissionService.setRiskToDto(appSubmissionDto);
 
-        appSubmissionDto = appSubmissionService.submit(appSubmissionDto, bpc.process);
+        appSubmissionDto = appSubmissionService.submitRenew(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
-        //back to renewal view page
+        //back to renewal licence view page
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","N");
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"jump");
+        ParamUtil.setRequestAttr(bpc.request,"jumpPmt","Y");
 
         log.info(StringUtil.changeForLog("the do doRenewSubmit end ...."));
     }

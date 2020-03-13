@@ -14,7 +14,7 @@
                                 <li id="licReLi" class="complete" role="presentation"><a id="licReA" href="#tabLicRe"
                                                                             aria-controls="tabLicRe" role="tab"
                                                                             data-toggle="tab">Licence Review</a></li>
-                                <li class="complete" role="presentation"><a href="#tabPay"
+                                <li class="complete" role="presentation"><a id="licPmt" href="#tabPay"
                                                                             aria-controls="tabPay" role="tab"
                                                                             data-toggle="tab">Payment</a></li>
                                 <li class="incomplete" role="presentation"><a href="#tabAck"
@@ -191,6 +191,9 @@
     $(document).ready(function () {
         if("Y" == '${jumpEdit}'){
             $('#licReA').click();
+        }
+        if("Y" == '${jumpPmt}'){
+            $('#licPmt').click();
         }
 
     });

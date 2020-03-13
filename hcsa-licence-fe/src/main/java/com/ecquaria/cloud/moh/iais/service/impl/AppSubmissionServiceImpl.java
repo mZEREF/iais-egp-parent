@@ -28,12 +28,13 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sop.webflow.rt.api.Process;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * AppSubmisionServiceImpl
@@ -285,7 +286,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public AppSubmissionDto submitRenew(AppSubmissionDto appSubmissionDto) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appSubmissionDto = applicationClient.saveAppsForRequestForChange(appSubmissionDto).getEntity();
+        appSubmissionDto = applicationClient.saveAppsForRenew(appSubmissionDto).getEntity();
         return appSubmissionDto;
     }
 }
