@@ -36,7 +36,7 @@
                     <iais:row>
                         <iais:field value="Select Role"/>
                         <iais:value width="10">
-                            <iais:select name="roleIds" onchange="chooseCurRole()" options="roleIds"
+                            <iais:select name="roleIds" onchange="chooseCurRole()" options="roleIds" cssClass="roleIds"
                                          firstOption="${curRole}" value="${curRole}"></iais:select>
                         </iais:value>
                     </iais:row>
@@ -64,7 +64,7 @@
                     <iais:row>
                         <iais:field value="Application Type"/>
                         <iais:value width="18">
-                            <iais:select name="application_type" options="appTypeOption"
+                            <iais:select name="application_type" options="appTypeOption" cssClass="application_type"
                                          firstOption="Please select"
                                          value="${supTaskSearchParam.filters['application_type']}"></iais:select>
                         </iais:value>
@@ -72,7 +72,7 @@
                     <iais:row>
                         <iais:field value="Application Status"/>
                         <iais:value width="18">
-                            <iais:select name="application_status" options="appStatusOption"
+                            <iais:select name="application_status" options="appStatusOption" cssClass="application_status"
                                          firstOption="Please select"
                                          value="${supTaskSearchParam.filters['application_status']}"></iais:select>
                         </iais:value>
