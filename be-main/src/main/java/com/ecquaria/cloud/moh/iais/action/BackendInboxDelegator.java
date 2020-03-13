@@ -85,9 +85,11 @@ public class BackendInboxDelegator {
     private SearchParam searchParam;
     private List<TaskDto> commPools;
     public void start(BaseProcessClass bpc){
-        AccessUtil.initLoginUserInfo(bpc.request);
-        List<SelectOption> selectOptionArrayList = new ArrayList<>();
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        if (loginContext == null) {
+            AccessUtil.initLoginUserInfo(bpc.request);
+        }
+        List<SelectOption> selectOptionArrayList = new ArrayList<>();
         for (String item : loginContext.getRoleIds()) {
             selectOptionArrayList.add(new SelectOption(item,item));
         }
