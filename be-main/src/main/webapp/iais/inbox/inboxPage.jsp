@@ -309,7 +309,7 @@
                         }
                         html += '<tr style = "color : ' + color + ';">';
                         if(hastaskList == "true") {
-                            html +='<td><input type="checkbox" name="taskcheckbox" value="' + taskList[res.rows[i].refNo] + '"></td>'
+                            html +='<td><input type="checkbox" name="taskcheckbox" value="' + taskList[res.rows[i].refNo] + '" onclick="chooseFirstcheckBox('+ divid+')"></td>'
                         }
                         html +='<td><p class="visible-xs visible-sm table-row-title">Application No</p><p><a href=' + url[res.rows[i].refNo] + '>' + res.rows[i].applicationNo + '</a></p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res.rows[i].serviceId] + '<p></td>' +
@@ -369,6 +369,24 @@
             $('#advfilterson' + id + ' input[type="checkbox"]').prop("checked",true)
         }else{
             $('#advfilterson' + id + ' input[type="checkbox"]').prop("checked",false)
+        }
+    }
+
+    function chooseFirstcheckBox(id){
+        var divid = 'checkbox' + id;
+        var flag=true;
+
+        $('#advfilterson' + id + ' input[type="checkbox"]').each(function(){
+            if($(this).attr('id') != divid){
+             if(!$(this).is(':checked')){
+                 flag = false;
+             }
+            }
+        });
+        if(flag){
+            $('#checkbox' + id).prop("checked",true)
+        }else{
+            $('#checkbox' + id).prop("checked",false)
         }
     }
 
