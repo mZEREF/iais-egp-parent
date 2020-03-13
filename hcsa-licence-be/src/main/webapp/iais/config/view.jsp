@@ -518,7 +518,7 @@
         <div class="form-group">
           <label class="col-xs-12 col-md-8 control-label">Effective Start Date<span class="mandatory">*</span></label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
-            <input type="text" readonly value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
+            <input type="text" disabled value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
           </div>
           <div class="clear"></div></div>
       </div>
@@ -527,7 +527,7 @@
         <div class="form-group">
           <label class="col-xs-12 col-md-8 control-label">Effective End Date</label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
-            <input type="text" readonly autocomplete="off" class="date_picker form-control form_datetime" name="EndDate" id="-20247433206800" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_EndDate" name="iaisErrorMsg" class="error-msg"></span>
+            <input type="text" disabled autocomplete="off" class="date_picker form-control form_datetime" name="EndDate" id="-20247433206800" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_EndDate" name="iaisErrorMsg" class="error-msg"></span>
           </div>
           <div class="clear"></div></div>
       </div>

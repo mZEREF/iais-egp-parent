@@ -22,8 +22,8 @@ public interface SystemAdminClient  {
     @RequestMapping(path = "/draft-number/{type}",method = RequestMethod.GET)
     FeignResponseEntity<String> draftNumber(@PathVariable(name = "type")  String applicationType);
 
-    @RequestMapping(path = "/application-number/{type}")
-    FeignResponseEntity<String> applicationNumber(@PathVariable(name = "type") String applicationType);
+    @RequestMapping(path = "/application-number")
+    FeignResponseEntity<String> applicationNumber(@RequestParam(value = "type") String applicationType);
 
     @RequestMapping(path="//api-postcodes/postal-code", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PostCodeDto> getPostCodeByCode(@RequestParam(value = "postalCode") String postalCode);

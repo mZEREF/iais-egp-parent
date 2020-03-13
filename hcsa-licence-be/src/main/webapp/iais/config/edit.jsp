@@ -269,15 +269,26 @@
           <div class="col-xs-12 col-md-4">
             <input id="DescriptionGeneral" type="text" name="DescriptionGeneral" maxlength="255">
           </div>
+          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
+            <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
+          </div>
         </div>
       </div>
 
       <div class="form-group">
         <div class="col-xs-12 col-md-8 marg-1">
+          <label class="col-xs-12 col-md-8 control-label" >Service Workload Manhours<span class="mandatory">*</span></label>
+          <div class="col-xs-10 col-md-4">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="manhours()"><span class="view">Configure</span></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service-Related Checklists<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <a class="btn btn-secondary "><span class="view">Configure</span></a>
+              <a class="btn btn-secondary " onclick="checklists()"><span class="view">Configure</span></a>
             </div>
           </div>
         </div>
@@ -293,13 +304,15 @@
           </div>
         </div>
       </div>
-      <br>
+
+     <%-- <iais:confirm msg="sda" callBack="config" popupOrder="confirm" title="ssss"/>--%>
+
       <div class="form-group">
         <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service KPI<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <a class="btn btn-secondary "><span class="view">Configure</span></a>
+              <a class="btn btn-secondary " onclick="kpi()"><span class="view">Configure</span></a>
             </div>
           </div>
         </div>
@@ -327,8 +340,118 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <div class="col-xs-12 col-md-12" style="margin-top: 1%">
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showNEW()"><span class="view">NEW APPLICATION</span></a>
+            </div>
+          </div>
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showRENEW()"><span class="view">RENEW</span></a>
+            </div>
+          </div>
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showAPPEAL()"><span class="view">APPEAL</span></a>
+            </div>
+          </div>
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showRFC()"><span class="view">REQUEST FOR CHANGE</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
 
 
+      <div  class="form-group">
+        <div class="col-xs-12 col-md-12" style="margin-top: 1%">
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showCESSATION()"><span class="view">CESSATION</span></a>
+            </div>
+          </div>
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showSUSPENSION()"><span class="view">SUSPENSION</span></a>
+            </div>
+          </div>
+
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showWITHDRAWAL()"><span class="view">WITHDRAWAL</span></a>
+            </div>
+          </div>
+          <div class="col-xs-10 col-md-3">
+            <div class="components">
+              <a class="btn btn-secondary " onclick="showREVOCATION()"><span class="view">REVOCATION</span></a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <c:forEach items="${routingStagess}" var="routingStages" varStatus="sta">
+
+      <div class="form-group" style="display: none" id="${routingStages.key}" >
+        <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
+          <table border="1px" style="text-align: center" >
+            <tr>
+              <th style="width: 10% ;height: 40px;text-align: center;padding: 1% 0% 1% "> application type<span class="mandatory" >*</span></th>
+              <th  style="width: 20% ;height: 40px;text-align: center"> Service Workflow Routing Stages<span class="mandatory" >*</span></th>
+              <th  style="width: 30% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
+              <th  style="width: 25% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
+            </tr>
+            <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
+              <tr >
+                <td >${routingStage.appTypeName}</td>
+                <td >${routingStage.stageName}</td>
+                <td >
+                  <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%" >
+                    <input type="text" name="stageId${routingStage.stageCode}${routingStages.key}" value="${routingStage.routingSchemeId}" style="display:none;">
+
+                    <select  name="RoutingScheme${routingStage.stageCode}${routingStages.key}"   >
+                      <option value="">Select one</option>
+                      <option value="common"
+                              <c:if test="${routingStage.routingSchemeName=='common'}">selected="selected" </c:if>
+                      >Common Pool</option>
+                      <option value="assign"
+                              <c:if test="${routingStage.routingSchemeName=='assign'}">selected="selected" </c:if>
+                      >Supervisor Assign</option>
+                      <option value="round"
+                              <c:if test="${routingStage.routingSchemeName=='round'}">selected="selected" </c:if>
+                      >Round Robin</option>
+                    </select>
+                  </div>
+                  <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%">
+                    <select name="isMandatory${routingStage.stageCode}${routingStages.key}">
+                      <option value="">Select one</option>
+                      <option value="mandatory" selected="selected">Mandatory</option>
+                      <option value="optional">Optional</option>
+                    </select>
+
+                  </div>
+                </td>
+                <td>
+                  <div class="col-xs-12 col-md-12">
+                    <input name="workstageId${routingStage.stageCode}${routingStages.key}" type="text" style="display: none" value="${routingStage.workStageId}">
+                    <select name="workingGroup${routingStage.stageCode}${routingStages.key}">
+                      <option value="">Select one</option>
+                      <c:forEach items="${routingStage.workingGroup}" var="workingGroup">
+                        <option <c:if test="${routingStage.workingGroupId==workingGroup.id}">selected="selected"</c:if> value="${workingGroup.id}">${workingGroup.groupName}</option>
+                      </c:forEach>
+                    </select>
+                  </div>
+                </td>
+              </tr>
+            </c:forEach>
+
+          </table>
+        </div>
+      </div>
+      </c:forEach>
 
 
 
@@ -339,6 +462,7 @@
           <div class="col-xs-12 col-md-7">
             <label>Page name</label>
           </div >
+          <span name="iaisErrorMsg" class="error-msg" id="error_hcsaSvcSubtypeOrSubsumed"></span>
           <div  class="col-xs-12 col-md-5"><input  type="text" value="Laboratory Disciplines" ></div>
 
           <div class="form-group"  id="add">
@@ -413,7 +537,7 @@
         <div class="form-group">
           <label class="col-xs-12 col-md-8 control-label">Effective Start Date<span class="mandatory">*</span></label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
-            <input type="text" readonly value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
+            <input type="text" disabled value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
           </div>
           <div class="clear"></div></div>
       </div>
@@ -426,18 +550,25 @@
           </div>
           <div class="clear"></div></div>
       </div>
+
+
+
       <div class="col-xs-12 col-md-8" style="left: 10%">
         <div class="row">
           <div class="col-xs-10 col-md-3">
             <div class="components">
+
               <a class="btn  btn-secondary" onclick="cancel()">Cancel</a>
+
             </div>
           </div>
           <div class="col-xs-10 col-md-3">
             <div class="components">
+
               <a class="btn  btn-secondary " onclick="save()">Save</a>
             </div>
           </div>
+
           <div class="col-xs-10 col-md-3">
             <div class="components">
               <a class="btn  btn-secondary  " onclick="saveAsNewVersion()">Select as New Version</a>
@@ -445,12 +576,12 @@
           </div>
           <div class="col-xs-10 col-md-3"  style="margin-left: 50%;margin-top: 1%;">
             <div class="components" style="display: none" id="versionSelect">
-            <select name="versionSelect" id="version">
-              <option value="">Select one</option>
-              <c:forEach items="${hcsaServiceDtosVersion}" var="hcsaServiceDtosVer">
-                <option  value="${hcsaServiceDtosVer.id}">${hcsaServiceDtosVer.version}</option>
-              </c:forEach>
-            </select>
+              <select name="versionSelect" id="version">
+                <option value="">Select one</option>
+                <c:forEach items="${hcsaServiceDtosVersion}" var="hcsaServiceDtosVer">
+                  <option  value="${hcsaServiceDtosVer.id}">${hcsaServiceDtosVer.version}</option>
+                </c:forEach>
+              </select>
             </div>
           </div>
         </div>
@@ -483,11 +614,35 @@
 </style>
 <script type="text/javascript">
 
-  $('#versionSelect').change(function () {
 
-      SOP.Crud.cfxSubmit("mainForm","version","version",$('#version').val());
+    function kpi() {
+        var b = confirm("are you ");
+        if(b==true){
+            config();
+        }else {
 
-  });
+        }
+    }
+
+    function config() {
+        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohKPIAndReminder";
+    }
+
+    function  checklists(){
+      location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohChecklistConfiguration";
+    }
+    function manhours(){
+        location.href="";
+    }
+    $('#versionSelect').change(function () {
+
+        SOP.Crud.cfxSubmit("mainForm","version","version",$('#version').val());
+
+    });
+
+    function saveAsNewVersion() {
+        $('#versionSelect').attr("style","display: block");
+    }
 
     $(document).ready(function(){
         let val = $("select[name='ServiceType']").val();
@@ -503,20 +658,129 @@
         }
 
     });
-  
-    function saveAsNewVersion() {
-      $('#versionSelect').attr("style","display: block");
-    }
-    
+
     function cancel() {
         location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohServiceConfig";
     }
 
     function save() {
         $('#ServiceType').removeAttr("disabled");
+        $("input[name='StartDate']").removeAttr("disabled");
         SOP.Crud.cfxSubmit("mainForm","save","save","save");
     }
 
+
+    function showNEW() {
+        let jQuery = $('#APTY002').attr("style");
+        $('#APTY001').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY002').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY002').attr("style","display: block");
+        }
+    }
+
+    function showRENEW() {
+        let jQuery = $('#APTY004').attr("style");
+        $('#APTY001').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY004').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY004').attr("style","display: block");
+        }
+    }
+
+    function showAPPEAL(){
+        let jQuery = $('#APTY001').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY001').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY001').attr("style","display: block");
+        }
+
+    }
+
+
+    function showRFC(){
+        let jQuery = $('#APTY005').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
+        $('#APTY001').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY005').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY005').attr("style","display: block");
+        }
+
+    }
+
+    function showCESSATION(){
+        let jQuery = $('#APTY008').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        $('#APTY001').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY008').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY008').attr("style","display: block");
+        }
+    }
+
+    function showSUSPENSION(){
+        let jQuery = $('#APTY007').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY006').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        $('#APTY001').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY007').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY007').attr("style","display: block");
+        }
+    }
+
+    function  showWITHDRAWAL(){
+        let jQuery = $('#APTY006').attr("style");
+        $('#APTY002').attr("style","display: none");
+        $('#APTY004').attr("style","display: none");
+        $('#APTY007').attr("style","display: none");
+        $('#APTY008').attr("style","display: none");
+        $('#APTY005').attr("style","display: none");
+        $('#APTY001').attr("style","display: none");
+        if(jQuery=='display: block'){
+            $('#APTY006').attr("style","display: none");
+        }else if(jQuery=='display: none'){
+            $('#APTY006').attr("style","display: block");
+        }
+    }
+
+    function showREVOCATION(){
+
+    }
 
 
 
