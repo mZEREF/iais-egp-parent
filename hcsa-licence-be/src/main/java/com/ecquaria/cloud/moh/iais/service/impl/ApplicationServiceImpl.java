@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -78,7 +79,7 @@ public class ApplicationServiceImpl implements ApplicationService {
           for (Map.Entry<String,List<ApplicationDto>> entry : applicationMap.entrySet()){
               String key = entry.getKey();
               List<ApplicationDto> value = entry.getValue();
-              if(appNo.equals(key) || value.get(0).isFastTracking()){
+              if(appNo.equals(key)){
                   continue;
               }else if(!containStatus(value,status)){
                   result = false;
@@ -93,7 +94,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         boolean result = false;
         if(!IaisCommonUtils.isEmpty(applicationDtos) && !StringUtil.isEmpty(status)){
             for(ApplicationDto applicationDto : applicationDtos){
-                if(status.equals(applicationDto.getStatus())){
+                if(status.equals(applicationDto.getStatus()) || ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(applicationDto.getStatus())){
                     result = true;
                     break;
                 }

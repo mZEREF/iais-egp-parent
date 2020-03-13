@@ -743,6 +743,7 @@ public class HcsaApplicationDelegator {
                 }
             }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)&&!applicationDto.isFastTracking()){
                 List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+                applicationDtoList = removeFastTracking(applicationDtoList);
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
                         ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
                 if(isAllSubmit){
@@ -776,6 +777,7 @@ public class HcsaApplicationDelegator {
             }
         }else{
             List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+            applicationDtoList = removeFastTracking(applicationDtoList);
             boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
                     ApplicationConsts.APPLICATION_STATUS_APPROVED);
             if(isAllSubmit || applicationDto.isFastTracking()){
@@ -798,7 +800,17 @@ public class HcsaApplicationDelegator {
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
-
+    private List<ApplicationDto> removeFastTracking(List<ApplicationDto> applicationDtos){
+        List<ApplicationDto> result = new ArrayList<>();
+        if(!IaisCommonUtils.isEmpty(applicationDtos)){
+         for (ApplicationDto applicationDto : applicationDtos){
+             if(!applicationDto.isFastTracking()){
+                 result.add(applicationDto);
+             }
+         }
+        }
+        return  result;
+    }
     private void rollBack(BaseProcessClass bpc,String stageId,String appStatus,String roleId ,String wrkGpId,String userId) throws FeignException, CloneNotSupportedException {
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
