@@ -269,7 +269,7 @@ public class HcsaApplicationDelegator {
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
         String appPremCorreId=taskDto.getRefNo();
         //save recommendation
-        String recommendationStr = ParamUtil.getString(bpc.request,"recomedation");
+        String recommendationStr = ParamUtil.getString(bpc.request,"recommendation");
         if(("---select---").equals(recommendationStr)){
 
         }else if(("reject").equals(recommendationStr)){
