@@ -49,7 +49,7 @@ public class WithOutRenewalDelegator {
 
         //init data
         List<String> licenceIDList = (List<String>) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR);
-        /*licenceIDList = new ArrayList<>();
+/*        licenceIDList = new ArrayList<>();
         licenceIDList.add("B1DC1835-E161-EA11-BE7F-000C29F371DC");*/
         if (licenceIDList == null || IaisCommonUtils.isEmpty(licenceIDList)){
             log.info("can not find licence id for without renewal");

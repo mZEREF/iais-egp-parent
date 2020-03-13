@@ -54,6 +54,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
@@ -137,6 +138,9 @@ public class NewApplicationDelegator {
 
     @Autowired
     private FeEmailClient feEmailClient;
+
+    @Autowired
+    private WithOutRenewalService withOutRenewalService;
 
 
     /**
@@ -1999,8 +2003,6 @@ public class NewApplicationDelegator {
             }
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setNeedEditController(true);
-            AppEditSelectDto changeSelectDto1 = appSubmissionDto.getChangeSelectDto()==null?new AppEditSelectDto():appSubmissionDto.getChangeSelectDto();
-            appSubmissionDto.setChangeSelectDto(changeSelectDto1);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
         log.info(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
@@ -2031,12 +2033,22 @@ public class NewApplicationDelegator {
 
     private void requestForInformationLoading(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
+
         String appNo = ParamUtil.getString(bpc.request,"appNo");
         if(!StringUtil.isEmpty(appNo)){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
             if(appSubmissionDto != null){
-                appSubmissionDto.setNeedEditController(true);
+                String appType =  appSubmissionDto.getAppType();
+                boolean isRenewalOrRfc = ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType);
+                if (isRenewalOrRfc){
+                    appSubmissionDto.setNeedEditController(true);
+                    // set the required information
+                    String licenceId = appSubmissionDto.getLicenceId();
+                    appSubmissionDto.setLicenceNo(withOutRenewalService.getLicenceNumberByLicenceId(licenceId));
+                }
+
             }
+
             AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             //ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
@@ -2542,6 +2554,8 @@ public class NewApplicationDelegator {
             }
 
         }
+        AppEditSelectDto changeSelectDto1 = appSubmissionDto.getChangeSelectDto()==null?new AppEditSelectDto():appSubmissionDto.getChangeSelectDto();
+        appSubmissionDto.setChangeSelectDto(changeSelectDto1);
         //set licenseeId
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
         if(interInboxUserDto != null){
