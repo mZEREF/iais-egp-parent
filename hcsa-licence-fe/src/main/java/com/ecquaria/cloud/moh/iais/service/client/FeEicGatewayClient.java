@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
@@ -124,4 +125,11 @@ public interface FeEicGatewayClient {
                                                                            @RequestHeader("authorization-Secondary") String authorizationSec);
 
 
+    @PostMapping(value = "/v1/no-attach-emails", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> feSendEmail(@RequestBody EmailDto email,
+                                                                           @RequestHeader("date") String date,
+                                                                           @RequestHeader("authorization") String authorization,
+                                                                           @RequestHeader("date-Secondary") String dateSec,
+                                                                           @RequestHeader("authorization-Secondary") String authorizationSec);
 }
