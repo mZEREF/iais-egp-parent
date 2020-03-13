@@ -628,7 +628,7 @@ public class OfficerOnlineEnquiriesDelegator {
                                     List<String> serviceNames=requestForInformationService.getSvcNamesByType(serviceLicenceType);
                                     for (String svcName:serviceNames
                                     ) {
-                                        if(svcName.equals(reqForInfoSearchListDto.getServiceName())){
+                                        if(svcName.equals(lic.getServiceName())){
                                             isAdd=true;
                                         }
                                     }
@@ -798,8 +798,8 @@ public class OfficerOnlineEnquiriesDelegator {
         }catch (Exception e){
             reqForInfoSearchListDto.setPastComplianceHistory("-");
         }
-        String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getRiskLevel()}).get(0).getText();
-        reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
+        //String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getRiskLevel()}).get(0).getText();
+        reqForInfoSearchListDto.setCurrentRiskTagging(rfiApplicationQueryDto.getRiskLevel());
         log.debug(StringUtil.changeForLog("licenseeId start ...."+rfiApplicationQueryDto.getLicenseeId()));
         if(rfiApplicationQueryDto.getLicenseeId()!=null){
             reqForInfoSearchListDto.setLicenseeId(rfiApplicationQueryDto.getLicenseeId());
