@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
@@ -442,7 +443,11 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     public ApptInspectionDateDto getApptSpecificDate(String taskId, ApptInspectionDateDto apptInspectionDateDto) {
         TaskDto taskDto = taskService.getTaskById(taskId);
         AppPremisesInspecApptDto appPremisesInspecApptDto = inspectionTaskClient.getSpecificDtoByAppPremCorrId(taskDto.getRefNo()).getEntity();
-        List<TaskDto> taskDtoList = organizationClient.getCurrTaskByRefNo(taskDto.getRefNo()).getEntity();
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = getAppPremisesCorrelationsByPremises(taskDto.getRefNo());
+        List<String> premCorrIds = getCorrIdsByCorrIdFromPremises(appPremisesCorrelationDtos);
+        apptInspectionDateDto.setRefNo(premCorrIds);
+        //get Other Tasks From The Same Premises
+        List<TaskDto> taskDtoList = getAllTaskFromSamePremises(premCorrIds);
         String specificDateStr = "-";
         String apptFeReason = "-";
         if(appPremisesInspecApptDto != null) {
@@ -464,8 +469,11 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         List<TaskDto> taskDtoList = apptInspectionDateDto.getTaskDtos();
         updateTaskDtoList(taskDtoList);
         List<TaskDto> taskDtos = new ArrayList<>();
+        //get appPremCorrId with Score
+        Map<String, Integer> appPremScoreMap = getAppPremTaskScore(taskDtoList);
         for(TaskDto taskDto2 : taskDtoList){
-            TaskDto tDto = createTaskDto(taskDto2, loginContext.getUserId());
+            int score = appPremScoreMap.get(taskDto2.getRefNo());
+            TaskDto tDto = createTaskDto(taskDto2, loginContext.getUserId(), score);
             taskDtos.add(tDto);
         }
         taskService.createTasks(taskDtos);
@@ -540,7 +548,39 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, null, null, taskDto.getWkGrpId());
     }
 
-    private TaskDto createTaskDto(TaskDto taskDto, String userId) {
+    private Map<String, Integer> getAppPremTaskScore(List<TaskDto> taskDtoList) {
+        Map<String, Integer> appPremScoreMap = new HashMap<>();
+        List<String> appPremCorrIds = new ArrayList<>();
+        for(TaskDto taskDto : taskDtoList){
+            appPremCorrIds.add(taskDto.getRefNo());
+        }
+        Set<String> appPremCorrIdSet = new HashSet<>(appPremCorrIds);
+        appPremCorrIds = new ArrayList<>(appPremCorrIdSet);
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList<>();
+        for(String appPremCorrId : appPremCorrIds){
+            ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = generateHcsaSvcStageWorkingGroupDto(appPremCorrId, applicationDto, HcsaConsts.ROUTING_STAGE_INS);
+            hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
+        }
+        hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+        if(!IaisCommonUtils.isEmpty(hcsaSvcStageWorkingGroupDtos)){
+            for(HcsaSvcStageWorkingGroupDto hDto : hcsaSvcStageWorkingGroupDtos){
+                appPremScoreMap.put(hDto.getTaskRefNo(), hDto.getCount());
+            }
+        }
+        return appPremScoreMap;
+    }
+
+    private HcsaSvcStageWorkingGroupDto generateHcsaSvcStageWorkingGroupDto(String appPremCorrId, ApplicationDto applicationDto, String routingStageIns) {
+        HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+        hcsaSvcStageWorkingGroupDto.setStageId(routingStageIns);
+        hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+        hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
+        hcsaSvcStageWorkingGroupDto.setTaskRefNo(appPremCorrId);
+        return hcsaSvcStageWorkingGroupDto;
+    }
+
+    private TaskDto createTaskDto(TaskDto taskDto, String userId, int score) {
         TaskDto tDto = new TaskDto();
         tDto.setId(null);
         tDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
@@ -557,7 +597,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         tDto.setDateAssigned(new Date());
         tDto.setRoleId(taskDto.getRoleId());
         taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
-        taskDto.setScore(taskDto.getScore());
+        taskDto.setScore(score);
         tDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return tDto;
     }
