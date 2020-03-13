@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQue
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -360,8 +361,9 @@ public class BackendInboxDelegator {
 
         broadcastApplicationDto.setApplicationDto(applicationDto);
         if(!StringUtil.isEmpty(stageId)){
-            if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)){
+            if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)&&!applicationDto.isFastTracking()){
                 List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+                applicationDtoList = removeFastTracking(applicationDtoList);
                 boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
                         ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
                 if(isAllSubmit){
@@ -384,9 +386,10 @@ public class BackendInboxDelegator {
             }
         }else{
             List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+            applicationDtoList = removeFastTracking(applicationDtoList);
             boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
                     ApplicationConsts.APPLICATION_STATUS_APPROVED);
-            if(isAllSubmit){
+            if(isAllSubmit || applicationDto.isFastTracking()){
                 //update application Group status
                 ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                 broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
@@ -406,7 +409,17 @@ public class BackendInboxDelegator {
 
 //        applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
-
+    private List<ApplicationDto> removeFastTracking(List<ApplicationDto> applicationDtos){
+        List<ApplicationDto> result = new ArrayList<>();
+        if(!IaisCommonUtils.isEmpty(applicationDtos)){
+            for (ApplicationDto applicationDto : applicationDtos){
+                if(!applicationDto.isFastTracking()){
+                    result.add(applicationDto);
+                }
+            }
+        }
+        return  result;
+    }
     private TaskDto completedTask(TaskDto taskDto){
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
         taskDto.setSlaDateCompleted(new Date());
