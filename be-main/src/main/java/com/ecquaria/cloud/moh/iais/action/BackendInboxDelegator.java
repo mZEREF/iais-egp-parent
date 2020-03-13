@@ -125,7 +125,7 @@ public class BackendInboxDelegator {
         hci_name = "";
         hci_address = "";
         ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
-        searchParam = getSearchParam(bpc,true);
+        initSearchParam();
     }
 
     /**
@@ -136,7 +136,6 @@ public class BackendInboxDelegator {
      */
     public void prepareData(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchPre start ...."));
-        searchParam = getSearchParam(bpc);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         AuditTrailHelper.auditFunction("BE-inbox", "Backend Inbox");
         commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
@@ -160,31 +159,12 @@ public class BackendInboxDelegator {
         }
     }
 
-    private SearchParam getSearchParam(BaseProcessClass bpc){
-        return getSearchParam(bpc, false);
-    }
+    private void initSearchParam(){
+        searchParam = new SearchParam(InspectionSubPoolQueryDto.class.getName());
+        searchParam.setPageSize(10);
+        searchParam.setPageNo(1);
+        searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
 
-    private SearchParam getSearchParam(BaseProcessClass bpc,boolean isNew){
-        if(searchParam == null || isNew){
-            searchParam = new SearchParam(InspectionSubPoolQueryDto.class.getName());
-            searchParam.setPageSize(10);
-            searchParam.setPageNo(1);
-            searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
-        }else{
-            String pageSizeString = ParamUtil.getRequestString(bpc.request, "pageJumpNoPageSize");
-            String pageNoString = ParamUtil.getRequestString(bpc.request, "pageJumpNoTextchangePage");
-            int pageSize = 10;
-            int pageNo = 1;
-            if(pageSizeString != null){
-                pageSize = Integer.parseInt(pageSizeString);
-            }
-            if(pageNoString != null){
-                pageNo = Integer.parseInt(pageNoString);
-            }
-            searchParam.setPageSize(pageSize);
-            searchParam.setPageNo(pageNo);
-        }
-        return searchParam;
     }
 
     /**
@@ -206,7 +186,7 @@ public class BackendInboxDelegator {
      */
     public void doSearch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchDoSearch start ...."));
-        searchParam = getSearchParam(bpc);
+        initSearchParam();
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         application_no = ParamUtil.getString(bpc.request, "application_no");
         application_type = ParamUtil.getString(bpc.request, "application_type");
@@ -217,15 +197,16 @@ public class BackendInboxDelegator {
 
         String inspectorValue = loginContext.getLoginId();
 
-
         String[] applicationNo_list = inspectionService.getApplicationNoListByPool(commPools);
         if(applicationNo_list == null || applicationNo_list.length == 0){
             applicationNo_list = new String[]{SystemParameterConstants.PARAM_FALSE};
         }
         String applicationStr = SqlHelper.constructInCondition("T1.APPLICATION_NO",applicationNo_list.length);
-        searchParam.addParam("applicationNo_list", applicationStr);
-        for (int i = 0; i<applicationNo_list.length; i++ ) {
-            searchParam.addFilter("T1.APPLICATION_NO"+i, applicationNo_list[i]);
+        if(!StringUtil.isEmpty(applicationStr)){
+            searchParam.addParam("applicationNo_list", applicationStr);
+            for (int i = 0; i<applicationNo_list.length; i++ ) {
+                searchParam.addFilter("T1.APPLICATION_NO"+i, applicationNo_list[i]);
+            }
         }
 
         if(!StringUtil.isEmpty(application_no)){

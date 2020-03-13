@@ -232,6 +232,9 @@
         $('input[name="hci_code"]').val("");
         $('input[name="hci_name"]').val("");
         $('input[name="hci_address"]').val("");
+        $("#application_type option:first").prop("selected", 'selected');
+        $("#application_status option:first").prop("selected", 'selected');
+        $("#inspector_name option:first").prop("selected", 'selected');
         $("#searchCondition .current").text("Please select");
     }
 
