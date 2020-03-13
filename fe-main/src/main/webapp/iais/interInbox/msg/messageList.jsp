@@ -74,7 +74,7 @@
                                 </c:choose>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Subject</p>
-                                    <p><a href="#" onclick="toMsgView('<iais:mask name="crud_action_value" value="${inboxQuery.id}"/>')">${inboxQuery.subject}</a></p>
+                                    <p><a href="#" onclick="toMsgView('<iais:mask name="crud_action_value" value="${inboxQuery.msgContent}"/>')">${inboxQuery.subject}</a></p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Message Type</p>

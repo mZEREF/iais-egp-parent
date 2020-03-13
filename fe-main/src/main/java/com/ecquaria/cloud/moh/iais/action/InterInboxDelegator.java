@@ -141,8 +141,8 @@ public class InterInboxDelegator {
 
     public void msgToView(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String msgId = ParamUtil.getString(request,InboxConst.CRUD_ACTION_VALUE);
-        log.debug("The Message Id ---->"+msgId);
+        String msgContent = ParamUtil.getMaskedString(request,InboxConst.CRUD_ACTION_VALUE);
+        ParamUtil.setRequestAttr(request,InboxConst.MESSAGE_CONTENT, msgContent);
         setNumInfoToRequest(request,interInboxUserDto);
     }
 

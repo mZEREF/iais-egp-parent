@@ -42,6 +42,8 @@ public class InboxConst {
     public static final String MESSAGE_VIEW                = "msgView";
     public static final String MESSAGE_CONTENT_VIEW        = "msgContentView";
 
+    public static final String MESSAGE_CONTENT             = "IAIS_MSG_CONTENT";
+
 
 
     public static final String SEARCH_ALL                 = "All";
