@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.AutoRenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaLastInspectionDto;
@@ -17,21 +16,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionRes
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskSupportBeService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * @Author: jiahao
@@ -96,8 +93,6 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
                     }
                 }
             }
-            //get liceence
-            getFromLicence(inspInfoList,licId,svcCode);
             lstInpDto = getLastAndSecLastInpection(inspInfoList);
             //callApi
             if(lstInpDto!=null){
@@ -117,20 +112,6 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
         }
         return lstInpDto;
 
-    }
-
-    private void getFromLicence(List<InspectionInfoDto> inspInfoList, String licId, String svcCode) {
-        LicenceDto licDto =hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
-        List<LicPremisesDto> licPremDtoList = hcsaLicenceClient.getLicPremListByLicId(licId).getEntity();
-        if(IaisCommonUtils.isEmpty(licPremDtoList)){
-            for(LicPremisesDto temp:licPremDtoList){
-                LicPremisesRecommendationDto recDto= hcsaLicenceClient.getLicPremRecordByIdAndType(temp.getId(),InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-                InspectionInfoDto dto = new InspectionInfoDto();
-                dto.setCreateDate(recDto.getRecomInDate());
-                dto.setAppPremId(temp.getId());
-                inspInfoList.add(dto);
-            }
-        }
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -12,10 +11,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspectStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditInspectorDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -26,12 +23,11 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @Author: jiahao
@@ -123,13 +119,6 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         //createauditTypedata
         createAudit(temp);
 
-        //updatestastus
-        List<LicPremInspectStatusDto> instatusList = new ArrayList<>();
-        LicPremInspectStatusDto statusDto = new LicPremInspectStatusDto();
-        statusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        statusDto.setLicPremId(temp.getId());
-        statusDto.setStatus("task assign");
-        hcsaLicenceClient.create(instatusList).getEntity();
         //
         //create
         String preInspecRemarks = null;//todo
@@ -145,7 +134,6 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         String workGrp = dto.getGroupId();
         String subStage = HcsaConsts.ROUTING_STAGE_PRE;
         String status = ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING;
-        createLicPremisesRoutingHistory(temp.getId(),status,taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.INSPECTION_STATUS_PENDING_PRE, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
         //create grop info
         createInspectionGroupInfo(temp);
     }
@@ -194,23 +182,6 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         return removeList;
     }
 
-    private LicPremisesRoutingHistoryDto createLicPremisesRoutingHistory(String licPremId, String appStatus,
-                                                                         String stageId, String internalRemarks, String processDec, String role, String wrkGroupId, String subStageId){
-        LicPremisesRoutingHistoryDto licPremisesRoutingHistoryDto = new LicPremisesRoutingHistoryDto();
-        licPremisesRoutingHistoryDto.setLicPremId(licPremId);
-        licPremisesRoutingHistoryDto.setStageId(stageId);
-        licPremisesRoutingHistoryDto.setRoleId(role);
-        licPremisesRoutingHistoryDto.setInternalRemark(internalRemarks);
-        licPremisesRoutingHistoryDto.setRouteStatus(appStatus);
-        licPremisesRoutingHistoryDto.setActionBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
-        licPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        licPremisesRoutingHistoryDto.setPorcessDescision(processDec);
-        licPremisesRoutingHistoryDto.setWrkGrpId(wrkGroupId);
-        licPremisesRoutingHistoryDto.setSubStage(subStageId);
-        licPremisesRoutingHistoryDto = hcsaLicenceClient.createLicPremisesRoutingHistory(licPremisesRoutingHistoryDto).getEntity();
-        return licPremisesRoutingHistoryDto;
-    }
-
     @Override
     public void doCancel(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
         if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){
@@ -245,13 +216,6 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         //createauditTypedata
         createAudit(temp);
 
-        //updatestastus
-        List<LicPremInspectStatusDto> instatusList = new ArrayList<>();
-        LicPremInspectStatusDto statusDto = new LicPremInspectStatusDto();
-        statusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        statusDto.setLicPremId(temp.getId());
-        statusDto.setStatus("task cancel");
-        hcsaLicenceClient.create(instatusList).getEntity();
         //
         //create
         String preInspecRemarks = null;//todo
@@ -267,7 +231,6 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         String workGrp = dto.getGroupId();
         String subStage = HcsaConsts.ROUTING_STAGE_PRE;
         String status = "status";//todo
-        createLicPremisesRoutingHistory(temp.getId(),status,taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.INSPECTION_STATUS_PENDING_PRE, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
         //create grop info
         createInspectionGroupInfo(temp);
     }

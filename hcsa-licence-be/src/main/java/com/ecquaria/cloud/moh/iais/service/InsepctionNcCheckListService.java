@@ -5,11 +5,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspecti
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditAdhocCheckShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
-
 import java.util.List;
 
 /**
@@ -28,6 +26,4 @@ public interface InsepctionNcCheckListService {
     void getCommonDto(InspectionFillCheckListDto commonDto, AppPremisesPreInspectChklDto appPremPreCklDto);
     AdCheckListShowDto getAdhocCheckListDto(String appPremCorrId);
     boolean isHaveNcOrBestPractice(InspectionFDtosDto serListDto, InspectionFillCheckListDto comDto, AdCheckListShowDto showDto);
-
-    void getRateOfCheckList(InspectionFDtosDto serListDto, AuditAdhocCheckShowDto adchklDto, InspectionFillCheckListDto commonDto);
 }

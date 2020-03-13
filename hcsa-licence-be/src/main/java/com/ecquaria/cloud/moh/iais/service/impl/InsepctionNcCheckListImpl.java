@@ -16,8 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditAdhocCheckShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditAdhocNcCehckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckListAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
@@ -40,15 +38,14 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.esotericsoftware.minlog.Log;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * @Author: jiahao
@@ -782,19 +779,6 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         return false;
     }
 
-    @Override
-    public void getRateOfCheckList(InspectionFDtosDto serListDto, AuditAdhocCheckShowDto adchklDto, InspectionFillCheckListDto commonDto) {
-        if(serListDto.getFdtoList()!=null){
-            getServiceTotalAndNc(serListDto);
-        }
-        if(commonDto!=null){
-            getGeneralTotalAndNc(commonDto,serListDto);
-        }
-        if(adchklDto!=null&&!IaisCommonUtils.isEmpty(adchklDto.getAdItemList())){
-            getAdhocTotalAndNc(adchklDto,serListDto);
-        }
-    }
-
     private void getServiceTotalAndNc(InspectionFDtosDto serListDto) {
         List<InspectionFillCheckListDto> dtoList = serListDto.getFdtoList();
         int totalNum = 0;
@@ -834,23 +818,5 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         serListDto.setGeneralTotal(totalNum);
         serListDto.setGeneralDo(doNum);
         serListDto.setGeneralNc(ncNum);
-    }
-
-    private void getAdhocTotalAndNc(AuditAdhocCheckShowDto adchklDto, InspectionFDtosDto serListDto) {
-        int totalNum = 0;
-        int ncNum = 0;
-        int doNum = 0;
-        for(AuditAdhocNcCehckItemDto aditem : adchklDto.getAdItemList()){
-            totalNum++;
-            if(!StringUtil.isEmpty(aditem)){
-                doNum++;
-                if("No".equals(aditem.getAdAnswer())){
-                    ncNum++;
-                }
-            }
-        }
-        serListDto.setAdhocTotal(totalNum);
-        serListDto.setAdhocNc(ncNum);
-        serListDto.setAdhocDo(doNum);
     }
 }

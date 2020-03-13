@@ -1,8 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesRecommendationDto;
-
 import java.util.List;
 
 /**
@@ -11,5 +9,4 @@ import java.util.List;
  */
 public interface AuditTcuListService {
     List<AuditTaskDataFillterDto> getAuditTcuList();
-    void saveAuditTcuList(List<LicPremisesRecommendationDto> licPremisesRecommendationDtos);
 }

@@ -1,1 +1,0 @@
-<%@include file="/iais/auditinspectionncList/ncListPageConfrim.jsp"%>
