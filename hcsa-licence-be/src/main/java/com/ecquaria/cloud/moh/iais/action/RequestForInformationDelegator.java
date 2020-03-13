@@ -224,8 +224,7 @@ public class RequestForInformationDelegator {
                     reqForInfoSearchListDto.setFloorNo(rfiLicenceQueryDto.getFloorNo());
                     reqForInfoSearchListDto.setLicenseeId(rfiLicenceQueryDto.getLicenseeId());
                     reqForInfoSearchListDto.setLicPremId(rfiLicenceQueryDto.getLicPremId());
-                    String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiLicenceQueryDto.getRiskLevel()}).get(0).getText();
-                    reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
+
                     LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiLicenceQueryDto.getLicenseeId());
                     reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
                     reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
@@ -287,8 +286,6 @@ public class RequestForInformationDelegator {
                             reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                             reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
                             reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
-                            String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getRiskLevel()}).get(0).getText();
-                            reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
                             reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
@@ -399,8 +396,6 @@ public class RequestForInformationDelegator {
                             reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                             reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
                             reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
-                            String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getRiskLevel()}).get(0).getText();
-                            reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
                             reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
@@ -535,8 +530,6 @@ public class RequestForInformationDelegator {
                     reqForInfoSearchListDto.setFloorNo(rfiLicenceQueryDto.getFloorNo());
                     reqForInfoSearchListDto.setLicenseeId(rfiLicenceQueryDto.getLicenseeId());
                     reqForInfoSearchListDto.setLicPremId(rfiLicenceQueryDto.getLicPremId());
-                    String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiLicenceQueryDto.getRiskLevel()}).get(0).getText();
-                    reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
                     LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiLicenceQueryDto.getLicenseeId());
                     reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
                     if(!StringUtil.isEmpty(serviceLicenceType)){

@@ -271,8 +271,7 @@ public class OfficerOnlineEnquiriesDelegator {
                                 reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                                 reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
                                 reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
-                                String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getRiskLevel()}).get(0).getText();
-                                reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
+
                                 reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                             }
                         }
@@ -316,8 +315,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                     reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
                     reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
-                    String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getRiskLevel()}).get(0).getText();
-                    reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
+
 
                     filter.put("id", lic.getAppId());
                     filter.remove("svc_names");
@@ -625,8 +623,6 @@ public class OfficerOnlineEnquiriesDelegator {
                                 reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                                 reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
                                 reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
-                                String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getRiskLevel()}).get(0).getText();
-                                reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
                                 if(!StringUtil.isEmpty(serviceLicenceType)){
                                     boolean isAdd=false;
                                     List<String> serviceNames=requestForInformationService.getSvcNamesByType(serviceLicenceType);
@@ -712,8 +708,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                     reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
                     reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
-                    String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getRiskLevel()}).get(0).getText();
-                    reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
+
 
                     filters.put("id", lic.getAppId());
                     filters.remove("svc_names");
