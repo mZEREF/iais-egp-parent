@@ -84,7 +84,6 @@ public class SendsReminderToReplyRfiBatchjob {
             stringBuilder.append("<p>   2. ").append("Documentations  ").append(licPremisesReqForInfoDto.getOfficerRemarks().split("\\|")[0]).append("</p>");
         }
         map.put("DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
-        map.put("DETAILS",StringUtil.viewHtml(licPremisesReqForInfoDto.getOfficerRemarks()));
         map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
         String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);
         try{

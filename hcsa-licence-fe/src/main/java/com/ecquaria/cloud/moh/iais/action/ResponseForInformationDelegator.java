@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
@@ -33,15 +32,6 @@ import java.util.List;
 public class ResponseForInformationDelegator {
     @Autowired
     ResponseForInformationService responseForInformationService;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
     @Autowired
     RequestForChangeService requestForChangeService;
     @Autowired

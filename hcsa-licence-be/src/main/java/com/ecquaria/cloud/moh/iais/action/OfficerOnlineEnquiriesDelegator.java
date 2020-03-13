@@ -425,6 +425,7 @@ public class OfficerOnlineEnquiriesDelegator {
         String uenNo = ParamUtil.getString(bpc.request, "uen_no");
         String serviceLicenceType = ParamUtil.getString(bpc.request, "service_licence_type");
         String licenceStatus = ParamUtil.getString(bpc.request, "licence_status");
+        String svcSubType=ParamUtil.getString(bpc.request,"service_sub_type");
         String hciCode = ParamUtil.getString(bpc.request, "hci_code");
         String hciName = ParamUtil.getString(bpc.request, "hci_name");
         String hciStreetName = ParamUtil.getString(bpc.request, "hci_street_name");
@@ -450,7 +451,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 SystemAdminBaseConstants.DATE_FORMAT);
 
         Map<String,Object> filters=new HashMap<>(10);
-        List<String> svcNames=null;
+        List<String> svcNames=new ArrayList<>();
         List<String> licenseeIds=null;
         int[] count={0,0,0,0,0};
         if(ParamUtil.getString(request,"hci")!=null){
@@ -502,6 +503,21 @@ public class OfficerOnlineEnquiriesDelegator {
             }
             if(!StringUtil.isEmpty(licenceStatus)){
                 filters.put("licence_status", licenceStatus);
+            }
+            if(!StringUtil.isEmpty(svcSubType)){
+                filters.put("serviceSubTypeName", svcSubType);
+                serviceParameter.setFilters(filters);
+                SearchParam serviceParam = SearchResultHelper.getSearchParam(request, serviceParameter,true);
+                QueryHelp.setMainSql(RFI_QUERY,"serviceQuery",serviceParam);
+                if (!serviceParam.getFilters().isEmpty()) {
+                    SearchResult<HcsaSvcQueryDto> serviceParamResult = onlineEnquiriesService.searchSvcNamesParam(serviceParam);
+                    for (HcsaSvcQueryDto r:serviceParamResult.getRows()
+                    ) {
+                        svcNames.add(r.getServiceName());
+                    }
+
+                }
+
             }
             if(!StringUtil.isEmpty(uenNo)){
                 LicenseeDto licenseeDto= organizationClient.getLicenseeDtoByUen(uenNo).getEntity();
@@ -555,7 +571,6 @@ public class OfficerOnlineEnquiriesDelegator {
             QueryHelp.setMainSql(RFI_QUERY,"serviceQuery",serviceParam);
             if (!serviceParam.getFilters().isEmpty()) {
                 SearchResult<HcsaSvcQueryDto> serviceParamResult = onlineEnquiriesService.searchSvcNamesParam(serviceParam);
-                 svcNames=new ArrayList<>();
                 for (HcsaSvcQueryDto r:serviceParamResult.getRows()
                 ) {
                     svcNames.add(r.getServiceName());
@@ -586,7 +601,7 @@ public class OfficerOnlineEnquiriesDelegator {
                         if(!StringUtil.isEmpty(rfiApplicationQueryDto.getId())){
                             filters.put("app_id", rfiApplicationQueryDto.getId());
                         }
-                        if(!StringUtil.isEmpty(svcNames)){
+                        if(svcNames.size()!=0){
                             filters.put("svc_names", svcNames);
                         }
                         if(!StringUtil.isEmpty(licenseeIds)){

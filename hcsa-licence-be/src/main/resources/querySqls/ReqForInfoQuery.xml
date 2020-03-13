@@ -42,6 +42,7 @@
             <#if serviceName??>AND :serviceName = :serviceName</#if>
             <#if serviceRole??>AND :serviceRole = :serviceRole</#if>
             <#if serviceRegnNo??>AND :serviceRegnNo = :serviceRegnNo</#if>
+            <#if serviceSubTypeName??>AND :serviceSubTypeName = :serviceSubTypeName</#if>
         ]]>
     </sql>
 
@@ -89,6 +90,7 @@
             <#if serviceName??>AND :serviceName = :serviceName</#if>
             <#if serviceRole??>AND :serviceRole = :serviceRole</#if>
             <#if serviceRegnNo??>AND :serviceRegnNo = :serviceRegnNo</#if>
+            <#if serviceSubTypeName??>AND :serviceSubTypeName = :serviceSubTypeName</#if>
             <#if id??>AND :id = :id</#if>
             <#if appType??>AND :appType = :appType</#if>
             <#if appNo??>AND :appNo = :appNo</#if>
@@ -137,6 +139,7 @@
             <#if serviceName??>AND :serviceName = :serviceName</#if>
             <#if serviceRole??>AND :serviceRole = :serviceRole</#if>
             <#if serviceRegnNo??>AND :serviceRegnNo = :serviceRegnNo</#if>
+            <#if serviceSubTypeName??>AND :serviceSubTypeName = :serviceSubTypeName</#if>
         ]]>
     </sql>
 
@@ -147,13 +150,15 @@
                 svc.SVC_NAME as SVC_NAME
             FROM hcsa_service AS svc
             LEFT JOIN hcsa_service_specific_personnel svcPersonnel ON svcPersonnel.SERVICE_ID = svc.ID
+            LEFT JOIN hcsa_service_subtype svcSub ON svcSub.SERVICE_ID = svc.ID
 
             WHERE 1=1
             <#if serviceId??> AND svc.id = :serviceId</#if>
             <#if serviceName??> AND charindex( :serviceName,svc.SVC_NAME )>0</#if>
             <#if serviceRole??> AND charindex( :serviceRole,svcPersonnel.PSN_TYPE )>0</#if>
             <#if serviceRegnNo??> AND charindex( :serviceRegnNo,svcPersonnel.ID )>0</#if>
-            
+            <#if serviceSubTypeName??> AND charindex( :serviceSubTypeName,svcSub.SUBTYPE_NAME )>0</#if>
+
             <#if id??>AND :id = :id</#if>
             <#if appType??>AND :appType = :appType</#if>
             <#if appNo??>AND :appNo = :appNo</#if>
@@ -172,7 +177,6 @@
             <#if hciName??>AND :hciName = :hciName</#if>
             <#if hciStreetName??>AND :hciStreetName = :hciStreetName</#if>
             <#if hciPostalCode??>AND :hciPostalCode = :hciPostalCode</#if>
-
             <#if licenseeId??>AND :licenseeId = :licenseeId</#if>
             <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
             <#if licenseeRegnNo??>AND :licenseeRegnNo = :licenseeRegnNo</#if>

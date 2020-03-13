@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.RequestForInformationClient;
@@ -81,6 +82,8 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     @Autowired
     private EventBusHelper eventBusHelper;
     @Autowired
+    HcsaChklClient hcsaChklClient;
+    @Autowired
     private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
     @Value("${iais.syncFileTracking.shared.path}")
     private     String sharedPath;
@@ -122,10 +125,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.LICENCE_STATUS_SUSPENDED,
             ApplicationConsts.LICENCE_STATUS_REVOKED
     };
-    private final String[] licServiceSubType=new String[]{
-            ApplicationConsts.SUB_TYPE_MODALITY,
-            ApplicationConsts.SUB_TYPE_DISCIPLINE
-    };
+
     @Override
     public List<SelectOption> getAppTypeOption() {
         return MasterCodeUtil.retrieveOptionsByCodes(appType);
@@ -143,7 +143,16 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     @Override
     public List<SelectOption> getLicSvcSubTypeOption() {
-        return MasterCodeUtil.retrieveOptionsByCodes(licServiceSubType);
+        List<String> subTypeNames= hcsaChklClient.listSubTypeName().getEntity();
+        List<SelectOption> selectOptions=new ArrayList<>();
+        for (String subTypeName:subTypeNames
+             ) {
+            SelectOption selectOption=new SelectOption();
+            selectOption.setText(subTypeName);
+            selectOption.setValue(subTypeName);
+            selectOptions.add(selectOption);
+        }
+        return selectOptions;
     }
 
     @Override
