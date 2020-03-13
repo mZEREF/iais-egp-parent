@@ -35,12 +35,12 @@
         <div class="col-xs-12">
           <div class="tab-gp dashboard-tab">
             <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-              <li id="recInspTabInfo" class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
+              <li id="ApptInspTabInfo" class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
                                                                             data-toggle="tab">Info</a></li>
-              <li id="recInspTabDocuments" class="complete" role="presentation"><a href="#tabDocuments"
+              <li id="ApptInspTabDocuments" class="complete" role="presentation"><a href="#tabDocuments"
                                                                                    aria-controls="tabDocuments" role="tab"
                                                                                    data-toggle="tab">Documents</a></li>
-              <li id="recInspTabProcessing" class="incomplete" role="presentation"><a href="#tabProcessing"
+              <li id="ApptInspTabProcessing" class="incomplete" role="presentation"><a href="#tabProcessing"
                                                                                       aria-controls="tabProcessing" role="tab"
                                                                                       data-toggle="tab">Processing</a></li>
             </ul>
