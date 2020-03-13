@@ -18,4 +18,6 @@ public interface WithOutRenewalService {
     List<AppSubmissionDto> getAppSubmissionDtos(List<String> licenceIds);
 
     String getAppGrpNoByAppType(String appType);
+
+    String getLicenceNumberByLicenceId(String licenceId);
 }

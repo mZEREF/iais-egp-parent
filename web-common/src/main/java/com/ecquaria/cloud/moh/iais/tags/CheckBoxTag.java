@@ -7,12 +7,14 @@ package com.ecquaria.cloud.moh.iais.tags;
  */
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
 import java.io.IOException;
 import java.util.List;
@@ -30,6 +32,28 @@ public final class CheckBoxTag extends DivTagSupport {
     private String labelClass;
     private String forName;
     private String spanClass;
+    private String checked;
+
+    public HttpServletRequest getRequest() {
+        return request;
+    }
+
+    public void setRequest(HttpServletRequest request) {
+        this.request = request;
+    }
+
+    private HttpServletRequest request;
+
+
+
+
+    public String getChecked() {
+        return checked;
+    }
+
+    public void setChecked(String checked) {
+        this.checked = checked;
+    }
 
     public String getName() {
         return name;
@@ -139,9 +163,22 @@ public final class CheckBoxTag extends DivTagSupport {
                         }
 
                         html.append(" type=\"checkbox\" ");
+
                         html.append(" value=\"").append(text).append("\"");
                         if (!StringUtils.isEmpty(ariaInvalid)){
                             html.append("aria-invalid=\"").append(ariaInvalid).append("\">");
+                        }
+
+                        //re display
+                        if (request != null){
+                            String[] selectVal = (String[]) ParamUtil.getRequestAttr(request, name);
+                            if (selectVal != null && selectVal.length > 0){
+                                for (String s : selectVal){
+                                    if (s.equals(text)){
+                                        html.append(" checked=\"checked\" ");
+                                    }
+                                }
+                            }
                         }
 
                         html.append(">");

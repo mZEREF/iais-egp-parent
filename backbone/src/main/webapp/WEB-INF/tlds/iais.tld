@@ -279,6 +279,13 @@
     </attribute>
 
     <attribute>
+      <name>request</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>javax.servlet.http.HttpServletRequest</type>
+    </attribute>
+
+    <attribute>
       <name>value</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>

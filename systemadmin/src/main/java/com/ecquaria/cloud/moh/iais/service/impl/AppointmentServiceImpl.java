@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -40,6 +41,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 	private IntranetUserClient intranetUserClient;
 
 	@Override
+	@SearchTrack(catalog = "Appointment BlackOut Date", key = "search")
 	public SearchResult<ApptBlackoutDateQueryDto> doQuery(SearchParam searchParam) {
 
 		//List<Date> dates = applicationBeClient.getInspectionRecomInDateByCorreId(null).getEntity();
@@ -123,6 +125,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 	}
 
 	@Override
+	@SearchTrack(catalog = "Appointment Inspector Calendar", key = "search")
 	public SearchResult<InspectorCalendarQueryDto> queryInspectorCalendar(SearchParam searchParam) {
 		return onlineApptClient.queryInspectorCalendar(searchParam).getEntity();
 	}

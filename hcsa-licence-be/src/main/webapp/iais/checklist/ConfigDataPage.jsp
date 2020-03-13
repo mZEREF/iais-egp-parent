@@ -53,12 +53,12 @@
 
       <div>
           <td>
-            <iais:checkbox checkboxId="moduleCheckBox" codeCategory = "CATE_ID_CHECKLIST_MODULE" name= "moduleCheckBox" labelName = "Module" ></iais:checkbox>
+            <iais:checkbox checkboxId="moduleCheckBox" codeCategory = "CATE_ID_CHECKLIST_MODULE" name= "moduleCheckBox" labelName = "Module" request="${pageContext.request}"></iais:checkbox>
           </td>
 
 
           <td>
-            <iais:checkbox checkboxId="typeCheckBox" codeCategory = "CATE_ID_CHECKLIST_TYPE" forName="typeCheckBoxFor" name= "typeCheckBox" labelName = "Type" ></iais:checkbox>
+            <iais:checkbox checkboxId="typeCheckBox" codeCategory = "CATE_ID_CHECKLIST_TYPE" forName="typeCheckBoxFor" name= "typeCheckBox" labelName = "Type" request="${pageContext.request}"></iais:checkbox>
           </td>
        </div>
 
@@ -237,4 +237,5 @@
   function sortRecords(sortFieldName,sortType){
       SOP.Crud.cfxSubmit("mainForm","doSort",sortFieldName,sortType);
   }
+
 </script>

@@ -24,7 +24,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -33,7 +40,17 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 @Delegator(value = "hcsaChklConfigDelegator")
 @Slf4j
@@ -227,7 +244,9 @@ public class HcsaChklConfigDelegator {
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE, common);
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE, svcName);
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE, svcSubType);
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE_CHECKBOX, moduleCheckBox);
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE_CHECKBOX, typeCheckBox);
+
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 
@@ -244,16 +263,27 @@ public class HcsaChklConfigDelegator {
             searchParam.addFilter(HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE, svcSubType, true);
         }
 
-        if (moduleCheckBox!= null && moduleCheckBox.length > 0){
-            for (String value : moduleCheckBox){
-                searchParam.addFilter(HcsaChecklistConstants.PARAM_CONFIG_MODULE, value, true);
+        if (moduleCheckBox!= null){
+            //<#if module??> and ${module} </#if>
+            String moduleStr = SqlHelper.constructInCondition("svc.module", moduleCheckBox.length);
+            searchParam.addParam("module", moduleStr);
+            int indx = 0;
+            for (String s : moduleCheckBox){
+                searchParam.addFilter("svc.module"+indx, s);
+                indx++;
             }
         }
 
-        if (typeCheckBox!= null && typeCheckBox.length > 0){
-            for (String value : typeCheckBox){
-                searchParam.addFilter(HcsaChecklistConstants.PARAM_CONFIG_TYPE, value, true);
+        if (typeCheckBox!= null){
+            //<#if type??> and ${type} </#if>
+            String typeStr = SqlHelper.constructInCondition("svc.type", typeCheckBox.length);
+            searchParam.addParam("type", typeStr);
+            int indx = 0;
+            for (String s : typeCheckBox){
+                searchParam.addFilter("svc.type"+indx, s);
+                indx++;
             }
+
         }
 
     }

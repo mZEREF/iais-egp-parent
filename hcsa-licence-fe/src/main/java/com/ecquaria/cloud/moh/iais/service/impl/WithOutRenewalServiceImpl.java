@@ -14,10 +14,10 @@ import java.util.List;
 public class WithOutRenewalServiceImpl implements WithOutRenewalService {
 
     @Autowired
-    LicenceClient licenceClient;
+    private LicenceClient licenceClient;
 
     @Autowired
-    SystemAdminClient systemAdminClient;
+    private SystemAdminClient systemAdminClient;
 
     @Override
     public WithOutRenewalDto getRenewalViewByLicNo(String licenceNo)
@@ -33,5 +33,10 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     @Override
     public String getAppGrpNoByAppType(String appType) {
         return systemAdminClient.applicationNumber(appType).getEntity();
+    }
+
+    @Override
+    public String getLicenceNumberByLicenceId(String licenceId) {
+        return licenceClient.getLicBylicId(licenceId).getEntity().getLicenceNo();
     }
 }

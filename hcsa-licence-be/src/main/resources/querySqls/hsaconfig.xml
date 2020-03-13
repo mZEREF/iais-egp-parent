@@ -54,9 +54,9 @@
             where (svc.is_common = 1 or svc.is_common = 0) and svc.status = 'CMSTAT001'
              <#if svcName??> and hcsa.svc_name = :svcName</#if>
              <#if common??> and svc.is_common = :common</#if>
-             <#if module??> and svc.module = :module</#if>
-             <#if type??> and svc.[type] = :type</#if>
              <#if svcSubType??> and svc.svc_subtype_name = :svcSubType</#if>
+             <#if module??> and ${module} </#if>
+             <#if type??> and ${type} </#if>
         ]]>
 
     </sql>
