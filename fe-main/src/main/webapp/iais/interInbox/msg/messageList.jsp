@@ -1,8 +1,10 @@
+<%@ taglib prefix="C" uri="http://java.sun.com/jsp/jstl/core" %>
 <div class="tab-search">
     <form class="" method="post" id="msgForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input type="hidden" name="msg_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
+        <input type="hidden" name="msg_page_action" value="">
         <input type="hidden" name="crud_action_additional" value="">
         <div class="row">
             <div class="col-md-4">
@@ -72,7 +74,7 @@
                                 </c:choose>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Subject</p>
-                                    <p><a href="#">${inboxQuery.subject}</a></p>
+                                    <p><a href="#" onclick="toMsgView('<iais:mask name="crud_action_value" value="${inboxQuery.id}"/>')">${inboxQuery.subject}</a></p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Message Type</p>
@@ -97,6 +99,20 @@
                 </c:choose>
                 </tbody>
             </table>
+            <div class="row" style="margin-top: 1.5%">
+                <div class="col-md-12">
+                    <C:if test="${msgPage == 'msgView'}">
+                        <div class="col-md-2 pull-right">
+                            <button type="button" class="btn btn-primary pull-right" onclick="toArchiveView()">Archive</button>
+                        </div>
+                    </C:if>
+                    <c:if test="${msgPage == 'msgContentView'}">
+                        <div class="col-md-2 pull-right">
+                            <button type="button" class="btn btn-primary pull-right" onclick="toMsgPage()">Back</button>
+                        </div>
+                    </c:if>
+                </div>
+            </div>
         </div>
     </div>
 </div>

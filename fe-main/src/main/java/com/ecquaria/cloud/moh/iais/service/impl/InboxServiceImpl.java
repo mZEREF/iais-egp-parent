@@ -71,8 +71,8 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
-    public Integer appDraftNum(List<String> appOrgIds) {
-        return appInboxClient.getAppDraftNum(appOrgIds).getEntity();
+    public Integer appDraftNum(String licenseeId) {
+        return appInboxClient.getAppDraftNum(licenseeId).getEntity();
     }
 
     @Override

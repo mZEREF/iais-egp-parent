@@ -2,7 +2,7 @@
 <Application defaultStart="/Steps/StartStep/start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInternetInbox" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
  <WebServices/>
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="start" x="70" y="-20">
+  <StartStep defClass="" executor="" icon="" name="start" x="-100" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -30,28 +30,28 @@
     <JavaCode defClass="" executor="" methodName="toAppPage_OnStepProcess_0" name="toAppPage_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="toLicencePage" x="640" y="240">
+  <AutomaticStep defClass="" executor="" icon="" name="toLicencePage" x="680" y="230">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="toLicencePage_OnStepProcess_0" name="toLicencePage_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doSearch" x="840" y="230">
+  <AutomaticStep defClass="" executor="" icon="" name="doSearch" x="960" y="-30">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doSearch_OnStepProcess_0" name="doSearch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doPage" x="910" y="220">
+  <AutomaticStep defClass="" executor="" icon="" name="doPage" x="860" y="-20">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doPage_OnStepProcess_0" name="doPage_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doSort" x="960" y="180">
+  <AutomaticStep defClass="" executor="" icon="" name="doSort" x="1090" y="-60">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -65,7 +65,7 @@
     <JavaCode defClass="" executor="" methodName="appSwitch_OnStepProcess_0" name="appSwitch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="licSwitch" x="660" y="480">
+  <AutomaticStep defClass="" executor="" icon="" name="licSwitch" x="700" y="480">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -147,7 +147,7 @@
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
-  <InvokeStep defClass="" executor="" icon="" name="msgToMenu" processname="MohInterInboxMenuControl" project="INTERNET" version="-1" x="760" y="260">
+  <InvokeStep defClass="" executor="" icon="" name="msgToMenu" processname="MohInterInboxMenuControl" project="INTERNET" version="-1" x="820" y="220">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
@@ -222,6 +222,27 @@
     <JavaCode defClass="" executor="" methodName="appDoReload_OnStepProcess_0" name="appDoReload_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="msgToViewStep" x="1060" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="msgToView_OnStepProcess_0" name="msgToView_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="msgToArchive" x="680" y="20">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="msgToArchive_OnStepProcess_0" name="msgToArchive_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="msgViewStep" x="1070" y="300">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="msgViewStep_OnStepProcess_0" name="msgViewStep_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" icon="" name="msgPageView" stageIndicator="" x="400" y="100">
@@ -236,11 +257,17 @@
    <OnPageLoad/>
    <OnPageSubmit/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" icon="" name="licPageView" stageIndicator="" x="650" y="360">
+  <WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" icon="" name="licPageView" stageIndicator="" x="680" y="340">
    <Description/>
    <probepoint type="none"/>
    <OnPageLoad/>
    <OnPageSubmit/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="msgViewPage" stageIndicator="" x="1070" y="200">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
   </WebPage>
  </Pages>
  <Forms/>
@@ -254,6 +281,8 @@
    <SwitchCase component="/Steps/AutomaticStep/doPage" value="&quot;msgPage&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSort" value="&quot;msgSort&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/toAppPage" value="&quot;msgToApp&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/msgToViewStep" value="&quot;msgToView&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/msgToArchive" value="&quot;msgToArchive&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/appDoSort" executor="" icon="" leftOperand="app_action_type" name="Switch2" x="140" y="550">
    <Description/>
@@ -270,7 +299,7 @@
    <SwitchCase component="/Steps/AutomaticStep/appDoDelete" value="&quot;appDoDelete&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/appDoReload" value="&quot;appDoReload&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/licDoSort" executor="" icon="" leftOperand="lic_action_type" name="Switch3" x="660" y="610">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/licDoSort" executor="" icon="" leftOperand="lic_action_type" name="Switch3" x="700" y="600">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/licDoAmend" value="&quot;licDoAmend&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/licDoSort" value="&quot;licSort&quot;"/>
@@ -285,10 +314,21 @@
    <SwitchCase component="/Steps/AutomaticStep/licDoAppeal" value="&quot;licDoAppeal&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/licToView" value="&quot;licToView&quot;"/>
   </Switch>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/prepareDate" executor="" icon="" leftOperand="msg_view_type" name="Switch4" x="1080" y="460">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/toLicencePage" value="&quot;toLic&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/prepareDate" value="&quot;toMsg&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/toAppPage" value="&quot;toApp&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/prepareDate" executor="" icon="" leftOperand="msg_page_action" name="Switch5" x="680" y="-70">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/msgToArchive" value="&quot;archive_view&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/prepareDate" value="\u201cmsg_view\u201d"/>
+  </Switch>
  </Switches>
  <Branches/>
  <Merges>
-  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="960" y="440">
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="950" y="520">
    <Description/>
   </Merge>
   <Merge defClass="" executor="" icon="" name="Merge2" type="Or" x="-20" y="1010">
@@ -303,7 +343,7 @@
  <AuthenticationRequire agent="false" authentication="true" citizen="true" counterStaff="false" workingGroup=""/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Direct" name="" sourceName="/Steps/StartStep/start" style="oblique">
-   <position>{(90,0)(80,120)}</position>
+   <position>{(-80,120)(80,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/msgPageView" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareDate" style="oblique">
    <position>{(80,120)(420,120)}</position>
@@ -318,31 +358,22 @@
    <position>{(160,260)(160,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/licPageView" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/toLicencePage" style="oblique">
-   <position>{(660,260)(670,380)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSearch" style="oblique">
-   <position>{(860,250)(980,460)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPage" style="oblique">
-   <position>{(930,240)(980,460)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSort" style="oblique">
-   <position>{(980,200)(980,460)}</position>
+   <position>{(700,250)(700,360)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/appSwitch" linkstyle="Direct" name="" sourceName="/Pages/WebPage/appPageView" style="oblique">
    <position>{(160,380)(160,490)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/licSwitch" linkstyle="Direct" name="" sourceName="/Pages/WebPage/licPageView" style="oblique">
-   <position>{(670,380)(680,500)}</position>
+   <position>{(700,360)(720,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/appSwitch" style="oblique">
    <position>{(160,490)(160,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/licSwitch" style="oblique">
-   <position>{(680,500)(680,630)}</position>
+   <position>{(720,500)(720,620)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
-   <position>{(980,460)(1171,460)(1174,55)(95,56)(80,120)}</position>
+   <position>{(970,540)(1180,539)(1179,-70)(96,-73)(80,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/appDoSort" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(160,570)(100,720)}</position>
@@ -351,7 +382,7 @@
    <position>{(160,570)(220,730)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/licDoSort" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(680,630)(680,860)}</position>
+   <position>{(720,620)(680,860)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/appDoSearch" style="oblique">
    <position>{(-10,790)(0,1030)}</position>
@@ -363,7 +394,7 @@
    <position>{(100,720)(0,1030)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/toAppPage" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge2" style="oblique">
-   <position>{(0,1030)(508,1031)(518,270)(160,260)}</position>
+   <position>{(0,1030)(508,1031)(514,259)(160,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/toMsgPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(160,570)(-60,820)}</position>
@@ -372,7 +403,7 @@
    <position>{(-60,820)(80,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/toMsgPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(680,630)(500,1073)(-53,1068)(-60,820)}</position>
+   <position>{(720,620)(500,1073)(-53,1068)(-60,820)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/licDoSearch" style="oblique">
    <position>{(550,940)(790,1120)}</position>
@@ -390,19 +421,19 @@
    <position>{(180,700)(0,1030)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/licToMenu" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(680,630)(730,840)}</position>
+   <position>{(720,620)(730,840)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge3" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/licToMenu" style="oblique">
    <position>{(730,840)(790,1120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/msgToMenu" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(780,280)}</position>
+   <position>{(720,120)(840,240)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/msgToMenu" style="oblique">
-   <position>{(780,280)(980,460)}</position>
+   <position>{(840,240)(970,540)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/RqForChange" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(680,630)(940,730)}</position>
+   <position>{(720,620)(940,730)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/appDoSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(160,570)(-10,790)}</position>
@@ -417,49 +448,49 @@
    <position>{(160,570)(130,700)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/licDoSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(680,630)(550,940)}</position>
+   <position>{(720,620)(550,940)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/licDoPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(680,630)(620,910)}</position>
+   <position>{(720,620)(620,910)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(860,250)}</position>
+   <position>{(720,120)(980,-10)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(930,240)}</position>
+   <position>{(720,120)(880,0)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSort" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(980,200)}</position>
+   <position>{(720,120)(1110,-40)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/toAppPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(720,120)(160,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/toLicencePage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(660,260)}</position>
+   <position>{(720,120)(700,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/toLicencePage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(160,570)(660,260)}</position>
+   <position>{(160,570)(700,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/toAppPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(680,630)(160,260)}</position>
+   <position>{(720,620)(160,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/licDoCease" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(680,630)(780,840)}</position>
+   <position>{(720,620)(780,840)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/licDoCease" style="oblique">
    <position>{(780,840)(790,1120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/licDoAmend" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(680,630)(840,860)}</position>
+   <position>{(720,620)(840,860)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/licDoAmend" style="oblique">
    <position>{(840,860)(790,1120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/toLicencePage" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge3" style="oblique">
-   <position>{(790,1120)(1143,1107)(1139,768)(660,260)}</position>
+   <position>{(790,1120)(1143,1107)(976,707)(700,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/licDoRenew" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(680,630)(900,880)}</position>
+   <position>{(720,620)(900,880)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/licDoRenew" style="oblique">
    <position>{(900,880)(790,1120)}</position>
@@ -471,7 +502,7 @@
    <position>{(160,570)(300,780)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/licDoAppeal" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(680,630)(970,920)}</position>
+   <position>{(720,620)(970,920)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/licDoAppeal" style="oblique">
    <position>{(970,920)(790,1120)}</position>
@@ -486,7 +517,7 @@
    <position>{(300,780)(0,1030)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/licToView" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(680,630)(1050,940)}</position>
+   <position>{(720,620)(1050,940)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/licToView" style="oblique">
    <position>{(1050,940)(790,1120)}</position>
@@ -502,6 +533,48 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/appDoReload" style="oblique">
    <position>{(390,840)(0,1030)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/msgToViewStep" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(720,120)(1080,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/msgToArchive" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(720,120)(700,40)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/msgPageView" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/msgToArchive" style="oblique">
+   <position>{(700,40)(441,44)(420,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/msgViewPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/msgToViewStep" style="oblique">
+   <position>{(1080,120)(1090,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/msgViewStep" linkstyle="Direct" name="" sourceName="/Pages/WebPage/msgViewPage" style="oblique">
+   <position>{(1090,220)(1090,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch4" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/msgViewStep" style="oblique">
+   <position>{(1090,320)(1100,480)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/toLicencePage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch4" style="rectanular">
+   <position>{(1100,480)(700,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch4" style="rectanular">
+   <position>{(1100,480)(80,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/toAppPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch4" style="rectanular">
+   <position>{(1100,480)(160,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch5" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPage" style="oblique">
+   <position>{(880,0)(700,-50)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch5" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSearch" style="oblique">
+   <position>{(980,-10)(700,-50)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch5" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSort" style="oblique">
+   <position>{(1110,-40)(700,-50)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/msgToArchive" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch5" style="rectanular">
+   <position>{(700,-50)(700,40)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
+   <position>{(700,-50)(80,120)}</position>
   </SynchronousLink>
  </Links>
  <RestServices/>

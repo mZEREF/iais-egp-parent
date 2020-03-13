@@ -7,8 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 
-import java.util.List;
-
 /**
  * @Author: Hc
  * @Program: iais-egp
@@ -24,7 +22,7 @@ public interface InboxService {
     SearchResult<InboxLicenceQueryDto> licenceDoQuery(SearchParam searchParam);
     void recallApplication(String appNo);
     Integer licActiveStatusNum(String licenseeId);
-    Integer appDraftNum(List<String> appOrgIds);
+    Integer appDraftNum(String licenseeId);
     Integer unreadAndUnresponseNum(String userId);
     void updateDraftStatus(String draftNo, String status);
 }

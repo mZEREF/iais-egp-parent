@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -18,12 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.InboxConst;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +52,10 @@ public class InterInboxDelegator {
     }
 
     private InterInboxUserDto interInboxUserDto;
+
+    private Map<String,Object> appSearchMap = new HashMap<>();
+    private Map<String,Object> inboxSearchMap = new HashMap<>();
+    private Map<String,Object> licSearchMap = new HashMap<>();
 
     private FilterParameter appParameter = new FilterParameter.Builder()
             .clz(InboxAppQueryDto.class)
@@ -93,6 +93,7 @@ public class InterInboxDelegator {
      */
     public void toMsgPage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("Step ---> toMsgPage"));
+
     }
 
     public void msgDoPage(BaseProcessClass bpc){
@@ -100,9 +101,49 @@ public class InterInboxDelegator {
         SearchResultHelper.doPage(request,inboxParameter);
     }
 
+
     public void msgDoSort(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         SearchResultHelper.doSort(request,inboxParameter);
+    }
+
+    public void msgToArchive(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        prepareMsgSelectOption(request);
+        String msgStatus[] = new String[]{
+                MessageConstants.MESSAGE_STATUS_UNREAD
+        };
+        inboxSearchMap.put("msgStatus",msgStatus);
+        inboxSearchMap.put("userId",interInboxUserDto.getUserId());
+        inboxParameter.setFilters(inboxSearchMap);
+        SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter,true);
+        QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
+        SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
+        List<InboxQueryDto> inboxQueryDtoList = inboxResult.getRows();
+        for (InboxQueryDto inboxQueryDto:inboxQueryDtoList
+                ) {
+            String serviceName = inboxService.getServiceNameById(inboxQueryDto.getServiceId());
+            inboxQueryDto.setServiceId(serviceName);
+        }
+        if(!StringUtil.isEmpty(inboxResult)){
+            ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, inboxParam);
+            ParamUtil.setRequestAttr(request,InboxConst.INBOX_RESULT, inboxResult);
+            ParamUtil.setRequestAttr(request,InboxConst.MESSAGE_PAGE, InboxConst.MESSAGE_CONTENT_VIEW);
+            cleanParameter("MSG");
+            clearMsgFilter();
+        }
+        setNumInfoToRequest(request,interInboxUserDto);
+    }
+
+    public void msgViewStep(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+    }
+
+    public void msgToView(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String msgId = ParamUtil.getString(request,InboxConst.CRUD_ACTION_VALUE);
+        log.debug("The Message Id ---->"+msgId);
+        setNumInfoToRequest(request,interInboxUserDto);
     }
 
     public void msgDoSearch(BaseProcessClass bpc){
@@ -110,12 +151,19 @@ public class InterInboxDelegator {
         String inboxType = ParamUtil.getString(request,InboxConst.MESSAGE_TYPE);
         String inboxService = ParamUtil.getString(request,InboxConst.MESSAGE_SERVICE);
         String msgSubject = ParamUtil.getString(request,InboxConst.MESSAGE_SEARCH);
-        Map<String,Object> inboxSearchMap = new HashMap<>();
-        if(inboxType != null && !inboxType.equals(InboxConst.SEARCH_ALL)){
-            inboxSearchMap.put("messageType",inboxType);
+        if(inboxType != null){
+            if (inboxType.equals(InboxConst.SEARCH_ALL)){
+                inboxSearchMap.remove("messageType");
+            }else{
+                inboxSearchMap.put("messageType",inboxType);
+            }
         }
-        if(inboxService != null && !inboxService.equals(InboxConst.SEARCH_ALL)){
-            inboxSearchMap.put("interService",inboxService);
+        if(inboxService != null){
+            if (inboxService.equals(InboxConst.SEARCH_ALL)){
+                inboxSearchMap.remove("interService");
+            }else{
+                inboxSearchMap.put("interService",inboxService);
+            }
         }
         if(msgSubject != null){
             inboxSearchMap.put("msgSubject",msgSubject);
@@ -126,9 +174,14 @@ public class InterInboxDelegator {
     public void prepareDate(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
-        String userId = interInboxUserDto.getUserId();
-        Map<String,Object> inboxSearchMap = new HashMap<>();
-        inboxSearchMap.put("userId",userId);
+        String msgStatus[] = new String[]{
+                MessageConstants.MESSAGE_STATUS_READ,
+//                MessageConstants.MESSAGE_STATUS_UNREAD,
+                MessageConstants.MESSAGE_STATUS_RESPONSE,
+                MessageConstants.MESSAGE_STATUS_UNRESPONSE,
+        };
+        inboxSearchMap.put("userId",interInboxUserDto.getUserId());
+        inboxSearchMap.put("msgStatus",msgStatus);
         inboxParameter.setFilters(inboxSearchMap);
         SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter,true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
@@ -137,15 +190,17 @@ public class InterInboxDelegator {
         for (InboxQueryDto inboxQueryDto:inboxQueryDtoList
                 ) {
             String serviceName = inboxService.getServiceNameById(inboxQueryDto.getServiceId());
-//            inboxQueryDto.setProcessUrl(RedirectUtil.changeUrlToCsrfGuardUrlUrl(inboxQueryDto.getProcessUrl(), request));
             inboxQueryDto.setServiceId(serviceName);
         }
         if(!StringUtil.isEmpty(inboxResult)){
             ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, inboxParam);
             ParamUtil.setRequestAttr(request,InboxConst.INBOX_RESULT, inboxResult);
+            ParamUtil.setRequestAttr(request,InboxConst.MESSAGE_PAGE, InboxConst.MESSAGE_VIEW);
             cleanParameter("MSG");
+            clearMsgFilter();
         }
         setNumInfoToRequest(request,interInboxUserDto);
+
     }
 
     public void prepareSwitch(BaseProcessClass bpc){
@@ -162,7 +217,6 @@ public class InterInboxDelegator {
         log.debug(StringUtil.changeForLog("Step ---> toLicencePage"));
         HttpServletRequest request = bpc.request;
         prepareLicSelectOption(request);
-        Map<String,Object> licSearchMap = new HashMap<>();
         licSearchMap.put("licenseeId",interInboxUserDto.getLicenseeId());
         licenceParameter.setFilters(licSearchMap);
         SearchParam licParam = SearchResultHelper.getSearchParam(request,licenceParameter,true);
@@ -191,7 +245,6 @@ public class InterInboxDelegator {
 
     public void licDoSearch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
-        Map<String,Object> licSearchMap = new HashMap<>();
         String licenceNo = ParamUtil.getString(request,"licNoPath");
         String serviceType = ParamUtil.getString(request,"licType");
         String licStatus = ParamUtil.getString(request,"licStatus");
@@ -206,11 +259,20 @@ public class InterInboxDelegator {
         if(licenceNo != null){
             licSearchMap.put("licNo","%"+licenceNo+"%");
         }
-        if(serviceType != null && !serviceType.equals(InboxConst.SEARCH_ALL)){
-            licSearchMap.put("serviceType",serviceType);
+        if(serviceType != null){
+            if (serviceType.equals(InboxConst.SEARCH_ALL)){
+                licSearchMap.remove("serviceType");
+            }else {
+                licSearchMap.put("serviceType", serviceType);
+            }
         }
-        if(licStatus != null && !licStatus.equals(InboxConst.SEARCH_ALL)){
-            licSearchMap.put("licStatus",licStatus);
+        if(licStatus != null){
+            if (licStatus.equals(InboxConst.SEARCH_ALL)){
+                licSearchMap.remove("licStatus");
+            }else{
+                licSearchMap.put("licStatus",licStatus);
+            }
+
         }
         if(!StringUtil.isEmpty(fStartDate)){
             licSearchMap.put("fStartDate",fStartDate);
@@ -238,6 +300,85 @@ public class InterInboxDelegator {
         SearchResultHelper.doSort(request,licenceParameter);
     }
 
+    public void licDoAppeal(BaseProcessClass bpc) throws IOException {
+        HttpServletRequest request = bpc.request;
+        String licNo = ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_VALUE);
+        StringBuffer url = new StringBuffer();
+        url.append("https://").append(bpc.request.getServerName())
+                .append("/hcsa-licence-web/eservice/INTERNET/MohAppealApplication")
+                .append("?appealingFor=")
+                .append(licNo)
+                .append("&type=licence");
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        bpc.response.sendRedirect(tokenUrl);
+
+    }
+
+    public void licToView(BaseProcessClass bpc) throws IOException {
+        HttpServletRequest request = bpc.request;
+        String licId = ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(bpc.request.getServerName())
+                .append("/hcsa-licence-web/eservice/INTERNET/MohLicenceView")
+                .append("?licenceId=").append(licId);
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        bpc.response.sendRedirect(tokenUrl);
+    }
+
+    /**
+     *
+     * @param bpc
+     *
+     */
+    public void licDoAmend(BaseProcessClass bpc) throws IOException {
+        String licId = ParamUtil.getString(bpc.request, "licenceNo");
+        String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(bpc.request.getServerName())
+                .append("/hcsa-licence-web/eservice/INTERNET/MohRequestForChange")
+                .append("?licenceId=").append(licIdValue);
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        bpc.response.sendRedirect(tokenUrl);
+    }
+
+    /**
+     *
+     * @param bpc
+     *
+     */
+    public void licDoRenew(BaseProcessClass bpc) throws IOException {
+        String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
+        if(licIds != null){
+            List<String> licIdValue = new ArrayList<>();
+            for(String item:licIds){
+                licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
+            }
+            StringBuilder url = new StringBuilder();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal");
+            ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licIdValue);
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+
+        }
+    }
+
+    public void licDoCease(BaseProcessClass bpc) throws IOException {
+        String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
+        if(licIds != null) {
+            List<String> licIdValue = new ArrayList<>();
+            for (String item : licIds) {
+                licIdValue.add(ParamUtil.getMaskedString(bpc.request, item));
+            }
+            ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
+            StringBuilder url = new StringBuilder();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohCessationApplication");
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }
+    }
+
     /**
      *
      * @param bpc
@@ -251,8 +392,7 @@ public class InterInboxDelegator {
         /**
          * Application SearchResult
          */
-        Map<String,Object> appSearchMap = new HashMap<>();
-        appSearchMap.put("appGrpId",interInboxUserDto.getAppGrpIds());
+        appSearchMap.put("licenseeId",interInboxUserDto.getLicenseeId());
         appParameter.setFilters(appSearchMap);
         SearchParam appParam = SearchResultHelper.getSearchParam(request,appParameter,true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.APPLICATION_QUERY_KEY,appParam);
@@ -288,22 +428,36 @@ public class InterInboxDelegator {
         String createDtStart = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "esd")),
                 SystemAdminBaseConstants.DATE_FORMAT);
         String createDtEnd = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "eed")),
-                SystemAdminBaseConstants.DATE_FORMAT);
-        Map<String,Object> appSearchMap = new HashMap<>();
-        if(applicationType != null && !applicationType.equals(InboxConst.SEARCH_ALL)){
-            appSearchMap.put("appType",applicationType);
-        }
-        if(applicationStatus != null && !applicationStatus.equals(InboxConst.SEARCH_ALL)){
-            appSearchMap.put("appStatus",applicationStatus);
-        }
-        if(applicationNo != null && !applicationNo.equals(InboxConst.SEARCH_ALL)){
-            if(applicationNo.indexOf("%") != -1){
-                applicationNo = applicationNo.replaceAll("%","//%");
+                SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
+        if(applicationType != null){
+            if (applicationType.equals(InboxConst.SEARCH_ALL)){
+                appSearchMap.remove("appType");
+            }else{
+                appSearchMap.put("appType",applicationType);
             }
-            appSearchMap.put("appNo","%"+applicationNo+"%");
         }
-        if(serviceType != null && !serviceType.equals(InboxConst.SEARCH_ALL)){
-            appSearchMap.put("serviceType",serviceType);
+        if(applicationStatus != null){
+            if (applicationStatus.equals(InboxConst.SEARCH_ALL)){
+                appSearchMap.remove("appStatus");
+            }else{
+                appSearchMap.put("appStatus",applicationStatus);
+            }
+        }
+        if(applicationNo != null){
+            if (applicationNo.equals(InboxConst.SEARCH_ALL)){
+                appSearchMap.remove("appNo");
+            }
+            else if(applicationNo.indexOf("%") != -1){
+                applicationNo = applicationNo.replaceAll("%","//%");
+                appSearchMap.put("appNo","%"+applicationNo+"%");
+            }
+        }
+        if(serviceType != null){
+            if (serviceType.equals(InboxConst.SEARCH_ALL)){
+                appSearchMap.remove("serviceType");
+            }else{
+                appSearchMap.put("serviceType",serviceType);
+            }
         }
         if(!StringUtil.isEmpty(createDtStart)){
             appSearchMap.put("createDtStart",createDtStart);
@@ -313,7 +467,6 @@ public class InterInboxDelegator {
         }
         appParameter.setFilters(appSearchMap);
         appParameter.setPageNo(1);
-
     }
 
     public void appDoPage(BaseProcessClass bpc){
@@ -401,88 +554,11 @@ public class InterInboxDelegator {
     }
 
 
-    public void licDoAppeal(BaseProcessClass bpc) throws IOException {
-        HttpServletRequest request = bpc.request;
-        String licNo = ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_VALUE);
-        StringBuffer url = new StringBuffer();
-        url.append("https://").append(bpc.request.getServerName())
-                .append("/hcsa-licence-web/eservice/INTERNET/MohAppealApplication")
-                .append("?appealingFor=")
-                .append(licNo)
-                .append("&type=licence");
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);
 
-    }
-
-    public void licToView(BaseProcessClass bpc) throws IOException {
-        HttpServletRequest request = bpc.request;
-        String licId = ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
-        StringBuilder url = new StringBuilder();
-        url.append("https://").append(bpc.request.getServerName())
-                .append("/hcsa-licence-web/eservice/INTERNET/MohLicenceView")
-                .append("?licenceId=").append(licId);
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);
-    }
-
-    /**
-     *
-     * @param bpc
-     *
-     */
-    public void licDoAmend(BaseProcessClass bpc) throws IOException {
-        String licId = ParamUtil.getString(bpc.request, "licenceNo");
-        String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
-        StringBuilder url = new StringBuilder();
-        url.append("https://").append(bpc.request.getServerName())
-                .append("/hcsa-licence-web/eservice/INTERNET/MohRequestForChange")
-                .append("?licenceId=").append(licIdValue);
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);
-    }
-
-    /**
-     *
-     * @param bpc
-     *
-     */
-    public void licDoRenew(BaseProcessClass bpc) throws IOException {
-        String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
-        if(licIds != null){
-            List<String> licIdValue = new ArrayList<>();
-            for(String item:licIds){
-                licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
-            }
-            StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal");
-            ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licIdValue);
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
-
-        }
-    }
-
-    public void licDoCease(BaseProcessClass bpc) throws IOException {
-        String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
-        if(licIds != null) {
-            List<String> licIdValue = new ArrayList<>();
-            for (String item : licIds) {
-                licIdValue.add(ParamUtil.getMaskedString(bpc.request, item));
-            }
-            ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
-            StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohCessationApplication");
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
-        }
-    }
 
     private void setNumInfoToRequest(HttpServletRequest request,InterInboxUserDto interInboxUserDto){
         Integer licActiveNum = inboxService.licActiveStatusNum(interInboxUserDto.getLicenseeId());
-        Integer appDraftNum = inboxService.appDraftNum(interInboxUserDto.getAppGrpIds());
+        Integer appDraftNum = inboxService.appDraftNum(interInboxUserDto.getLicenseeId());
         Integer unreadAndresponseNum = inboxService.unreadAndUnresponseNum(interInboxUserDto.getUserId());
         ParamUtil.setRequestAttr(request,"unreadAndresponseNum", unreadAndresponseNum);
         ParamUtil.setRequestAttr(request,"licActiveNum", licActiveNum);
@@ -576,17 +652,22 @@ public class InterInboxDelegator {
 
     private void cleanParameter(String tabName){
         if ("MSG".equals(tabName)){
-            appParameter.setFilters(null);
-            licenceParameter.setFilters(null);
+            appSearchMap.clear();
+            licSearchMap.clear();
         }
         if ("APP".equals(tabName)){
-            inboxParameter.setFilters(null);
-            licenceParameter.setFilters(null);
+            licSearchMap.clear();
+            inboxSearchMap.clear();
         }
         if ("LIC".equals(tabName)){
-            inboxParameter.setFilters(null);
-            appParameter.setFilters(null);
+            appSearchMap.clear();
+            inboxSearchMap.clear();
         }
+    }
+
+    private void clearMsgFilter(){
+        inboxSearchMap.remove("interService");
+        inboxSearchMap.remove("messageType");
     }
     
 }

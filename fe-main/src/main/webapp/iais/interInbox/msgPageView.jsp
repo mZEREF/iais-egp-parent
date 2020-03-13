@@ -59,6 +59,13 @@
     }
 
     $("#inboxType").change(function () {
+        if ('${msgPage}' == "msgView") {
+            alert('${msgPage}')
+            $("[name='msg_page_action']").val("msg_view");
+        }else {
+            alert('${msgPage}')
+            $("[name='msg_page_action']").val("archive_view");
+        }
         submit('msgSearch');
     });
 
@@ -80,7 +87,15 @@
         submit('msgSearch');
     }
     
-    function x() {
-        
+    function toArchiveView() {
+        submit('msgToArchive');
+    }
+
+    function toMsgPage() {
+        submit('toMsgPage');
+    }
+
+    function toMsgView(msgId) {
+        submit('msgToView');
     }
 </script>

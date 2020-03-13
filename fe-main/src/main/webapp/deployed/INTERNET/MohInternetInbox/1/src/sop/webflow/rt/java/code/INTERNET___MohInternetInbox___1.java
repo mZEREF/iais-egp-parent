@@ -54,7 +54,19 @@ public class INTERNET___MohInternetInbox___1 extends BaseProcessClass {
 	public void doSort_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "msgDoSort", this);
 	}
-	
+
+	public void msgToArchive_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "msgToArchive", this);
+		}
+
+	public void msgViewStep_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "msgViewStep", this);
+	}
+
+	public void msgToView_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "msgToView", this);
+	}
+
 	/**
 	 * 
 	 * @throws Exception
@@ -93,12 +105,10 @@ public class INTERNET___MohInternetInbox___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "licDoRenew", this);
 	}
 	public void licDoAppeal_OnStepProcess_0() throws Exception {
-		// 		licDoAppeal->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "licDoAppeal", this);
 	}
 
 	public void licToView_OnStepProcess_0() throws Exception {
-	// 		licToView->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "licToView", this);
 	}
 	/**
@@ -136,25 +146,22 @@ public class INTERNET___MohInternetInbox___1 extends BaseProcessClass {
 	}
 
 	public void appDoAppeal_OnStepProcess_0() throws Exception {
-	// 		appDoAppeal->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "appDoAppeal", this);
 	}
 
 	public void appDoRecall_OnStepProcess_0() throws Exception {
-	// 		appDoRecall->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "appDoRecall", this);
 	}
 
 	public void appDoDelete_OnStepProcess_0() throws Exception {
-	// 		appDoDelete->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "appDoDelete", this);
 	}
 
 	public void appDoReload_OnStepProcess_0() throws Exception {
-	// 		appDoReload->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "appDoReload", this);
 	}
 
+	
 	
 
 }

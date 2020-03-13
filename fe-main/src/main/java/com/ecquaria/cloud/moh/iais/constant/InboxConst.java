@@ -38,6 +38,10 @@ public class InboxConst {
     public static final String MESSAGE_SERVICE             = "inboxService";
     public static final String MESSAGE_SEARCH              = "inboxAdvancedSearch";
 
+    public static final String MESSAGE_PAGE                = "msgPage";
+    public static final String MESSAGE_VIEW                = "msgView";
+    public static final String MESSAGE_CONTENT_VIEW        = "msgContentView";
+
 
 
     public static final String SEARCH_ALL                 = "All";
