@@ -60,13 +60,12 @@
                 licApp.APPLICATION_ID as APPLICATION_ID,
                 Prem.HCI_CODE,Prem.HCI_NAME,
                 Prem.BLK_NO, Prem.FLOOR_NO, Prem.UNIT_NO, Prem.STREET_NAME, Prem.BUILDING_NAME,
-                licPrem.ID as lic_prem_id,LicPremisesAdhocChklItem.RISK_LEVEL
+                licPrem.ID as lic_prem_id
             FROM LICENCE AS lic
             LEFT JOIN LIC_PREMISES licPrem ON licPrem.LICENCE_ID = lic.ID
             LEFT JOIN PREMISES Prem ON Prem.ID = licPrem.PREMISES_ID
             LEFT JOIN LIC_APP_CORRELATION licApp ON licApp.LICENCE_ID = lic.ID
-            LEFT JOIN lic_premises_adhoc_chkl_config LicPremisesAdhocChklCfg ON licPrem.ID = LicPremisesAdhocChklCfg.LIC_PREM_ID
-            LEFT JOIN lic_premises_adhoc_chkl_item LicPremisesAdhocChklItem ON LicPremisesAdhocChklCfg.ID = LicPremisesAdhocChklItem.ADHOC_CONF_ID
+
             WHERE 1=1
             <#if licence_status??> AND lic.STATUS = :licence_status</#if>
             <#if start_date??> AND lic.start_date >= :start_date</#if>

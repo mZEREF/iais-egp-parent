@@ -1,9 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
@@ -14,8 +12,6 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * OnlineEnquiriesServiceImpl
@@ -42,15 +38,6 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     @Override
     public SearchResult<HcsaSvcQueryDto> searchSvcNamesParam(SearchParam searchParam) {
         return hcsaConfigClient.searchSvcNamesParam(searchParam).getEntity();
-    }
-
-    @Override
-    public List<SelectOption> getLicSvcTypeOption() {
-        List<String> serviceNames =hcsaConfigClient.getHcsaServiceNameByType(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE).getEntity();
-        List<String> serviceNames1 =hcsaConfigClient.getHcsaServiceNameByType(ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED).getEntity();
-
-
-        return null;
     }
 
     @Override
