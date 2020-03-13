@@ -268,6 +268,8 @@
                             <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag}">
                               <iais:row>
                                 <iais:field value="Available Appointment Dates"/>
+                              </iais:row>
+                              <iais:row>
                                 <iais:value width="7">
                                   <c:if test="${apptInspectionDateDto.inspectionDate != null}">
                                     <c:forEach items="${apptInspectionDateDto.inspectionDate}" var="inspectionDate">
