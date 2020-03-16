@@ -30,7 +30,7 @@
         FROM (SELECT
                 app.id,
                 app.application_no,
-                (select LICENCE_ID from application_group as ag where ag.ID =  app.APP_GRP_ID) as licensee_id,
+                (select LICENSEE_ID from application_group as ag where ag.ID =  app.APP_GRP_ID) as licensee_id,
                 app.app_type,
                 app.status,
                 app.service_id,
