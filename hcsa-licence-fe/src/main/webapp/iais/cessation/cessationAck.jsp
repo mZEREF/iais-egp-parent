@@ -19,7 +19,7 @@
                         <p>Your cessation application has been successfully submitted, the following licences will be
                             ceased on <U><strong><fmt:formatDate value="${confirm.effectiveDate}" pattern="dd/MM/yyyy"/></strong></U></p>
 
-                        <p>and the application number is<U><strong><c:out value="${confirm.appNo}"/></strong></U></p>
+                        <p>and the application number is <U><strong><c:out value="${confirm.appNo}"/></strong></U></p>
                         <table class="table" border="1" cellspacing="0" cellpadding="0">
                             <thead>
                             <tr style="padding: 1%">
@@ -49,14 +49,19 @@
                     </c:forEach>
                 </div>
                 <div align="right">
-                    <button id="ackBack" type="button" class="btn btn-primary">Back</button>
+                    <button id="ackBack" type="button" class="btn btn-primary" onclick="back('back')">Back</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
-<script type="text/javascript">
-    $('#ackBack').click(function () {
-        location.href="https://egp.sit.inter.iais.com/main-web/eservice/INTERNET/MohInternetInbox";
-    });
+
+<script>
+    function submit(action){
+        $("[name='crud_action_type']").val(action);
+        $("#mainForm").submit();
+    }
+    function back(action){
+        submit(action);
+    }
 </script>

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
@@ -22,6 +23,7 @@ import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -51,8 +53,8 @@ public class ReCessationApplicationDelegator {
         List<String> licIds = (List<String>)ParamUtil.getSessionAttr(bpc.request, "licIds");
         if(licIds==null){
             licIds = new ArrayList<>();
-            licIds.add("7ECAE165-534A-EA11-BE7F-000C29F371DC");
-            licIds.add("CFCAC193-6F4D-EA11-BE7F-000C29F371DC");
+            licIds.add("3F0C254C-0764-EA11-BE7F-000C29F371DC");
+            //licIds.add("CFCAC193-6F4D-EA11-BE7F-000C29F371DC");
         }
         List<AppCessLicDto> appCessDtosByLicIds = cessationService.getOldCessationByIds(licIds);
 
@@ -77,7 +79,15 @@ public class ReCessationApplicationDelegator {
 
     }
 
-    public void valiant(BaseProcessClass bpc){
+    public void valiant(BaseProcessClass bpc) throws IOException {
+        String action_type = ParamUtil.getRequestString(bpc.request, "crud_action_type");
+        if ("back".equals(action_type)) {
+            StringBuilder url = new StringBuilder();
+            url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+            return;
+        }
         List<AppCessLicDto> appCessDtosByLicIds = (List<AppCessLicDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtos");
         int size = (int) ParamUtil.getSessionAttr(bpc.request, "size");
         List<AppCessLicDto> appCessHciDtos = prepareDataForValiant(bpc, size, appCessDtosByLicIds);
@@ -85,13 +95,29 @@ public class ReCessationApplicationDelegator {
         CopyUtil.copyMutableObjectList(appCessHciDtos, cloneAppCessHciDtos);
         List<AppCessLicDto> confirmDtos = getConfirmDtos(cloneAppCessHciDtos);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable) appCessHciDtos);
+        String readInfo = ParamUtil.getRequestString(bpc.request, "readInfo");
+        ParamUtil.setSessionAttr(bpc.request, "readInfo", readInfo);
+        Map<String, String> errorMap = new HashMap<>(34);
+        Boolean choose = false;
+        for (int i = 1; i <=size ; i++) {
+            for (int j = 1; j <= size; j++) {
+                String whichTodo = ParamUtil.getRequestString(bpc.request, i + "whichTodo" + j);
+                if(!StringUtil.isEmpty(whichTodo)){
+                    choose = true;
+                }
+            }
+        }
+        if(!choose){
+            errorMap.put("choose", "Please select at least one licence");
+        }
         if (confirmDtos.size() == 0) {
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;
         }
-        Map<String, String> errorMap = new HashMap<>(34);
+
         for (int i = 1; i <= size; i++) {
-            for (int j = 0; j <= size; j++) {
+            for (int j = 1; j <= size; j++) {
                 String whichTodo = ParamUtil.getRequestString(bpc.request, i + "whichTodo" + j);
                 if (!StringUtil.isEmpty(whichTodo)) {
                     Map<String, String> validate = validate(bpc,i,j);
@@ -106,6 +132,7 @@ public class ReCessationApplicationDelegator {
         }
 
         List<AppCessationDto> appCessationDtos = transformDto(cloneAppCessHciDtos);
+//        List<AppCessLicDto> confirmDtos = getConfirmDtos(cloneAppCessHciDtos);
         ParamUtil.setSessionAttr(bpc.request, "confirmDtos", (Serializable)confirmDtos);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtosSave", (Serializable)appCessationDtos);
@@ -113,17 +140,16 @@ public class ReCessationApplicationDelegator {
 
     public void action(BaseProcessClass bpc){
         String action_type = ParamUtil.getRequestString(bpc.request, "crud_action_type");
-        if("submit".equals(action_type)){
+        if ("submit".equals(action_type)) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-        }else if("back".equals(action_type)){
+        } else if ("back".equals(action_type)) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
         }
-
     }
 
     public void saveData(BaseProcessClass bpc){
         List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
-        cessationService.saveCessations(appCessationDtos);
+        //cessationService.saveCessations(appCessationDtos);
         List<AppCessatonConfirmDto> appCessationDtosConfirms = new ArrayList<>();
         for (AppCessationDto appCessationDto : appCessationDtos) {
             String licId = appCessationDto.getWhichTodo();
@@ -147,9 +173,23 @@ public class ReCessationApplicationDelegator {
             appCessatonConfirmDto.setHciName(hciName);
             appCessationDtosConfirms.add(appCessatonConfirmDto);
         }
+        List<String> licNos = new ArrayList<>();
+        for(AppCessatonConfirmDto appCessatonConfirmDto :appCessationDtosConfirms){
+            String licenceNo = appCessatonConfirmDto.getLicenceNo();
+            licNos.add(licenceNo);
+        }
+        if(!licNos.isEmpty()){
+            cessationService.updateLicenceFe(licNos);
+        }
         ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) appCessationDtosConfirms);
     }
 
+    public void response(BaseProcessClass bpc) throws IOException {
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        bpc.response.sendRedirect(tokenUrl);
+    }
 
     /*
 

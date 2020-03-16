@@ -185,10 +185,10 @@
             <label style="font-weight: normal" for="confirmInfo">I have read the information</label>
         </div>
         <div align="right">
-            <button id="backButton" type="button" class="btn btn-primary">
+            <button id="backButton" type="button" class="btn btn-primary" onclick="back('back')">
                 Back
             </button>
-            <button id="submitButton" type="button" class="btn btn-primary" onclick="submitSure()">
+            <button id="submitButton" type="button" class="btn btn-primary" onclick="submitSure('submit')">
                 Next
             </button>
         </div>
@@ -205,9 +205,23 @@
     }
 </style>
 <script type="text/javascript">
-    $('#backButton').click(function () {
-        location.href="https://egp.sit.inter.iais.com/main-web/eservice/INTERNET/MohInternetInbox";
-    });
+
+    function submit(action){
+        $("[name='crud_action_type']").val(action);
+        $("#mainForm").submit();
+    }
+
+    function submitSure(action) {
+        if ($('#confirmInfo').is(':checked')) {
+            submit(action);
+            $("#readInfo").hide();
+        } else {
+            $("#readInfo").show();
+        }
+    }
+    function back(action){
+        submit(action);
+    }
 
     function changeReason() {
         for (var i = 1; i < 8; i++) {
@@ -258,15 +272,6 @@
                 }
             }
 
-        }
-    }
-
-    function submitSure() {
-        if ($('#confirmInfo').is(':checked')) {
-            $("#mainForm").submit();
-            $("#readInfo").hide();
-        } else {
-            $("#readInfo").show();
         }
     }
 

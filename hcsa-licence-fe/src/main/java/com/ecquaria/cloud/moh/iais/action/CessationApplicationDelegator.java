@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
@@ -21,6 +22,7 @@ import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -73,7 +75,15 @@ public class CessationApplicationDelegator {
     public void prepareData(BaseProcessClass bpc) {
     }
 
-    public void valiant(BaseProcessClass bpc) {
+    public void valiant(BaseProcessClass bpc) throws IOException {
+        String action_type = ParamUtil.getRequestString(bpc.request, "crud_action_type");
+        if ("back".equals(action_type)) {
+            StringBuilder url = new StringBuilder();
+            url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+            return;
+        }
         List<AppCessLicDto> appCessDtosByLicIds = (List<AppCessLicDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtos");
         int size = (int) ParamUtil.getSessionAttr(bpc.request, "size");
         List<AppCessLicDto> appCessHciDtos = prepareDataForValiant(bpc, size, appCessDtosByLicIds);
@@ -124,19 +134,18 @@ public class CessationApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtosSave", (Serializable)appCessationDtos);
     }
 
-    public void action(BaseProcessClass bpc) {
+    public void action(BaseProcessClass bpc) throws IOException {
         String action_type = ParamUtil.getRequestString(bpc.request, "crud_action_type");
         if ("submit".equals(action_type)) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
         } else if ("back".equals(action_type)) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
         }
-
     }
 
     public void saveData(BaseProcessClass bpc) {
         List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
-        cessationService.saveCessations(appCessationDtos);
+        //cessationService.saveCessations(appCessationDtos);
         List<AppCessatonConfirmDto> appCessationDtosConfirms = new ArrayList<>();
         for (AppCessationDto appCessationDto : appCessationDtos) {
             String licId = appCessationDto.getWhichTodo();
@@ -171,6 +180,12 @@ public class CessationApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) appCessationDtosConfirms);
     }
 
+    public void response(BaseProcessClass bpc) throws IOException {
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        bpc.response.sendRedirect(tokenUrl);
+    }
 
     /*
 

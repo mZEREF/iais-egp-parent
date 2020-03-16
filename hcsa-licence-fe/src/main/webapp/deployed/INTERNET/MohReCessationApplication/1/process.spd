@@ -30,7 +30,7 @@
     <JavaCode defClass="" executor="" methodName="valiant_OnStepProcess_0" name="valiant_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Action" x="520" y="110">
+  <AutomaticStep defClass="" executor="" icon="" name="Action" x="530" y="110">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -42,6 +42,13 @@
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="saveData_OnStepProcess_0" name="saveData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="response" x="1030" y="320">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="response_OnStepProcess_0" name="response_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -89,10 +96,10 @@
    <position>{(370,330)(240,330)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Action" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ConfirmPage" style="rectanular">
-   <position>{(540,330)(540,130)}</position>
+   <position>{(540,330)(550,130)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/ActionCond" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Action" style="rectanular">
-   <position>{(540,130)(710,130)}</position>
+   <position>{(550,130)(710,130)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/SaveData" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/ActionCond" style="rectanular">
    <position>{(710,130)(710,340)}</position>
@@ -102,6 +109,9 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreapreData" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/ActionCond" style="rectanular">
    <position>{(710,130)(240,330)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/response" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Ack" style="rectanular">
+   <position>{(930,340)(1050,340)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>

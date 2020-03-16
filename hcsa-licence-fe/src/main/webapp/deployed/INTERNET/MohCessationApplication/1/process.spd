@@ -44,6 +44,13 @@
     <JavaCode defClass="" executor="" methodName="saveData_OnStepProcess_0" name="saveData_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="response" x="880" y="360">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="response_OnStepProcess_0" name="response_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreparePage" stageIndicator="" x="250" y="100">
@@ -102,6 +109,9 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/ActionCond" style="rectanular">
    <position>{(760,120)(285,19)(270,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/response" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AckPage" style="oblique">
+   <position>{(900,270)(900,380)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>

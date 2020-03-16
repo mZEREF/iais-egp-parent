@@ -30,4 +30,8 @@ public class INTERNET___MohReCessationApplication___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "saveData", this);
 	}
 
+	public void response_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "response", this);
+	}
+
 }
