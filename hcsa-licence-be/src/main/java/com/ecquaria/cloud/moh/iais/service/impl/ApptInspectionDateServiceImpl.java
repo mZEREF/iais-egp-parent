@@ -318,7 +318,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     }
 
     private String getApptDateToShow(Date date) {
-        String specificDate =  Formatter.formatDateTime(date, "d MMM");
+        String specificDate = Formatter.formatDateTime(date, "d MMM");
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int curHour24 = cal.get(Calendar.HOUR_OF_DAY);
