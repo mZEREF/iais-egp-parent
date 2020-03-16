@@ -31,15 +31,18 @@ public class FeEicGatewayClientFallback {
         return entity;
     }
 
-    public FeignResponseEntity<String> routeSelfDeclData(List<String> contentJsonList, String date,
-                                                         String authorization, String dateSec,
+    public FeignResponseEntity<String> routeSelfDeclData(List<String> contentJsonList,
+                                                         String date,
+                                                         String authorization,
+                                                         String dateSec,
                                                          String authorizationSec) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
-    public FeignResponseEntity<List<List<ApptUserCalendarDto>>> getUserCalendarByUserId(AppointmentDto appointmentDto,
+
+    public FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> getUserCalendarByUserId(AppointmentDto appointmentDto,
                                                                                         String date,
                                                                                         String authorization,
                                                                                         String dateSec,
