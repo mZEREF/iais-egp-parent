@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import java.util.List;
 
 /**
  * LicenseeService
@@ -10,5 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
  */
 
 public interface LicenseeService {
-    public LicenseeDto getLicenseeDtoById(String licenseeId);
+    LicenseeDto getLicenseeDtoById(String licenseeId);
+    List<String> getLicenseeEmails(String licenseeId);
 }

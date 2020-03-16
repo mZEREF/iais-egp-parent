@@ -14,6 +14,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.RedirectUtil;
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -24,12 +25,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.egp.api.EGPHelper;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -238,11 +239,9 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     public static List<String> getLicenseeEmailAddrs(String licenseeId) {
-        //TODO:
-        List<String> list = new ArrayList<>();
-        list.add("jinhua@ecqsz.com");
+        LicenseeService licenseeService = SpringContextHelper.getContext().getBean(LicenseeService.class);
 
-        return list;
+        return licenseeService.getLicenseeEmails(licenseeId);
     }
 
     private IaisEGPHelper() {throw new IllegalStateException("Utility class");}
