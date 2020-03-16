@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspec
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -191,29 +192,37 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     public ApptFeConfirmDateDto getApptNewSystemDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        //get new Inspection date
+        AppPremisesInspecApptDto appPremisesInspecApptDto = apptFeConfirmDateDto.getAppPremisesInspecApptDtoList().get(0);
         List<AppointmentUserDto> appointmentUserDtos = getUserCalendarDtosByMap(apptFeConfirmDateDto.getApptInspDateMap());
+        String appGroupId = apptFeConfirmDateDto.getApplicationDtos().get(0).getAppGrpId();
+        ApplicationGroupDto applicationGroupDto = applicationClient.getApplicationGroup(appGroupId).getEntity();
+
         AppointmentDto appointmentDto = new AppointmentDto();
         appointmentDto.setUsers(appointmentUserDtos);
+        appointmentDto.setSubmitDt(applicationGroupDto.getSubmitDt());
         appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
-        AppPremisesInspecApptDto appPremisesInspecApptDto = apptFeConfirmDateDto.getAppPremisesInspecApptDtoList().get(0);
         appointmentDto.setStartDate(Formatter.formatDateTime(appPremisesInspecApptDto.getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
         appointmentDto.setEndDate(Formatter.formatDateTime(appPremisesInspecApptDto.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
         Map<String, List<ApptUserCalendarDto>> appInspDateMap = feEicGatewayClient.getUserCalendarByUserId(appointmentDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
+
         Map<String, Date> inspectionNewDateMap = new HashMap<>();
         List<SelectOption> inspectionNewDate = new ArrayList<>();
         Map<String, String> refMap = new HashMap<>();
+        int index = 0;
         if(appInspDateMap != null) {
-
-            /*for (int i = 0; i < apptUserCalendarDtoLists.size(); i++) {
-                *//*ApptUserCalendarDto apptUserCalendarDto = apptUserCalendarDtoLists.get(i).get(0);
-                Date inspDate = apptUserCalendarDto.getTimeSlot();
+            for(Map.Entry<String, List<ApptUserCalendarDto>> map : appInspDateMap.entrySet()) {
+                List<ApptUserCalendarDto> apptUserCalendarDtos = map.getValue();
+                ApptUserCalendarDto apptUserCalendarDto = apptUserCalendarDtos.get(0);
+                Date inspDate = apptUserCalendarDto.getTimeSlot().get(0);
                 String dateStr = apptDateToStringShow(inspDate);
-                inspectionNewDateMap.put(i + "", inspDate);
-                refMap.put(i + "", apptUserCalendarDto.getApptRefNo());
-                SelectOption so = new SelectOption(i + "", dateStr);
-                inspectionNewDate.add(so);*//*
-            }*/
+                inspectionNewDateMap.put(index + "", inspDate);
+                refMap.put(index + "", apptUserCalendarDto.getApptRefNo());
+                SelectOption so = new SelectOption(index + "", dateStr);
+                index++;
+                inspectionNewDate.add(so);
+            }
             apptFeConfirmDateDto.setInspectionNewDate(inspectionNewDate);
             apptFeConfirmDateDto.setInspectionNewDateMap(inspectionNewDateMap);
             apptFeConfirmDateDto.setRefNoMap(refMap);
