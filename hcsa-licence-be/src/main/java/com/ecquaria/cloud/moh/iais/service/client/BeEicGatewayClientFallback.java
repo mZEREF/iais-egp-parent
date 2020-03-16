@@ -130,4 +130,12 @@ public class BeEicGatewayClientFallback implements BeEicGatewayClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<String> getAppNo(String applicationType, String date, String authorization, String dateSec, String authorizationSec) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
