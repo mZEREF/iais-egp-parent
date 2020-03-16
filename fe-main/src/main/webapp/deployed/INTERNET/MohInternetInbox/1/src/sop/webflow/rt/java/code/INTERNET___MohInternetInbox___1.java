@@ -138,7 +138,7 @@ public class INTERNET___MohInternetInbox___1 extends BaseProcessClass {
 	}
 
 	public void appDoRenew_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "appDoRenew", this);
+		EngineHelper.delegate(DELEGATOR, "appDoWithDraw", this);
 	}
 
 	public void appDoDraft_OnStepProcess_0() throws Exception {

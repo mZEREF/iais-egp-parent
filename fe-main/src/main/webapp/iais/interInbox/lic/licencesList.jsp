@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-md-12">
                 <iais:value>
-                    <label class="col-xs-3 col-md-3" for="licNoPath" style="text-align:left;margin-top: 1.5%">Search By Licence No or Part of:</label>
+                    <label class="col-xs-3 col-md-3" for="licNoPath" style="text-align:left;margin-top: 1.5%">Search by Licence No or Part of:</label>
                     <div class="col-xs-7 col-md-7">
                         <input id="licNoPath" name="licNoPath" type="text" maxlength="15" value="<%=request.getParameter("licNoPath")==null?"":request.getParameter("licNoPath")%>">
                     </div>

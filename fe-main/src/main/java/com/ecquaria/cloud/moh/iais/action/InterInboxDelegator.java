@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
@@ -553,8 +554,15 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
     }
 
-
-
+    public void appDoRecall(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("Step ---> appDoRecall"));
+        HttpServletRequest request = bpc.request;
+        String appId = ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
+        RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
+        recallApplicationDto.setAppId(appId);
+        Boolean recallResult = inboxService.recallApplication(recallApplicationDto);
+        ParamUtil.setRequestAttr(request,InboxConst.APP_RECALL_RESULT, recallResult);
+    }
 
     private void setNumInfoToRequest(HttpServletRequest request,InterInboxUserDto interInboxUserDto){
         Integer licActiveNum = inboxService.licActiveStatusNum(interInboxUserDto.getLicenseeId());

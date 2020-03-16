@@ -41,8 +41,6 @@ public class InboxServiceImpl implements InboxService {
     @Autowired
     private EicGatewayFeMainClient eicGatewayFeMainClient;
 
-    @Value("${iais.syncFileTracking.shared.path}")
-    private String sharedPath;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")

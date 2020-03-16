@@ -45,6 +45,13 @@
     }
 </style>
 <script type="text/javascript">
+    function pageAction() {
+        if ('${msgPage}' == "msgView") {
+            $("[name='msg_page_action']").val("msg_view");
+        }else {
+            $("[name='msg_page_action']").val("archive_view");
+        }
+    }
     function submit(action) {
         $("[name='msg_action_type']").val(action);
         $("#msgForm").submit();
@@ -59,37 +66,35 @@
     }
 
     $("#inboxType").change(function () {
-        if ('${msgPage}' == "msgView") {
-            $("[name='msg_page_action']").val("msg_view");
-        }else {
-            $("[name='msg_page_action']").val("archive_view");
-        }
+        pageAction();
         submit('msgSearch');
     });
 
     $("#inboxService").change(function () {
+        pageAction();
         submit('msgSearch');
     });
 
     function jumpToPagechangePage() {
+        pageAction();
         submit('msgPage');
     }
 
     function sortRecords(sortFieldName, sortType) {
+        pageAction();
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
         submit('msgSort');
     }
 
     function searchBySubject() {
+        pageAction();
         submit('msgSearch');
     }
     
     function toArchiveView() {
         submit('msgToArchive');
     }
-
-
 
     function toMsgPage() {
         submit('toMsgPage');

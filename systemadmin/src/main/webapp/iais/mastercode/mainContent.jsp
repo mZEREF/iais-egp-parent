@@ -69,12 +69,12 @@
                                                 <p class="visible-xs visible-sm table-row-title">Effective Start
                                                     Date</p>
                                                 <p><fmt:formatDate value="${masterCodeResult.effectiveStartDate}"
-                                                                   pattern="MM/dd/yyyy"/></p>
+                                                                   pattern="dd/MM/yyyy"/></p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Effective End Date</p>
                                                 <p><fmt:formatDate value="${masterCodeResult.effectiveEndDate}"
-                                                                   pattern="MM/dd/yyyy"/></p>
+                                                                   pattern="dd/MM/yyyy"/></p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Remarks</p>

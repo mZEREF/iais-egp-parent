@@ -90,6 +90,11 @@
             $("[name='action_no_value']").val(appNo);
             $("[name='action_id_value']").val(appId);
             submit("appDoAppeal");
+        }if ("Recall" == actionName) {
+            showWaiting();
+            $("[name='action_no_value']").val(appNo);
+            $("[name='action_id_value']").val(appId);
+            submit("appDoRecall");
         }
     };
 
