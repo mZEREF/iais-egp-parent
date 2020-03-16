@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -99,7 +100,6 @@ public class HcsaChklConfigDelegator {
      * @throws IllegalAccessException
      */
     public void prepare(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
 
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_COMMON, null);
@@ -148,17 +148,13 @@ public class HcsaChklConfigDelegator {
         String sectionDesc = ParamUtil.getString(request, "sectionDesc");
 
         if(StringUtils.isEmpty(section) || StringUtils.isEmpty(sectionDesc)){
-            Map<String,String> errorMap = new HashMap<>(1);
-            errorMap.put("sectionName", MessageCodeKey.ERR0009);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("sectionName", "ERR0009"));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
 
         if (curSecName.contains(section)){
-            Map<String,String> errorMap = new HashMap<>(1);
-            errorMap.put("sectionName", MessageCodeKey.CHKL_ERR007);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("sectionName", "CHKL_ERR007"));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
@@ -397,6 +393,7 @@ public class HcsaChklConfigDelegator {
             configDto.setEftStartDate(starteDate);
             configDto.setEftEndDate(endDate);
 
+            configDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             //field validate
             ValidationResult validationResult = WebValidationHelper.validateProperty(configDto, "create");
             if(validationResult != null && validationResult.isHasErrors()){
@@ -410,11 +407,11 @@ public class HcsaChklConfigDelegator {
             }
 
             //record validate
+
             boolean existsRecord = hcsaChklService.isExistsRecord(configDto);
             if (existsRecord){
                 Map<String,String> errorMap = new HashMap<>(1);
-                errorMap.put("configCustomValidation", "Do not create the same configuration,Unless you disable it");
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("configCustomValidation", "CHKL_ERR019"));
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             }
 
@@ -540,7 +537,7 @@ public class HcsaChklConfigDelegator {
             generateOrderIndex(request, configDto.getSectionDtos());
 
             ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage(MessageCodeKey.CHKL_ACK004, "yyyy-MM-dd"));
-
+            configDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             ChecklistConfigDto checklistConfigDto = hcsaChklService.submitConfig(configDto);
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, checklistConfigDto);
 
@@ -663,14 +660,14 @@ public class HcsaChklConfigDelegator {
             sec.setOrder(order);
 
             List<ChecklistItemDto> checklistItemDtos = sec.getChecklistItemDtos();
-            if (checklistItemDtos != null && !checklistItemDtos.isEmpty()){
+            if (!IaisCommonUtils.isEmpty(checklistItemDtos)){
                 for (ChecklistItemDto item : checklistItemDtos){
                     String itemId = item.getItemId() + orderStr;
                     String itemOrder = ParamUtil.getString(request, itemId);
                     item.setSectionItemOrder(Integer.valueOf(itemOrder));
                 }
+                checklistItemDtos.sort(Comparator.comparing(ChecklistItemDto::getSectionItemOrder));
             }
-            checklistItemDtos.sort(Comparator.comparing(ChecklistItemDto::getSectionItemOrder));
         }
     }
 
@@ -684,18 +681,26 @@ public class HcsaChklConfigDelegator {
         HttpServletRequest request = bpc.request;
 
         ChecklistConfigDto preViewConfig = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
-        if (preViewConfig.getSectionDtos() == null || preViewConfig.getSectionDtos().isEmpty()){
-            Map<String,String> errorMap = new HashMap<>(1);
-            errorMap.put("configErrorMsg", "Please add the required information.");
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+        if (IaisCommonUtils.isEmpty(preViewConfig.getSectionDtos())){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("configErrorMsg", "CHKL_ERR018"));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-        }else {
-            ParamUtil.setSessionAttr(request, "actionBtn", "submitView");
-            generateOrderIndex(request, preViewConfig.getSectionDtos());
-            preViewConfig.getSectionDtos().sort(Comparator.comparing(ChecklistSectionDto::getOrder));
-            ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, preViewConfig);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+            return;
         }
+
+        List<ChecklistSectionDto> checklistSectionDtoList = preViewConfig.getSectionDtos();
+        for (ChecklistSectionDto sectionDto : checklistSectionDtoList){
+            if (IaisCommonUtils.isEmpty(sectionDto.getChecklistItemDtos())){
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("configErrorMsg", "CHKL_ERR017"));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                return;
+            }
+        }
+
+        ParamUtil.setSessionAttr(request, "actionBtn", "submitView");
+        generateOrderIndex(request, preViewConfig.getSectionDtos());
+        preViewConfig.getSectionDtos().sort(Comparator.comparing(ChecklistSectionDto::getOrder));
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, preViewConfig);
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
 
     }
 
@@ -750,12 +755,12 @@ public class HcsaChklConfigDelegator {
         try {
             ChecklistConfigDto configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
             if(configDto != null){
-
                 String operationType = (String) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.ACTION_OPERATIONTYPE);
                 if (HcsaChecklistConstants.ACTION_CLONE.equals(operationType)){
                     configDto.setId(null);
                 }
 
+                configDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 ChecklistConfigDto checklistConfigDto = hcsaChklService.submitConfig(configDto);
 
                 ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage(MessageCodeKey.CHKL_ACK002, "yyyy-MM-dd"));

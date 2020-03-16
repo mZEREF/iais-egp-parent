@@ -71,7 +71,9 @@
   <div class="main-content">
     <div class="container">
       <div class="row">
+        <br><br>
         <span id="error_configErrorMsg" name="iaisErrorMsg" class="error-msg"></span>
+        <br><br>
         <div class="col-xs-12">
         <c:choose>
           <c:when test="${operationType == 'doEdit'}">

@@ -87,7 +87,7 @@ public class HcsaChklConfigValidate implements CustomizeValidator {
         LocalDate endDate = LocalDate.parse(eStr, formatter);
 
         int comparatorValue = endDate.compareTo(startDate);
-        if (comparatorValue < 0){
+        if (comparatorValue < 0 || comparatorValue == 0){
             errMap.put("configCustomValidation", MessageUtil.getMessageDesc(MessageCodeKey.CHKL_ERR013));
             return errMap;
         }

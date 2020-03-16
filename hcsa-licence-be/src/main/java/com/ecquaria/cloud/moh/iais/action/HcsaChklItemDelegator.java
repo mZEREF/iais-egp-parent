@@ -88,7 +88,7 @@ public class HcsaChklItemDelegator {
      * @throws IllegalAccessException
      */
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction("Checklist Management", "Checklist Management");
+        AuditTrailHelper.auditFunction("Checklist Management", "Checklist Item");
         HttpServletRequest request = bpc.request;
 
 
@@ -315,8 +315,7 @@ public class HcsaChklItemDelegator {
             Map<String, String> errorMap = new HashMap<>();
             int errorCode = itemDtoIaisApiResult.getErrorCode();
             if (IaisApiStatusCode.DUPLICATION_RECORD.getStatusCode() == errorCode){
-                errorMap.put("messageContent", IaisApiStatusCode.DUPLICATION_RECORD.getMessage());
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("messageContent", IaisApiStatusCode.DUPLICATION_RECORD.getMessage()));
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             }
         }else {
@@ -510,11 +509,8 @@ public class HcsaChklItemDelegator {
                 for (ChecklistItemDto chkl : checklistItemDtos){
                     for (String s : checkBoxItemId){
                         if (chkl.getItemId().equals(s)){
-                            Map<String,String> errorMap = new HashMap<>();
-                            errorMap.put("configCustomValidation", MessageCodeKey.CHKL_ERR007);
-
                             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-                            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("configCustomValidation", "CHKL_ERR007"));
                             return;
                         }
                     }
@@ -642,9 +638,7 @@ public class HcsaChklItemDelegator {
         if(!StringUtil.isEmpty(itemId)){
             boolean canInactive = hcsaChklService.inActiveItem(itemId);
             if (!canInactive){
-                Map<String,String> errorMap = new HashMap<>(1);
-                errorMap.put("deleteItemMsg", "Delete Item faild, this item is being used.");
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("deleteItemMsg", "CHKL_ERR020"));
             }
         }
     }
