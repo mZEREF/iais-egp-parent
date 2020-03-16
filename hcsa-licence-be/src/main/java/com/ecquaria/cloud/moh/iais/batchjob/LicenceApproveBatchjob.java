@@ -361,7 +361,7 @@ public class LicenceApproveBatchjob {
                     List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos = applicationListDto.getAppSvcPremisesScopeDtos();
                     List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos = applicationListDto.getAppSvcPremisesScopeAllocationDtos();
 
-                    List<PremisesGroupDto> premisesGroupDtos1 = getPremisesGroupDto(appGrpPremisesEntityDtos,appPremisesCorrelationDtos,appSvcPremisesScopeDtos,
+                    List<PremisesGroupDto> premisesGroupDtos1 = getPremisesGroupDto(applicationLicenceDto,appGrpPremisesEntityDtos,appPremisesCorrelationDtos,appSvcPremisesScopeDtos,
                             appSvcPremisesScopeAllocationDtos, hcsaServiceDto,organizationId,isPostInspNeeded);
                     if(!IaisCommonUtils.isEmpty(premisesGroupDtos1)){
                         PremisesGroupDto premisesGroupDto = premisesGroupDtos1.get(0);
@@ -505,10 +505,10 @@ public class LicenceApproveBatchjob {
                 List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos = applicationListDto.getAppSvcPremisesScopeDtos();
                 List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos = applicationListDto.getAppSvcPremisesScopeAllocationDtos();
 
-                List<PremisesGroupDto> premisesGroupDtos = getPremisesGroupDto(appGrpPremisesEntityDtos,appPremisesCorrelationDtos,appSvcPremisesScopeDtos,
+                List<PremisesGroupDto> premisesGroupDtos = getPremisesGroupDto(applicationLicenceDto,appGrpPremisesEntityDtos,appPremisesCorrelationDtos,appSvcPremisesScopeDtos,
                         appSvcPremisesScopeAllocationDtos, hcsaServiceDto,organizationId,isPostInspNeeded);
                 String licenceNo = null;
-                //todo:get the yearLenth.
+                //get the yearLenth.
                 int yearLength = getYearLength(appPremisesRecommendationDto);
                 if(!IaisCommonUtils.isEmpty(premisesGroupDtos)){
                     PremisesGroupDto premisesGroupDto =premisesGroupDtos.get(0);
@@ -631,8 +631,34 @@ public class LicenceApproveBatchjob {
         return  result;
     }
 
+    private String getHciCodeFromSameApplicaitonGroup(ApplicationLicenceDto applicationLicenceDto,AppGrpPremisesEntityDto appGrpPremisesEntityDto){
+        String hciCode = null;
+        if(applicationLicenceDto != null && appGrpPremisesEntityDto != null){
+            List<ApplicationListDto> applicationListDtoList = applicationLicenceDto.getApplicationListDtoList();
+            if(!IaisCommonUtils.isEmpty(applicationListDtoList)){
+              for (ApplicationListDto applicationListDto : applicationListDtoList){
+                  List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos =  applicationListDto.getAppGrpPremisesEntityDtos();
+                  if(!IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)){
+                     for (AppGrpPremisesEntityDto appGrpPremisesEntityDto1 : appGrpPremisesEntityDtos){
+                         if(appGrpPremisesEntityDto.getPremiseKey().equals(appGrpPremisesEntityDto1.getPremiseKey()) &&
+                                 !StringUtil.isEmpty(appGrpPremisesEntityDto1.getHciCode())){
+                             hciCode = appGrpPremisesEntityDto1.getHciCode();
+                             break;
+                         }
+                     }
+                  }
+                  if(!StringUtil.isEmpty(hciCode)){
+                      break;
+                  }
+              }
+            }
+        }
+        return  hciCode;
 
-    private List<PremisesGroupDto> getPremisesGroupDto(List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos,
+    }
+
+    private List<PremisesGroupDto> getPremisesGroupDto(ApplicationLicenceDto applicationLicenceDto,
+                                                       List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos,
                                                        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos,
                                                        List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos,
                                                        List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos,
@@ -649,7 +675,11 @@ public class LicenceApproveBatchjob {
             //premises
             String hciCode = appGrpPremisesEntityDto.getHciCode();
             if(StringUtil.isEmpty(hciCode)){
-                hciCode = licenceService.getHciCode(hcsaServiceDto.getSvcCode());
+                hciCode = getHciCodeFromSameApplicaitonGroup(applicationLicenceDto,appGrpPremisesEntityDto);
+                if(StringUtil.isEmpty(hciCode)){
+                    hciCode = licenceService.getHciCode(hcsaServiceDto.getSvcCode());
+                }
+                appGrpPremisesEntityDto.setHciCode(hciCode);
             }
             PremisesDto premisesDto = MiscUtil.transferEntityDto(appGrpPremisesEntityDto,PremisesDto.class);
             premisesDto.setHciCode(hciCode);

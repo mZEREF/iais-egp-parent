@@ -81,11 +81,7 @@ public class EventbusCallBackDelegate {
                 if (EventBusConsts.SERVICE_NAME_DEMO.equals(serviceName)) {
                     handleDemoNext(submissionId, eventRefNum, operation);
                 }else if (EventBusConsts.SERVICE_NAME_APPSUBMIT.equals(serviceName)) {
-                     if(EventBusConsts.OPERATION_LICENCE_SAVE_APPEAL.equals(operation)){
-                         invokeMethod(submissionId, eventRefNum,
-                                 "com.ecquaria.cloud.moh.iais.service.impl.AppealServiceImpl",
-                                 "updateFEAppealLicenceDto");
-                    }else if(EventBusConsts.OPERATION_APPLICATION_UPDATE_APPEAL.equals(operation)){
+                    if(EventBusConsts.OPERATION_APPLICATION_UPDATE_APPEAL.equals(operation)){
                          invokeMethod(submissionId, eventRefNum,
                                  "com.ecquaria.cloud.moh.iais.service.impl.AppealApplicaionServiceImpl",
                                  "updateFEAppealApplicationDto");
@@ -97,6 +93,10 @@ public class EventbusCallBackDelegate {
                         invokeMethod(submissionId, eventRefNum,
                                 "com.ecquaria.cloud.moh.iais.service.impl.LicenceServiceImpl",
                                 "createFESuperLicDto");
+                    }else if(EventBusConsts.OPERATION_LICENCE_SAVE_APPEAL.equals(operation)){
+                        invokeMethod(submissionId, eventRefNum,
+                                "com.ecquaria.cloud.moh.iais.service.impl.AppealServiceImpl",
+                                "updateFEAppealLicenceDto");
                     }
                 }
             }
