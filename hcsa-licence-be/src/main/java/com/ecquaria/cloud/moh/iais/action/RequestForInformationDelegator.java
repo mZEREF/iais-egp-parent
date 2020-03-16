@@ -863,12 +863,16 @@ public class RequestForInformationDelegator {
         String userId = loginContext.getUserId();
         //ParamUtil.setRequestAttr(request, "isValid", "Y");
         ParamUtil.setRequestAttr(request, "isValid", "N");
-        List<String> userIds=requestForInformationService.getActionBysByLicPremCorrId(licPremId);
-        for (String id:userIds
-             ) {
-            if (userId.equals(id)){
-                ParamUtil.setRequestAttr(request, "isValid", "Y");
+        try{
+            List<String> userIds=requestForInformationService.getActionBysByLicPremCorrId(licPremId);
+            for (String id:userIds
+            ) {
+                if (userId.equals(id)){
+                    ParamUtil.setRequestAttr(request, "isValid", "Y");
+                }
             }
+        }catch (Exception e){
+            log.info(e.getMessage());
         }
 
         if(!licPremisesReqForInfoDtoList.isEmpty()) {
