@@ -903,8 +903,6 @@ public class NewApplicationDelegator {
     public void doSubmit(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do doSubmit start ...."));
 
-        String isGroupLic = ParamUtil.getString(bpc.request,"isGroupLic");
-
         Map<String, String> map = doPreviewAndSumbit(bpc);
         if(!map.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"Msg",map);
@@ -913,9 +911,11 @@ public class NewApplicationDelegator {
         }
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
 
-        if(AppConsts.YES.equals(isGroupLic)){
+        String isGroupLic = ParamUtil.getString(bpc.request,"isGroupLic");
+        if(!StringUtil.isEmpty(isGroupLic) && AppConsts.YES.equals(isGroupLic)){
             appSubmissionDto.setGroupLic(true);
         }
+
         String draftNo = appSubmissionDto.getDraftNo();
         if(StringUtil.isEmpty(draftNo)){
             draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
