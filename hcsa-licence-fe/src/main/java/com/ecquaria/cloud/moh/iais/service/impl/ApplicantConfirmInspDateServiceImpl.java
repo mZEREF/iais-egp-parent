@@ -27,17 +27,20 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import java.util.Set;
 
 /**
  * @author Shicheng
@@ -76,49 +79,52 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
-//        if(!StringUtil.isEmpty(appPremCorrId)) {
-//            ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(appPremCorrId).getEntity();
-//            apptFeConfirmDateDto.setApplicationDto(applicationDto);
-//            List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = inspectionFeClient.getSystemDtosByAppPremCorrId(appPremCorrId).getEntity();
-//            if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtoList)){
-//                List<String> apptRefNos = new ArrayList<>();
-//                for(AppPremisesInspecApptDto aDto : appPremisesInspecApptDtoList){
-//                    apptRefNos.add(aDto.getApptRefNo());
-//                }
-//                List<ApptUserCalendarAndUserIdDto> apptUserCalendarAndUserIdDtos = feEicGatewayClient.getAppointmentByApptRefNo(apptRefNos, signature.date(), signature.authorization(),
-//                        signature2.date(), signature2.authorization()).getEntity();
-//                if(!IaisCommonUtils.isEmpty(apptUserCalendarAndUserIdDtos)) {
-//                    apptFeConfirmDateDto.setApptUserCalendarAndUserIdDtos(apptUserCalendarAndUserIdDtos);
-//                    setSystemDateMap(apptFeConfirmDateDto);
-//                }
-//            }
-//            apptFeConfirmDateDto.setAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList);
-//            apptFeConfirmDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDtoList.get(0));
-//            apptFeConfirmDateDto.setAppPremCorrId(appPremCorrId);
-//        }
+        if(!StringUtil.isEmpty(appPremCorrId)) {
+            ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(appPremCorrId).getEntity();
+            apptFeConfirmDateDto.setApplicationDto(applicationDto);
+            List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = inspectionFeClient.getSystemDtosByAppPremCorrId(appPremCorrId).getEntity();
+            if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtoList)){
+                List<String> apptRefNos = new ArrayList<>();
+                for(AppPremisesInspecApptDto aDto : appPremisesInspecApptDtoList){
+                    apptRefNos.add(aDto.getApptRefNo());
+                }
+                Set<String> apptRefNoSet = new HashSet<>(apptRefNos);
+                apptRefNos = new ArrayList<>(apptRefNoSet);
+                Map<String, List<ApptUserCalendarDto>> apptInspDateMap = feEicGatewayClient.getAppointmentByApptRefNo(apptRefNos, signature.date(), signature.authorization(),
+                        signature2.date(), signature2.authorization()).getEntity();
+                if(apptInspDateMap != null) {
+                    apptFeConfirmDateDto.setApptInspDateMap(apptInspDateMap);
+                    setSystemDateMap(apptFeConfirmDateDto);
+                }
+            }
+            apptFeConfirmDateDto.setAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList);
+            apptFeConfirmDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDtoList.get(0));
+            apptFeConfirmDateDto.setAppPremCorrId(appPremCorrId);
+        }
         return apptFeConfirmDateDto;
     }
 
     private void setSystemDateMap(ApptFeConfirmDateDto apptFeConfirmDateDto) {
         List<ApptUserCalendarDto> apptUserCalendarDtos = new ArrayList<>();
-//        for(ApptUserCalendarAndUserIdDto aucauDto : apptFeConfirmDateDto.getApptUserCalendarAndUserIdDtos()){
-//            if(!IaisCommonUtils.isEmpty(aucauDto.getAppointmentDtoList())){
-//                apptUserCalendarDtos.add(aucauDto.getAppointmentDtoList().get(0));
-//            }
-//        }
+        for(Map.Entry<String, List<ApptUserCalendarDto>> apptInspDateMap : apptFeConfirmDateDto.getApptInspDateMap().entrySet()){
+            List<ApptUserCalendarDto> apptUserCalendarDtoList = apptInspDateMap.getValue();
+            if(!IaisCommonUtils.isEmpty(apptUserCalendarDtoList)){
+                apptUserCalendarDtos.add(apptUserCalendarDtoList.get(0));
+            }
+        }
         if(!IaisCommonUtils.isEmpty(apptUserCalendarDtos)) {
             Map<String, Date> inspectionDateMap = new HashMap<>();
             List<SelectOption> inspectionDate = new ArrayList<>();
             for (AppPremisesInspecApptDto appPremisesInspecApptDto : apptFeConfirmDateDto.getAppPremisesInspecApptDtoList()) {
                 for(int i = 0; i < apptUserCalendarDtos.size(); i++){
                     if(appPremisesInspecApptDto.getApptRefNo().equals(apptUserCalendarDtos.get(i).getApptRefNo())){
-                        /*Date inspDate = apptUserCalendarDtos.get(i).getTimeSlot();
+                        Date inspDate = apptUserCalendarDtos.get(i).getTimeSlot().get(0);
                         String dateStr = apptDateToStringShow(inspDate);
                         inspectionDateMap.put(appPremisesInspecApptDto.getId(), inspDate);
                         SelectOption so = new SelectOption(appPremisesInspecApptDto.getId(), dateStr);
                         inspectionDate.add(so);
                         apptUserCalendarDtos.remove(i);
-                        i--;*/
+                        i--;
                     }
                 }
             }
@@ -152,14 +158,15 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     }
 
     private void setRecommendationDto(ApptFeConfirmDateDto apptFeConfirmDateDto, ApptInspectionDateDto apptInspectionDateDto) {
+        List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = new ArrayList<>();
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appPremisesRecommendationDto.setAppPremCorreId(apptFeConfirmDateDto.getAppPremCorrId());
         appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         appPremisesRecommendationDto.setRecomDecision(InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE);
         appPremisesRecommendationDto.setRecomInDate(apptFeConfirmDateDto.getSaveDate());
         appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
-        apptInspectionDateDto.setAppPremisesRecommendationDto(appPremisesRecommendationDto);
+        appPremisesRecommendationDtos.add(appPremisesRecommendationDto);
+        apptInspectionDateDto.setAppPremisesRecommendationDtos(appPremisesRecommendationDtos);
     }
 
     @Override
@@ -174,7 +181,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 //        }
         AppointmentDto appointmentDto = new AppointmentDto();
         AppPremisesInspecApptDto appPremisesInspecApptDto = apptFeConfirmDateDto.getAppPremisesInspecApptDto();
-        //appointmentDto.setUserId(systemCorrId);
         appointmentDto.setStartDate(Formatter.formatDateTime(appPremisesInspecApptDto.getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
         appointmentDto.setEndDate(Formatter.formatDateTime(appPremisesInspecApptDto.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
         List<List<ApptUserCalendarDto>> apptUserCalendarDtoLists = feEicGatewayClient.getUserCalendarByUserId(appointmentDto, signature.date(), signature.authorization(),
@@ -241,10 +247,12 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     }
 
     private void setCreateInspectionStatus(ApptInspectionDateDto apptInspectionDateDto, String status) {
+        List<AppInspectionStatusDto> appInspectionStatusDtos = new ArrayList<>();
         AppInspectionStatusDto appInspectionStatusDto = new AppInspectionStatusDto();
         appInspectionStatusDto.setStatus(status);
         appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        apptInspectionDateDto.setAppInspectionStatusDto(appInspectionStatusDto);
+        appInspectionStatusDtos.add(appInspectionStatusDto);
+        apptInspectionDateDto.setAppInspectionStatusDtos(appInspectionStatusDtos);
     }
 
     private void setCreateHistoryDto(ApptFeConfirmDateDto apptFeConfirmDateDto, ApptInspectionDateDto apptInspectionDateDto) {
@@ -255,7 +263,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         appPremisesRoutingHistoryDto.setAppStatus(apptFeConfirmDateDto.getApplicationDto().getStatus());
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
-        apptInspectionDateDto.setAppPremisesRoutingHistoryDto(appPremisesRoutingHistoryDto);
+        //apptInspectionDateDto.setAppPremisesRoutingHistoryDto(appPremisesRoutingHistoryDto);
     }
 
     private void setUpdateApplicationDto(ApptFeConfirmDateDto apptFeConfirmDateDto, ApptInspectionDateDto apptInspectionDateDto, String status) {
@@ -264,7 +272,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         applicationDto = applicationClient.updateApplication(applicationDto).getEntity();
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        apptInspectionDateDto.setApplicationDto(applicationDto);
+        //apptInspectionDateDto.setApplicationDto(applicationDto);
     }
 
     private void setApptCreateList(ApptFeConfirmDateDto apptFeConfirmDateDto, ApptInspectionDateDto apptInspectionDateDto, String processDo) {
@@ -349,7 +357,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         setUpdateApplicationDto(apptFeConfirmDateDto, apptInspectionDateDto, ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING);
         setCreateHistoryDto(apptFeConfirmDateDto, apptInspectionDateDto);
         setCreateInspectionStatus(apptInspectionDateDto, InspectionConstants.INSPECTION_STATUS_PENDING_RE_APPOINTMENT_INSPECTION_DATE);
-        apptInspectionDateDto.setAppPremisesRecommendationDto(null);
+        apptInspectionDateDto.setAppPremisesRecommendationDtos(null);
 
         feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
@@ -409,7 +417,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         setUpdateApplicationDto(apptFeConfirmDateDto, apptInspectionDateDto, ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING);
         setCreateHistoryDto(apptFeConfirmDateDto, apptInspectionDateDto);
         setCreateInspectionStatus(apptInspectionDateDto, InspectionConstants.INSPECTION_STATUS_PENDING_RE_APPOINTMENT_INSPECTION_DATE);
-        apptInspectionDateDto.setAppPremisesRecommendationDto(null);
+        apptInspectionDateDto.setAppPremisesRecommendationDtos(null);
 
         feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
