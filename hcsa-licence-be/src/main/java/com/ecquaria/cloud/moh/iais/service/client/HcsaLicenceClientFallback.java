@@ -1,12 +1,12 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicEicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
@@ -21,10 +21,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditInspectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
-
 import java.util.List;
 import java.util.Map;
+import org.springframework.http.HttpHeaders;
 
 /**
  * @author Wenkang
@@ -146,7 +145,7 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<LicEicRequestTrackingDto> getLicEicRequestTrackingDto(String eventRefNo) {
+    public FeignResponseEntity<EicRequestTrackingDto> getLicEicRequestTrackingDto(String eventRefNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -154,7 +153,7 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<LicEicRequestTrackingDto> updateLicEicRequestTracking(LicEicRequestTrackingDto licEicRequestTrackingDto) {
+    public FeignResponseEntity<EicRequestTrackingDto> updateLicEicRequestTracking(EicRequestTrackingDto licEicRequestTrackingDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
