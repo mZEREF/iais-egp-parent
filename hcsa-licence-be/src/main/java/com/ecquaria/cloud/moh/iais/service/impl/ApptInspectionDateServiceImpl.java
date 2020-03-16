@@ -361,22 +361,24 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     @Override
     public void saveLeadSpecificDate(ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto) {
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = new ArrayList<>();
-        String appPremCorrId = apptInspectionDateDto.getTaskDto().getRefNo();
+        String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
+        List<String> appPremCorrIds = apptInspectionDateDto.getRefNo();
         String serviceId = apptInspectionDateDto.getAppointmentDto().getServiceId();
         Date submitDt = apptInspectionDateDto.getAppointmentDto().getSubmitDt();
-        AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
-        appPremisesInspecApptDto.setAppCorrId(appPremCorrId);
-        appPremisesInspecApptDto.setApptRefNo(null);
-        appPremisesInspecApptDto.setSpecificInspDate(apptInspectionDateDto.getSpecificDate());
-        appPremisesInspecApptDto.setId(null);
-        appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
-
+        for(String appPremCorrId : appPremCorrIds) {
+            AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
+            appPremisesInspecApptDto.setAppCorrId(appPremCorrId);
+            appPremisesInspecApptDto.setApptRefNo(null);
+            appPremisesInspecApptDto.setSpecificInspDate(apptInspectionDateDto.getSpecificDate());
+            appPremisesInspecApptDto.setId(null);
+            appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
+        }
         appPremisesInspecApptDtoList = applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList).getEntity();
         createFeAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
         String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
-                MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE + appPremCorrId;
+                MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE + urlId;
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         inspectionDateSendEmail(submitDt, url, licenseeId);
         createMessage(url, serviceId, submitDt);
