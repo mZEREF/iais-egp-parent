@@ -35,7 +35,7 @@
                             <iais:value>
                                 <label class="col-xs-2 col-md-2 control-label">MsgName</label>
                                 <div class="col-xs-4 col-sm-4 col-md-4">
-                                    <input type="text" name="msgName" id="msgName" value="${msgName}"/>
+                                    <input type="text" name="msgName" maxlength="500" id="msgName" value="${msgName}"/>
                                 </div>
                             </iais:value>
                         </div>
