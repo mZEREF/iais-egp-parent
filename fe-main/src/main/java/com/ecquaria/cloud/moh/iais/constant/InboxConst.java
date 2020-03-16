@@ -45,9 +45,9 @@ public class InboxConst {
     public static final String MESSAGE_CONTENT             = "IAIS_MSG_CONTENT";
 
 
+    public static final String APP_RECALL_RESULT           = "recall_result";
+    public static final String SEARCH_ALL                  = "All";
 
-    public static final String SEARCH_ALL                 = "All";
-
-    public static final String ASCENDING            = "ASC";
-    public static final String DESCENDING           = "DESC";
+    public static final String ASCENDING                   = "ASC";
+    public static final String DESCENDING                  = "DESC";
 }

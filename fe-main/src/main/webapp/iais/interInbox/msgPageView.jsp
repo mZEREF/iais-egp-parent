@@ -60,10 +60,8 @@
 
     $("#inboxType").change(function () {
         if ('${msgPage}' == "msgView") {
-            alert('${msgPage}')
             $("[name='msg_page_action']").val("msg_view");
         }else {
-            alert('${msgPage}')
             $("[name='msg_page_action']").val("archive_view");
         }
         submit('msgSearch');
@@ -90,6 +88,8 @@
     function toArchiveView() {
         submit('msgToArchive');
     }
+
+
 
     function toMsgPage() {
         submit('toMsgPage');

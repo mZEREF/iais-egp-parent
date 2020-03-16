@@ -2,16 +2,21 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,6 +37,20 @@ public class InboxServiceImpl implements InboxService {
 
     @Autowired
     private FeUserClient feUserClient;
+
+    @Autowired
+    private EicGatewayFeMainClient eicGatewayFeMainClient;
+
+    @Value("${iais.syncFileTracking.shared.path}")
+    private String sharedPath;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     @Override
     public String getServiceNameById(String serviceId) {
@@ -62,10 +81,6 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
-    public void recallApplication(String appNo) {
-    }
-
-    @Override
     public Integer licActiveStatusNum(String licenseeId) {
         return licenceInboxClient.getLicActiveStatusNum(licenseeId).getEntity();
     }
@@ -83,5 +98,37 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public void updateDraftStatus(String draftNo, String status) {
         appInboxClient.updateDraftStatus(draftNo,status).getEntity();
+    }
+
+    @Override
+    public Boolean recallApplication(RecallApplicationDto recallApplicationDto) {
+        Boolean result = false;
+        List<String> refNoList = new ArrayList<>();
+        String appId = recallApplicationDto.getAppId();
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = appInboxClient.listAppPremisesCorrelation(appId).getEntity();
+        for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtoList
+             ) {
+            refNoList.add(appPremisesCorrelationDto.getId());
+        }
+        recallApplicationDto.setRefNo(refNoList);
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        try {
+            recallApplicationDto = eicGatewayFeMainClient.recallAppChangeTask(recallApplicationDto, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getEntity();
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            return result;
+        }
+        if (recallApplicationDto.getResult()){
+            try {
+                result = eicGatewayFeMainClient.updateApplicationStatus(recallApplicationDto, signature.date(), signature.authorization(),
+                        signature2.date(), signature2.authorization()).getEntity();
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+                return result;
+            }
+        }
+        return result;
     }
 }
