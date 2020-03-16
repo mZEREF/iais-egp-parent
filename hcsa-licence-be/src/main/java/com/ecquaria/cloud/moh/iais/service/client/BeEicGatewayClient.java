@@ -16,12 +16,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -130,4 +125,11 @@ public interface BeEicGatewayClient {
                                                                @RequestHeader("date-Secondary") String dateSec,
                                                                @RequestHeader("authorization-Secondary") String authorizationSec);
 
+
+    @GetMapping(value = "/v1/new-app-no", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> getAppNo(@RequestParam(value = "type") String applicationType,
+                                                                 @RequestHeader("date") String date,
+                                                                 @RequestHeader("authorization") String authorization,
+                                                                 @RequestHeader("date-Secondary") String dateSec,
+                                                                 @RequestHeader("authorization-Secondary") String authorizationSec);
 }

@@ -176,7 +176,10 @@ public class ReCessationApplicationDelegator {
         List<String> licNos = new ArrayList<>();
         for(AppCessatonConfirmDto appCessatonConfirmDto :appCessationDtosConfirms){
             String licenceNo = appCessatonConfirmDto.getLicenceNo();
-            licNos.add(licenceNo);
+            Date effectiveDate = appCessatonConfirmDto.getEffectiveDate();
+            if(effectiveDate.before(new Date())){
+                licNos.add(licenceNo);
+            }
         }
         if(!licNos.isEmpty()){
             cessationService.updateLicenceFe(licNos);

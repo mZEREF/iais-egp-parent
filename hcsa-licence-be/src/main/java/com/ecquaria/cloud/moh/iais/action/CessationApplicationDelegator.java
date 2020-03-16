@@ -151,31 +151,31 @@ public class CessationApplicationDelegator {
     public void saveData(BaseProcessClass bpc){
         List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
         cessationService.saveCessations(appCessationDtos);
-        List<AppCessatonConfirmDto> appCessationDtosConfirms = new ArrayList<>();
-        for (AppCessationDto appCessationDto : appCessationDtos) {
-            String licId = appCessationDto.getWhichTodo();
-            List<String> licIds = new ArrayList<>();
-            licIds.add(licId);
-            ApplicationDto applicationDto = applicationClient.getApplicationByLicId(licId).getEntity();
-            List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
-            AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
-            String licenceNo = appCessLicDto.getLicenceNo();
-            String svcName = appCessLicDto.getSvcName();
-            String hciName = appCessLicDto.getAppCessHciDtos().get(0).getHciName();
-            String hciAddress = appCessLicDto.getAppCessHciDtos().get(0).getHciAddress();
-            String applicationNo = applicationDto.getApplicationNo();
-            Date effectiveDate = appCessationDto.getEffectiveDate();
-            AppCessatonConfirmDto appCessatonConfirmDto = new AppCessatonConfirmDto();
-            appCessatonConfirmDto.setAppNo(applicationNo);
-            appCessatonConfirmDto.setEffectiveDate(effectiveDate);
-            appCessatonConfirmDto.setHciAddress(hciAddress);
-            appCessatonConfirmDto.setSvcName(svcName);
-            appCessatonConfirmDto.setLicenceNo(licenceNo);
-            appCessatonConfirmDto.setHciName(hciName);
-            appCessationDtosConfirms.add(appCessatonConfirmDto);
-        }
+//        List<AppCessatonConfirmDto> appCessationDtosConfirms = new ArrayList<>();
+//        for (AppCessationDto appCessationDto : appCessationDtos) {
+//            String licId = appCessationDto.getWhichTodo();
+//            List<String> licIds = new ArrayList<>();
+//            licIds.add(licId);
+//            ApplicationDto applicationDto = applicationClient.getApplicationByLicId(licId).getEntity();
+//            List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
+//            AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
+//            String licenceNo = appCessLicDto.getLicenceNo();
+//            String svcName = appCessLicDto.getSvcName();
+//            String hciName = appCessLicDto.getAppCessHciDtos().get(0).getHciName();
+//            String hciAddress = appCessLicDto.getAppCessHciDtos().get(0).getHciAddress();
+//            String applicationNo = applicationDto.getApplicationNo();
+//            Date effectiveDate = appCessationDto.getEffectiveDate();
+//            AppCessatonConfirmDto appCessatonConfirmDto = new AppCessatonConfirmDto();
+//            appCessatonConfirmDto.setAppNo(applicationNo);
+//            appCessatonConfirmDto.setEffectiveDate(effectiveDate);
+//            appCessatonConfirmDto.setHciAddress(hciAddress);
+//            appCessatonConfirmDto.setSvcName(svcName);
+//            appCessatonConfirmDto.setLicenceNo(licenceNo);
+//            appCessatonConfirmDto.setHciName(hciName);
+//            appCessationDtosConfirms.add(appCessatonConfirmDto);
+//        }
 
-        ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) appCessationDtosConfirms);
+        //ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) appCessationDtosConfirms);
     }
 
     public void response(BaseProcessClass bpc) throws IOException {

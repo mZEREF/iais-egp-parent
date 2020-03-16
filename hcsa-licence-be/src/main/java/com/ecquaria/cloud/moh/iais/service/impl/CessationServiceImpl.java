@@ -11,11 +11,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,6 +37,18 @@ public class CessationServiceImpl implements CessationService {
     private CessationClient cessationClient;
     @Autowired
     private ApplicationClient applicationClient;
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     @Override
     public List<String> getActiveLicence(List<String> licIds) {
@@ -85,29 +100,32 @@ public class CessationServiceImpl implements CessationService {
 
     @Override
     public void saveCessations(List<AppCessationDto> appCessationDtos) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<AppCessMiscDto> appCessMiscDtos = new ArrayList<>();
         for (AppCessationDto appCessationDto : appCessationDtos) {
             AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
             String licId = appCessationDto.getWhichTodo();
-            String appNo = "AN191276000067q";
-            ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo, licId,ApplicationConsts.APPLICATION_TYPE_APPEAL);
-            List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
-            appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);
-            ApplicationDto applicationDto = new ApplicationDto();
-            applicationDto.setApplicationType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
-            applicationDto.setApplicationNo(appNo);
-            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-            applicationDto.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
-            applicationDto.setVersion(1);
-            applicationDto.setLicenceId(licId);
-            List<ApplicationDto> applicationDtos = new ArrayList<>();
-            applicationDtos.add(applicationDto);
-            appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
-            appCessMiscDto.setApplicationDto(applicationDtos);
-            setMiscData(appCessationDto,appCessMiscDto);
-            appCessMiscDtos.add(appCessMiscDto);
+            String appNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT,signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getEntity();
+//            ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo, licId,ApplicationConsts.APPLICATION_TYPE_APPEAL);
+//            List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
+//            appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);
+//            ApplicationDto applicationDto = new ApplicationDto();
+//            applicationDto.setApplicationType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
+//            applicationDto.setApplicationNo(appNo);
+//            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+//            applicationDto.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
+//            applicationDto.setVersion(1);
+//            applicationDto.setLicenceId(licId);
+//            List<ApplicationDto> applicationDtos = new ArrayList<>();
+//            applicationDtos.add(applicationDto);
+//            appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
+//            appCessMiscDto.setApplicationDto(applicationDtos);
+//            setMiscData(appCessationDto,appCessMiscDto);
+//            appCessMiscDtos.add(appCessMiscDto);
         }
-        cessationClient.saveCessation(appCessMiscDtos).getEntity();
+        //cessationClient.saveCessation(appCessMiscDtos).getEntity();
     }
 
 
