@@ -43,7 +43,9 @@
                         <iais:row>
                           <iais:field value="Application No"/>
                           <iais:value width="7">
-                            <label><c:out value = "${apptFeConfirmDateDto.applicationNo}"/></label>
+                            <c:forEach items="${apptFeConfirmDateDto.applicationDtos}" var="app">
+                              <label><c:out value = "${app.applicationNo}"/></label><br>
+                            </c:forEach>
                           </iais:value>
                         </iais:row>
                         <iais:row>
@@ -55,7 +57,9 @@
                         <iais:row>
                           <iais:field value="Licence Period"/>
                           <iais:value width="7">
-                            <label><c:out value = "${apptFeConfirmDateDto.licencePeriod}"/></label>
+                            <c:forEach items="${apptFeConfirmDateDto.licencePeriods}" var="lic">
+                              <label><c:out value = "${lic}"/></label><br>
+                            </c:forEach>
                           </iais:value>
                         </iais:row>
                         <iais:row>

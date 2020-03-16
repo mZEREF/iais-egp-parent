@@ -393,33 +393,50 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     @Override
     public ApptFeConfirmDateDto getSpecificDateDto(String appPremCorrId) {
         ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
-        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = new ArrayList<>();
+        //get All CorrDto From Same Premises
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getLastAppPremisesCorrelationDtoByCorreId(appPremCorrId).getEntity();
+        //set All TaskRefNo (AppPremCorrIds)
+        List<String> taskRefNo = getTaskRefNoList(appPremisesCorrelationDtos);
+        apptFeConfirmDateDto.setTaskRefNo(taskRefNo);
+        List<ApplicationDto> applicationDtos = applicationClient.getPremisesApplicationsByCorreId(appPremCorrId).getEntity();
+        apptFeConfirmDateDto.setApplicationDtos(applicationDtos);
+        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = inspectionFeClient.getSystemDtosByAppPremCorrIdList(taskRefNo).getEntity();
         if(!StringUtil.isEmpty(appPremCorrId)){
-            AppPremisesInspecApptDto appPremisesInspecApptDto = inspectionFeClient.getSpecificDtoByAppPremCorrId(appPremCorrId).getEntity();
-            appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
-
+            AppPremisesInspecApptDto appPremisesInspecApptDto = appPremisesInspecApptDtoList.get(0);
             apptFeConfirmDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDto);
             apptFeConfirmDateDto.setAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList);
-            ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(appPremCorrId).getEntity();
-            LicenceDto licenceDto = licenceClient.getLicBylicId(applicationDto.getLicenceId()).getEntity();
+
+            //get licence periods
+            apptFeConfirmDateDto = getLicencePeriods(apptFeConfirmDateDto, applicationDtos);
+
             if(appPremisesInspecApptDto != null){
                 apptFeConfirmDateDto.setSpecificDate(appPremisesInspecApptDto.getSpecificInspDate());
                 apptFeConfirmDateDto.setApptStartDate(appPremisesInspecApptDto.getStartDate());
                 apptFeConfirmDateDto.setApptEndDate(appPremisesInspecApptDto.getEndDate());
                 apptFeConfirmDateDto.setAppPremCorrId(appPremCorrId);
                 apptFeConfirmDateDto.setApptRefNo(appPremisesInspecApptDto.getApptRefNo());
-                apptFeConfirmDateDto.setApplicationNo(applicationDto.getApplicationNo());
-                apptFeConfirmDateDto.setApplicationType(applicationDto.getApplicationType());
-
-                SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-                String licenceStartDate = format.format(licenceDto.getStartDate());
-                String licenceEndDate = format.format(licenceDto.getEndDate());
-                String licensePeriod = licenceStartDate + " - " + licenceEndDate;
-                apptFeConfirmDateDto.setLicencePeriod(licensePeriod);
                 String specificDate = apptDateToStringShow(appPremisesInspecApptDto.getSpecificInspDate());
                 apptFeConfirmDateDto.setSpecificDateShow(specificDate);
             }
         }
+        return apptFeConfirmDateDto;
+    }
+
+    private ApptFeConfirmDateDto getLicencePeriods(ApptFeConfirmDateDto apptFeConfirmDateDto, List<ApplicationDto> applicationDtos) {
+        List<String> licencePeriods = new ArrayList<>();
+        for(ApplicationDto applicationDto : applicationDtos) {
+            LicenceDto licenceDto = licenceClient.getLicBylicId(applicationDto.getLicenceId()).getEntity();
+            if(licenceDto != null) {
+                String licenceStartDate = Formatter.formatDateTime(licenceDto.getStartDate(), "dd/MM/yyyy");
+                String licenceEndDate = Formatter.formatDateTime(licenceDto.getEndDate(), "dd/MM/yyyy");
+                String licensePeriod = licenceStartDate + " - " + licenceEndDate;
+                licencePeriods.add(licensePeriod);
+            }
+        }
+        if(IaisCommonUtils.isEmpty(licencePeriods)){
+            licencePeriods.add("-");
+        }
+        apptFeConfirmDateDto.setLicencePeriods(licencePeriods);
         return apptFeConfirmDateDto;
     }
 
