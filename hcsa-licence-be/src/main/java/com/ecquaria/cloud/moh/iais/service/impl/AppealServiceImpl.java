@@ -134,6 +134,7 @@ public class AppealServiceImpl implements AppealService {
     public AppealLicenceDto updateFEAppealLicenceDto(String eventRefNum,String submissionId) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        log.info(StringUtil.changeForLog("The eventRefNum is -->:"+eventRefNum));
         LicEicRequestTrackingDto licEicRequestTrackingDto = licenceService.getLicEicRequestTrackingDtoByRefNo(eventRefNum);
         AppealLicenceDto appealLicenceDto = getObjectLic(licEicRequestTrackingDto,AppealLicenceDto.class);
         if(appealLicenceDto!=null){
@@ -154,8 +155,11 @@ public class AppealServiceImpl implements AppealService {
             try {
                 result = mapper.readValue(licEicRequestTrackingDto.getDtoObj(), cls);
             } catch (IOException e) {
+                log.error(StringUtil.changeForLog("can not get the licEicRequestTrackingDto"));
                 log.error(StringUtil.changeForLog(e.getMessage()),e);
             }
+        }else{
+            log.error(StringUtil.changeForLog("The licEicRequestTrackingDto is null ..."));
         }
         return  result;
     }
