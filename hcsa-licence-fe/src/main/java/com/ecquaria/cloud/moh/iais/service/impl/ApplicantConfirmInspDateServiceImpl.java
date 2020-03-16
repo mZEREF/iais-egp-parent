@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -79,12 +80,16 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
-        List<String> taskRefNo = new ArrayList<>();
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos;
+        //get All CorrDto From Same Premises
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getLastAppPremisesCorrelationDtoByCorreId(appPremCorrId).getEntity();
+        //set All TaskRefNo (AppPremCorrIds)
+        List<String> taskRefNo = getTaskRefNoList(appPremisesCorrelationDtos);
+        apptFeConfirmDateDto.setTaskRefNo(taskRefNo);
+
         if(!StringUtil.isEmpty(appPremCorrId)) {
             List<ApplicationDto> applicationDtos = applicationClient.getPremisesApplicationsByCorreId(appPremCorrId).getEntity();
             apptFeConfirmDateDto.setApplicationDtos(applicationDtos);
-            List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = inspectionFeClient.getSystemDtosByAppPremCorrId(appPremCorrId).getEntity();
+            List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = inspectionFeClient.getSystemDtosByAppPremCorrIdList(taskRefNo).getEntity();
             if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtoList)){
                 List<String> apptRefNos = new ArrayList<>();
                 for(AppPremisesInspecApptDto aDto : appPremisesInspecApptDtoList){
@@ -104,6 +109,16 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             apptFeConfirmDateDto.setAppPremCorrId(appPremCorrId);
         }
         return apptFeConfirmDateDto;
+    }
+
+    private List<String> getTaskRefNoList(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos) {
+        List<String> taskRefNo = new ArrayList<>();
+        if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){
+            for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
+                taskRefNo.add(appPremisesCorrelationDto.getId());
+            }
+        }
+        return taskRefNo;
     }
 
     private void setSystemDateMap(ApptFeConfirmDateDto apptFeConfirmDateDto) {
@@ -258,23 +273,29 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     }
 
     private void setCreateHistoryDto(ApptFeConfirmDateDto apptFeConfirmDateDto, ApptInspectionDateDto apptInspectionDateDto) {
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-        /*appPremisesRoutingHistoryDto.setApplicationNo(apptFeConfirmDateDto.getApplicationDto().getApplicationNo());
-        appPremisesRoutingHistoryDto.setSubStage(HcsaConsts.ROUTING_STAGE_PRE);
-        appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
-        appPremisesRoutingHistoryDto.setAppStatus(apptFeConfirmDateDto.getApplicationDto().getStatus());
-        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
-        apptInspectionDateDto.setAppPremisesRoutingHistoryDto(appPremisesRoutingHistoryDto);*/
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = new ArrayList<>();
+        for(ApplicationDto applicationDto : apptFeConfirmDateDto.getApplicationDtos()) {
+            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+            appPremisesRoutingHistoryDto.setApplicationNo(applicationDto.getApplicationNo());
+            appPremisesRoutingHistoryDto.setSubStage(HcsaConsts.ROUTING_STAGE_PRE);
+            appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
+            appPremisesRoutingHistoryDto.setAppStatus(applicationDto.getStatus());
+            appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+            appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
+        }
+        apptInspectionDateDto.setAppPremisesRoutingHistoryDtos(appPremisesRoutingHistoryDtos);
     }
 
     private void setUpdateApplicationDto(ApptFeConfirmDateDto apptFeConfirmDateDto, ApptInspectionDateDto apptInspectionDateDto, String status) {
-        /*ApplicationDto applicationDto = apptFeConfirmDateDto.getApplicationDto();
-        applicationDto.setStatus(status);
-        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        applicationDto = applicationClient.updateApplication(applicationDto).getEntity();
-        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        apptInspectionDateDto.setApplicationDto(applicationDto);*/
+        List<ApplicationDto> applicationDtos = apptFeConfirmDateDto.getApplicationDtos();
+        for(ApplicationDto applicationDto : applicationDtos) {
+            applicationDto.setStatus(status);
+            applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            applicationDto = applicationClient.updateApplication(applicationDto).getEntity();
+            applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        }
+        apptInspectionDateDto.setApplicationDtos(applicationDtos);
     }
 
     private void setApptCreateList(ApptFeConfirmDateDto apptFeConfirmDateDto, ApptInspectionDateDto apptInspectionDateDto, String processDo) {
