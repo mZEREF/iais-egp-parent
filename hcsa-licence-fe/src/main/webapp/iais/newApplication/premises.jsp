@@ -734,7 +734,7 @@
             var $premContent = $(this).closest('div.premContent');
             var thisId = $(this).attr('id');
             <!--remove disable -->
-            undisabledPartPage($premContent);
+            unreadonlyPartPage($premContent);
             <!--remove hidden-->
             $premContent.find('a.retrieveAddr').removeClass('hidden');
             $premContent.find('button.addPubHolDay').removeClass('hidden');
@@ -807,9 +807,9 @@
 
                             <!--disable this form -->
                             var $premFormOnsite = $premContent.find('div.new-premise-form-on-site');
-                            disabledPartPage($premFormOnsite);
+                            readonlyPartPage($premFormOnsite);
                             var $premFormConveyance = $premContent.find('div.new-premise-form-conv');
-                            disabledPartPage($premFormConveyance);
+                            readonlyPartPage($premFormConveyance);
                             <!--hidden btn -->
                             $premContent.find('a.retrieveAddr').addClass('hidden');
                             $premContent.find('button.addPubHolDay').addClass('hidden');

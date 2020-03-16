@@ -138,19 +138,19 @@
         $('div.nice-select').addClass('disabled');
     }
 
-    function disabledPartPage($Ele) {
-        $Ele.find('input[type="radio"]').prop('disabled',true);
-        $Ele.find('input[type="text"]').prop('disabled',true);
-        $Ele.find('input[type="file"]').prop('disabled',true);
-        $Ele.find('input[type="checkbox"]').prop('disabled',true);
+    function readonlyPartPage($Ele) {
+        $Ele.find('input[type="radio"]').prop('readonly',true);
+        $Ele.find('input[type="text"]').prop('readonly',true);
+        $Ele.find('input[type="file"]').prop('readonly',true);
+        $Ele.find('input[type="checkbox"]').prop('readonly',true);
         $Ele.find('div.nice-select').addClass('disabled');
     }
 
-    function undisabledPartPage($Ele) {
-        $Ele.find('input[type="radio"]').prop('disabled',false);
-        $Ele.find('input[type="text"]').prop('disabled',false);
-        $Ele.find('input[type="file"]').prop('disabled',false);
-        $Ele.find('input[type="checkbox"]').prop('disabled',false);
+    function unreadonlyPartPage($Ele) {
+        $Ele.find('input[type="radio"]').prop('readonly',false);
+        $Ele.find('input[type="text"]').prop('readonly',false);
+        $Ele.find('input[type="file"]').prop('readonly',false);
+        $Ele.find('input[type="checkbox"]').prop('readonly',false);
         $Ele.find('div.nice-select').removeClass('disabled');
     }
 
