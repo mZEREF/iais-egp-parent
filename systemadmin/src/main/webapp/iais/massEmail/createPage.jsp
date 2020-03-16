@@ -24,7 +24,7 @@
                             <label class="col-xs-4 col-md-4 control-label" >Name:</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="name" type="text" name="name" value="${distribution.getDisname()}">
+                                    <input id="name" type="text" name="name" maxlength="500" value="${distribution.getDisname()}">
                                     <span id="error_disname" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
