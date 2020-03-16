@@ -31,10 +31,15 @@
       <iais:body >
         <div class="container">
           <div class="col-xs-12">
-            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-              <h3>
-                <span>Success</span>
-              </h3>
+            <div class="center-content">
+              <div class="intranet-content">
+                <div class="bg-title">
+                  <h2>
+                    <span>The appointment date has been reject.</span>
+                  </h2>
+                </div>
+              </div>
+              <div align="left"><span><a href="/main-web/eservice/INTERNET/MohInternetInbox">Back</a></span></div>
             </div>
           </div>
         </div>
