@@ -404,7 +404,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         if(!StringUtil.isEmpty(appPremCorrId)){
             AppPremisesInspecApptDto appPremisesInspecApptDto = appPremisesInspecApptDtoList.get(0);
             apptFeConfirmDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDto);
-            apptFeConfirmDateDto.setAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList);
 
             //get licence periods
             apptFeConfirmDateDto = getLicencePeriods(apptFeConfirmDateDto, applicationDtos);
@@ -419,6 +418,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 apptFeConfirmDateDto.setSpecificDateShow(specificDate);
             }
         }
+        apptFeConfirmDateDto.setAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList);
         return apptFeConfirmDateDto;
     }
 
