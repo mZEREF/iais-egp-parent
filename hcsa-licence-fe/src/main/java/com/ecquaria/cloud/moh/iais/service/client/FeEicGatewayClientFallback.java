@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * EicGatewayClientFallback
@@ -47,16 +48,16 @@ public class FeEicGatewayClientFallback {
         return entity;
     }
 
-//    public FeignResponseEntity<List<ApptUserCalendarAndUserIdDto>> getAppointmentByApptRefNo(List<String> apptRefNos,
-//                                                                                             String date,
-//                                                                                             String authorization,
-//                                                                                             String dateSec,
-//                                                                                             String authorizationSec){
-//        FeignResponseEntity entity = new FeignResponseEntity<>();
-//        HttpHeaders headers = new HttpHeaders();
-//        entity.setHeaders(headers);
-//        return entity;
-//    }
+    public FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> getAppointmentByApptRefNo(List<String> apptRefNos,
+                                                                                                 String date,
+                                                                                                 String authorization,
+                                                                                                 String dateSec,
+                                                                                                 String authorizationSec){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 
     public FeignResponseEntity<ApptInspectionDateDto> apptFeDataUpdateCreateBe(ApptInspectionDateDto apptInspectionDateDto,
                                                                                String date,

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * EicGatewayClient
@@ -95,12 +96,12 @@ public interface FeEicGatewayClient {
                                                                                  @RequestHeader("date-Secondary") String dateSec,
                                                                                  @RequestHeader("authorization-Secondary") String authorizationSec);
 
-//    @PostMapping(value = "/v1/hcsa-appt-refno",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-//    FeignResponseEntity<List<ApptUserCalendarAndUserIdDto>> getAppointmentByApptRefNo(@RequestBody List<String> apptRefNos,
-//                                                                                      @RequestHeader("date") String date,
-//                                                                                      @RequestHeader("authorization") String authorization,
-//                                                                                      @RequestHeader("date-Secondary") String dateSec,
-//                                                                                      @RequestHeader("authorization-Secondary") String authorizationSec);
+    @PostMapping(value = "/v1/hcsa-appt-refno",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> getAppointmentByApptRefNo(@RequestBody List<String> apptRefNos,
+                                                                                          @RequestHeader("date") String date,
+                                                                                          @RequestHeader("authorization") String authorization,
+                                                                                          @RequestHeader("date-Secondary") String dateSec,
+                                                                                          @RequestHeader("authorization-Secondary") String authorizationSec);
 
     @PostMapping(value = "/v1/hcsa-app-insdate-up", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApptInspectionDateDto> apptFeDataUpdateCreateBe(@RequestBody ApptInspectionDateDto apptInspectionDateDto,
