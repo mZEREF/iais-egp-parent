@@ -3,12 +3,12 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicEicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -135,7 +135,7 @@ public class AppealServiceImpl implements AppealService {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         log.info(StringUtil.changeForLog("The eventRefNum is -->:"+eventRefNum));
-        LicEicRequestTrackingDto licEicRequestTrackingDto = licenceService.getLicEicRequestTrackingDtoByRefNo(eventRefNum);
+        EicRequestTrackingDto licEicRequestTrackingDto = licenceService.getLicEicRequestTrackingDtoByRefNo(eventRefNum);
         AppealLicenceDto appealLicenceDto = getObjectLic(licEicRequestTrackingDto,AppealLicenceDto.class);
         if(appealLicenceDto!=null){
             appealLicenceDto = beEicGatewayClient.updateAppealLicence(appealLicenceDto, signature.date(), signature.authorization(),
@@ -148,12 +148,12 @@ public class AppealServiceImpl implements AppealService {
     }
 
 
-    private <T> T getObjectLic(LicEicRequestTrackingDto licEicRequestTrackingDto, Class<T> cls){
+    private <T> T getObjectLic(EicRequestTrackingDto licEicRequestTrackingDto, Class<T> cls){
         T result = null;
         if(licEicRequestTrackingDto!=null){
             ObjectMapper mapper = new ObjectMapper();
             try {
-                result = mapper.readValue(licEicRequestTrackingDto.getDtoObj(), cls);
+                result = mapper.readValue(licEicRequestTrackingDto.getDtoObject(), cls);
             } catch (IOException e) {
                 log.error(StringUtil.changeForLog("can not get the licEicRequestTrackingDto"));
                 log.error(StringUtil.changeForLog(e.getMessage()),e);
