@@ -55,8 +55,6 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
-import com.ecquaria.cloud.moh.iais.service.client.FeEmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -133,11 +131,6 @@ public class NewApplicationDelegator {
     @Autowired
     private RequestForChangeService requestForChangeService;
 
-    @Autowired
-    private SystemAdminClient systemAdminClient;
-
-    @Autowired
-    private FeEmailClient feEmailClient;
 
     @Autowired
     private WithOutRenewalService withOutRenewalService;
@@ -1107,7 +1100,7 @@ public class NewApplicationDelegator {
     //=============================================================================
 
     private void inspectionDateSendNewApplicationPaymentOnlineEmail(AppSubmissionDto appSubmissionDto,BaseProcessClass bpc) {
-        MsgTemplateDto msgTemplateDto = systemAdminClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ONLINE_ID).getEntity();
+        MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ONLINE_ID);
         if(msgTemplateDto != null) {
             Double amount = appSubmissionDto.getAmount();
             String licenseeId = appSubmissionDto.getLicenseeId();
@@ -1135,8 +1128,9 @@ public class NewApplicationDelegator {
             emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + appGrpNo);
             emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
             emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-
-            //String requestRefNum = feEmailClient.sendNotification(emailDto).getEntity();
+            emailDto.setClientQueryCode(appSubmissionDto.getAppGrpId());
+            //send email
+            appSubmissionService.feSendEmail(emailDto);
         }
     }
 
