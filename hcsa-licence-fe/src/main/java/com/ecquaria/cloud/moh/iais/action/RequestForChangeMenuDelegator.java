@@ -685,6 +685,7 @@ public class RequestForChangeMenuDelegator {
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         appEditSelectDto.setPremisesListEdit(true);
         appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
+        appSubmissionDto.setChangeSelectDto(appEditSelectDto);
         //save data
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
