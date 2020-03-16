@@ -42,14 +42,12 @@
 
                         <div class="form-group">
                             <label class="col-xs-4 col-md-4 control-label">Service:</label>
-                                <iais:section title="" id="supPoolList">
-                                    <iais:row>
-                                        <iais:value width="20">
+                            <iais:value>
+                                <iais:value width="10">
                                             <iais:select name="service" options="service"
                                                          firstOption="${firstOption}" value=""></iais:select>
-                                        </iais:value>
-                                    </iais:row>
-                                </iais:section>
+                                </iais:value>
+                            </iais:value>
                             <span id="error_service" name="iaisErrorMsg" class="error-msg"></span>
                         </div>
 
@@ -73,7 +71,7 @@
                                         </c:if>
                                                name="mode" value="sms">
                                         <label class="form-check-label"><span
-                                                class="check-square"></span>Sms</label>
+                                                class="check-square"></span>SMS</label>
                                     </div>
                                     <span id="error_mode" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
@@ -83,7 +81,7 @@
                     </div>
                     <div class="application-tab-footer">
                         <div class="row">
-                            <div class="col-xs-12 col-sm-12">
+                            <div class="col-xs-11 col-sm-11">
                                 <div class="text-right text-center-mobile"><button id="saveDis" type="button" class="btn btn-primary">SAVE</button></div>
                             </div>
                         </div>
