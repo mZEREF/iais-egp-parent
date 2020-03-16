@@ -145,7 +145,7 @@ public class CessationApplicationDelegator {
 
     public void saveData(BaseProcessClass bpc) {
         List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
-        //cessationService.saveCessations(appCessationDtos);
+        cessationService.saveCessations(appCessationDtos);
         List<AppCessatonConfirmDto> appCessationDtosConfirms = new ArrayList<>();
         for (AppCessationDto appCessationDto : appCessationDtos) {
             String licId = appCessationDto.getWhichTodo();

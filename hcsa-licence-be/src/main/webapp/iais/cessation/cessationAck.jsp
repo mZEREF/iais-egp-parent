@@ -19,7 +19,7 @@
                         <p>Your cessation application has been successfully submitted, the following licences will be
                             ceased on <U><strong><fmt:formatDate value="${confirm.effectiveDate}" pattern="dd/MM/yyyy"/></strong></U></p>
 
-                        <p>and the application number is<U><strong><c:out value="${confirm.appNo}"/></strong></U></p>
+                        <p>and the application number is <U><strong><c:out value="${confirm.appNo}"/></strong></U></p>
                         <table class="table" border="1" cellspacing="0" cellpadding="0">
                             <thead>
                             <tr style="padding: 1%">

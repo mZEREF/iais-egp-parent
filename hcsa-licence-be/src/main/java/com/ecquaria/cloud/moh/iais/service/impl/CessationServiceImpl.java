@@ -103,29 +103,29 @@ public class CessationServiceImpl implements CessationService {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<AppCessMiscDto> appCessMiscDtos = new ArrayList<>();
-        for (AppCessationDto appCessationDto : appCessationDtos) {
+        for (int i = 0; i < appCessationDtos.size(); i++) {
+            AppCessationDto appCessationDto = appCessationDtos.get(0);
             AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
             String licId = appCessationDto.getWhichTodo();
-            String appNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT,signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
-//            ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo, licId,ApplicationConsts.APPLICATION_TYPE_APPEAL);
-//            List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
-//            appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);
-//            ApplicationDto applicationDto = new ApplicationDto();
-//            applicationDto.setApplicationType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
-//            applicationDto.setApplicationNo(appNo);
-//            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-//            applicationDto.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
-//            applicationDto.setVersion(1);
-//            applicationDto.setLicenceId(licId);
-//            List<ApplicationDto> applicationDtos = new ArrayList<>();
-//            applicationDtos.add(applicationDto);
-//            appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
-//            appCessMiscDto.setApplicationDto(applicationDtos);
-//            setMiscData(appCessationDto,appCessMiscDto);
-//            appCessMiscDtos.add(appCessMiscDto);
+            String appNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT,signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
+            ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo,ApplicationConsts.APPLICATION_TYPE_APPEAL);
+            List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
+            appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);
+            ApplicationDto applicationDto = new ApplicationDto();
+            applicationDto.setApplicationType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
+            applicationDto.setApplicationNo(appNo+"-0"+i);
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+            applicationDto.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
+            applicationDto.setVersion(1);
+            applicationDto.setLicenceId(licId);
+            List<ApplicationDto> applicationDtos = new ArrayList<>();
+            applicationDtos.add(applicationDto);
+            appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
+            appCessMiscDto.setApplicationDto(applicationDtos);
+            setMiscData(appCessationDto,appCessMiscDto);
+            appCessMiscDtos.add(appCessMiscDto);
         }
-        //cessationClient.saveCessation(appCessMiscDtos).getEntity();
+        cessationClient.saveCessation(appCessMiscDtos).getEntity();
     }
 
 
@@ -164,8 +164,21 @@ public class CessationServiceImpl implements CessationService {
 
     }
 
+    @Override
+    public void updateLicence(List<String> licNos) {
+        List<LicenceDto> licenceDtos = hcsaLicenceClient.getLicDtosByLicNos(licNos).getEntity();
+        List<LicenceDto> licenceDtoNew = new ArrayList<>();
+        if(licenceDtos!=null&&!licenceDtos.isEmpty()){
+            for(LicenceDto licenceDto :licenceDtos){
+                licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
+                licenceDtoNew.add(licenceDto);
+            }
+        }
+        hcsaLicenceClient.updateLicences(licenceDtoNew);
+    }
 
-    private ApplicationGroupDto getApplicationGroupDto(String appNo, String licId,String appType) {
+
+    private ApplicationGroupDto getApplicationGroupDto(String appNo,String appType) {
         ApplicationGroupDto applicationGroupDto = new ApplicationGroupDto();
         applicationGroupDto.setSubmitDt(new Date());
         applicationGroupDto.setGroupNo(appNo);
