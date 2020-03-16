@@ -43,7 +43,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
-import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -67,6 +66,7 @@ import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicInspNcEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
+import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -142,6 +142,8 @@ public class RequestForInformationDelegator {
     private InboxMsgService inboxMsgService;
     @Autowired
     LicInspNcEmailService licInspNcEmailService;
+    @Autowired
+    OnlineEnquiriesService onlineEnquiriesService;
     @Autowired
     private SystemParamConfig systemParamConfig;
     @Value("${iais.hmac.keyId}")
@@ -827,15 +829,8 @@ public class RequestForInformationDelegator {
         HttpServletRequest request=bpc.request;
         String appPremCorrId = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
 
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String taskId = ParamUtil.getString(bpc.request,"taskId");
-        if(StringUtil.isEmpty(taskId)){
-            taskId = "BB8C47A3-9B37-EA11-BE7E-000C29F371DC";
-        }
-        TaskDto taskDto = taskService.getTaskById(taskId);
-        taskDto.setRefNo(appPremCorrId);
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appPremCorrId);
-        InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
+        InspectionReportDto insRepDto = onlineEnquiriesService.getInsRepDto(applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
         ParamUtil.setSessionAttr(bpc.request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
@@ -876,6 +871,7 @@ public class RequestForInformationDelegator {
         }
 
         if(!licPremisesReqForInfoDtoList.isEmpty()) {
+            //for
             ParamUtil.setSessionAttr(request, "licenceNo", licPremisesReqForInfoDtoList.get(0).getLicenceNo());
         }
         else {
@@ -976,7 +972,8 @@ public class RequestForInformationDelegator {
         interMessageDto.setService_id(svcDto.getId());
         interMessageDto.setMsgContent(mesContext);
         interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-        interMessageDto.setUserId(licenseeId);
+        //interMessageDto.setUserId(licenseeId);
+        interMessageDto.setUserId("B4C95F9B-5D30-EA11-BE78-000C29D29DB0");
         interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         inboxMsgService.saveInterMessage(interMessageDto);
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
@@ -1006,6 +1003,7 @@ public class RequestForInformationDelegator {
         licPremisesReqForInfoDto.setAction("delete");
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,licPremisesReqForInfoDto.getLicPremId());
         gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto,
                 signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
         // 		doCancel->OnStepProcess
@@ -1019,6 +1017,7 @@ public class RequestForInformationDelegator {
         licPremisesReqForInfoDto.setAction("delete");
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,licPremisesReqForInfoDto.getLicPremId());
         gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto,
                 signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
         // 		doAccept->OnStepProcess
@@ -1047,6 +1046,7 @@ public class RequestForInformationDelegator {
             dueDate =calendar.getTime();
         }
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(reqInfoId);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,licPremisesReqForInfoDto.getLicPremId());
         licPremisesReqForInfoDto.setDueDateSubmission(dueDate);
         requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
