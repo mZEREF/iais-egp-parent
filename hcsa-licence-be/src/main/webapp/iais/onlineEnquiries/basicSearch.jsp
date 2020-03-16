@@ -16,7 +16,7 @@
     <input type="hidden" name="crud_action_additional" value=""/>
     <iais:body >
         <div class="container">
-            <div class="col-xs-12">
+            <div class="col-xs-14">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <br><br><br><br><br><br>
                     <h2>Basic Search Criteria</h2>
