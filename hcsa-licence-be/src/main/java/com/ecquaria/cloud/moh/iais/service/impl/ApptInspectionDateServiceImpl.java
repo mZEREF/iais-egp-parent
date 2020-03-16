@@ -452,7 +452,6 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     @Override
     public void saveSpecificDateLast(ApptInspectionDateDto apptInspectionDateDto, LoginContext loginContext) {
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtos = apptInspectionDateDto.getAppPremisesInspecApptDtos();
-        TaskDto taskDto = apptInspectionDateDto.getTaskDto();
         List<String> appPremCorrIds = apptInspectionDateDto.getRefNo();
         List<TaskDto> taskDtoList = apptInspectionDateDto.getTaskDtos();
         updateTaskDtoList(taskDtoList);
@@ -509,39 +508,59 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         } else if (apptInspectionDateDto.getProcessDec().equals(InspectionConstants.PROCESS_DECI_ACCEPTS_THE_DATE)) {
             saveDate = appPremisesInspecApptDtos.get(0).getSpecificInspDate();
         }
+        //save Inspection date / status, save Application
+        saveRoutingData(appPremCorrIds, taskDtoList, saveDate, apptInspectionDateDto);
+    }
+
+    private void saveRoutingData(List<String> appPremCorrIds, List<TaskDto> taskDtoList, Date saveDate, ApptInspectionDateDto apptInspectionDateDto) {
         for(String appPremCorrId : appPremCorrIds){
-            AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-            if (appPremisesRecommendationDto == null) {
-                appPremisesRecommendationDto = new AppPremisesRecommendationDto();
-                appPremisesRecommendationDto.setAppPremCorreId(appPremCorrId);
-                appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                appPremisesRecommendationDto.setVersion(1);
-                appPremisesRecommendationDto.setRecomInDate(saveDate);
-                appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
-                appPremisesRecommendationDto.setRecomDecision(InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY);
-                appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
-            } else {
-                appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                fillUpCheckListGetAppClient.updateAppRecom(appPremisesRecommendationDto);
-                AppPremisesRecommendationDto appPremRecDto = new AppPremisesRecommendationDto();
-                appPremRecDto.setId(null);
-                appPremRecDto.setAppPremCorreId(appPremCorrId);
-                appPremRecDto.setVersion(appPremisesRecommendationDto.getVersion() + 1);
-                appPremRecDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                appPremRecDto.setRecomInDate(saveDate);
-                appPremRecDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
-                appPremRecDto.setRecomDecision(InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY);
-                appPremRecDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                fillUpCheckListGetAppClient.saveAppRecom(appPremRecDto);
+            TaskDto taskDto = null;
+            for(TaskDto tDto : taskDtoList){
+                if(appPremCorrId.equals(tDto.getRefNo())){
+                    taskDto = tDto;
+                }
             }
+            AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+            //save Inspection date
+            createOrUpdateRecommendation(appPremisesRecommendationDto, appPremCorrId, saveDate);
+            //update Inspection status
             updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
+            //Application data
             ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
             ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
             applicationDto1 = applicationService.updateFEApplicaiton(applicationDto1);
-            inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, apptInspectionDateDto.getProcessDec(), taskDto.getRoleId(), HcsaConsts.ROUTING_STAGE_PRE, taskDto.getWkGrpId());
-            inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, null, null, taskDto.getWkGrpId());
+            if(taskDto != null) {
+                inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, apptInspectionDateDto.getProcessDec(), taskDto.getRoleId(), HcsaConsts.ROUTING_STAGE_PRE, taskDto.getWkGrpId());
+                inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, null, null, taskDto.getWkGrpId());
+            }
+        }
+    }
+
+    private void createOrUpdateRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto, String appPremCorrId, Date saveDate) {
+        if (appPremisesRecommendationDto == null) {
+            appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+            appPremisesRecommendationDto.setAppPremCorreId(appPremCorrId);
+            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appPremisesRecommendationDto.setVersion(1);
+            appPremisesRecommendationDto.setRecomInDate(saveDate);
+            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
+            appPremisesRecommendationDto.setRecomDecision(InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY);
+            appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
+        } else {
+            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            fillUpCheckListGetAppClient.updateAppRecom(appPremisesRecommendationDto);
+            AppPremisesRecommendationDto appPremRecDto = new AppPremisesRecommendationDto();
+            appPremRecDto.setId(null);
+            appPremRecDto.setAppPremCorreId(appPremCorrId);
+            appPremRecDto.setVersion(appPremisesRecommendationDto.getVersion() + 1);
+            appPremRecDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appPremRecDto.setRecomInDate(saveDate);
+            appPremRecDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
+            appPremRecDto.setRecomDecision(InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY);
+            appPremRecDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            fillUpCheckListGetAppClient.saveAppRecom(appPremRecDto);
         }
     }
 
