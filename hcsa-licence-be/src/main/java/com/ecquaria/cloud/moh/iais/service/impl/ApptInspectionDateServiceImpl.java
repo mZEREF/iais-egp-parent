@@ -160,6 +160,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         if(AppConsts.SUCCESS.equals(actionButtonFlag)) {
             //get Applicant set start date and end date from appGroup
             AppointmentDto appointmentDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(taskDto.getRefNo()).getEntity();
+            appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
             Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
             List<String> serviceIds = new ArrayList<>();
             for (Map.Entry<String, String> map : corrIdServiceIdMap.entrySet()) {
