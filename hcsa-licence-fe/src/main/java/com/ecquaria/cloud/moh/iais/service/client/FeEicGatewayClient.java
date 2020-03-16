@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -111,7 +112,7 @@ public interface FeEicGatewayClient {
                                                                         @RequestHeader("authorization-Secondary") String authorizationSec);
 
     @PostMapping(value = "/v1/hcsa-task-assignment", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<TaskDto>> createFeReplyTask(@RequestBody TaskDto taskDto,
+    FeignResponseEntity<List<TaskDto>> createFeReplyTask(@RequestBody ApptFeConfirmDateDto apptFeConfirmDateDto,
                                                          @RequestHeader("date") String date,
                                                          @RequestHeader("authorization") String authorization,
                                                          @RequestHeader("date-Secondary") String dateSec,
