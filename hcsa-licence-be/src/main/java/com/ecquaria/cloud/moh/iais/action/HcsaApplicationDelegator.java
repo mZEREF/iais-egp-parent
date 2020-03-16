@@ -166,9 +166,18 @@ public class HcsaApplicationDelegator {
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
 
         Map<String,String> routingStage=new HashMap<>();
-        for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage:hcsaSvcRoutingStageDtoList) {
-            routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
+        if(hcsaSvcRoutingStageDtoList!=null){
+            if(hcsaSvcRoutingStageDtoList.size()>0){
+                for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage:hcsaSvcRoutingStageDtoList) {
+                    routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
+                }
+            }else{
+                //if  this is the last stage
+                routingStage.put(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
+                        MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL));
+            }
         }
+
         //   rollback
         Map<String,String> rollBackMap = new HashMap<>();
         if(applicationViewDto.getRollBackHistroyList()!=null){
@@ -200,8 +209,8 @@ public class HcsaApplicationDelegator {
         }
 
         if(HcsaConsts.ROUTING_STAGE_AO3.equals(taskDto.getTaskKey())){
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
-                    MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL));
+//            routingStage.put(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
+//                    MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL));
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Route To DMS");
         }else if(HcsaConsts.ROUTING_STAGE_AO2.equals(taskDto.getTaskKey())
                 ||HcsaConsts.ROUTING_STAGE_AO1.equals(taskDto.getTaskKey())){
