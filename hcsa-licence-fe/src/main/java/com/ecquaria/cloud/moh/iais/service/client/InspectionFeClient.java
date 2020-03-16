@@ -45,4 +45,8 @@ public interface InspectionFeClient {
     @GetMapping(value = "/iais-inspection-fe/nc-item-list/{appNcId}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesPreInspectionNcItemDto>> getNcItemDtoListByAppPremNcId(@PathVariable(name = "appNcId") String appNcId);
+
+    @PostMapping(value = "/iais-appt-inspec-fe/appt-systemdate-dtos", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremisesInspecApptDto>> getSystemDtosByAppPremCorrIdList(@RequestBody List<String> appPremCorrIds);
 }
