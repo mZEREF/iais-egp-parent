@@ -376,9 +376,16 @@
                                             <td><c:out value="${pool.pastComplianceHistory}"/></td>
                                             <td><c:out value="${pool.currentRiskTagging}"/></td>
                                             <td>
-                                                <iais:action style="text-align:center;">
-                                                    <button type="button"  class="btn btn-default" onclick="javascript:doCessation('${pool.licenceId}');" >Cessation</button>
-                                                </iais:action>
+                                                <c:if test="${pool.isCessation==1}">
+                                                    <iais:action style="text-align:center;">
+                                                        <button type="button"  class="btn btn-default" onclick="javascript:doCessation('${pool.licenceId}');" >Cessation</button>
+                                                    </iais:action>
+                                                </c:if>
+                                                <c:if test="${pool.isCessation==0}">
+                                                    <iais:action style="text-align:center;">
+                                                        <button type="button"  class="btn btn-default" data-toggle="modal" data-target="#editUser"  >Cessation</button>
+                                                    </iais:action>
+                                                </c:if>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -433,7 +440,6 @@
     }
     function doCessation(licId) {
         showWaiting();
-
         SOP.Crud.cfxSubmit("mainForm", "cessation",licId);
     }
 </script>
