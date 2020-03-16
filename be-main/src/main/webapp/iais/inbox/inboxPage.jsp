@@ -52,7 +52,7 @@
                     <iais:row>
                         <iais:field value="HCI Name / HCI Address"/>
                         <iais:value width="18">
-                            <input type="text" name="hci_name" value="${hci_name}"/>
+                            <input type="text" name="hci_address" value="${hci_address}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -230,7 +230,6 @@
     function doInspectorSearchTaskClear() {
         $('input[name="application_no"]').val("");
         $('input[name="hci_code"]').val("");
-        $('input[name="hci_name"]').val("");
         $('input[name="hci_address"]').val("");
         $("#application_type option:first").prop("selected", 'selected');
         $("#application_status option:first").prop("selected", 'selected');
@@ -291,25 +290,25 @@
                         } else if (res.rows[i].timeLimitWarning == "amber") {
                             color = "#DD9C00";
                         }
-                        var address = '';
-                        if(res.rows[i].blkNo != null){
-                            address = res.rows[i].blkNo;
-                        }
-                        if(res.rows[i].streetName != null){
-                            address +=" " + res.rows[i].streetName;
-                        }
-                        if(res.rows[i].buildingName != null){
-                            address +=" " + res.rows[i].buildingName;
-                        }
-                        if(res.rows[i].floorNo != null){
-                            address +=" # " + res.rows[i].floorNo;
-                        }
-                        if(res.rows[i].unitNo != null){
-                            address += "-" + res.rows[i].unitNo;
-                        }
-                        if(res.rows[i].postalCode != null){
-                            address += ", " + res.rows[i].postalCode;
-                        }
+                        var address = res.rows[i].address;
+                        // if(res.rows[i].blkNo != null && res.rows[i].blkNo != ""){
+                        //     address = res.rows[i].blkNo;
+                        // }
+                        // if(res.rows[i].streetName != null && res.rows[i].streetName != ""){
+                        //     address +=" " + res.rows[i].streetName;
+                        // }
+                        // if(res.rows[i].buildingName != null && res.rows[i].buildingName != ""){
+                        //     address +=" " + res.rows[i].buildingName;
+                        // }
+                        // if(res.rows[i].floorNo != null && res.rows[i].floorNo != ""){
+                        //     address +=" # " + res.rows[i].floorNo;
+                        // }
+                        // if(res.rows[i].unitNo != null && res.rows[i].unitNo != ""){
+                        //     address += "-" + res.rows[i].unitNo;
+                        // }
+                        // if(res.rows[i].postalCode != null && res.rows[i].postalCode != ""){
+                        //     address += "," + res.rows[i].postalCode;
+                        // }
                         html += '<tr style = "color : ' + color + ';">';
                         if(hastaskList == "true") {
                             html +='<td><input type="checkbox" name="taskcheckbox" value="' + taskList[res.rows[i].refNo] + '" onclick="chooseFirstcheckBox('+ divid+')"></td>'

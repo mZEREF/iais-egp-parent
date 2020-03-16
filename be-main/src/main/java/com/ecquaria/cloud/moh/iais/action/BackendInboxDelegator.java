@@ -80,7 +80,6 @@ public class BackendInboxDelegator {
     private String application_type;
     private String application_status;
     private String hci_code;
-    private String hci_name;
     private String hci_address;
     private List<String> applicationDtoIds;
     private SearchParam searchParam;
@@ -122,7 +121,6 @@ public class BackendInboxDelegator {
         application_type = "";
         application_status = "";
         hci_code = "";
-        hci_name = "";
         hci_address = "";
         ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
         initSearchParam();
@@ -145,8 +143,7 @@ public class BackendInboxDelegator {
 
         ParamUtil.setRequestAttr(bpc.request,"hci_code",hci_code);
         ParamUtil.setRequestAttr(bpc.request,"curRole",loginContext.getCurRoleId());
-        ParamUtil.setRequestAttr(bpc.request,"hci_name",hci_name);
-        ParamUtil.setRequestAttr(bpc.request,"blk_no",hci_address);
+        ParamUtil.setRequestAttr(bpc.request,"hci_address",hci_address);
         ParamUtil.setRequestAttr(bpc.request,"application_no",application_no);
         ParamUtil.setRequestAttr(bpc.request, "supTaskSearchParam", searchParam);
         ParamUtil.setRequestAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
@@ -192,8 +189,7 @@ public class BackendInboxDelegator {
         application_type = ParamUtil.getString(bpc.request, "application_type");
         application_status = ParamUtil.getString(bpc.request, "application_status");
         hci_code = ParamUtil.getString(bpc.request, "hci_code");
-        hci_name = ParamUtil.getString(bpc.request, "hci_name");
-        hci_address = ParamUtil.getString(bpc.request, "hci_name");
+        hci_address = ParamUtil.getString(bpc.request, "hci_address");
 
         String inspectorValue = loginContext.getLoginId();
 
@@ -229,9 +225,6 @@ public class BackendInboxDelegator {
         }
         if(!StringUtil.isEmpty(hci_code)){
             searchParam.addFilter("hci_code", hci_code,true);
-        }
-        if(!StringUtil.isEmpty(hci_name)){
-            searchParam.addFilter("hci_name", "%" +hci_name +"%",true);
         }
         if(!StringUtil.isEmpty(hci_address)){
             searchParam.addFilter("address", "%" +hci_address +"%",true);
@@ -490,8 +483,8 @@ public class BackendInboxDelegator {
                 searchParamAjax.removeFilter("application_type");
             }
             if(!StringUtil.isEmpty(hci_code)){
-                searchParamGroup.addFilter("hci_code", hci_code,true);
-                searchParamAjax.addFilter("hci_code", hci_code,true);
+                searchParamGroup.addFilter("hci_code", hci_code.trim(),true);
+                searchParamAjax.addFilter("hci_code", hci_code.trim(),true);
             }else{
                 searchParamGroup.removeFilter("hci_code");
                 searchParamAjax.removeFilter("hci_code");
@@ -502,13 +495,6 @@ public class BackendInboxDelegator {
             }else{
                 searchParamGroup.removeFilter("application_status");
                 searchParamAjax.removeFilter("application_status");
-            }
-            if(!StringUtil.isEmpty(hci_name)){
-                searchParamGroup.addFilter("hci_name", "%" +hci_name +"%",true);
-                searchParamAjax.addFilter("hci_name", "%" +hci_name +"%",true);
-            }else{
-                searchParamGroup.removeFilter("hci_name");
-                searchParamAjax.removeFilter("hci_name");
             }
 
             if(!StringUtil.isEmpty(hci_address)){
