@@ -73,7 +73,7 @@ public interface BeEicGatewayClient {
                                            @RequestHeader("authorization-Secondary") String authorizationSec
     );
 
-    @RequestMapping(value = "/v1/hcsa-licence-transport-appeal/",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/v1/hcsa-licence-transport-appeal/",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppealLicenceDto> updateAppealLicence(@RequestBody AppealLicenceDto appealLicenceDto,
                                                               @RequestHeader("date") String date,
                                                               @RequestHeader("authorization") String authorization,
