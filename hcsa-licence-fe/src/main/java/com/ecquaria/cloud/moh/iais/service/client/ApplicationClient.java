@@ -194,6 +194,9 @@ public interface ApplicationClient  {
     @GetMapping(value = "/iais-application/app-one/{appPremCorrId}")
     FeignResponseEntity<ApplicationDto> getApplicationByCorreId(@PathVariable(name = "appPremCorrId")String appPremCorrId);
 
+    @GetMapping(value = "/iais-application/app-group/{appPremCorrId}")
+    FeignResponseEntity<List<ApplicationDto>> getPremisesApplicationsByCorreId(@PathVariable(name = "appPremCorrId")String appPremCorrId);
+
     @GetMapping(value = "/appeal/application-premises-misc",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity <AppPremiseMiscDto>getAppPremisesMisc(@RequestParam("correId") String correId);
 
