@@ -1,15 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicEicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-
 import java.util.List;
 
 /**
@@ -34,9 +33,9 @@ public interface LicenceService {
 
     public EventBusLicenceGroupDtos getEventBusLicenceGroupDtosByRefNo(String refNo);
 
-    public LicEicRequestTrackingDto updateLicEicRequestTrackingDto(LicEicRequestTrackingDto licEicRequestTrackingDto);
+    public EicRequestTrackingDto updateLicEicRequestTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto);
 
-    public LicEicRequestTrackingDto getLicEicRequestTrackingDtoByRefNo(String refNo);
+    public EicRequestTrackingDto getLicEicRequestTrackingDtoByRefNo(String refNo);
 
 
 

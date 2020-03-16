@@ -3,11 +3,11 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicEicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -24,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
-import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,12 +166,12 @@ public class LicenceServiceImpl implements LicenceService {
     }
 
     @Override
-    public LicEicRequestTrackingDto updateLicEicRequestTrackingDto(LicEicRequestTrackingDto licEicRequestTrackingDto) {
+    public EicRequestTrackingDto updateLicEicRequestTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto) {
         return hcsaLicenceClient.updateLicEicRequestTracking(licEicRequestTrackingDto).getEntity();
     }
 
     @Override
-    public LicEicRequestTrackingDto getLicEicRequestTrackingDtoByRefNo(String refNo) {
+    public EicRequestTrackingDto getLicEicRequestTrackingDtoByRefNo(String refNo) {
         return hcsaLicenceClient.getLicEicRequestTrackingDto(refNo).getEntity();
     }
 
