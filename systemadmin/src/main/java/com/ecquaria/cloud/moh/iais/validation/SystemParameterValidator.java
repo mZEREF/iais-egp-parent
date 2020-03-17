@@ -27,19 +27,18 @@ public class SystemParameterValidator implements CustomizeValidator {
 		}
 
 		String paramType = editDto.getParamType();
-		int value = Integer.parseInt(editDto.getValue());
+
 		switch (paramType){
 			case SystemParameterConstants.PARAM_TYPE_REMINDER:
-
 			break;
 			case SystemParameterConstants.PARAM_TYPE_PAGE_SIZE:
-				errMap = verifyPageSize(errMap, value);
+				errMap = verifyPageSize(errMap, Integer.parseInt(editDto.getValue()));
 			break;
 			case SystemParameterConstants.PARAM_TYPE_MAX_FILE_SIZE:
-				errMap = verifyFileUploadSize(errMap, value);
+				errMap = verifyFileUploadSize(errMap, Integer.parseInt(editDto.getValue()));
 			break;
 			case SystemParameterConstants.PARAM_TYPE_AUDIT_TRAIL_SEARCH_WEEK:
-				errMap = verifyAuditTrailWeek(errMap, value);
+				errMap = verifyAuditTrailWeek(errMap, Integer.parseInt(editDto.getValue()));
 			break;
 
 			case SystemParameterConstants.PARAM_TYPE_MONTH:

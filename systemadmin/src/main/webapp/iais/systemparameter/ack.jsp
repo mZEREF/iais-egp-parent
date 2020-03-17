@@ -31,12 +31,13 @@
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <input type="hidden" name="currentValidateId" value="">
-    <div class="bg-title"><h2>Acknowledgement</h2></div>
+    <br><br><br>
+    <div class="panel-heading"><h2><strong>Acknowledgement</strong></h2></div>
 
     <p><c:out value="${ackMsg}"></c:out></p>
 
     <div class="text-right text-center-mobile">
-      <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doCancel();">Cancel</a>
+      <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doCancel();">Done</a>
     </div>
   </form>
 </div>

@@ -8,6 +8,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <webui:setLayout name="iais-intranet"/>
 
 <%
@@ -36,13 +37,13 @@
       <br><br>
 
         <div class="form-horizontal">
-            <%--<div class="form-group">
+            <div class="form-group">
                 <label class="col-md-1">System Parameter Type:
                 </label>
                 <div class="col-md-3">
                     <iais:select name="domainType" id="domainType"
                                  firstOption="Please select" codeCategory="CATE_ID_SYSTEM_PARAMETER_TYPE"
-                                 value="${parameterRequestDto.domainType}"></iais:select>
+                                 value="${parameterRequestDto.domainType}" disabled="true"></iais:select>
                     <span id="error_domainType" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
@@ -51,20 +52,20 @@
                 <label class="col-md-1">Module:
                 </label>
                 <div class="col-md-3">
-                    <iais:select name="module" id="module"  codeCategory = "CATE_ID_SYSTEM_PARAMETER_MODULE" firstOption="Please select" value="${parameterRequestDto.module}"></iais:select>
+                    <iais:select name="module" id="module"  codeCategory = "CATE_ID_SYSTEM_PARAMETER_MODULE" disabled="true" firstOption="Please select" value="${parameterRequestDto.module}"></iais:select>
                     <span id="error_module" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
-            </div>--%>
+            </div>
 
-           <%-- <div class="form-group">
+            <div class="form-group">
                 <label class="col-md-1">Type of Value:
                 </label>
                 <div class="col-md-3">
                     <iais:select name="paramType" id="paramType"
-                                 firstOption="Please select" codeCategory="CATE_ID_SYSTEM_PARAMETER_TYPE_OF_VALUE" value="${parameterRequestDto.paramType}"></iais:select>
+                                 firstOption="Please select" codeCategory="CATE_ID_SYSTEM_PARAMETER_TYPE_OF_VALUE" disabled="true" value="${parameterRequestDto.paramType}"></iais:select>
                     <span id="error_paramType" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
-            </div>--%>
+            </div>
 
             <div class="form-group">
                 <label class="col-md-1">Value:
@@ -84,7 +85,7 @@
 
                         </c:when>
                         <c:otherwise>
-                            <input name="value" type="text" maxlength="5" value="${parameterRequestDto.value}">
+                            <input name="value" type="text" maxlength="3" value="${parameterRequestDto.value}">
                         </c:otherwise>
                     </c:choose>
                     <span id="error_value" name="iaisErrorMsg" class="error-msg"></span>
@@ -95,10 +96,28 @@
                 <label class="col-md-1">Parameter Description:
                 </label>
                 <div class="col-md-3">
-                    <input name="description" type="text" maxlength="500" value="${parameterRequestDto.description}">
+                    <textarea cols="70" rows="7" name="description" id="description" maxlength="500"><c:out value="${parameterRequestDto.description}"></c:out></textarea>
                     <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
+
+            <div class="form-group">
+                <label class="col-md-1">Update On
+                </label>
+                <div class="col-md-3">
+                    <p><fmt:formatDate value="${parameterRequestDto.modifiedAt}" pattern="dd/MM/yyyy"/></p>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-md-1">Update By
+                </label>
+                <div class="col-md-3">
+                    <p><input name="modifiedAt" type="text" id="modifiedBy" title="modifiedBy"  readonly value="${parameterRequestDto.modifiedBy}"></p>
+                </div>
+            </div>
+
 
            <%-- <div class="form-group">
                 <label class="col-md-1">Status:

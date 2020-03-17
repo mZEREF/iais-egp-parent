@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterQueryDto;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
@@ -10,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.SystemParameterService;
 import com.ecquaria.cloud.moh.iais.service.client.ConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.IntranetUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class SystemParameterServiceImpl implements SystemParameterService {
 
     @Autowired
     private ConfigClient configClient;
+
+    @Autowired
+    private IntranetUserClient userClient;
 
     @Autowired
     private EicGatewayClient eicGatewayClient;
@@ -72,5 +77,10 @@ public class SystemParameterServiceImpl implements SystemParameterService {
     @Override
     public SystemParameterDto getParameterByPid(String pid) {
        return systemClient.getParameterByRowguid(pid).getEntity();
+    }
+
+    @Override
+    public OrgUserDto retrieveOrgUserAccountById(String userId) {
+        return userClient.getOrgUserAccountByUserId(userId).getEntity();
     }
 }

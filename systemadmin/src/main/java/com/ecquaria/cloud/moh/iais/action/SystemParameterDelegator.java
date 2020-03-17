@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -14,7 +15,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.SystemParameterService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -24,6 +30,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /*
     @author yichen_guo@ecquaria.com
@@ -231,6 +238,16 @@ public class SystemParameterDelegator {
                         systemParameterDto.setMaxlength(query.getMaxlength());
                         systemParameterDto.setStatus(query.getStatus());
                         systemParameterDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                        systemParameterDto.setModifiedAt(query.getModifiedAt());
+
+
+                        Optional<OrgUserDto> user =  Optional.ofNullable(parameterService.retrieveOrgUserAccountById(query.getModifiedBy()));
+                        if (user.isPresent()){
+                            systemParameterDto.setModifiedBy(user.get().getDisplayName());
+                        }else {
+                            systemParameterDto.setModifiedBy("system");
+                        }
+
 //                        systemParameterDto.setPropertiesKey(query.getPropertiesKey());
                         ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO, systemParameterDto);
                     }
