@@ -105,4 +105,15 @@
         $("[name='crud_action_additional']").val(sortType);
         submit('licSort');
     }
+
+    function doClearLic(){
+        $("[name='licNoPath']").val("");
+        $("[name='fExpiryDate']").val("");
+        $("[name='eExpiryDate']").val("");
+        $("[name='eStartDate']").val("");
+        $("[name='fStartDate']").val("");
+        $("#licType option:first").prop("selected", 'selected').val("All");
+        $("#licStatus option:first").prop("selected", 'selected').val("All");
+        $("#clearBody .current").text("All");
+    }
 </script>

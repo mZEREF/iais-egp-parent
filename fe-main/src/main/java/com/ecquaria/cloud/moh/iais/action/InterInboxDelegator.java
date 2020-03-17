@@ -111,7 +111,6 @@ public class InterInboxDelegator {
         SearchResultHelper.doPage(request,inboxParameter);
     }
 
-
     public void msgDoSort(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         SearchResultHelper.doSort(request,inboxParameter);
@@ -259,33 +258,38 @@ public class InterInboxDelegator {
                 SystemAdminBaseConstants.DATE_FORMAT);
         if(licenceNo != null){
             licSearchMap.put("licNo",'%'+licenceNo+'%');
+        }else{
+            licSearchMap.remove("licNo");
         }
-        if(serviceType != null){
-            if (serviceType.equals(InboxConst.SEARCH_ALL)){
-                licSearchMap.remove("serviceType");
-            }else {
-                licSearchMap.put("serviceType", serviceType);
-            }
+        if(serviceType == null || serviceType.equals(InboxConst.SEARCH_ALL)){
+            licSearchMap.remove("serviceType");
+        }else {
+            licSearchMap.put("serviceType", serviceType);
         }
-        if(licStatus != null){
-            if (licStatus.equals(InboxConst.SEARCH_ALL)){
-                licSearchMap.remove("licStatus");
-            }else{
-                licSearchMap.put("licStatus",licStatus);
-            }
-
+        if(licStatus == null || licStatus.equals(InboxConst.SEARCH_ALL)){
+            licSearchMap.remove("licStatus");
+        }else{
+            licSearchMap.put("licStatus",licStatus);
         }
         if(!StringUtil.isEmpty(fStartDate)){
             licSearchMap.put("fStartDate",fStartDate);
+        }else{
+            licSearchMap.remove("fStartDate");
         }
         if(!StringUtil.isEmpty(eStartDate)){
             licSearchMap.put("eStartDate",eStartDate);
+        }else{
+            licSearchMap.remove("eStartDate");
         }
         if(!StringUtil.isEmpty(fExpiryDate)){
             licSearchMap.put("fExpiryDate",fExpiryDate);
+        }else{
+            licSearchMap.remove("fExpiryDate");
         }
         if(!StringUtil.isEmpty(eExpiryDate)){
             licSearchMap.put("eExpiryDate",eExpiryDate);
+        }else{
+            licSearchMap.remove("eExpiryDate");
         }
         licenceParameter.setFilters(licSearchMap);
         licenceParameter.setPageNo(1);
@@ -430,19 +434,15 @@ public class InterInboxDelegator {
                 SystemAdminBaseConstants.DATE_FORMAT);
         String createDtEnd = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "eed")),
                 SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
-        if(applicationType != null){
-            if (applicationType.equals(InboxConst.SEARCH_ALL)){
-                appSearchMap.remove("appType");
-            }else{
-                appSearchMap.put("appType",applicationType);
-            }
+        if(applicationType == null || applicationType.equals(InboxConst.SEARCH_ALL)){
+            appSearchMap.remove("appType");
+        }else{
+            appSearchMap.put("appType",applicationType);
         }
-        if(applicationStatus != null){
-            if (applicationStatus.equals(InboxConst.SEARCH_ALL)){
-                appSearchMap.remove("appStatus");
-            }else{
-                appSearchMap.put("appStatus",applicationStatus);
-            }
+        if(applicationStatus == null || applicationStatus.equals(InboxConst.SEARCH_ALL)){
+            appSearchMap.remove("appStatus");
+        }else{
+            appSearchMap.put("appStatus",applicationStatus);
         }
         if(applicationNo != null){
             if(applicationNo.indexOf('%') != -1){
@@ -451,19 +451,23 @@ public class InterInboxDelegator {
             }else{
                 appSearchMap.put("appNo","%"+applicationNo+"%");
             }
+        }else{
+            appSearchMap.remove("appNo");
         }
-        if(serviceType != null){
-            if (serviceType.equals(InboxConst.SEARCH_ALL)){
-                appSearchMap.remove("serviceType");
-            }else{
-                appSearchMap.put("serviceType",serviceType);
-            }
+        if(serviceType == null || serviceType.equals(InboxConst.SEARCH_ALL)){
+            appSearchMap.remove("serviceType");
+        }else{
+            appSearchMap.put("serviceType",serviceType);
         }
         if(!StringUtil.isEmpty(createDtStart)){
             appSearchMap.put("createDtStart",createDtStart);
+        }else{
+            appSearchMap.remove("createDtStart");
         }
         if(!StringUtil.isEmpty(createDtEnd)){
             appSearchMap.put("createDtEnd",createDtEnd);
+        }else{
+            appSearchMap.remove("createDtEnd");
         }
         appParameter.setFilters(appSearchMap);
         appParameter.setPageNo(1);

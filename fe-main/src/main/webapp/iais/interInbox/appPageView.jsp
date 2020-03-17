@@ -61,8 +61,14 @@
 
     }
 
-    function appClear(){
-        appAjax();
+    function doAppClear(){
+        $("[name='appNoPath']").val("");
+        $("[name='eed']").val("");
+        $("[name='esd']").val("");
+        $("#appTypeSelect option:first").prop("selected", 'selected').val("All");
+        $("#appStatusSelect option:first").prop("selected", 'selected').val("All");
+        $("#appServiceType option:first").prop("selected", 'selected').val("All");
+        $("#clearBody .current").text("All");
     }
 
     function jumpToPagechangePage() {
@@ -117,7 +123,6 @@
     }
 
     function appAjax(){
-        alert("^^^^^~~~~~~^^^^^^");
         $.ajax({
             data:{
                 appNoPath:$("[name='appNoPath']").val(),

@@ -93,10 +93,12 @@
     }
     
     function toArchiveView() {
+        doClearMsg();
         submit('msgToArchive');
     }
 
     function toMsgPage() {
+        doClearMsg();
         submit('toMsgPage');
     }
 
@@ -104,4 +106,12 @@
         $("[name='crud_action_value']").val(msgContent);
         submit('msgToView');
     }
+
+    function doClearMsg(){
+        $("#inboxType option:first").prop("selected", 'selected').val("All");
+        $("#inboxService option:first").prop("selected", 'selected').val("All");
+        $("#inboxType .current").text("Select a type");
+        $("#inboxService .current").text("Select a service");
+    }
+
 </script>

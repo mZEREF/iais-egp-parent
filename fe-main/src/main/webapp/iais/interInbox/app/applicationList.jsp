@@ -7,70 +7,81 @@
         <input type="hidden" name="action_no_value" value="">
         <input type="hidden" name="action_id_value" value="">
         <input type="hidden" name="action_type_value" value="">
-        <div class="row">
-            <div class="col-md-6">
-                <iais:value>
-                    <label class="col-xs-6 col-md-6" for="appNoPath" style="margin-top:1%;">Search by Application No or Part of:</label>
-                    <div class="col-xs-6 col-md-6">
-                        <input id="appNoPath" name="appNoPath" type="text" maxlength="15" value="<%=request.getParameter("appNoPath")==null?"":request.getParameter("appNoPath")%>">
-                    </div>
-                </iais:value>
+        <div id="clearBody">
+            <div class="row">
+                <div class="col-md-6">
+                    <iais:value>
+                        <label class="col-xs-6 col-md-6" for="appNoPath" style="margin-top:1%;">Search by Application No
+                            or Part of:</label>
+                        <div class="col-xs-6 col-md-6">
+                            <input id="appNoPath" name="appNoPath" type="text" maxlength="15"
+                                   value="<%=request.getParameter("appNoPath")==null?"":request.getParameter("appNoPath")%>">
+                        </div>
+                    </iais:value>
+                </div>
+                <div class="col-md-6">
+                    <iais:value>
+                        <label class="col-xs-4 col-md-4" for="appServiceType" style="margin-top:3%;">Service
+                            Type:</label>
+                        <div class="col-xs-8 col-md-8">
+                            <%String appServiceType = request.getParameter("appServiceType");%>
+                            <iais:select name="appServiceType" id="appServiceType" cssClass="appServiceType"
+                                         options="appServiceType"
+                                         firstOption="<%=appServiceType%>" value="<%=appServiceType%>"></iais:select>
+                        </div>
+                    </iais:value>
+                </div>
             </div>
-            <div class="col-md-6">
-                <iais:value>
-                    <label class="col-xs-4 col-md-4" for="appServiceType" style="margin-top:3%;">Service Type:</label>
-                    <div class="col-xs-8 col-md-8">
-                        <%String appServiceType = request.getParameter("appServiceType");%>
-                        <iais:select name="appServiceType" id="appServiceType" cssClass="appServiceType" options="appServiceType"
-                                     firstOption="<%=appServiceType%>" value="<%=appServiceType%>"></iais:select>
-                    </div>
-                </iais:value>
+            <div class="row" style="margin-bottom: 14px">
+                <div class="col-md-6">
+                    <iais:value>
+                        <label class="col-xs-6 col-md-6" for="appTypeSelect" style="margin-top:3%;">Application
+                            Type:</label>
+                        <div class="col-xs-6 col-md-6">
+                            <%String appTypeSelect = request.getParameter("appTypeSelect");%>
+                            <iais:select name="appTypeSelect" id="appTypeSelect" cssClass="appTypeSelect"
+                                         options="appTypeSelect"
+                                         firstOption="<%=appTypeSelect%>" value="<%=appTypeSelect%>"></iais:select>
+                        </div>
+                    </iais:value>
+                </div>
+                <div class="col-md-6">
+                    <iais:value>
+                        <label class="col-xs-4 col-md-4" for="appStatusSelect" style="margin-top:3%;">Application
+                            Status:</label>
+                        <div class="col-xs-8 col-md-8">
+                            <%String appStatusSelect = request.getParameter("appStatusSelect");%>
+                            <iais:select options="appStatusSelect" cssClass="appStatusSelect" name="appStatusSelect"
+                                         id="appStatusSelect"
+                                         firstOption="<%=appStatusSelect%>" value="<%=appStatusSelect%>"></iais:select>
+                        </div>
+                    </iais:value>
+                </div>
             </div>
-        </div>
-        <div class="row" style="margin-bottom: 14px">
-            <div class="col-md-6">
-                <iais:value>
-                    <label class="col-xs-6 col-md-6" for="appTypeSelect" style="margin-top:3%;">Application Type:</label>
-                    <div class="col-xs-6 col-md-6">
-                        <%String appTypeSelect = request.getParameter("appTypeSelect");%>
-                        <iais:select name="appTypeSelect" id="appTypeSelect" cssClass="appTypeSelect" options="appTypeSelect"
-                                     firstOption="<%=appTypeSelect%>" value="<%=appTypeSelect%>"></iais:select>
-                    </div>
-                </iais:value>
-            </div>
-            <div class="col-md-6">
-                <iais:value>
-                    <label class="col-xs-4 col-md-4" for="appStatusSelect" style="margin-top:3%;">Application Status:</label>
-                    <div class="col-xs-8 col-md-8">
-                        <%String appStatusSelect = request.getParameter("appStatusSelect");%>
-                        <iais:select options="appStatusSelect" cssClass="appStatusSelect" name="appStatusSelect" id="appStatusSelect"
-                                     firstOption="<%=appStatusSelect%>" value="<%=appStatusSelect%>"></iais:select>
-                    </div>
-                </iais:value>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <iais:value>
-                    <label class="col-xs-6 col-md-6" for="esd" style="margin-top:3%;">Date Submitted:</label>
-                    <div class="col-xs-6 col-md-6">
-                        <%Date esd = Formatter.parseDate(request.getParameter("esd"));%>
-                        <iais:datePicker id="esd" name="esd" dateVal="<%=esd%>"/>
-                    </div>
-                </iais:value>
-            </div>
-            <div class="col-md-6">
-                <iais:value>
-                    <label class="col-xs-4 col-md-4" for="appStatusSelect" style="margin-top:3%;">To</label>
-                    <div class="col-xs-8 col-md-8">
-                        <%Date eed = Formatter.parseDate(request.getParameter("eed"));%>
-                        <iais:datePicker id="eed" name="eed" dateVal="<%=eed%>"/>
-                    </div>
-                </iais:value>
+            <div class="row">
+                <div class="col-md-6">
+                    <iais:value>
+                        <label class="col-xs-6 col-md-6" for="esd" style="margin-top:3%;">Date Submitted:</label>
+                        <div class="col-xs-6 col-md-6">
+                            <%Date esd = Formatter.parseDate(request.getParameter("esd"));%>
+                            <iais:datePicker id="esd" name="esd" dateVal="<%=esd%>"/>
+                        </div>
+                    </iais:value>
+                </div>
+                <div class="col-md-6">
+                    <iais:value>
+                        <label class="col-xs-4 col-md-4" for="appStatusSelect" style="margin-top:3%;">To</label>
+                        <div class="col-xs-8 col-md-8">
+                            <%Date eed = Formatter.parseDate(request.getParameter("eed"));%>
+                            <iais:datePicker id="eed" name="eed" dateVal="<%=eed%>"/>
+                        </div>
+                    </iais:value>
+                </div>
             </div>
         </div>
         <div class="row">
             <div class="text-right text-center-mobile" style="margin-right:3%">
+                <button type="button" class="btn btn-primary" onclick="doAppClear()">Clear</button>
                 <button type="button" class="btn btn-primary" onclick="doSearchApp()">Search</button>
             </div>
         </div>
@@ -108,7 +119,11 @@
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>
                                     <p><a href="#"
-                                          onclick="doDraft('<iais:mask name="action_no_value" value="${app.applicationNo}"/>','<iais:mask name="action_type_value" value="${app.applicationType}"/>','${app.status}')">${app.applicationNo}</a></p>
+                                          onclick="doDraft('<iais:mask name="action_no_value"
+                                                                       value="${app.applicationNo}"/>','<iais:mask
+                                                  name="action_type_value"
+                                                  value="${app.applicationType}"/>','${app.status}')">${app.applicationNo}</a>
+                                    </p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Type</p>
@@ -138,7 +153,8 @@
                                         <c:otherwise>
                                             <iais:select name="appAction" id="appAction"
                                                          options="selectApplication"
-                                                         firstOption="Select" onchange="doAppAction('${app.id}','${app.applicationNo}',this.value)"></iais:select>
+                                                         firstOption="Select"
+                                                         onchange="doAppAction('${app.id}','${app.applicationNo}',this.value)"></iais:select>
                                         </c:otherwise>
                                     </c:choose>
                                 </td>

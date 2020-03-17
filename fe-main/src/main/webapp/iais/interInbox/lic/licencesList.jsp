@@ -4,75 +4,84 @@
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="crud_action_additional" value="">
         <input type="hidden" name="action_id_value" value="">
-        <div class="row">
-            <div class="col-md-12">
-                <iais:value>
-                    <label class="col-xs-4 col-md-4" for="licNoPath" style="text-align:left;margin-top: 1.5%">Search by Licence No or Part of:</label>
-                    <div class="col-xs-8 col-md-8">
-                        <input id="licNoPath" name="licNoPath" type="text" maxlength="15" value="<%=request.getParameter("licNoPath")==null?"":request.getParameter("licNoPath")%>">
-                    </div>
-                </iais:value>
+        <div id="clearBody">
+            <div class="row">
+                <div class="col-md-12">
+                    <iais:value>
+                        <label class="col-xs-4 col-md-4" for="licNoPath" style="text-align:left;margin-top: 1.5%">Search
+                            by Licence No or Part of:</label>
+                        <div class="col-xs-8 col-md-8">
+                            <input id="licNoPath" name="licNoPath" type="text" maxlength="15"
+                                   value="<%=request.getParameter("licNoPath")==null?"":request.getParameter("licNoPath")%>">
+                        </div>
+                    </iais:value>
+                </div>
             </div>
-        </div>
-        <div class="row" style="margin-bottom: 1.5%">
-            <div class="col-md-12">
-                <iais:value>
-                    <label class="col-xs-4 col-md-4" for="licType" style="text-align:left;margin-top: 1.5%">Service Type:</label>
-                    <div class="col-xs-8 col-md-8">
-                        <%String licType = request.getParameter("licType");%>
-                        <iais:select name="licType" id="licType" options="licType" firstOption="<%=licType%>" value="<%=licType%>"></iais:select>
-                    </div>
-                </iais:value>
+            <div class="row" style="margin-bottom: 1.5%">
+                <div class="col-md-12">
+                    <iais:value>
+                        <label class="col-xs-4 col-md-4" for="licType" style="text-align:left;margin-top: 1.5%">Service
+                            Type:</label>
+                        <div class="col-xs-8 col-md-8">
+                            <%String licType = request.getParameter("licType");%>
+                            <iais:select name="licType" id="licType" options="licType" firstOption="<%=licType%>"
+                                         value="<%=licType%>"></iais:select>
+                        </div>
+                    </iais:value>
+                </div>
             </div>
-        </div>
-        <div class="row" style="margin-bottom: 1.5%">
-            <div class="col-md-12">
-                <iais:value>
-                    <label class="col-xs-4 col-md-4" for="licStatus" style="text-align:left;margin-top: 1.5%">Licence Status:</label>
-                    <div class="col-xs-8 col-md-8">
-                        <%String licStatus = request.getParameter("licStatus");%>
-                        <iais:select name="licStatus" id="licStatus" options="licStatus"
-                                     firstOption="<%=licStatus%>" value="<%=licStatus%>"></iais:select>
-                    </div>
-                </iais:value>
+            <div class="row" style="margin-bottom: 1.5%">
+                <div class="col-md-12">
+                    <iais:value>
+                        <label class="col-xs-4 col-md-4" for="licStatus" style="text-align:left;margin-top: 1.5%">Licence
+                            Status:</label>
+                        <div class="col-xs-8 col-md-8">
+                            <%String licStatus = request.getParameter("licStatus");%>
+                            <iais:select name="licStatus" id="licStatus" options="licStatus"
+                                         firstOption="<%=licStatus%>" value="<%=licStatus%>"></iais:select>
+                        </div>
+                    </iais:value>
+                </div>
             </div>
-        </div>
-        <div class="row" style="margin-bottom: 1.5%">
-            <div class="col-md-12">
-                <iais:value>
-                    <label class="col-md-3" for="fStartDate" style="text-align:left;margin-top: 1.5%">Licence Start Date:</label>
-                    <div class="col-md-4">
-                        <%Date fStartDate = Formatter.parseDate(request.getParameter("fStartDate"));%>
-                        <iais:datePicker id="fStartDate" name="fStartDate" dateVal="<%=fStartDate%>"/>
-                    </div>
+            <div class="row" style="margin-bottom: 1.5%">
+                <div class="col-md-12">
+                    <iais:value>
+                        <label class="col-md-3" for="fStartDate" style="text-align:left;margin-top: 1.5%">Licence Start
+                            Date:</label>
+                        <div class="col-md-4">
+                            <%Date fStartDate = Formatter.parseDate(request.getParameter("fStartDate"));%>
+                            <iais:datePicker id="fStartDate" name="fStartDate" dateVal="<%=fStartDate%>"/>
+                        </div>
+                        <div class="col-xs-1 col-md-1" style="margin-top: 1.5%">
+                            <span>To</span>
+                        </div>
+                        <div class="col-md-4">
+                            <%Date eStartDate = Formatter.parseDate(request.getParameter("eStartDate"));%>
+                            <iais:datePicker id="eStartDate" name="eStartDate" dateVal="<%=eStartDate%>"/>
+                        </div>
+                    </iais:value>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <iais:value>
+                        <label class="col-xs-3 col-md-3" style="text-align:left;margin-top: 1.5%">Licence Expiry
+                            Date:</label>
+                        <div class="col-xs-4 col-md-4">
+                            <%Date fExpiryDate = Formatter.parseDate(request.getParameter("fExpiryDate"));%>
+                            <iais:datePicker id="fExpiryDate" name="fExpiryDate" dateVal="<%=fExpiryDate%>"/>
+                        </div>
+                    </iais:value>
                     <div class="col-xs-1 col-md-1" style="margin-top: 1.5%">
                         <span>To</span>
                     </div>
-                    <div class="col-md-4">
-                        <%Date eStartDate = Formatter.parseDate(request.getParameter("eStartDate"));%>
-                        <iais:datePicker id="eStartDate" name="eStartDate" dateVal="<%=eStartDate%>"/>
-                    </div>
-                </iais:value>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <iais:value>
-                    <label class="col-xs-3 col-md-3" style="text-align:left;margin-top: 1.5%">Licence Expiry Date:</label>
-                    <div class="col-xs-4 col-md-4">
-                        <%Date fExpiryDate = Formatter.parseDate(request.getParameter("fExpiryDate"));%>
-                        <iais:datePicker id="fExpiryDate" name="fExpiryDate" dateVal="<%=fExpiryDate%>"/>
-                    </div>
-                </iais:value>
-                <div class="col-xs-1 col-md-1" style="margin-top: 1.5%">
-                    <span>To</span>
+                    <iais:value>
+                        <div class="col-xs-4 col-md-4">
+                            <%Date eExpiryDate = Formatter.parseDate(request.getParameter("eExpiryDate"));%>
+                            <iais:datePicker id="eExpiryDate" name="eExpiryDate" dateVal="<%=eExpiryDate%>"/>
+                        </div>
+                    </iais:value>
                 </div>
-                <iais:value>
-                    <div class="col-xs-4 col-md-4">
-                        <%Date eExpiryDate = Formatter.parseDate(request.getParameter("eExpiryDate"));%>
-                        <iais:datePicker id="eExpiryDate" name="eExpiryDate" dateVal="<%=eExpiryDate%>"/>
-                    </div>
-                </iais:value>
             </div>
         </div>
         <div class="row">
@@ -84,12 +93,12 @@
                 </div>
                 <div class="col-md-5">
                     <button type="button" class="btn btn-primary" onclick="doPrint()">Print</button>
-                    <button type="button" class="btn btn-primary" onclick="doPrint()">Clear</button>
+                    <button type="button" class="btn btn-primary" onclick="doClearLic()">Clear</button>
                     <button type="button" class="btn btn-primary" onclick="doSearchLic()">Search</button>
                 </div>
             </div>
         </div>
-        <iais:pagination  param="licParam" result="licResult"/>
+        <iais:pagination param="licParam" result="licResult"/>
     </div>
     <div class="row">
         <div class="col-xs-12">
@@ -97,13 +106,16 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <iais:sortableHeader needSort="false"  field="" value=" "></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No."></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true"  field="SVC_NAME" value="Type"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true"  field="STATUS" value="Status"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true"  field="PREMISE" value="Premises"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true"  field="START_DATE" value="Start Date"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true"  field="EXPIRY_DATE" value="Expiry Date"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="false" field="" value=" "></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="LICENCE_NO"
+                                             value="Licence No."></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="SVC_NAME" value="Type"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="STATUS" value="Status"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="PREMISE" value="Premises"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="START_DATE"
+                                             value="Start Date"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="EXPIRY_DATE"
+                                             value="Expiry Date"></iais:sortableHeader>
                         <th style="width:15%">Actions</th>
                     </tr>
                     </thead>
@@ -130,8 +142,10 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <a href="#" onclick="toLicView('<iais:mask name="action_id_value" value="${licenceQuery.id}"/>')">${licenceQuery.licenceNo}</a>
-                                        <input type="hidden" name="licenId${status.index}" value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
+                                        <a href="#" onclick="toLicView('<iais:mask name="action_id_value"
+                                                                                   value="${licenceQuery.id}"/>')">${licenceQuery.licenceNo}</a>
+                                        <input type="hidden" name="licenId${status.index}"
+                                               value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Type</p>
@@ -158,7 +172,8 @@
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Actions</p>
                                         <iais:select name="licActions" id="licActions" options="licActions"
-                                                     firstOption="Select"  onchange="doLicAppeal('${licenceQuery.licenceNo}')"></iais:select>
+                                                     firstOption="Select"
+                                                     onchange="doLicAppeal('${licenceQuery.licenceNo}')"></iais:select>
                                     </td>
                                 </tr>
                             </c:forEach>
