@@ -116,13 +116,13 @@
                                                 </iais:value>
                                                 <iais:field value="Licence Start Date To"/>
                                                 <iais:value width="18">
-                                                    <iais:datePicker id = "start_to_date" name = "start_to_date" value="${SearchParam.filters['expiry_date']}"></iais:datePicker>
+                                                    <iais:datePicker id = "start_to_date" name = "start_to_date" value="${SearchParam.filters['start_to_date']}"></iais:datePicker>
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
                                                 <iais:field value="Licence Expiry Date From"/>
                                                 <iais:value width="18">
-                                                    <iais:datePicker id = "expiry_start_date" name = "expiry_start_date" value="${SearchParam.filters['start_date']}" ></iais:datePicker>
+                                                    <iais:datePicker id = "expiry_start_date" name = "expiry_start_date" value="${SearchParam.filters['expiry_start_date']}" ></iais:datePicker>
                                                 </iais:value>
 
                                                 <iais:field value="Licence Expiry Date To"/>
@@ -162,7 +162,7 @@
                                                 <iais:field value="HCI Code:"/>
                                                 <iais:value width="18">
                                                     <label>
-                                                        <input type="text" style="width:180%; font-weight:normal;" name="hci_code" value="${SearchParam.filters['hci_code']}" />
+                                                        <input type="text" style="width:180%; font-weight:normal;" name="hci_code" value="${SearchParam.filters['hciCode']}" />
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
@@ -170,7 +170,7 @@
                                                 <iais:field value="HCI Name:"/>
                                                 <iais:value width="18">
                                                     <label>
-                                                        <input type="text" style="width:180%; font-weight:normal;" name="hci_name" value="${SearchParam.filters['hci_name']}" />
+                                                        <input type="text" style="width:180%; font-weight:normal;" name="hci_name" value="${SearchParam.filters['hciName']}" />
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
@@ -178,7 +178,7 @@
                                                 <iais:field value="HCI Street Name:"/>
                                                 <iais:value width="18">
                                                     <label>
-                                                        <input type="text" style="width:180%; font-weight:normal;" name="hci_street_name" value="${SearchParam.filters['hci_street_name']}" />
+                                                        <input type="text" style="width:180%; font-weight:normal;" name="hci_street_name" value="${SearchParam.filters['hciStreetName']}" />
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
@@ -186,7 +186,7 @@
                                                 <iais:field value="HCI Postal Code:"/>
                                                 <iais:value width="18">
                                                     <label>
-                                                        <input type="text" style="width:180%; font-weight:normal;" name="hci_postal_code" value="${SearchParam.filters['hci_postal_code']}" />
+                                                        <input type="text" style="width:180%; font-weight:normal;" name="hci_postal_code" value="${SearchParam.filters['hciPostalCode']}" />
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
@@ -223,7 +223,7 @@
                                                 <iais:field value="Licensee ID:"/>
                                                 <iais:value width="18">
                                                     <label>
-                                                        <input type="text" style="width:180%; font-weight:normal;" name="licensee_id" value="${SearchParam.filters['licensee_id']}" />
+                                                        <input type="text" style="width:180%; font-weight:normal;" name="licensee_id" value="${SearchParam.filters['licenseeId']}" />
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
@@ -231,7 +231,7 @@
                                                 <iais:field value="Licensee Name:"/>
                                                 <iais:value width="18">
                                                     <label>
-                                                        <input type="text" style="width:180%; font-weight:normal;" name="licensee_name" value="${SearchParam.filters['licensee_name']}" />
+                                                        <input type="text" style="width:180%; font-weight:normal;" name="licensee_name" value="${SearchParam.filters['licenseeName']}" />
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
@@ -239,7 +239,7 @@
                                                 <iais:field value="Licensee Professional Regn No."/>
                                                 <iais:value width="18">
                                                     <label>
-                                                        <input type="text" style="width:180%; font-weight:normal;" name="licensee_regn_no" value="${SearchParam.filters['licensee_regn_no']}" />
+                                                        <input type="text" style="width:180%; font-weight:normal;" name="licensee_regn_no" value="${SearchParam.filters['licenseeRegnNo']}" />
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
@@ -276,7 +276,7 @@
                                                 <iais:field value="Service Personnal ID:"/>
                                                 <iais:value width="18">
                                                     <label>
-                                                        <input type="text" style="width:180%; font-weight:normal;" name="service_id" value="${SearchParam.filters['service_id']}" />
+                                                        <input type="text" style="width:180%; font-weight:normal;" name="service_id" value="${SearchParam.filters['serviceId']}" />
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
@@ -284,7 +284,7 @@
                                                 <iais:field value="Service Personnel Name:"/>
                                                 <iais:value width="18">
                                                     <label>
-                                                        <input type="text" style="width:180%; font-weight:normal;" name="service_name" value="${SearchParam.filters['service_name']}" />
+                                                        <input type="text" style="width:180%; font-weight:normal;" name="service_name" value="${SearchParam.filters['serviceName']}" />
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
@@ -292,7 +292,7 @@
                                                 <iais:field value="Service Professional Regn No."/>
                                                 <iais:value width="18">
                                                     <label>
-                                                        <input type="text" style="width:180%; font-weight:normal;" name="service_regn_no" value="${SearchParam.filters['service_regn_no']}" />
+                                                        <input type="text" style="width:180%; font-weight:normal;" name="service_regn_no" value="${SearchParam.filters['serviceRegnNo']}" />
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
@@ -300,7 +300,7 @@
                                                 <iais:field value="Service Professional Role:"/>
                                                 <iais:value width="18">
                                                     <label>
-                                                        <input type="text" style="width:180%; font-weight:normal;" name="service_role" value="${SearchParam.filters['service_role']}" />
+                                                        <input type="text" style="width:180%; font-weight:normal;" name="service_role" value="${SearchParam.filters['serviceRole']}" />
                                                     </label>
                                                 </iais:value>
                                             </iais:row>

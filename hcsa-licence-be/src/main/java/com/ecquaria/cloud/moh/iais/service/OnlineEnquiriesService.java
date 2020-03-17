@@ -8,6 +8,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * OnlineEnquiriesService
  *
@@ -19,4 +21,6 @@ public interface OnlineEnquiriesService {
     SearchResult<LicenseeQueryDto> searchLicenseeIdsParam(SearchParam searchParam);
     SearchResult<HcsaSvcQueryDto> searchSvcNamesParam(SearchParam searchParam);
     SearchResult<ProfessionalInformationQueryDto> searchProfessionalInformation(SearchParam searchParam);
+    void setLicInfo(HttpServletRequest request);
+    void preInspReport(HttpServletRequest request);
 }

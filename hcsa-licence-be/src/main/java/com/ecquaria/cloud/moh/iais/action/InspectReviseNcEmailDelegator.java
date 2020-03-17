@@ -109,6 +109,7 @@ public class InspectReviseNcEmailDelegator {
     private static final String TD="</td><td>";
     private static final String SUBJECT="subject";
     private static final String SER_LIST_DTO= "serListDto";
+    private static final String DRA_EMA_ID="draftEmailId";
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -116,9 +117,6 @@ public class InspectReviseNcEmailDelegator {
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         AccessUtil.initLoginUserInfo(bpc.request);
         String taskId = ParamUtil.getRequestString(request,"taskId");
-//        if (StringUtil.isEmpty(taskId)) {
-//            taskId = "07528289-4246-EA11-BE7F-000C29F371DC";
-//        }
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
         String appPremCorrId = taskDto.getRefNo();
         List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
@@ -136,7 +134,6 @@ public class InspectReviseNcEmailDelegator {
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
         ParamUtil.setSessionAttr(request,TASK_DTO,taskDto);
-        ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
         ParamUtil.setSessionAttr(request,MSG_CON, null);
         ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
@@ -160,7 +157,7 @@ public class InspectReviseNcEmailDelegator {
         String content=ParamUtil.getString(request,MSG_CON);
         ParamUtil.setSessionAttr(request,MSG_CON,content);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
-        ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"emailView");
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,EMAIL_VIEW);
     }
 
     public void previewEmail(BaseProcessClass bpc){
@@ -258,9 +255,6 @@ public class InspectReviseNcEmailDelegator {
         log.info("=======>>>>>preCheckList>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"checkList".equals(currentAction)){
-
-        }
         ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"checkList");
     }
     public void checkListNext(BaseProcessClass bpc) {
@@ -296,8 +290,8 @@ public class InspectReviseNcEmailDelegator {
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, TASK_DTO);
         String correlationId = taskDto.getRefNo();
         InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail(correlationId);
-        ParamUtil.setSessionAttr(request,"draftEmailId",inspectionEmailTemplateDto.getId());
-        ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
+        ParamUtil.setSessionAttr(request,DRA_EMA_ID,inspectionEmailTemplateDto.getId());
+        ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
         ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"emailView");
     }
 
@@ -345,8 +339,8 @@ public class InspectReviseNcEmailDelegator {
         inspectionEmailTemplateDto.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getStatus()}).get(0).getText());
         ParamUtil.setRequestAttr(request,"appPremisesRoutingHistoryDtos", appPremisesRoutingHistoryDtos);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
-        ParamUtil.setSessionAttr(request,"draftEmailId",inspectionEmailTemplateDto.getId());
-        ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
+        ParamUtil.setSessionAttr(request,DRA_EMA_ID,inspectionEmailTemplateDto.getId());
+        ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
         ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"processing");
     }
 
@@ -468,7 +462,7 @@ public class InspectReviseNcEmailDelegator {
         map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
         String mesContext= MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(),map);
         inspectionEmailTemplateDto.setMessageContent(mesContext);
-        String draftEmailId= (String) ParamUtil.getSessionAttr(request,"draftEmailId");
+        String draftEmailId= (String) ParamUtil.getSessionAttr(request,DRA_EMA_ID);
         inspectionEmailTemplateDto.setId(draftEmailId);
         inspEmailService.updateEmailDraft(inspectionEmailTemplateDto);
         return mesContext;

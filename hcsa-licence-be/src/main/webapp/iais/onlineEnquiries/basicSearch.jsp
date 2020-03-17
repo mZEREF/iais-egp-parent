@@ -29,7 +29,7 @@
                                             <iais:field value="Search No:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text"  style="width:180%; font-weight:normal;" name="searchNo" value="${searchNo}" />
+                                                    <input type="text"  style="width:180%; font-weight:normal;" name="searchNo" maxlength="100" value="${searchNo}" />
                                                 </label>
                                             </iais:value>
                                         </iais:row>
@@ -69,7 +69,7 @@
                                             <button type="button" class="btn btn-lg btn-login-submit" type="button"
                                                     style="background:#2199E8; color: white" onclick="javascript:doSearch();">Search</button>
                                             <button type="button" class="btn btn-lg btn-login-submit" type="button"
-                                                    style="background:#2199E8; color: white" onclick="javascript:doAdvancedSearch();">Advanced</button>
+                                                    style="background:#2199E8; color: white" onclick="javascript:doAdvancedSearch();">Advanced Search</button>
                                             <button type="button" class="btn btn-lg btn-login-clear" type="button"
                                                     style="background:#2199E8; color: white" onclick="javascript:doClear();">Clear</button>
                                         </iais:action>
@@ -98,7 +98,7 @@
                                 <iais:sortableHeader needSort="false"  field="LICENCE_NO" value="Licence No."></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="HCI_NAME" value="HCI Name "></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="ADDRESS" value=" Address"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="HCI_ADDRESS" value="HCI Address"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="LICENSEE_NAME" value="Licensee Name"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="SERVICE_NAME" value="Service Name"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="Licence_Period" value="Licence Period"></iais:sortableHeader>
@@ -185,7 +185,7 @@
 
 
     function doClear(){
-        $('input[name="search_no"]').val("");
+        $('input[name="searchNo"]').val("");
         $('input[type="checkbox"]').prop("checked", false);
     }
 

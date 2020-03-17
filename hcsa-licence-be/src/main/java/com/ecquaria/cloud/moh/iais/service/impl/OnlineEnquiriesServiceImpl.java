@@ -3,21 +3,28 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComplianceHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
@@ -27,10 +34,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
+import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -42,7 +55,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -62,17 +78,20 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
-
+    @Autowired
+    private ApplicationClient applicationClient;
     @Autowired
     private InsRepClient insRepClient;
-
+    @Autowired
+    LicenceService licenceService;
     @Autowired
     private HcsaChklClient hcsaChklClient;
     @Autowired
     private InsepctionNcCheckListService insepctionNcCheckListService;
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
-
+    @Autowired
+    private InsRepService insRepService;
     @Autowired
     AppInspectionStatusClient appInspectionStatusClient;
 
@@ -94,6 +113,65 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     public SearchResult<ProfessionalInformationQueryDto> searchProfessionalInformation(SearchParam searchParam) {
         return hcsaLicenceClient.searchProfessionalInformation(searchParam).getEntity();
     }
+
+    @Override
+    public void setLicInfo(HttpServletRequest request) {
+        String licenceId = (String) ParamUtil.getSessionAttr(request, "id");
+
+        LicenceDto licenceDto=licenceService.getLicenceDto(licenceId);
+        OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licenceDto.getLicenseeId()).getEntity();
+        List<PersonnelsDto> personnelsDto= hcsaLicenceClient.getPersonnelDtoByLicId(licenceId).getEntity();
+
+        for (LicenseeKeyApptPersonDto org:organizationLicDto.getLicenseeKeyApptPersonDtos()
+        ) {
+            org.setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{org.getSalutation()}).get(0).getText());
+        }
+        for (PersonnelsDto per:personnelsDto
+        ) {
+            try{
+                per.getKeyPersonnelDto().setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getSalutation()}).get(0).getText());
+                per.getKeyPersonnelDto().setDesignation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getDesignation()}).get(0).getText());
+                per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelExtDto().getProfessionType()}).get(0).getText());
+
+            }catch (NullPointerException e){
+                log.info(e.getMessage());
+            }
+        }
+
+        List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
+
+        List<ComplianceHistoryDto> complianceHistoryDtos=new ArrayList<>();
+        for(LicAppCorrelationDto licAppCorrelationDto : licAppCorrelationDtos){
+            ComplianceHistoryDto complianceHistoryDto=new ComplianceHistoryDto();
+            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(licAppCorrelationDto.getApplicationId()).getEntity();
+            ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDto.getApplicationId()).getEntity();
+            ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+            complianceHistoryDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? "Post":"Pre");
+            complianceHistoryDto.setAppPremCorrId(appPremisesCorrelationDto.getId());
+            complianceHistoryDto.setComplianceTag("Full");
+            try{
+                List<AdhocChecklistItemDto> adhocChecklistItemDtos=applicationClient.getAdhocByAppPremCorrId(appPremisesCorrelationDto.getId()).getEntity();
+                complianceHistoryDto.setRiskTag(adhocChecklistItemDtos.get(0).getRiskLvl());
+            }catch (Exception e){
+                log.info(e.getMessage());
+            }
+            try{
+                AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                Calendar c = Calendar.getInstance();
+                c.setTime(appPremisesRecommendationDto.getRecomInDate());
+                complianceHistoryDto.setInspectionDateYear(c.get(Calendar.YEAR));
+                complianceHistoryDtos.add(complianceHistoryDto);
+            }catch (Exception e){
+                complianceHistoryDtos.add(complianceHistoryDto);
+                log.info(e.getMessage());
+            }
+        }
+
+        ParamUtil.setSessionAttr(request,"complianceHistoryDtos", (Serializable) complianceHistoryDtos);
+        ParamUtil.setSessionAttr(request,"organizationLicDto",organizationLicDto);
+        ParamUtil.setSessionAttr(request,"personnelsDto", (Serializable) personnelsDto);
+    }
+
     @Override
     public InspectionReportDto getInsRepDto(ApplicationViewDto applicationViewDto) {
         InspectionReportDto inspectionReportDto = new InspectionReportDto();
@@ -260,5 +338,18 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         inspectionReportDto.setTaskRemarks(remarks);
         inspectionReportDto.setCurrentStatus(status);
         return inspectionReportDto;
+    }
+
+    @Override
+    public void preInspReport(HttpServletRequest request) {
+        log.info("=======>>>>>preInspReport>>>>>>>>>>>>>>>>requestForInformation");
+        String appPremCorrId = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+
+        ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appPremCorrId);
+        InspectionReportDto insRepDto = getInsRepDto(applicationViewDto);
+        ParamUtil.setSessionAttr(request, "insRepDto", insRepDto);
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+        ParamUtil.setSessionAttr(request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
+        // 		preAppInfo->OnStepProcess
     }
 }

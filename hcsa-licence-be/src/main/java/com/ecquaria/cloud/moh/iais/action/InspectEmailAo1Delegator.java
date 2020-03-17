@@ -111,6 +111,7 @@ public class InspectEmailAo1Delegator {
     private static final String SER_LIST_DTO= "serListDto";
     private static final String TD="</td><td>";
     private static final String SUBJECT="subject";
+    private static final String DRA_EMA_ID="draftEmailId";
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -121,9 +122,6 @@ public class InspectEmailAo1Delegator {
         AccessUtil.initLoginUserInfo(bpc.request);
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getRequestString(request,"taskId");
-//        if (StringUtil.isEmpty(taskId)) {
-//            taskId = "06528289-4246-EA11-BE7F-000C29F371DC";
-//         }
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
         String appPremCorrId = taskDto.getRefNo();
         List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
@@ -141,7 +139,6 @@ public class InspectEmailAo1Delegator {
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
         ParamUtil.setSessionAttr(request,TASK_DTO,taskDto);
-        ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
         ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
         ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
@@ -173,7 +170,7 @@ public class InspectEmailAo1Delegator {
         String content=ParamUtil.getString(request,MSG_CON);
         ParamUtil.setSessionAttr(request,MSG_CON,content);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
-        ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"emailView");
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,EMAIL_VIEW);
     }
     public void doProcessing(BaseProcessClass bpc){
         log.info("=======>>>>>doProcessing>>>>>>>>>>>>>>>>emailRequest");
@@ -308,7 +305,7 @@ public class InspectEmailAo1Delegator {
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, TASK_DTO);
         String correlationId = taskDto.getRefNo();
         InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail(correlationId);
-        ParamUtil.setSessionAttr(request,"draftEmailId",inspectionEmailTemplateDto.getId());
+        ParamUtil.setSessionAttr(request,DRA_EMA_ID,inspectionEmailTemplateDto.getId());
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
         ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"emailView");
     }
@@ -345,7 +342,7 @@ public class InspectEmailAo1Delegator {
         inspectionEmailTemplateDto.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getStatus()}).get(0).getText());
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setRequestAttr(request,"appPremisesRoutingHistoryDtos", appPremisesRoutingHistoryDtos);
-        ParamUtil.setSessionAttr(request,"draftEmailId",inspectionEmailTemplateDto.getId());
+        ParamUtil.setSessionAttr(request,DRA_EMA_ID,inspectionEmailTemplateDto.getId());
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
         ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"processing");
     }
@@ -464,7 +461,7 @@ public class InspectEmailAo1Delegator {
         map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
         String mesContext= MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(),map);
         inspectionEmailTemplateDto.setMessageContent(mesContext);
-        String draftEmailId= (String) ParamUtil.getSessionAttr(request,"draftEmailId");
+        String draftEmailId= (String) ParamUtil.getSessionAttr(request,DRA_EMA_ID);
         inspectionEmailTemplateDto.setId(draftEmailId);
         inspEmailService.updateEmailDraft(inspectionEmailTemplateDto);
         return mesContext;

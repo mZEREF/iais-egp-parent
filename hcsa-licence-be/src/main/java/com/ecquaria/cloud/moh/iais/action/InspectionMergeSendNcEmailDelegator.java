@@ -86,6 +86,9 @@ public class InspectionMergeSendNcEmailDelegator {
     private static final String TASK_DTO="taskDto";
     private static final String SUBJECT="subject";
     private static final String MSG_CON="messageContent";
+    private static final String APP_VIEW_DTO="applicationViewDto";
+    private static final String BELOW_REVIEW="Below are the review outcome";
+    private static final String THANKS="<p>Thank you</p>";
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -94,7 +97,7 @@ public class InspectionMergeSendNcEmailDelegator {
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, null);
         ParamUtil.setSessionAttr(request,"appPremCorrIds",null);
         ParamUtil.setSessionAttr(request,MSG_CON, null);
-        ParamUtil.setSessionAttr(request,"applicationViewDto",null);
+        ParamUtil.setSessionAttr(request,APP_VIEW_DTO,null);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
 
     }
@@ -103,9 +106,6 @@ public class InspectionMergeSendNcEmailDelegator {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getRequestString(request,"taskId");
-//        if(StringUtil.isEmpty(taskId)){
-//            taskId= "6E5A002D-9437-EA11-BE7E-000C29F371DC";
-//        }
         TaskDto taskDto ;
         if(StringUtil.isEmpty(taskId)){
             taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
@@ -122,8 +122,8 @@ public class InspectionMergeSendNcEmailDelegator {
         for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
         ) {
             oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
-            if(oneEmail.contains("Below are the review outcome")){
-                mesContext.append(oneEmail.substring(0,oneEmail.indexOf("Below are the review outcome")));
+            if(oneEmail.contains(BELOW_REVIEW)){
+                mesContext.append(oneEmail.substring(0,oneEmail.indexOf(BELOW_REVIEW)));
                 break;
             }
         }
@@ -137,8 +137,8 @@ public class InspectionMergeSendNcEmailDelegator {
             appPremCorrIds.add(appPremisesCorrelationDto.getId());
             ApplicationViewDto appViewDto = inspEmailService.getAppViewByCorrelationId(appPremisesCorrelationDto.getId());
             svcNames.add(inspectionService.getHcsaServiceDtoByServiceId(appViewDto.getApplicationDto().getServiceId()).getSvcName());
-            if(oneEmail.contains("Below are the review outcome") && oneEmail.contains("<p>Thank you</p>")){
-                mesContext.append(ncEmail.substring(ncEmail.indexOf("Below are the review outcome"),ncEmail.indexOf("<p>Thank you</p>")));
+            if(oneEmail.contains(BELOW_REVIEW) && oneEmail.contains(THANKS)){
+                mesContext.append(ncEmail.substring(ncEmail.indexOf(BELOW_REVIEW),ncEmail.indexOf(THANKS)));
             }
             else {
                 mesContext.append(ncEmail);
@@ -147,8 +147,8 @@ public class InspectionMergeSendNcEmailDelegator {
         for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
         ) {
             oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
-            if(oneEmail.contains("<p>Thank you</p>")){
-                mesContext.append(oneEmail.substring(oneEmail.indexOf("<p>Thank you</p>")));
+            if(oneEmail.contains(THANKS)){
+                mesContext.append(oneEmail.substring(oneEmail.indexOf(THANKS)));
                 break;
             }
         }
@@ -164,7 +164,7 @@ public class InspectionMergeSendNcEmailDelegator {
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setSessionAttr(request,MSG_CON, mesContext.toString());
         ParamUtil.setRequestAttr(request,"svcNames",svcNames);
-        ParamUtil.setSessionAttr(request,"applicationViewDto",applicationViewDto);
+        ParamUtil.setSessionAttr(request,APP_VIEW_DTO,applicationViewDto);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
     }
 
@@ -195,12 +195,12 @@ public class InspectionMergeSendNcEmailDelegator {
         HttpServletRequest request = bpc.request;
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
-        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,"applicationViewDto");
+        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,APP_VIEW_DTO);
         TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
-        inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,"messageContent"));
+        inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,MSG_CON));
         String decision=ParamUtil.getString(request,"decision");
         if("Select".equals(decision)){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
         List<String>appPremCorrIds= (List<String>) ParamUtil.getSessionAttr(request,"appPremCorrIds");
@@ -433,7 +433,7 @@ public class InspectionMergeSendNcEmailDelegator {
         return result;
     }
 
-    public void doRecallEmail(BaseProcessClass bpc) {
+    public void doRecallEmail() {
         log.info("=======>>>>>doRecallEmail>>>>>>>>>>>>>>>>emailRequest");
     }
 

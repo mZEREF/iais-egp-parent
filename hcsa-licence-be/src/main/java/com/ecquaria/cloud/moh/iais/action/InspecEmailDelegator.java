@@ -105,9 +105,6 @@ public class InspecEmailDelegator {
         HttpServletRequest request = bpc.request;
         String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
         String taskId = ParamUtil.getRequestString(request,"taskId");
-//        if(StringUtil.isEmpty(taskId)){
-//            taskId = "F2733132-A137-EA11-BE7E-000C29F371DC";
-//        }
         TaskDto taskDto ;
         if(StringUtil.isEmpty(taskId)){
             taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
