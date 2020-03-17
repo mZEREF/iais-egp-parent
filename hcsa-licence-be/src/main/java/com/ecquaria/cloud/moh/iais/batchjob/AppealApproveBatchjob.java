@@ -110,7 +110,7 @@ public class AppealApproveBatchjob {
                   AppealApplicationDto appealApplicationDto = new  AppealApplicationDto();
                   String eventRefNo = String.valueOf(System.currentTimeMillis());
                   appealApplicationDto.setEventRefNo(eventRefNo);
-                  appealApplicationDto.setAppealApplicationDto(appealApplicaiton);
+                  appealApplicationDto.setApplicationDtos(appealApplicaiton);
                   appealApplicationDto.setRollBackApplicationDto(rollBackApplication);
                   appealApplicationDto.setAppealPersonnel(appealPersonnel);
                   appealApplicationDto.setRollBackPersonnel(rollBackPersonnel);
