@@ -718,9 +718,9 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     @Override
     public void routingTask(TaskDto taskDto, String preInspecRemarks, LoginContext loginContext, boolean flag) {
         if(flag){
-            routingToNcEmail(taskDto,preInspecRemarks,loginContext);
+            routingToNcEmail(taskDto,preInspecRemarks,loginContext); // false
         }else{
-            routingForToReport(taskDto,preInspecRemarks,loginContext);
+            routingForToReport(taskDto,preInspecRemarks,loginContext);// false
         }
     }
 

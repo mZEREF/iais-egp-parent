@@ -52,6 +52,9 @@ public interface HcsaLicenceClient {
     @RequestMapping(path = "/hcsa-premises/latestVersion/{hciCode}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PremisesDto> getLatestVersionPremisesByHciCode(@PathVariable(name = "hciCode") String hciCode);
 
+    @GetMapping(path = "/hcsa-licence/getActiveHCICode",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity< List<String>> getActiveHCICode();
+
     @RequestMapping(path = "/hcsa-key-personnel/latestVersion/{idNo}/{orgId}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<KeyPersonnelDto> getLatestVersionKeyPersonnelByidNoAndOrgId(@PathVariable(name = "idNo") String idNo,
                                                                            @PathVariable(name = "orgId") String orgId);

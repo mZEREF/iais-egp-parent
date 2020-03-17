@@ -16,6 +16,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditInspect
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
@@ -28,6 +30,9 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author: jiahao
@@ -44,10 +49,11 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     private TaskService taskService;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
+
     @Override
     public void getInspectors(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
-        if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){
-            for(AuditTaskDataFillterDto temp:auditTaskDataDtos){
+        if (!IaisCommonUtils.isEmpty(auditTaskDataDtos)) {
+            for (AuditTaskDataFillterDto temp : auditTaskDataDtos) {
                 HcsaSvcStageWorkingGroupDto dto = new HcsaSvcStageWorkingGroupDto();
                 HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(temp.getSvcName()).getEntity();
                 dto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
@@ -58,7 +64,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                 String workGroupId = dto.getGroupId();
                 temp.setWorkGroupId(workGroupId);
                 List<OrgUserDto> orgDtos = organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-                getinspectorOp(orgDtos,temp);
+                getinspectorOp(orgDtos, temp);
             }
         }
 
@@ -66,8 +72,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
 
     private void getinspectorOp(List<OrgUserDto> orgDtos, AuditTaskDataFillterDto temp) {
         List<SelectOption> ops = new ArrayList<>();
-        if(!IaisCommonUtils.isEmpty(orgDtos)){
-            for(OrgUserDto ou :orgDtos){
+        if (!IaisCommonUtils.isEmpty(orgDtos)) {
+            for (OrgUserDto ou : orgDtos) {
                 SelectOption op = new SelectOption();
                 op.setText(ou.getDisplayName());
                 op.setValue(ou.getUserId());
@@ -79,16 +85,16 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
 
     @Override
     public List<SelectOption> getAuditOp() {
-        String category[] = {"ADTYPE001","ADTYPE002","ADTYPE003"};
-        List<SelectOption> inpTypeOp =   MasterCodeUtil.retrieveOptionsByCodes(category);
+        String category[] = {"ADTYPE001", "ADTYPE002", "ADTYPE003"};
+        List<SelectOption> inpTypeOp = MasterCodeUtil.retrieveOptionsByCodes(category);
         return inpTypeOp;
     }
 
     @Override
     public void doSubmit(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
-        if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){
-            for(AuditTaskDataFillterDto temp: auditTaskDataDtos){
-                if(temp.isSelectedForAudit()){
+        if (!IaisCommonUtils.isEmpty(auditTaskDataDtos)) {
+            for (AuditTaskDataFillterDto temp : auditTaskDataDtos) {
+                if (temp.isSelectedForAudit()) {
                     assignTask(temp);
                 }
             }
@@ -172,9 +178,9 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     @Override
     public List<AuditTaskDataFillterDto> doRemove(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
         List<AuditTaskDataFillterDto> removeList = new ArrayList<>();
-        if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){
-            for(AuditTaskDataFillterDto temp:auditTaskDataDtos){
-                if(!temp.isSelectedForAudit()){
+        if (!IaisCommonUtils.isEmpty(auditTaskDataDtos)) {
+            for (AuditTaskDataFillterDto temp : auditTaskDataDtos) {
+                if (!temp.isSelectedForAudit()) {
                     removeList.add(temp);
                 }
             }
@@ -233,5 +239,36 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         String status = "status";//todo
         //create grop info
         createInspectionGroupInfo(temp);
+    }
+
+    @Override
+    public List<HcsaServiceDto> getActiveHCIServices() {
+        return hcsaConfigClient.getActiveServices().getEntity();
+    }
+
+    @Override
+    public  List<SelectOption> getActiveHCIServicesByNameOrCode(List<HcsaServiceDto> hcsaServiceDtos,String type){
+        List<SelectOption> activeHCISelections = new ArrayList<>();
+        if (hcsaServiceDtos != null && hcsaServiceDtos.size() > 0) {
+            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos)
+                if(StringUtil.isEmpty(type))
+                activeHCISelections.add(new SelectOption(String.valueOf(hcsaServiceDto.getSvcCode()), String.valueOf(hcsaServiceDto.getSvcName())));
+               else if(HcsaLicenceBeConstant.GET_HCI_SERVICE_SELECTION_NAME_TAG.equalsIgnoreCase(type))
+                    activeHCISelections.add(new SelectOption( String.valueOf(hcsaServiceDto.getSvcName()), String.valueOf(hcsaServiceDto.getSvcName())));
+               else
+                   activeHCISelections.add(new SelectOption(String.valueOf(hcsaServiceDto.getSvcName()),String.valueOf(hcsaServiceDto.getSvcCode())));
+        }
+        return activeHCISelections;
+    }
+
+
+    @Override
+    public List<SelectOption> getActiveHCICode() {
+        List<String> activeHcicode = hcsaLicenceClient.getActiveHCICode().getEntity();
+        List<SelectOption> selectOptions = new ArrayList<>();
+        if(activeHcicode != null)
+            for(String string : activeHcicode)
+                selectOptions.add(new SelectOption(string,string));
+        return selectOptions;
     }
 }

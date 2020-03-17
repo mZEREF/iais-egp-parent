@@ -104,7 +104,7 @@
                                                         <td>${applicationViewDto.hciName}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">HCI ADDRESS</td>
+                                                        <td align="right">HCI Address</td>
                                                         <td>${applicationViewDto.hciAddress}</td>
                                                     </tr>
                                                     <tr>

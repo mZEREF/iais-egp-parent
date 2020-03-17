@@ -102,15 +102,16 @@ public class FillupChklistDelegator {
 
     public void init(BaseProcessClass bpc){
         Log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
-        AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         AccessUtil.initLoginUserInfo(bpc.request);
+        AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getRequestString(request,"taskId");
         if (StringUtil.isEmpty(taskId)) {
-            taskId = "B3A5C76D-9C3A-EA11-BE7E-000C29F371DC";
+            taskId = "3DCE1467-5663-EA11-BE7F-000C29F371DE";
         }
-        String serviceType = "Inspection";
+       // String serviceType = "Inspection";
         TaskDto taskDto = taskService.getTaskById(taskId);
+        if(taskDto == null) return;
         String appPremCorrId = taskDto.getRefNo();
         //fillupChklistService.getDraftByTaskId(taskId,serviceType);
         //fillupChklistService.getAllAppChklDraftList(appPremCorrId);
@@ -129,26 +130,25 @@ public class FillupChklistDelegator {
         ParamUtil.setSessionAttr(request,"maxComChkDto", maxComChkDto);
         //draft end
         InspectionFillCheckListDto commonDto = null;
-        List<InspectionFillCheckListDto> cDtoList = null;
+       //  List<InspectionFillCheckListDto> cDtoList = null;
         InspectionFDtosDto serListDto = new InspectionFDtosDto();
-        List<InspectionFillCheckListDto> commonList = null;
+       // List<InspectionFillCheckListDto> commonList = null;
         if(checkListDraftDto!=null){
             commonDto = checkListDraftDto.getComDto();
         }else{
-            cDtoList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"service");
+            List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"service");
             serListDto.setFdtoList(cDtoList);
             fillupChklistService.getSvcName(serListDto);
             serListDto.setBestPractice("");
             serListDto.setTcuRemark("");
             serListDto.setTuc("");
-            commonList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"common");
+            List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"common");
             if(commonList!=null&&!commonList.isEmpty()){
                 commonDto = commonList.get(0);
             }
         }
-        AdCheckListShowDto adchklDto = null;
-        adchklDto = fillupChklistService.getAdhocDraftByappCorrId(appPremCorrId);
-        if(adchklDto==null){
+        AdCheckListShowDto adchklDto = fillupChklistService.getAdhocDraftByappCorrId(appPremCorrId);
+        if(adchklDto == null){
             adchklDto = fillupChklistService.getAdhoc(appPremCorrId);
         }
         String inspectionDate = fillupChklistService.getInspectionDate(appPremCorrId);
