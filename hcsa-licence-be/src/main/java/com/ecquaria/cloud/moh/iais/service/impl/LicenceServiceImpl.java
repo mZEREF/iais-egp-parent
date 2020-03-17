@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
@@ -12,17 +13,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +58,12 @@ public class LicenceServiceImpl implements LicenceService {
     private SystemParamConfig systemParamConfig;
     @Autowired
     private EventBusHelper eventBusHelper;
+
+    @Autowired
+    private MsgTemplateClient msgTemplateClient;
+
+    @Autowired
+    private EmailClient emailClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -173,6 +175,17 @@ public class LicenceServiceImpl implements LicenceService {
     @Override
     public EicRequestTrackingDto getLicEicRequestTrackingDtoByRefNo(String refNo) {
         return hcsaLicenceClient.getLicEicRequestTrackingDto(refNo).getEntity();
+    }
+
+    @Override
+    public MsgTemplateDto getMsgTemplateById(String id) {
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(id).getEntity();
+        return msgTemplateDto;
+    }
+
+    @Override
+    public void sendEmail(EmailDto emailDto) {
+        emailClient.sendNotification(emailDto);
     }
 
 

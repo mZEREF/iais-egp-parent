@@ -3,7 +3,9 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
@@ -46,13 +48,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SuperLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -60,6 +66,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -342,6 +351,10 @@ public class LicenceApproveBatchjob {
                 LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),applicationGroupDto,yearLength,appPremisesRecommendationDto,
                         originLicenceDto,null,applicationDtos);
                 superLicDto.setLicenceDto(licenceDto);
+                //if PostInspNeeded send email
+                if(isPostInspNeeded == Integer.parseInt(AppConsts.YES)){
+                    sendEmailInspection(licenceDto);
+                }
                 //
                 List<PremisesGroupDto> premisesGroupDtos = new ArrayList<>();
                 List<LicAppCorrelationDto> licAppCorrelationDtos = new ArrayList<>();
@@ -425,6 +438,34 @@ public class LicenceApproveBatchjob {
         }
         log.debug(StringUtil.changeForLog("The generateGroupLicence is end ..."));
        return result;
+    }
+
+    //send email
+    private void sendEmailInspection(LicenceDto licenceDto){
+        if(licenceDto != null){
+            String serviceName = licenceDto.getSvcName();
+            MsgTemplateDto msgTemplateDto = licenceService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_POST_INSPECTION_IS_IDENTIFIED_ID);
+            if(msgTemplateDto != null){
+                Map<String ,Object> tempMap = new HashMap<>();
+                tempMap.put("userName",StringUtil.viewHtml(serviceName));
+                tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+                String mesContext = null;
+                try {
+                    mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+                } catch (IOException | TemplateException e) {
+                    log.error(e.getMessage(),e);
+                }
+                EmailDto emailDto = new EmailDto();
+                emailDto.setContent(mesContext);
+                emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + serviceName);
+                emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId()));
+                emailDto.setClientQueryCode(licenceDto.getId());
+                //send
+                licenceService.sendEmail(emailDto);
+            }
+        }
+        
     }
 
     private LicenceDto deleteOriginLicenceDto(String organizationId){
@@ -534,6 +575,10 @@ public class LicenceApproveBatchjob {
                 LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),applicationGroupDto,yearLength,appPremisesRecommendationDto,
                         originLicenceDto,applicationDto,null);
                 superLicDto.setLicenceDto(licenceDto);
+                //if PostInspNeeded send email
+                if(isPostInspNeeded == Integer.parseInt(AppConsts.YES)){
+                    sendEmailInspection(licenceDto);
+                }
                 //create the lic_app_correlation
                 List<LicAppCorrelationDto> licAppCorrelationDtos = new ArrayList<>();
                 LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
