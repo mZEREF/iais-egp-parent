@@ -272,11 +272,11 @@
                               <iais:row>
                                 <iais:value width="7">
                                   <c:if test="${apptInspectionDateDto.inspectionDate != null}">
+                                    <ul>
                                     <c:forEach items="${apptInspectionDateDto.inspectionDate}" var="inspectionDate">
-                                      <ul>
-                                        <li><c:out value="${inspectionDate}"/></li>
-                                      </ul>
+                                      <li><label><c:out value="${inspectionDate}"/></label></li>
                                     </c:forEach>
+                                    </ul>
                                   </c:if>
                                 </iais:value>
                               </iais:row>
