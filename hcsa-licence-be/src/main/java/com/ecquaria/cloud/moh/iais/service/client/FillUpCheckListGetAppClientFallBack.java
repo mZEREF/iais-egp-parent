@@ -69,6 +69,14 @@ public class FillUpCheckListGetAppClientFallBack implements FillUpCheckListGetAp
     }
 
     @Override
+    public FeignResponseEntity<List<AppPremisesRecommendationDto>> getAppPremisesRecommendationHistoryDtosByIdAndType(String appPremId, String recomType) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<AppPremisesPreInspectionNcItemDto>> getALlRecItem() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

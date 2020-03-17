@@ -156,13 +156,16 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 log.info(e.getMessage());
             }
             try{
-                AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
                 Calendar c = Calendar.getInstance();
-                c.setTime(appPremisesRecommendationDto.getRecomInDate());
-                complianceHistoryDto.setInspectionDateYear(c.get(Calendar.YEAR));
-                complianceHistoryDtos.add(complianceHistoryDto);
+                for (AppPremisesRecommendationDto appPremisesRecommendationDto:appPremisesRecommendationDtos
+                     ) {
+                    c.setTime(appPremisesRecommendationDto.getRecomInDate());
+                    complianceHistoryDto.setInspectionDateYear(c.get(Calendar.YEAR));
+                    complianceHistoryDtos.add(complianceHistoryDto);
+                }
+
             }catch (Exception e){
-                complianceHistoryDtos.add(complianceHistoryDto);
                 log.info(e.getMessage());
             }
         }

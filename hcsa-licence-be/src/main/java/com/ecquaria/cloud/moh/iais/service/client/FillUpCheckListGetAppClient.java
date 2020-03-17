@@ -65,6 +65,10 @@ public interface FillUpCheckListGetAppClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppPremisesRecommendationDto> getAppPremRecordByIdAndType(@PathVariable(value ="appPremId" ) String appPremId,@PathVariable(value ="recomType" ) String recomType);
 
+    @GetMapping(path = "/application-be/RescomHistoryDtos/{appPremId}/{recomType}",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<AppPremisesRecommendationDto>> getAppPremisesRecommendationHistoryDtosByIdAndType(@PathVariable(value ="appPremId" ) String appPremId,@PathVariable(value ="recomType" ) String recomType);
+
     @GetMapping(path = "/iais-apppreinschkl-be/AppPremissChklId/{appPremId}/{configId}",produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppPremisesPreInspectChklDto> getAppPremInspeChlkByAppCorrIdAndConfigId(@PathVariable(value ="appPremId" ) String appPremId,@PathVariable(value ="configId" ) String configId);
