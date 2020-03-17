@@ -115,6 +115,8 @@ public class HcsaApplicationDelegator {
     @Autowired
     private LicenseeService licenseeService;
 
+    @Autowired
+    private GenerateIdClient generateIdClient;
 
 //    public void routingTask(BaseProcessClass bpc) throws FeignException {
 //        log.debug(StringUtil.changeForLog("the do routingTask start ...."));
@@ -487,8 +489,7 @@ public class HcsaApplicationDelegator {
 
         log.debug(StringUtil.changeForLog("the do support end ...."));
     }
-    @Autowired
-    private GenerateIdClient generateIdClient;
+
     /**
      * StartStep: broadcast
      *
