@@ -179,6 +179,7 @@ public class AppealServiceImpl implements AppealService {
         String type = request.getParameter("type");
         if ("licence".equals(type)) {
             LicenceDto licenceDto = licenceClient.getLicBylicNo(appealingFor).getEntity();
+
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
             List<PremisesListQueryDto> premisesListQueryDtos = licenceClient.getPremises(licenceDto.getId()).getEntity();
@@ -196,6 +197,7 @@ public class AppealServiceImpl implements AppealService {
                 hciNames.add(hciName);
                 addresses.add(address);
             }
+            request.getSession().setAttribute("id",licenceDto.getId());
             request.getSession().setAttribute("hciAddress",addresses);
             request.getSession().setAttribute("hciNames",hciNames);
             request.getSession().setAttribute("serviceName",svcName);
@@ -225,6 +227,7 @@ public class AppealServiceImpl implements AppealService {
                 request.getSession().setAttribute("serviceName",svcName);
             }
             String applicationNo = applicationDto.getApplicationNo();
+            request.getSession().setAttribute("id",applicationDto.getId());
             request.getSession().setAttribute("applicationNo",applicationNo);
             request.setAttribute("applicationDto",applicationDto);
             String status = applicationDto.getStatus();
@@ -348,6 +351,11 @@ public class AppealServiceImpl implements AppealService {
             map.put("remarks","UC_CHKLMD001_ERR001");
         }
         String appealReason = appealPageDto.getAppealReason();
+        String id = (String)request.getSession().getAttribute("id");
+        Boolean entity = applicationClient.isUseReason(id, appealReason).getEntity();
+        if(!entity){
+            map.put("reason","This reason can no longer be selected");
+        }
         if (StringUtil.isEmpty(appealReason)){
             map.put("reason","UC_CHKLMD001_ERR001");
         }else {
