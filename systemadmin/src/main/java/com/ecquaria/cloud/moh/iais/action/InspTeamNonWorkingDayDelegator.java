@@ -105,16 +105,19 @@ public class InspTeamNonWorkingDayDelegator {
 
 		List<WorkingGroupQueryDto> workingGroupQueryList = searchResult.getRows();
 
-		List<ApptNonWorkingDateDto> nonWorkingDateListByWorkGroupId;
+		List<ApptNonWorkingDateDto> nonWorkingDateListByWorkGroupId = new ArrayList<>();
 		String shotName = ParamUtil.getString(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT);
 
 		if (shotName != null){
 			nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(shotName);
 			ParamUtil.setSessionAttr(request, CURRENT_SHORT_NAME, shotName);
 		}else {
-			String defualtId = workingGroupQueryList.stream().findFirst().get().getId();
-			nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(defualtId);
-			ParamUtil.setSessionAttr(request, CURRENT_SHORT_NAME, defualtId);
+			Optional<WorkingGroupQueryDto> wrkOtional = workingGroupQueryList.stream().findFirst();
+			if (wrkOtional.isPresent()){
+				String defualtId = wrkOtional.get().getId();
+				nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(defualtId);
+				ParamUtil.setSessionAttr(request, CURRENT_SHORT_NAME, defualtId);
+			}
 		}
 
 		List<SelectOption> wrlGrpNameOpt = new ArrayList<>();
@@ -127,21 +130,17 @@ public class InspTeamNonWorkingDayDelegator {
 
 		ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT, (Serializable) wrlGrpNameOpt);
 
-		if (IaisCommonUtils.isEmpty(nonWorkingDateListByWorkGroupId)){
-			nonWorkingDateListByWorkGroupId = new ArrayList<>();
-		}
-
 		List<ApptNonWorkingDateDto> sortDayList = sortNonWorkingDay(nonWorkingDateListByWorkGroupId);
 
 		ParamUtil.setSessionAttr(request, NON_WKR_DAY_LIST_ATTR, (Serializable) sortDayList);
 	}
 
 	/**
-	* @author: yichen
-	* @description: the code need to optimize
-	* @param:
-	* @return:
-	*/
+	 * @author: yichen
+	 * @description: the code need to optimize
+	 * @param:
+	 * @return:
+	 */
 	private List<ApptNonWorkingDateDto> sortNonWorkingDay(List<ApptNonWorkingDateDto> nonWorkingDateList){
 		List<String> wkrDays = new ArrayList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"));
 		List<ApptNonWorkingDateDto> retList = new ArrayList<>(7);
