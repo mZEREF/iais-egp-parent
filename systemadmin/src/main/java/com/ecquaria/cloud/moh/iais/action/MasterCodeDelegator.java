@@ -29,7 +29,6 @@ import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -149,7 +148,7 @@ public class MasterCodeDelegator {
                 SystemAdminBaseConstants.DATE_FORMAT);
         String codeEndDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO)),
                 SystemAdminBaseConstants.DATE_FORMAT);
-        Map<String,Object> masterCodeMap = new HashMap<>();
+        Map<String,Object> masterCodeMap = IaisCommonUtils.genNewHashMap();
 
         if (!StringUtil.isEmpty(categoryDescription)){
             String codeCategory = masterCodeService.findCodeCategoryByDescription(categoryDescription);

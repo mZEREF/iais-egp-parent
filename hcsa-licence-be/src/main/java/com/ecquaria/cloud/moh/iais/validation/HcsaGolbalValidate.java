@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +20,7 @@ public class HcsaGolbalValidate implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         GolbalRiskShowDto golbalShowDto = (GolbalRiskShowDto) ParamUtil.getSessionAttr(request, "golbalShowDto");
-        Map<String, String> errMap = new HashMap<>();
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         List<GobalRiskTotalDto> tolList =  golbalShowDto.getGoalbalTotalList();
         List<GobalRiskTotalDto> updatetolList =  IaisCommonUtils.genNewArrayList();
         for(GobalRiskTotalDto temp:tolList){

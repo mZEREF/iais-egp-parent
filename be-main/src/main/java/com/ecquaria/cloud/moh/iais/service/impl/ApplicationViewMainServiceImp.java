@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayMainClient;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -86,7 +85,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
     private Map<String,List<ApplicationDto>> tidyApplicationDto(List<ApplicationDto> applicationDtoList){
         Map<String,List<ApplicationDto>> result = null;
         if(!IaisCommonUtils.isEmpty(applicationDtoList)){
-            result = new HashMap<>();
+            result = IaisCommonUtils.genNewHashMap();
             for(ApplicationDto applicationDto : applicationDtoList){
                 String appNo = applicationDto.getApplicationNo();
                 List<ApplicationDto> applicationDtos = result.get(appNo);

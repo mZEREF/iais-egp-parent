@@ -58,7 +58,6 @@ import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -210,7 +209,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
                     MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION +
                     taskDto.getRefNo() + "&recVersion=" + version;
             MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION).getEntity();
-            Map<String, Object> params = new HashMap<>();
+            Map<String, Object> params = IaisCommonUtils.genNewHashMap();
             params.put("process_url", url);
             LicenseeDto licDto = licenseeService.getLicenseeDtoById(applicationViewDto.getApplicationGroupDto().getLicenseeId());
             params.put("applicant_name", StringUtil.viewHtml(licDto.getName()));
@@ -302,7 +301,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
 
     @Override
     public Map<String, AppPremisesPreInspectionNcItemDto> getNcItemDtoMap(String id) {
-        Map<String, AppPremisesPreInspectionNcItemDto> ncItemDtoMap = new HashMap<>();
+        Map<String, AppPremisesPreInspectionNcItemDto> ncItemDtoMap = IaisCommonUtils.genNewHashMap();
         List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(id).getEntity();
         if(!IaisCommonUtils.isEmpty(appPremisesPreInspectionNcItemDtos)){
             for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtos) {

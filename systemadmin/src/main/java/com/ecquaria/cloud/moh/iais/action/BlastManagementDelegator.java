@@ -240,13 +240,13 @@ public class BlastManagementDelegator {
         blastManagementDto.setMode(mode);
         blastManagementDto.setStatus(status);
         if(!(MM != null && StringUtils.isNumeric(HH) &&  Integer.valueOf(HH) < 24)){
-            Map<String, String> errorMap = new HashMap<>();
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             errorMap.put("date","HH should be hours");
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
             ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
         }else if(!(HH != null && StringUtils.isNumeric(MM) &&  Integer.valueOf(MM) < 60)){
-            Map<String, String> errorMap = new HashMap<>();
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             errorMap.put("date","MM should be minutes");
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
@@ -370,7 +370,7 @@ public class BlastManagementDelegator {
     }
 
     private Map<String, String> validationFile(HttpServletRequest request, MultipartFile file){
-        Map<String, String> errorMap = new HashMap<>();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (file.getSize() <= 0){
             errorMap.put(FILE_UPLOAD_ERROR, "GENERAL_ERR0004");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

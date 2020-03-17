@@ -37,7 +37,6 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -109,7 +108,7 @@ public class HcsaChklConfigDelegator {
         ParamUtil.setSessionAttr(request, "configIdAttr", null);
 
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.ACTION_OPERATIONTYPE, null);
-        curSecName = new HashSet<>();
+        curSecName = IaisCommonUtils.genNewHashSet();
 
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if(HcsaChecklistConstants.ACTION_CANCEL.equals(currentAction) || HcsaChecklistConstants.BACK_LAST_PAGE_BUTTON.equals(currentAction)){

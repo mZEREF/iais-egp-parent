@@ -3,12 +3,11 @@ package com.ecquaria.cloud.moh.iais.validation;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author: yichen
@@ -20,7 +19,7 @@ public class SystemParameterValidator implements CustomizeValidator {
 
 	@Override
 	public Map<String, String> validate(HttpServletRequest httpServletRequest) {
-		Map<String, String> errMap = new HashMap<>();
+		Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
 		SystemParameterDto editDto = (SystemParameterDto) ParamUtil.getSessionAttr(httpServletRequest, SystemParameterConstants.PARAMETER_REQUEST_DTO);
 		if (editDto == null){
 			return errMap;

@@ -196,7 +196,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             appCorrIdList.add(AppConsts.NO);
             return appCorrIdList;
         }
-        Set<String> appCorrIdSet = new HashSet<>();
+        Set<String> appCorrIdSet = IaisCommonUtils.genNewHashSet();
         for(TaskDto tDto:commPools){
             appCorrIdSet.add(tDto.getRefNo());
         }

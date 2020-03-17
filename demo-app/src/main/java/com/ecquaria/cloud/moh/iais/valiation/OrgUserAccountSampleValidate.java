@@ -15,13 +15,12 @@ package com.ecquaria.cloud.moh.iais.valiation;
 
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.sample.OrgUserAccountSampleDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * OrgUserAccountValidate
@@ -33,7 +32,7 @@ public class OrgUserAccountSampleValidate implements CustomizeValidator {
 
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
-        Map<String, String> errMap = new HashMap<>();
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         OrgUserAccountSampleDto dto = (OrgUserAccountSampleDto) ParamUtil.getSessionAttr(request,
                 DemoConstants.ORG_USER_DTO_ATTR);
         if (dto == null || StringUtil.isEmpty(dto.getNircNo()))

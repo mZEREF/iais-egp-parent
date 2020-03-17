@@ -656,7 +656,7 @@ public class MohIntranetUserDelegator {
 
 
     private Map<String, String> valiant(OrgUserDto orgUserDto){
-        Map<String, String> errorMap = new HashMap<>();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String userId = orgUserDto.getUserId();
         if(!StringUtil.isEmpty(userId)){
             if(!userId.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(.{1,64})$")){

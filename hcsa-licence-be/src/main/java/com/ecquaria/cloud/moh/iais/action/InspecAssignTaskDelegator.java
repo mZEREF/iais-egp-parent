@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -275,7 +274,7 @@ public class InspecAssignTaskDelegator {
     }
 
     private void setMapTaskId(BaseProcessClass bpc, List<TaskDto> commPools) {
-        Map<String, String> appCorrIdTaskIdMap = new HashMap<>();
+        Map<String, String> appCorrIdTaskIdMap = IaisCommonUtils.genNewHashMap();
         if(!IaisCommonUtils.isEmpty(commPools)){
             for(TaskDto td:commPools){
                 appCorrIdTaskIdMap.put(td.getRefNo(), td.getId());

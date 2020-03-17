@@ -56,20 +56,18 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Shicheng
@@ -196,7 +194,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     @Override
     public Map<ApplicationDto, List<String>> getApplicationInfoToShow(List<String> premCorrIds, List<TaskDto> taskDtoList) {
-        Map<ApplicationDto, List<String>> applicationInfoMap = new HashMap<>();
+        Map<ApplicationDto, List<String>> applicationInfoMap = IaisCommonUtils.genNewHashMap();
         List<String> workerName = IaisCommonUtils.genNewArrayList();
         List<String> ids = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(premCorrIds)) {
@@ -569,7 +567,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     }
 
     private Map<String, Integer> getAppPremTaskScore(List<TaskDto> taskDtoList) {
-        Map<String, Integer> appPremScoreMap = new HashMap<>();
+        Map<String, Integer> appPremScoreMap = IaisCommonUtils.genNewHashMap();
         List<String> appPremCorrIds = IaisCommonUtils.genNewArrayList();
         for(TaskDto taskDto : taskDtoList){
             appPremCorrIds.add(taskDto.getRefNo());
@@ -662,7 +660,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION);
         if(inspectionEmailTemplateDto != null) {
             String strSubmitDt = Formatter.formatDateTime(submitDt, "dd MMM yyyy");
-            Map<String, Object> map = new HashMap<>();
+            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
             map.put("submitDt", StringUtil.viewHtml(strSubmitDt));
             map.put("process_url", StringUtil.viewHtml(url));
             String mesContext = null;
@@ -684,7 +682,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     private void createMessage(String url, String serviceId, Date submitDt) {
         MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION).getEntity();
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         String strSubmitDt = Formatter.formatDateTime(submitDt, "dd MMM yyyy");
         map.put("submitDt", StringUtil.viewHtml(strSubmitDt));
         map.put("process_url", StringUtil.viewHtml(url));

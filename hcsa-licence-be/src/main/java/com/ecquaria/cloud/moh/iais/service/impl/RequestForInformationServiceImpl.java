@@ -243,7 +243,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                     String name = fil.getName();
                     String path = fil.getPath();
                     String relPath="backupsRec"+File.separator+name;
-                    HashMap<String,String> map=new HashMap<>();
+                    HashMap<String,String> map=IaisCommonUtils.genNewHashMap();
                     map.put("fileName",name);
                     map.put("filePath",relPath);
 

@@ -113,7 +113,7 @@ public class ConfigServiceImpl implements ConfigService {
             sendURL(request,response);
             return;
         }
-        Map<String, String> errorMap = new HashMap<>();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         HcsaServiceConfigDto hcsaServiceConfigDto = getDateOfHcsaService(request);
         doValidate(hcsaServiceConfigDto, errorMap,request);
         HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
@@ -137,7 +137,7 @@ public class ConfigServiceImpl implements ConfigService {
                 String psnType = hcsaSvcPersonnelDto.getPsnType();
                 request.setAttribute(psnType, hcsaSvcPersonnelDto);
             }
-            Set<String> premisesSet = new HashSet<>();
+            Set<String> premisesSet = IaisCommonUtils.genNewHashSet();
             for (HcsaSvcSpePremisesTypeDto hcsaSvcSpePremisesTypeDto : hcsaSvcSpePremisesTypeDtos) {
                 premisesSet.add(hcsaSvcSpePremisesTypeDto.getPremisesType());
             }
@@ -146,7 +146,7 @@ public class ConfigServiceImpl implements ConfigService {
             request.setAttribute("PremisesType", premisesSet);
             request.setAttribute("hcsaServiceDto", hcsaServiceDto);
             request.setAttribute("crud_action_type", "dovalidate");
-            Map<String, List<HcsaConfigPageDto>> map = new HashMap<>();
+            Map<String, List<HcsaConfigPageDto>> map = IaisCommonUtils.genNewHashMap();
 
             map.put("APTY002",hcsaConfigPageDtos);
             request.setAttribute("routingStagess", map);
@@ -181,7 +181,7 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public void update(HttpServletRequest request,HttpServletResponse response) {
-        Map<String, String> errorMap = new HashMap<>();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_value = request.getParameter("crud_action_value");
         if("cancel".equals(crud_action_value)){
             sendURL(request,response);
@@ -199,7 +199,7 @@ public class ConfigServiceImpl implements ConfigService {
                 String psnType = hcsaSvcPersonnelDto.getPsnType();
                 request.setAttribute(psnType, hcsaSvcPersonnelDto);
             }
-            Set<String> premisesSet = new HashSet<>();
+            Set<String> premisesSet = IaisCommonUtils.genNewHashSet();
             for (HcsaSvcSpePremisesTypeDto hcsaSvcSpePremisesTypeDto : hcsaSvcSpePremisesTypeDtos) {
                 premisesSet.add(hcsaSvcSpePremisesTypeDto.getPremisesType());
             }
@@ -224,7 +224,7 @@ public class ConfigServiceImpl implements ConfigService {
                 setValueOfhcsaConfigPageDtos(hcsaConfigPageDtos3,workGrop);
                 setValueOfhcsaConfigPageDtos(hcsaConfigPageDtos4,workGrop1);
 
-            Map<String, List<HcsaConfigPageDto>> map = new HashMap<>();
+            Map<String, List<HcsaConfigPageDto>> map = IaisCommonUtils.genNewHashMap();
             map.put("APTY002",workGrop1);
             map.put("APTY001",workGrop);
             Map<String, List<HcsaConfigPageDto>> tables = getTables(request);
@@ -333,7 +333,7 @@ public class ConfigServiceImpl implements ConfigService {
         String[] levels = request.getParameterValues("level");
 
         List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos=IaisCommonUtils.genNewArrayList();
-        Map<Integer ,String> level1=new HashMap<>();
+        Map<Integer ,String> level1=IaisCommonUtils.genNewHashMap();
         if(levels!=null){
             for(int i=0;i<levels.length;i++ ){
                 level1.put(i,levels[i]);
@@ -953,8 +953,8 @@ public class ConfigServiceImpl implements ConfigService {
 
 
         List<String> types = getType();
-        Map<String,List<HcsaSvcStageWorkloadDto>> map=new HashMap<>();
-        Map<String, List<HcsaSvcSpeRoutingSchemeDto>> hcsaSvcSpeRoutingSchemeDtoMap=new HashMap<>();
+        Map<String,List<HcsaSvcStageWorkloadDto>> map=IaisCommonUtils.genNewHashMap();
+        Map<String, List<HcsaSvcSpeRoutingSchemeDto>> hcsaSvcSpeRoutingSchemeDtoMap=IaisCommonUtils.genNewHashMap();
         for(String type:types){
             List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtos1=IaisCommonUtils.genNewArrayList();
             List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos1=IaisCommonUtils.genNewArrayList();
@@ -973,7 +973,7 @@ public class ConfigServiceImpl implements ConfigService {
             map.put(type,hcsaSvcStageWorkloadDtos1);
             hcsaSvcSpeRoutingSchemeDtoMap.put(type,hcsaSvcSpeRoutingSchemeDtos1);
         }
-        Map<String,  List<HcsaSvcStageWorkingGroupDto>> hcsaSvcStageWorkingGroupDtoMap=new HashMap<>();
+        Map<String,  List<HcsaSvcStageWorkingGroupDto>> hcsaSvcStageWorkingGroupDtoMap=IaisCommonUtils.genNewHashMap();
         hcsaSvcSpeRoutingSchemeDtoMap.forEach((k,v)->{
             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos1=IaisCommonUtils.genNewArrayList();
             for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto:v){
@@ -988,7 +988,7 @@ public class ConfigServiceImpl implements ConfigService {
             }
             hcsaSvcStageWorkingGroupDtoMap.put(k,hcsaSvcStageWorkingGroupDtos1);
         });
-        Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtoMap=new HashMap<>();
+        Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtoMap=IaisCommonUtils.genNewHashMap();
         for (String type:types){
             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos1 = hcsaSvcStageWorkingGroupDtoMap.get(type);
             List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtos1 = map.get(type);
@@ -1133,7 +1133,7 @@ public class ConfigServiceImpl implements ConfigService {
     private    Map<String ,  List<HcsaConfigPageDto>> getHcsaConfigPageDtos(HttpServletRequest request) {
         List<HcsaConfigPageDto> hcsaConfigPageDtos1 = (List<HcsaConfigPageDto>) request.getAttribute("hcsaConfigPageDtos");
         List<String> types = getType();
-        Map<String ,  List<HcsaConfigPageDto>> map=new HashMap<>();
+        Map<String ,  List<HcsaConfigPageDto>> map=IaisCommonUtils.genNewHashMap();
         if(hcsaConfigPageDtos1!=null){
             for(String type:types){
                 List<HcsaConfigPageDto> list=IaisCommonUtils.genNewArrayList();
@@ -1324,7 +1324,7 @@ public class ConfigServiceImpl implements ConfigService {
 
     private  Map<String, List<HcsaConfigPageDto>>  getTables(HttpServletRequest request){
         Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtos = getHcsaConfigPageDtos(request);
-        Map<String, List<HcsaConfigPageDto>> map = new HashMap<>();
+        Map<String, List<HcsaConfigPageDto>> map = IaisCommonUtils.genNewHashMap();
         List<String> types = getType();
         for(String type:types){
             List<HcsaConfigPageDto> hcsaConfigPageDto = hcsaConfigPageDtos.get(type);
@@ -1359,7 +1359,7 @@ public class ConfigServiceImpl implements ConfigService {
     private void  sendEmail(HttpServletRequest request) throws IOException, TemplateException {
         OrgUserDto orgUserDto=(OrgUserDto)request.getSession().getAttribute("orgUserDto");
         String option = (String) request.getAttribute("option");
-        Map<String,Object> map=new HashMap<>();
+        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         String userId = orgUserDto.getUserId();
         String serviceName =(String) request.getAttribute("serviceName");
         map.put("serviceName",serviceName);
@@ -1429,7 +1429,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
     private void sendStartOrEndDateChangeEmail(HttpServletRequest request) throws IOException, TemplateException {
         OrgUserDto orgUserDto=(OrgUserDto)request.getSession().getAttribute("orgUserDto");
-        Map<String,Object> map=new HashMap<>();
+        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         String userId = orgUserDto.getUserId();
         String serviceName = request.getParameter("serviceName");
         map.put("serviceName",serviceName);

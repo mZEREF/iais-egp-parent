@@ -104,7 +104,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private Map<String,List<ApplicationDto>> tidyApplicationDto(List<ApplicationDto> applicationDtoList){
         Map<String,List<ApplicationDto>> result = null;
         if(!IaisCommonUtils.isEmpty(applicationDtoList)){
-            result = new HashMap<>();
+            result = IaisCommonUtils.genNewHashMap();
             for(ApplicationDto applicationDto : applicationDtoList){
                String appNo = applicationDto.getApplicationNo();
                 List<ApplicationDto> applicationDtos = result.get(appNo);

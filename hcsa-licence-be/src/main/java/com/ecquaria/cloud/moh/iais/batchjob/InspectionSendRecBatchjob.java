@@ -33,7 +33,6 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -137,7 +136,7 @@ public class InspectionSendRecBatchjob {
                 String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName() +
                              MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION + appPremCorrId;
                 MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION).getEntity();
-                Map<String, Object> params = new HashMap<>();
+                Map<String, Object> params = IaisCommonUtils.genNewHashMap();
                 params.put("process_url", url);
                 LicenseeDto licDto = licenseeService.getLicenseeDtoById(dto.getApplicationGroupDto().getLicenseeId());
                 params.put("applicant_name", StringUtil.viewHtml(licDto.getName()));

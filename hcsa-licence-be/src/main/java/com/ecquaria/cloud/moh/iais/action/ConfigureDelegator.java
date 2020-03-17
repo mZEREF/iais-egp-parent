@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigureService;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -76,7 +75,7 @@ public class ConfigureDelegator {
         }
         hcsaSvcStageWorkloadDtoList = configureService.serviceInStage(stageValue);
         List<HcsaServiceDto> hcsaServiceDtoList = configureService.getActiveServices();
-        Map<String,HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtoMap = new HashMap<>();
+        Map<String,HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtoMap = IaisCommonUtils.genNewHashMap();
         List<HcsaSvcStageWorkloadDto> newlist = IaisCommonUtils.genNewArrayList();
         if(hcsaSvcStageWorkloadDtoList != null){
             for (HcsaSvcStageWorkloadDto stage:hcsaSvcStageWorkloadDtoList

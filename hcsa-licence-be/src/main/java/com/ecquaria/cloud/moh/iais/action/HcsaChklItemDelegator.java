@@ -146,7 +146,7 @@ public class HcsaChklItemDelegator {
     }
 
     private Map<String, String> validationFile(HttpServletRequest request, MultipartFile file){
-        Map<String, String> errorMap = new HashMap<>();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (file == null){
             errorMap.put(FILE_UPLOAD_ERROR, MessageCodeKey.GENERAL_ERR0004);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -310,7 +310,7 @@ public class HcsaChklItemDelegator {
         //Business check
         IaisApiResult<ChecklistItemDto> itemDtoIaisApiResult = hcsaChklService.saveChklItem(itemDto);
         if(itemDtoIaisApiResult.isHasError()){
-            Map<String, String> errorMap = new HashMap<>();
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             int errorCode = itemDtoIaisApiResult.getErrorCode();
             if (IaisApiStatusCode.DUPLICATION_RECORD.getStatusCode() == errorCode){
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("messageContent", IaisApiStatusCode.DUPLICATION_RECORD.getMessage()));

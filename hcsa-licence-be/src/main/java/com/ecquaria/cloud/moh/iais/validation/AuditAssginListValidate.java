@@ -5,11 +5,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Author: jiahao
@@ -18,7 +16,7 @@ import java.util.Map;
 public class AuditAssginListValidate implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
-        Map<String, String> errMap = new HashMap<>();
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>) ParamUtil.getSessionAttr(request,"auditTaskDataDtos");
         int selectedFlagNum = 0;
         if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){

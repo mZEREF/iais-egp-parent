@@ -8,21 +8,20 @@ package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import org.apache.commons.lang.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang.StringUtils;
 
 public class HcsaChklConfigValidate implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
-        Map<String, String> errMap = new HashMap<>();
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         String common = ParamUtil.getString(httpServletRequest, HcsaChecklistConstants.PARAM_CONFIG_COMMON);
         String module = ParamUtil.getString(httpServletRequest, HcsaChecklistConstants.PARAM_CONFIG_MODULE);
         String type = ParamUtil.getString(httpServletRequest, HcsaChecklistConstants.PARAM_CONFIG_TYPE);

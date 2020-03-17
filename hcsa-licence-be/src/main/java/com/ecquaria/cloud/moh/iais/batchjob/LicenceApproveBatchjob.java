@@ -89,7 +89,7 @@ public class LicenceApproveBatchjob {
     private ApplicationGroupService applicationGroupService;
 
     private Map<String,Integer> hciCodeVersion = new HashMap();
-    private Map<String,Integer> keyPersonnelVersion = new HashMap<>();
+    private Map<String,Integer> keyPersonnelVersion = IaisCommonUtils.genNewHashMap();
 
     public void doBatchJob(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is start ..."));
@@ -264,7 +264,7 @@ public class LicenceApproveBatchjob {
     }
 
     private Map<String,List<ApplicationListDto>> tidyAppForGroupLicence(List<ApplicationListDto> applicationListDtoList){
-        Map<String,List<ApplicationListDto>> result = new HashMap<>();
+        Map<String,List<ApplicationListDto>> result = IaisCommonUtils.genNewHashMap();
         if(IaisCommonUtils.isEmpty(applicationListDtoList)){
             return  result;
         }
@@ -443,7 +443,7 @@ public class LicenceApproveBatchjob {
             String serviceName = licenceDto.getSvcName();
             MsgTemplateDto msgTemplateDto = licenceService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_POST_INSPECTION_IS_IDENTIFIED_ID);
             if(msgTemplateDto != null){
-                Map<String ,Object> tempMap = new HashMap<>();
+                Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
                 tempMap.put("userName",StringUtil.viewHtml(serviceName));
                 tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
                 String mesContext = null;

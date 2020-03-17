@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -51,12 +52,12 @@ public class MessageUtilsTest {
         when(SpringContextHelper.getContext()).thenReturn(context);
         when(RedisCacheHelper.getInstance()).thenReturn(rch);
         doNothing().when(rch).set(anyString(), anyString(), anyObject());
-        Map<String,String> message = new HashMap<>();
+        Map<String,String> message = IaisCommonUtils.genNewHashMap();
         message.put("messageKey","messageValue");
         MessageUtil.loadMessages(message);
         String messageKey =  MessageUtil.getMessageDesc("messageKey");
         String pattern = "The message {key} test";
-        HashMap<String,String> arguments=new HashMap<>();
+        HashMap<String,String> arguments=IaisCommonUtils.genNewHashMap();
         arguments.put("key","value");
         String messageKey1 = MessageUtil.getMessageDesc(pattern,arguments);
         Assert.assertEquals("The message value test", messageKey1);

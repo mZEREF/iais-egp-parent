@@ -34,8 +34,6 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.sz.commons.util.FileUtil;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -166,7 +164,7 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setSessionAttr(bpc.request, "HcsaSvcSubtypeOrSubsumedDto", (Serializable) checkList);
 
         //reload
-        Map<String,String> reloadChkLstMap = new HashMap<>();
+        Map<String,String> reloadChkLstMap = IaisCommonUtils.genNewHashMap();
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         if(appSvcRelatedInfoDto != null){
            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
@@ -275,7 +273,7 @@ public class ClinicalLaboratoryDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, "CgoSelect", (Serializable) spList);
 
-        Map<String,String> reloadAllocation = new HashMap<>();
+        Map<String,String> reloadAllocation = IaisCommonUtils.genNewHashMap();
         List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
         if(appSvcDisciplineAllocationDtoList != null && !appSvcDisciplineAllocationDtoList.isEmpty()){
             for(AppSvcDisciplineAllocationDto allocationDto:appSvcDisciplineAllocationDtoList){
@@ -376,7 +374,7 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setSessionAttr(bpc.request, "serviceDocConfigDto", (Serializable) hcsaSvcDocDtos);
         }
 
-        Map<String,AppSvcDocDto> reloadSvcDo = new HashMap<>();
+        Map<String,AppSvcDocDto> reloadSvcDo = IaisCommonUtils.genNewHashMap();
         if(appSvcRelatedInfoDto != null){
             List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
             if(appSvcDocDtos != null && !appSvcDocDtos.isEmpty()){
@@ -447,14 +445,14 @@ public class ClinicalLaboratoryDelegator {
         log.debug("isGetDataFromPage:"+isGetDataFromPage);
         if(isGetDataFromPage) {
             AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto = null;
-            Map<String, HcsaSvcSubtypeOrSubsumedDto> map = new HashMap<>();
+            Map<String, HcsaSvcSubtypeOrSubsumedDto> map = IaisCommonUtils.genNewHashMap();
             List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = (List<HcsaSvcSubtypeOrSubsumedDto>) ParamUtil.getSessionAttr(bpc.request, "HcsaSvcSubtypeOrSubsumedDto");
             turn(hcsaSvcSubtypeOrSubsumedDtos, map);
             String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
             AppSvcRelatedInfoDto currentSvcDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            Map<String, String> reloadChkLstMap = new HashMap<>();
-            Map<String, String> errorMap = new HashMap<>();
+            Map<String, String> reloadChkLstMap = IaisCommonUtils.genNewHashMap();
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = IaisCommonUtils.genNewArrayList();
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
                 String premiseName = "";
@@ -503,7 +501,7 @@ public class ClinicalLaboratoryDelegator {
                     errorMap = NewApplicationHelper.doValidateLaboratory(appSvcChckListDtoList, currentSvcId);
 
                     if (appSubmissionDto.isNeedEditController()) {
-                        Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
+                        Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                         clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_LABORATORY);
                         appSubmissionDto.setClickEditPage(clickEditPages);
                         AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
@@ -559,7 +557,7 @@ public class ClinicalLaboratoryDelegator {
             List<AppSvcCgoDto> appSvcCgoDtoList = genAppSvcCgoDto(bpc.request);
 
             //do validate
-            Map<String, String> errList = new HashMap<>();
+            Map<String, String> errList = IaisCommonUtils.genNewHashMap();
             String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
             AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
             currentSvcRelatedDto.setAppSvcCgoDtoList(appSvcCgoDtoList);
@@ -571,7 +569,7 @@ public class ClinicalLaboratoryDelegator {
                 errList = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoList);
 
                 if (appSubmissionDto.isNeedEditController()) {
-                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
+                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_GOVERNANCE_OFFICERS);
                     appSubmissionDto.setClickEditPage(clickEditPages);
                     AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
@@ -599,7 +597,7 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doDisciplineAllocation(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doDisciplineAllocation start ...."));
-        Map<String, String> errorMap = new HashMap<>();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
@@ -661,7 +659,7 @@ public class ClinicalLaboratoryDelegator {
                 doValidateDisciplineAllocation(errorMap, daList);
 
                 if (appSubmissionDto.isNeedEditController()) {
-                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
+                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DISCIPLINE_ALLOCATION);
                     appSubmissionDto.setClickEditPage(clickEditPages);
                     AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
@@ -716,7 +714,7 @@ public class ClinicalLaboratoryDelegator {
         if (isGetDataFromPagePo || isGetDataFromPageDpo) {
             List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = genAppSvcPrincipalOfficersDto(bpc.request, isGetDataFromPagePo, isGetDataFromPageDpo);
             ParamUtil.setSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto", (Serializable) appSvcPrincipalOfficersDtoList);
-            Map<String, String> map = new HashMap<>();
+            Map<String, String> map = IaisCommonUtils.genNewHashMap();
             String crud_action_additional = ParamUtil.getRequestString(bpc.request, "nextStep");
 
 
@@ -729,7 +727,7 @@ public class ClinicalLaboratoryDelegator {
                 List<AppSvcPrincipalOfficersDto> poDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto");
                 map = NewApplicationHelper.doValidatePo(poDto);
                 if (appSubmissionDto.isNeedEditController()) {
-                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
+                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     if(isGetDataFromPagePo){
                         clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DISCIPLINE_ALLOCATION);
                     }
@@ -765,7 +763,7 @@ public class ClinicalLaboratoryDelegator {
         List<AppSvcDocDto> appSvcDocDtoList = IaisCommonUtils.genNewArrayList();
         AppSvcDocDto appSvcDocDto = null;
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        Map<String,String> errorMap=new HashMap<>();
+        Map<String,String> errorMap=IaisCommonUtils.genNewHashMap();
         String crudActionType =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
         String crudActionTypeTab =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
@@ -806,11 +804,11 @@ public class ClinicalLaboratoryDelegator {
         if(isGetDataFromPage){
             Map<String,AppSvcDocDto> beforeReloadDocMap = (Map<String, AppSvcDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADSVCDOC);
             List<HcsaSvcDocConfigDto> svcDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, "serviceDocConfigDto");
-            Map<String,CommonsMultipartFile> commonsMultipartFileMap = new HashMap<>();
+            Map<String,CommonsMultipartFile> commonsMultipartFileMap = IaisCommonUtils.genNewHashMap();
             CommonsMultipartFile file = null;
 
             if(appSubmissionDto.isNeedEditController()){
-                Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
+                Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                 clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DOCUMENT);
                 appSubmissionDto.setClickEditPage(clickEditPages);
                 AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
@@ -1003,7 +1001,7 @@ public class ClinicalLaboratoryDelegator {
 
 
         if(isGetDataFromPage){
-            Map<String ,String >errorMap=new HashMap<>();
+            Map<String ,String >errorMap=IaisCommonUtils.genNewHashMap();
             String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
             String currentSvcCod = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
 
@@ -1034,7 +1032,7 @@ public class ClinicalLaboratoryDelegator {
             if(!StringUtil.isEmpty(nextStep)){
                 doValidatetionServicePerson(errorMap,appSvcPersonnelDtos);
                 if(appSubmissionDto.isNeedEditController()){
-                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null? new HashSet<>() :appSubmissionDto.getClickEditPage();
+                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null? IaisCommonUtils.genNewHashSet() :appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL);
                     appSubmissionDto.setClickEditPage(clickEditPages);
                 }
@@ -1601,7 +1599,7 @@ public class ClinicalLaboratoryDelegator {
     }
 
     private Set<String> getRfcClickEditPageSet(AppSubmissionDto appSubmissionDto){
-        return appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
+        return appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
     }
 
     private AppSubmissionDto setPrincipalOfficersClickEditPage(AppSubmissionDto appSubmissionDto, Boolean isGetDataFromPagePo, Boolean isGetDataFromPageDpo){

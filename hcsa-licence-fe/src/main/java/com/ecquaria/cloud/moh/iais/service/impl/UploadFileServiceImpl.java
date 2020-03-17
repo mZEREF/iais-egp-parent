@@ -40,7 +40,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -123,7 +122,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Override
     public String  changeStatus(ApplicationListFileDto applicationListDto) {
             List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
-            Map<String,List<String>> map =new HashMap<>();
+            Map<String,List<String>> map =IaisCommonUtils.genNewHashMap();
             List<String> oldStatus= IaisCommonUtils.genNewArrayList();
             oldStatus.add(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
             List<String> newStatus=IaisCommonUtils.genNewArrayList();
@@ -309,11 +308,11 @@ public class UploadFileServiceImpl implements UploadFileService {
 
         for(ApplicationGroupDto every :applicationGroup){
 
-            Set<String> appliGrpPremisesIds=new HashSet<>();
-            Set<String> appGrpPersonIds=new HashSet<>();
-            Set<String> appGrpPersonExtIds=new HashSet<>();
-            Set<String> appSvcKeyPersonIds=new HashSet<>();
-            Set<String> appSvcPremisesScopeIds=new HashSet<>();
+            Set<String> appliGrpPremisesIds=IaisCommonUtils.genNewHashSet();
+            Set<String> appGrpPersonIds=IaisCommonUtils.genNewHashSet();
+            Set<String> appGrpPersonExtIds=IaisCommonUtils.genNewHashSet();
+            Set<String> appSvcKeyPersonIds=IaisCommonUtils.genNewHashSet();
+            Set<String> appSvcPremisesScopeIds=IaisCommonUtils.genNewHashSet();
 
             ApplicationListFileDto applicationListFileDto=new ApplicationListFileDto();
             List<ApplicationGroupDto> groupDtos=IaisCommonUtils.genNewArrayList();

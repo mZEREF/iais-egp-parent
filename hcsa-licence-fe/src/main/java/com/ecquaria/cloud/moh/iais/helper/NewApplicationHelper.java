@@ -23,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import java.sql.Time;
 import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +37,7 @@ import sop.util.CopyUtil;
 
 public class NewApplicationHelper {
     public static Map<String,String> doValidateLaboratory(List<AppSvcChckListDto>  listDtos, String serviceId){
-        Map<String,String> map=new HashMap<>();
+        Map<String,String> map=IaisCommonUtils.genNewHashMap();
         int count=0;
 
         if(listDtos.isEmpty()){
@@ -86,10 +85,10 @@ public class NewApplicationHelper {
     public static Map<String,String> doValidateGovernanceOfficers(List<AppSvcCgoDto> appSvcCgoList){
 
         if(appSvcCgoList == null){
-            return new HashMap<>();
+            return IaisCommonUtils.genNewHashMap();
         }
 
-        Map<String,String> errMap = new HashMap<>();
+        Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         List<String> stringList=IaisCommonUtils.genNewArrayList();
         for(int i=0;i<appSvcCgoList.size();i++ ){
             StringBuilder stringBuilder1=new StringBuilder();
@@ -245,7 +244,7 @@ public class NewApplicationHelper {
     }
     //todo change
     public static Map<String,  String> doValidatePo(List<AppSvcPrincipalOfficersDto> poDto) {
-        Map<String, String> oneErrorMap = new HashMap<>();
+        Map<String, String> oneErrorMap = IaisCommonUtils.genNewHashMap();
         StringBuilder stringBuilder =new StringBuilder();
         int poIndex=0;
         int dpoIndex=0;
@@ -471,7 +470,7 @@ public class NewApplicationHelper {
     }
     //just for one svc
     public static void setLaboratoryDisciplinesInfo(AppSubmissionDto appSubmissionDto,List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos){
-       Map<String, HcsaSvcSubtypeOrSubsumedDto> map = new HashMap<>();
+       Map<String, HcsaSvcSubtypeOrSubsumedDto> map = IaisCommonUtils.genNewHashMap();
        turn(hcsaSvcSubtypeOrSubsumedDtos, map);
        if(appSubmissionDto == null){
            return;
@@ -485,7 +484,7 @@ public class NewApplicationHelper {
     }
     //
     public static void setLaboratoryDisciplinesInfo(AppSvcRelatedInfoDto appSvcRelatedInfoDto,List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos){
-        Map<String, HcsaSvcSubtypeOrSubsumedDto> map = new HashMap<>();
+        Map<String, HcsaSvcSubtypeOrSubsumedDto> map = IaisCommonUtils.genNewHashMap();
         turn(hcsaSvcSubtypeOrSubsumedDtos, map);
         if(appSvcRelatedInfoDto == null){
             return;
@@ -513,7 +512,7 @@ public class NewApplicationHelper {
             allocationDto = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
         }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = new HashMap<>();
+        Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = IaisCommonUtils.genNewHashMap();
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
             List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocation = IaisCommonUtils.genNewArrayList();
             String hciName = "";

@@ -244,7 +244,7 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public Map<String,String> validate(HttpServletRequest request) {
-        Map<String,String> errorMap=new HashMap<>();
+        Map<String,String> errorMap=IaisCommonUtils.genNewHashMap();
         validae(request,errorMap);
         return errorMap;
     }
@@ -806,7 +806,7 @@ public class AppealServiceImpl implements AppealService {
 
     private void sendEmail(HttpServletRequest request) throws IOException, TemplateException {
         String newApplicationNo =(String) request.getAttribute("newApplicationNo");
-        Map<String,Object> map=new HashMap<>();
+        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         map.put("applicationNo",newApplicationNo);
         MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("").getEntity();
         String messageContent = entity.getMessageContent();

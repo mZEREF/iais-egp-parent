@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 public class HcsaWeightageRiskValidate implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
-        Map<String, String> errMap = new HashMap<>();
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         HcsaRiskWeightageShowDto wightageDto = (HcsaRiskWeightageShowDto) ParamUtil.getSessionAttr(request, "wightageDto");
         List<HcsaRiskWeightageDto> editList =  IaisCommonUtils.genNewArrayList();
         List<HcsaRiskWeightageDto> wDtoList =  wightageDto.getWeightageDtoList();

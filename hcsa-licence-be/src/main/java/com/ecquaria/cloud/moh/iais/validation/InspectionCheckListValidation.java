@@ -11,12 +11,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.esotericsoftware.minlog.Log;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Author: jiahao
@@ -26,7 +24,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
     private static final String ERR0010 = "ERR0010";
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
-        Map<String, String> errMap = new HashMap<>();
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
         if(serListDto!=null&&!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
             for(InspectionFillCheckListDto fDto:serListDto.getFdtoList()){

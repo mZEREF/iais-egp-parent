@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspecUserRecUploadService;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -134,7 +133,7 @@ public class InspecUserRecUploadDelegator {
         //get file from page
         CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("selectedFile");
         //do validate
-        Map<String,String> errorMap = new HashMap<>();
+        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         if(InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue) || InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)){
             log.info("The dto we checked is null ===>" + (inspecUserRecUploadDto == null));
             errorMap = doValidateByRecFile(inspecUserRecUploadDto, mulReq, errorMap, actionValue, file);

@@ -101,7 +101,7 @@ public class BackendAjaxController {
 
             QueryHelp.setMainSql("inspectionQuery", "AppByGroupAjax", searchParamAjax);
             SearchResult<InspectionAppInGroupQueryDto> ajaxResult = inspectionService.searchInspectionBeAppGroupAjax(searchParamAjax);
-            Map<String,String> serviceNameMap = new HashMap<>();
+            Map<String,String> serviceNameMap = IaisCommonUtils.genNewHashMap();
             for (InspectionAppInGroupQueryDto item:ajaxResult.getRows()) {
                 HcsaServiceDto hcsaServiceDto = inspectionAssignTaskService.getHcsaServiceDtoByServiceId(item.getServiceId());
                 serviceNameMap.put(hcsaServiceDto.getId(),hcsaServiceDto.getSvcName());
@@ -362,7 +362,7 @@ public class BackendAjaxController {
         String curRole = request.getParameter("curRole");
         LoginContext loginContext = new LoginContext();
         loginContext.setCurRoleId(curRole);
-        Map<String, String> res = new HashMap<>();
+        Map<String, String> res = IaisCommonUtils.genNewHashMap();
         res.put("role",curRole);
         return res;
     }

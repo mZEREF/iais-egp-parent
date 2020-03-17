@@ -15,12 +15,12 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
@@ -76,7 +76,7 @@ public class WebValidationHelperTest {
     @Test
     public void testValidateEntity() {
         AuditTrailDto.setThreadDto(new AuditTrailDto());
-        Map<String, String> errorMap = new HashMap<>();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         errorMap.put("key","value");
         PowerMockito.when(ValidationUtils.validateEntity(Mockito.anyObject())).thenReturn(validationResult);
         PowerMockito.when(validationResult.isHasErrors()).thenReturn(true);

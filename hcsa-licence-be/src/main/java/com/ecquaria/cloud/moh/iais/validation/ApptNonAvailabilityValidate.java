@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +38,7 @@ public class ApptNonAvailabilityValidate implements CustomizeValidator {
         ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = (ApptNonAvailabilityDateDto) ParamUtil.getSessionAttr(request, "inspNonAvailabilityDto");
         List<TaskDto> taskDtoList = organizationClient.getTasksByUserIdAndRole(apptNonAvailabilityDateDto.getUserCorrId(), RoleConsts.USER_ROLE_INSPECTIOR).getEntity();
         List<Date> inspectionDate = IaisCommonUtils.genNewArrayList();
-        Map<String, String> errMap = new HashMap<>();
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH");
         for(TaskDto tDto : taskDtoList){
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(tDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();

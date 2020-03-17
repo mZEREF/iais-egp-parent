@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import freemarker.template.TemplateException;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.Before;
@@ -81,7 +80,7 @@ public class SqlMapTest {
 
     @Test
     public void testGetSqlParam() throws IOException, TemplateException {
-        Map<String, Object> param = new HashMap<>();
+        Map<String, Object> param = IaisCommonUtils.genNewHashMap();
         param.put("nric_no", "dsas");
         String s = sm.getSql(CATA, KEY_D, param);
         assertNotNull(s);
@@ -89,7 +88,7 @@ public class SqlMapTest {
 
     @Test
     public void testGetDynamicSqlStat() throws IOException, TemplateException {
-        Map<String, Object> param = new HashMap<>();
+        Map<String, Object> param = IaisCommonUtils.genNewHashMap();
         param.put("nric_no", "dsas");
         Sql sql = sm.getSql(CATA, KEY_1);
         sm.getDynamicSqlStat(sql, param);

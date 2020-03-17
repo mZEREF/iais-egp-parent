@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.sample.DemoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.sample.OrgUserAccountSampleDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -29,16 +30,14 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserAccountSampleService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Process: OrgUserAccount
@@ -271,7 +270,7 @@ public class OrgUserAccountSampleDelegator {
                 ParamUtil.setRequestAttr(request,DemoConstants.ERRORMAP,errorMap);
                 ParamUtil.setRequestAttr(request,DemoConstants.ISVALID,"N");
             }else{
-                Map<String,String> successMap = new HashMap<>();
+                Map<String,String> successMap = IaisCommonUtils.genNewHashMap();
                 successMap.put("test","suceess");
                 orgUserAccountService.saveOrgUserAccounts(accountDto);
                 ParamUtil.setRequestAttr(request,DemoConstants.ISVALID,"Y");

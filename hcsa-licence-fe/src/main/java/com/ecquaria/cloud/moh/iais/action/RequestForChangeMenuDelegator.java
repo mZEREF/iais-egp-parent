@@ -37,7 +37,6 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -325,7 +324,7 @@ public class RequestForChangeMenuDelegator {
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
         String licenseeId = interInboxUserDto.getLicenseeId();
         List<PersonnelListQueryDto> licenseeKeyApptPersonDtoList =  requestForChangeService.getLicencePersonnelListQueryDto(licenseeId);
-        Map<String,List<PersonnelListQueryDto>> personnelListMap = new HashMap<>();
+        Map<String,List<PersonnelListQueryDto>> personnelListMap = IaisCommonUtils.genNewHashMap();
         for(PersonnelListQueryDto personnelListQueryDto:licenseeKeyApptPersonDtoList){
             String idNo = personnelListQueryDto.getIdNo();
             List<PersonnelListQueryDto> personnelListQueryDtos  = personnelListMap.get(idNo);
@@ -409,7 +408,7 @@ public class RequestForChangeMenuDelegator {
         }
 
 
-        Map<String,String> errMap = new HashMap<>();
+        Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         if(StringUtil.isEmpty(email)){
             errMap.put("emailAddr", "UC_CHKLMD001_ERR001");
         }else if (!StringUtil.isEmpty(email)) {
@@ -820,7 +819,7 @@ public class RequestForChangeMenuDelegator {
 
     private Map<String, String> doValidatePremiss(HttpServletRequest request, AppGrpPremisesDto appGrpPremisesDto) {
         String premiseType = appGrpPremisesDto.getPremisesType();
-        Map<String, String> errorMap = new HashMap<>();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
             String postalCode = appGrpPremisesDto.getPostalCode();
             if (!StringUtil.isEmpty(postalCode)) {

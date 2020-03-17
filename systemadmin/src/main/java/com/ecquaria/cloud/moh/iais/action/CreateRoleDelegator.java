@@ -1,17 +1,15 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.CreateRoleService;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Wenkang
@@ -51,7 +49,7 @@ public class CreateRoleDelegator {
     public void step(BaseProcessClass bpc){
 
         log.info("**** start ***  save");
-        Map<String,String> errorMap=new HashMap<>();
+        Map<String,String> errorMap= IaisCommonUtils.genNewHashMap();
         String type = ParamUtil.getRequestString(bpc.request, "crud_action_type");
         if(!StringUtil.isEmpty(type)){
             if("saveRole".equals(type)){

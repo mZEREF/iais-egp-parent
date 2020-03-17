@@ -22,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import com.ecquaria.cloud.moh.iais.service.TemplatesService;
 import java.text.ParseException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -163,7 +162,7 @@ public class TemplatesDelegator {
                 SystemAdminBaseConstants.DATE_FORMAT);
         String templateEndDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO)),
                 SystemAdminBaseConstants.DATE_FORMAT);
-        Map<String,Object> templateMap = new HashMap<>();
+        Map<String,Object> templateMap = IaisCommonUtils.genNewHashMap();
         if (!StringUtil.isEmpty(msgType)){
             templateMap.put(MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE,msgType);
         }

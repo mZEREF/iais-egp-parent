@@ -33,7 +33,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -85,7 +84,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public String getSvcIdBySvcCode(String svcCode) {
-        Map<String,Object> map = new HashMap<>();
+        Map<String,Object> map = IaisCommonUtils.genNewHashMap();
         map.put("code", svcCode);
 
         return   appConfigClient.getServiceIdByCode(svcCode).getEntity();
@@ -94,7 +93,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Override
     public Map<String,AppGrpPremisesDto> getAppGrpPremisesDtoByLoginId(String loginId) {
         List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getDistinctPremisesByLicenseeId(loginId).getEntity();
-        Map<String,AppGrpPremisesDto> appGrpPremisesDtoMap = new HashMap<>();
+        Map<String,AppGrpPremisesDto> appGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
             if(!StringUtil.isEmpty(appGrpPremisesDto.getPremisesIndexNo())){
                 appGrpPremisesDtoMap.put(appGrpPremisesDto.getPremisesIndexNo(),appGrpPremisesDto);
@@ -126,7 +125,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public List<HcsaSvcDocConfigDto> getAllHcsaSvcDocs(String serviceId) {
-        Map<String,String> docMap = new HashMap<>();
+        Map<String,String> docMap = IaisCommonUtils.genNewHashMap();
         if(StringUtil.isEmpty(serviceId)){
             docMap.put("common", "0");
             docMap.put("premises", "1");
@@ -141,7 +140,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public List<HcsaSvcSubtypeOrSubsumedDto> loadLaboratoryDisciplines(String serviceId) {
-        Map<String,Object> map = new HashMap<>();
+        Map<String,Object> map = IaisCommonUtils.genNewHashMap();
         map.put("svcId", serviceId);
 
         return appConfigClient.listSubCorrelation(serviceId).getEntity();
@@ -150,7 +149,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public List<HcsaSvcPersonnelDto> getGOSelectInfo(String serviceId, String psnType) {
-        Map<String,Object> map = new HashMap<>();
+        Map<String,Object> map = IaisCommonUtils.genNewHashMap();
         map.put("serviceId", serviceId);
         map.put("psnType", psnType);
 
@@ -247,7 +246,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public Map<String,List<HcsaSvcPersonnelDto>>  getAllSvcAllPsnConfig(List<HcsaServiceStepSchemeDto> svcStep, List<String> svcIds) {
-        Map<String,List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = new HashMap<>();
+        Map<String,List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = IaisCommonUtils.genNewHashMap();
         for(String svcId:svcIds){
             List<HcsaSvcPersonnelDto> oneSvcAllPsnConfig = getSvcAllPsnConfig(svcStep, svcId);
             allSvcAllPsnConfig.put(svcId, oneSvcAllPsnConfig);

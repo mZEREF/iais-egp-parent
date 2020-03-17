@@ -14,23 +14,21 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Wenkang
@@ -113,7 +111,7 @@ public class NewApplicationAjaxController {
 
         //premiseSelect -- on-site
         List<SelectOption> premisesOnSite= (List) ParamUtil.getSessionAttr(request, "premisesSelect");
-        Map<String,String> premisesOnSiteAttr = new HashMap<>();
+        Map<String,String> premisesOnSiteAttr = IaisCommonUtils.genNewHashMap();
         premisesOnSiteAttr.put("class", "premSelect");
         premisesOnSiteAttr.put("id", "onSiteSel");
         premisesOnSiteAttr.put("name", "onSiteSelect");
@@ -122,7 +120,7 @@ public class NewApplicationAjaxController {
 
         //premiseSelect -- conveyance
         List<SelectOption> premisesConv= (List) ParamUtil.getSessionAttr(request, "conveyancePremSel");
-        Map<String,String> premisesConvAttr = new HashMap<>();
+        Map<String,String> premisesConvAttr = IaisCommonUtils.genNewHashMap();
         premisesConvAttr.put("class", "premSelect");
         premisesConvAttr.put("id", "conveyanceSel");
         premisesConvAttr.put("name", "conveyanceSelect");
@@ -131,7 +129,7 @@ public class NewApplicationAjaxController {
 
         //Address Type on-site
         List<SelectOption> addrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
-        Map<String,String> addrTypesAttr = new HashMap<>();
+        Map<String,String> addrTypesAttr = IaisCommonUtils.genNewHashMap();
         addrTypesAttr.put("class", "siteAddressType");
         addrTypesAttr.put("id", "siteAddressType");
         addrTypesAttr.put("name", "onSiteAddressType");
@@ -140,7 +138,7 @@ public class NewApplicationAjaxController {
 
         //Address Type conveyance
         List<SelectOption> conAddrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
-        Map<String,String> conAddrTypesAttr = new HashMap<>();
+        Map<String,String> conAddrTypesAttr = IaisCommonUtils.genNewHashMap();
         conAddrTypesAttr.put("class", "conveyanceAddressType");
         conAddrTypesAttr.put("id", "siteAddressType");
         conAddrTypesAttr.put("name", "conveyanceAddrType");
@@ -215,7 +213,7 @@ public class NewApplicationAjaxController {
 
         //assign cgo select
         List<SelectOption> cgoSelectList= (List) ParamUtil.getSessionAttr(request, "CgoSelectList");
-        Map<String,String> cgoSelectAttr = new HashMap<>();
+        Map<String,String> cgoSelectAttr = IaisCommonUtils.genNewHashMap();
         cgoSelectAttr.put("class", "assignSel");
         cgoSelectAttr.put("name", "assignSelect");
         cgoSelectAttr.put("style", "display: none;");
@@ -223,7 +221,7 @@ public class NewApplicationAjaxController {
 
         //salutation
         List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-        Map<String,String> salutationAttr = new HashMap<>();
+        Map<String,String> salutationAttr = IaisCommonUtils.genNewHashMap();
         salutationAttr.put("class", "salutationSel");
         salutationAttr.put("name", "salutation");
         salutationAttr.put("style", "display: none;");
@@ -231,7 +229,7 @@ public class NewApplicationAjaxController {
 
         //ID Type
         List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
-        Map<String,String>  idTypeAttr = new HashMap<>();
+        Map<String,String>  idTypeAttr = IaisCommonUtils.genNewHashMap();
         idTypeAttr.put("class", "idTypeSel");
         idTypeAttr.put("name", "idType");
         idTypeAttr.put("style", "display: none;");
@@ -239,7 +237,7 @@ public class NewApplicationAjaxController {
 
         //Designation
         List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
-        Map<String,String> designationAttr = new HashMap<>();
+        Map<String,String> designationAttr = IaisCommonUtils.genNewHashMap();
         designationAttr.put("class", "designationSel");
         designationAttr.put("name", "designation");
         designationAttr.put("style", "display: none;");
@@ -247,7 +245,7 @@ public class NewApplicationAjaxController {
 
         //Professional Regn Type
         List<SelectOption> proRegnTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE);
-        Map<String,String> proRegnTypeAttr = new HashMap<>();
+        Map<String,String> proRegnTypeAttr = IaisCommonUtils.genNewHashMap();
         proRegnTypeAttr.put("class", "professionTypeSel");
         proRegnTypeAttr.put("name", "professionType");
         proRegnTypeAttr.put("style", "display: none;");
@@ -255,7 +253,7 @@ public class NewApplicationAjaxController {
 
         //Specialty
         List<SelectOption> specialtyList = (List<SelectOption>) ParamUtil.getSessionAttr(request, "SpecialtySelectList");
-        Map<String,String> specialtyAttr = new HashMap<>();
+        Map<String,String> specialtyAttr = IaisCommonUtils.genNewHashMap();
         specialtyAttr.put("name", "specialty");
         specialtyAttr.put("class", "specialty");
         specialtyAttr.put("style", "display: none;");
@@ -313,14 +311,14 @@ public class NewApplicationAjaxController {
         String sql = SqlMap.INSTANCE.getSql("servicePersonnel", "NuclearMedicineImaging").getSqlStr();
         String currentSvcCod = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
         List<SelectOption> personnel = ClinicalLaboratoryDelegator.genPersonnelTypeSel(currentSvcCod);
-        Map<String,String> personnelAttr = new HashMap<>();
+        Map<String,String> personnelAttr = IaisCommonUtils.genNewHashMap();
         personnelAttr.put("name", "personnelSel");
         personnelAttr.put("class", "personnelSel");
         personnelAttr.put("style", "display: none;");
         String personnelSelectStr = NewApplicationHelper.generateDropDownHtml(personnelAttr, personnel, NewApplicationDelegator.FIRESTOPTION);
 
         List<SelectOption> designation = (List) ParamUtil.getSessionAttr(request, "NuclearMedicineImagingDesignation");
-        Map<String,String> designationAttr = new HashMap<>();
+        Map<String,String> designationAttr = IaisCommonUtils.genNewHashMap();
         designationAttr.put("name", "designation");
         designationAttr.put("style", "display: none;");
         String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designation, NewApplicationDelegator.FIRESTOPTION);
@@ -342,7 +340,7 @@ public class NewApplicationAjaxController {
 
         //assign select
         List<SelectOption> assignPrincipalOfficerSel = ClinicalLaboratoryDelegator.getAssignPrincipalOfficerSel(svcId, false);
-        Map<String,String> assignPrincipalOfficerAttr = new HashMap<>();
+        Map<String,String> assignPrincipalOfficerAttr = IaisCommonUtils.genNewHashMap();
         assignPrincipalOfficerAttr.put("name", "assignSelect");
         assignPrincipalOfficerAttr.put("class", "poSelect");
         assignPrincipalOfficerAttr.put("style", "display: none;");
@@ -350,7 +348,7 @@ public class NewApplicationAjaxController {
 
         //salutation
         List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-        Map<String,String> salutationAttr = new HashMap<>();
+        Map<String,String> salutationAttr = IaisCommonUtils.genNewHashMap();
         salutationAttr.put("class", "salutation");
         salutationAttr.put("name", "salutation");
         salutationAttr.put("style", "display: none;");
@@ -358,7 +356,7 @@ public class NewApplicationAjaxController {
 
         //ID Type
         List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
-        Map<String,String>  idTypeAttr = new HashMap<>();
+        Map<String,String>  idTypeAttr = IaisCommonUtils.genNewHashMap();
         idTypeAttr.put("class", "idType");
         idTypeAttr.put("name", "idType");
         idTypeAttr.put("style", "display: none;");
@@ -366,7 +364,7 @@ public class NewApplicationAjaxController {
 
         //Designation
         List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
-        Map<String,String> designationAttr = new HashMap<>();
+        Map<String,String> designationAttr = IaisCommonUtils.genNewHashMap();
         designationAttr.put("class", "designation");
         designationAttr.put("name", "designation");
         designationAttr.put("style", "display: none;");
@@ -389,7 +387,7 @@ public class NewApplicationAjaxController {
 
         //salutation
         List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-        Map<String,String> salutationAttr = new HashMap<>();
+        Map<String,String> salutationAttr = IaisCommonUtils.genNewHashMap();
         salutationAttr.put("class", "deputySalutation");
         salutationAttr.put("name", "deputySalutation");
         salutationAttr.put("style", "display: none;");
@@ -397,7 +395,7 @@ public class NewApplicationAjaxController {
 
         //ID Type
         List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
-        Map<String,String>  idTypeAttr = new HashMap<>();
+        Map<String,String>  idTypeAttr = IaisCommonUtils.genNewHashMap();
         idTypeAttr.put("class", "deputyIdType");
         idTypeAttr.put("name", "deputyIdType");
         idTypeAttr.put("style", "display: none;");
@@ -405,7 +403,7 @@ public class NewApplicationAjaxController {
 
         //Designation
         List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
-        Map<String,String> designationAttr = new HashMap<>();
+        Map<String,String> designationAttr = IaisCommonUtils.genNewHashMap();
         designationAttr.put("class", "deputyDesignation");
         designationAttr.put("name", "deputyDesignation");
         designationAttr.put("style", "display: none;");
@@ -413,7 +411,7 @@ public class NewApplicationAjaxController {
 
         //MedAlert
         List<SelectOption> medAlertSelectList = ClinicalLaboratoryDelegator.getMedAlertSelectList(false);
-        Map<String,String> medAlertSelectAttr = new HashMap<>();
+        Map<String,String> medAlertSelectAttr = IaisCommonUtils.genNewHashMap();
         medAlertSelectAttr.put("class", "modeOfMedAlert");
         medAlertSelectAttr.put("name", "modeOfMedAlert");
         medAlertSelectAttr.put("style", "display: none;");

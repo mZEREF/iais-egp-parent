@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.sql.SqlMapLoader;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletContextEvent;
@@ -76,7 +75,7 @@ public class AppInitializerTest {
     public void testContextInitialized() throws Exception {
         SearchResult<Map<String, String>> sr = new SearchResult<Map<String, String>>();
         List<Map<String, String>> list = IaisCommonUtils.genNewArrayList();
-        Map<String, String> mc = new HashMap<>();
+        Map<String, String> mc = IaisCommonUtils.genNewHashMap();
         mc.put("codeKey", "aaaa");
         mc.put("description", "bbbbbb");
         list.add(mc);

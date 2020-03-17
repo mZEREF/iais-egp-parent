@@ -58,6 +58,17 @@ import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import java.io.IOException;
+import java.io.Serializable;
+import java.sql.Time;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -66,19 +77,6 @@ import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Serializable;
-import java.sql.Time;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * egator
@@ -394,7 +392,7 @@ public class NewApplicationDelegator {
             List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
             if(appSubmissionDto.isNeedEditController()){
-                Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null? new HashSet<>() :appSubmissionDto.getClickEditPage();
+                Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null? IaisCommonUtils.genNewHashSet() :appSubmissionDto.getClickEditPage();
                 clickEditPages.add(APPLICATION_PAGE_NAME_PREMISES);
                 appSubmissionDto.setClickEditPage(clickEditPages);
                 AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
@@ -464,10 +462,10 @@ public class NewApplicationDelegator {
             List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO);
             List<AppGrpPremisesDto> appGrpPremisesList = appSubmissionDto.getAppGrpPremisesDtoList();
             List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
-            Map<String,String> errorMap = new HashMap<>();
+            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             Map<String,AppGrpPrimaryDocDto> beforeReloadDocMap = (Map<String, AppGrpPrimaryDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP);
             if(appSubmissionDto.isNeedEditController()){
-                Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
+                Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                 clickEditPages.add(NewApplicationDelegator.APPLICATION_PAGE_NAME_PRIMARY);
                 appSubmissionDto.setClickEditPage(clickEditPages);
                 AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
@@ -475,7 +473,7 @@ public class NewApplicationDelegator {
                 appSubmissionDto.setChangeSelectDto(appEditSelectDto);
             }
 
-            Map<String,CommonsMultipartFile> commonsMultipartFileMap = new HashMap<>();
+            Map<String,CommonsMultipartFile> commonsMultipartFileMap = IaisCommonUtils.genNewHashMap();
             for(HcsaSvcDocConfigDto comm:commonHcsaSvcDocConfigList){
                 String name = "common"+comm.getId();
                 file = (CommonsMultipartFile) mulReq.getFile(name);
@@ -1113,7 +1111,7 @@ public class NewApplicationDelegator {
                 }
             }
             String appGrpNo = appSubmissionDto.getAppGrpNo();
-            Map<String, Object> map = new HashMap<>();
+            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
             map.put("serviceNames", serviceNames);
             map.put("paymentAmount",Formatter.formatNumber(amount));
             map.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
@@ -1136,7 +1134,7 @@ public class NewApplicationDelegator {
 
     private Map<String,String> doComChange( AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto){
         StringBuilder sB=new StringBuilder();
-        Map<String,String> result=new HashMap<>();
+        Map<String,String> result=IaisCommonUtils.genNewHashMap();
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
         if(appEditSelectDto!=null){
             if(!appEditSelectDto.isPremisesEdit()){
@@ -1562,7 +1560,7 @@ public class NewApplicationDelegator {
 
     private Map<String,String> doPreviewAndSumbit( BaseProcessClass bpc){
         StringBuilder sB=new StringBuilder();
-        Map<String,String> previewAndSubmitMap=new HashMap<>();
+        Map<String,String> previewAndSubmitMap=IaisCommonUtils.genNewHashMap();
         //
         Map<String, String> premissMap = doValidatePremiss(bpc);
         if(!premissMap.isEmpty()){
@@ -1594,7 +1592,7 @@ public class NewApplicationDelegator {
             log.info("map json str:"+mapStr);
         }
 
-        Map<String,String> documentMap=new HashMap<>();
+        Map<String,String> documentMap=IaisCommonUtils.genNewHashMap();
         documentValid(bpc.request,documentMap);
         if(!documentMap.isEmpty()){
             previewAndSubmitMap.put("document","UC_CHKLMD001_ERR001");
@@ -1614,7 +1612,7 @@ public class NewApplicationDelegator {
     private Map<String,String> doCheckBox( BaseProcessClass bpc,StringBuilder sB){
 
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        Map<String,String> errorMap=new HashMap<>();
+        Map<String,String> errorMap=IaisCommonUtils.genNewHashMap();
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
         for(int i=0;i< dto.size();i++ ){
@@ -2163,7 +2161,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         //do validate one premiss
 
-        Map<String, String> errorMap = new HashMap<>();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         for(int i=0;i<appGrpPremisesDtoList.size();i++){
@@ -2450,7 +2448,7 @@ public class NewApplicationDelegator {
     private Map<String,String> doValidatePremissCgo(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         //do validate premiss
-        Map<String,String> errorMap = new HashMap<>();
+        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         AppSvcCgoDto appSvcCgoDto=  (AppSvcCgoDto) ParamUtil.getSessionAttr(bpc.request,"AppSvcCgoDto");
         String mobileNo = appSvcCgoDto.getMobileNo();
         String emailAddr = appSvcCgoDto.getEmailAddr();
@@ -2564,7 +2562,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "IndexNoCount", 0);
 
         //reload
-        Map<String,AppGrpPrimaryDocDto> initBeforeReloadDocMap = new HashMap<>();
+        Map<String,AppGrpPrimaryDocDto> initBeforeReloadDocMap = IaisCommonUtils.genNewHashMap();
         ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, (Serializable) initBeforeReloadDocMap);
 
         //error_msg

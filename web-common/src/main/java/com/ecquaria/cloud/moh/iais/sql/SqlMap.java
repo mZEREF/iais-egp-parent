@@ -14,19 +14,18 @@
 package com.ecquaria.cloud.moh.iais.sql;
 
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.core.TemplateClassResolver;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * SqlMap
@@ -112,6 +111,6 @@ public class SqlMap {
     }
 
     private SqlMap() {
-        mapforSql = new HashMap<>();
+        mapforSql = IaisCommonUtils.genNewHashMap();
     }
 }

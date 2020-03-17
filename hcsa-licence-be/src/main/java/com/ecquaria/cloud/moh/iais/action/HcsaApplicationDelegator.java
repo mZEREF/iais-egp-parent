@@ -63,8 +63,6 @@ import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -174,7 +172,7 @@ public class HcsaApplicationDelegator {
 //        get routing stage dropdown send to page.
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
 
-        Map<String,String> routingStage=new HashMap<>();
+        Map<String,String> routingStage=IaisCommonUtils.genNewHashMap();
         if(hcsaSvcRoutingStageDtoList!=null){
             if(hcsaSvcRoutingStageDtoList.size()>0){
                 for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage:hcsaSvcRoutingStageDtoList) {
@@ -188,7 +186,7 @@ public class HcsaApplicationDelegator {
         }
 
         //   rollback
-        Map<String,String> rollBackMap = new HashMap<>();
+        Map<String,String> rollBackMap = IaisCommonUtils.genNewHashMap();
         if(applicationViewDto.getRollBackHistroyList()!=null){
         for (AppPremisesRoutingHistoryDto e:applicationViewDto.getRollBackHistroyList()) {
             String stageName=applicationViewService.getStageById(e.getStageId()).getStageName();
@@ -650,7 +648,7 @@ public class HcsaApplicationDelegator {
             }
         }
         MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
-        Map<String ,Object> map=new HashMap<>();
+        Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
         map.put("APPLICANT_NAME",licenseeDto.getName());
@@ -670,7 +668,7 @@ public class HcsaApplicationDelegator {
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             String approvalOfficerName = loginContext.getUserName();
 
-            Map<String ,Object> tempMap = new HashMap<>();
+            Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
             tempMap.put("userName",StringUtil.viewHtml(username));
             tempMap.put("applicationNumber",StringUtil.viewHtml(applicationNo));
             tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
@@ -972,7 +970,7 @@ public class HcsaApplicationDelegator {
     }
 
     private List<String> getUserIds(List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos){
-        Set<String> set = new HashSet<>();
+        Set<String> set = IaisCommonUtils.genNewHashSet();
         if(appPremisesRoutingHistoryDtos == null || appPremisesRoutingHistoryDtos.size() ==0){
             return  null;
         }

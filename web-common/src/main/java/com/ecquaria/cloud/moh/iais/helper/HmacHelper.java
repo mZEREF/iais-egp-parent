@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -9,7 +10,6 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -34,7 +34,7 @@ public class HmacHelper {
     /**
      * the map storing the hmac algorithms supported by tyk(version 2.7.6)
      */
-    private static final Map<String, String> ALGORITHM_MAP = MapUtils.putAll(new HashMap<>(),
+    private static final Map<String, String> ALGORITHM_MAP = MapUtils.putAll(IaisCommonUtils.genNewHashMap(),
             new String[]{HMAC_SHA_1, "HmacSHA1", HMAC_SHA_256, "HmacSHA256", HMAC_SHA_384, "HmacSHA384",
                     HMAC_SHA_512, "HmacSHA512"});
 

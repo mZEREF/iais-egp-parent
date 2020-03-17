@@ -55,7 +55,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -191,11 +190,11 @@ public class InspectReviseNcEmailDelegator {
         inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, IntranetUserConstant.INTRANET_REMARKS));
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,MSG_CON));
         if (inspectionEmailTemplateDto.getSubject().isEmpty()){
-            Map<String,String> errorMap = new HashMap<>();
+            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
         }
         if (inspectionEmailTemplateDto.getMessageContent().isEmpty()){
-            Map<String,String> errorMap = new HashMap<>();
+            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
         }
         if (decision.equals(InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW)){
@@ -437,7 +436,7 @@ public class InspectReviseNcEmailDelegator {
         List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(appPremCorrId);
         AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,InspectionConstants.RECOM_TYPE_TCU);
         inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
-        Map<String,Object> map=new HashMap<>();
+        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         map.put("APPLICANT_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicantName()));
         map.put("APPLICATION_NUMBER",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicationNumber()));
         map.put("HCI_CODE",StringUtil.viewHtml(inspectionEmailTemplateDto.getHciCode()));

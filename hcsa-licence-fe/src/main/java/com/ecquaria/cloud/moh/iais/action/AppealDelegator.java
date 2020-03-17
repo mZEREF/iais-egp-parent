@@ -133,7 +133,7 @@ public class AppealDelegator {
         String sql = SqlMap.INSTANCE.getSql("governanceOfficer", "generateGovernanceOfficerHtml").getSqlStr();
 
         //assign cgo select
-        Map<String,String> cgoSelectAttr = new HashMap<>();
+        Map<String,String> cgoSelectAttr = IaisCommonUtils.genNewHashMap();
         cgoSelectAttr.put("class", "assignSel");
         cgoSelectAttr.put("name", "assignSelect");
         cgoSelectAttr.put("style", "display: none;");
@@ -141,35 +141,35 @@ public class AppealDelegator {
 
         //salutation
         List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-        Map<String,String> salutationAttr = new HashMap<>();
+        Map<String,String> salutationAttr = IaisCommonUtils.genNewHashMap();
         salutationAttr.put("name", "salutation");
         salutationAttr.put("style", "display: none;");
         String salutationSelectStr = getHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
 
         //ID Type
         List<SelectOption> idTypeList = getIdTypeSelOp();
-        Map<String,String>  idTypeAttr = new HashMap<>();
+        Map<String,String>  idTypeAttr = IaisCommonUtils.genNewHashMap();
         idTypeAttr.put("name", "idType");
         idTypeAttr.put("style", "display: none;");
         String idTypeSelectStr = getHtml(idTypeAttr, idTypeList, null);
 
         //Designation
         List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
-        Map<String,String> designationAttr = new HashMap<>();
+        Map<String,String> designationAttr = IaisCommonUtils.genNewHashMap();
         designationAttr.put("name", "designation");
         designationAttr.put("style", "display: none;");
         String designationSelectStr = getHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
 
         //Professional Regn Type
         List<SelectOption> proRegnTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE);
-        Map<String,String> proRegnTypeAttr = new HashMap<>();
+        Map<String,String> proRegnTypeAttr = IaisCommonUtils.genNewHashMap();
         proRegnTypeAttr.put("name", "professionType");
         proRegnTypeAttr.put("style", "display: none;");
         String proRegnTypeSelectStr = getHtml(proRegnTypeAttr, proRegnTypeList, NewApplicationDelegator.FIRESTOPTION);
 
         //Specialty
 
-        Map<String,String> specialtyAttr = new HashMap<>();
+        Map<String,String> specialtyAttr = IaisCommonUtils.genNewHashMap();
         specialtyAttr.put("name", "specialty");
         specialtyAttr.put("class", "specialty");
         specialtyAttr.put("style", "display: none;");

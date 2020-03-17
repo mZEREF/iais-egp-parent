@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +23,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         LicenceTenShowDto showDto = (LicenceTenShowDto)ParamUtil.getSessionAttr(request,"tenShowDto");
-        Map<String, String> errMap = new HashMap<>();
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         if(showDto.isAddFlag()){
             addMaxVad(showDto,errMap);
         }else{

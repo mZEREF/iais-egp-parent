@@ -22,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +36,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
 
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
-        Map<String, String> errMap = new HashMap<>();
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         RiskFinancialShowDto findto = (RiskFinancialShowDto) ParamUtil.getSessionAttr(request, RiskConsts.FINANCIALSHOWDTO);
         List<HcsaRiskFinanceMatrixDto> financeList = findto.getFinanceList();
         List<HcsaRiskFinanceMatrixDto> editList = IaisCommonUtils.genNewArrayList();

@@ -21,11 +21,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.sample.DemoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.sample.OrgSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.sample.OrgUserAccountSampleDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserAccountSampleService;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
-import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +62,7 @@ public class OrgUserAccountSampleServiceImpl implements OrgUserAccountSampleServ
 
     @Override
     public OrgUserAccountSampleDto getOrgUserAccountByRowguId(String rowguId) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         map.put("searchField", "rowguId");
         map.put("filterValue", rowguId);
         return null;
@@ -71,7 +71,7 @@ public class OrgUserAccountSampleServiceImpl implements OrgUserAccountSampleServ
 
     @Override
     public OrgUserAccountSampleDto getOrgUserAccountByNircNo(String nircNo) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         map.put("searchField", "nircNo");
         map.put("filterValue", nircNo);
 

@@ -126,7 +126,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 String name = fil.getName();
                 String path = fil.getPath();
                 String relPath= AppServicesConsts.BACKUPS+File.separator+name;
-                HashMap<String,String> map=new HashMap<>();
+                HashMap<String,String> map=IaisCommonUtils.genNewHashMap();
                 map.put("fileName",name);
                 map.put("filePath",relPath);
 
@@ -702,7 +702,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     private void requeOrNew(List<ApplicationDto> requestForInforList, List<ApplicationGroupDto> applicationGroup,List<ApplicationDto> dtoList) {
 
-        Map<String,List<ApplicationDto>> map=new HashMap<>();
+        Map<String,List<ApplicationDto>> map=IaisCommonUtils.genNewHashMap();
         for (ApplicationGroupDto applicationGroupDto : applicationGroup) {
             List<ApplicationDto> list=IaisCommonUtils.genNewArrayList();
             for (ApplicationDto applicationDto : dtoList) {
@@ -728,7 +728,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         for(ApplicationDto every:applicationList){
             idList.add(every.getId());
         }
-        Map<ApplicationGroupDto,List<ApplicationDto>> map=new HashMap<>();
+        Map<ApplicationGroupDto,List<ApplicationDto>> map=IaisCommonUtils.genNewHashMap();
         for (ApplicationGroupDto every : applicationGroup) {
             List<ApplicationDto> applicationslist=IaisCommonUtils.genNewArrayList();
 

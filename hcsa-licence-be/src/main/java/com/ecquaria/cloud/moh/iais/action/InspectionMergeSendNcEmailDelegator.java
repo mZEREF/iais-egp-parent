@@ -41,7 +41,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloudfeign.FeignException;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -208,11 +207,11 @@ public class InspectionMergeSendNcEmailDelegator {
 
 
         if (inspectionEmailTemplateDto.getSubject().isEmpty()){
-            Map<String,String> errorMap = new HashMap<>();
+            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
         }
         if (inspectionEmailTemplateDto.getMessageContent().isEmpty()){
-            Map<String,String> errorMap = new HashMap<>();
+            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
         }
         if (decision.equals(InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT)){

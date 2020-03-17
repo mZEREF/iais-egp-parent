@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 public class HcsaLegislativeValidate implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
-        Map<String, String> errMap = new HashMap<>();
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         RiskLegislativeShowDto legShowDto = (RiskLegislativeShowDto)ParamUtil.getSessionAttr(request, "legShowDto");
         List<HcsaRiskLegislativeMatrixDto> financeList = legShowDto.getLegislativeList();
         List<HcsaRiskLegislativeMatrixDto> editList = IaisCommonUtils.genNewArrayList();

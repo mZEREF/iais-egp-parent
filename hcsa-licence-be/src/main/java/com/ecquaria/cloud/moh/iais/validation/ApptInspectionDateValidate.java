@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +42,7 @@ public class ApptInspectionDateValidate implements CustomizeValidator {
         if(specificDate == null){
             return null;
         }
-        Map<String, String> errMap = new HashMap<>();
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         List<Date> inspectionDate = IaisCommonUtils.genNewArrayList();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH");
         String strSpecDate = sdf.format(specificDate);

@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -15,22 +16,17 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.KpiAndReminderService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.cloudfeign.FeignResponseEntity;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Wenkang
@@ -103,7 +99,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
 
     private HcsaSvcKpiDto getParameter(HttpServletRequest request) throws ParseException {
 
-        Map<String ,Integer> kpi=new HashMap<>();
+        Map<String ,Integer> kpi= IaisCommonUtils.genNewHashMap();
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
         OrgUserDto entity = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
@@ -139,7 +135,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
 
 
     private Map doValidate(HttpServletRequest request){
-        Map<String,String> errorMap=new HashMap<>();
+        Map<String,String> errorMap=IaisCommonUtils.genNewHashMap();
         String configKpi = (String)request.getSession().getAttribute("configKpi");
         if(!"configKpi".equals(configKpi)){
             String service = request.getParameter("service");

@@ -162,7 +162,7 @@ public class OfficerOnlineEnquiriesDelegator {
         if(ParamUtil.getString(request,"servicePersonnel")!=null){
             count=5;
         }
-        Map<String,Object> filter=new HashMap<>();
+        Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
         List<String> svcNames=IaisCommonUtils.genNewArrayList();
         List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
@@ -939,7 +939,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 allocationDto = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
             }
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = new HashMap<>();
+            Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = IaisCommonUtils.genNewHashMap();
             for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
                 List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocation = IaisCommonUtils.genNewArrayList();
                 String hciName = "";

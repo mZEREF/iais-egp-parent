@@ -26,7 +26,6 @@ import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -96,7 +95,7 @@ public class AuditFunctionAspect {
                 AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
         Object[] args = point.getArgs();
         Method method = ((MethodSignature) point.getSignature()).getMethod();
-        Map<String, Object> json = new HashMap<>();
+        Map<String, Object> json = IaisCommonUtils.genNewHashMap();
         SearchTrack logInfo = method.getAnnotation(SearchTrack.class);
         if (!StringUtil.isEmpty(logInfo.catalog()) && !StringUtil.isEmpty(logInfo.key())) {
             json.put("sql_catalog", logInfo.catalog());

@@ -23,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +103,7 @@ public final class MasterCodeUtil {
             list.add((MasterCodeView) obj);
         });
         Map<String, List<MasterCodeView>> cateMap = new LinkedHashMap<>();
-        Map<String, List<MasterCodeView>> filterMap = new HashMap<>();
+        Map<String, List<MasterCodeView>> filterMap = IaisCommonUtils.genNewHashMap();
         list.forEach(mc ->
             RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, mc.getCode(), mc.getCodeValue(),
                     RedisCacheHelper.NOT_EXPIRE)

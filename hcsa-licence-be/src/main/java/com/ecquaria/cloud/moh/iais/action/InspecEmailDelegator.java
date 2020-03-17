@@ -44,7 +44,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -132,7 +131,7 @@ public class InspecEmailDelegator {
         if(appPreRecommentdationDto!=null){
             inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
         }
-        Map<String,Object> map=new HashMap<>();
+        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         map.put("APPLICANT_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicantName()));
         map.put("APPLICATION_NUMBER",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicationNumber()));
         map.put("HCI_CODE",StringUtil.viewHtml(inspectionEmailTemplateDto.getHciCode()));
@@ -225,12 +224,12 @@ public class InspecEmailDelegator {
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,MSG_CON));
         inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, IntranetUserConstant.INTRANET_REMARKS));
         if (inspectionEmailTemplateDto.getSubject().isEmpty()){
-            Map<String,String> errorMap = new HashMap<>();
+            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
             ParamUtil.setRequestAttr(request,DemoConstants.ISVALID, SystemParameterConstants.STATUS_ACTIVE);
         }
         if (inspectionEmailTemplateDto.getMessageContent().isEmpty()){
-            Map<String,String> errorMap = new HashMap<>();
+            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
             ParamUtil.setRequestAttr(request,DemoConstants.ISVALID,SystemParameterConstants.STATUS_DEACTIVATED);
         }

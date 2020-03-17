@@ -17,13 +17,13 @@ import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.client.ErrorMsgClient;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.entity.MessageCode;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.sql.SqlMapLoader;
-import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -73,7 +73,7 @@ public class AppInitializer implements ServletContextListener {
         SearchResult<MessageCode> sr = client.retrieveErrorMsgs(param).getEntity();
 
         if (sr.getRowCount() > 0) {
-            Map<String, String> map = new HashMap<>();
+            Map<String, String> map = IaisCommonUtils.genNewHashMap();
             for (MessageCode mc : sr.getRows()) {
                 map.put(mc.getCodeKey(), mc.getDescription());
             }

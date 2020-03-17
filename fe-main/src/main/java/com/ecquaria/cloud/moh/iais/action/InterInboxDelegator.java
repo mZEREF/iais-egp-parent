@@ -58,9 +58,9 @@ public class InterInboxDelegator {
 
     private InterInboxUserDto interInboxUserDto;
 
-    private static Map<String,Object> appSearchMap = new HashMap<>();
-    private static Map<String,Object> inboxSearchMap = new HashMap<>();
-    private static Map<String,Object> licSearchMap = new HashMap<>();
+    private static Map<String,Object> appSearchMap = IaisCommonUtils.genNewHashMap();
+    private static Map<String,Object> inboxSearchMap = IaisCommonUtils.genNewHashMap();
+    private static Map<String,Object> licSearchMap = IaisCommonUtils.genNewHashMap();
     private static String msgStatus[] = {
             MessageConstants.MESSAGE_STATUS_READ,
             MessageConstants.MESSAGE_STATUS_UNREAD,

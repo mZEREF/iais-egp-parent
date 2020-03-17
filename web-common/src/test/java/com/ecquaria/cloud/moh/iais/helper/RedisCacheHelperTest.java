@@ -14,6 +14,9 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,12 +33,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 import static org.junit.Assert.assertNotNull;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.powermock.api.mockito.PowerMockito.doNothing;
+import static org.powermock.api.mockito.PowerMockito.doReturn;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * RedisCacheHelperTest
@@ -101,7 +102,7 @@ public class RedisCacheHelperTest {
         doNothing().when(redisTemplate).delete(KEY);
         rch.delete(KEY);
         rch.delete("cname", "key");
-        Set<String> keys = new HashSet<>();
+        Set<String> keys = IaisCommonUtils.genNewHashSet();
         keys.add(KEY);
         doReturn(keys).when(redisTemplate).keys("cname:");
         rch.clear("cname");

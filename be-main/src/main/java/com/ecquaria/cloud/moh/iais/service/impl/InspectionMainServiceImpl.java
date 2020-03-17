@@ -37,7 +37,6 @@ import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -118,7 +117,7 @@ public class InspectionMainServiceImpl implements InspectionMainService {
         if(commPools == null || commPools.size() <= 0){
             return null;
         }
-        Set<String> applicationNoSet = new HashSet<>();
+        Set<String> applicationNoSet = IaisCommonUtils.genNewHashSet();
         for(TaskDto tDto:commPools){
             applicationNoSet.add(tDto.getRefNo());
         }

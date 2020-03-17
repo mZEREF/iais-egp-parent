@@ -1,14 +1,13 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * AdminValidator
@@ -19,7 +18,7 @@ import java.util.Map;
 public class UserValidator implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
         FeUserDto dto = (FeUserDto) ParamUtil.getRequestAttr(request, "user");
         if (dto != null) {
             String idNo = dto.getIdNo();

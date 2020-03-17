@@ -30,20 +30,18 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Shicheng
@@ -132,7 +130,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             }
         }
         if(!IaisCommonUtils.isEmpty(apptUserCalendarDtos)) {
-            Map<String, Date> inspectionDateMap = new HashMap<>();
+            Map<String, Date> inspectionDateMap = IaisCommonUtils.genNewHashMap();
             List<SelectOption> inspectionDate = IaisCommonUtils.genNewArrayList();
             for (AppPremisesInspecApptDto appPremisesInspecApptDto : apptFeConfirmDateDto.getAppPremisesInspecApptDtoList()) {
                 for(int i = 0; i < apptUserCalendarDtos.size(); i++){
@@ -209,9 +207,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         Map<String, List<ApptUserCalendarDto>> appInspDateMap = feEicGatewayClient.getUserCalendarByUserId(appointmentDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
 
-        Map<String, Date> inspectionNewDateMap = new HashMap<>();
+        Map<String, Date> inspectionNewDateMap = IaisCommonUtils.genNewHashMap();
         List<SelectOption> inspectionNewDate = IaisCommonUtils.genNewArrayList();
-        Map<String, String> refMap = new HashMap<>();
+        Map<String, String> refMap = IaisCommonUtils.genNewHashMap();
         int index = 0;
         if(appInspDateMap != null) {
             for(Map.Entry<String, List<ApptUserCalendarDto>> map : appInspDateMap.entrySet()) {

@@ -15,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.service.client.UenManagementClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +54,7 @@ public class UenManagementServiceImpl implements UenManagementService {
         //等ACRA api
         String templateId="AC65C90C-3564-EA11-BE7F-000C29F371DC";
         InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
-        Map<String,Object> map=new HashMap<>();
+        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         map.put("UEN Number",StringUtil.viewHtml(mohUenDto1.getUenNo()));
         map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
         String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);

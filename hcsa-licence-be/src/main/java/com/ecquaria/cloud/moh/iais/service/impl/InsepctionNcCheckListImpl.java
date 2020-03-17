@@ -39,7 +39,6 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.esotericsoftware.minlog.Log;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -179,7 +178,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         if (taskDto != null) {
             appPremCorrId = taskDto.getRefNo();
         }
-        Map<String, Object> appCklMap = new HashMap<>();
+        Map<String, Object> appCklMap = IaisCommonUtils.genNewHashMap();
         appCklMap.put("appPremId", appPremCorrId);
         appCklMap.put("configId", configId);
         AppPremisesPreInspectChklDto appPremisesPreInspectChklDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appPremCorrId,configId).getEntity();
@@ -196,7 +195,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     @Override
     public AppPremisesRecommendationDto getAppRecomDtoByAppCorrId(String appCorrId, String recomType) {
-        Map<String, Object> paramMap = new HashMap<>();
+        Map<String, Object> paramMap = IaisCommonUtils.genNewHashMap();
         paramMap.put("appCorrId", appCorrId);
         paramMap.put("recomType", recomType);
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appCorrId,recomType).getEntity();

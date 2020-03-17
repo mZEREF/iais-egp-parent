@@ -267,7 +267,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             for(String every:useLicenceIdFindHciNameAndAddress){
                 String hciName = every.substring(0, every.indexOf("/"));
                 String address = every.substring(every.indexOf("/") + 1);
-                Map<String ,Object> map=new HashMap<>();
+                Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
                 String format = simpleDateFormat.format(expiryDate);
                 map.put("Payment_Amount",total);
                 map.put("NAME_OF_HCI",hciName);

@@ -531,12 +531,12 @@ public class BackendInboxDelegator {
             ParamUtil.setRequestAttr(bpc.request, "supTaskSearchResult", null);
         }
         ParamUtil.setRequestAttr(bpc.request,"curRole",loginContext.getCurRoleId());
-        Map<String,String> appNoUrl = new HashMap<>();
+        Map<String,String> appNoUrl = IaisCommonUtils.genNewHashMap();
 
-        Map<String,TaskDto> taskMap = new HashMap<>();
+        Map<String,TaskDto> taskMap = IaisCommonUtils.genNewHashMap();
 
 
-            Map<String,String> taskList = new HashMap<>();
+            Map<String,String> taskList = IaisCommonUtils.genNewHashMap();
             if(commPools != null && commPools.size() >0){
                 for (TaskDto item:commPools
                 ) {

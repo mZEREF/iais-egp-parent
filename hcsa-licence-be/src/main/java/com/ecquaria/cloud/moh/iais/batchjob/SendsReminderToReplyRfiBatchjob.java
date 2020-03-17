@@ -20,7 +20,6 @@ import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -75,7 +74,7 @@ public class SendsReminderToReplyRfiBatchjob {
         InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
         String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto.getReqInfoId()).getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
-        Map<String,Object> map=new HashMap<>();
+        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         map.put("APPLICANT_NAME",StringUtil.viewHtml(licenseeDto.getName()));
         StringBuilder stringBuilder=new StringBuilder();
         stringBuilder.append("<p>   1. ").append("Information ").append(licPremisesReqForInfoDto.getOfficerRemarks().split("\\|")[0]).append("</p>");

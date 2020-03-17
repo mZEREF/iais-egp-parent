@@ -170,7 +170,7 @@ public class RequestForInformationDelegator {
         HttpServletRequest request=bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         String searchNo= ParamUtil.getString(request,"search_no");
-        Map<String,Object> filters=new HashMap<>();
+        Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
 
         if (!StringUtil.isEmpty(searchNo)) {
             filters.put("licence_no", searchNo);
@@ -231,7 +231,7 @@ public class RequestForInformationDelegator {
         HttpServletRequest request=bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         String searchNo= ParamUtil.getString(request,"search_no");
-        Map<String,Object> filters=new HashMap<>();
+        Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
 
         if (!StringUtil.isEmpty(searchNo)) {
             filters.put("appNo", searchNo);
@@ -331,7 +331,7 @@ public class RequestForInformationDelegator {
         String toDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
 
-        Map<String,Object> filters=new HashMap<>();
+        Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
 
         if(!StringUtil.isEmpty(applicationNo)){
             filters.put("appNo", applicationNo);
@@ -361,7 +361,7 @@ public class RequestForInformationDelegator {
                 List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
                 for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
                 ) {
-                    Map<String,Object> filter=new HashMap<>();
+                    Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
                     if(!StringUtil.isEmpty(rfiApplicationQueryDto.getId())){
                         filter.put("app_id", rfiApplicationQueryDto.getId());
                     }
@@ -467,7 +467,7 @@ public class RequestForInformationDelegator {
                 SystemAdminBaseConstants.DATE_FORMAT);
         String toDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
-        Map<String,Object> filters=new HashMap<>();
+        Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
 
         if(!StringUtil.isEmpty(licenceNo)){
             filters.put("licence_no", licenceNo);
@@ -692,7 +692,7 @@ public class RequestForInformationDelegator {
                 allocationDto = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
             }
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = new HashMap<>();
+            Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = IaisCommonUtils.genNewHashMap();
             for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
                 List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocation = IaisCommonUtils.genNewArrayList();
                 String hciName = "";
@@ -865,7 +865,7 @@ public class RequestForInformationDelegator {
         InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
         String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto1.getReqInfoId()).getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
-        Map<String,Object> map=new HashMap<>();
+        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         StringBuilder stringBuilder=new StringBuilder();
         stringBuilder.append("<p>   1. ").append("Information ").append(rfiTitle).append("</p>");
         map.put("APPLICANT_NAME",StringUtil.viewHtml(licenseeDto.getName()));

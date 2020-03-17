@@ -190,7 +190,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     @Override
     public Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> getSelfCheckListByCorrId(String refNo) {
-        Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> map = new HashMap<>();
+        Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> map = IaisCommonUtils.genNewHashMap();
         List<InspectionFillCheckListDto> chkDtoList = IaisCommonUtils.genNewArrayList();
         InspectionFillCheckListDto commonDto = new InspectionFillCheckListDto();
         List<String> ids = IaisCommonUtils.genNewArrayList();

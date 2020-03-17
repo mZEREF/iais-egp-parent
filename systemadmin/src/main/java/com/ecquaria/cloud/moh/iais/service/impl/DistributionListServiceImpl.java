@@ -43,7 +43,7 @@ public class DistributionListServiceImpl implements DistributionListService {
             userIdList.add(item.getCreateBy());
         }
         List<OrgUserDto> userList = organizationClient.retrieveOrgUserAccount(userIdList).getEntity();
-        Map<String , String > userNameList = new HashMap<>();
+        Map<String , String > userNameList = IaisCommonUtils.genNewHashMap();
         for (OrgUserDto item :userList
              ) {
             userNameList.put(item.getId(),item.getDisplayName());

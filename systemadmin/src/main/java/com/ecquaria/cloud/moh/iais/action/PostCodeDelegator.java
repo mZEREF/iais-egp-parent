@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.service.PostCodeService;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +37,7 @@ public class PostCodeDelegator {
     }
 
     private Map<String,String> initstreetMap() throws IOException {
-        Map<String,String> streetMap = new HashMap<>();
+        Map<String,String> streetMap = IaisCommonUtils.genNewHashMap();
         try(BufferedReader  br = new BufferedReader(new FileReader(streetsPath));){
             String line = null;
             String key = null;
@@ -58,7 +57,7 @@ public class PostCodeDelegator {
         return streetMap;
     }
     private Map<String,String> initbuildingMap() throws IOException {
-        Map<String,String> buildingMap = new HashMap<>();
+        Map<String,String> buildingMap = IaisCommonUtils.genNewHashMap();
         try (BufferedReader  br = new BufferedReader(new FileReader(buildingPath)); ){
             String line = null;
             String key = null;

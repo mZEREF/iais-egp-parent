@@ -20,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -163,7 +162,7 @@ public class FeUserManageDelegate {
 
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.FALSE);
         }else{
-            Map<String,String> successMap = new HashMap<>();
+            Map<String,String> successMap = IaisCommonUtils.genNewHashMap();
             successMap.put("save","suceess");
             orgUserManageService.editUserAccount(feUserDto);
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.TRUE);

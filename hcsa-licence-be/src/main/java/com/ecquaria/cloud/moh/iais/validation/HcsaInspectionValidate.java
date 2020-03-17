@@ -21,7 +21,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         InspectionShowDto showDto = (InspectionShowDto) ParamUtil.getSessionAttr(request,"inShowDto");
-        Map<String, String> errMap = new HashMap<>();
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         List<HcsaRiskInspectionMatrixDto> iDtoList = showDto.getInspectionDtoList();
         List<HcsaRiskInspectionMatrixDto> editList = IaisCommonUtils.genNewArrayList();
         for(HcsaRiskInspectionMatrixDto temp:iDtoList){

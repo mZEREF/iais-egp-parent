@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -11,15 +12,13 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * NotifyUnprocessedTaskBatchjob
@@ -47,7 +46,7 @@ public class NotifyUnprocessedTaskBatchjob {
         log.debug(StringUtil.changeForLog("The NotifyUnprocessedTaskBatchjob is  start..." ));
 
         log.debug(StringUtil.changeForLog("Unprocessed Task Notification to Officer..." ));
-        Map<String, Object> emailmap = new HashMap<>();
+        Map<String, Object> emailmap = IaisCommonUtils.genNewHashMap();
         //get officer groupleader admin to notify
         emailmap = taskService.getEmailNotifyList();
         //get email template
@@ -114,7 +113,7 @@ public class NotifyUnprocessedTaskBatchjob {
 
     private void sendEmail(TaskEmailDto item,String templateHtml) throws IOException, TemplateException{
         EmailDto email = new EmailDto();
-        Map<String,Object> map=new HashMap<>();
+        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         map.put("OFFICER_NAME",item.getName());
         map.put("NC_DETAILS","There is an unprocessed task.");
         map.put("MOH_NAME","MOH");

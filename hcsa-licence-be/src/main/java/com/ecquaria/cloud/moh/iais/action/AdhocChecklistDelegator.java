@@ -38,7 +38,6 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -186,7 +185,7 @@ public class AdhocChecklistDelegator {
         HttpServletRequest request = bpc.request;
 
         boolean hasSampleItem = false;
-        Set<String > hashSet = new HashSet<>();
+        Set<String > hashSet = IaisCommonUtils.genNewHashSet();
         AdhocCheckListConifgDto adhocConfigObj = getAdhocConfigObj(request);
         List<AdhocChecklistItemDto> allAdhocItem = adhocConfigObj.getAllAdhocItem();
         for (AdhocChecklistItemDto adhocItem : allAdhocItem){

@@ -294,7 +294,7 @@ public class BlackedOutDateDelegator {
         blackoutDateDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(blackoutDateDto, propertName);
-        Map<String, String> errorMap = new HashMap<>();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if(validationResult != null && validationResult.isHasErrors()) {
             errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
