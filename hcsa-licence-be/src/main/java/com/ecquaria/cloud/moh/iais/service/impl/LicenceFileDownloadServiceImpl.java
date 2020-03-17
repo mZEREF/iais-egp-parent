@@ -451,7 +451,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         String id = applicationListDto.getApplicationGroup().get(0).getId();
         eventBusHelper.submitAsyncRequest(applicationListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION,id,null);
-        List<ApplicationDto> list = this.listApplication();
 
         Boolean flag=true;
        /* try {

@@ -46,6 +46,12 @@ public interface FeEicGatewayClient {
     * @param:
     * @return:
     */
+    @PostMapping(value = "/v1/app-file-sync-trackings/",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> saveFileApplication(@RequestBody ProcessFileTrackDto processFileTrackDto,
+                                         @RequestHeader("date") String date,
+                                         @RequestHeader("authorization") String authorization,
+                                         @RequestHeader("date-Secondary") String dateSec,
+                                         @RequestHeader("authorization-Secondary") String authorizationSec);
     @PostMapping(value = "/v1/self-decl-bridge/",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<IaisApiResult<AppPremisesSelfDeclChklDto>> routeSelfDeclData(@RequestBody List<String> contentJsonList,
                                                                                      @RequestHeader("date") String date,

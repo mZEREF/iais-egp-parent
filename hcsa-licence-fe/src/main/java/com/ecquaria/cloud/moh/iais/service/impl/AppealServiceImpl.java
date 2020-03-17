@@ -452,8 +452,9 @@ public class AppealServiceImpl implements AppealService {
                 }
 
             }
+
             else if("MS007".equals(appealReason)){
-                String otherReason = appealPageDto.getOtherReason();
+                String otherReason = request.getParameter("othersReason");
                 if(StringUtil.isEmpty(otherReason)){
                     map.put("otherReason","UC_CHKLMD001_ERR001");
                 }
