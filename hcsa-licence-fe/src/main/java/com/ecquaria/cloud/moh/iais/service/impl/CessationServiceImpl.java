@@ -251,7 +251,7 @@ public class CessationServiceImpl implements CessationService {
         applicationGroupDto.setIsBundledFee(9966);
         applicationGroupDto.setIsCharitable(0);
         applicationGroupDto.setIsByGiro(0);
-        applicationGroupDto.setIsGrpLic(0);
+        applicationGroupDto.setGrpLic(false);
         applicationGroupDto.setDeclStmt("N");
         applicationGroupDto.setSubmitBy("C55C9E62-750B-EA11-BE7D-000C29F371DC");
         applicationGroupDto.setAppType(appType);

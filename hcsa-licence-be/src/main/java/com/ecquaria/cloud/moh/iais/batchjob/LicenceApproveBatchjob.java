@@ -113,12 +113,12 @@ public class LicenceApproveBatchjob {
                     // delete the reject applicaiton
                     List<ApplicationListDto> applicationListDtoList = applicationLicenceDto.getApplicationListDtoList();
                     deleteRejectApplication(applicationListDtoList);
-                    int isGrpLic = applicationGroupDto.getIsGrpLic();
+                    boolean isGrpLic = applicationGroupDto.isGrpLic();
                     log.debug(StringUtil.changeForLog("The application group no is -->;"+applicationGroupDto.getGroupNo()) );
                     log.debug(StringUtil.changeForLog("The isGrpLic is -->;"+isGrpLic));
                     GenerateResult generateResult =null;
                     try{
-                        if(AppConsts.YES.equals(String.valueOf(isGrpLic))){
+                        if(isGrpLic){
                             //generate the Group licence
                             generateResult = generateGroupLicence(applicationLicenceDto,hcsaServiceDtos);
                         }else{
@@ -1027,7 +1027,7 @@ public class LicenceApproveBatchjob {
                 licenceDto.setStartDate(startDate);
                 licenceDto.setExpiryDate(LicenceUtil.getExpiryDate(licenceDto.getStartDate(),yearLength));
                 //licenceDto.setEndDate(licenceDto.getExpiryDate());
-                licenceDto.setGrpLic(applicationGroupDto.getIsGrpLic() == 1);
+                licenceDto.setGrpLic(applicationGroupDto.isGrpLic());
                 licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
             }
 
