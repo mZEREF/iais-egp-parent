@@ -145,15 +145,15 @@ public class MassEmailDelegator {
      * @param bpc
      */
     public void search(BaseProcessClass bpc){
-        String descriptionSwitch = ParamUtil.getRequestString(bpc.request,"descriptionSwitch");
+        String distributionSwitch = ParamUtil.getRequestString(bpc.request,"distributionSwitch");
         String recipientsSwitch = ParamUtil.getRequestString(bpc.request,"recipientsSwitch");
         String service = ParamUtil.getString(bpc.request,"service");
         String serviceName = ParamUtil.getRequestString(bpc.request,"serviceName");
         searchParam.getParams().clear();
         searchParam.getFilters().clear();
         searchParam.setPageNo(1);
-        if(!StringUtil.isEmpty(descriptionSwitch)){
-            searchParam.addFilter("description", "%" + descriptionSwitch + "%",true);
+        if(!StringUtil.isEmpty(distributionSwitch)){
+            searchParam.addFilter("description", "%" + distributionSwitch + "%",true);
         }
         if(!StringUtil.isEmpty(recipientsSwitch)){
             searchParam.addFilter("recipients",  "%" +recipientsSwitch + "%",true);
@@ -167,7 +167,7 @@ public class MassEmailDelegator {
             serviceName = "Please select";
         }
         setServiceSelect(bpc);
-        ParamUtil.setRequestAttr(bpc.request,"descriptionSwitch",descriptionSwitch);
+        ParamUtil.setRequestAttr(bpc.request,"distributionSwitch",distributionSwitch);
         ParamUtil.setRequestAttr(bpc.request,"recipientsSwitch",recipientsSwitch);
         ParamUtil.setRequestAttr(bpc.request,"firstValue",service);
         ParamUtil.setRequestAttr(bpc.request,"firstOption",serviceName);

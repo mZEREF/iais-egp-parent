@@ -26,15 +26,15 @@
                     </h3>
                     <iais:section title="" id="supPoolList">
                         <iais:row>
-                            <iais:field value="Description Name"/>
+                            <iais:field value="Distribution Name"/>
                             <iais:value width="18">
-                                <input type="text" name="descriptionSwitch" id="descriptionSwitch" value="${descriptionSwitch}"/>
+                                <input type="text" name="distributionSwitch" id="distributionSwitch" value="${distributionSwitch}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="Recipients Role"/>
                             <iais:value width="18">
-                                <input type="text" name="recipientsSwitch" id="recipientsSwitch" value="${recipientsSwitch}"/>
+                                <input type="text" name="recipientsSwitch" id="recipientsSwitch" maxlength="500" value="${recipientsSwitch}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -73,10 +73,10 @@
                                 <th>Distribution Name</th>
                                 <th>Service</th>
                                 <th>Recipients Role</th>
-                                <th>Mode of Dellivery</th>
+                                <th>Mode of Delivery</th>
                                 <th>Created Date</th>
-                                <th>Created by</th>
-                                <th>Eidt</th>
+                                <th>Created By</th>
+                                <th>Edit</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -96,7 +96,8 @@
                                                     <p><input type="checkbox" name="checkboxlist" value="${item.id}"></p>
                                                 </td>
                                                 <td>
-                                                    <p><c:out value="${item.id}"/></p>
+                                                    <p><c:out
+                                                            value="${(status.index + 1) + (distributionSearchParam.pageNo - 1) * distributionSearchParam.pageSize}"/></p>
                                                 </td>
                                                 <td>
                                                     <p><c:out value="${item.disname}"/></p>
@@ -117,7 +118,7 @@
                                                     <p><c:out value="${item.createBy}"/></p>
                                                 </td>
                                                 <td>
-                                                    <p><a onclick="edit('${item.id}')">eidt</a></p>
+                                                    <p><a onclick="edit('${item.id}')">Edit</a></p>
                                                 </td>
                                             </tr>
                                         </c:forEach>
@@ -153,7 +154,7 @@ function search() {
     SOP.Crud.cfxSubmit("mainForm","search");
 }
 function clearSearch(){
-    $('input[name="descriptionSwitch"]').val("");
+    $('input[name="distributionSwitch"]').val("");
     $('input[name="recipientsSwitch"]').val("");
     $("#service option:first").prop("selected", 'selected');
 }

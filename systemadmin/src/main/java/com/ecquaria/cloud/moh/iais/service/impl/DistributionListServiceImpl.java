@@ -3,15 +3,21 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListDto;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import com.ecquaria.cloud.moh.iais.service.client.DistributionListClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author guyin
@@ -26,9 +32,31 @@ public class DistributionListServiceImpl implements DistributionListService {
 
     @Autowired
     private HcsaConfigClient hcsaConfigClient ;
+
+    @Autowired
+    private OrganizationClient organizationClient;
     @Override
     public SearchResult<DistributionListDto> distributionList(SearchParam searchParam) {
-        return distributionListClient.getDistributionList(searchParam).getEntity();
+        SearchResult<DistributionListDto> distributionListDtoSearchResult = distributionListClient.getDistributionList(searchParam).getEntity();
+        List<String> userIdList = new ArrayList<>();
+        for (DistributionListDto item:distributionListDtoSearchResult.getRows()
+             ) {
+            userIdList.add(item.getCreateBy());
+        }
+        List<OrgUserDto> userList = organizationClient.retrieveOrgUserAccount(userIdList).getEntity();
+        Map<String , String > userNameList = new HashMap<>();
+        for (OrgUserDto item :userList
+             ) {
+            userNameList.put(item.getId(),item.getDisplayName());
+        }
+        for (DistributionListDto item:distributionListDtoSearchResult.getRows()
+             ) {
+            String name = userNameList.get(item.getCreateBy());
+            item.setCreateBy(name);
+
+            item.setService(HcsaServiceCacheHelper.getServiceByCode(item.getService()).getSvcName());
+        }
+        return distributionListDtoSearchResult;
     }
     @Override
     public List<DistributionListDto> getDistributionList() {
