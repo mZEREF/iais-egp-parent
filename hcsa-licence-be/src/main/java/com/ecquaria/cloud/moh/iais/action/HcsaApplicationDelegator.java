@@ -51,6 +51,7 @@ import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloudfeign.FeignException;
@@ -486,7 +487,8 @@ public class HcsaApplicationDelegator {
 
         log.debug(StringUtil.changeForLog("the do support end ...."));
     }
-
+    @Autowired
+    private GenerateIdClient generateIdClient;
     /**
      * StartStep: broadcast
      *
@@ -558,8 +560,10 @@ public class HcsaApplicationDelegator {
             //save the broadcast
             broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null);
-            broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,null);
+            String submissionId = generateIdClient.getSeqId().getEntity();
+            log.info(StringUtil.changeForLog(submissionId));
+            broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null,submissionId);
+            broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,null,submissionId);
             //0062460 update FE  application status.
             applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
         }
@@ -805,8 +809,10 @@ public class HcsaApplicationDelegator {
         String evenRefNum = String.valueOf(System.currentTimeMillis());
         broadcastOrganizationDto.setEventRefNo(evenRefNum);
         broadcastApplicationDto.setEventRefNo(evenRefNum);
-        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process);
-        broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process);
+        String submissionId = generateIdClient.getSeqId().getEntity();
+        log.info(StringUtil.changeForLog(submissionId));
+        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,submissionId);
+        broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
@@ -859,8 +865,10 @@ public class HcsaApplicationDelegator {
         String evenRefNum = String.valueOf(System.currentTimeMillis());
         broadcastOrganizationDto.setEventRefNo(evenRefNum);
         broadcastApplicationDto.setEventRefNo(evenRefNum);
-        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process);
-        broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process);
+        String submissionId = generateIdClient.getSeqId().getEntity();
+        log.info(StringUtil.changeForLog(submissionId));
+        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,submissionId);
+        broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
 
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
