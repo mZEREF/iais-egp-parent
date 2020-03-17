@@ -43,7 +43,7 @@ public class AuditSystemListDelegator {
     AuditSystemListService auditSystemListService;
 
 
-    public static String SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME = "auditSystemPotentialDtoForSearch";
+    private String SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME = "auditSystemPotentialDtoForSearch";
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
