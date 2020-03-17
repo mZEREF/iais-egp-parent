@@ -46,10 +46,10 @@
                     <div id="edit-content">
                       <c:choose>
                         <c:when test="${'1' == canEdit}">
-                          <p class="text-right"><a id="edit"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
+                          <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                         </c:when>
                         <c:otherwise>
-                          <p class="text-right" style="color: gray"><i class="fa fa-pencil-square-o"></i>Edit</p>
+                          <p class="text-right" style="color: gray"><em class="fa fa-pencil-square-o"></em>Edit</p>
                         </c:otherwise>
                       </c:choose>
                     </div>
