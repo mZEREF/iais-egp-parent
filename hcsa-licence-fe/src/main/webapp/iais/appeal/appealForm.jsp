@@ -258,7 +258,9 @@ $('.selectedFile').change(function () {
 
   }
   $('#cancel').click(function () {
-    location.href="https://egp.sit.inter.iais.com/main-web/eservice/INTERNET/MohInternetInbox";
+
+      SOP.Crud.cfxSubmit("mainForm", "cancel","cancel","");
+
   });
 
 </script>

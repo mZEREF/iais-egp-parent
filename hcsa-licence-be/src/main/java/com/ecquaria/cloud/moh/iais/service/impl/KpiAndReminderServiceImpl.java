@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
@@ -20,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,10 +45,24 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
     @Autowired
     private OrganizationClient organizationClient;
     @Override
-    public void saveKpiAndReminder(HttpServletRequest request) {
+    public void saveKpiAndReminder(HttpServletRequest request , HttpServletResponse response) {
 
         String crud_action_value = request.getParameter("crud_action_value");
+        if("cancel".equals(crud_action_value)){
 
+            StringBuilder url = new StringBuilder();
+            url.append("https://").append(request.getServerName())
+                    .append("/main-web/eservice/INTRANET/MohBackendInbox");
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(),request);
+            try {
+                response.sendRedirect(tokenUrl);
+
+            } catch (IOException e) {
+               log.info(e.getMessage(),e);
+            }
+
+
+        }
 
         Map errorMap = doValidate(request);
             if(!errorMap.isEmpty()){
@@ -62,11 +79,6 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if("servceiConfig".equals(crud_action_value)){
-            request.setAttribute("crud_action_type","servcieConfig");
-            request.setAttribute("parameter",parameter);
-            return;
-        }
 
         hcsaConfigClient.saveKpiAndReminder(parameter);
         request.setAttribute("message","You have successfully created required KPI");
@@ -77,7 +89,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
     public void  getKpiAndReminder(HttpServletRequest request) {
         List<HcsaServiceDto> entity = hcsaConfigClient.getActiveServices().getEntity();
 
-        request.setAttribute("hcsaServiceDtos",entity);
+        request.getSession().setAttribute("hcsaServiceDtos",entity);
 
     }
 

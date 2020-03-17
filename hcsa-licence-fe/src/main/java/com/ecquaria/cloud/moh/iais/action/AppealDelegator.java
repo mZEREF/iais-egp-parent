@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -19,6 +20,7 @@ import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +71,14 @@ public class AppealDelegator {
 
         bpc.request.setAttribute("newApplicationNo",s);
         log.info("end**************submit************");
+    }
+
+    public void cancel(BaseProcessClass bpc) throws IOException {
+        log.info("start**************cancel************");
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        bpc.response.sendRedirect(tokenUrl);
     }
 
     public void start(BaseProcessClass bpc){

@@ -123,7 +123,6 @@
            <div class="col-xs-12 col-sm-10">
              <div class="text-right text-center-mobile">
                   <a class="btn btn-primary" href="#" id="createRole">Submit</a>
-                 <a class="btn btn-primary" href="#" id="serviceConfig">Save</a>
                   <a class="btn btn-primary" href="#" id="cancel">Cancel</a>
              </div>
            </div>
@@ -223,8 +222,8 @@ $(document).ready(function () {
 
 $('#cancel').click(function () {
 
-    location.href="https://egp.sit.intra.iais.com/egov/process/EGPCLOUD/Home";
-   /* SOP.Crud.cfxSubmit("mainForm", "cancel");*/
+
+    SOP.Crud.cfxSubmit("mainForm", "cancel","cancel","");
 });
 
 

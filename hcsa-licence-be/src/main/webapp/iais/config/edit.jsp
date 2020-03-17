@@ -9,6 +9,18 @@
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
+<style>
+  .mandatory{
+    color: #ff0000;
+  }
+  .view{
+    color: #2199E8;
+  }
+
+  .marg-1{
+    margin-top: 1%;
+  }
+</style>
 
 <div class="main-content">
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
@@ -66,7 +78,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="ServiceType">Service Type<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <select id="ServiceType" disabled="disabled" name="ServiceType">
+            <select id="ServiceType"  name="ServiceType">
 
               <option>Select one</option>
               <option <c:if test="${hcsaServiceDto.svcType=='SVTP001'}">selected="selected"</c:if> value="SVTP001">Base</option>
@@ -305,7 +317,7 @@
         </div>
       </div>
 
-     <%-- <iais:confirm msg="sda" callBack="config" popupOrder="confirm" title="ssss"/>--%>
+
 
       <div class="form-group">
         <div class="col-xs-12 col-md-8 marg-1">
@@ -539,7 +551,7 @@
         <div class="form-group">
           <label class="col-xs-12 col-md-8 control-label">Effective Start Date<span class="mandatory">*</span></label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
-            <input type="text" disabled value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
+            <input type="text"  value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
           </div>
           <div class="clear"></div></div>
       </div>
@@ -602,18 +614,9 @@
     <%@ include file="/include/validation.jsp" %>
   </form>
 </div>
-<style>
-  .mandatory{
-    color: #ff0000;
-  }
-  .view{
-    color: #2199E8;
-  }
 
-  .marg-1{
-    margin-top: 1%;
-  }
-</style>
+
+
 <script type="text/javascript">
 
 
@@ -668,12 +671,13 @@
     });
 
     function cancel() {
-        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohServiceConfig";
+        SOP.Crud.cfxSubmit("mainForm", "cancel","cancel","");
     }
 
     function save() {
         $('#ServiceType').removeAttr("disabled");
         $("input[name='StartDate']").removeAttr("disabled");
+
         SOP.Crud.cfxSubmit("mainForm","save","save","save");
     }
 

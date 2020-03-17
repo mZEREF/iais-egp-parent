@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Wenkang
@@ -10,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface KpiAndReminderService  {
 
-    void saveKpiAndReminder(HttpServletRequest request);
+    void saveKpiAndReminder(HttpServletRequest request, HttpServletResponse response);
 
     void  getKpiAndReminder(HttpServletRequest request);
     HcsaSvcKpiDto searchKpi(String service,String module);

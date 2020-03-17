@@ -79,13 +79,13 @@
     <JavaCode defClass="" executor="" methodName="step8_OnStepProcess_0" name="step8_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <InvokeStep defClass="" executor="" icon="" name="Step9" processname="" project="" version="" x="380" y="-190">
+  <InvokeStep defClass="" executor="" icon="" name="Step9" processname="MohBackendInbox" project="INTRANET" version="-1" x="380" y="-190">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
-  <InvokeStep defClass="" executor="" icon="" name="cancel" processname="" project="" version="" x="780" y="250">
+  <InvokeStep defClass="" executor="" icon="" name="cancel" processname="MohBackendInbox" project="INTRANET" version="-1" x="780" y="250">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
@@ -112,7 +112,7 @@
     <JavaCode defClass="" executor="" methodName="step2_OnStepProcess_0" name="step2_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <InvokeStep defClass="" executor="" icon="" name="Step4" processname="" project="" version="" x="790" y="100">
+  <InvokeStep defClass="" executor="" icon="" name="Step4" processname="MohBackendInbox" project="INTRANET" version="-1" x="800" y="50">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
@@ -124,13 +124,13 @@
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
-  <InvokeStep defClass="" executor="" icon="" name="Checklists" processname="" project="" version="" x="770" y="410">
+  <InvokeStep defClass="" executor="" icon="" name="Checklists" processname="MohChecklistConfig" project="INTRANET" version="-1" x="770" y="410">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
-  <InvokeStep defClass="" executor="" icon="" name="RiskScore" processname="" project="" version="" x="770" y="490">
+  <InvokeStep defClass="" executor="" icon="" name="RiskScore" processname="MohRiskScoreConfiguration" project="INTRANET" version="-1" x="770" y="490">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
@@ -293,7 +293,7 @@
    <position>{(930,240)(1151,366)(1350,620)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/Step4" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
-   <position>{(930,240)(810,120)}</position>
+   <position>{(930,240)(820,70)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Step2" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch6" style="oblique">
    <position>{(1480,450)(960,420)}</position>

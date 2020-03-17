@@ -52,10 +52,7 @@ public class KpiAndReminderDelegator {
 
     public void prepareData(BaseProcessClass bpc){
     log.info("-------------start prepareData  KpiAndReminderDelegator--------------");
-        String crud_action_type = (String)bpc.request.getAttribute("crud_action_type");
-        if("configKpi".equals(crud_action_type)){
-            bpc.request.getSession().setAttribute("configKpi","configKpi");
-        }
+
         List<HcsaSvcRoutingStageDto> entity = hcsaConfigClient.getAllHcsaSvcRoutingStage().getEntity();
         for(HcsaSvcRoutingStageDto every:entity){
             String stageCode = every.getStageCode();
@@ -98,7 +95,7 @@ public class KpiAndReminderDelegator {
     public void submit(BaseProcessClass bpc){
     log.info("------------ start  submit  KpiAndReminderDelegator ---------------------");
 
-        kpiAndReminderService.saveKpiAndReminder(bpc.request);
+        kpiAndReminderService.saveKpiAndReminder(bpc.request,bpc.response);
 
         log.info("-------------end submit KpiAndReminderDelegator---------------------------");
 

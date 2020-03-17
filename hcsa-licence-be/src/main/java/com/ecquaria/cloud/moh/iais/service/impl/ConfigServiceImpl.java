@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -38,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -105,7 +107,12 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    public void saveOrUpdate(HttpServletRequest request) {
+    public void saveOrUpdate(HttpServletRequest request, HttpServletResponse response) {
+        String crud_action_value = request.getParameter("crud_action_value");
+        if("cancel".equals(crud_action_value)){
+            sendURL(request,response);
+            return;
+        }
         Map<String, String> errorMap = new HashMap<>();
         HcsaServiceConfigDto hcsaServiceConfigDto = getDateOfHcsaService(request);
         doValidate(hcsaServiceConfigDto, errorMap,request);
@@ -173,9 +180,13 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    public void update(HttpServletRequest request) {
+    public void update(HttpServletRequest request,HttpServletResponse response) {
         Map<String, String> errorMap = new HashMap<>();
         String crud_action_value = request.getParameter("crud_action_value");
+        if("cancel".equals(crud_action_value)){
+            sendURL(request,response);
+            return;
+        }
         HcsaServiceConfigDto hcsaServiceConfigDto = getDateOfHcsaService(request);
         doValidate(hcsaServiceConfigDto, errorMap,request);
         if (!errorMap.isEmpty()) {
@@ -1431,5 +1442,18 @@ public class ConfigServiceImpl implements ConfigService {
         emailDto.setContent(templateMessageByContent);
         emailDto.setSubject("The Effective Start/End Date of the following HCSA Service Template: "+serviceName+"  has been amended");
         emailDto.setSender("MOH");
+    }
+
+    private void sendURL(HttpServletRequest request,HttpServletResponse response){
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(request.getServerName())
+                .append("/main-web/eservice/INTRANET/MohBackendInbox");
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(),request);
+        try {
+            response.sendRedirect(tokenUrl);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

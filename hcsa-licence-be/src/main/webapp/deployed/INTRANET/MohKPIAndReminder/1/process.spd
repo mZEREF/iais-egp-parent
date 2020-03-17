@@ -23,7 +23,7 @@
     <JavaCode defClass="" executor="" methodName="step3_OnStepProcess_0" name="step3_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <InvokeStep defClass="" executor="" icon="" name="Step4" processname="MohBackendInbox" project="" version="-1" x="820" y="280">
+  <InvokeStep defClass="" executor="" icon="" name="Step4" processname="MohBackendInbox" project="" version="-1" x="1070" y="220">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
@@ -42,7 +42,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page2" stageIndicator="" x="890" y="70">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page2" stageIndicator="" x="890" y="50">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -64,10 +64,10 @@
    <position>{(610,100)(730,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Page2" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(730,120)(910,90)}</position>
+   <position>{(730,120)(910,70)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/Step4" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(730,120)(840,300)}</position>
+   <position>{(730,120)(1090,240)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Step5" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(730,120)(680,310)}</position>

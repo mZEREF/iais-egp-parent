@@ -9,7 +9,18 @@
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
+<style>
+  .mandatory{
+    color: #ff0000;
+  }
+  .view{
+    color: #2199E8;
+  }
 
+  .marg-1{
+    margin-top: 1%;
+  }
+</style>
 <div class="main-content">
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -619,23 +630,13 @@
     <%@ include file="/include/validation.jsp" %>
   </form>
 </div>
-<style>
-  .mandatory{
-    color: #ff0000;
-  }
-  .view{
-    color: #2199E8;
-  }
 
-  .marg-1{
-    margin-top: 1%;
-  }
-</style>
+<iais:confirm msg="sda" callBack="config" popupOrder="confirm" title="ssss"/>
 <script type="text/javascript">
 
     function cancel() {
 
-       location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohServiceConfig";
+        SOP.Crud.cfxSubmit("mainForm","cancel","cancel","");
     }
 
     function kpi() {

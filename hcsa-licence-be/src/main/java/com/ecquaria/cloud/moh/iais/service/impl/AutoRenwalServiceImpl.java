@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2019/12/26 10:08
  */
 @Service
+@Slf4j
 public class AutoRenwalServiceImpl implements AutoRenwalService {
 
     @Autowired
@@ -78,7 +80,9 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                     try {
                         isAuto(v.get(i),request);
                     } catch (Exception e) {
-                        e.printStackTrace();
+
+                     log.info(e.getMessage(),e);
+
                     }
 
                 }else {
@@ -88,9 +92,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                         isNoAuto(v.get(i),request);
 
                     } catch (Exception e) {
-
-                        e.printStackTrace();
-
+                        log.error(e.getMessage(),e+"have error ");
                     }
 
                 }

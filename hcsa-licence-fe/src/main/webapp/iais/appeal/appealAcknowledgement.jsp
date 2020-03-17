@@ -54,7 +54,11 @@
 </div>
 <script>
 
+    $('#cancel').click(function () {
 
+        SOP.Crud.cfxSubmit("mainForm", "cancel","cancel","");
+
+    });
 
 </script>
 

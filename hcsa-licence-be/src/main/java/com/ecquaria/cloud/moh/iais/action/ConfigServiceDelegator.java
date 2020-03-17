@@ -57,7 +57,7 @@ public class ConfigServiceDelegator {
     public void saveOrUpdate(BaseProcessClass bpc){
         log.info("*********saveOrUpdate  start***********");
 
-        configService.saveOrUpdate(bpc.request);
+        configService.saveOrUpdate(bpc.request,bpc.response);
     }
     public void saveDate(BaseProcessClass bpc){
         log.info("*********saveDate  start***********");
@@ -118,7 +118,7 @@ public class ConfigServiceDelegator {
     public void update(BaseProcessClass bpc){
 
         log.info("*********update  start***********");
-        configService.update(bpc.request);
+        configService.update(bpc.request,bpc.response);
 
     }
 }

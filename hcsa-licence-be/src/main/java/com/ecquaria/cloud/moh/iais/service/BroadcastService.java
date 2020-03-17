@@ -12,8 +12,8 @@ import sop.webflow.rt.api.Process;
  */
 
 public interface BroadcastService {
-    public BroadcastOrganizationDto svaeBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto,Process process);
-    public BroadcastApplicationDto svaeBroadcastApplicationDto(BroadcastApplicationDto broadcastApplicationDto,Process process);
+    public BroadcastOrganizationDto svaeBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto,Process process,String submissionId);
+    public BroadcastApplicationDto svaeBroadcastApplicationDto(BroadcastApplicationDto broadcastApplicationDto,Process process,String submissionId);
     public BroadcastOrganizationDto getBroadcastOrganizationDto(String groupName, String groupDomain);
 
 }

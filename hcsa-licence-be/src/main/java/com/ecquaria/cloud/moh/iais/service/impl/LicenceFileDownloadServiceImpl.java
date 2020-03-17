@@ -1,14 +1,16 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 
-import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
@@ -36,15 +38,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
-import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import java.io.BufferedInputStream;
@@ -61,12 +62,10 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
@@ -115,6 +114,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private ApplicationService applicationService;
     @Autowired
     private OrganizationClient organizationClient;
+    @Autowired
+    private EventBusHelper eventBusHelper;
+    @Autowired
+    private GenerateIdClient generateIdClient;
     @Override
     public boolean decompression() throws Exception{
         log.info("-------------decompression start ---------");
@@ -173,11 +176,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         List<ApplicationDto> listApplicationDto =new ArrayList();
                         List<ApplicationDto> requestForInfList=new ArrayList();
                         //need event bus
+                        String submissionId = generateIdClient.getSeqId().getEntity();
+                        this.download(processFileTrackDto,listApplicationDto, requestForInfList,name,refId,submissionId);
+                        sendTask(listApplicationDto,requestForInfList,submissionId);
 
-                        this.download(processFileTrackDto,listApplicationDto, requestForInfList,name,refId);
-                        sendTask(listApplicationDto,requestForInfList);
-
-                        moveFile(fil);
+                      /*  moveFile(fil);*/
                         //save success
                     }catch (Exception e){
                         //save bad
@@ -249,7 +252,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     public Boolean  download( ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,String fileName
-    ,String groupPath)  throws Exception {
+    ,String groupPath,String submissionId)  throws Exception {
 
         Boolean flag=false;
 
@@ -274,15 +277,15 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                                 count= fileInputStream.read(size);
                             }
 
-                            Boolean aBoolean = fileToDto(by.toString(), listApplicationDto, requestForInfList,processFileTrackDto);
+                            Boolean aBoolean = fileToDto(by.toString(), listApplicationDto, requestForInfList,processFileTrackDto,submissionId);
 
                            flag=aBoolean;
                             if(aBoolean){
                                 if(processFileTrackDto!=null){
 
-                                    changeStatus(processFileTrackDto);
+                                    changeStatus(processFileTrackDto,submissionId);
 
-                                    saveFileRepo( fileName,groupPath);
+                                    saveFileRepo( fileName,groupPath,submissionId);
                                 }
                             }
                         }catch (Exception e){
@@ -302,12 +305,15 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     /*
     * to update fe data
     * */
-    private void changeStatus( ProcessFileTrackDto processFileTrackDto){
+    private void changeStatus( ProcessFileTrackDto processFileTrackDto,String submissionId){
         processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         AuditTrailDto batchJobDto = AuditTrailHelper.getBatchJobDto("INTRANET");
         processFileTrackDto.setAuditTrailDto(batchJobDto);
         processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_COMPLETE);
-        systemClient.updateProcessFileTrack(processFileTrackDto);
+
+        eventBusHelper.submitAsyncRequest(processFileTrackDto,submissionId,EventBusConsts.SERVICE_NAME_APPSUBMIT
+        ,EventBusConsts.OPERATION_CHANGE_STATUS_FILE_TRACK,processFileTrackDto.getRefId(),null);
+       /* systemClient.updateProcessFileTrack(processFileTrackDto);*/
 
     }
 
@@ -381,7 +387,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
 
 
-    private Boolean fileToDto(String str,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,ProcessFileTrackDto processFileTrackDto)
+    private Boolean fileToDto(String str,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,ProcessFileTrackDto processFileTrackDto,
+                              String submissionId)
             throws Exception {
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
@@ -438,16 +445,25 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             every.setAuditTrailDto(intranet);
         }
         applicationListDto.setAuditTrailDto(intranet);
-        Boolean flag=false;
-        try {
-             flag=applicationClient.getDownloadFile(applicationListDto).getStatusCode() == 200;
+
+        String id = applicationListDto.getApplicationGroup().get(0).getId();
+        eventBusHelper.submitAsyncRequest(applicationListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION,id,null);
+        List<ApplicationDto> list = this.listApplication();
+        this. requestForInfList(requestForInfList);
+
+        listApplicationDto.addAll(list);
+        Boolean flag=true;
+       /* try {
+
+            flag=applicationClient.getDownloadFile(applicationListDto).getStatusCode() == 200;
             if(flag){
                 log.info("-----------getDownloadFile-------");
                 List<ApplicationDto> list = this.listApplication();
                 this. requestForInfList(requestForInfList);
 
                 listApplicationDto.addAll(list);
-                
+
             }
 
         }catch (Exception e){
@@ -458,7 +474,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             processFileTrackDto.setStatus("PFT004");
             systemClient.updateProcessFileTrack(processFileTrackDto);
             throw new Exception();
-        }
+        }*/
 
         return flag;
 
@@ -469,12 +485,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     /*
     *
     * save file to fileRepro*/
-    private void saveFileRepo(String fileNames,String groupPath){
+    private void saveFileRepo(String fileNames,String groupPath,String submissionId){
         boolean aBoolean=false;
         File file =new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileNames+File.separator+groupPath+File.separator+"folder"+File.separator+"files");
         if(!file.exists()){
             file.mkdirs();
         }
+        List<FileRepoDto> fileRepoDtos = new ArrayList<>();
         if(file.isDirectory()){
             File[] files = file.listFiles();
             for(File f:files){
@@ -490,9 +507,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             fileItem = new DiskFileItem("selectedFile", Files.probeContentType(f.toPath()),
                                     false, fileName.toString(), (int) f.length(), f.getParentFile());
                         } catch (IOException e) {
-                            e.printStackTrace();
+                          log.error(e.getMessage(),e);
                         }
-                        try ( InputStream input = new FileInputStream(f)){
+                      /*  try ( InputStream input = new FileInputStream(f)){
                             if(fileItem!=null){
                                 OutputStream os = fileItem.getOutputStream();
                                 IOUtils.copy(input, os);
@@ -500,16 +517,32 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         } catch (IOException ex) {
                            log.error(ex.getMessage(),ex);
                         }
-                        MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+                        MultipartFile multipartFile = new CommonsMultipartFile(fileItem);*/
 
                         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
                         FileRepoDto fileRepoDto = new FileRepoDto();
+
+                        fileRepoDto.setId(fileName.toString());
+                        fileRepoDto.setAuditTrailDto(intranet);
+                        fileRepoDto.setFileName(f.getName());
+                        fileRepoDto.setRelativePath(AppServicesConsts.COMPRESS+File.separator+fileNames+
+                                File.separator+groupPath+File.separator+"folder"+File.separator+"files");
+                        fileRepoDtos.add(fileRepoDto);
+                        FileRepoEventDto eventDto = new FileRepoEventDto();
+                        eventDto.setFileRepoList(fileRepoDtos);
+                        eventDto.setEventRefNo(groupPath);
+                        eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
+                                EventBusConsts.OPERATION_BE_REC_DATA_COPY, groupPath, null);
+
+/*
+
                         fileRepoDto.setId(split[0]);
                         fileRepoDto.setAuditTrailDto(intranet);
                         fileRepoDto.setFileName(fileName.toString());
                         fileRepoDto.setRelativePath(sharedPath+File.separator+AppServicesConsts.COMPRESS
                                 +File.separator+fileNames+File.separator+AppServicesConsts.FILE_NAME+File.separator+AppServicesConsts.FILES);
                         aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
+*/
 
                         if(aBoolean){
                          /*   removeFilePath(f);*/
@@ -599,7 +632,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
 
 
-    private void  sendTask(List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList) throws  Exception{
+    private void  sendTask(List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,String submissionId) throws  Exception{
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
 
         TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(listApplicationDto, HcsaConsts.ROUTING_STAGE_ASO, RoleConsts.USER_ROLE_ASO,intranet);
@@ -637,8 +670,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }
             broadcastOrganizationDto.setOneSubmitTaskList(onSubmitTaskList);
             broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
-            broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null);
-            broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,null);
+            broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null,submissionId);
+            broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,null,submissionId);
 
         }
 

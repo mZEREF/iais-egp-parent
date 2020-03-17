@@ -101,7 +101,10 @@ public class UploadFileServiceImpl implements UploadFileService {
         File file = MiscUtil.generateFile(sharedPath+ AppServicesConsts.FILE_NAME+File.separator+groupId, s+AppServicesConsts.FILE_FORMAT);
         try (FileOutputStream fileOutputStream  = new FileOutputStream(file);) {
              if(!file.exists()){
-                file.createNewFile();
+                 boolean newFile = file.createNewFile();
+                 if(newFile){
+                     log.info("***newFile createNewFile***");
+                 }
              }
             fileOutputStream.write(str.getBytes());
         } catch (Exception e) {
@@ -239,8 +242,10 @@ public class UploadFileServiceImpl implements UploadFileService {
                    byte[] bytes = by.toByteArray();
                    String s = FileUtil.genMd5FileChecksum(bytes);
                    File curFile = MiscUtil.generateFile(sharedPath+AppServicesConsts.BACKUPS, s + ".zip");
-                   file.renameTo(curFile);
-                   log.info("----------- new zip file name is"+sharedPath+AppServicesConsts.BACKUPS+File.separator+s+".zip");
+                   boolean b = file.renameTo(curFile);
+                   if(b){
+                       log.info("----------- new zip file name is"+sharedPath+AppServicesConsts.BACKUPS+File.separator+s+".zip");
+                   }
                    String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,AppServicesConsts.BACKUPS + File.separator+s+AppServicesConsts.ZIP_NAME,groupId);
                    if(!s1.equals("SUCCESS")){
                        MiscUtil.deleteFile(curFile);
