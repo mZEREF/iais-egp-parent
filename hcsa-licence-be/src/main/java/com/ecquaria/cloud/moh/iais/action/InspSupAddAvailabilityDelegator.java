@@ -214,7 +214,7 @@ public class InspSupAddAvailabilityDelegator {
         try {
             date1 = sdf.parse(stringDate);
         } catch (ParseException e) {
-            e.printStackTrace();
+            log.debug(StringUtil.changeForLog("date error ...."), e);
         }
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
         String date2 = sdf2.format(date1);
@@ -222,7 +222,7 @@ public class InspSupAddAvailabilityDelegator {
         try {
             date3 = sdf2.parse(date2);
         } catch (ParseException e) {
-            e.printStackTrace();
+            log.debug(StringUtil.changeForLog("date error ...."), e);
         }
         return date3;
     }
