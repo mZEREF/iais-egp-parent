@@ -221,7 +221,7 @@
               <div class="tab-pane" id="tabProcessing" role="tabpanel">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                   <h3>
-                    <span>Choosing of Appointment Date</span>
+                    <span>Appointment Scheduling (Inspection)</span>
                   </h3>
                   <div class="panel panel-default">
                     <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
