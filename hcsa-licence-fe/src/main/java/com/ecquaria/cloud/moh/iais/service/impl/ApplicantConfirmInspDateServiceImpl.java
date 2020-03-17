@@ -157,7 +157,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
+        //get selected date
         String checkDate = apptFeConfirmDateDto.getCheckDate();
+        //Exclude a selected date
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = new ArrayList<>();
         for(AppPremisesInspecApptDto apptDto : apptFeConfirmDateDto.getAppPremisesInspecApptDtoList()){
             if(!(apptDto.getId().equals(checkDate))){
@@ -217,11 +219,12 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 ApptUserCalendarDto apptUserCalendarDto = apptUserCalendarDtos.get(0);
                 Date inspDate = apptUserCalendarDto.getTimeSlot().get(0);
                 String dateStr = apptDateToStringShow(inspDate);
+                //key is inspectionNewDateMap.checkNewDate
                 inspectionNewDateMap.put(index + "", inspDate);
                 refMap.put(index + "", apptUserCalendarDto.getApptRefNo());
                 SelectOption so = new SelectOption(index + "", dateStr);
-                index++;
                 inspectionNewDate.add(so);
+                index++;
             }
             apptFeConfirmDateDto.setInspectionNewDate(inspectionNewDate);
             apptFeConfirmDateDto.setInspectionNewDateMap(inspectionNewDateMap);
@@ -248,12 +251,15 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
-        Map<String, Date> newDateMap = apptFeConfirmDateDto.getInspectionNewDateMap();
+        //get selected key
         String key = apptFeConfirmDateDto.getCheckNewDate();
+        //get selected date
+        Map<String, Date> newDateMap = apptFeConfirmDateDto.getInspectionNewDateMap();
         Date checkDate = newDateMap.get(key);
+        apptFeConfirmDateDto.setSaveDate(checkDate);
+        //get selected refNo
         Map<String, String> refNoMap = apptFeConfirmDateDto.getRefNoMap();
         String refNo = refNoMap.get(key);
-        apptFeConfirmDateDto.setSaveDate(checkDate);
         apptFeConfirmDateDto.setApptRefNo(refNo);
 
         setApptUpdateList(apptFeConfirmDateDto, apptInspectionDateDto);
@@ -321,22 +327,24 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     private void setApptCreateList(ApptFeConfirmDateDto apptFeConfirmDateDto, ApptInspectionDateDto apptInspectionDateDto, String processDo) {
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = new ArrayList<>();
-        AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
-        appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appPremisesInspecApptDto.setId(null);
-        if(InspectionConstants.SWITCH_ACTION_REJECT.equals(processDo)) {
-            appPremisesInspecApptDto.setSpecificInspDate(apptFeConfirmDateDto.getSaveDate());
-            appPremisesInspecApptDto.setApptRefNo(null);
-        } else if(StringUtil.isEmpty(processDo)) {
-            appPremisesInspecApptDto.setSpecificInspDate(null);
-            appPremisesInspecApptDto.setApptRefNo(apptFeConfirmDateDto.getApptRefNo());
+        for(String appPremCorrId : apptInspectionDateDto.getRefNo()) {
+            AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
+            appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            appPremisesInspecApptDto.setId(null);
+            if (InspectionConstants.SWITCH_ACTION_REJECT.equals(processDo)) {
+                appPremisesInspecApptDto.setSpecificInspDate(apptFeConfirmDateDto.getSaveDate());
+                appPremisesInspecApptDto.setApptRefNo(null);
+            } else if (StringUtil.isEmpty(processDo)) {
+                appPremisesInspecApptDto.setSpecificInspDate(null);
+                appPremisesInspecApptDto.setApptRefNo(apptFeConfirmDateDto.getApptRefNo());
+            }
+            appPremisesInspecApptDto.setAppCorrId(appPremCorrId);
+            appPremisesInspecApptDto.setStartDate(apptFeConfirmDateDto.getAppPremisesInspecApptDtoList().get(0).getStartDate());
+            appPremisesInspecApptDto.setEndDate(apptFeConfirmDateDto.getAppPremisesInspecApptDtoList().get(0).getEndDate());
+            appPremisesInspecApptDto.setReason(apptFeConfirmDateDto.getReason());
+            appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
         }
-        appPremisesInspecApptDto.setAppCorrId(apptFeConfirmDateDto.getAppPremCorrId());
-        appPremisesInspecApptDto.setStartDate(apptFeConfirmDateDto.getAppPremisesInspecApptDtoList().get(0).getStartDate());
-        appPremisesInspecApptDto.setEndDate(apptFeConfirmDateDto.getAppPremisesInspecApptDtoList().get(0).getEndDate());
-        appPremisesInspecApptDto.setReason(apptFeConfirmDateDto.getReason());
-        appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
         appPremisesInspecApptDtoList = inspectionFeClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList).getEntity();
 
         for(AppPremisesInspecApptDto apptDto : appPremisesInspecApptDtoList){
