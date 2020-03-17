@@ -40,7 +40,7 @@
 
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->
-                                    <div class="panel-heading"><b>Submission Details</b></div>
+                                    <div class="panel-heading"><strong>Submission Details</strong></div>
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="table-gp">
@@ -80,7 +80,7 @@
 
                                 <div>&nbsp</div>
                                 <div class="panel panel-default">
-                                    <div class="panel-heading"><b>Applicant Details</b></div>
+                                    <div class="panel-heading"><strong>Applicant Details</strong></div>
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="table-gp">
@@ -117,7 +117,7 @@
                             <div class="tab-pane" id="tabKeyRoles" role="tabpanel">
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->
-                                    <div class="panel-heading"><b>Key Roles</b></div>
+                                    <div class="panel-heading"><strong>Key Roles</strong></div>
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="table-gp">
@@ -151,7 +151,7 @@
                             <div class="tab-pane" id="tabServiceRelated" role="tabpanel">
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->
-                                    <div class="panel-heading"><b>Service Related</b></div>
+                                    <div class="panel-heading"><strong>Service Related</strong></div>
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="table-gp">
@@ -170,7 +170,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="panel-heading"><b>Allocation</b></div>
+                                    <div class="panel-heading"><strong>Allocation</strong></div>
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <table class="table">

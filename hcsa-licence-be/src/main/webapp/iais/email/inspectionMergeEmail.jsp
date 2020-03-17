@@ -232,7 +232,7 @@
                                     <tr height="1">
                                         <td class="col-xs-2" >
                                             <p >
-                                                Processing Decision:<b style="color:#ff0000;"> *</b>
+                                                Processing Decision:<strong style="color:#ff0000;"> *</strong>
                                             </p>
                                         </td>
                                         <td>
@@ -260,7 +260,7 @@
                                     <tr height="1" style="display: none" id="selectReviseNc">
                                         <td class="col-xs-2" >
                                             <p >
-                                                Need Revise:<b style="color:#ff0000;"> *</b>
+                                                Need Revise:<strong style="color:#ff0000;"> *</strong>
                                             </p>
                                         </td>
                                         <td>

@@ -810,17 +810,19 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setUnitNo(rfiApplicationQueryDto.getUnitNo());
         reqForInfoSearchListDto.setStreetName(rfiApplicationQueryDto.getStreetName());
         reqForInfoSearchListDto.setFloorNo(rfiApplicationQueryDto.getFloorNo());
+        reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
         try{
-            reqForInfoSearchListDto.setPastComplianceHistory("Full");
+            reqForInfoSearchListDto.setLastComplianceHistory("Full");
             List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = insepctionNcCheckListService.getNcItemDtoByAppCorrId(rfiApplicationQueryDto.getAppCorrId());
             for (AppPremisesPreInspectionNcItemDto nc:appPremisesPreInspectionNcItemDtos
             ) {
                 if(nc.getIsRecitfied()==0){
-                    reqForInfoSearchListDto.setPastComplianceHistory("Partial");
+                    reqForInfoSearchListDto.setLastComplianceHistory("Partial");
                 }
             }
         }catch (Exception e){
             reqForInfoSearchListDto.setPastComplianceHistory("-");
+            reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
         }
         //String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getRiskLevel()}).get(0).getText();
         reqForInfoSearchListDto.setCurrentRiskTagging(rfiApplicationQueryDto.getRiskLevel());

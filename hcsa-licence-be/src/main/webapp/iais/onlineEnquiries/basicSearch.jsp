@@ -16,7 +16,7 @@
     <input type="hidden" name="crud_action_additional" value=""/>
     <iais:body >
         <div class="container">
-            <div class="col-xs-14">
+            <div class="col-xs-15">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <br><br><br><br><br><br>
                     <h2>Basic Search Criteria</h2>
@@ -82,7 +82,7 @@
             </div>
         </div>
         <div class="container">
-            <div class="col-xs-14">
+            <div class="col-xs-15">
                 <div class="components">
                     <h3>
                         <span>Search Results</span>
@@ -103,7 +103,8 @@
                                 <iais:sortableHeader needSort="false"  field="SERVICE_NAME" value="Service Name"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="Licence_Period" value="Licence Period"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="Licence_Status" value="Licence Status"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="past_compliance_history" value="Past Compliance History"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="2nd_last_compliance_history" value="2nd Last Compliance History"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="last_compliance_history" value="Last Compliance History"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="current_risk_tagging" value="Current Risk Tagging"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
                             </tr>
@@ -112,7 +113,7 @@
                             <c:choose>
                                 <c:when test="${empty SearchResult.rows}">
                                     <tr>
-                                        <td colspan="14">
+                                        <td colspan="15">
                                             <iais:message key="ACK018" escape="true"></iais:message>
                                         </td>
                                     </tr>
@@ -134,7 +135,8 @@
                                             <td><iais:service value="${pool.serviceName}"></iais:service></td>
                                             <td><fmt:formatDate value="${pool.startDate}" pattern="dd/MM/yyyy" />-<fmt:formatDate value="${pool.expiryDate}" pattern="dd/MM/yyyy" /></td>
                                             <td><c:out value="${pool.licenceStatus}"/></td>
-                                            <td><c:out value="${pool.pastComplianceHistory}"/></td>
+                                            <td><c:out value="${pool.twoLastComplianceHistory}"/></td>
+                                            <td><c:out value="${pool.lastComplianceHistory}"/></td>
                                             <td><c:out value="${pool.currentRiskTagging}"/></td>
                                             <td>
                                                 <c:if test="${pool.isCessation==1}">
@@ -184,6 +186,7 @@
 
     function doClear(){
         $('input[name="search_no"]').val("");
+        $('input[type="checkbox"]').prop("checked", false);
     }
 
     function doAdvancedSearch(){
