@@ -45,7 +45,7 @@
         <tr class="premTr">
           <td>
             <a  class="premAddr"><c:out value="${prem.address}"/></a>
-            <label ><i class="fa fa-pencil-square-o"></i></label>
+            <label ><em class="fa fa-pencil-square-o"></em></label>
             <input type="hidden" class="statusIndex" name="statusIndex" value="${status.index}" />
             <input type="hidden" class="licId" name="licId${status.index}" value="<iais:mask name="licId${status.index}" value="${prem.licenceId}" />" />
             <input type="hidden" class="premisesId" name="premisesId${status.index}" value="<iais:mask name="premisesId${status.index}" value="${prem.premisesId}"/>" />
