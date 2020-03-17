@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicat
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
@@ -396,6 +397,14 @@ public class ApplicationClientFallback implements ApplicationClient{
 
     @Override
     public FeignResponseEntity<Map<String, String>> getServiceIdsByCorrIdsFromPremises(List<String> appPremCorrIds) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<ProcessFileTrackDto> isFileExistence(Map<String, String> map) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

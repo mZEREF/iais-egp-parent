@@ -42,8 +42,8 @@
           <c:if test="${type=='application'}"><option value="MS003" <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option></c:if>
           <c:if test="${type=='application'}"><option value="MS008" <c:if test="${appPremiseMiscDto.reason=='MS008'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option></c:if>
           <c:if test="${type=='licence'}"> <option value="MS004" <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option></c:if>
-            <%-- <option value="MS005" <c:if test="${appPremiseMiscDto.reason=='MS005'}">selected="selected"</c:if>>Appeal against suspension</option>
-             <option value="MS006" <c:if test="${appPremiseMiscDto.reason=='MS006'}">selected="selected"</c:if>>Appeal against revocation</option>--%>
+             <option value="MS007" <c:if test="${appPremiseMiscDto.reason=='MS007'}">selected="selected"</c:if>>Others</option>
+             <%--<option value="MS006" <c:if test="${appPremiseMiscDto.reason=='MS006'}">selected="selected"</c:if>>Appeal against revocation</option>--%>
           </select>
 
           <div> <span  class="error-msg" name="iaisErrorMsg" id="error_reason"></span></div>
@@ -54,6 +54,12 @@
 
           </div>
 
+          <div class="col-xs-12 col-md-10" id="othersReason" style="display: none" >
+            <label style="font-size: 20px;margin-top: 1%">Others reason</label>
+            <input type="text" maxlength="100"   name="othersReason" value="${appPremiseMiscDto.otherReason}" >
+
+          </div>
+          <span class="error-msg" name="iaisErrorMsg" id="error_otherReason"></span>
           <div class="form-check-gp" id="selectHciNameAppeal" style="display: none" class="col-xs-12 col-md-6">
             <label style="font-size: 20px">Select HCI Name To Appeal</label>
             <c:forEach items="${hciNames}" var="hciName" >
@@ -166,6 +172,11 @@
       }else {
           $('#licenceYear').attr("style","display: none");
       }
+      if("MS007"==reason){
+          $('#othersReason').attr("style","display: block");
+      }else {
+          $('#othersReason').attr("style","display: none");
+      }
       if(  $("input[name='selectHciName']").prop("checked")){
           $('#proposedHciName').attr("style","display: block");
       }else {
@@ -218,6 +229,11 @@ $('#reasonSelect').change(function () {
       $('#licenceYear').attr("style","display: block");
   }else {
       $('#licenceYear').attr("style","display: none");
+  }
+  if("MS007"==reason){
+      $('#othersReason').attr("style","display: block");
+  }else {
+      $('#othersReason').attr("style","display: none");
   }
     
 });

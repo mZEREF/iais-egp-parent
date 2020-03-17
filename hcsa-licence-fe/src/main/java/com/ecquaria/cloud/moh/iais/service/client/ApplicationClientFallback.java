@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
@@ -442,6 +443,14 @@ public class ApplicationClientFallback implements ApplicationClient {
 
     @Override
     public FeignResponseEntity<List<AppSvcKeyPersonnelDto>> getAppSvcKeyPersonnel(ApplicationDto applicationDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<ProcessFileTrackDto> isFileExistence(Map<String, String> map) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

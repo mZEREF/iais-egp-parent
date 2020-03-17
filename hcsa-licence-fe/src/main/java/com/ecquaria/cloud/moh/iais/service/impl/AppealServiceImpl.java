@@ -125,6 +125,7 @@ public class AppealServiceImpl implements AppealService {
         String reasonSelect = request.getParameter("reasonSelect");
         String proposedHciName = request.getParameter("proposedHciName");
         String remarks = request.getParameter("remarks");
+        String othersReason = request.getParameter("othersReason");
         CommonsMultipartFile selectedFile =(CommonsMultipartFile) request.getFile("selectedFile");
         if(selectedFile!=null&&selectedFile.getSize()>0){
             String filename = selectedFile.getOriginalFilename();
@@ -177,6 +178,7 @@ public class AppealServiceImpl implements AppealService {
         AppSubmissionDto entity = applicationClient.saveDraft(appSubmissionDto).getEntity();
         String draftNo = entity.getDraftNo();
         appPremiseMiscDto.setRemarks(remarks);
+        appPremiseMiscDto.setOtherReason(othersReason);
         appPremiseMiscDto.setReason(reasonSelect);
         appPremiseMiscDto.setNewHciName(proposedHciName);
         req.setAttribute("appPremiseMiscDto",appPremiseMiscDto);
@@ -358,11 +360,11 @@ public class AppealServiceImpl implements AppealService {
         AppealPageDto appealPageDto = reAppealPage(request);
         String remarks = appealPageDto.getRemarks();
         if (StringUtil.isEmpty(remarks)) {
-            map.put("remarks","Please key in remarks for appeal");
+            map.put("remarks","UC_CHKLMD001_ERR001");
         }
         String appealReason = appealPageDto.getAppealReason();
         if (StringUtil.isEmpty(appealReason)){
-            map.put("reason","Please select an appeal reason");
+            map.put("reason","UC_CHKLMD001_ERR001");
         }else {
             if("MS003".equals(appealReason)){
                 List<AppSvcCgoDto> appSvcCgoList = appealPageDto.getAppSvcCgoDto();
@@ -464,6 +466,12 @@ public class AppealServiceImpl implements AppealService {
 
                 }
 
+            }
+            else if("MS007".equals(appealReason)){
+                String otherReason = appealPageDto.getOtherReason();
+                if(StringUtil.isEmpty(otherReason)){
+                    map.put("otherReason","UC_CHKLMD001_ERR001");
+                }
             }
         }
 
@@ -736,6 +744,8 @@ public class AppealServiceImpl implements AppealService {
         CommonsMultipartFile sessionFile =( CommonsMultipartFile)  req.getSession().getAttribute("file");
         String isDelete = request.getParameter("isDelete");
         String remarks = request.getParameter("remarks");
+        String othersReason = request.getParameter("othersReason");
+        appealDto.setOtherReason(othersReason);
         CommonsMultipartFile selectedFile =(CommonsMultipartFile) request.getFile("selectedFile");
         if(selectedFile!=null&&selectedFile.getSize()>0){
             try {

@@ -52,6 +52,16 @@ public class AppealDelegator {
         if ("save".equals(crud_action_value)) {
             bpc. request.setAttribute("crud_action_type","save");
             return;
+        }else if("cancel".equals(crud_action_value)){
+            StringBuilder url = new StringBuilder();
+            url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            try {
+                bpc.response.sendRedirect(tokenUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
         }
         Map<String, String> validate = appealService.validate(bpc.request);
         if(!validate.isEmpty()){
@@ -197,7 +207,7 @@ public class AppealDelegator {
 
 
     private  List<SelectOption> genSpecialtySelectList(String svcCode){
-        List<SelectOption> specialtySelectList = null;
+        List<SelectOption> specialtySelectList = new ArrayList<>();
         if(!StringUtil.isEmpty(svcCode)){
             if(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode) ||
                     AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode) ||

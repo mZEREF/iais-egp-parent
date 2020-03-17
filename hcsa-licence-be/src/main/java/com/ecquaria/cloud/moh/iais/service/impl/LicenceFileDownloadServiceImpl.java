@@ -62,6 +62,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
@@ -132,7 +133,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 map.put("fileName",name);
                 map.put("filePath",relPath);
 
-                ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
+                ProcessFileTrackDto processFileTrackDto = applicationClient.isFileExistence(map).getEntity();
                 if(processFileTrackDto!=null){
                     //check file is changed
                     try (FileInputStream is=new FileInputStream(fil);
@@ -445,14 +446,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             every.setAuditTrailDto(intranet);
         }
         applicationListDto.setAuditTrailDto(intranet);
-
+        update(listApplicationDto,applicationGroup,application);
+        requeOrNew(requestForInfList,applicationGroup,application);
         String id = applicationListDto.getApplicationGroup().get(0).getId();
         eventBusHelper.submitAsyncRequest(applicationListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION,id,null);
         List<ApplicationDto> list = this.listApplication();
-        this. requestForInfList(requestForInfList);
 
-        listApplicationDto.addAll(list);
         Boolean flag=true;
        /* try {
 
@@ -701,5 +701,130 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         file.delete();
 
     }
+
+
+
+    private void requeOrNew(List<ApplicationDto> requestForInforList, List<ApplicationGroupDto> applicationGroup,List<ApplicationDto> dtoList) {
+
+        Map<String,List<ApplicationDto>> map=new HashMap<>();
+        for (ApplicationGroupDto applicationGroupDto : applicationGroup) {
+            List<ApplicationDto> list=new ArrayList<>();
+            for (ApplicationDto applicationDto : dtoList) {
+                if (applicationGroupDto.getId().equals(applicationDto.getAppGrpId())) {
+                    list.add(applicationDto);
+                }
+
+            }
+            map.put(applicationGroupDto.getId(),list);
+        }
+        map.forEach((k,v)->{
+            for(ApplicationDto application :v){
+                if(application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY)){
+                    requestForInforList.add(application);
+                }
+            }
+        });
+    }
+
+    private void update(List<ApplicationDto> list,List<ApplicationGroupDto> applicationGroup,List<ApplicationDto>  applicationList){
+
+        List<String> idList=new ArrayList<>();
+        for(ApplicationDto every:applicationList){
+            idList.add(every.getId());
+        }
+        Map<ApplicationGroupDto,List<ApplicationDto>> map=new HashMap<>();
+        for (ApplicationGroupDto every : applicationGroup) {
+            List<ApplicationDto> applicationslist=new ArrayList<>();
+
+            for (ApplicationDto application : applicationList) {
+                if (every.getId().equals(application.getAppGrpId())) {
+                    applicationslist.add(application);
+                }
+            }
+            map.put(every,applicationslist);
+        }
+
+        map.forEach((k,v)->{
+            int j=0;
+            int requestForChange=0;
+            int reNew=0;
+            Boolean autoRfc = k.isAutoApprove();
+
+            String appType = k.getAppType();
+            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+                if(autoRfc) {
+                    k.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+                }else {
+
+                }
+                for(ApplicationDto application :v){
+                    if (autoRfc) {
+                     /*   application.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                        application.setApplicationType(ApplicationConsts.APPLICATION_STATUS_APPROVED);*/
+                    }else {
+                        application.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+
+                    }
+                    int i=v.size();
+                    if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(application.getApplicationType())){
+                        requestForChange++;
+                    }else if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(application.getStatus())){
+                        requestForChange--;
+                    }
+                    if(requestForChange==i){
+
+                        if(!autoRfc){
+                            list.addAll(v);
+                        }
+
+                    }
+                }
+
+            }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                if(autoRfc) {
+                    k.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+                }else {
+
+                }
+                for(ApplicationDto application:v){
+                    if (autoRfc) {
+                       /* application.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                        application.setApplicationType(ApplicationConsts.APPLICATION_STATUS_APPROVED);*/
+                    }else {
+                        application.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+
+                    }
+                    int i=v.size();
+                    if(application.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_RENEWAL)){
+                        reNew++;
+                    }else if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(application.getStatus())){
+                        reNew--;
+                    }
+
+                    if(reNew==i){
+
+                        if(!autoRfc){
+                            //all reNew application
+                            list.addAll(v);
+                        }
+                    }
+                }
+
+
+            }else {
+                for(ApplicationDto application :v){
+                    int i=v.size();
+                    if(application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING)){
+                        j++;
+                    }
+                    if(j==i){ list.addAll(v); }
+                }
+            }
+
+        });
+
+
+    }
+
 
 }
