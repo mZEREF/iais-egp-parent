@@ -740,13 +740,18 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setUnitNo(rfiApplicationQueryDto.getUnitNo());
         reqForInfoSearchListDto.setStreetName(rfiApplicationQueryDto.getStreetName());
         reqForInfoSearchListDto.setFloorNo(rfiApplicationQueryDto.getFloorNo());
-        List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-        if(appPremisesRecommendationDtos.size()>=2){
-            reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
-        }
-        else {
+        try {
+            List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+            if(appPremisesRecommendationDtos.size()>=2){
+                reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
+            }
+            else {
+                reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
+            }
+        }catch (Exception e){
             reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
         }
+
         try{
             reqForInfoSearchListDto.setLastComplianceHistory("Full");
             List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = insepctionNcCheckListService.getNcItemDtoByAppCorrId(rfiApplicationQueryDto.getAppCorrId());
