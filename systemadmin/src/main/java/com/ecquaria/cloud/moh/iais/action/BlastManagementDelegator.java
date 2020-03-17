@@ -240,7 +240,7 @@ public class BlastManagementDelegator {
         blastManagementDto.setMsgName(name);
         blastManagementDto.setMode(mode);
         blastManagementDto.setStatus(status);
-        if(!(MM != null && StringUtils.isNumeric(HH) &&  Integer.valueOf(MM) < 24)){
+        if(!(MM != null && StringUtils.isNumeric(HH) &&  Integer.valueOf(HH) < 24)){
             Map<String, String> errorMap = new HashMap<>();
             errorMap.put("date","HH should be hours");
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
