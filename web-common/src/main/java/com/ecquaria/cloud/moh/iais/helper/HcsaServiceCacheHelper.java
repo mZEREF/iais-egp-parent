@@ -75,6 +75,7 @@ public final class HcsaServiceCacheHelper {
 		if (serviceClient == null){
 			log.info("================== receive service on startup failed ==================");
 			log.info(HcsaServiceCacheHelper.class.getName() +  " service client is null");
+			return;
 		}
 
 		int status = serviceClient.getActiveServices().getStatusCode();
