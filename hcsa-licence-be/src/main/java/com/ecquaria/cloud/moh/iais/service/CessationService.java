@@ -17,4 +17,6 @@ public interface CessationService {
     void updateCesation(List<AppCessationDto> appCessationDtos);
 
     void updateLicence(List<String> licNos);
+
+    List<String> listLicIdsCeased(List<String> licIds);
 }

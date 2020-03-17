@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -117,7 +118,7 @@ public class CessationServiceImpl implements CessationService {
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
             applicationDto.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
             applicationDto.setVersion(1);
-            applicationDto.setLicenceId(licId);
+            applicationDto.setOriginLicenceId(licId);
             List<ApplicationDto> applicationDtos = new ArrayList<>();
             applicationDtos.add(applicationDto);
             appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
@@ -175,6 +176,14 @@ public class CessationServiceImpl implements CessationService {
             }
         }
         hcsaLicenceClient.updateLicences(licenceDtoNew);
+    }
+
+    @Override
+    public List<String> listLicIdsCeased(List<String> licIds) {
+        for(String licId :licIds){
+
+        }
+        return null;
     }
 
 

@@ -149,4 +149,7 @@ public interface HcsaLicenceClient {
     FeignResponseEntity<LicPremisesAuditInspectorDto> updateLicPremisesAuditInspector(@RequestBody LicPremisesAuditInspectorDto licPremisesAuditInspectorDto);
     @GetMapping(value = "/hcsa-licence/licence-dto-svc-name",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> getLicenceDtosBySvcName(@RequestParam("svcName") String svcName);
+
+    @GetMapping(value = "/hcsa-licence/postInspection-map",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Map<String,List<String>>> getPostInspectionMap();
 }

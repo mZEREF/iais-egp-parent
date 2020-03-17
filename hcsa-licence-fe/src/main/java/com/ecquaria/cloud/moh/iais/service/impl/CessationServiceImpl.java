@@ -170,7 +170,7 @@ public class CessationServiceImpl implements CessationService {
             applicationDto.setApplicationNo(appNo);
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
             applicationDto.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
-            applicationDto.setLicenceId(licId);
+            applicationDto.setOriginLicenceId(licId);
             applicationDto.setVersion(1);
             List<ApplicationDto> applicationDtos = new ArrayList<>();
             applicationDtos.add(applicationDto);
