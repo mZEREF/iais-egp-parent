@@ -17,9 +17,12 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -29,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.egp.api.EGPHelper;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -242,6 +246,24 @@ public final class IaisEGPHelper extends EGPHelper {
         LicenseeService licenseeService = SpringContextHelper.getContext().getBean(LicenseeService.class);
 
         return licenseeService.getLicenseeEmails(licenseeId);
+    }
+
+    public static void retrigerEicMethods(List<EicRequestTrackingDto> trackList) {
+        trackList.forEach(e -> {
+            try {
+                Class actCls = Class.forName(e.getActionClsName());
+                Object actObj = SpringContextHelper.getContext().getBean(actCls);
+                Method med = actCls.getMethod("aaaa");
+                Class dtoCls = Class.forName(e.getDtoClsName());
+                Object dto = JsonUtil.parseToObject(e.getDtoObject(), dtoCls);
+                if (med != null) {
+                    med.invoke(actObj, dto);
+                    e.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_COMPLETE);
+                }
+            } catch (Exception ex) {
+                log.error(ex.getMessage(), ex);
+            }
+        });
     }
 
     private IaisEGPHelper() {throw new IllegalStateException("Utility class");}
