@@ -770,7 +770,7 @@ public class LicenceApproveBatchjob {
         }
 
       for(AppSvcPremisesScopeDto appSvcPremisesScopeDto : appSvcPremisesScopeDtos){
-         if(appPremCorrecId.equals(appSvcPremisesScopeDto.getAppPremCorreId())){
+         if(appSvcPremisesScopeDto != null && appPremCorrecId.equals(appSvcPremisesScopeDto.getAppPremCorreId())){
              result.add(appSvcPremisesScopeDto);
          }
       }
