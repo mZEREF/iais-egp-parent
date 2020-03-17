@@ -245,7 +245,8 @@
     }
 
     function doBack(){
-        SOP.Crud.cfxSubmit("mainForm","backLastPage");
+        var value = '${configIdAttr}'
+        SOP.Crud.cfxSubmit("mainForm","backLastPage", value);
     }
 
     function removeSectionItem(sectionId, itemId){
