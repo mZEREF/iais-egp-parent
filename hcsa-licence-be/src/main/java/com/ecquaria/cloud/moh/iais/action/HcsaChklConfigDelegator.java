@@ -432,7 +432,11 @@ public class HcsaChklConfigDelegator {
         String value = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
 
         if (!StringUtils.isEmpty(value)){
-            hcsaChklService.deleteRecord(value);
+            boolean canDelete = hcsaChklService.deleteRecord(value);
+            if (!canDelete){
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("configCustomValidation", "CHKL_ERR022"));
+
+            }
         }
     }
 

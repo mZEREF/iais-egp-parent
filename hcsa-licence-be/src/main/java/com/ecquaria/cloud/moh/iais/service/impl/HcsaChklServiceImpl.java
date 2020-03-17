@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulati
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
 
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -47,8 +51,14 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     private String secSecretKey;
 
     @Override
-    public void deleteRecord(String configId) {
+    public Boolean deleteRecord(String configId) {
+        int count = fillUpCheckListGetAppClient.countByChkLstConfId(configId).getEntity();
+        if (count > 0){
+            return false;
+        }
+
         chklClient.inActiveConfig(configId);
+        return true;
     }
 
     @Override
@@ -151,6 +161,7 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     public String submitUploadItem(List<ChecklistItemDto> checklistItemExcelList) {
         return chklClient.submitUploadItem(checklistItemExcelList).getEntity();
     }
+
 
 
 }

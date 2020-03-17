@@ -21,7 +21,7 @@ import java.util.List;
 @Service
 public interface HcsaChklService {
 
-    void deleteRecord(String configId);
+    Boolean deleteRecord(String configId);
     Boolean inActiveItem(String itemId);
 
     /**
