@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.InspecSaveBeRecByService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
@@ -79,6 +80,9 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     @Autowired
     private EventBusHelper eventBusHelper;
 
+    @Autowired
+    private GenerateIdClient generateIdClient;
+
     @Override
     public List<ProcessFileTrackDto> getFileTypeAndStatus(String applicationStatusFeToBeRectification, String commonStatusActive) {
         List<ProcessFileTrackDto> processFileTrackDtos = systemBeLicClient.getFileTypeAndStatus(ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION,
@@ -96,7 +100,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         File compressPathFile = new File(compressPath);
         //delete old zip and folder
         FileUtils.deleteTempFile(downloadFile);
-        FileUtils.deleteTempFile(zipFiles);
         FileUtils.deleteTempFile(compressPathFile);
         //create new
         MiscUtil.checkDirs(downloadFile);
@@ -173,7 +176,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         File file = new File(download);
         List<String> appPremCorrIds = new ArrayList<>();
         List<String> appIds = new ArrayList<>();
-        String submissionId = processFileTrackDtos.get(0).getRefId();
+        String submissionId = generateIdClient.getSeqId().getEntity();
         //file is backupsRec
         if(file.isDirectory()){
             File[] files = file.listFiles();
