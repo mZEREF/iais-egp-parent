@@ -445,11 +445,10 @@ public class InterInboxDelegator {
             }
         }
         if(applicationNo != null){
-            if (applicationNo.equals(InboxConst.SEARCH_ALL)){
-                appSearchMap.remove("appNo");
-            }
-            else if(applicationNo.indexOf('%') != -1){
+            if(applicationNo.indexOf('%') != -1){
                 applicationNo = applicationNo.replaceAll("%","//%");
+                appSearchMap.put("appNo","%"+applicationNo+"%");
+            }else{
                 appSearchMap.put("appNo","%"+applicationNo+"%");
             }
         }
