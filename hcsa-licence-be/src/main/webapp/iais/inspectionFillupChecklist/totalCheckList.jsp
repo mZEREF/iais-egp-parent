@@ -250,7 +250,7 @@
 
                                     <div class="input-group">
                                         <div class="ax_default text_area">
-                                            <span style="font-size: 18px"><strong>Inspection Leader</strong></span> <c:out value="${serListDto.inspectionLeader}"/>
+                                            <span style="font-size: 18px"><strong>Inspector Lead</strong></span> <c:out value="${serListDto.inspectionLeader}"/>
                                         </div>
                                     </div>
 
@@ -279,20 +279,20 @@
 
                                     <div class="input-group">
                                         <div class="ax_default text_area">
-                                            <h4><strong>Remark</strong></h4> <textarea cols="70" rows="7" name="tcuRemark" id="tcuRemark" maxlength="300"><c:out value="${serListDto.tcuRemark}"></c:out></textarea>
+                                            <h4><strong>Remarks</strong></h4> <textarea cols="70" rows="7" name="tcuRemark" id="tcuRemark" maxlength="300"><c:out value="${serListDto.tcuRemark}"></c:out></textarea>
                                             <span class="error-msg" id="error_tcuRemark" name="iaisErrorMsg"></span>
                                         </div>
                                     </div>
                                     <div class="input-group">
                                         <div class="ax_default text_area">
-                                            <h4><strong>Best Practice</strong></h4>
+                                            <h4><strong>Best Practices</strong></h4>
                                             <textarea cols="70" rows="7" name="bestpractice" id="bestpractice" maxlength="500"><c:out value="${serListDto.bestPractice}"></c:out></textarea>
                                             <span class="error-msg" id="error_bestPractice" name="iaisErrorMsg"></span>
                                         </div>
                                     </div>
                                     <div class="input-group">
                                         <div class="ax_default text_area">
-                                            <h4><strong>Litter Written to Licensee</strong></h4>
+                                            <h4><strong>Letter written to Licensee</strong></h4>
                                             <span id="licFileName"></span>
                                             <div class="file-upload-gp">
                                                 <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
