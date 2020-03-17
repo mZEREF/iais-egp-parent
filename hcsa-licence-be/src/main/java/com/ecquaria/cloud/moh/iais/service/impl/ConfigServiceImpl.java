@@ -207,7 +207,7 @@ public class ConfigServiceImpl implements ConfigService {
             Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtos2 = getHcsaConfigPageDtos(request);
 
             List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = (List<HcsaServiceStepSchemeDto>) request.getAttribute("hcsaServiceStepSchemeDtos");
-            List<String> stringList = new ArrayList<>();
+            List<String> stringList = IaisCommonUtils.genNewArrayList();
             for (HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto : hcsaServiceStepSchemeDtos) {
                 String stepCode = hcsaServiceStepSchemeDto.getStepCode();
                 stringList.add(stepCode);
@@ -332,7 +332,7 @@ public class ConfigServiceImpl implements ConfigService {
         String[] subTypes = request.getParameterValues("subType");
         String[] levels = request.getParameterValues("level");
 
-        List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos=new ArrayList<>();
+        List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos=IaisCommonUtils.genNewArrayList();
         Map<Integer ,String> level1=new HashMap<>();
         if(levels!=null){
             for(int i=0;i<levels.length;i++ ){
@@ -343,14 +343,14 @@ public class ConfigServiceImpl implements ConfigService {
                 if("0".equals(s)){
                     HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto1=new HcsaSvcSubtypeOrSubsumedDto();
                     hcsaSvcSubtypeOrSubsumedDto1.setName(subTypes[i]);
-                    List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos2=new ArrayList<>();
+                    List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos2=IaisCommonUtils.genNewArrayList();
                     hcsaSvcSubtypeOrSubsumedDtos.add(hcsaSvcSubtypeOrSubsumedDto1);
                     for(int j=i+1;j<levels.length;j++){
                         String s1 = level1.get(j);
                         if("1".equals(s1)){
                             HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto2=new HcsaSvcSubtypeOrSubsumedDto();
                             hcsaSvcSubtypeOrSubsumedDto2.setName(subTypes[j]);
-                            List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos3=new ArrayList<>();
+                            List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos3=IaisCommonUtils.genNewArrayList();
                             hcsaSvcSubtypeOrSubsumedDtos2.add(hcsaSvcSubtypeOrSubsumedDto2);
                             hcsaSvcSubtypeOrSubsumedDto1.setList(hcsaSvcSubtypeOrSubsumedDtos2);
                             for(int k=j+1;k<levels.length;k++){
@@ -376,8 +376,8 @@ public class ConfigServiceImpl implements ConfigService {
 
 
 
-        List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = new ArrayList<>();
-        List<HcsaServiceSubTypeDto> list=new ArrayList<>();
+        List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = IaisCommonUtils.genNewArrayList();
+        List<HcsaServiceSubTypeDto> list=IaisCommonUtils.genNewArrayList();
         if("SVTP002".equals(serviceType)){
             if(subsumption!=null){
                 for(String str:subsumption){
@@ -416,8 +416,8 @@ public class ConfigServiceImpl implements ConfigService {
         String manprincipalOfficer = request.getParameter("man-principalOfficer");
         String mixprincipalOfficer = request.getParameter("mix-principalOfficer");
         String poId = request.getParameter("poId");
-        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = new ArrayList<>();
-        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = new ArrayList<>();
+        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = IaisCommonUtils.genNewArrayList();
+        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = IaisCommonUtils.genNewArrayList();
         HcsaSvcPersonnelDto poDto = new HcsaSvcPersonnelDto();
         poDto.setPsnType("PO");
         try {
@@ -569,7 +569,7 @@ public class ConfigServiceImpl implements ConfigService {
 
         svcPersonnelDto.setStatus("CMSTAT001");
         hcsaSvcPersonnelDtos.add(svcPersonnelDto);
-        List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = new ArrayList<>();
+        List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = IaisCommonUtils.genNewArrayList();
         String numberDocument = request.getParameter("NumberDocument");
         String descriptionDocument = request.getParameter("DescriptionDocument");
         String numberfields = request.getParameter("Numberfields");
@@ -641,10 +641,10 @@ public class ConfigServiceImpl implements ConfigService {
 
         }
 
-        List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtoList = new ArrayList<>();
-        List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtoList = new ArrayList<>();
-        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList<>();
-        List<HcsaConfigPageDto> hcsaConfigPageDtos = new ArrayList<>();
+        List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtoList = IaisCommonUtils.genNewArrayList();
+        List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtoList = IaisCommonUtils.genNewArrayList();
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
+        List<HcsaConfigPageDto> hcsaConfigPageDtos = IaisCommonUtils.genNewArrayList();
         List<String> type = getType();
         for(String every:type){
             for (HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto : hcsaSvcRoutingStageDtos) {
@@ -775,7 +775,7 @@ public class ConfigServiceImpl implements ConfigService {
 
 
         List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = hcsaServiceConfigDto.getHcsaSvcSubtypeOrSubsumedDtos();
-        List<String> subtypeName=new ArrayList<>();
+        List<String> subtypeName=IaisCommonUtils.genNewArrayList();
         if(hcsaSvcSubtypeOrSubsumedDtos!=null&&!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
             for(HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto :hcsaSvcSubtypeOrSubsumedDtos){
                 List<HcsaSvcSubtypeOrSubsumedDto> list = hcsaSvcSubtypeOrSubsumedDto.getList();
@@ -938,7 +938,7 @@ public class ConfigServiceImpl implements ConfigService {
 
         List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtos =
                 hcsaConfigClient.getHcsaSvcSpeRoutingSchemeByServiceId(hcsaServiceDto.getId()).getEntity();
-        List<String> stageIds = new ArrayList<>();
+        List<String> stageIds = IaisCommonUtils.genNewArrayList();
         stageIds.add("12848A70-820B-EA11-BE7D-000C29F371DC");
         stageIds.add("13848A70-820B-EA11-BE7D-000C29F371DC");
         stageIds.add("14848A70-820B-EA11-BE7D-000C29F371DC");
@@ -956,8 +956,8 @@ public class ConfigServiceImpl implements ConfigService {
         Map<String,List<HcsaSvcStageWorkloadDto>> map=new HashMap<>();
         Map<String, List<HcsaSvcSpeRoutingSchemeDto>> hcsaSvcSpeRoutingSchemeDtoMap=new HashMap<>();
         for(String type:types){
-            List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtos1=new ArrayList<>();
-            List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos1=new ArrayList<>();
+            List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtos1=IaisCommonUtils.genNewArrayList();
+            List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos1=IaisCommonUtils.genNewArrayList();
             for(HcsaSvcStageWorkloadDto hcsaSvcStageWorkloadDto:hcsaSvcStageWorkloadDtos){
                 String appType = hcsaSvcStageWorkloadDto.getAppType();
                 if(type.equals(appType)){
@@ -975,7 +975,7 @@ public class ConfigServiceImpl implements ConfigService {
         }
         Map<String,  List<HcsaSvcStageWorkingGroupDto>> hcsaSvcStageWorkingGroupDtoMap=new HashMap<>();
         hcsaSvcSpeRoutingSchemeDtoMap.forEach((k,v)->{
-            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos1=new ArrayList<>();
+            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos1=IaisCommonUtils.genNewArrayList();
             for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto:v){
                 String stageWrkGrpID = hcsaSvcSpeRoutingSchemeDto.getStageWrkGrpID();
                 for(HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto:hcsaSvcStageWorkingGroupDtos){
@@ -1040,7 +1040,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     private  List<HcsaConfigPageDto> ProcessingData(String type,List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos,List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtos,List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos,  List<WorkingGroupDto> hcsa  ){
-        List<HcsaConfigPageDto> hcsaConfigPageDtos = new ArrayList<>();
+        List<HcsaConfigPageDto> hcsaConfigPageDtos = IaisCommonUtils.genNewArrayList();
         for (HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto : hcsaSvcRoutingStageDtos) {
             HcsaConfigPageDto hcsaConfigPageDto = new HcsaConfigPageDto();
             hcsaConfigPageDto.setStageCode(hcsaSvcRoutingStageDto.getStageCode());
@@ -1136,7 +1136,7 @@ public class ConfigServiceImpl implements ConfigService {
         Map<String ,  List<HcsaConfigPageDto>> map=new HashMap<>();
         if(hcsaConfigPageDtos1!=null){
             for(String type:types){
-                List<HcsaConfigPageDto> list=new ArrayList<>();
+                List<HcsaConfigPageDto> list=IaisCommonUtils.genNewArrayList();
                 for(HcsaConfigPageDto hcsaConfigPageDto:hcsaConfigPageDtos1){
                     String appType = hcsaConfigPageDto.getAppType();
                     if(type.equals(appType)){
@@ -1148,7 +1148,7 @@ public class ConfigServiceImpl implements ConfigService {
         }
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = getHcsaSvcRoutingStageDtos();
         List<WorkingGroupDto> workingGroup = getWorkingGroup();
-        List<HcsaConfigPageDto> hcsaConfigPageDtos = new ArrayList<>();
+        List<HcsaConfigPageDto> hcsaConfigPageDtos = IaisCommonUtils.genNewArrayList();
         for(String type:types){
             for (HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto : hcsaSvcRoutingStageDtos) {
                 HcsaConfigPageDto hcsaConfigPageDto = new HcsaConfigPageDto();
@@ -1214,7 +1214,7 @@ public class ConfigServiceImpl implements ConfigService {
 
 
     private void getWorkingGroupDto(List<WorkingGroupDto> hcsa, HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto, HcsaConfigPageDto hcsaConfigPageDto) {
-        List<WorkingGroupDto> workingGroupDtoList = new ArrayList<>();
+        List<WorkingGroupDto> workingGroupDtoList = IaisCommonUtils.genNewArrayList();
         for (WorkingGroupDto workingGroupDto : hcsa) {
             String groupName = workingGroupDto.getGroupName();
             String stageName = hcsaSvcRoutingStageDto.getStageName();
@@ -1241,7 +1241,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     private List<HcsaConfigPageDto> getWorkGrop(String type,String typeName){
-        List<HcsaConfigPageDto> hcsaConfigPageDtos = new ArrayList<>();
+        List<HcsaConfigPageDto> hcsaConfigPageDtos = IaisCommonUtils.genNewArrayList();
         List<WorkingGroupDto> workingGroup = getWorkingGroup();
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = getHcsaSvcRoutingStageDtos();
         for (HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto : hcsaSvcRoutingStageDtos) {
@@ -1250,7 +1250,7 @@ public class ConfigServiceImpl implements ConfigService {
             hcsaConfigPageDto.setStageName(hcsaSvcRoutingStageDto.getStageName());
             hcsaConfigPageDto.setAppTypeName(typeName);
             hcsaConfigPageDto.setAppType(type);
-            List<WorkingGroupDto> workingGroupDtoList = new ArrayList<>();
+            List<WorkingGroupDto> workingGroupDtoList = IaisCommonUtils.genNewArrayList();
             for (WorkingGroupDto workingGroupDto : workingGroup) {
                 String groupName = workingGroupDto.getGroupName();
                 String stageName = hcsaSvcRoutingStageDto.getStageName();
@@ -1281,7 +1281,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     private List<String> getType(){
-        List<String> list=new ArrayList<>();
+        List<String> list=IaisCommonUtils.genNewArrayList();
         list.add("APTY002");
        /* list.add("APTY003");
         list.add("APTY004");
@@ -1310,7 +1310,7 @@ public class ConfigServiceImpl implements ConfigService {
 
     private  List<String>  split(String str){
         String[] split = str.split(",");
-        List<String> list=new ArrayList<>();
+        List<String> list=IaisCommonUtils.genNewArrayList();
         Collections.addAll(list,split);
         for(int i=0;i<list.size();i++){
            if("".equals(list.get(i))){
@@ -1328,7 +1328,7 @@ public class ConfigServiceImpl implements ConfigService {
         List<String> types = getType();
         for(String type:types){
             List<HcsaConfigPageDto> hcsaConfigPageDto = hcsaConfigPageDtos.get(type);
-            List<HcsaConfigPageDto> appeal=new ArrayList<>();
+            List<HcsaConfigPageDto> appeal=IaisCommonUtils.genNewArrayList();
             if("APTY001".equals(type)){
                 appeal= getWorkGrop(type,"appeal");
             }else if("APTY002".equals(type)){
@@ -1407,11 +1407,11 @@ public class ConfigServiceImpl implements ConfigService {
         }
         List<HcsaSvcSubtypeOrSubsumedDto> entity = hcsaConfigClient.listSubtype(id).getEntity();
         request.setAttribute("hcsaSvcSubtypeOrSubsumedDto",entity);
-        List<String> ids = new ArrayList<>();
+        List<String> ids = IaisCommonUtils.genNewArrayList();
         ids.add(id);
         Set<String> set = hcsaConfigClient.getAppGrpPremisesTypeBySvcId(ids).getEntity();
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = hcsaConfigClient.getHcsaServiceStepSchemeDtoByServiceId(hcsaServiceDto.getId()).getEntity();
-        List<String> stringList = new ArrayList<>();
+        List<String> stringList = IaisCommonUtils.genNewArrayList();
         for (HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto : hcsaServiceStepSchemeDtos) {
             String stepCode = hcsaServiceStepSchemeDto.getStepCode();
             stringList.add(stepCode);

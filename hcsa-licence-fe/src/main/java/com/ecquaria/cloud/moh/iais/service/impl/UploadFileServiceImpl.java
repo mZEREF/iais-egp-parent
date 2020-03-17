@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -39,7 +40,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -124,11 +124,11 @@ public class UploadFileServiceImpl implements UploadFileService {
     public String  changeStatus(ApplicationListFileDto applicationListDto) {
             List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
             Map<String,List<String>> map =new HashMap<>();
-            List<String> oldStatus=new ArrayList<>();
+            List<String> oldStatus= IaisCommonUtils.genNewArrayList();
             oldStatus.add(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
-            List<String> newStatus=new ArrayList<>();
+            List<String> newStatus=IaisCommonUtils.genNewArrayList();
             newStatus.add(ApplicationConsts.APPLICATION_SUCCESS_ZIP);
-            List<String> groupIds=new ArrayList<>();
+            List<String> groupIds=IaisCommonUtils.genNewArrayList();
 
             for(ApplicationGroupDto every:applicationGroup){
                 String id = every.getId();
@@ -305,7 +305,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppEditSelectDto> appEditSelects = applicationListDto.getAppEditSelects();
 
 
-        List<ApplicationListFileDto> applicationListFileDtoList=new ArrayList<>();
+        List<ApplicationListFileDto> applicationListFileDtoList=IaisCommonUtils.genNewArrayList();
 
         for(ApplicationGroupDto every :applicationGroup){
 
@@ -316,39 +316,39 @@ public class UploadFileServiceImpl implements UploadFileService {
             Set<String> appSvcPremisesScopeIds=new HashSet<>();
 
             ApplicationListFileDto applicationListFileDto=new ApplicationListFileDto();
-            List<ApplicationGroupDto> groupDtos=new ArrayList<>();
-            List<ApplicationDto> applicationDtos=new ArrayList<>();
+            List<ApplicationGroupDto> groupDtos=IaisCommonUtils.genNewArrayList();
+            List<ApplicationDto> applicationDtos=IaisCommonUtils.genNewArrayList();
 
-            List<AppGrpPremisesEntityDto> appGrpPremisesDtos=new ArrayList<>();
+            List<AppGrpPremisesEntityDto> appGrpPremisesDtos=IaisCommonUtils.genNewArrayList();
 
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos=new ArrayList<>();
+            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos=IaisCommonUtils.genNewArrayList();
 
-            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=new ArrayList<>();
+            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=IaisCommonUtils.genNewArrayList();
 
-            List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos=new ArrayList<>();
+            List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos=IaisCommonUtils.genNewArrayList();
 
-            List<AppGrpPersonnelDto> appGrpPersonnelDtos=new ArrayList<>();
+            List<AppGrpPersonnelDto> appGrpPersonnelDtos=IaisCommonUtils.genNewArrayList();
 
-            List<AppGrpPersonnelExtDto> appGrpPersonnelExtDtos=new ArrayList<>();
+            List<AppGrpPersonnelExtDto> appGrpPersonnelExtDtos=IaisCommonUtils.genNewArrayList();
 
-            List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos=new ArrayList<>();
+            List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos=IaisCommonUtils.genNewArrayList();
 
 
-            List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos=new ArrayList<>();
+            List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos=IaisCommonUtils.genNewArrayList();
 
-            List<AppSvcPersonnelDto >  appSvcPersonnelDtos=new ArrayList<>();
+            List<AppSvcPersonnelDto >  appSvcPersonnelDtos=IaisCommonUtils.genNewArrayList();
 
-            List<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklDtos=new ArrayList<>();
+            List<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklDtos=IaisCommonUtils.genNewArrayList();
 
-            List<AppSvcDocDto> appSvcDocDtos=new ArrayList<>();
+            List<AppSvcDocDto> appSvcDocDtos=IaisCommonUtils.genNewArrayList();
 
-            List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtoList=new ArrayList<>();
+            List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtoList=IaisCommonUtils.genNewArrayList();
 
-            List<AppPremiseMiscDto> appPremiseMiscDtoList=new ArrayList<>();
+            List<AppPremiseMiscDto> appPremiseMiscDtoList=IaisCommonUtils.genNewArrayList();
 
-            List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList=new ArrayList<>();
+            List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList=IaisCommonUtils.genNewArrayList();
 
-            List<AppEditSelectDto> appEditSelectDtos=new ArrayList<>();
+            List<AppEditSelectDto> appEditSelectDtos=IaisCommonUtils.genNewArrayList();
 
             groupDtos.add(every);
             String groupId = every.getId();

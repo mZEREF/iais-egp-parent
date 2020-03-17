@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -18,17 +19,11 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloudfeign.FeignException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -197,7 +192,7 @@ public class InsReportAoDelegator {
     }
 
     private List<SelectOption> getChronoOption() {
-        List<SelectOption> ChronoResult = new ArrayList<>();
+        List<SelectOption> ChronoResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("Year", "Year");
         SelectOption so2 = new SelectOption("Month", "Month");
         SelectOption so3 = new SelectOption("Week", "Week");
@@ -208,7 +203,7 @@ public class InsReportAoDelegator {
     }
 
     private List<SelectOption> getriskLevel() {
-        List<SelectOption> riskLevelResult = new ArrayList<>();
+        List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("Low", "Low");
         SelectOption so2 = new SelectOption("Moderate", "Moderate");
         SelectOption so3 = new SelectOption("High", "High");
@@ -219,7 +214,7 @@ public class InsReportAoDelegator {
     }
 
     private List<SelectOption> getProcessingDecision() {
-        List<SelectOption> riskLevelResult = new ArrayList<>();
+        List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption(APPROVAL, "Acknowledge Inspection Report");
         SelectOption so2 = new SelectOption(REJECT, "Revise Inspection Report");
         riskLevelResult.add(so1);
@@ -228,7 +223,7 @@ public class InsReportAoDelegator {
     }
 
     private List<SelectOption> getRecommendationOption() {
-        List<SelectOption> recommendationResult = new ArrayList<>();
+        List<SelectOption> recommendationResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("Approval", "ACCEPT");
         SelectOption so2 = new SelectOption("Reject", "REJECT");
         SelectOption so3 = new SelectOption(OTHERS, "Other");

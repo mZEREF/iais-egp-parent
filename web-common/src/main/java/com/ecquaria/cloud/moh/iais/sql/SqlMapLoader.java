@@ -13,15 +13,14 @@
 
 package com.ecquaria.cloud.moh.iais.sql;
 
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import org.apache.commons.collections.CollectionUtils;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import javax.xml.parsers.ParserConfigurationException;
+import org.apache.commons.collections.CollectionUtils;
+import org.xml.sax.SAXException;
 
 /**
  * SqlMapLoader
@@ -45,7 +44,7 @@ public class SqlMapLoader {
         List<Sql> sqls = null;
         SqlXmlParser sxp = new SqlXmlParser();
         if (files != null) {
-            sqls = new ArrayList<>();
+            sqls = IaisCommonUtils.genNewArrayList();
             for (String file : files) {
                 List<Sql> sqlsInFile = sxp.parseSqlXml(file);
                 if (!CollectionUtils.isEmpty(sqlsInFile)) {
@@ -60,18 +59,18 @@ public class SqlMapLoader {
         private List<String> files;
 
         public FolderFileList(File rootPath) {
-            files = new ArrayList<>();
+            files = IaisCommonUtils.genNewArrayList();
             listFilesForFolder(rootPath);
         }
 
         private void listFilesForFolder(File folder) {
-            if (folder == null)
+            if (folder == null) {
                 return;
-
+            }
             File[] fileArrays = folder.listFiles();
-            if (fileArrays == null || fileArrays.length == 0)
+            if (fileArrays == null || fileArrays.length == 0) {
                 return;
-
+            }
             for (File fileEntry : fileArrays) {
                 if (fileEntry != null){
                     if (fileEntry.isDirectory()) {

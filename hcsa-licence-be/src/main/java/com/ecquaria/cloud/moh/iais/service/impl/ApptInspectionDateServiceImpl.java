@@ -162,7 +162,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             AppointmentDto appointmentDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(taskDto.getRefNo()).getEntity();
             appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
             Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
-            List<String> serviceIds = new ArrayList<>();
+            List<String> serviceIds = IaisCommonUtils.genNewArrayList();
             for (Map.Entry<String, String> map : corrIdServiceIdMap.entrySet()) {
                 serviceIds.add(map.getValue());
             }
@@ -172,7 +172,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                 appointmentDto = hcsaConfigClient.getApptStartEndDateByService(appointmentDto).getEntity();
             }
             //get inspection date
-            List<AppointmentUserDto> appointmentUserDtos = new ArrayList<>();
+            List<AppointmentUserDto> appointmentUserDtos = IaisCommonUtils.genNewArrayList();
             for (TaskDto tDto : taskDtoList) {
                 AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
                 appointmentUserDto.setLoginUserId(tDto.getUserId());
@@ -197,8 +197,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     @Override
     public Map<ApplicationDto, List<String>> getApplicationInfoToShow(List<String> premCorrIds, List<TaskDto> taskDtoList) {
         Map<ApplicationDto, List<String>> applicationInfoMap = new HashMap<>();
-        List<String> workerName = new ArrayList<>();
-        List<String> ids = new ArrayList<>();
+        List<String> workerName = IaisCommonUtils.genNewArrayList();
+        List<String> ids = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(premCorrIds)) {
             for (String appPremCorrId : premCorrIds) {
                 ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
@@ -275,7 +275,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     }
 
     private List<TaskDto> getAllTaskFromSamePremises(List<String> premCorrIds) {
-        List<TaskDto> taskDtoList = new ArrayList<>();
+        List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(premCorrIds)){
             for(String appPremCorrId : premCorrIds){
                 List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremCorrId).getEntity();
@@ -290,7 +290,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     }
 
     private List<String> getCorrIdsByCorrIdFromPremises(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos) {
-        List<String> appPremCorrIds = new ArrayList<>();
+        List<String> appPremCorrIds = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){
             for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
                 appPremCorrIds.add(appPremisesCorrelationDto.getId());
@@ -304,9 +304,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     }
 
     private ApptInspectionDateDto getShowTimeStringList(Map<String, List<ApptUserCalendarDto>> inspectionDateMap, ApptInspectionDateDto apptInspectionDateDto) {
-        List<String> inspectionDates = new ArrayList<>();
+        List<String> inspectionDates = IaisCommonUtils.genNewArrayList();
         if(inspectionDateMap != null){
-            List<ApptUserCalendarDto> apptUserCalendarDtoListAll = new ArrayList<>();
+            List<ApptUserCalendarDto> apptUserCalendarDtoListAll = IaisCommonUtils.genNewArrayList();
             for(Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()){
                 inspDateMap.getValue();
             }
@@ -339,7 +339,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     @Override
     public List<SelectOption> getInspectionDateHours() {
-        List<SelectOption> hourOption = new ArrayList<>();
+        List<SelectOption> hourOption = IaisCommonUtils.genNewArrayList();
         for(int i = 1; i < 13; i++){
             SelectOption so = new SelectOption(i + "", i + "");
             hourOption.add(so);
@@ -349,7 +349,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     @Override
     public List<SelectOption> getAmPmOption() {
-        List<SelectOption> amPmOption = new ArrayList<>();
+        List<SelectOption> amPmOption = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption(Formatter.DAY_AM, "am");
         SelectOption so2 = new SelectOption(Formatter.DAY_PM, "pm");
         amPmOption.add(so1);
@@ -359,7 +359,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     @Override
     public void saveLeadSpecificDate(ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto) {
-        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = new ArrayList<>();
+        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
         List<String> appPremCorrIds = apptInspectionDateDto.getRefNo();
         String serviceId = apptInspectionDateDto.getAppointmentDto().getServiceId();
@@ -386,7 +386,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     @Override
     public void saveSystemInspectionDate(ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto) {
-        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = new ArrayList<>();
+        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
         List<String> appPremCorrIds = apptInspectionDateDto.getRefNo();
         String serviceId = apptInspectionDateDto.getAppointmentDto().getServiceId();
         for(String appPremCorrId : appPremCorrIds) {
@@ -459,7 +459,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         List<String> appPremCorrIds = apptInspectionDateDto.getRefNo();
         List<TaskDto> taskDtoList = apptInspectionDateDto.getTaskDtos();
         updateTaskDtoList(taskDtoList);
-        List<TaskDto> taskDtos = new ArrayList<>();
+        List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
         //get appPremCorrId with Score
         Map<String, Integer> appPremScoreMap = getAppPremTaskScore(taskDtoList);
         for (TaskDto taskDto2 : taskDtoList) {
@@ -470,8 +470,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         taskService.createTasks(taskDtos);
         Date saveDate = null;
         if (apptInspectionDateDto.getProcessDec().equals(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE)) {
-            List<AppPremisesInspecApptDto> appPremisesInspecApptDtoCreateList = new ArrayList<>();
-            List<AppPremisesInspecApptDto> appPremisesInspecApptDtoUpdateList = new ArrayList<>();
+            List<AppPremisesInspecApptDto> appPremisesInspecApptDtoCreateList = IaisCommonUtils.genNewArrayList();
+            List<AppPremisesInspecApptDto> appPremisesInspecApptDtoUpdateList = IaisCommonUtils.genNewArrayList();
             saveDate = apptInspectionDateDto.getSpecificDate();
             //remove inactive inspection date
             if (!IaisCommonUtils.isEmpty(appPremisesInspecApptDtos)) {
@@ -570,13 +570,13 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     private Map<String, Integer> getAppPremTaskScore(List<TaskDto> taskDtoList) {
         Map<String, Integer> appPremScoreMap = new HashMap<>();
-        List<String> appPremCorrIds = new ArrayList<>();
+        List<String> appPremCorrIds = IaisCommonUtils.genNewArrayList();
         for(TaskDto taskDto : taskDtoList){
             appPremCorrIds.add(taskDto.getRefNo());
         }
         Set<String> appPremCorrIdSet = new HashSet<>(appPremCorrIds);
         appPremCorrIds = new ArrayList<>(appPremCorrIdSet);
-        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList<>();
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
         for(String appPremCorrId : appPremCorrIds){
             ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = generateHcsaSvcStageWorkingGroupDto(appPremCorrId, applicationDto, HcsaConsts.ROUTING_STAGE_INS);

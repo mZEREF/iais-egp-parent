@@ -25,17 +25,15 @@ import com.ecquaria.cloud.moh.iais.service.AppPremSelfDeclService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * @author yichen
@@ -138,13 +136,13 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
             return null;
         }
 
-        List<SelfDecl> selfDeclList = new ArrayList<>();
-        List<String> premiseList = new ArrayList<>();
+        List<SelfDecl> selfDeclList = IaisCommonUtils.genNewArrayList();
+        List<String> premiseList = IaisCommonUtils.genNewArrayList();
 
         boolean commonFlag = false;
         for (ApplicationDto app : appList){
             SelfDecl selfDecl = new SelfDecl();
-            List<String> confList = new ArrayList<>();
+            List<String> confList = IaisCommonUtils.genNewArrayList();
             String appId = app.getId();
             String svcId = app.getServiceId();
             String type = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.SELF_ASSESSMENT);
@@ -158,7 +156,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
             selfDecl.setPeriodDto(inspPeriod);
 
             String svcName = hcsa.getSvcName();
-            List<PremCheckItem> premItemList = new ArrayList<>();
+            List<PremCheckItem> premItemList = IaisCommonUtils.genNewArrayList();
             Map<String, List<PremCheckItem>> premiseAnswerMap = new HashMap<>(16);
             List<AppPremisesCorrelationDto>  correlationList = applicationClient.listAppPremisesCorrelation(appId).getEntity();
             for (AppPremisesCorrelationDto corre : correlationList){
@@ -319,7 +317,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
         }
 
         SelfDecl selfDecl = new SelfDecl();
-        List<PremCheckItem> premCheckItems = new ArrayList<>();
+        List<PremCheckItem> premCheckItems = IaisCommonUtils.genNewArrayList();
         setPremChecklistItem(premCheckItems, configId, true, null, grpPremId);
 
         Map<String, List<PremCheckItem>> premAnswerMap = new HashMap<>(16);
@@ -331,7 +329,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
         selfDecl.setPremAnswerMap(premAnswerMap);
         selfDecl.setCommon(true);
 
-        List<String> configList = new ArrayList<>();
+        List<String> configList = IaisCommonUtils.genNewArrayList();
         configList.add(configId);
 
         selfDecl.setConfIdList(configList);

@@ -12,17 +12,20 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import java.util.Date;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author weilu
@@ -52,7 +55,7 @@ public class CessationServiceImpl implements CessationService {
 
     @Override
     public List<String> getActiveLicence(List<String> licIds) {
-        List<String> activeLicIds = new ArrayList<>();
+        List<String> activeLicIds = IaisCommonUtils.genNewArrayList();
         for (String licId : licIds) {
             LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
             String status = licenceDto.getStatus();
@@ -65,7 +68,7 @@ public class CessationServiceImpl implements CessationService {
 
     @Override
     public List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds) {
-        List<AppCessLicDto> appCessLicDtos = new ArrayList<>();
+        List<AppCessLicDto> appCessLicDtos = IaisCommonUtils.genNewArrayList();
         if (licIds != null && !licIds.isEmpty()) {
             for (String licId : licIds) {
                 AppCessLicDto appCessDto = new AppCessLicDto();
@@ -76,7 +79,7 @@ public class CessationServiceImpl implements CessationService {
                 appCessDto.setLicenceNo(licenceNo);
                 appCessDto.setSvcName(svcName);
                 appCessDto.setLicenceId(licId);
-                List<AppCessHciDto> appCessHciDtos = new ArrayList<>();
+                List<AppCessHciDto> appCessHciDtos = IaisCommonUtils.genNewArrayList();
                 if (premisesDtos != null && !premisesDtos.isEmpty()) {
                     for (PremisesDto premisesDto : premisesDtos) {
                         String blkNo = premisesDto.getBlkNo();
@@ -157,7 +160,7 @@ public class CessationServiceImpl implements CessationService {
 
     @Override
     public void saveCessations(List<AppCessationDto> appCessationDtos) {
-        List<AppCessMiscDto> appCessMiscDtos = new ArrayList<>();
+        List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         for (AppCessationDto appCessationDto : appCessationDtos) {
             AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
             String licId = appCessationDto.getWhichTodo();
@@ -172,7 +175,7 @@ public class CessationServiceImpl implements CessationService {
             applicationDto.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
             applicationDto.setOriginLicenceId(licId);
             applicationDto.setVersion(1);
-            List<ApplicationDto> applicationDtos = new ArrayList<>();
+            List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
             applicationDtos.add(applicationDto);
             appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
             appCessMiscDto.setApplicationDto(applicationDtos);
@@ -188,7 +191,7 @@ public class CessationServiceImpl implements CessationService {
         applicationDto.setId(null);
         applicationDto.setApplicationNo(systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity());
         withdrawnDto.setApplicationDto(applicationDto);
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = new ArrayList<>();
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
         AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
         appGrpPremisesDto.setPremisesType(ApplicationConsts.PREMISES_TYPE_ON_SITE);
         appGrpPremisesDto.setPostalCode("78979");
@@ -207,7 +210,7 @@ public class CessationServiceImpl implements CessationService {
 
     @Override
     public void updateCesation(List<AppCessationDto> appCessationDtos) {
-        List<AppCessMiscDto> appCessMiscDtos = new ArrayList<>();
+        List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         for (AppCessationDto appCessationDto : appCessationDtos) {
             AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
             String licId = appCessationDto.getWhichTodo();
@@ -215,7 +218,7 @@ public class CessationServiceImpl implements CessationService {
             ApplicationDto applicationDto = applicationClient.getApplicationByLicId(licId).getEntity();
             String appGrpId = applicationDto.getAppGrpId();
             applicationGroupDto.setId(appGrpId);
-            List<ApplicationDto> applicationDtoList = new ArrayList<>();
+            List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
             String applicationNo = applicationDto.getApplicationNo();
             applicationDto.setStatus("APST009");
             applicationDtoList.add(applicationDto);
@@ -261,7 +264,7 @@ public class CessationServiceImpl implements CessationService {
     }
 
     private List<AppGrpPremisesDto> getAppGrpPremisesDto() {
-        List<AppGrpPremisesDto> appGrpPremisesDtos = new ArrayList<>();
+        List<AppGrpPremisesDto> appGrpPremisesDtos = IaisCommonUtils.genNewArrayList();
         AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
         appGrpPremisesDto.setPremisesType(ApplicationConsts.PREMISES_TYPE_ON_SITE);
         appGrpPremisesDto.setPostalCode("999666");

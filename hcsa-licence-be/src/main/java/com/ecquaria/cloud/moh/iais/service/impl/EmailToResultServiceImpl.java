@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.EmailToResultService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
@@ -13,13 +14,14 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sop.util.DateUtil;
-
-import javax.xml.crypto.Data;
-import java.io.IOException;
-import java.util.*;
 
 /**
  * @author weilu
@@ -185,7 +187,7 @@ public class EmailToResultServiceImpl implements EmailToResultService {
         jobRemindMsgTrackingDto.setRefNo(appNo);
         jobRemindMsgTrackingDto.setMsgKey(SUCCESSMSGKEY);
         jobRemindMsgTrackingDto.setStatus("ACTIVE");
-        List<JobRemindMsgTrackingDto> list = new ArrayList<>();
+        List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
         list.add(jobRemindMsgTrackingDto);
         systemBeLicClient.createJobRemindMsgTrackingDtos(list);
         Map<String,Object> map = new HashMap<>(34);
@@ -207,7 +209,7 @@ public class EmailToResultServiceImpl implements EmailToResultService {
         jobRemindMsgTrackingDto.setRefNo(appNo);
         jobRemindMsgTrackingDto.setMsgKey(FAILEDMSGKEY);
         jobRemindMsgTrackingDto.setStatus("ACTIVE");
-        List<JobRemindMsgTrackingDto> list = new ArrayList<>();
+        List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
         list.add(jobRemindMsgTrackingDto);
         systemBeLicClient.createJobRemindMsgTrackingDtos(list);
         Map<String,Object> map = new HashMap<>(34);

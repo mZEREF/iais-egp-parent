@@ -5,15 +5,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.WorkloadManhoursService;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * WorkloadManhoursBatchjob
@@ -46,7 +45,7 @@ public class WorkloadManhoursBatchjob {
             workload += item.getManhourCount();
         }
         log.debug(StringUtil.changeForLog("The workload is  ..." + workload));
-        List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtoList = new ArrayList<>();
+        List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtoList = IaisCommonUtils.genNewArrayList();
         hcsaSvcSpePremisesTypeDtoList = workloadManhoursService.applicationPremisesByIds(hcsaSvcSpecificStageWorkloadDtoList);
         Integer onsite = 0;
         Integer conveyance = 0;

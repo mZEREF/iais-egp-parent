@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.annotation.CustomValidate;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -25,7 +26,6 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -283,7 +283,7 @@ public class WebValidationHelper {
         Map<String, String> errors = result.retrieveAll();
         String errorMsg = generateJsonStr(errors);
         dto.setValidationFail(errorMsg);
-        List<AuditTrailDto> dtoList = new ArrayList<>();
+        List<AuditTrailDto> dtoList = IaisCommonUtils.genNewArrayList();
         dtoList.add(dto);
         dto.setOperation(AuditTrailConsts.OPERATION_VALIDATION_FAIL);
         SubmissionClient client = SpringContextHelper.getContext().getBean(SubmissionClient.class);

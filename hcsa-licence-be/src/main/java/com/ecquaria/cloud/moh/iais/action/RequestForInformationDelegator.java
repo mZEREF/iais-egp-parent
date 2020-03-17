@@ -188,7 +188,7 @@ public class RequestForInformationDelegator {
             if(!StringUtil.isEmpty(licResult)){
                 SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
                 searchListDtoSearchResult.setRowCount(licResult.getRowCount());
-                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=new ArrayList<>();
+                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
                 for (RfiLicenceQueryDto rfiLicenceQueryDto:licResult.getRows()
                 ) {
                     ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
@@ -247,7 +247,7 @@ public class RequestForInformationDelegator {
             if(!StringUtil.isEmpty(appResult)){
                 SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
                 searchListDtoSearchResult.setRowCount(appResult.getRowCount());
-                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=new ArrayList<>();
+                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
                 for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
                 ) {
 
@@ -358,7 +358,7 @@ public class RequestForInformationDelegator {
             if(!StringUtil.isEmpty(appResult)){
                 SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
                 searchListDtoSearchResult.setRowCount(appResult.getRowCount());
-                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=new ArrayList<>();
+                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
                 for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
                 ) {
                     Map<String,Object> filter=new HashMap<>();
@@ -494,7 +494,7 @@ public class RequestForInformationDelegator {
             if(!StringUtil.isEmpty(licResult)){
                 SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
                 searchListDtoSearchResult.setRowCount(licResult.getRowCount());
-                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=new ArrayList<>();
+                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
                 for (RfiLicenceQueryDto rfiLicenceQueryDto:licResult.getRows()
                 ) {
                     ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
@@ -599,7 +599,7 @@ public class RequestForInformationDelegator {
             allocationDto = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
         }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocationList = new ArrayList<>();
+        List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocationList = IaisCommonUtils.genNewArrayList();
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
             String hciName = "";
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
@@ -694,7 +694,7 @@ public class RequestForInformationDelegator {
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = new HashMap<>();
             for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
-                List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocation = new ArrayList<>();
+                List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocation = IaisCommonUtils.genNewArrayList();
                 String hciName = "";
                 if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
                     hciName = appGrpPremisesDto.getHciName();
@@ -910,7 +910,7 @@ public class RequestForInformationDelegator {
             emailDto.setContent(mesContext);
             emailDto.setSubject(rfiEmailTemplateDto.getSubject());
             emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-            List<String> licenseeIds=new ArrayList<>();
+            List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
             licenseeIds.add(licenseeId);
             List<String> emailAddress = EmailHelper.getEmailAddressListByLicenseeId(licenseeIds);
             emailDto.setReceipts(emailAddress);

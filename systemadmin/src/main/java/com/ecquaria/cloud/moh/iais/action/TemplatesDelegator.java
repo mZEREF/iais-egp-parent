@@ -9,23 +9,26 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import com.ecquaria.cloud.moh.iais.service.TemplatesService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Author: Hc
@@ -76,7 +79,7 @@ public class TemplatesDelegator {
             ParamUtil.setSessionAttr(request,MsgTemplateConstants.MSG_SEARCH_PARAM, searchParam);
             ParamUtil.setRequestAttr(request,MsgTemplateConstants.MSG_SEARCH_RESULT, searchResult);
         }
-        List<SelectOption> messageTypeSelectList = new ArrayList<>();
+        List<SelectOption> messageTypeSelectList = IaisCommonUtils.genNewArrayList();
         messageTypeSelectList.add(new SelectOption("", "Select"));
         messageTypeSelectList.add(new SelectOption("MTTP001", "Alert"));
         messageTypeSelectList.add(new SelectOption("MTTP002", "Banner Alert"));
@@ -84,7 +87,7 @@ public class TemplatesDelegator {
         messageTypeSelectList.add(new SelectOption("MTTP004", "Notification"));
         ParamUtil.setRequestAttr(bpc.request, "msgType", messageTypeSelectList);
 
-        List<SelectOption> deliveryModeSelectList = new ArrayList<>();
+        List<SelectOption> deliveryModeSelectList = IaisCommonUtils.genNewArrayList();
         deliveryModeSelectList.add(new SelectOption("", "Select"));
         deliveryModeSelectList.add(new SelectOption("DEMD001", "Mail"));
         deliveryModeSelectList.add(new SelectOption("DEMD002", "SMS"));
@@ -110,7 +113,7 @@ public class TemplatesDelegator {
             ParamUtil.setSessionAttr(request,MsgTemplateConstants.MSG_TEMPLATE_DTO, msgTemplateDto);
 
 
-            List<SelectOption> messageTypeSelectList = new ArrayList<>();
+            List<SelectOption> messageTypeSelectList = IaisCommonUtils.genNewArrayList();
             messageTypeSelectList.add(new SelectOption(messageType, messageTypeTxt));
             messageTypeSelectList.add(new SelectOption("MTTP001", "Alert"));
             messageTypeSelectList.add(new SelectOption("MTTP002", "Banner Alert"));
@@ -119,7 +122,7 @@ public class TemplatesDelegator {
             messageTypeSelectList.add(new SelectOption("MTTP005", "Scheduled Maintenance"));
             ParamUtil.setRequestAttr(bpc.request, "messageTypeSelect", messageTypeSelectList);
 
-            List<SelectOption> deliveryModeSelectList = new ArrayList<>();
+            List<SelectOption> deliveryModeSelectList = IaisCommonUtils.genNewArrayList();
             deliveryModeSelectList.add(new SelectOption(deliveryMode, deliveryModeTxt));
             deliveryModeSelectList.add(new SelectOption("DEMD001", "Mail"));
             deliveryModeSelectList.add(new SelectOption("DEMD002", "SMS"));

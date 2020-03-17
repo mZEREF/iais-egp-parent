@@ -17,12 +17,10 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * AutoRenewalDelegator
@@ -49,7 +47,7 @@ public class WithOutRenewalDelegator {
 
         //init data
         List<String> licenceIDList = (List<String>) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR);
-/*        licenceIDList = new ArrayList<>();
+/*        licenceIDList = IaisCommonUtils.genNewArrayList();
         licenceIDList.add("B1DC1835-E161-EA11-BE7F-000C29F371DC");*/
         if (licenceIDList == null || IaisCommonUtils.isEmpty(licenceIDList)){
             log.info("can not find licence id for without renewal");
@@ -201,7 +199,7 @@ public class WithOutRenewalDelegator {
         log.info(StringUtil.changeForLog("the do toPrepareData start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO);
         RenewDto renewDto = new RenewDto();
-        List<AppSubmissionDto> appSubmissionDtos = new ArrayList<>();
+        List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
         appSubmissionDtos.add(appSubmissionDto);
         renewDto.setAppSubmissionDtos(appSubmissionDtos);
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);

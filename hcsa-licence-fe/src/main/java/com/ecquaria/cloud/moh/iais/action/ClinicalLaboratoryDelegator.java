@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
@@ -31,22 +32,20 @@ import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.sz.commons.util.FileUtil;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -216,7 +215,7 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         ParamUtil.setRequestAttr(bpc.request, "CgoMandatoryCount", mandatoryCount);
-        List<SelectOption> cgoSelectList = new ArrayList<>();
+        List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();
         SelectOption sp0 = new SelectOption("-1", "Select Personnel");
         cgoSelectList.add(sp0);
         SelectOption sp1 = new SelectOption("newOfficer", "I'd like to add a new personnel");
@@ -251,7 +250,7 @@ public class ClinicalLaboratoryDelegator {
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
-        List<AppSvcLaboratoryDisciplinesDto> newChkLstDtoList = new ArrayList<>();
+        List<AppSvcLaboratoryDisciplinesDto> newChkLstDtoList = IaisCommonUtils.genNewArrayList();
         for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtoList){
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
@@ -265,7 +264,7 @@ public class ClinicalLaboratoryDelegator {
         }
 
         ParamUtil.setSessionAttr(bpc.request, "PremisesAndChkLst", (Serializable) newChkLstDtoList);
-        List<SelectOption> spList = new ArrayList<>();
+        List<SelectOption> spList = IaisCommonUtils.genNewArrayList();
         List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         SelectOption sp = null;
         if(appSvcCgoDtoList != null && !appSvcCgoDtoList.isEmpty()){
@@ -317,8 +316,8 @@ public class ClinicalLaboratoryDelegator {
 
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-        List<AppSvcPrincipalOfficersDto> principalOfficersDtos = new ArrayList<>();
-        List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = new ArrayList<>();
+        List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
+        List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
         if(appSvcPrincipalOfficersDtos != null && ! appSvcPrincipalOfficersDtos.isEmpty()){
             for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto:appSvcPrincipalOfficersDtos){
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(appSvcPrincipalOfficersDto.getPsnType())){
@@ -349,7 +348,7 @@ public class ClinicalLaboratoryDelegator {
         List<SelectOption> MedAlertSelectList = getMedAlertSelectList(true);
         ParamUtil.setRequestAttr(bpc.request, "MedAlertSelect", MedAlertSelectList);
 
-        List<SelectOption> deputyFlagSelect = new ArrayList<>();
+        List<SelectOption> deputyFlagSelect = IaisCommonUtils.genNewArrayList();
         SelectOption deputyFlagOp1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
         deputyFlagSelect.add(deputyFlagOp1);
         SelectOption deputyFlagOp2 = new SelectOption("0", "N");
@@ -456,7 +455,7 @@ public class ClinicalLaboratoryDelegator {
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             Map<String, String> reloadChkLstMap = new HashMap<>();
             Map<String, String> errorMap = new HashMap<>();
-            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = new ArrayList<>();
+            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = IaisCommonUtils.genNewArrayList();
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
                 String premiseName = "";
                 if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
@@ -466,7 +465,7 @@ public class ClinicalLaboratoryDelegator {
                 }
                 String name = premiseName + "control--runtime--1";
                 String[] checkList = ParamUtil.getStrings(bpc.request, name);
-                List<AppSvcChckListDto> appSvcChckListDtoList = new ArrayList<>();
+                List<AppSvcChckListDto> appSvcChckListDtoList = IaisCommonUtils.genNewArrayList();
                 AppSvcChckListDto appSvcChckListDto = new AppSvcChckListDto();
                 if (!StringUtil.isEmpty(checkList)) {
                     for (String maskName : checkList) {
@@ -621,7 +620,7 @@ public class ClinicalLaboratoryDelegator {
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
             AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
-            List<AppSvcDisciplineAllocationDto> daList = new ArrayList<>();
+            List<AppSvcDisciplineAllocationDto> daList = IaisCommonUtils.genNewArrayList();
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = currentSvcRelatedDto.getAppSvcLaboratoryDisciplinesDtoList();
             if (appSvcLaboratoryDisciplinesDtoList != null) {
                 for (AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList) {
@@ -763,7 +762,7 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doDocuments(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doDocuments start ...."));
-        List<AppSvcDocDto> appSvcDocDtoList = new ArrayList<>();
+        List<AppSvcDocDto> appSvcDocDtoList = IaisCommonUtils.genNewArrayList();
         AppSvcDocDto appSvcDocDto = null;
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         Map<String,String> errorMap=new HashMap<>();
@@ -972,7 +971,7 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setRequestAttr(bpc.request, SERVICEPERSONNELTYPE, personnelTypeSel);
 
 
-        List<SelectOption> designation = new ArrayList<>();
+        List<SelectOption> designation = IaisCommonUtils.genNewArrayList();
         SelectOption designationOp1 = new SelectOption("Diagnostic radiographer", "Diagnostic radiographer");
         SelectOption designationOp2 = new SelectOption("Radiation therapist", "Radiation therapist");
         SelectOption designationOp3 = new SelectOption("Nuclear Medicine Technologist", "Nuclear Medicine Technologist");
@@ -1008,9 +1007,9 @@ public class ClinicalLaboratoryDelegator {
             String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
             String currentSvcCod = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
 
-            List<AppSvcPersonnelDto> appSvcPersonnelDtos = new ArrayList<>();
+            List<AppSvcPersonnelDto> appSvcPersonnelDtos = IaisCommonUtils.genNewArrayList();
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
-            List<String> personnelTypeList = new ArrayList<>();
+            List<String> personnelTypeList = IaisCommonUtils.genNewArrayList();
             List<SelectOption> personnelTypeSel = genPersonnelTypeSel(currentSvcCod);
             for(SelectOption sp:personnelTypeSel){
                 personnelTypeList.add(sp.getValue());
@@ -1236,7 +1235,7 @@ public class ClinicalLaboratoryDelegator {
 
     private List<AppSvcCgoDto> genAppSvcCgoDto(HttpServletRequest request){
         ParamUtil.setSessionAttr(request, ERRORMAP_GOVERNANCEOFFICERS,null);
-        List<AppSvcCgoDto> appSvcCgoDtoList = new ArrayList<>();
+        List<AppSvcCgoDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
         AppSvcCgoDto appSvcCgoDto = null;
 
         String[] assignSelect = ParamUtil.getStrings(request, "assignSelect");
@@ -1287,7 +1286,7 @@ public class ClinicalLaboratoryDelegator {
 
 
     private List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDto(HttpServletRequest request, Boolean isGetDataFromPagePo, Boolean isGetDataFromPageDpo){
-        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = new ArrayList<>();
+        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
         String deputySelect = ParamUtil.getString(request, "deputyPrincipalOfficer");
         if(isGetDataFromPagePo){
             String [] assignSelect = ParamUtil.getStrings(request, "assignSelect");
@@ -1463,7 +1462,7 @@ public class ClinicalLaboratoryDelegator {
             if(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode) ||
                     AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode) ||
                     AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)){
-                specialtySelectList = new ArrayList<>();
+                specialtySelectList = IaisCommonUtils.genNewArrayList();
                 SelectOption ssl1 = new SelectOption("-1", "Please select");
                 SelectOption ssl2 = new SelectOption("Pathology", "Pathology");
                 SelectOption ssl3 = new SelectOption("Haematology", "Haematology");
@@ -1475,7 +1474,7 @@ public class ClinicalLaboratoryDelegator {
             }else if(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(svcCode) ||
                     AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode) ||
                     AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)){
-                specialtySelectList = new ArrayList<>();
+                specialtySelectList = IaisCommonUtils.genNewArrayList();
                 SelectOption ssl1 = new SelectOption("-1", "Please select");
                 SelectOption ssl2 = new SelectOption("Diagnostic Radiology", "Diagnostic Radiology");
                 SelectOption ssl3 = new SelectOption("Nuclear Medicine", "Nuclear Medicine");
@@ -1491,7 +1490,7 @@ public class ClinicalLaboratoryDelegator {
 
 
     private List<AppSvcPersonnelDto> genAppSvcPersonnelDtoList(HttpServletRequest request, List<String> personnelTypeList){
-        List<AppSvcPersonnelDto> appSvcPersonnelDtos = new ArrayList<>();
+        List<AppSvcPersonnelDto> appSvcPersonnelDtos = IaisCommonUtils.genNewArrayList();
         String [] personnelSels =  ParamUtil.getStrings(request, "personnelSel");
         String [] designations = ParamUtil.getStrings(request, "designation");
         String [] names = ParamUtil.getStrings(request, "name");
@@ -1540,7 +1539,7 @@ public class ClinicalLaboratoryDelegator {
         return appSvcPersonnelDtos;
     }
     public static List<SelectOption> genPersonnelTypeSel(String currentSvcCod){
-        List<SelectOption> personnelTypeSel = new ArrayList<>();
+        List<SelectOption> personnelTypeSel = IaisCommonUtils.genNewArrayList();
         if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)){
             SelectOption personnelTypeOp1 = new SelectOption("SPPT001", "Radiology Professional");
             SelectOption personnelTypeOp2 = new SelectOption("SPPT002", "Medical Physicist");
@@ -1563,7 +1562,7 @@ public class ClinicalLaboratoryDelegator {
         return personnelTypeSel;
     }
     public static List<SelectOption> getAssignPrincipalOfficerSel(String svcId, boolean needFirstOpt){
-        List<SelectOption> assignSelectList = new ArrayList<>();
+        List<SelectOption> assignSelectList = IaisCommonUtils.genNewArrayList();
         if(needFirstOpt){
             SelectOption assignOp1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
             assignSelectList.add(assignOp1);
@@ -1578,7 +1577,7 @@ public class ClinicalLaboratoryDelegator {
 
 
     public static List<SelectOption> getMedAlertSelectList(boolean needFirstOp){
-        List<SelectOption> MedAlertSelectList = new ArrayList<>();
+        List<SelectOption> MedAlertSelectList = IaisCommonUtils.genNewArrayList();
         if(needFirstOp){
             SelectOption idType0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
             MedAlertSelectList.add(idType0);

@@ -21,15 +21,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
-import sop.util.CopyUtil;
-
-import javax.servlet.http.HttpServletRequest;
 import java.sql.Time;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import sop.util.CopyUtil;
 
 /**
  * NewApplicationHelper
@@ -92,7 +90,7 @@ public class NewApplicationHelper {
         }
 
         Map<String,String> errMap = new HashMap<>();
-        List<String> stringList=new ArrayList<>();
+        List<String> stringList=IaisCommonUtils.genNewArrayList();
         for(int i=0;i<appSvcCgoList.size();i++ ){
             StringBuilder stringBuilder1=new StringBuilder();
             String assignSelect = appSvcCgoList.get(i).getAssignSelect();
@@ -196,7 +194,7 @@ public class NewApplicationHelper {
     }
 
     public static  List<SelectOption> getIdTypeSelOp(){
-        List<SelectOption> idTypeSelectList = new ArrayList<>();
+        List<SelectOption> idTypeSelectList = IaisCommonUtils.genNewArrayList();
         SelectOption idType0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
         idTypeSelectList.add(idType0);
         SelectOption idType1 = new SelectOption("NRIC", "NRIC");
@@ -517,7 +515,7 @@ public class NewApplicationHelper {
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = new HashMap<>();
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
-            List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocation = new ArrayList<>();
+            List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocation = IaisCommonUtils.genNewArrayList();
             String hciName = "";
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
                 hciName = appGrpPremisesDto.getHciName();

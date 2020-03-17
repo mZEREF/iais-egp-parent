@@ -35,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformati
 import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -51,16 +52,14 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * OnlineEnquiriesServiceImpl
@@ -140,7 +139,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 
         List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
 
-        List<ComplianceHistoryDto> complianceHistoryDtos=new ArrayList<>();
+        List<ComplianceHistoryDto> complianceHistoryDtos= IaisCommonUtils.genNewArrayList();
         for(LicAppCorrelationDto licAppCorrelationDto : licAppCorrelationDtos){
             ComplianceHistoryDto complianceHistoryDto=new ComplianceHistoryDto();
             AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(licAppCorrelationDto.getApplicationId()).getEntity();
@@ -194,7 +193,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             inspectionReportDto.setLicenseeName(name);
         }
         List<AppGrpPersonnelDto> principalOfficer = appInsRepDto.getPrincipalOfficer();
-        List<String> poNames = new ArrayList<>();
+        List<String> poNames = IaisCommonUtils.genNewArrayList();
         for(AppGrpPersonnelDto appGrpPersonnelDto : principalOfficer){
             String name = appGrpPersonnelDto.getName();
             poNames.add(name);
@@ -204,7 +203,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 
         List<String> inspectors = taskOrganizationClient.getInspectorByAppCorrId(appPremisesCorrelationId).getEntity();
         List<OrgUserDto> inspectorsNames = organizationClient.retrieveOrgUserAccount(inspectors).getEntity();
-        List<String> nameList = new ArrayList<>();
+        List<String> nameList = IaisCommonUtils.genNewArrayList();
         for(OrgUserDto orgUserDto :inspectorsNames){
             nameList.add(orgUserDto.getDisplayName());
         }
@@ -222,7 +221,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         }
 
         //serviceId transform serviceCode
-        List<String> list = new ArrayList<>();
+        List<String> list = IaisCommonUtils.genNewArrayList();
         String serviceId = appInsRepDto.getServiceId();
         list.add(serviceId);
         List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
@@ -236,15 +235,15 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         }
 
         List<HcsaSvcSubtypeOrSubsumedDto> subsumedDtos = hcsaConfigClient.listSubCorrelationFooReport(serviceId).getEntity();
-        List<String> subsumedServices = new ArrayList<>();
+        List<String> subsumedServices = IaisCommonUtils.genNewArrayList();
         for(HcsaSvcSubtypeOrSubsumedDto subsumedDto :subsumedDtos){
             subsumedServices.add(subsumedDto.getName());
         }
         inspectionReportDto.setSubsumedServices(subsumedServices);
         //Nc
         List<ChecklistQuestionDto> listChecklistQuestionDtos = hcsaChklClient.getcheckListQuestionDtoList(svcCode, "Inspection").getEntity();
-        List<ReportNcRegulationDto> listReportNcRegulationDto = new ArrayList<>();
-        List<ReportNcRectifiedDto> listReportNcRectifiedDto = new ArrayList<>();
+        List<ReportNcRegulationDto> listReportNcRegulationDto = IaisCommonUtils.genNewArrayList();
+        List<ReportNcRectifiedDto> listReportNcRectifiedDto = IaisCommonUtils.genNewArrayList();
         //add ReportNcRegulationDto and add ncItemId
         if (listChecklistQuestionDtos != null && !listChecklistQuestionDtos.isEmpty()) {
             String configId = listChecklistQuestionDtos.get(0).getConfigId();

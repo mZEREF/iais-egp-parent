@@ -5,7 +5,12 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -21,15 +26,13 @@ import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /****
  *
@@ -171,8 +174,8 @@ public class RequestForChangeDelegator {
                 Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap= NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto,svcId);
                 ParamUtil.setRequestAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
                 //PO/DPO
-                List<AppSvcPrincipalOfficersDto> principalOfficersDtos = new ArrayList<>();
-                List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = new ArrayList<>();
+                List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
+                List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
                 if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos.get(0).getAppSvcPrincipalOfficersDtoList())){
                     for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto:appSvcRelatedInfoDtos.get(0).getAppSvcPrincipalOfficersDtoList()){
                         if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(appSvcPrincipalOfficersDto.getPsnType())){
@@ -267,7 +270,7 @@ public class RequestForChangeDelegator {
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         String UNID=ParamUtil.getString(bpc.request, "UNID");
         String newLicenseeId=null;
-        List<String> uenMemberIds=new ArrayList<>();
+        List<String> uenMemberIds=IaisCommonUtils.genNewArrayList();
         List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoList=requestForChangeService.getLicenseeKeyApptPersonDtoListByUen(UNID);
          if(licenseeKeyApptPersonDtoList!=null&&licenseeKeyApptPersonDtoList.size()>0) {
              for (LicenseeKeyApptPersonDto e : licenseeKeyApptPersonDtoList
@@ -279,7 +282,7 @@ public class RequestForChangeDelegator {
 
              //uen
              List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoListFromLicenseeId = requestForChangeService.getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
-             List<String> oldMemberIds = new ArrayList<>();
+             List<String> oldMemberIds = IaisCommonUtils.genNewArrayList();
              if (licenseeKeyApptPersonDtoListFromLicenseeId != null && licenseeKeyApptPersonDtoListFromLicenseeId.size() > 0) {
                  for (LicenseeKeyApptPersonDto e : licenseeKeyApptPersonDtoListFromLicenseeId
                  ) {
@@ -345,7 +348,7 @@ public class RequestForChangeDelegator {
                  }
                  String grpNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                  appSubmissionDto.setAppGrpNo(grpNo);
-                 List<String> names = new ArrayList<>();
+                 List<String> names = IaisCommonUtils.genNewArrayList();
                  for (AppSvcRelatedInfoDto e : appSubmissionDto.getAppSvcRelatedInfoDtoList()
                  ) {
                      names.add(e.getServiceName());
@@ -400,7 +403,7 @@ public class RequestForChangeDelegator {
             }else{
                 appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                 String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
-                List<String> svcNames = new ArrayList<>();
+                List<String> svcNames = IaisCommonUtils.genNewArrayList();
                 svcNames.add(svcName);
                 List<HcsaServiceDto> hcsaServiceDtoList  = serviceConfigService.getHcsaServiceByNames(svcNames);
                 ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);

@@ -6,20 +6,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskInspectionMatr
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.InspectionShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskInspectionService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @Author: jiahao
@@ -209,8 +208,8 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<HcsaRiskInspectionMatrixDto> dtoList = showDto.getInspectionDtoList();
-        List<HcsaRiskInspectionMatrixDto> saveList = new ArrayList<>();
-        List<HcsaRiskInspectionMatrixDto> updateList = new ArrayList<>();
+        List<HcsaRiskInspectionMatrixDto> saveList = IaisCommonUtils.genNewArrayList();
+        List<HcsaRiskInspectionMatrixDto> updateList = IaisCommonUtils.genNewArrayList();
         for(HcsaRiskInspectionMatrixDto temp : dtoList){
             if(temp.isCaEdit()||temp.isMjEdit()||temp.isMiEdit()){
                 saveList.add(getFinDto(temp,true,"RSKL0001"));
@@ -297,7 +296,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
 
     public List<HcsaRiskInspectionMatrixDto> getLastversionList(HcsaRiskInspectionMatrixDto temp){
         List<HcsaRiskInspectionMatrixDto> lastversionList= hcsaConfigClient.getInspectionBySvcCode(temp.getSvcCode()).getEntity();
-        List<HcsaRiskInspectionMatrixDto> returnList = new ArrayList<>();
+        List<HcsaRiskInspectionMatrixDto> returnList = IaisCommonUtils.genNewArrayList();
         if(lastversionList!=null && !lastversionList.isEmpty()){
             for(HcsaRiskInspectionMatrixDto fin:lastversionList){
                 if(temp.isCaEdit()&&"RSKL0001".equals(fin.getRiskLevel())){

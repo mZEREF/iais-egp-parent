@@ -78,7 +78,7 @@ public class TaskServiceImpl implements TaskService {
             log.error(StringUtil.changeForLog("The applicationDto or stageId is null"));
             return result;
         }
-        List<ApplicationDto> applicationDtos = new ArrayList<>();
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         applicationDtos.add(applicationDto);
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,statgId);
         hcsaSvcStageWorkingGroupDtos = this.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
@@ -134,8 +134,8 @@ public class TaskServiceImpl implements TaskService {
                 String workGroupId = hcsaSvcStageWorkingGroupDtos.get(0).getGroupId();
                 TaskDto taskScoreDto = getUserIdForWorkGroup(workGroupId);
                // List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = this.getAppPremisesCorrelationByAppGroupId(applicationDtos.get(0).getAppGrpId());
-                List<TaskDto> taskDtos = new ArrayList<>();
-                List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = new ArrayList<>();
+                List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+                List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = IaisCommonUtils.genNewArrayList();
                 for(ApplicationDto applicationDto : applicationDtos){
                     int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
                             stageId,applicationDto.getApplicationType());
@@ -349,7 +349,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<String> getDistincTaskRefNumByCurrentGroup(String wrkGroupId) {
         List<TaskDto> commPoolByGroupWordId =  getCommPoolByGroupWordId(wrkGroupId);
-        List<String> taskRefNumList = new ArrayList<>();
+        List<String> taskRefNumList = IaisCommonUtils.genNewArrayList();
         commPoolByGroupWordId.stream().forEach(i -> taskRefNumList.add(i.getRefNo()));
         return taskRefNumList.stream().distinct().collect(Collectors.toList());
     }

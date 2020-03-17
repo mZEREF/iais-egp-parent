@@ -236,10 +236,10 @@ public class HcsaApplicationDelegator {
         String svcCode=hcsaServiceDto.getSvcCode();
         RiskAcceptiionDto riskAcceptiionDto=new RiskAcceptiionDto();
         riskAcceptiionDto.setScvCode(svcCode);
-        List<RiskAcceptiionDto> listRiskAcceptiionDto = new ArrayList<>();
+        List<RiskAcceptiionDto> listRiskAcceptiionDto = IaisCommonUtils.genNewArrayList();
         listRiskAcceptiionDto.add(riskAcceptiionDto);
         List<RiskResultDto> listRiskResultDto = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();
-        List<String> riskResult = new ArrayList<>();
+        List<String> riskResult = IaisCommonUtils.genNewArrayList();
         if(listRiskResultDto!=null && !listRiskResultDto.isEmpty()){
             for(RiskResultDto riskResultDto :listRiskResultDto){
                 String dateType = riskResultDto.getDateType();
@@ -528,12 +528,12 @@ public class HcsaApplicationDelegator {
             //add this user to this workgroup
             List<UserGroupCorrelationDto> userGroupCorrelationDtoList = broadcastOrganizationDto.getUserGroupCorrelationDtoList();
             if(broadcastOrganizationDto.getWorkingGroupDto()!= null && userGroupCorrelationDtoList != null && userGroupCorrelationDtoList.size() > 0){
-                List<UserGroupCorrelationDto> cloneUserGroupCorrelationDtos = new ArrayList<>();
+                List<UserGroupCorrelationDto> cloneUserGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
                 CopyUtil.copyMutableObjectList(userGroupCorrelationDtoList,cloneUserGroupCorrelationDtos);
                 broadcastOrganizationDto.setRollBackUserGroupCorrelationDtoList(cloneUserGroupCorrelationDtos);
                 userGroupCorrelationDtoList =changeStatusUserGroupCorrelationDtos(userGroupCorrelationDtoList,AppConsts.COMMON_STATUS_ACTIVE);
             }else{
-                userGroupCorrelationDtoList = new ArrayList<>();
+                userGroupCorrelationDtoList = IaisCommonUtils.genNewArrayList();
                 for(String id : userIds) {
                     UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
                     userGroupCorrelationDto.setUserId(id);
@@ -790,7 +790,7 @@ public class HcsaApplicationDelegator {
                     workingGroupDto = changeStatusWrokGroup(workingGroupDto,AppConsts.COMMON_STATUS_DELETED);
                     broadcastOrganizationDto.setWorkingGroupDto(workingGroupDto);
                     List<UserGroupCorrelationDto> userGroupCorrelationDtos = broadcastOrganizationDto1.getUserGroupCorrelationDtoList();
-                    List<UserGroupCorrelationDto> cloneUserGroupCorrelationDtos = new ArrayList<>();
+                    List<UserGroupCorrelationDto> cloneUserGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
                     CopyUtil.copyMutableObjectList(userGroupCorrelationDtos,cloneUserGroupCorrelationDtos);
                     broadcastOrganizationDto.setRollBackUserGroupCorrelationDtoList(cloneUserGroupCorrelationDtos);
                     userGroupCorrelationDtos = changeStatusUserGroupCorrelationDtos(userGroupCorrelationDtos,AppConsts.COMMON_STATUS_DELETED);
@@ -860,7 +860,7 @@ public class HcsaApplicationDelegator {
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
     private List<ApplicationDto> removeFastTracking(List<ApplicationDto> applicationDtos){
-        List<ApplicationDto> result = new ArrayList<>();
+        List<ApplicationDto> result = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(applicationDtos)){
          for (ApplicationDto applicationDto : applicationDtos){
              if(!applicationDto.isFastTracking()){
@@ -919,7 +919,7 @@ public class HcsaApplicationDelegator {
     }
 
     private List<UserGroupCorrelationDto> changeStatusUserGroupCorrelationDtos(List<UserGroupCorrelationDto> userGroupCorrelationDtos,String status){
-        List<UserGroupCorrelationDto> result = new ArrayList<>();
+        List<UserGroupCorrelationDto> result = IaisCommonUtils.genNewArrayList();
         if(userGroupCorrelationDtos!= null && userGroupCorrelationDtos.size() >0){
             for (UserGroupCorrelationDto userGroupCorrelationDto : userGroupCorrelationDtos){
                 userGroupCorrelationDto.setStatus(status);

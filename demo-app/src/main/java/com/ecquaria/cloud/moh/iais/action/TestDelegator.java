@@ -53,7 +53,7 @@ public final class TestDelegator {
 //       String sql = "select *  from SINGPOST_ADDRESS";
 //        ResultSet result = DBToolService.getInstance().query(sql);
 //        int columnCount = 0;
-//        List<String> columnNames = new ArrayList<>();
+//        List<String> columnNames = IaisCommonUtils.genNewArrayList();
 //        if (result != null) {
 //            ResultSetMetaData resultSetMetaData = result.getMetaData();
 //            if (resultSetMetaData != null) {

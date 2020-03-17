@@ -33,14 +33,7 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
@@ -50,6 +43,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 @Delegator(value = "hcsaChklConfigDelegator")
 @Slf4j
@@ -164,7 +162,7 @@ public class HcsaChklConfigDelegator {
             if(configDto != null){
                 List<ChecklistSectionDto> sectionDtos = configDto.getSectionDtos();
                 if(sectionDtos == null){
-                    sectionDtos = new ArrayList<>();
+                    sectionDtos = IaisCommonUtils.genNewArrayList();
                 }
 
                 ChecklistSectionDto checklistSectionDto = new ChecklistSectionDto();
@@ -198,8 +196,8 @@ public class HcsaChklConfigDelegator {
     private void preSelectOption(HttpServletRequest request){
         this.subtypeNames =  hcsaChklService.listSubTypeName();
         this.svcNames = hcsaChklService.listServiceName();
-        List<SelectOption> subtypeSelect = new ArrayList<>();
-        List<SelectOption> svcNameSelect = new ArrayList<>();
+        List<SelectOption> subtypeSelect = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> svcNameSelect = IaisCommonUtils.genNewArrayList();
 
         for(String sn : subtypeNames){
             subtypeSelect.add(new SelectOption(sn, sn));
@@ -605,7 +603,7 @@ public class HcsaChklConfigDelegator {
      */
     public void prepareConfigSectionInfo(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        List<SelectOption> subtypeSelects = new ArrayList<>();
+        List<SelectOption> subtypeSelects = IaisCommonUtils.genNewArrayList();
 
         List<String> subtypeNames = hcsaChklService.listSubTypeName();
         for(String s : subtypeNames){

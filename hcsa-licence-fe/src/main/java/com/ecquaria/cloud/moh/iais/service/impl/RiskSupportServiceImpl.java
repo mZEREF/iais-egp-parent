@@ -71,7 +71,7 @@ public class RiskSupportServiceImpl implements RiskSupportService {
     }
     @Override
     public HcsaLastInspectionDto getLastSecRiskSocre(String licId,String svcCode) {//use
-        List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = new ArrayList<>();
+        List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = IaisCommonUtils.genNewArrayList();
         HcsaLastInspectionDto lstInpDto = null;
         List<InspectionInfoDto> inspInfoList = new ArrayList<InspectionInfoDto>();
         InspectionInfoDto info = new InspectionInfoDto();
@@ -113,7 +113,7 @@ public class RiskSupportServiceImpl implements RiskSupportService {
 
     @Override
     public List<PreOrPostInspectionResultDto> preOrPostInspection(List<RecommendInspectionDto> recommendInspectionDtoList){
-        List<PreOrPostInspectionResultDto> preOrPostInspectionResultDtoList = new ArrayList<>();
+        List<PreOrPostInspectionResultDto> preOrPostInspectionResultDtoList = IaisCommonUtils.genNewArrayList();
         if(recommendInspectionDtoList!=null&&!recommendInspectionDtoList.isEmpty()){
             for(RecommendInspectionDto temp:recommendInspectionDtoList){
                 if(temp.isRenew()){
@@ -219,7 +219,7 @@ public class RiskSupportServiceImpl implements RiskSupportService {
     }
 
     public RiskResultDto getRiskResult(HcsaLastInspectionDto dto,String svcCode){//use
-        List<RiskAcceptiionDto> riskAcceptiionDtoList = new ArrayList<>();
+        List<RiskAcceptiionDto> riskAcceptiionDtoList = IaisCommonUtils.genNewArrayList();
         RiskAcceptiionDto accDto = new RiskAcceptiionDto();
         accDto.setScvCode(svcCode);
         accDto.setLastInspectionScore(dto.getLastScore());
@@ -278,7 +278,7 @@ public class RiskSupportServiceImpl implements RiskSupportService {
     @Override
     public List<AutoRenewDto> isAutoRenew(List<String> licNo,boolean isRenew) {
         List<LicenceDto> licDtoList = licenceClient.getLicDtosByLicNos(licNo).getEntity();
-        List<AutoRenewDto> autoRenewDtoList = new ArrayList<>();
+        List<AutoRenewDto> autoRenewDtoList = IaisCommonUtils.genNewArrayList();
         AutoRenewDto dto = null;
         if(IaisCommonUtils.isEmpty(licDtoList)){
             for(LicenceDto temp:licDtoList){
@@ -294,7 +294,7 @@ public class RiskSupportServiceImpl implements RiskSupportService {
         String svcName = temp.getSvcName();
         AutoRenewDto adto = null;
         String svcCode = appConfigClient.getServiceCodeByName(svcName).getEntity();
-        List<RecommendInspectionDto> recommendInspectionDtoList = new ArrayList<>();
+        List<RecommendInspectionDto> recommendInspectionDtoList = IaisCommonUtils.genNewArrayList();
         RecommendInspectionDto dto = new RecommendInspectionDto();
         dto.setLicId(licId);
         dto.setSvcCode(svcCode);

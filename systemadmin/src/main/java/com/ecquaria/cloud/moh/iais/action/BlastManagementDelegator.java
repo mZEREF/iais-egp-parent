@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.EmailAuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -24,6 +25,19 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,21 +47,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 /*
@@ -111,7 +110,7 @@ public class BlastManagementDelegator {
         setModeSelection(bpc,null);
     }
     private void setModeSelection(BaseProcessClass bpc,String selected){
-        List<SelectOption> selectOptions = new ArrayList<>();
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         if(selected != null){
             if(selected.equals(EMAIL)){
                 selectOptions.add(new SelectOption(EMAIL,EMAIL));
@@ -129,7 +128,7 @@ public class BlastManagementDelegator {
     }
 
     private void setStatusSelection(BaseProcessClass bpc,String selected){
-        List<SelectOption> selectOptionArrayList = new ArrayList<>();
+        List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
         if(selected != null){
             if(selected.equals(AppConsts.COMMON_STATUS_ACTIVE)){
                 selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_ACTIVE,"active"));
@@ -321,7 +320,7 @@ public class BlastManagementDelegator {
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
         }else{
             List<DistributionListDto> distributionListDtos = distributionListService.getDistributionList();
-            List<SelectOption> selectOptions = new ArrayList<>();
+            List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
             if(blastManagementDto.getDistributionId() != null){
                 selectOptions.add(new SelectOption(blastManagementDto.getDistributionId(),blastManagementDto.getDistributionName()));
             }else{

@@ -9,10 +9,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -22,18 +21,18 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloudfeign.FeignException;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * @author weilu
@@ -162,7 +161,7 @@ public class InsReportDelegator {
     }
 
     private List<AppPremisesRecommendationDto> prepareForSave(BaseProcessClass bpc, String appPremisesCorrelationId) {
-        List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = new ArrayList<>();
+        List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = IaisCommonUtils.genNewArrayList();
         String riskLevel = ParamUtil.getRequestString(bpc.request, "riskLevel");
         String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
         String followUpAction = ParamUtil.getRequestString(bpc.request, "followUpAction");
@@ -216,7 +215,7 @@ public class InsReportDelegator {
     }
 
     private List<SelectOption> getChronoOption() {
-        List<SelectOption> ChronoResult = new ArrayList<>();
+        List<SelectOption> ChronoResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("Year", "Year");
         SelectOption so2 = new SelectOption("Month", "Month");
         SelectOption so3 = new SelectOption("Week", "Week");
@@ -227,7 +226,7 @@ public class InsReportDelegator {
     }
 
     private List<SelectOption> getRecommendationOption() {
-        List<SelectOption> recommendationResult = new ArrayList<>();
+        List<SelectOption> recommendationResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("Approved", "Proceed with Licence Issuance");
         SelectOption so2 = new SelectOption("Approved", "Proceed with Licence Issuance (with LTCs)");
         SelectOption so3 = new SelectOption("Rejected", "Reject Licence");
@@ -238,7 +237,7 @@ public class InsReportDelegator {
     }
 
     private List<SelectOption> getriskLevel() {
-        List<SelectOption> riskLevelResult = new ArrayList<>();
+        List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("Low", "Low");
         SelectOption so2 = new SelectOption("Moderate", "Moderate");
         SelectOption so3 = new SelectOption("High", "High");
@@ -249,7 +248,7 @@ public class InsReportDelegator {
     }
 
     private List<SelectOption> getProcessingDecision() {
-        List<SelectOption> riskLevelResult = new ArrayList<>();
+        List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("submit", "Submit Inspection Report for review");
         riskLevelResult.add(so1);
         return riskLevelResult;

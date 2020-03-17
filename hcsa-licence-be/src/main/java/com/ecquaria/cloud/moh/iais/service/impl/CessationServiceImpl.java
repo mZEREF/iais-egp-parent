@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
@@ -17,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +57,7 @@ public class CessationServiceImpl implements CessationService {
 
     @Override
     public List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds) {
-        List<AppCessLicDto> appCessDtos = new ArrayList<>();
+        List<AppCessLicDto> appCessDtos = IaisCommonUtils.genNewArrayList();
         if (licIds != null && !licIds.isEmpty()) {
             for (String licId : licIds) {
                 AppCessLicDto appCessDto = new AppCessLicDto();
@@ -68,7 +68,7 @@ public class CessationServiceImpl implements CessationService {
                 appCessDto.setLicenceNo(licenceNo);
                 appCessDto.setSvcName(svcName);
                 appCessDto.setLicenceId(licId);
-                List<AppCessHciDto> appCessHciDtos = new ArrayList<>();
+                List<AppCessHciDto> appCessHciDtos = IaisCommonUtils.genNewArrayList();
 
                 if (premisesDtos != null && !premisesDtos.isEmpty()) {
                     for (PremisesDto premisesDto : premisesDtos) {
@@ -101,7 +101,7 @@ public class CessationServiceImpl implements CessationService {
     public void saveCessations(List<AppCessationDto> appCessationDtos) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        List<AppCessMiscDto> appCessMiscDtos = new ArrayList<>();
+        List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < appCessationDtos.size(); i++) {
             AppCessationDto appCessationDto = appCessationDtos.get(0);
             AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
@@ -117,7 +117,7 @@ public class CessationServiceImpl implements CessationService {
             applicationDto.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
             applicationDto.setVersion(1);
             applicationDto.setOriginLicenceId(licId);
-            List<ApplicationDto> applicationDtos = new ArrayList<>();
+            List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
             applicationDtos.add(applicationDto);
             appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
             appCessMiscDto.setApplicationDto(applicationDtos);
@@ -130,7 +130,7 @@ public class CessationServiceImpl implements CessationService {
 
     @Override
     public void updateCesation(List<AppCessationDto> appCessationDtos) {
-        List<AppCessMiscDto> appCessMiscDtos = new ArrayList<>();
+        List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
 //        for (AppCessationDto appCessationDto : appCessationDtos) {
 //            AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
 //            String licId = appCessationDto.getWhichTodo();
@@ -138,7 +138,7 @@ public class CessationServiceImpl implements CessationService {
 //            ApplicationDto applicationDto = applicationClient.getApplicationByLicId(licId).getEntity();
 //            String appGrpId = applicationDto.getAppGrpId();
 //            applicationGroupDto.setId(appGrpId);
-//            List<ApplicationDto> applicationDtoList = new ArrayList<>();
+//            List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
 //            List<ApplicationDto> applicationDtos = applicationClient.getApplicationByLicId(licId).getEntity();
 //            ApplicationDto applicationDto = applicationDtos.get(0);
 //            String applicationNo = applicationDto.getApplicationNo();
@@ -166,7 +166,7 @@ public class CessationServiceImpl implements CessationService {
     @Override
     public void updateLicence(List<String> licNos) {
         List<LicenceDto> licenceDtos = hcsaLicenceClient.getLicDtosByLicNos(licNos).getEntity();
-        List<LicenceDto> licenceDtoNew = new ArrayList<>();
+        List<LicenceDto> licenceDtoNew = IaisCommonUtils.genNewArrayList();
         if(licenceDtos!=null&&!licenceDtos.isEmpty()){
             for(LicenceDto licenceDto :licenceDtos){
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
@@ -207,7 +207,7 @@ public class CessationServiceImpl implements CessationService {
     }
 
     private List<AppGrpPremisesDto> getAppGrpPremisesDto() {
-        List<AppGrpPremisesDto> appGrpPremisesDtos = new ArrayList<>();
+        List<AppGrpPremisesDto> appGrpPremisesDtos = IaisCommonUtils.genNewArrayList();
         AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
         appGrpPremisesDto.setPremisesType(ApplicationConsts.PREMISES_TYPE_ON_SITE);
         appGrpPremisesDto.setPostalCode("999666");

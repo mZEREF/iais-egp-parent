@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -39,7 +40,6 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -183,14 +183,14 @@ public class AppealServiceImpl implements AppealService {
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
             List<PremisesListQueryDto> premisesListQueryDtos = licenceClient.getPremises(licenceDto.getId()).getEntity();
-            List<PremisesListQueryDto> listQueryDtos=new ArrayList<>();
+            List<PremisesListQueryDto> listQueryDtos= IaisCommonUtils.genNewArrayList();
             for(int i=0;i<premisesListQueryDtos.size();i++){
                 if(licenceDto.getId().equals(premisesListQueryDtos.get(i).getLicenceId())){
                     listQueryDtos.add(premisesListQueryDtos.get(i));
                 }
             }
-            List<String> hciNames=new ArrayList<>();
-            List<String> addresses=new ArrayList<>();
+            List<String> hciNames=IaisCommonUtils.genNewArrayList();
+            List<String> addresses=IaisCommonUtils.genNewArrayList();
             for(int i=0;i<listQueryDtos.size();i++){
                 String hciName = listQueryDtos.get(i).getHciName();
                 String address = listQueryDtos.get(i).getAddress();
@@ -211,15 +211,15 @@ public class AppealServiceImpl implements AppealService {
                 AppInsRepDto entity = applicationClient.getHciNameAndAddress(id).getEntity();
                 String hciName = entity.getHciName();
                 String hciAddres = entity.getHciAddress();
-                List<String> hciNames=new ArrayList<>();
+                List<String> hciNames=IaisCommonUtils.genNewArrayList();
                 hciNames.add(hciName);
-                List<String >hciAddress=new ArrayList<>();
+                List<String >hciAddress=IaisCommonUtils.genNewArrayList();
                 hciAddress.add(hciAddres);
                 request.getSession().setAttribute("hciAddress",hciAddress);
                 request.getSession().setAttribute("hciNames",hciNames);
             }
 
-            List<String> list=new ArrayList<>();
+            List<String> list=IaisCommonUtils.genNewArrayList();
             list.add(serviceId);
             List<HcsaServiceDto> entity = appConfigClient.getHcsaService(list).getEntity();
             for(int  i=0;i<entity.size();i++){
@@ -252,7 +252,7 @@ public class AppealServiceImpl implements AppealService {
 
     private List<AppSvcCgoDto>  reAppSvcCgo(HttpServletRequest req){
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        List<AppSvcCgoDto> appSvcCgoDtoList = new ArrayList<>();
+        List<AppSvcCgoDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
         AppSvcCgoDto appSvcCgoDto = null;
         String[] assignSelect = ParamUtil.getStrings(request, "assignSelect");
         int size=0;
@@ -503,20 +503,20 @@ public class AppealServiceImpl implements AppealService {
         LicenceDto entity=new LicenceDto();
                 String id = entity.getId();
         String svcName = entity.getSvcName();
-        List<ApplicationDto> applicationDtoListlist=new ArrayList<>();
+        List<ApplicationDto> applicationDtoListlist=IaisCommonUtils.genNewArrayList();
         List<PremisesDto> premisess = licenceClient.getPremisesDto(licenceDto.getId()).getEntity();
         String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo);
         applicationGroupDto.setLicenseeId(licenseeId);
         StringBuilder stringBuilder =new StringBuilder(appNo);
         String s = stringBuilder.append("-01").toString();
-        List<AppGrpPremisesDto> premisesDtos=new ArrayList<>();
+        List<AppGrpPremisesDto> premisesDtos=IaisCommonUtils.genNewArrayList();
                 for(PremisesDto every:premisess){
                     AppGrpPremisesDto appGrpPremisesDto = MiscUtil.transferEntityDto(every, AppGrpPremisesDto.class);
                     premisesDtos.add(appGrpPremisesDto);
                 }
 
-        List<AppSvcCgoDto> list=new ArrayList<>();
+        List<AppSvcCgoDto> list=IaisCommonUtils.genNewArrayList();
         for(AppGrpPremisesDto every:premisesDtos){
             AppSvcCgoDto appSvcCgoDto = MiscUtil.transferEntityDto(every, AppSvcCgoDto.class);
             list.add(appSvcCgoDto);
@@ -538,7 +538,7 @@ public class AppealServiceImpl implements AppealService {
                 }
 
             }
-            List<String> svcNames=new ArrayList<>();
+            List<String> svcNames=IaisCommonUtils.genNewArrayList();
             svcNames.add(licenceDto.getSvcName());
             List<HcsaServiceDto> hcsaServiceDtos = appConfigClient.getHcsaServiceByNames(svcNames).getEntity();
             applicationDto.setLicenceId(licenceDto.getId());
@@ -654,7 +654,7 @@ public class AppealServiceImpl implements AppealService {
         applicationDto1.setVersion(1);
 
         applicationDto1.setLicenceId(applicationDto.getLicenceId());
-        List<ApplicationDto> list=new ArrayList<>();
+        List<ApplicationDto> list=IaisCommonUtils.genNewArrayList();
         list.add(applicationDto1);
         appealDto.setApplicationGroupDto(applicationGroupDto);
 
@@ -693,7 +693,7 @@ public class AppealServiceImpl implements AppealService {
         ApplicationDto applicationDto =(ApplicationDto) request.getAttribute("applicationDto");
         String id = applicationDto.getId();
         String appGrpId = applicationDto.getAppGrpId();
-        List<String> appPremisCorreIds=new ArrayList<>();
+        List<String> appPremisCorreIds=IaisCommonUtils.genNewArrayList();
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.listAppPremisesCorrelation(id).getEntity();
         if(appPremisesCorrelationDtos!=null){
             for(AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos){
@@ -716,7 +716,7 @@ public class AppealServiceImpl implements AppealService {
         if("MS003".equals(reason)){
             List<AppSvcCgoDto> appSvcCgoDtos = applicationClient.getAppGrpPersonnelByGrpId(appGrpId).getEntity();
             ParamUtil.setRequestAttr(request, "CgoMandatoryCount", appSvcCgoDtos.size());
-            List<SelectOption> cgoSelectList = new ArrayList<>();
+            List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();
             SelectOption sp0 = new SelectOption("-1", "Select Personnel");
             cgoSelectList.add(sp0);
             SelectOption sp1 = new SelectOption("newOfficer", "I'd like to add a new personnel");

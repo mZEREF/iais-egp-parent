@@ -17,16 +17,14 @@ import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 
 /*
@@ -199,7 +197,7 @@ public class MassEmailDelegator {
                 .filter(hcsaServiceDto -> SPECIFIED_SERVICE.equals(hcsaServiceDto.getSvcType())).collect(Collectors.toList());
 
         baseService.addAll(specifiedService);
-        List<SelectOption> selectOptionArrayList = new ArrayList<>();
+        List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
         for (HcsaServiceDto item : baseService) {
             selectOptionArrayList.add(new SelectOption(item.getSvcCode(),item.getSvcName()));
         }

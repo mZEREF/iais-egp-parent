@@ -155,7 +155,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
         InspRectificationSaveDto inspRectificationSaveDto = new InspRectificationSaveDto();
 
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        List<ApplicationDto> applicationDtos = new ArrayList<>();
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         applicationDtos.add(applicationDto);
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,HcsaConsts.ROUTING_STAGE_INS);
         hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
@@ -245,7 +245,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
     }
 
     private InspRectificationSaveDto getUpdateItemNcList(InspectionPreTaskDto inspectionPreTaskDto, InspRectificationSaveDto inspRectificationSaveDto) {
-        List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = new ArrayList<>();
+        List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = IaisCommonUtils.genNewArrayList();
         for(InspecUserRecUploadDto inspecUserRecUploadDto : inspectionPreTaskDto.getInspecUserRecUploadDtos()){
             AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = inspecUserRecUploadDto.getAppPremisesPreInspectionNcItemDto();
             if(appPremisesPreInspectionNcItemDto != null){
@@ -262,7 +262,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
 
     @Override
     public List<ChecklistItemDto> getQuesAndClause(String appPremCorrId) {
-        List<ChecklistItemDto> checklistItemDtos = new ArrayList<>();
+        List<ChecklistItemDto> checklistItemDtos = IaisCommonUtils.genNewArrayList();
         if(!(StringUtil.isEmpty(appPremCorrId))){
             List<String> itemIds = inspectionTaskClient.getItemIdsByAppNo(appPremCorrId).getEntity();
             checklistItemDtos = getcheckDtosByItemIds(itemIds);
@@ -273,7 +273,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
     @Override
     public List<FileRepoDto> getFileByItemId(List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos) {
         if(!IaisCommonUtils.isEmpty(appPremPreInspectionNcDocDtos)){
-            List<String> fileIds = new ArrayList<>();
+            List<String> fileIds = IaisCommonUtils.genNewArrayList();
             for(AppPremPreInspectionNcDocDto appInspNcDoc : appPremPreInspectionNcDocDtos){
                 fileIds.add(appInspNcDoc.getFileRepoId());
             }
@@ -313,7 +313,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
     }
 
     private List<ChecklistItemDto> getcheckDtosByItemIds(List<String> itemIds) {
-        List<ChecklistItemDto> checklistItemDtos = new ArrayList<>();
+        List<ChecklistItemDto> checklistItemDtos = IaisCommonUtils.genNewArrayList();
         if(itemIds != null && !(itemIds.isEmpty())) {
             for (String itemId:itemIds) {
                 ChecklistItemDto checklistItemDto = hcsaChklClient.getChklItemById(itemId).getEntity();
@@ -355,7 +355,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
 
     private void createTaskForReport(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos, TaskDto td, LoginContext loginContext) {
         TaskDto taskDto = new TaskDto();
-        List<TaskDto> taskDtos = new ArrayList<>();
+        List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
         taskDto.setId(null);
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         taskDto.setPriority(td.getPriority());

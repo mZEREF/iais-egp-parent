@@ -9,20 +9,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLeaderShipShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskLeaderShipService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @Author: jiahao
@@ -48,7 +47,7 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
     public RiskLeaderShipShowDto getLeaderShowDto() {
         List<HcsaServiceDto> serviceDtoList = hcsaConfigClient.getActiveServices().getEntity();
         RiskLeaderShipShowDto showDto  = hcsaConfigClient.getRiskLeaderShipShow(serviceDtoList).getEntity();
-        List<RiskAcceptiionDto> riskAcceptiionDtoList = new ArrayList<>();
+        List<RiskAcceptiionDto> riskAcceptiionDtoList = IaisCommonUtils.genNewArrayList();
         RiskAcceptiionDto dto = new RiskAcceptiionDto();
         dto.setScvCode("CLB");
         riskAcceptiionDtoList.add(dto);
@@ -195,8 +194,8 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
     @Override
     public void saveDto(RiskLeaderShipShowDto dto) {
         List<HcsaRiskLeadershipMatrixDto> dtoList = dto.getLeaderShipDtoList();
-        List<HcsaRiskLeadershipMatrixDto> saveList = new ArrayList<>();
-        List<HcsaRiskLeadershipMatrixDto> updateList = new ArrayList<>();
+        List<HcsaRiskLeadershipMatrixDto> saveList = IaisCommonUtils.genNewArrayList();
+        List<HcsaRiskLeadershipMatrixDto> updateList = IaisCommonUtils.genNewArrayList();
         for(HcsaRiskLeadershipMatrixDto temp : dtoList){
             if(temp.isAdIsEdit()||temp.isDpIsEdit()){
                 saveList.add(getFinDto(temp,true,true));
@@ -240,7 +239,7 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
 
     public List<HcsaRiskLeadershipMatrixDto> getLastversionList(HcsaRiskLeadershipMatrixDto temp){
         List<HcsaRiskLeadershipMatrixDto> lastversionList= hcsaConfigClient.getLeadershipRiskBySvcCode(temp.getSvcCode()).getEntity();
-        List<HcsaRiskLeadershipMatrixDto> returnList = new ArrayList<>();
+        List<HcsaRiskLeadershipMatrixDto> returnList = IaisCommonUtils.genNewArrayList();
         if(lastversionList!=null && !lastversionList.isEmpty()){
             for(HcsaRiskLeadershipMatrixDto fin:lastversionList){
                 if(temp.isAdIsEdit()&&RiskConsts.AUDIT.equals(fin.getLsSourse())){

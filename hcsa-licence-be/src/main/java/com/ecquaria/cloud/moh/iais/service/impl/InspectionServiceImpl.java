@@ -110,7 +110,7 @@ public class InspectionServiceImpl implements InspectionService {
     @Override
     public List<String> getApplicationNoListByPool(List<TaskDto> commPools) {
         if(IaisCommonUtils.isEmpty(commPools)){
-            List<String> appCorrIdList = new ArrayList<>();
+            List<String> appCorrIdList = IaisCommonUtils.genNewArrayList();
             appCorrIdList.add(AppConsts.NO);
             return appCorrIdList;
         }
@@ -139,7 +139,7 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public List<String> getWorkGroupIdsByLogin(LoginContext loginContext) {
-        List<String> workGroupIdList = new ArrayList<>();
+        List<String> workGroupIdList = IaisCommonUtils.genNewArrayList();
         List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
         for(UserGroupCorrelationDto ugcDto:userGroupCorrelationDtos){
             if(ugcDto.getIsLeadForGroup() == 1){
@@ -161,7 +161,7 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public List<TaskDto> getReassignPoolByGroupWordId(String workGroupId) {
-        List<TaskDto> reassignTasks = new ArrayList<>();
+        List<TaskDto> reassignTasks = IaisCommonUtils.genNewArrayList();
         if(workGroupId!=null){
             reassignTasks = organizationClient.getReassignTaskByWkId(workGroupId).getEntity();
         }
@@ -170,7 +170,7 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public InspectionTaskPoolListDto reassignInspectorOption(InspectionTaskPoolListDto inspectionTaskPoolListDto, String taskId){
-        List<SelectOption> inspectorOption = new ArrayList<>();
+        List<SelectOption> inspectorOption = IaisCommonUtils.genNewArrayList();
         List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(inspectionTaskPoolListDto.getWorkGroupId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
         TaskDto taskDto = organizationClient.getTaskById(taskId).getEntity();
         String userId = taskDto.getUserId();
@@ -186,16 +186,16 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public List<SelectOption> getInspectorOptionByLogin(LoginContext loginContext, List<String> workGroupIds) {
-        List<SelectOption> inspectorOption = new ArrayList<>();
+        List<SelectOption> inspectorOption = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isEmpty(workGroupIds)){
             return null;
         }
-        List<String> userIdList = new ArrayList<>();
+        List<String> userIdList = IaisCommonUtils.genNewArrayList();
         for(String workId:workGroupIds){
             List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(workId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
             userIdList = getUserIdList(orgUserDtoList, userIdList);
         }
-        List<OrgUserDto> orgUserDtos = new ArrayList<>();
+        List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(userIdList)){
             orgUserDtos = organizationClient.retrieveOrgUserAccount(userIdList).getEntity();
         }
@@ -237,7 +237,7 @@ public class InspectionServiceImpl implements InspectionService {
                                         String internalRemarks, ApplicationDto applicationDto, TaskDto taskDto, ApplicationViewDto applicationViewDto) {
         try {
             List<SelectOption> inspectorCheckList = inspectionTaskPoolListDto.getInspectorCheck();
-            List<ApplicationDto> applicationDtos = new ArrayList<>();
+            List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
             applicationDtos.add(applicationDto);
             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,HcsaConsts.ROUTING_STAGE_INS);
             hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
@@ -342,7 +342,7 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public SearchResult<InspectionTaskPoolListDto> getOtherDataForSr(SearchResult<InspectionSubPoolQueryDto> searchResult, List<TaskDto> commPools, LoginContext loginContext) {
-        List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList = new ArrayList<>();
+        List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isEmpty(commPools) || IaisCommonUtils.isEmpty(searchResult.getRows())){
             return null;
         }
@@ -356,7 +356,7 @@ public class InspectionServiceImpl implements InspectionService {
                         inspectionTaskPoolListDto.setInspectorName(HcsaConsts.HCSA_PREMISES_HCI_NULL);
                     } else {
                         inspectionTaskPoolListDto.setInspector(tDto.getUserId());
-                        List<String> ids = new ArrayList<>();
+                        List<String> ids = IaisCommonUtils.genNewArrayList();
                         ids.add(tDto.getUserId());
                         List<OrgUserDto> orgUserDtos = organizationClient.retrieveOrgUserAccount(ids).getEntity();
                         inspectionTaskPoolListDto.setInspectorName(orgUserDtos.get(0).getDisplayName());
@@ -413,7 +413,7 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     private List<String> getWorkGroupLeadsByGroupId(String workGroupId, List<OrgUserDto> orgUserDtos) {
-        List<String> leadName = new ArrayList<>();
+        List<String> leadName = IaisCommonUtils.genNewArrayList();
         if(!(StringUtil.isEmpty(workGroupId))){
             List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
             for(String id : leadIds){
@@ -429,7 +429,7 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public List<SelectOption> getCheckInspector(String[] nameValue, InspectionTaskPoolListDto inspectionTaskPoolListDto) {
-        List<SelectOption> inspectorCheckList = new ArrayList<>();
+        List<SelectOption> inspectorCheckList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < nameValue.length; i++) {
             for (SelectOption so : inspectionTaskPoolListDto.getInspectorOption()) {
                 getInNameBySelectOption(inspectorCheckList, nameValue[i], so);

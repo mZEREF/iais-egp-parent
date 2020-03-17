@@ -3,20 +3,19 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.PostCodeService;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Delegator
 @Slf4j
@@ -85,7 +84,7 @@ public class PostCodeDelegator {
      * read file, use inited Map convert data to SingpostAddress
      */
     private  List<PostCodeDto> convert(Map<String,String> streetMap,Map<String,String> buildingMap) throws IOException {
-        List<PostCodeDto> list = new ArrayList<>();
+        List<PostCodeDto> list = IaisCommonUtils.genNewArrayList();
         try(BufferedReader br = new BufferedReader(new FileReader(postCodePath));){
             String line = null;
             String postalCode = null;

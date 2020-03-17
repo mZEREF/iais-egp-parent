@@ -38,7 +38,6 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.esotericsoftware.minlog.Log;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -76,7 +75,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     @Override
     public InspectionFillCheckListDto getNcCheckList(InspectionFillCheckListDto infillDto, AppPremisesPreInspectChklDto appPremDto, List<AppPremisesPreInspectionNcItemDto> itemDtoList, AppPremisesRecommendationDto appPremisesRecommendationDto) {
         List<InspectionCheckQuestionDto> fillCheckList = infillDto.getCheckList();
-        List<InspectionCheckQuestionDto> ncCheckList = new ArrayList<>();
+        List<InspectionCheckQuestionDto> ncCheckList = IaisCommonUtils.genNewArrayList();
         InspectionCheckQuestionDto ncCheck = null;
         String answer = appPremDto.getAnswer();
         List<InspectionCheckListAnswerDto> answerDtoList = JsonUtil.parseToList(answer, InspectionCheckListAnswerDto.class);
@@ -109,7 +108,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     public InspectionFillCheckListDto fillInspectionFillCheckListDto(InspectionFillCheckListDto infillCheckListDto) {
         List<InspectionCheckQuestionDto> iqdDtolist = infillCheckListDto.getCheckList();
-        List<SectionDto> sectionDtoList = new ArrayList<>();
+        List<SectionDto> sectionDtoList = IaisCommonUtils.genNewArrayList();
         for (InspectionCheckQuestionDto temp : iqdDtolist) {
             SectionDto sectionDto = new SectionDto();
             sectionDto.setSectionName(temp.getSectionName());
@@ -137,7 +136,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         List<SectionDto> sectionDtoList = infillCheckListDto.getSectionDtoList();
         List<InspectionCheckQuestionDto> iqdDtolist = infillCheckListDto.getCheckList();
         for (SectionDto temp : sectionDtoList) {
-            List<ItemDto> itemDtoList = new ArrayList<>();
+            List<ItemDto> itemDtoList = IaisCommonUtils.genNewArrayList();
             for (InspectionCheckQuestionDto iq : iqdDtolist) {
                 ItemDto itemDto = new ItemDto();
                 if (temp.getSectionName().equals(iq.getSectionName())) {
@@ -216,7 +215,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         saveEndTime(serListDto,appPremId);
         saveOtherInspection(serListDto,appPremId);
         saveRecommend(serListDto,appPremId);
-        List<InspectionFillCheckListDto> fillcheckDtoList = new ArrayList<>();
+        List<InspectionFillCheckListDto> fillcheckDtoList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
             for(InspectionFillCheckListDto temp:serListDto.getFdtoList()){
                 fillcheckDtoList.add(temp);
@@ -395,7 +394,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     public void saveAdhocDto(AdCheckListShowDto showDto,String appPremId){
         List<AdhocNcCheckItemDto>  itemDtoList = showDto.getAdItemList();
-        List<AdhocChecklistItemDto> saveItemDtoList = new ArrayList<>();
+        List<AdhocChecklistItemDto> saveItemDtoList = IaisCommonUtils.genNewArrayList();
         AdhocCheckListConifgDto dto = applicationClient.getAdhocConfigByAppPremCorrId(appPremId).getEntity();
         if(dto!=null){
             dto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
@@ -445,7 +444,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             appDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             appDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             try {
-                List<InspectionCheckListAnswerDto> answerDtoList = new ArrayList<>();
+                List<InspectionCheckListAnswerDto> answerDtoList = IaisCommonUtils.genNewArrayList();
                 InspectionCheckListAnswerDto answerDto = null;
                 for(int i =0;i<icqDtoList.size();i++){
                     answerDto = new InspectionCheckListAnswerDto();
@@ -471,7 +470,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     }
 
     public List<AppPremisesPreInspectionNcItemDto> getAppPremisesPreInspectionNcItemDto(List<InspectionFillCheckListDto> fillcheckDtoList, AppPremPreInspectionNcDto ncDto) {
-        List<AppPremisesPreInspectionNcItemDto> ncItemDtoList =  new ArrayList<>();
+        List<AppPremisesPreInspectionNcItemDto> ncItemDtoList =  IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(fillcheckDtoList)){
             for(InspectionFillCheckListDto dto:fillcheckDtoList){
                 List<InspectionCheckQuestionDto> insqDtoList = dto.getCheckList();
@@ -521,7 +520,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     public List<NcAnswerDto> getNcAnswerDtoList(String appPremCorrId){
         List<NcAnswerDto> serviceNcDtoList = getServiceNcDtoList(appPremCorrId);
         List<NcAnswerDto> commonNcDtoList = getCommonNcDtoList(appPremCorrId);
-        List<NcAnswerDto> ncAnswerDtoList = new ArrayList<>();
+        List<NcAnswerDto> ncAnswerDtoList = IaisCommonUtils.genNewArrayList();
         if(serviceNcDtoList!=null && !serviceNcDtoList.isEmpty()){
             for(NcAnswerDto temp:serviceNcDtoList){
                 ncAnswerDtoList.add(temp);
@@ -539,9 +538,9 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     }
 
     private List<NcAnswerDto> getCommonNcDtoList(String appPremCorrId) {
-        List<NcAnswerDto> ncAnswerDtoList = new ArrayList<>();
+        List<NcAnswerDto> ncAnswerDtoList = IaisCommonUtils.genNewArrayList();
         List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklList(appPremCorrId).getEntity();
-        List<AppPremisesPreInspectChklDto> commonChklList = new ArrayList<>();
+        List<AppPremisesPreInspectChklDto> commonChklList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(chkList)){
             for(AppPremisesPreInspectChklDto temp:chkList){
                 ChecklistConfigDto dto = hcsaChklClient.getChecklistConfigById(temp.getChkLstConfId()).getEntity();
@@ -583,7 +582,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     private List<NcAnswerDto> getServiceNcDtoList(String appPremCorrId) {
         List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklList(appPremCorrId).getEntity();
-        List<AppPremisesPreInspectChklDto> serviceChklList = new ArrayList<>();
+        List<AppPremisesPreInspectChklDto> serviceChklList = IaisCommonUtils.genNewArrayList();
         if(chkList!=null&&!chkList.isEmpty()){
             for(AppPremisesPreInspectChklDto temp:chkList){
                 ChecklistConfigDto dto = hcsaChklClient.getChecklistConfigById(temp.getChkLstConfId()).getEntity();
@@ -601,7 +600,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     }
 
     private List<NcAnswerDto> getNcList(List<AppPremisesPreInspectChklDto> serviceChklList) {
-        List<NcAnswerDto> ncAnswerDtoList = new ArrayList<>();
+        List<NcAnswerDto> ncAnswerDtoList = IaisCommonUtils.genNewArrayList();
         for(AppPremisesPreInspectChklDto achk:serviceChklList){
             if(achk!=null){
                 String answerStr = achk.getAnswer();
@@ -665,7 +664,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     @Override
     public void getCommonDto(InspectionFillCheckListDto commonDto, AppPremisesPreInspectChklDto appPremDto) {
         List<InspectionCheckQuestionDto> fillCheckList = commonDto.getCheckList();
-        List<InspectionCheckQuestionDto> ncCheckList = new ArrayList<>();
+        List<InspectionCheckQuestionDto> ncCheckList = IaisCommonUtils.genNewArrayList();
         String answer = appPremDto.getAnswer();
         List<InspectionCheckListAnswerDto> answerDtoList = JsonUtil.parseToList(answer, InspectionCheckListAnswerDto.class);
         if (!IaisCommonUtils.isEmpty(fillCheckList)) {

@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskGlobalDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskGolbalExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -17,14 +18,12 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskGolbalService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @Author: jiahao
@@ -56,7 +55,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
 
     @Override
     public List<SelectOption> getAutoOp() {
-        List<SelectOption> autoRenew = new ArrayList<>();
+        List<SelectOption> autoRenew = IaisCommonUtils.genNewArrayList();
         SelectOption op = new SelectOption();
         op.setValue("Y");
         op.setText("Yes");
@@ -77,7 +76,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
 
     @Override
     public List<SelectOption> PreOrPostOp() {
-        List<SelectOption> autoRenew = new ArrayList<>();
+        List<SelectOption> autoRenew = IaisCommonUtils.genNewArrayList();
         SelectOption op = new SelectOption();
         op.setValue("post");
         op.setText("Post");
@@ -169,7 +168,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<GobalRiskTotalDto> totalDtoList  = golbalShowDto.getGoalbalTotalList();
-        List<GobalRiskTotalDto> updateList  = new ArrayList<>();
+        List<GobalRiskTotalDto> updateList  = IaisCommonUtils.genNewArrayList();
         for(GobalRiskTotalDto temp:totalDtoList){
             if(temp.isEdit()){
                 updateList.add(temp);
@@ -188,7 +187,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
     private void dosave(GobalRiskTotalDto temp) {
         HcsaRiskGlobalDto golDto = new HcsaRiskGlobalDto();
         HcsaRiskGolbalExtDto golExtDto = new HcsaRiskGolbalExtDto();
-        List<HcsaRiskGolbalExtDto> extDtoList = new ArrayList<>();
+        List<HcsaRiskGolbalExtDto> extDtoList = IaisCommonUtils.genNewArrayList();
         if(temp.getId()!=null){
             golDto = transferTogolDto(temp);
             extDtoList = transferToextDtoList(temp);
@@ -235,14 +234,14 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
         }
         lastVersionDto.setEndDate(doeffDate);
         lastVersionDto.setStatus(status);
-        List<HcsaRiskGlobalDto> golDtoList= new ArrayList<>();
+        List<HcsaRiskGlobalDto> golDtoList= IaisCommonUtils.genNewArrayList();
         golDtoList.add(lastVersionDto);
         hcsaConfigClient.udpateGoalbalMatrixList(golDtoList);
 
     }
 
     private List<HcsaRiskGolbalExtDto> transferToextDtoList(GobalRiskTotalDto temp) {
-        List<HcsaRiskGolbalExtDto> extList = new ArrayList<>();
+        List<HcsaRiskGolbalExtDto> extList = IaisCommonUtils.genNewArrayList();
         HcsaRiskGolbalExtDto newExt = new HcsaRiskGolbalExtDto();
         newExt.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         newExt.setRsGolbalId(temp.getGalbalId());

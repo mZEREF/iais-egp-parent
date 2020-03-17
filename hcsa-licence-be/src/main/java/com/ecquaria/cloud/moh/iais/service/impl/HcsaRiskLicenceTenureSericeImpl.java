@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.LicenceTenShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.SubLicenceTenureDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -15,13 +16,11 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskLicenceTenureSerice;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @Author: jiahao
@@ -60,7 +59,7 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
     public void remove(String removeVal, LicenceTenShowDto showDto) {
         char num = removeVal.charAt(removeVal.length()-1);
         String svcCode = removeVal.substring(0,removeVal.length()-1);
-        List<SubLicenceTenureDto> subList = new ArrayList<>();
+        List<SubLicenceTenureDto> subList = IaisCommonUtils.genNewArrayList();
         List<HcsaRiskLicenceTenureDto> tdDtoList = showDto.getLicenceTenureDtoList();
         for(HcsaRiskLicenceTenureDto temp:tdDtoList){
             if(temp.getSvcCode().equals(svcCode)){
@@ -75,7 +74,7 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
     }
 
     private List<SubLicenceTenureDto> removeCol(char num, List<SubLicenceTenureDto> subDtoList) {
-        List<SubLicenceTenureDto> removeList = new ArrayList<>();
+        List<SubLicenceTenureDto> removeList = IaisCommonUtils.genNewArrayList();
         int i=0;
         for(SubLicenceTenureDto temp:subDtoList){
             if(!(temp.getOrderNum()+"").equals(num+"")){
@@ -174,7 +173,7 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
     @Override
     public void saveDto(LicenceTenShowDto showDto) {
         List<HcsaRiskLicenceTenureDto> ltDtoList = showDto.getLicenceTenureDtoList();
-        List<HcsaRiskLicenceTenureDto> saveDtoList = new ArrayList<>();
+        List<HcsaRiskLicenceTenureDto> saveDtoList = IaisCommonUtils.genNewArrayList();
         for(HcsaRiskLicenceTenureDto temp:ltDtoList){
             if(temp.getSubDtoList()!=null&&!temp.getSubDtoList().isEmpty()&&temp.isEdit()){
                 for(SubLicenceTenureDto sub:temp.getSubDtoList()){
@@ -226,7 +225,7 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
 
     private List<HcsaRiskLicenceTenureDto> getLastversionList(HcsaRiskLicenceTenureDto temp) {
         List<HcsaRiskLicenceTenureDto> lastVersionList = hcsaConfigClient.getgetLictenureByCode(temp.getSvcCode()).getEntity();
-        List<HcsaRiskLicenceTenureDto> returnList = new ArrayList<>();
+        List<HcsaRiskLicenceTenureDto> returnList = IaisCommonUtils.genNewArrayList();
         for(HcsaRiskLicenceTenureDto lt:lastVersionList){
             if(temp.isEdit()){
                 returnList.add(lt);

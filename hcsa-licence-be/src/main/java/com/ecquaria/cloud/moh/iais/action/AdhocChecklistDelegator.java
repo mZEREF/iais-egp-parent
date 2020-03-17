@@ -35,13 +35,7 @@ import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,6 +44,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 @Delegator(value = "adhocChecklistDelegator")
 @Slf4j
@@ -338,7 +336,7 @@ public class AdhocChecklistDelegator {
         AdhocCheckListConifgDto obj = (AdhocCheckListConifgDto) ParamUtil.getSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR);
         if (obj == null) {
             obj = new AdhocCheckListConifgDto();
-            List<AdhocChecklistItemDto> allAdhocItem = new ArrayList<>();
+            List<AdhocChecklistItemDto> allAdhocItem = IaisCommonUtils.genNewArrayList();
             obj.setAllAdhocItem(allAdhocItem);
             return obj;
         } else {

@@ -77,7 +77,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public List<TaskDto> getCommPoolByGroupWordId(LoginContext loginContext) {
-        List<TaskDto> taskDtoList = new ArrayList<>();
+        List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         Set<String> workGrpIds = loginContext.getWrkGrpIds();
         if(workGrpIds == null || workGrpIds.size() <= 0){
             return null;
@@ -94,7 +94,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     @Override
     public InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String appCorrelationId, List<TaskDto> commPools, LoginContext loginContext,
                                                             InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
-        List<OrgUserDto> orgUserDtos = new ArrayList<>();
+        List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
         String workGroupId = "";
         for(TaskDto tDto:commPools){
             if(appCorrelationId.equals(tDto.getRefNo())){
@@ -132,7 +132,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         if(StringUtil.isEmpty(workGroupId)){
             return;
         }
-        List<String> leadNames = new ArrayList<>();
+        List<String> leadNames = IaisCommonUtils.genNewArrayList();
         List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
         for(String id : leadIds){
             for(OrgUserDto oDto : orgUserDtos){
@@ -149,7 +149,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             inspecTaskCreAndAssDto.setInspector(null);
             return;
         }
-        List<SelectOption> inspectorList = new ArrayList<>();
+        List<SelectOption> inspectorList = IaisCommonUtils.genNewArrayList();
         Set<String> roles = loginContext.getRoleIds();
         List<String> roleList = new ArrayList<>(roles);
         if(roleList.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)){
@@ -192,7 +192,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     @Override
     public List<String> getAppCorrIdListByPool(List<TaskDto> commPools) {
         if(IaisCommonUtils.isEmpty(commPools)){
-            List<String> appCorrIdList = new ArrayList<>();
+            List<String> appCorrIdList = IaisCommonUtils.genNewArrayList();
             appCorrIdList.add(AppConsts.NO);
             return appCorrIdList;
         }
@@ -218,7 +218,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             List<SelectOption> inspectorCheckList = inspecTaskCreAndAssDto.getInspectorCheck();
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
 
-            List<ApplicationDto> applicationDtos = new ArrayList<>();
+            List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
             applicationDtos.add(applicationDto);
             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,HcsaConsts.ROUTING_STAGE_INS);
             hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);

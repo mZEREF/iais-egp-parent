@@ -133,7 +133,7 @@ public class BackendAjaxController {
         HcsaSvcKpiDto hcsaSvcKpiDto = hcsaConfigClient.searchKpiResult(hcsaServiceDto.getSvcCode(), applicationDto.getApplicationType()).getEntity();
         int days = 0;
         if(hcsaSvcKpiDto != null){
-            List<Date> workAndNonWorkDays = new ArrayList<>();
+            List<Date> workAndNonWorkDays = IaisCommonUtils.genNewArrayList();
             if(taskDto.getTaskKey().equals(HcsaConsts.ROUTING_STAGE_INS)) {
                 String subStage = getSubStageByInspectionStatus(inspectionAppInGroupQueryDto);
                 Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
@@ -201,8 +201,8 @@ public class BackendAjaxController {
 
     private Map<Integer, Integer> getWorkingDaysBySubStage(String subStage, TaskDto taskDto) {
         Map<Integer, Integer> workAndNonMap = new HashMap();
-        List<Date> workAndNonWorkDays = new ArrayList<>();
-        List<String> processUrls = new ArrayList<>();
+        List<Date> workAndNonWorkDays = IaisCommonUtils.genNewArrayList();
+        List<String> processUrls = IaisCommonUtils.genNewArrayList();
         if(StringUtil.isEmpty(subStage)){
             return null;
         }
@@ -215,7 +215,7 @@ public class BackendAjaxController {
         appPremisesRoutingHistoryDto.setApplicationNo(applicationDto.getApplicationNo());
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = inspectionTaskMainClient.getHistoryForKpi(appPremisesRoutingHistoryDto).getEntity();
         List<String> roleIds = getRoleIdsByHistory(appPremisesRoutingHistoryDtos);
-        List<TaskDto> taskDtoList = new ArrayList<>();
+        List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         int allWorkDays = 0;
         int allHolidays = 0;
         if(subStage.equals(HcsaConsts.ROUTING_STAGE_INP)){
@@ -285,7 +285,7 @@ public class BackendAjaxController {
     }
 
     private List<String> getRoleIdsByHistory(List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos) {
-        List<String> roleIds = new ArrayList<>();
+        List<String> roleIds = IaisCommonUtils.genNewArrayList();
         if(!(IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtos))){
             for(AppPremisesRoutingHistoryDto aprhDto : appPremisesRoutingHistoryDtos) {
                 roleIds.add(aprhDto.getRoleId());
@@ -298,7 +298,7 @@ public class BackendAjaxController {
 
     private Map<Integer, Integer> getActualWorkingDays(List<TaskDto> taskDtoList, int allWorkDays, int allHolidays) {
         Map<Integer, Integer> workAndNonMap = new HashMap();
-        List<Date> workAndNonWorkDays = new ArrayList<>();
+        List<Date> workAndNonWorkDays = IaisCommonUtils.genNewArrayList();
         for(TaskDto td : taskDtoList){
             Date startDate = td.getDateAssigned();
             Date completeDate;

@@ -17,17 +17,15 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemPotitalListService;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
-import com.ecquaria.cloud.moh.iais.validation.AuditAssginListValidate;
 import com.ecquaria.cloud.moh.iais.validation.AduitSystemGenerateValidate;
+import com.ecquaria.cloud.moh.iais.validation.AuditAssginListValidate;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: jiahao
@@ -85,12 +83,14 @@ public class AuditSystemListDelegator {
         List<SelectOption> aduitTypeOp = auditSystemListService.getAuditOp();
         ParamUtil.setSessionAttr(request, "aduitTypeOp", (Serializable) aduitTypeOp);
         AuditSystemPotentialDto dto = new AuditSystemPotentialDto();
-        List<String> serviceNmaeList = new ArrayList<>();
-        if(!StringUtil.isEmpty(serviceName))
-        serviceNmaeList.add(serviceName);
-        List<String> hcsaServiceCodeList = new ArrayList<>();
-        if(!StringUtil.isEmpty(hclSCode))
-        hcsaServiceCodeList.add(hclSCode);
+        List<String> serviceNmaeList = IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(serviceName)) {
+            serviceNmaeList.add(serviceName);
+        }
+        List<String> hcsaServiceCodeList = IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(hclSCode)) {
+            hcsaServiceCodeList.add(hclSCode);
+        }
         dto.setSvcNameList(serviceNmaeList);
         dto.setHcsaServiceCodeList(hcsaServiceCodeList);
         dto.setPostalCode(postcode);

@@ -89,7 +89,7 @@ public class NotifyUnprocessedTaskBatchjob {
             inspEmailService.SendAndSaveEmail(email);
         }
 
-//        List<String> adminEmailAddr = new ArrayList<>();
+//        List<String> adminEmailAddr = IaisCommonUtils.genNewArrayList();
 //        for (TaskEmailDto item: adminDtoList
 //        ) {
 //            //todo jugde email sent

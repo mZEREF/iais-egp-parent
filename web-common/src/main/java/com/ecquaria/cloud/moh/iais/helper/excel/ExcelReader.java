@@ -9,9 +9,17 @@ package com.ecquaria.cloud.moh.iais.helper.excel;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -19,17 +27,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.apache.poi.ss.usermodel.CellType.STRING;
 
@@ -80,7 +77,7 @@ public final class ExcelReader {
         int rowCount = sheet.getPhysicalNumberOfRows();
         int cellCount = sheet.getRow(0).getPhysicalNumberOfCells();
 
-        List<List<String>> result = new ArrayList<>();
+        List<List<String>> result = IaisCommonUtils.genNewArrayList();
         for (int i = 1; i < rowCount; i++) {
             Row row = sheet.getRow(i);
             if (row == null || row.getCell(0) == null || row.getCell(0).getNumericCellValue() == 0x0){
@@ -90,7 +87,7 @@ public final class ExcelReader {
                 continue;
             }
 
-            List<String> cellResult = new ArrayList<>();
+            List<String> cellResult = IaisCommonUtils.genNewArrayList();
             for (int j = 0; j < cellCount; j++) {
                 cellResult.add(getCellValue(sheet, i, j));
             }

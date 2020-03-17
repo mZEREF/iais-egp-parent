@@ -6,20 +6,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFinanceMatrixD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskFinancialShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @Author: jiahao
@@ -57,8 +56,8 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
     @Override
     public void saveDto(RiskFinancialShowDto dto) {
         List<HcsaRiskFinanceMatrixDto> dtoList = dto.getFinanceList();
-        List<HcsaRiskFinanceMatrixDto> saveList = new ArrayList<>();
-        List<HcsaRiskFinanceMatrixDto> updateList = new ArrayList<>();
+        List<HcsaRiskFinanceMatrixDto> saveList = IaisCommonUtils.genNewArrayList();
+        List<HcsaRiskFinanceMatrixDto> updateList = IaisCommonUtils.genNewArrayList();
         for(HcsaRiskFinanceMatrixDto temp : dtoList){
             if(temp.isInIsEdit()||temp.isPrIsEdit()){
                 //in
@@ -112,7 +111,7 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
 
     public List<HcsaRiskFinanceMatrixDto> getLastversionList(HcsaRiskFinanceMatrixDto temp){
         List<HcsaRiskFinanceMatrixDto> lastversionList= hcsaConfigClient.getFinianceRiskBySvcCode(temp.getServiceCode()).getEntity();
-        List<HcsaRiskFinanceMatrixDto> returnList = new ArrayList<>();
+        List<HcsaRiskFinanceMatrixDto> returnList = IaisCommonUtils.genNewArrayList();
         if(lastversionList!=null && !lastversionList.isEmpty()){
             for(HcsaRiskFinanceMatrixDto fin:lastversionList){
 

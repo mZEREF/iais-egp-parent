@@ -4,12 +4,19 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,14 +25,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Wenkang
@@ -115,7 +114,7 @@ public class AppealDelegator {
     @RequestMapping(value = "/governance-officer", method = RequestMethod.GET)
     public @ResponseBody String genGovernanceOfficerHtmlList(HttpServletRequest request){
 
-        List<SelectOption> cgoSelectList = new ArrayList<>();
+        List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();
         SelectOption sp0 = new SelectOption("-1", "Select Personnel");
         cgoSelectList.add(sp0);
         SelectOption sp1 = new SelectOption("newOfficer", "I'd like to add a new personnel");
@@ -195,7 +194,7 @@ public class AppealDelegator {
     }
 
     private List<SelectOption> getIdTypeSelOp(){
-        List<SelectOption> idTypeSelectList = new ArrayList<>();
+        List<SelectOption> idTypeSelectList = IaisCommonUtils.genNewArrayList();
         SelectOption idType0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
         idTypeSelectList.add(idType0);
         SelectOption idType1 = new SelectOption("NRIC", "NRIC");
@@ -207,12 +206,12 @@ public class AppealDelegator {
 
 
     private  List<SelectOption> genSpecialtySelectList(String svcCode){
-        List<SelectOption> specialtySelectList = new ArrayList<>();
+        List<SelectOption> specialtySelectList = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(svcCode)){
             if(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode) ||
                     AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode) ||
                     AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)){
-                specialtySelectList = new ArrayList<>();
+                specialtySelectList = IaisCommonUtils.genNewArrayList();
                 SelectOption ssl1 = new SelectOption("-1", "Please select");
                 SelectOption ssl2 = new SelectOption("Pathology", "Pathology");
                 SelectOption ssl3 = new SelectOption("Haematology", "Haematology");
@@ -224,7 +223,7 @@ public class AppealDelegator {
             }else if(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(svcCode) ||
                     AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode) ||
                     AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)){
-                specialtySelectList = new ArrayList<>();
+                specialtySelectList = IaisCommonUtils.genNewArrayList();
                 SelectOption ssl1 = new SelectOption("-1", "Please select");
                 SelectOption ssl2 = new SelectOption("Diagnostic Radiology", "Diagnostic Radiology");
                 SelectOption ssl3 = new SelectOption("Nuclear Medicine", "Nuclear Medicine");

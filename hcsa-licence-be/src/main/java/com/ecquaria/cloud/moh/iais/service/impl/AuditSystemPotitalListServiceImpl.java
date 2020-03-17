@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaLastInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.InspectionInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditSystemPotentialDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
@@ -23,20 +22,18 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemPotitalListService;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskSupportBeService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.esotericsoftware.minlog.Log;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * @Author: jiahao
@@ -78,7 +75,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     }
 
     private List<AuditTaskDataFillterDto> inspectionFitter(SearchResult<AuditTaskDataDto> searchResult, AuditSystemPotentialDto dto) {
-        List<AuditTaskDataDto> auditTaskDtos = new ArrayList<>();
+        List<AuditTaskDataDto> auditTaskDtos = IaisCommonUtils.genNewArrayList();
         if (StringUtil.isEmpty(dto.getLastInspectionStart()) && StringUtil.isEmpty(dto.getLastInspectionEnd())) {
             for (AuditTaskDataDto temp : searchResult.getRows()) {
                 auditTaskDtos.add(temp);
@@ -100,7 +97,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     }
 
     private List<AuditTaskDataFillterDto> getNcFitter(List<AuditTaskDataFillterDto> dtoList, AuditSystemPotentialDto dto) {
-        List<AuditTaskDataFillterDto> fitterDtoList = new ArrayList<>();
+        List<AuditTaskDataFillterDto> fitterDtoList = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(dtoList)) {
             for (AuditTaskDataFillterDto temp : dtoList) {
                 if (!StringUtil.isEmpty(dto.getResultLastCompliance())) {
@@ -117,7 +114,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
 
     private boolean doNcFitter(AuditTaskDataFillterDto temp, String resultLastCompliance) {
         List<LicAppCorrelationDto> licCorrDtoList = hcsaLicenceClient.getLicCorrBylicId(temp.getLicId()).getEntity();
-        List<AppPremPreInspectionNcDto> ncDtoList = new ArrayList<>();
+        List<AppPremPreInspectionNcDto> ncDtoList = IaisCommonUtils.genNewArrayList();
         if (licCorrDtoList != null && !licCorrDtoList.isEmpty()) {
             for (LicAppCorrelationDto licAppCorr : licCorrDtoList) {
                 String appId = licAppCorr.getApplicationId();
@@ -156,7 +153,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     }
 
     private List<AuditTaskDataDto> transferBackToDataDtoList(List<AuditTaskDataFillterDto> dtoList) {
-        List<AuditTaskDataDto> dataDtoList = new ArrayList<>();
+        List<AuditTaskDataDto> dataDtoList = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(dtoList)) {
             for (AuditTaskDataFillterDto temp : dtoList) {
                 AuditTaskDataDto dto = new AuditTaskDataDto();
@@ -192,7 +189,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             }
             dtoList = getNumberList(dto, dtoList);
         } else {
-            dtoList = new ArrayList<>();
+            dtoList = IaisCommonUtils.genNewArrayList();
             for (AuditTaskDataDto temp : auditTaskDtos) {
                 AuditTaskDataFillterDto fDto = transferDtoToFiltterDto(temp, 0d);
                 dtoList.add(fDto);
@@ -202,7 +199,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     }
 
     private List<AuditTaskDataFillterDto> getNumberList(AuditSystemPotentialDto dto, List<AuditTaskDataFillterDto> dtoList) {
-        List<AuditTaskDataFillterDto> reuturnList = new ArrayList<>();
+        List<AuditTaskDataFillterDto> reuturnList = IaisCommonUtils.genNewArrayList();
         if (dto.getGenerateNum() > 0) {
             int num = dto.getGenerateNum();
             if (!IaisCommonUtils.isEmpty(dtoList)) {
@@ -218,8 +215,8 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     }
 
     private List<AuditTaskDataFillterDto> sortByOverallRisk(AuditSystemPotentialDto dto, List<AuditTaskDataDto> auditTaskDtos) {
-        List<AuditTaskDataFillterDto> fillterDtos = new ArrayList<>();
-        List<RiskAcceptiionDto> riskAcceptiionDtoList = new ArrayList<>();
+        List<AuditTaskDataFillterDto> fillterDtos = IaisCommonUtils.genNewArrayList();
+        List<RiskAcceptiionDto> riskAcceptiionDtoList = IaisCommonUtils.genNewArrayList();
         RiskAcceptiionDto acceptiiondto = new RiskAcceptiionDto();
         if (!IaisCommonUtils.isEmpty(auditTaskDtos)) {
             for (AuditTaskDataDto temp : auditTaskDtos) {
@@ -244,8 +241,8 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
 
 
     private List<AuditTaskDataFillterDto> sortByScore(AuditSystemPotentialDto dto, List<AuditTaskDataDto> auditTaskDtos, String type) {
-        List<AuditTaskDataFillterDto> fillterDtos = new ArrayList<>();
-        List<AuditSystemRiskAccpetDto> acceptDtoList = new ArrayList<>();
+        List<AuditTaskDataFillterDto> fillterDtos = IaisCommonUtils.genNewArrayList();
+        List<AuditSystemRiskAccpetDto> acceptDtoList = IaisCommonUtils.genNewArrayList();
         AuditTaskDataFillterDto fdto = null;
         if (!IaisCommonUtils.isEmpty(auditTaskDtos)) {
             for (AuditTaskDataDto temp : auditTaskDtos) {
@@ -272,7 +269,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     }
 
     private List<AuditTaskDataFillterDto> sortBySecLastInsp(AuditSystemPotentialDto dto, List<AuditTaskDataDto> auditTaskDtos) {
-        List<AuditTaskDataFillterDto> dtoList = new ArrayList<>();
+        List<AuditTaskDataFillterDto> dtoList = IaisCommonUtils.genNewArrayList();
         Double score = 0d;
         if (!IaisCommonUtils.isEmpty(auditTaskDtos)) {
             for (AuditTaskDataDto temp : auditTaskDtos) {
@@ -290,7 +287,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     }
 
     private List<AuditTaskDataFillterDto> sortByLastInsp(AuditSystemPotentialDto dto, List<AuditTaskDataDto> auditTaskDtos) {
-        List<AuditTaskDataFillterDto> dtoList = new ArrayList<>();
+        List<AuditTaskDataFillterDto> dtoList = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(auditTaskDtos)) {
             for (AuditTaskDataDto temp : auditTaskDtos) {
                 String svcCode = hcsaConfigClient.getServiceCodeByName(temp.getSvcName()).getEntity();
@@ -355,7 +352,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
 
     private Date getInspectionStartDate(String licId, String svcCode, boolean isStartDate) {
         Date inspectionDate = null;
-        List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = new ArrayList<>();
+        List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = IaisCommonUtils.genNewArrayList();
         List<InspectionInfoDto> inspInfoList = new ArrayList<InspectionInfoDto>();
         InspectionInfoDto info = new InspectionInfoDto();
         List<LicAppCorrelationDto> licCorrDtoList = hcsaLicenceClient.getLicCorrBylicId(licId).getEntity();
@@ -432,16 +429,19 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     }
 
     private List<String> getSvcName(List<String> svcNameList, List<String> hcsaServiceCodeList) {
-        List<String> serviceNameList = new ArrayList<>();
+        List<String> serviceNameList = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(svcNameList)) {
             for (String temp : svcNameList) {
                 serviceNameList.add(temp);
             }
         }
-        if (!IaisCommonUtils.isEmpty(hcsaServiceCodeList))
-            for (String svcName : hcsaServiceCodeList)
-                if (!serviceNameList.contains(svcName))
+        if (!IaisCommonUtils.isEmpty(hcsaServiceCodeList)) {
+            for (String svcName : hcsaServiceCodeList) {
+                if (!serviceNameList.contains(svcName)) {
                     serviceNameList.add(svcName);
+                }
+            }
+        }
            /* if(!IaisCommonUtils.isEmpty(serviceNameList)&&!IaisCommonUtils.isEmpty(hcsaServiceCodeList)){
                 List<HcsaServiceDto> dtos = hcsaConfigClient.getHcsaServiceDtoByCode(hcsaServiceCodeList).getEntity();
                 for(HcsaServiceDto temp:dtos){

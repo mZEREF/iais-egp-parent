@@ -163,9 +163,9 @@ public class OfficerOnlineEnquiriesDelegator {
             count=5;
         }
         Map<String,Object> filter=new HashMap<>();
-        List<String> svcNames=new ArrayList<>();
-        List<String> licenseeIds=new ArrayList<>();
-        List<String> licenceIds=new ArrayList<>();
+        List<String> svcNames=IaisCommonUtils.genNewArrayList();
+        List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
+        List<String> licenceIds=IaisCommonUtils.genNewArrayList();
         if(searchNo!=null) {
             switch (count) {
                 case 2:
@@ -178,7 +178,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     filter.put("hciName", searchNo);
                     break;
                 case 5:
-                    svcNames=new ArrayList<>();
+                    svcNames=IaisCommonUtils.genNewArrayList();
                     filter.put("serviceName", searchNo);
                     serviceParameter.setFilters(filter);
                     SearchParam serviceParam = SearchResultHelper.getSearchParam(request, serviceParameter,true);
@@ -192,7 +192,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     }
                     break;
                 case 4:
-                    licenseeIds=new ArrayList<>();
+                    licenseeIds=IaisCommonUtils.genNewArrayList();
                     filter.put("licenseeName", searchNo);
                     licenseeParameter.setFilters(filter);
                     SearchParam licenseeParam = SearchResultHelper.getSearchParam(request, licenseeParameter,true);
@@ -221,7 +221,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 if(!StringUtil.isEmpty(appResult)){
                     SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
                     searchListDtoSearchResult.setRowCount(appResult.getRowCount());
-                    List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=new ArrayList<>();
+                    List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
                     for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
                     ) {
 
@@ -283,7 +283,7 @@ public class OfficerOnlineEnquiriesDelegator {
             SearchResult<RfiLicenceQueryDto> licResult =requestForInformationService.licenceDoQuery(licParam);
             SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
             if(licResult.getRowCount()!=0) {
-                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=new ArrayList<>();
+                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
                 searchListDtoSearchResult.setRowCount(licResult.getRowCount());
                 for (RfiLicenceQueryDto lic:licResult.getRows()
                 ) {
@@ -433,9 +433,9 @@ public class OfficerOnlineEnquiriesDelegator {
                 SystemAdminBaseConstants.DATE_FORMAT);
 
         Map<String,Object> filters=new HashMap<>(10);
-        List<String> svcNames=new ArrayList<>();
-        List<String> licenseeIds=new ArrayList<>();
-        List<String> licenceIds=new ArrayList<>();
+        List<String> svcNames=IaisCommonUtils.genNewArrayList();
+        List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
+        List<String> licenceIds=IaisCommonUtils.genNewArrayList();
         int[] count={0,0,0,0,0};
         if(ParamUtil.getString(request,"hci")!=null){
             count[0]=1;
@@ -505,7 +505,7 @@ public class OfficerOnlineEnquiriesDelegator {
             if(!StringUtil.isEmpty(uenNo)){
                 LicenseeDto licenseeDto= organizationClient.getLicenseeDtoByUen(uenNo).getEntity();
                 if(licenseeDto!=null) {
-                    licenseeIds = new ArrayList<>();
+                    licenseeIds = IaisCommonUtils.genNewArrayList();
                     licenseeIds.add(licenseeDto.getId());
                 }
             }
@@ -527,7 +527,7 @@ public class OfficerOnlineEnquiriesDelegator {
             QueryHelp.setMainSql(RFI_QUERY,"licenseeQuery",licenseeParam);
             if (!licenseeParam.getFilters().isEmpty()) {
                 SearchResult<LicenseeQueryDto> licenseeParamResult = onlineEnquiriesService.searchLicenseeIdsParam(licenseeParam);
-                licenseeIds=new ArrayList<>();
+                licenseeIds=IaisCommonUtils.genNewArrayList();
                 for (LicenseeQueryDto r:licenseeParamResult.getRows()
                 ) {
                     licenseeIds.add(r.getId());
@@ -577,7 +577,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 if(!StringUtil.isEmpty(appResult)){
                     SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
                     searchListDtoSearchResult.setRowCount(appResult.getRowCount());
-                    List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=new ArrayList<>();
+                    List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
                     for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
                     ) {
 
@@ -654,7 +654,7 @@ public class OfficerOnlineEnquiriesDelegator {
             SearchResult<RfiLicenceQueryDto> licResult =requestForInformationService.licenceDoQuery(licParam);
             SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
             if(licResult.getRowCount()!=0) {
-                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=new ArrayList<>();
+                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
                 searchListDtoSearchResult.setRowCount(licResult.getRowCount());
                 for (RfiLicenceQueryDto lic:licResult.getRows()
                 ) {
@@ -792,7 +792,7 @@ public class OfficerOnlineEnquiriesDelegator {
         log.info("=======>>>>>callCessation>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String licId = (String) ParamUtil.getSessionAttr(request, "id");
-        List<String> licIds=new ArrayList<>();
+        List<String> licIds=IaisCommonUtils.genNewArrayList();
         licIds.add(licId);
         ParamUtil.setSessionAttr(request,"licIds", (Serializable) licIds);
 
@@ -843,7 +843,7 @@ public class OfficerOnlineEnquiriesDelegator {
             allocationDto = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
         }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocationList = new ArrayList<>();
+        List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocationList = IaisCommonUtils.genNewArrayList();
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
             String hciName = "";
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
@@ -941,7 +941,7 @@ public class OfficerOnlineEnquiriesDelegator {
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = new HashMap<>();
             for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
-                List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocation = new ArrayList<>();
+                List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocation = IaisCommonUtils.genNewArrayList();
                 String hciName = "";
                 if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
                     hciName = appGrpPremisesDto.getHciName();

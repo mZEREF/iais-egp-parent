@@ -40,20 +40,18 @@ import com.ecquaria.cloud.moh.iais.service.BroadcastMainService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloudfeign.FeignException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * BankedInboxDelegator
@@ -89,7 +87,7 @@ public class BackendInboxDelegator {
         if (loginContext == null) {
             AccessUtil.initLoginUserInfo(bpc.request);
         }
-        List<SelectOption> selectOptionArrayList = new ArrayList<>();
+        List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
         for (String item : loginContext.getRoleIds()) {
             selectOptionArrayList.add(new SelectOption(item,item));
         }
@@ -246,7 +244,7 @@ public class BackendInboxDelegator {
     }
 
     private List<TaskDto> getCommPoolBygetUserId(String getUserId, String curRole) {
-        List<TaskDto> taskDtoList = new ArrayList<>();
+        List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         if(getUserId == null){
             return null;
         }
@@ -276,7 +274,7 @@ public class BackendInboxDelegator {
      * @throws
      */
     public void doApprove(BaseProcessClass bpc)  throws FeignException, CloneNotSupportedException {
-        applicationDtoIds = new ArrayList<>();
+        applicationDtoIds = IaisCommonUtils.genNewArrayList();
         String[] taskList =  ParamUtil.getStrings(bpc.request, "taskcheckbox");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(!StringUtil.isEmpty(taskList)){
@@ -384,7 +382,7 @@ public class BackendInboxDelegator {
 //        applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
     private List<ApplicationDto> removeFastTracking(List<ApplicationDto> applicationDtos){
-        List<ApplicationDto> result = new ArrayList<>();
+        List<ApplicationDto> result = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(applicationDtos)){
             for (ApplicationDto applicationDto : applicationDtos){
                 if(!applicationDto.isFastTracking()){

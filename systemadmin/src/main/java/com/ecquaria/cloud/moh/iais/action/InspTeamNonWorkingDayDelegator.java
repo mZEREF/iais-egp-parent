@@ -105,7 +105,7 @@ public class InspTeamNonWorkingDayDelegator {
 
 		List<WorkingGroupQueryDto> workingGroupQueryList = searchResult.getRows();
 
-		List<ApptNonWorkingDateDto> nonWorkingDateListByWorkGroupId = new ArrayList<>();
+		List<ApptNonWorkingDateDto> nonWorkingDateListByWorkGroupId = IaisCommonUtils.genNewArrayList();
 		String shotName = ParamUtil.getString(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT);
 
 		if (shotName != null){
@@ -120,7 +120,7 @@ public class InspTeamNonWorkingDayDelegator {
 			}
 		}
 
-		List<SelectOption> wrlGrpNameOpt = new ArrayList<>();
+		List<SelectOption> wrlGrpNameOpt = IaisCommonUtils.genNewArrayList();
 		workingGroupQueryList.stream().forEach(wkr -> {
 			String groupId = wkr.getId();
 			String groupName = wkr.getGroupName();

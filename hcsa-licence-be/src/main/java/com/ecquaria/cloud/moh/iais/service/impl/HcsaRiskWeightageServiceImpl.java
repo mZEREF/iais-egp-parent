@@ -6,20 +6,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskWeightageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskWeightageShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskWeightageService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.util.CopyUtil;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @Author: jiahao
@@ -118,7 +117,7 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
         }catch (CloneNotSupportedException C){
 
         }
-        List<HcsaRiskWeightageDto> saveList = new ArrayList<>();
+        List<HcsaRiskWeightageDto> saveList = IaisCommonUtils.genNewArrayList();
         HcsaRiskWeightageDto sWeiDto = null;
         for(HcsaRiskWeightageDto temp:weightageDtoList){
             if(temp.isEdit()){

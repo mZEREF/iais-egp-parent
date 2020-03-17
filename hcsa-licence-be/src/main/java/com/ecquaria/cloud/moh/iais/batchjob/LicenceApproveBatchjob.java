@@ -57,18 +57,15 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
-
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.ecquaria.sz.commons.util.MsgUtil;
-import freemarker.template.TemplateException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -116,9 +113,9 @@ public class LicenceApproveBatchjob {
                 ApplicationGroupDto applicationGroupDto = applicationLicenceDto.getApplicationGroupDto();
                 if(applicationGroupDto != null){
 
-                    List<LicenceGroupDto> licenceGroupDtos = new ArrayList<>();
-                    List<ApplicationGroupDto> success = new ArrayList<>();
-                    List<Map<String,String>> fail = new ArrayList<>();
+                    List<LicenceGroupDto> licenceGroupDtos = IaisCommonUtils.genNewArrayList();
+                    List<ApplicationGroupDto> success = IaisCommonUtils.genNewArrayList();
+                    List<Map<String,String>> fail = IaisCommonUtils.genNewArrayList();
                     // delete the reject applicaiton
                     List<ApplicationListDto> applicationListDtoList = applicationLicenceDto.getApplicationListDtoList();
                     deleteRejectApplication(applicationListDtoList);
@@ -183,7 +180,7 @@ public class LicenceApproveBatchjob {
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is end ..."));
     }
     private List<ApplicationDto> updateApplicationStatusToGenerated(List<ApplicationDto> applicationDtos){
-        List<ApplicationDto> result = new ArrayList<>();
+        List<ApplicationDto> result = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isEmpty(applicationDtos)){
             return result;
         }
@@ -208,7 +205,7 @@ public class LicenceApproveBatchjob {
     }
 
    private List<ApplicationDto> getApplications(List<LicenceGroupDto> licenceGroupDtos){
-       List<ApplicationDto> result = new ArrayList<>();
+       List<ApplicationDto> result = IaisCommonUtils.genNewArrayList();
        if(!IaisCommonUtils.isEmpty(licenceGroupDtos)){
          for (LicenceGroupDto licenceGroupDto : licenceGroupDtos){
              List<SuperLicDto>  superLicDtos =  licenceGroupDto.getSuperLicDtos();
@@ -228,7 +225,7 @@ public class LicenceApproveBatchjob {
        return  result;
    }
     private List<ApplicationGroupDto> updateStatusToGenerated(List<ApplicationGroupDto> applicationGroupDtos){
-        List<ApplicationGroupDto> result = new ArrayList<>();
+        List<ApplicationGroupDto> result = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isEmpty(applicationGroupDtos)){
              return result;
         }
@@ -277,7 +274,7 @@ public class LicenceApproveBatchjob {
             log.debug(StringUtil.changeForLog("The groupLicenceFlag is -->:" + groupLicenceFlag));
             List<ApplicationListDto> applicationListDtos = result.get(groupLicenceFlag);
             if(applicationListDtos == null){
-                applicationListDtos = new ArrayList<>();
+                applicationListDtos = IaisCommonUtils.genNewArrayList();
             }
             applicationListDtos.add(applicationListDto);
             result.put(groupLicenceFlag,applicationListDtos);
@@ -308,7 +305,7 @@ public class LicenceApproveBatchjob {
             log.debug(StringUtil.changeForLog("The applicationListDtoList size is -->:"+applicationListDtoList.size()));
             //tidy up Application for Group Licence use
             Map<String,List<ApplicationListDto>> applications = tidyAppForGroupLicence(applicationListDtoList);
-            List<SuperLicDto> superLicDtos = new ArrayList<>();
+            List<SuperLicDto> superLicDtos = IaisCommonUtils.genNewArrayList();
             String errorMessage = null;
             if(applications.size()<=0){
                 return result;
@@ -356,10 +353,10 @@ public class LicenceApproveBatchjob {
                     sendEmailInspection(licenceDto);
                 }
                 //
-                List<PremisesGroupDto> premisesGroupDtos = new ArrayList<>();
-                List<LicAppCorrelationDto> licAppCorrelationDtos = new ArrayList<>();
-                List<LicDocumentRelationDto> licDocumentRelationDtos = new ArrayList<>();
-                List<PersonnelsDto> personnelsDtos = new ArrayList<>();
+                List<PremisesGroupDto> premisesGroupDtos = IaisCommonUtils.genNewArrayList();
+                List<LicAppCorrelationDto> licAppCorrelationDtos = IaisCommonUtils.genNewArrayList();
+                List<LicDocumentRelationDto> licDocumentRelationDtos = IaisCommonUtils.genNewArrayList();
+                List<PersonnelsDto> personnelsDtos = IaisCommonUtils.genNewArrayList();
                 for(ApplicationListDto applicationListDto : applicationListDtos){
                     //create Premises
                     List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = applicationListDto.getAppGrpPremisesEntityDtos();
@@ -391,7 +388,7 @@ public class LicenceApproveBatchjob {
                     licAppCorrelationDtos.add(licAppCorrelationDto);
                     superLicDto.setLicAppCorrelationDtos(licAppCorrelationDtos);
                     //create LicFeeGroupItemDto
-                    List<LicFeeGroupItemDto> licFeeGroupItemDtos = new ArrayList<>();
+                    List<LicFeeGroupItemDto> licFeeGroupItemDtos = IaisCommonUtils.genNewArrayList();
                     LicFeeGroupItemDto licFeeGroupItemDto = new LicFeeGroupItemDto();
                     licFeeGroupItemDtos.add(licFeeGroupItemDto);
                     superLicDto.setLicFeeGroupItemDtos(licFeeGroupItemDtos);
@@ -480,7 +477,7 @@ public class LicenceApproveBatchjob {
     }
 
     private List<ApplicationDto> getApplicationDtos(List<ApplicationListDto> applicationListDtos){
-        List<ApplicationDto> result = new ArrayList<>();
+        List<ApplicationDto> result = IaisCommonUtils.genNewArrayList();
         if(applicationListDtos!=null && applicationListDtos.size() > 0){
             for (ApplicationListDto applicationListDto : applicationListDtos){
                 result.add(applicationListDto.getApplicationDto());
@@ -512,7 +509,7 @@ public class LicenceApproveBatchjob {
         }else{
             log.debug(StringUtil.changeForLog("The applicationListDtoList size is -->:"+applicationListDtoList.size()));
 
-            List<SuperLicDto> superLicDtos = new ArrayList<>();
+            List<SuperLicDto> superLicDtos = IaisCommonUtils.genNewArrayList();
             String errorMessage = null;
             for(ApplicationListDto applicationListDto : applicationListDtoList){
                 SuperLicDto superLicDto = new SuperLicDto();
@@ -580,13 +577,13 @@ public class LicenceApproveBatchjob {
                     sendEmailInspection(licenceDto);
                 }
                 //create the lic_app_correlation
-                List<LicAppCorrelationDto> licAppCorrelationDtos = new ArrayList<>();
+                List<LicAppCorrelationDto> licAppCorrelationDtos = IaisCommonUtils.genNewArrayList();
                 LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
                 licAppCorrelationDto.setApplicationId(applicationDto.getId());
                 licAppCorrelationDtos.add(licAppCorrelationDto);
                 superLicDto.setLicAppCorrelationDtos(licAppCorrelationDtos);
                 //create LicFeeGroupItemDto
-                List<LicFeeGroupItemDto> licFeeGroupItemDtos = new ArrayList<>();
+                List<LicFeeGroupItemDto> licFeeGroupItemDtos = IaisCommonUtils.genNewArrayList();
                 LicFeeGroupItemDto licFeeGroupItemDto = new LicFeeGroupItemDto();
                 licFeeGroupItemDtos.add(licFeeGroupItemDto);
                 superLicDto.setLicFeeGroupItemDtos(licFeeGroupItemDtos);
@@ -666,7 +663,7 @@ public class LicenceApproveBatchjob {
     }
 
     private List<LicSvcSpecificPersonnelDto> getLicSvcSpecificPersonnelDtos(List<AppSvcPersonnelDto> appSvcPersonnelDtos){
-        List<LicSvcSpecificPersonnelDto> result = new ArrayList<>();
+        List<LicSvcSpecificPersonnelDto> result = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(appSvcPersonnelDtos)){
            for (AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtos){
                LicSvcSpecificPersonnelDto licSvcSpecificPersonnelDto = MiscUtil.transferEntityDto(appSvcPersonnelDto,LicSvcSpecificPersonnelDto.class);
@@ -710,7 +707,7 @@ public class LicenceApproveBatchjob {
                                                        HcsaServiceDto hcsaServiceDto,
                                                        String organizationId,
                                                        Integer isPostInspNeeded){
-        List<PremisesGroupDto> reuslt = new ArrayList<>();
+        List<PremisesGroupDto> reuslt = IaisCommonUtils.genNewArrayList();
         if (IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)){
             return  reuslt;
         }
@@ -732,7 +729,7 @@ public class LicenceApproveBatchjob {
             premisesDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             premisesDto.setOrganizationId(organizationId);
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesEntityDto.getAppPremPhOpenPeriodDtoList();
-            List<LicPremPhOpenPeriodDto> licPremPhOpenPeriodDtos = new ArrayList<>();
+            List<LicPremPhOpenPeriodDto> licPremPhOpenPeriodDtos = IaisCommonUtils.genNewArrayList();
             if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriodDtos)){
                 for (AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodDtos){
                     LicPremPhOpenPeriodDto licPremPhOpenPeriodDto = MiscUtil.transferEntityDto(appPremPhOpenPeriodDto,LicPremPhOpenPeriodDto.class);
@@ -778,7 +775,7 @@ public class LicenceApproveBatchjob {
             //create LicPremisesScopeDto
             List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtoList = getAppSvcPremisesScopeDtoByCorrelationId(appSvcPremisesScopeDtos,appPremCorrecId);
             if(!IaisCommonUtils.isEmpty(appSvcPremisesScopeDtoList)){
-                List<LicPremisesScopeGroupDto> licPremisesScopeGroupDtoList = new ArrayList<>();
+                List<LicPremisesScopeGroupDto> licPremisesScopeGroupDtoList = IaisCommonUtils.genNewArrayList();
                 for(AppSvcPremisesScopeDto appSvcPremisesScopeDto :appSvcPremisesScopeDtoList){
                     LicPremisesScopeGroupDto licPremisesScopeGroupDto = new LicPremisesScopeGroupDto();
                     LicPremisesScopeDto licPremisesScopeDto = new LicPremisesScopeDto();
@@ -809,7 +806,7 @@ public class LicenceApproveBatchjob {
 
 
   private List<AppSvcPremisesScopeDto> getAppSvcPremisesScopeDtoByCorrelationId(List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos,String appPremCorrecId){
-      List<AppSvcPremisesScopeDto> result = new ArrayList<>();
+      List<AppSvcPremisesScopeDto> result = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isEmpty(appSvcPremisesScopeDtos)|| StringUtil.isEmpty(appPremCorrecId)){
           return result;
         }
@@ -843,7 +840,7 @@ public class LicenceApproveBatchjob {
     private List<PersonnelsDto> getPersonnelsDto(List<AppGrpPersonnelDto> appGrpPersonnelDtos,List<AppGrpPersonnelExtDto> appGrpPersonnelExtDtos,
                                                  List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos,
                                                  String organizationId){
-        List<PersonnelsDto> result = new ArrayList<>();
+        List<PersonnelsDto> result = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isEmpty(appSvcKeyPersonnelDtos)){
             return result;
         }
@@ -942,7 +939,7 @@ public class LicenceApproveBatchjob {
 
     private List<LicDocumentRelationDto> getLicDocumentRelationDto(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,List<AppSvcDocDto> appSvcDocDtos,
                                                                    List<AppPremisesCorrelationDto> appPremisesCorrelationDtos,List<PremisesGroupDto> premisesGroupDtos){
-        List<LicDocumentRelationDto> licDocumentRelationDtos = new ArrayList<>();
+        List<LicDocumentRelationDto> licDocumentRelationDtos = IaisCommonUtils.genNewArrayList();
         if(appGrpPrimaryDocDtos != null){
             for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){
                 if(!IaisCommonUtils.isEmpty(premisesGroupDtos)){
@@ -1091,7 +1088,7 @@ public class LicenceApproveBatchjob {
             //todo:Judge the licence status
             licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
         }
-        List<ApplicationDto> applicationDtos1 =  new ArrayList<>();
+        List<ApplicationDto> applicationDtos1 =  IaisCommonUtils.genNewArrayList();
         if(applicationDto!=null){
             applicationDtos1.add(applicationDto);
         }
@@ -1125,7 +1122,7 @@ public class LicenceApproveBatchjob {
     //getAllServiceId
     private List<String> getAllServiceId(List<ApplicationLicenceDto> applicationLicenceDtos){
         log.debug(StringUtil.changeForLog("The getAllServiceId is start ..."));
-        List<String> result  = new ArrayList<>();
+        List<String> result  = IaisCommonUtils.genNewArrayList();
         Set<String> set = new HashSet();
         if(IaisCommonUtils.isEmpty(applicationLicenceDtos)){
             return  result;

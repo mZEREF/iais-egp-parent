@@ -11,13 +11,29 @@ import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeToExcelDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
+import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,16 +42,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Author Hua_Chong
@@ -325,7 +331,7 @@ public class MasterCodeDelegator {
         String masterCodeId = ParamUtil.getString(request,SystemAdminBaseConstants.CRUD_ACTION_VALUE);
         if (!masterCodeId.isEmpty()){
             MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
-            List<SelectOption> mcStatusSelectList = new ArrayList<>();
+            List<SelectOption> mcStatusSelectList = IaisCommonUtils.genNewArrayList();
             mcStatusSelectList.add(new SelectOption(masterCodeDto.getStatus(), MasterCodeUtil.getCodeDesc(masterCodeDto.getStatus())));
             mcStatusSelectList.add(new SelectOption("CMSTAT001", "Active"));
             mcStatusSelectList.add(new SelectOption("CMSTAT002", "Deleted"));
@@ -386,7 +392,7 @@ public class MasterCodeDelegator {
     }
 
     private void prepareSelect(HttpServletRequest request){
-        List<SelectOption> selectCodeStatusList = new ArrayList<>();
+        List<SelectOption> selectCodeStatusList = IaisCommonUtils.genNewArrayList();
         selectCodeStatusList.add(new SelectOption("CMSTAT001", "Active"));
         selectCodeStatusList.add(new SelectOption("CMSTAT003", "Inactive"));
         ParamUtil.setRequestAttr(request, "codeStatus", selectCodeStatusList);

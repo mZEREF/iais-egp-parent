@@ -48,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import com.ecquaria.sz.commons.util.FileUtil;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -67,16 +68,12 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 
 /**
@@ -490,7 +487,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         if(!file.exists()){
             file.mkdirs();
         }
-        List<FileRepoDto> fileRepoDtos = new ArrayList<>();
+        List<FileRepoDto> fileRepoDtos = IaisCommonUtils.genNewArrayList();
         if(file.isDirectory()){
             File[] files = file.listFiles();
             for(File f:files){
@@ -563,10 +560,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private TaskHistoryDto getRoutingTaskForRequestForInformation(List<ApplicationDto> applicationDtos,AuditTrailDto auditTrailDto) throws Exception {
         log.debug(StringUtil.changeForLog("the do getRoutingTaskForRequestForInformation start ...."));
         TaskHistoryDto result = new TaskHistoryDto();
-        List<TaskDto> taskDtoList = new ArrayList<>();
-        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = new ArrayList<>();
-        List<ApplicationDto> newApplicationDtos = new ArrayList<>();
-        List<ApplicationDto> rollBackApplicationDtos = new ArrayList<>();
+        List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = IaisCommonUtils.genNewArrayList();
+        List<ApplicationDto> newApplicationDtos = IaisCommonUtils.genNewArrayList();
+        List<ApplicationDto> rollBackApplicationDtos = IaisCommonUtils.genNewArrayList();
 
         if(!IaisCommonUtils.isEmpty(applicationDtos)){
             log.debug(StringUtil.changeForLog("the applicationDtos size is-->"+applicationDtos.size()));
@@ -647,8 +644,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             broadcastOrganizationDto.setEventRefNo(evenRefNum);
             broadcastApplicationDto.setEventRefNo(evenRefNum);
 
-            List<TaskDto> onSubmitTaskList = new ArrayList<>();
-            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = new ArrayList<>();
+            List<TaskDto> onSubmitTaskList = IaisCommonUtils.genNewArrayList();
+            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = IaisCommonUtils.genNewArrayList();
             if(taskHistoryDto!=null){
                 if(!IaisCommonUtils.isEmpty(taskHistoryDto.getTaskDtoList())){
                     onSubmitTaskList.addAll(taskHistoryDto.getTaskDtoList());
@@ -707,7 +704,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         Map<String,List<ApplicationDto>> map=new HashMap<>();
         for (ApplicationGroupDto applicationGroupDto : applicationGroup) {
-            List<ApplicationDto> list=new ArrayList<>();
+            List<ApplicationDto> list=IaisCommonUtils.genNewArrayList();
             for (ApplicationDto applicationDto : dtoList) {
                 if (applicationGroupDto.getId().equals(applicationDto.getAppGrpId())) {
                     list.add(applicationDto);
@@ -727,13 +724,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     private void update(List<ApplicationDto> list,List<ApplicationGroupDto> applicationGroup,List<ApplicationDto>  applicationList){
 
-        List<String> idList=new ArrayList<>();
+        List<String> idList=IaisCommonUtils.genNewArrayList();
         for(ApplicationDto every:applicationList){
             idList.add(every.getId());
         }
         Map<ApplicationGroupDto,List<ApplicationDto>> map=new HashMap<>();
         for (ApplicationGroupDto every : applicationGroup) {
-            List<ApplicationDto> applicationslist=new ArrayList<>();
+            List<ApplicationDto> applicationslist=IaisCommonUtils.genNewArrayList();
 
             for (ApplicationDto application : applicationList) {
                 if (every.getId().equals(application.getAppGrpId())) {

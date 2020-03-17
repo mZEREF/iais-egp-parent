@@ -19,16 +19,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import lombok.extern.slf4j.Slf4j;
-
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * MasterCodeUtil
@@ -100,7 +99,7 @@ public final class MasterCodeUtil {
         if (sr == null || sr.getRowCount() <= 0) {
             return;
         }
-        List<MasterCodeView> list = new ArrayList<>();
+        List<MasterCodeView> list = IaisCommonUtils.genNewArrayList();
         sr.getRows().forEach(obj -> {
             list.add((MasterCodeView) obj);
         });
@@ -113,7 +112,7 @@ public final class MasterCodeUtil {
         list.forEach(mc -> {
             String cateStr = String.valueOf(mc.getCategory());
             if (cateMap.get(cateStr) == null) {
-                List<MasterCodeView> codes = new ArrayList<>();
+                List<MasterCodeView> codes = IaisCommonUtils.genNewArrayList();
                 codes.add(mc);
                 cateMap.put(cateStr, codes);
             } else {
@@ -126,7 +125,7 @@ public final class MasterCodeUtil {
             if (StringUtil.isEmpty(mc.getFilterValue())) {
                 //Do nothing
             } else if (filterMap.get(mc.getFilterValue()) == null) {
-                List<MasterCodeView> codes = new ArrayList<>();
+                List<MasterCodeView> codes = IaisCommonUtils.genNewArrayList();
                 codes.add(mc);
                 filterMap.put(mc.getFilterValue(), codes);
             } else {
@@ -162,7 +161,7 @@ public final class MasterCodeUtil {
      */
     public static List<MasterCodeView> retrieveByCategory(String cateId) {
         List<MasterCodeView> list = retrieveCateSource(cateId);
-        List<MasterCodeView> mcList = new ArrayList<>();
+        List<MasterCodeView> mcList = IaisCommonUtils.genNewArrayList();
         list.forEach(m ->
             mcList.add(MiscUtil.transferEntityDto(m, MasterCodeView.class))
         );
@@ -179,7 +178,7 @@ public final class MasterCodeUtil {
      */
     public static List<SelectOption> retrieveOptionsByCate(String cateId) {
         List<MasterCodeView> list = retrieveCateSource(cateId);
-        List<SelectOption> opts = new ArrayList<>();
+        List<SelectOption> opts = IaisCommonUtils.genNewArrayList();
         list.forEach(m ->
             opts.add(new SelectOption(m.getCode(), m.getCodeValue()))
         );
@@ -223,7 +222,7 @@ public final class MasterCodeUtil {
      */
     public static List<SelectOption> retrieveOptionsByFilter(String filter) {
         List<MasterCodeView> list = retrieveFilterSource(filter);
-        List<SelectOption> opts = new ArrayList<>();
+        List<SelectOption> opts = IaisCommonUtils.genNewArrayList();
         list.forEach(m ->
             opts.add(new SelectOption(m.getCode(), m.getCodeValue()))
         );
@@ -240,7 +239,7 @@ public final class MasterCodeUtil {
      */
     public static List<MasterCodeView> retrieveByFilter(String filter) {
         List<MasterCodeView> list = retrieveFilterSource(filter);
-        List<MasterCodeView> mcList = new ArrayList<>();
+        List<MasterCodeView> mcList = IaisCommonUtils.genNewArrayList();
         list.forEach(m ->
             mcList.add(MiscUtil.transferEntityDto(m, MasterCodeView.class))
         );
@@ -256,7 +255,7 @@ public final class MasterCodeUtil {
      * @return: java.util.List<com.ecquaria.cloud.moh.iais.tags.SelectOption>
      */
     public static List<SelectOption> retrieveOptionsByCodes(String[] codes) {
-        List<SelectOption> opts = new ArrayList<>();
+        List<SelectOption> opts = IaisCommonUtils.genNewArrayList();
         if (codes == null) {
             return opts;
         }
@@ -287,7 +286,7 @@ public final class MasterCodeUtil {
                 );
                 RedisCacheHelper.getInstance().set(CACHE_NAME_CATE_MAP, cateId, list, RedisCacheHelper.NOT_EXPIRE);
             } else {
-                return new ArrayList<>();
+                return IaisCommonUtils.genNewArrayList();
             }
         }
 
@@ -311,7 +310,7 @@ public final class MasterCodeUtil {
                 );
                 RedisCacheHelper.getInstance().set(CACHE_NAME_FILTER, filter, list, RedisCacheHelper.NOT_EXPIRE);
             } else {
-                return new ArrayList<>();
+                return IaisCommonUtils.genNewArrayList();
             }
         }
 
@@ -332,7 +331,7 @@ public final class MasterCodeUtil {
         String cate = String.valueOf(mc.getCategory());
         List<MasterCodeView> list = rch.get(CACHE_NAME_CATE_MAP, cate);
         if (list == null) {
-            list = new ArrayList<>();
+            list = IaisCommonUtils.genNewArrayList();
         }
         list.add(mc);
         rch.set(CACHE_NAME_CATE_MAP, cate, list);
@@ -341,7 +340,7 @@ public final class MasterCodeUtil {
         }
         list = rch.get(CACHE_NAME_FILTER, mc.getFilterValue());
         if (list == null) {
-            list = new ArrayList<>();
+            list = IaisCommonUtils.genNewArrayList();
         }
         list.add(mc);
         rch.set(CACHE_NAME_FILTER, mc.getFilterValue(), list);

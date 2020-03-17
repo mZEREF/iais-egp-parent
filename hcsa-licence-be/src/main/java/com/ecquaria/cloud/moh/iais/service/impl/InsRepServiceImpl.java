@@ -12,8 +12,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -21,23 +25,46 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRectifiedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.*;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
+import com.ecquaria.cloud.moh.iais.service.InsRepService;
+import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * @author weilu
@@ -105,7 +132,7 @@ public class InsRepServiceImpl implements InsRepService {
             inspectionReportDto.setLicenseeName(name);
         }
         List<AppGrpPersonnelDto> principalOfficer = appInsRepDto.getPrincipalOfficer();
-        List<String> poNames = new ArrayList<>();
+        List<String> poNames = IaisCommonUtils.genNewArrayList();
         for(AppGrpPersonnelDto appGrpPersonnelDto : principalOfficer){
             String name = appGrpPersonnelDto.getName();
             poNames.add(name);
@@ -115,7 +142,7 @@ public class InsRepServiceImpl implements InsRepService {
 
         List<String> inspectors = taskOrganizationClient.getInspectorByAppCorrId(appPremisesCorrelationId).getEntity();
         List<OrgUserDto> inspectorsNames = organizationClient.retrieveOrgUserAccount(inspectors).getEntity();
-        List<String> nameList = new ArrayList<>();
+        List<String> nameList = IaisCommonUtils.genNewArrayList();
         for(OrgUserDto orgUserDto :inspectorsNames){
             nameList.add(orgUserDto.getDisplayName());
         }
@@ -133,7 +160,7 @@ public class InsRepServiceImpl implements InsRepService {
         }
 
         //serviceId transform serviceCode
-        List<String> list = new ArrayList<>();
+        List<String> list = IaisCommonUtils.genNewArrayList();
         String serviceId = appInsRepDto.getServiceId();
         list.add(serviceId);
         List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
@@ -147,15 +174,15 @@ public class InsRepServiceImpl implements InsRepService {
         }
 
         List<HcsaSvcSubtypeOrSubsumedDto> subsumedDtos = hcsaConfigClient.listSubCorrelationFooReport(serviceId).getEntity();
-        List<String> subsumedServices = new ArrayList<>();
+        List<String> subsumedServices = IaisCommonUtils.genNewArrayList();
         for(HcsaSvcSubtypeOrSubsumedDto subsumedDto :subsumedDtos){
             subsumedServices.add(subsumedDto.getName());
         }
         inspectionReportDto.setSubsumedServices(subsumedServices);
         //Nc
         List<ChecklistQuestionDto> listChecklistQuestionDtos = hcsaChklClient.getcheckListQuestionDtoList(svcCode, "Inspection").getEntity();
-        List<ReportNcRegulationDto> listReportNcRegulationDto = new ArrayList<>();
-        List<ReportNcRectifiedDto> listReportNcRectifiedDto = new ArrayList<>();
+        List<ReportNcRegulationDto> listReportNcRegulationDto = IaisCommonUtils.genNewArrayList();
+        List<ReportNcRectifiedDto> listReportNcRectifiedDto = IaisCommonUtils.genNewArrayList();
         //add ReportNcRegulationDto and add ncItemId
         if (listChecklistQuestionDtos != null && !listChecklistQuestionDtos.isEmpty()) {
             String configId = listChecklistQuestionDtos.get(0).getConfigId();
@@ -375,7 +402,7 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public List<SelectOption> getRiskOption(ApplicationViewDto applicationViewDto) {
         String serviceId = applicationViewDto.getApplicationDto().getServiceId();
-        List<String> list = new ArrayList<>();
+        List<String> list = IaisCommonUtils.genNewArrayList();
         list.add(serviceId);
         List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
         String svcCode = "";
@@ -384,10 +411,10 @@ public class InsRepServiceImpl implements InsRepService {
                 svcCode = hcsaServiceDto.getSvcCode();
             }
         }
-        List<SelectOption> riskResult = new ArrayList<>();
+        List<SelectOption> riskResult = IaisCommonUtils.genNewArrayList();
         RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
         riskAcceptiionDto.setScvCode(svcCode);
-        List<RiskAcceptiionDto> listRiskAcceptiionDto = new ArrayList<>();
+        List<RiskAcceptiionDto> listRiskAcceptiionDto = IaisCommonUtils.genNewArrayList();
         listRiskAcceptiionDto.add(riskAcceptiionDto);
         List<RiskResultDto> listRiskResultDto = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();
         if (listRiskResultDto != null && !listRiskResultDto.isEmpty()) {
@@ -408,7 +435,7 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public List<String> getPeriods(ApplicationViewDto applicationViewDto) {
         String serviceId = applicationViewDto.getApplicationDto().getServiceId();
-        List<String> list = new ArrayList<>();
+        List<String> list = IaisCommonUtils.genNewArrayList();
         list.add(serviceId);
         List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
         String svcCode = "";
@@ -417,10 +444,10 @@ public class InsRepServiceImpl implements InsRepService {
                 svcCode = hcsaServiceDto.getSvcCode();
             }
         }
-        List<String> riskResult = new ArrayList<>();
+        List<String> riskResult = IaisCommonUtils.genNewArrayList();
         RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
         riskAcceptiionDto.setScvCode(svcCode);
-        List<RiskAcceptiionDto> listRiskAcceptiionDto = new ArrayList<>();
+        List<RiskAcceptiionDto> listRiskAcceptiionDto = IaisCommonUtils.genNewArrayList();
         listRiskAcceptiionDto.add(riskAcceptiionDto);
         List<RiskResultDto> listRiskResultDto = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();
         if (listRiskResultDto != null && !listRiskResultDto.isEmpty()) {
@@ -518,7 +545,7 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public InspectionReportDto getInspectorUser(TaskDto taskDto,LoginContext loginContext) {
         InspectionReportDto reportDtoForInspector = new InspectionReportDto();
-        List<String> listUserId = new ArrayList<>();
+        List<String> listUserId = IaisCommonUtils.genNewArrayList();
         String userId = loginContext.getUserId();
         String wkGrpId = taskDto.getWkGrpId();
         String correlationId = taskDto.getRefNo();
@@ -536,12 +563,12 @@ public class InsRepServiceImpl implements InsRepService {
         reportDtoForInspector.setReportedBy(reportBy);
         reportDtoForInspector.setReportNoteBy(leadName);
         Set<String> inspectiors = taskService.getInspectiors(correlationId, "TSTATUS003", "INSPECTOR");
-        List<String> inspectors = new ArrayList<>();
+        List<String> inspectors = IaisCommonUtils.genNewArrayList();
         for(String inspector :inspectiors){
             inspectors.add(inspector);
         }
         List<OrgUserDto> inspectorList = organizationClient.retrieveOrgUserAccount(inspectors).getEntity();
-        List<String> inspectorsName = new ArrayList<>();
+        List<String> inspectorsName = IaisCommonUtils.genNewArrayList();
         for(OrgUserDto orgUserDto :inspectorList){
             String displayName = orgUserDto.getDisplayName();
             inspectorsName.add(displayName);
@@ -552,7 +579,7 @@ public class InsRepServiceImpl implements InsRepService {
 
     @Override
     public InspectionReportDto getInspectorAo(TaskDto taskDto,ApplicationViewDto applicationViewDto) {
-        List<String> listUserId = new ArrayList<>();
+        List<String> listUserId = IaisCommonUtils.genNewArrayList();
         String correlationId = taskDto.getRefNo();
         String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
         InspectionReportDto reportDtoForAo = new InspectionReportDto();
@@ -573,12 +600,12 @@ public class InsRepServiceImpl implements InsRepService {
             reportDtoForAo.setReportedBy(reportBy);
             reportDtoForAo.setReportNoteBy(leadName);
             Set<String> inspectiors = taskService.getInspectiors(correlationId, "TSTATUS003", "INSPECTOR");
-            List<String> inspectors = new ArrayList<>();
+            List<String> inspectors = IaisCommonUtils.genNewArrayList();
             for(String inspector :inspectiors){
                 inspectors.add(inspector);
             }
             List<OrgUserDto> inspectorList = organizationClient.retrieveOrgUserAccount(inspectors).getEntity();
-            List<String> inspectorsName = new ArrayList<>();
+            List<String> inspectorsName = IaisCommonUtils.genNewArrayList();
             for(OrgUserDto orgUserDto :inspectorList){
                 String displayName = orgUserDto.getDisplayName();
                 inspectorsName.add(displayName);
@@ -639,8 +666,8 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     private List<TaskDto> prepareTaskToAo1(TaskDto taskDto, ApplicationDto applicationDto, HcsaSvcStageWorkingGroupDto dto) throws FeignException {
-        List<TaskDto> list = new ArrayList<>();
-        List<ApplicationDto> applicationDtos = new ArrayList<>();
+        List<TaskDto> list = IaisCommonUtils.genNewArrayList();
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         applicationDtos.add(applicationDto);
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
         hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
@@ -666,14 +693,14 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     private List<TaskDto> prepareTaskToAo2(TaskDto taskDto, String serviceId, ApplicationDto applicationDto) throws FeignException {
-        List<TaskDto> list = new ArrayList<>();
+        List<TaskDto> list = IaisCommonUtils.genNewArrayList();
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
         hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
         hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_AO2);
         hcsaSvcStageWorkingGroupDto.setOrder(1);
         hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
         HcsaSvcStageWorkingGroupDto dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
-        List<ApplicationDto> applicationDtos = new ArrayList<>();
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         applicationDtos.add(applicationDto);
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
         hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
@@ -701,7 +728,7 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     private List<TaskDto> prepareBackTaskList(TaskDto taskDto,String userId) {
-        List<TaskDto> list = new ArrayList<>();
+        List<TaskDto> list = IaisCommonUtils.genNewArrayList();
         taskDto.setId(null);
         taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
         taskDto.setUserId(userId);

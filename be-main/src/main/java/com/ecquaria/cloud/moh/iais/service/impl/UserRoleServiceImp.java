@@ -1,13 +1,12 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.UserRoleService;
 import com.ecquaria.cloud.moh.iais.service.client.UserRoleClient;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Service
@@ -24,7 +23,7 @@ public class UserRoleServiceImp implements UserRoleService {
 
     @Override
     public void setAvailable(String userId,String ava){
-        List<String> user = new ArrayList<>();
+        List<String> user = IaisCommonUtils.genNewArrayList();
         user.add(0,userId);
         user.add(1,ava);
         userRoleClient.setAvailable(user);

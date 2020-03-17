@@ -6,25 +6,29 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.*;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * @author weilu
@@ -49,7 +53,7 @@ public class CessationApplicationDelegator {
     public void init(BaseProcessClass bpc) {
         List<String> licIds = (List<String>)ParamUtil.getSessionAttr(bpc.request, "licIds");
         if(licIds==null){
-            licIds = new ArrayList<>();
+            licIds = IaisCommonUtils.genNewArrayList();
             licIds.add("ACB51822-A656-EA11-BE7F-000C29F371DC");
             licIds.add("4083B3AD-B04D-EA11-BE7F-000C29F371DC");
         }
@@ -87,7 +91,7 @@ public class CessationApplicationDelegator {
         List<AppCessLicDto> appCessDtosByLicIds = (List<AppCessLicDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtos");
         int size = (int) ParamUtil.getSessionAttr(bpc.request, "size");
         List<AppCessLicDto> appCessHciDtos = prepareDataForValiant(bpc, size, appCessDtosByLicIds);
-        List<AppCessLicDto> cloneAppCessHciDtos = new ArrayList<>();
+        List<AppCessLicDto> cloneAppCessHciDtos = IaisCommonUtils.genNewArrayList();
         CopyUtil.copyMutableObjectList(appCessHciDtos, cloneAppCessHciDtos);
         List<AppCessLicDto> confirmDtos = getConfirmDtos(cloneAppCessHciDtos);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable) appCessHciDtos);
@@ -146,10 +150,10 @@ public class CessationApplicationDelegator {
     public void saveData(BaseProcessClass bpc) {
         List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
         cessationService.saveCessations(appCessationDtos);
-        List<AppCessatonConfirmDto> appCessationDtosConfirms = new ArrayList<>();
+        List<AppCessatonConfirmDto> appCessationDtosConfirms = IaisCommonUtils.genNewArrayList();
         for (AppCessationDto appCessationDto : appCessationDtos) {
             String licId = appCessationDto.getWhichTodo();
-            List<String> licIds = new ArrayList<>();
+            List<String> licIds = IaisCommonUtils.genNewArrayList();
             licIds.add(licId);
             ApplicationDto applicationDto = applicationClient.getApplicationByLicId(licId).getEntity();
             List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
@@ -169,7 +173,7 @@ public class CessationApplicationDelegator {
             appCessatonConfirmDto.setHciName(hciName);
             appCessationDtosConfirms.add(appCessatonConfirmDto);
         }
-        List<String> licNos = new ArrayList<>();
+        List<String> licNos = IaisCommonUtils.genNewArrayList();
         for(AppCessatonConfirmDto appCessatonConfirmDto :appCessationDtosConfirms){
             String licenceNo = appCessatonConfirmDto.getLicenceNo();
             Date effectiveDate = appCessatonConfirmDto.getEffectiveDate();
@@ -195,12 +199,12 @@ public class CessationApplicationDelegator {
      */
 
     private List<AppCessLicDto> prepareDataForValiant(BaseProcessClass bpc, int size, List<AppCessLicDto> appCessDtosByLicIds) {
-        List<AppCessLicDto> appCessLicDtos = new ArrayList<>();
+        List<AppCessLicDto> appCessLicDtos = IaisCommonUtils.genNewArrayList();
         for (int i = 1; i <= size; i++) {
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(i - 1);
             List<AppCessHciDto> appCessHciDtoso = appCessLicDto.getAppCessHciDtos();
             int size1 = appCessHciDtoso.size();
-            List<AppCessHciDto> appCessHciDtos = new ArrayList<>();
+            List<AppCessHciDto> appCessHciDtos = IaisCommonUtils.genNewArrayList();
             for (int j = 1; j <= size1; j++) {
                 AppCessHciDto appCessHciDto = appCessHciDtoso.get(j - 1);
                 String whichTodo = ParamUtil.getRequestString(bpc.request, i + "whichTodo" + j);
@@ -250,7 +254,7 @@ public class CessationApplicationDelegator {
     }
 
     private List<AppCessationDto> transformDto(List<AppCessLicDto> appCessLicDtos) {
-        List<AppCessationDto> appCessationDtos = new ArrayList<>();
+        List<AppCessationDto> appCessationDtos = IaisCommonUtils.genNewArrayList();
         for (AppCessLicDto appCessLicDto : appCessLicDtos) {
             List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
             if(appCessHciDtos!=null&&!appCessHciDtos.isEmpty()){
@@ -293,7 +297,7 @@ public class CessationApplicationDelegator {
         for(AppCessLicDto appCessLicDto :appCessLicDtos){
             List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
             if(appCessHciDtos!=null&&!appCessHciDtos.isEmpty()){
-                List<AppCessHciDto> list = new ArrayList<>();
+                List<AppCessHciDto> list = IaisCommonUtils.genNewArrayList();
                 for (AppCessHciDto appCessHciDto :appCessHciDtos){
                     String whichTodo = appCessHciDto.getWhichTodo();
                     if(StringUtil.isEmpty(whichTodo)){
@@ -375,7 +379,7 @@ public class CessationApplicationDelegator {
     }
 
     private List<SelectOption> getReasonOption() {
-        List<SelectOption> riskLevelResult = new ArrayList<>();
+        List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, "Not Profitable");
         SelectOption so2 = new SelectOption(ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, "Reduce Workloa");
         SelectOption so3 = new SelectOption(ApplicationConsts.CESSATION_REASON_OTHER, "Others");
@@ -386,7 +390,7 @@ public class CessationApplicationDelegator {
     }
 
     private List<SelectOption> getPatientsOption() {
-        List<SelectOption> riskLevelResult = new ArrayList<>();
+        List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, "HCI");
         SelectOption so2 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, "Professional Regn No.");
         SelectOption so3 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER, "Others");

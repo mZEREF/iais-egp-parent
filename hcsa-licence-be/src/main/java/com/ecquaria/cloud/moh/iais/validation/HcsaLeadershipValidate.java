@@ -3,16 +3,15 @@ package com.ecquaria.cloud.moh.iais.validation;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskLeadershipMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLeaderShipShowDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Author: jiahao
@@ -24,7 +23,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         Map<String, String> errMap = new HashMap<>();
         RiskLeaderShipShowDto findto = (RiskLeaderShipShowDto) ParamUtil.getSessionAttr(request, "leaderShowDto");
         List<HcsaRiskLeadershipMatrixDto> financeList = findto.getLeaderShipDtoList();
-        List<HcsaRiskLeadershipMatrixDto> editList = new ArrayList<>();
+        List<HcsaRiskLeadershipMatrixDto> editList = IaisCommonUtils.genNewArrayList();
         for(HcsaRiskLeadershipMatrixDto dto :financeList){
             if(dto.isAdIsEdit()||dto.isDpIsEdit()){
                 editList.add(dto);

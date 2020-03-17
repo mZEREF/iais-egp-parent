@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageQueryDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -19,14 +20,12 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.MessageService;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /*
  *File Name: MessageDelegator
@@ -56,18 +55,18 @@ public class MessageDelegator {
      * @param request
      */
     private void preSelectOption(HttpServletRequest request){
-        List<SelectOption> domainOptionList = new ArrayList<>();
+        List<SelectOption> domainOptionList = IaisCommonUtils.genNewArrayList();
         domainOptionList.add(new SelectOption("Internet", "Internet"));
         domainOptionList.add(new SelectOption("Intranet", "Intranet"));
         domainOptionList.add(new SelectOption("Mobile", "Mobile"));
         ParamUtil.setRequestAttr(request, "domainTypeSelect", domainOptionList);
 
-        List<SelectOption> msgOptionList = new ArrayList<>();
+        List<SelectOption> msgOptionList = IaisCommonUtils.genNewArrayList();
         msgOptionList.add(new SelectOption("Acknowledgement", "Acknowledgement"));
         msgOptionList.add(new SelectOption("Error", "Error"));
         ParamUtil.setRequestAttr(request, "msgTypeSelect", msgOptionList);
 
-        List<SelectOption> moduleList =  new ArrayList<>();
+        List<SelectOption> moduleList =  IaisCommonUtils.genNewArrayList();
         moduleList.add(new SelectOption("New", "New"));
         moduleList.add(new SelectOption("Renewal", "Renewal"));
         moduleList.add(new SelectOption("Request For Change", "Request For Change"));

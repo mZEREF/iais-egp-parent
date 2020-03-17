@@ -51,17 +51,17 @@ public class AppealApproveBatchjob {
                   log.info(StringUtil.changeForLog("The AppealApproveBatchjob group no is -->"+applicationGroupDto.getGroupNo()));
                   log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealApproveDtos.size() is -->"+appealApproveDtos.size()));
                   List<ApplicationDto> appealApplicaiton = new ArrayList();
-                  List<ApplicationDto> rollBackApplication = new ArrayList<>();
-                  List<LicenceDto> appealLicence = new ArrayList<>();
-                  List<LicenceDto> rollBackLicence = new ArrayList<>();
-                  List<AppSvcKeyPersonnelDto> appealPersonnel = new ArrayList<>();
-                  List<AppSvcKeyPersonnelDto> rollBackPersonnel = new ArrayList<>();
-                  List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto = new ArrayList<>();
-                  List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto = new ArrayList<>();
-                  List<AppPremisesRecommendationDto> appealAppPremisesRecommendationDtos = new ArrayList<>();
-                  List<AppPremisesRecommendationDto> rollBackAppPremisesRecommendationDtos = new ArrayList<>();
-                  List<ApplicationGroupDto> appealApplicationGroupDtos = new ArrayList<>();
-                  List<ApplicationGroupDto> rollBackApplicationGroupDtos = new ArrayList<>();
+                  List<ApplicationDto> rollBackApplication = IaisCommonUtils.genNewArrayList();
+                  List<LicenceDto> appealLicence = IaisCommonUtils.genNewArrayList();
+                  List<LicenceDto> rollBackLicence = IaisCommonUtils.genNewArrayList();
+                  List<AppSvcKeyPersonnelDto> appealPersonnel = IaisCommonUtils.genNewArrayList();
+                  List<AppSvcKeyPersonnelDto> rollBackPersonnel = IaisCommonUtils.genNewArrayList();
+                  List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto = IaisCommonUtils.genNewArrayList();
+                  List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto = IaisCommonUtils.genNewArrayList();
+                  List<AppPremisesRecommendationDto> appealAppPremisesRecommendationDtos = IaisCommonUtils.genNewArrayList();
+                  List<AppPremisesRecommendationDto> rollBackAppPremisesRecommendationDtos = IaisCommonUtils.genNewArrayList();
+                  List<ApplicationGroupDto> appealApplicationGroupDtos = IaisCommonUtils.genNewArrayList();
+                  List<ApplicationGroupDto> rollBackApplicationGroupDtos = IaisCommonUtils.genNewArrayList();
                   for (AppealApproveDto appealApproveDto: appealApproveDtos){
                       ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
                       AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();

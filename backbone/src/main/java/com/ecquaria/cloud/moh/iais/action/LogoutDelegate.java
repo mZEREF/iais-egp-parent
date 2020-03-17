@@ -3,11 +3,11 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class LogoutDelegate {
             String userid=session_mgmt.getCurrentUserID();
             //Add audit trail
             AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-            List<AuditTrailDto> dtoList = new ArrayList<>();
+            List<AuditTrailDto> dtoList = IaisCommonUtils.genNewArrayList();
             dtoList.add(auditTrailDto);
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGOUT);
             auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTRANET);

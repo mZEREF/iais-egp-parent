@@ -22,14 +22,12 @@ import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Process: MohInspectionInboxSearch
@@ -196,7 +194,7 @@ public class InspectionSearchDelegator {
     }
 
     private List<TaskDto> getCommPoolByGroupWordId(List<String> workGroupIds) {
-        List<TaskDto> taskDtoList = new ArrayList<>();
+        List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isEmpty(workGroupIds)){
             return null;
         }

@@ -191,9 +191,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     @Override
     public Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> getSelfCheckListByCorrId(String refNo) {
         Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> map = new HashMap<>();
-        List<InspectionFillCheckListDto> chkDtoList = new ArrayList<>();
+        List<InspectionFillCheckListDto> chkDtoList = IaisCommonUtils.genNewArrayList();
         InspectionFillCheckListDto commonDto = new InspectionFillCheckListDto();
-        List<String> ids = new ArrayList<>();
+        List<String> ids = IaisCommonUtils.genNewArrayList();
         ids.add(refNo);
         List<String> selfDeclIdList = inspectionTaskClient.getSelfDeclChecklistByCorreId(ids).getEntity();
         if(IaisCommonUtils.isEmpty(selfDeclIdList)){

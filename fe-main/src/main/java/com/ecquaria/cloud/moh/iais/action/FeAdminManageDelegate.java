@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -21,14 +22,12 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.impl.OrgUserManageServiceImpl;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * FeAdminManageDelegate
@@ -144,7 +143,7 @@ public class FeAdminManageDelegate {
         log.debug(StringUtil.changeForLog("*******************edit"));
         String userId = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
 
-        List<SelectOption> mcStatusSelectList = new ArrayList<>();
+        List<SelectOption> mcStatusSelectList = IaisCommonUtils.genNewArrayList();
         mcStatusSelectList.add(new SelectOption("NRIC", "NRIC"));
         mcStatusSelectList.add(new SelectOption("FIN", "FIN"));
         ParamUtil.setRequestAttr(bpc.request, "mcStatusSelectList", mcStatusSelectList);
@@ -235,7 +234,7 @@ public class FeAdminManageDelegate {
             ParamUtil.setRequestAttr(bpc.request, "name", name);
             ParamUtil.setRequestAttr(bpc.request, "designation", designation);
 
-            List<SelectOption> mcStatusSelectList = new ArrayList<>();
+            List<SelectOption> mcStatusSelectList = IaisCommonUtils.genNewArrayList();
             mcStatusSelectList.add(new SelectOption("NRIC", "NRIC"));
             mcStatusSelectList.add(new SelectOption("FIN", "FIN"));
             ParamUtil.setRequestAttr(bpc.request, "mcStatusSelectList", mcStatusSelectList);

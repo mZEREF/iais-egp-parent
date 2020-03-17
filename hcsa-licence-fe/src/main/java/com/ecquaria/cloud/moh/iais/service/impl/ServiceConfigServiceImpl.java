@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -28,22 +29,20 @@ import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * ServiceConfigServiceImpl
@@ -191,7 +190,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public List<HcsaServiceStepSchemeDto> getHcsaServiceStepSchemesByServiceId(String serviceId) {
-        List<HcsaServiceStepSchemeDto> result = new ArrayList<>();
+        List<HcsaServiceStepSchemeDto> result = IaisCommonUtils.genNewArrayList();
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos =  appConfigClient.getServiceStepsByServiceId(serviceId).getEntity();
         if(hcsaServiceStepSchemeDtos!=null && hcsaServiceStepSchemeDtos.size() > 0){
             for (HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto : hcsaServiceStepSchemeDtos){
@@ -224,9 +223,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public List<HcsaSvcPersonnelDto> getSvcAllPsnConfig(List<HcsaServiceStepSchemeDto> svcStep, String svcId) {
-        List<SpecicalPersonDto> specicalPersonDtos =new ArrayList<>();
+        List<SpecicalPersonDto> specicalPersonDtos =IaisCommonUtils.genNewArrayList();
         SpecicalPersonDto specicalPersonDto = new SpecicalPersonDto();
-        List<String> psnTypes = new ArrayList<>();
+        List<String> psnTypes = IaisCommonUtils.genNewArrayList();
         for(HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto:svcStep){
             if(svcId.equals(hcsaServiceStepSchemeDto.getServiceId())){
                 String stepCode = hcsaServiceStepSchemeDto.getStepCode();

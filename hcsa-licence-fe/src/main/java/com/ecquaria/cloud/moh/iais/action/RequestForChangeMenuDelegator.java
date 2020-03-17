@@ -34,19 +34,17 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import java.io.IOException;
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Serializable;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESSAGE;
 
@@ -194,7 +192,7 @@ public class RequestForChangeMenuDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
 
-        List<AppGrpPremisesDto> reloadPremisesDtoList = new ArrayList<>();
+        List<AppGrpPremisesDto> reloadPremisesDtoList = IaisCommonUtils.genNewArrayList();
         AppGrpPremisesDto appGrpPremisesDto = null;
         Object rfi = ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         if(appSubmissionDto != null){
@@ -247,7 +245,7 @@ public class RequestForChangeMenuDelegator {
                 premisesListQueryDto = getPremisesListQueryDto(premisesListQueryDtos, licId, premId);
                 if (premisesListQueryDto != null) {
                     appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(premisesListQueryDto.getLicenceId());
-                    List<String> names = new ArrayList<>();
+                    List<String> names = IaisCommonUtils.genNewArrayList();
                     if(appSubmissionDto != null ) {
                         // from draft,rfi
                         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -297,7 +295,7 @@ public class RequestForChangeMenuDelegator {
         PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
         AppGrpPremisesDto newPremisesDto = genAppGrpPremisesDto(premisesListQueryDto, bpc.request);
 
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = new ArrayList<>();
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
         appGrpPremisesDtoList.add(newPremisesDto);
         ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, appGrpPremisesDtoList);
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
@@ -332,7 +330,7 @@ public class RequestForChangeMenuDelegator {
             String idNo = personnelListQueryDto.getIdNo();
             List<PersonnelListQueryDto> personnelListQueryDtos  = personnelListMap.get(idNo);
             if(IaisCommonUtils.isEmpty(personnelListQueryDtos)){
-                personnelListQueryDtos = new ArrayList<>();
+                personnelListQueryDtos = IaisCommonUtils.genNewArrayList();
             }
             personnelListQueryDtos.add(personnelListQueryDto);
             personnelListMap.put(idNo,personnelListQueryDtos);
@@ -444,13 +442,13 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
             return;
         }
-        List<String> licenceIds = new ArrayList<>();
+        List<String> licenceIds = IaisCommonUtils.genNewArrayList();
         for(PersonnelListQueryDto item:personnelEditList){
             licenceIds.add(item.getLicenceId());
         }
         List<AppSubmissionDto> appSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(licenceIds);
         String appGroupNo = requestForChangeService.getApplicationGroupNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-        List<String> names = new ArrayList<>();
+        List<String> names = IaisCommonUtils.genNewArrayList();
         for(AppSubmissionDto appSubmissionDto:appSubmissionDtos){
             if(appSubmissionDto != null ) {
                 // from draft,rfi

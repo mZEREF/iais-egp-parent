@@ -20,18 +20,16 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspecUserRecUploadService;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Process MohInspecUserRectifiUpload
@@ -89,7 +87,7 @@ public class InspecUserRecUploadDelegator {
             }
             List<ChecklistItemDto> checklistItemDtos = inspecUserRecUploadService.getQuesAndClause(appPremCorrId);
             ApplicationDto applicationDto = inspecUserRecUploadService.getApplicationByCorrId(appPremCorrId);
-            inspecUserRecUploadDtos = new ArrayList<>();
+            inspecUserRecUploadDtos = IaisCommonUtils.genNewArrayList();
             int index = -1;
             if(checklistItemDtos != null && !(checklistItemDtos.isEmpty())) {
                 for (ChecklistItemDto cDto : checklistItemDtos) {

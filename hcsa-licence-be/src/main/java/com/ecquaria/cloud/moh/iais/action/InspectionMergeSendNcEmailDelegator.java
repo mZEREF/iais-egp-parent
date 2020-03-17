@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -38,18 +39,16 @@ import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloudfeign.FeignException;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DurationFormatUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.time.DurationFormatUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * InspectionMergeSendNcEmailDelegator
@@ -128,8 +127,8 @@ public class InspectionMergeSendNcEmailDelegator {
             }
         }
 
-        List<String> appPremCorrIds=new ArrayList<>();
-        List<String> svcNames=new ArrayList<>();
+        List<String> appPremCorrIds= IaisCommonUtils.genNewArrayList();
+        List<String> svcNames=IaisCommonUtils.genNewArrayList();
 
         for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
         ) {
@@ -363,7 +362,7 @@ public class InspectionMergeSendNcEmailDelegator {
                 emailDto.setContent(inspectionEmailTemplateDto.getMessageContent());
                 emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
                 emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-                List<String> licenseeIds=new ArrayList<>();
+                List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
                 String licenseeId=inspEmailService.getAppInsRepDto(appPremCorrIds.get(0)).getLicenseeId();
                 licenseeIds.add(licenseeId);
                 List<String> emailAddress = EmailHelper.getEmailAddressListByLicenseeId(licenseeIds);
@@ -395,7 +394,7 @@ public class InspectionMergeSendNcEmailDelegator {
         return appPremisesRoutingHistoryDto;
     }
     private List<TaskDto> prepareTaskList(TaskDto taskDto, HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto) {
-        List<TaskDto> list = new ArrayList<>();
+        List<TaskDto> list = IaisCommonUtils.genNewArrayList();
         List<HcsaSvcStageWorkingGroupDto> listhcsaSvcStageWorkingGroupDto = hcsaConfigClient.getSvcWorkGroup(hcsaSvcStageWorkingGroupDto).getEntity();
 
         Integer count = listhcsaSvcStageWorkingGroupDto.get(0).getCount();

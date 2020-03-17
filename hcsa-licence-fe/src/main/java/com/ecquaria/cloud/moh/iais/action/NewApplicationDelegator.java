@@ -202,7 +202,7 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         //get svcCode to get svcId
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
-        List<String> svcIds = new ArrayList<>();
+        List<String> svcIds = IaisCommonUtils.genNewArrayList();
         if (hcsaServiceDtoList != null) {
             hcsaServiceDtoList.forEach(item -> svcIds.add(item.getId()));
         }
@@ -284,8 +284,8 @@ public class NewApplicationDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(null);
         if (hcsaSvcDocDtos != null) {
-            List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigDto = new ArrayList<>();
-            List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigDto = new ArrayList<>();
+            List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigDto = IaisCommonUtils.genNewArrayList();
+            List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigDto = IaisCommonUtils.genNewArrayList();
             for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocDtos){
                 if("0".equals(hcsaSvcDocConfigDto.getDupForPrem())){
                     commonHcsaSvcDocConfigDto.add(hcsaSvcDocConfigDto);
@@ -463,7 +463,7 @@ public class NewApplicationDelegator {
             List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO);
             List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO);
             List<AppGrpPremisesDto> appGrpPremisesList = appSubmissionDto.getAppGrpPremisesDtoList();
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = new ArrayList<>();
+            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
             Map<String,String> errorMap = new HashMap<>();
             Map<String,AppGrpPrimaryDocDto> beforeReloadDocMap = (Map<String, AppGrpPrimaryDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP);
             if(appSubmissionDto.isNeedEditController()){
@@ -1188,10 +1188,10 @@ public class NewApplicationDelegator {
                     //send eamil
                 }
                 //change
-                List<String> newPoIdNos = new ArrayList<>();
-                List<String> oldPoIdNos = new ArrayList<>();
-                List<String> newDpoIdNos = new ArrayList<>();
-                List<String> olddDpoIdNos = new ArrayList<>();
+                List<String> newPoIdNos = IaisCommonUtils.genNewArrayList();
+                List<String> oldPoIdNos = IaisCommonUtils.genNewArrayList();
+                List<String> newDpoIdNos = IaisCommonUtils.genNewArrayList();
+                List<String> olddDpoIdNos = IaisCommonUtils.genNewArrayList();
 
                 for(AppSvcPrincipalOfficersDto item:newAppSvcPrincipalOfficersDto){
                     if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(item.getPsnType())){
@@ -1218,8 +1218,8 @@ public class NewApplicationDelegator {
             if(appEditSelectDto.isServiceEdit()){
                 List<AppSvcCgoDto> newAppSvcCgoDto =  appSvcRelatedInfoDtoList.getAppSvcCgoDtoList();
                 List<AppSvcCgoDto> oldAppSvcCgoDto =  oldAppSvcRelatedInfoDtoList.getAppSvcCgoDtoList();
-                List<String> newCgoIdNos = new ArrayList<>();
-                List<String> oldCgoIdNos = new ArrayList<>();
+                List<String> newCgoIdNos = IaisCommonUtils.genNewArrayList();
+                List<String> oldCgoIdNos = IaisCommonUtils.genNewArrayList();
                 if(!IaisCommonUtils.isEmpty(newAppSvcCgoDto) && !IaisCommonUtils.isEmpty(oldAppSvcCgoDto)){
                     for(AppSvcCgoDto item:newAppSvcCgoDto){
                         newCgoIdNos.add(item.getIdNo());
@@ -1243,8 +1243,8 @@ public class NewApplicationDelegator {
                         List<AppSvcChckListDto> newCheckList =  item.getAppSvcChckListDtoList();
                         List<AppSvcChckListDto> oldCheckList = oldAppSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
                         if(!IaisCommonUtils.isEmpty(newCheckList) && !IaisCommonUtils.isEmpty(oldCheckList)){
-                            List<String> newCheckListIds = new ArrayList<>();
-                            List<String> oldCheckListIds = new ArrayList<>();
+                            List<String> newCheckListIds = IaisCommonUtils.genNewArrayList();
+                            List<String> oldCheckListIds = IaisCommonUtils.genNewArrayList();
                             for(AppSvcChckListDto checBox:oldCheckList){
                                 oldCheckListIds.add(checBox.getChkLstConfId());
                             }
@@ -1377,7 +1377,7 @@ public class NewApplicationDelegator {
      */
     private List<AppGrpPremisesDto> genAppGrpPremisesDtoList(HttpServletRequest request){
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = new ArrayList<>();
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
         int count = 0;
         String [] premisesType = ParamUtil.getStrings(request, "premType");
         String [] hciName = ParamUtil.getStrings(request, "onSiteHciName");
@@ -1450,7 +1450,7 @@ public class NewApplicationDelegator {
 
 
             appGrpPremisesDto.setPremisesType(premisesType[i]);
-            List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = new ArrayList<>();
+            List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = IaisCommonUtils.genNewArrayList();
             int length = 0;
             try {
                 length = Integer.parseInt(phLength[i]);
@@ -2055,8 +2055,8 @@ public class NewApplicationDelegator {
     private boolean loadingServiceConfig(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the do loadingServiceConfig start ...."));
         //loading the service
-        List<String> serviceConfigIds = new ArrayList<>();
-        List<String> names = new ArrayList<>();
+        List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
+        List<String> names = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         if(appSubmissionDto != null ){
             // from draft,rfi
@@ -2134,7 +2134,7 @@ public class NewApplicationDelegator {
         sortService(specifiedList);
         sortService(subList);
         sortService(otherList);
-        hcsaServiceDtoList = new ArrayList<>();
+        hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
         hcsaServiceDtoList.addAll(baseList);
         hcsaServiceDtoList.addAll(specifiedList);
         hcsaServiceDtoList.addAll(subList);
@@ -2478,12 +2478,12 @@ public class NewApplicationDelegator {
         if(appSubmissionDto == null){
             appSubmissionDto = new AppSubmissionDto();
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = new ArrayList<>();
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
             appGrpPremisesDtoList.add(appGrpPremisesDto);
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
             List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,  AppServicesConsts.HCSASERVICEDTOLIST);
-            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = new ArrayList<>();
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = IaisCommonUtils.genNewArrayList();
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = null;
             for(HcsaServiceDto svc:hcsaServiceDtos){
                 appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
@@ -2500,7 +2500,7 @@ public class NewApplicationDelegator {
             Object rfi = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
             if(rfi != null){
                 List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST);
-                List<HcsaServiceDto> oneHcsaServiceDto = new ArrayList<>();
+                List<HcsaServiceDto> oneHcsaServiceDto = IaisCommonUtils.genNewArrayList();
                 for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
                     if(hcsaServiceDto.getId().equals(appSubmissionDto.getRfiServiceId())){
                         oneHcsaServiceDto.add(hcsaServiceDto);
@@ -2617,7 +2617,7 @@ public class NewApplicationDelegator {
         if(svcAllPsnConfig == null){
             AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            List<String> svcIds = new ArrayList<>();
+            List<String> svcIds = IaisCommonUtils.genNewArrayList();
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 svcIds.add(appSvcRelatedInfoDto.getServiceId());
             }

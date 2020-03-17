@@ -17,16 +17,15 @@ import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFinanceMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskFinancialShowDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * HcsaFinancialRiskValidate
@@ -41,7 +40,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         Map<String, String> errMap = new HashMap<>();
         RiskFinancialShowDto findto = (RiskFinancialShowDto) ParamUtil.getSessionAttr(request, RiskConsts.FINANCIALSHOWDTO);
         List<HcsaRiskFinanceMatrixDto> financeList = findto.getFinanceList();
-        List<HcsaRiskFinanceMatrixDto> editList = new ArrayList<>();
+        List<HcsaRiskFinanceMatrixDto> editList = IaisCommonUtils.genNewArrayList();
         for(HcsaRiskFinanceMatrixDto dto :financeList){
             if(dto.isPrIsEdit()||dto.isInIsEdit()){
                 editList.add(dto);

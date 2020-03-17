@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -31,16 +32,15 @@ import com.ecquaria.cloud.moh.iais.service.client.BelicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Shicheng
@@ -75,7 +75,7 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
 
     @Override
     public List<TaskDto> getCommPoolByGroupWordId(LoginContext loginContext) {
-        List<TaskDto> taskDtoList = new ArrayList<>();
+        List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         Set<String> workGrpIds = loginContext.getWrkGrpIds();
         if(workGrpIds == null || workGrpIds.size() <= 0){
             return null;
@@ -99,7 +99,7 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
             inspecTaskCreAndAssDto.setInspector(null);
             return;
         }
-        List<SelectOption> inspectorList = new ArrayList<>();
+        List<SelectOption> inspectorList = IaisCommonUtils.genNewArrayList();
         Set<String> roles = loginContext.getRoleIds();
         List<String> roleList = new ArrayList<>(roles);
         if(roleList.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)){
@@ -165,7 +165,7 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
 
     @Override
     public List<SelectOption> getCheckInspector(String[] nameValue, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
-        List<SelectOption> inspectorCheckList = new ArrayList<>();
+        List<SelectOption> inspectorCheckList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < nameValue.length; i++) {
             for (SelectOption so : inspecTaskCreAndAssDto.getInspector()) {
                 getInNameBySelectOption(inspectorCheckList, nameValue[i], so);
@@ -264,7 +264,7 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
     }
 
     private void createTaskByInspectorList(List<SelectOption> inspectorCheckList, List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
-        List<TaskDto> taskDtoList = new ArrayList<>();
+        List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         for(SelectOption so : inspectorCheckList) {
             for (TaskDto td : commPools) {
                 if(td.getId().equals(inspecTaskCreAndAssDto.getTaskId())){

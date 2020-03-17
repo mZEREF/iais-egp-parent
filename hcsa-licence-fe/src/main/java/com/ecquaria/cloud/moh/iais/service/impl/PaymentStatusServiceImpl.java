@@ -1,20 +1,18 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.PaymentStatusService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPaymentStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author weilu
@@ -49,7 +47,7 @@ public class PaymentStatusServiceImpl implements PaymentStatusService {
             for (PaymentDto paymentDto : paymentDtos) {
                 String reqRefNo = paymentDto.getReqRefNo();
                 String pmtStatusPayment = paymentDto.getPmtStatus();
-                List<String> appGrpIds = new ArrayList<>();
+                List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
                 appGrpIds.add(reqRefNo);
                 //get appGrp info
                 List<ApplicationGroupDto> appGrps = applicationClient.getApplicationGroupsByIds(appGrpIds).getEntity();

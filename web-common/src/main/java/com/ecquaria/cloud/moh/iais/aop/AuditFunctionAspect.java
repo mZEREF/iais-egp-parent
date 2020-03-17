@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.annotation.LogInfo;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -25,7 +26,6 @@ import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,7 +138,7 @@ public class AuditFunctionAspect {
     }
 
     private void callRestApi(AuditTrailDto dto) {
-        List<AuditTrailDto> dtoList = new ArrayList<>();
+        List<AuditTrailDto> dtoList = IaisCommonUtils.genNewArrayList();
         dtoList.add(dto);
         try {
             AuditLogUtil.callWithEventDriven(dtoList, client);

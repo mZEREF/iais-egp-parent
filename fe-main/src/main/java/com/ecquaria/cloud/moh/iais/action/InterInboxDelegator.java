@@ -15,25 +15,29 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.InboxConst;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Author: Hc
@@ -356,7 +360,7 @@ public class InterInboxDelegator {
     public void licDoRenew(BaseProcessClass bpc) throws IOException {
         String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
         if(licIds != null){
-            List<String> licIdValue = new ArrayList<>();
+            List<String> licIdValue = IaisCommonUtils.genNewArrayList();
             for(String item:licIds){
                 licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
             }
@@ -373,7 +377,7 @@ public class InterInboxDelegator {
     public void licDoCease(BaseProcessClass bpc) throws IOException {
         String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
         if(licIds != null) {
-            List<String> licIdValue = new ArrayList<>();
+            List<String> licIdValue = IaisCommonUtils.genNewArrayList();
             for (String item : licIds) {
                 licIdValue.add(ParamUtil.getMaskedString(bpc.request, item));
             }
@@ -583,7 +587,7 @@ public class InterInboxDelegator {
      * @description Data to Form select part
      */
     private void prepareMsgSelectOption(HttpServletRequest request){
-        List<SelectOption> inboxServiceSelectList = new ArrayList<>();
+        List<SelectOption> inboxServiceSelectList = IaisCommonUtils.genNewArrayList();
         inboxServiceSelectList.add(new SelectOption("All", "Select a service"));
         inboxServiceSelectList.add(new SelectOption("34F99D15-820B-EA11-BE7D-000C29F371DC", "Blood Banking"));
         inboxServiceSelectList.add(new SelectOption("35F99D15-820B-EA11-BE7D-000C29F371DC", "Clinical Laboratory"));
@@ -591,7 +595,7 @@ public class InterInboxDelegator {
         inboxServiceSelectList.add(new SelectOption("F27DD5E2-C90C-EA11-BE7D-000C29F371DC", "Nuclear Medicine (Imaging)"));
         ParamUtil.setRequestAttr(request, "inboxServiceSelect", inboxServiceSelectList);
 
-        List<SelectOption> inboxTypSelectList = new ArrayList<>();
+        List<SelectOption> inboxTypSelectList = IaisCommonUtils.genNewArrayList();
         inboxTypSelectList.add(new SelectOption("All", "Select a type"));
         inboxTypSelectList.add(new SelectOption("MESTYPE001", "Notification"));
         inboxTypSelectList.add(new SelectOption("MESTYPE002", "Announcement"));
@@ -600,7 +604,7 @@ public class InterInboxDelegator {
     }
 
     private void prepareAppSelectOption(HttpServletRequest request){
-        List<SelectOption> applicationTypeSelectList = new ArrayList<>();
+        List<SelectOption> applicationTypeSelectList = IaisCommonUtils.genNewArrayList();
         applicationTypeSelectList.add(new SelectOption("All", "All"));
         applicationTypeSelectList.add(new SelectOption("APTY001", "Appeal"));
         applicationTypeSelectList.add(new SelectOption("APTY004", "Renewal"));
@@ -608,7 +612,7 @@ public class InterInboxDelegator {
         applicationTypeSelectList.add(new SelectOption("APTY003", "Reinstatement "));
         ParamUtil.setRequestAttr(request, "appTypeSelect", applicationTypeSelectList);
 
-        List<SelectOption> applicationStatusSelectList = new ArrayList<>();
+        List<SelectOption> applicationStatusSelectList = IaisCommonUtils.genNewArrayList();
         applicationStatusSelectList.add(new SelectOption("All", "All"));
         applicationStatusSelectList.add(new SelectOption("APST008", "Draft"));
         applicationStatusSelectList.add(new SelectOption("APST000", "Rollback"));
@@ -620,7 +624,7 @@ public class InterInboxDelegator {
         appServiceStatusSelectList.add(0,new SelectOption("All", "All"));
         ParamUtil.setRequestAttr(request, "appStatusSelect", appServiceStatusSelectList);
 
-        List<SelectOption> appServiceTypeSelectList = new ArrayList<>();
+        List<SelectOption> appServiceTypeSelectList = IaisCommonUtils.genNewArrayList();
         appServiceTypeSelectList.add(new SelectOption("All", "All"));
         appServiceTypeSelectList.add(new SelectOption("34F99D15-820B-EA11-BE7D-000C29F371DC", "Blood Banking"));
         appServiceTypeSelectList.add(new SelectOption("35F99D15-820B-EA11-BE7D-000C29F371DC", "Clinical Laboratory"));
@@ -628,12 +632,12 @@ public class InterInboxDelegator {
         appServiceTypeSelectList.add(new SelectOption("F27DD5E2-C90C-EA11-BE7D-000C29F371DC", "Nuclear Medicine (Imaging)"));
         ParamUtil.setRequestAttr(request, "appServiceType", appServiceTypeSelectList);
 
-        List<SelectOption> selectDraftApplicationSelectList = new ArrayList<>();
+        List<SelectOption> selectDraftApplicationSelectList = IaisCommonUtils.genNewArrayList();
         selectDraftApplicationSelectList.add(new SelectOption("Reload", "Reload"));
         selectDraftApplicationSelectList.add(new SelectOption("Delete", "Delete"));
         ParamUtil.setRequestAttr(request, "selectDraftApplication", selectDraftApplicationSelectList);
 
-        List<SelectOption> selectApplicationSelectList = new ArrayList<>();
+        List<SelectOption> selectApplicationSelectList = IaisCommonUtils.genNewArrayList();
         selectApplicationSelectList.add(new SelectOption("Recall", "Recall"));
         selectApplicationSelectList.add(new SelectOption("Appeal", "Appeal"));
         selectApplicationSelectList.add(new SelectOption("Withdraw", "Withdraw"));
@@ -641,7 +645,7 @@ public class InterInboxDelegator {
     }
 
     private void prepareLicSelectOption(HttpServletRequest request){
-        List<SelectOption> LicenceStatusList = new ArrayList<>();
+        List<SelectOption> LicenceStatusList = IaisCommonUtils.genNewArrayList();
         LicenceStatusList.add(new SelectOption("All", "All"));
         LicenceStatusList.add(new SelectOption("LICEST001", "Active"));
         LicenceStatusList.add(new SelectOption("LICEST002", "Ceased"));
@@ -652,13 +656,13 @@ public class InterInboxDelegator {
         LicenceStatusList.add(new SelectOption("LICEST007", "Revoked "));
         ParamUtil.setRequestAttr(request, "licStatus", LicenceStatusList);
 
-        List<SelectOption> LicenceTypeList = new ArrayList<>();
+        List<SelectOption> LicenceTypeList = IaisCommonUtils.genNewArrayList();
         LicenceTypeList.add(new SelectOption("All", "All"));
         LicenceTypeList.add(new SelectOption("Clinical Laboratory", "Clinical Laboratory"));
         LicenceTypeList.add(new SelectOption("Blood Transfusion Service", "Blood Transfusion"));
         ParamUtil.setRequestAttr(request, "licType", LicenceTypeList);
 
-        List<SelectOption> LicenceActionsList = new ArrayList<>();
+        List<SelectOption> LicenceActionsList = IaisCommonUtils.genNewArrayList();
         LicenceActionsList.add(new SelectOption("Appeal", "Appeal"));
         ParamUtil.setRequestAttr(request, "licActions", LicenceActionsList);
     }

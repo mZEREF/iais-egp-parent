@@ -21,17 +21,15 @@ import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * ApplicationServiceImpl
@@ -111,7 +109,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                String appNo = applicationDto.getApplicationNo();
                 List<ApplicationDto> applicationDtos = result.get(appNo);
                 if(applicationDtos ==null){
-                    applicationDtos = new ArrayList<>();
+                    applicationDtos = IaisCommonUtils.genNewArrayList();
                 }
                 applicationDtos.add(applicationDto);
                 result.put(appNo,applicationDtos);

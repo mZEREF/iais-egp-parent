@@ -102,14 +102,14 @@ public class BlackedOutDateDelegator {
 
         List<WorkingGroupQueryDto> workingGroupQueryList = searchResult.getRows();
         String defualtId = workingGroupQueryList.stream().findFirst().orElse(new WorkingGroupQueryDto()).getId();
-        List<SelectOption> wrlGrpNameOpt = new ArrayList<>();
+        List<SelectOption> wrlGrpNameOpt = IaisCommonUtils.genNewArrayList();
         workingGroupQueryList.stream().forEach(wkr -> {
             String groupId = wkr.getId();
             String groupName = wkr.getGroupName();
             wrlGrpNameOpt.add(new SelectOption(groupId, groupName));
         });
 
-        List<SelectOption> dropYear = new ArrayList<>();
+        List<SelectOption> dropYear = IaisCommonUtils.genNewArrayList();
         Calendar date = Calendar.getInstance();
         int currentYear = date.get(Calendar.YEAR);
         for (int i = currentYear; i > currentYear - 10; i--){
@@ -365,7 +365,7 @@ public class BlackedOutDateDelegator {
 
         Calendar calendar = Calendar.getInstance();
 
-        List<Date> includeDayList = new ArrayList<>();
+        List<Date> includeDayList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < reduceDay; i++) {
             calendar.setTime(startDate);
             calendar.add(Calendar.DAY_OF_MONTH, i);

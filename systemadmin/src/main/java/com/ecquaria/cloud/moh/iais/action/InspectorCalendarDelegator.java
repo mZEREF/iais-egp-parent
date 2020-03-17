@@ -92,7 +92,7 @@ public class InspectorCalendarDelegator {
 	}
 
 	private void preSelectOpt(HttpServletRequest request){
-		List<SelectOption> dropYear = new ArrayList<>();
+		List<SelectOption> dropYear = IaisCommonUtils.genNewArrayList();
 		List<SelectOption> recurrenceOption = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DATE_TYPE);
 
 
@@ -145,7 +145,7 @@ public class InspectorCalendarDelegator {
 
 		String isNew = (String) ParamUtil.getSessionAttr(request, AppointmentConstants.IS_NEW_VIEW_DATA);
 
-		List<SelectOption> wrlGrpNameOpt = new ArrayList<>();
+		List<SelectOption> wrlGrpNameOpt = IaisCommonUtils.genNewArrayList();
 		workingGroupQueryList.stream().forEach(wkr -> {
 			String groupId = wkr.getId();
 			String groupName = wkr.getGroupName();

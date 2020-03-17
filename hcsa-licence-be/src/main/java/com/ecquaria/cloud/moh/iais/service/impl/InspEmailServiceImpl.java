@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestion
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -21,12 +22,10 @@ import com.ecquaria.cloud.moh.iais.service.client.InsEmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * InspEmailServiceImpl
@@ -96,7 +95,7 @@ public class InspEmailServiceImpl implements InspEmailService {
 
     @Override
     public List<NcAnswerDto> getNcAnswerDtoList(InspectionFillCheckListDto cDto, InspectionFillCheckListDto commonDto, AdCheckListShowDto adchklDto, List<NcAnswerDto> acDtoList) {
-        List<NcAnswerDto> ncList = new ArrayList<>();
+        List<NcAnswerDto> ncList = IaisCommonUtils.genNewArrayList();
         List<InspectionCheckQuestionDto> genCheckList = cDto.getCheckList();
         List<InspectionCheckQuestionDto> comCheckList = commonDto.getCheckList();
         List<AdhocNcCheckItemDto> adhocItemList = adchklDto.getAdItemList();

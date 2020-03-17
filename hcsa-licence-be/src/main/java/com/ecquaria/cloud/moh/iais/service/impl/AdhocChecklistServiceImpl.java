@@ -22,13 +22,11 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
+import java.util.List;
+import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
 
 @Slf4j
 @Service
@@ -75,7 +73,7 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
 
         String type = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.INSPECTION);
 
-        List<ChecklistConfigDto> inspChecklist = new ArrayList<>();
+        List<ChecklistConfigDto> inspChecklist = IaisCommonUtils.genNewArrayList();
         ChecklistConfigDto commonConfig = hcsaChklClient.getMaxVersionCommonConfig().getEntity();
         if (commonConfig != null){
             log.info("inspection checklist for common info: " + commonConfig.toString());

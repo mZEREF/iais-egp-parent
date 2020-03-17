@@ -5,19 +5,33 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.client.rbac.UserClient;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -29,13 +43,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.management.relation.Role;
-import javax.servlet.http.HttpServletRequest;
-import java.io.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
 
 /**
  * @author weilu
@@ -105,7 +112,7 @@ public class MohIntranetUserDelegator {
     }
 
     public void prepareCreate(BaseProcessClass bpc) {
-        List<SelectOption> salutation = new ArrayList<>();
+        List<SelectOption> salutation = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("Mr", "Mr");
         SelectOption so2 = new SelectOption("Ms", "Ms");
         SelectOption so3 = new SelectOption("Mrs", "Mrs");
@@ -558,7 +565,7 @@ public class MohIntranetUserDelegator {
 
     private void prepareOption(BaseProcessClass bpc) {
         HttpServletRequest request =bpc.request;
-        List<SelectOption> salutation = new ArrayList<>();
+        List<SelectOption> salutation = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("Mr", "Mr");
         SelectOption so2 = new SelectOption("Ms", "Ms");
         SelectOption so3 = new SelectOption("Mrs", "Mrs");
@@ -569,7 +576,7 @@ public class MohIntranetUserDelegator {
         salutation.add(so3);
         salutation.add(so4);
         salutation.add(so5);
-        List<SelectOption> statusOption = new ArrayList<>();
+        List<SelectOption> statusOption = IaisCommonUtils.genNewArrayList();
         SelectOption status1 = new SelectOption("I", "I");
         SelectOption status2 = new SelectOption("A", "A");
         SelectOption status3 = new SelectOption("E", "E");
@@ -597,7 +604,7 @@ public class MohIntranetUserDelegator {
         Element root=document.getRootElement();
         //ele
         List list=root.elements();
-        List<OrgUserDto> orgUserDtos = new ArrayList<>();
+        List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < list.size(); i++) {
             Element element=(Element)list.get(i);
             String userId=element.element("userId").getText();
@@ -711,7 +718,7 @@ public class MohIntranetUserDelegator {
 
 
     private List<SelectOption> getStatusOption() {
-        List<SelectOption> result = new ArrayList<>();
+        List<SelectOption> result = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("CMSTAT001", "Active");
         SelectOption so2 = new SelectOption("CMSTAT003", "Inactive");
         SelectOption so3 = new SelectOption("OUSTAT004", "Terminated");
@@ -726,7 +733,7 @@ public class MohIntranetUserDelegator {
     }
 
     private List<SelectOption> getRoleOption() {
-        List<SelectOption> result = new ArrayList<>();
+        List<SelectOption> result = IaisCommonUtils.genNewArrayList();
         SelectOption so = new SelectOption("", "Please Select");
         SelectOption so1 = new SelectOption("Admin", "Admin");
         SelectOption so2 = new SelectOption("Professional", "Professional");
@@ -739,7 +746,7 @@ public class MohIntranetUserDelegator {
     }
 
     private List<SelectOption> getprivilegeOption() {
-        List<SelectOption> result = new ArrayList<>();
+        List<SelectOption> result = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("Admin Screening Task", "Admin Screening Task");
         SelectOption so2 = new SelectOption("Approve a Particular Application Stage", "Approve a Particular Application Stage");
         SelectOption so3 = new SelectOption("Access a Particular Online Enquiry or Report", "access a particular Online Enquiry or Report");

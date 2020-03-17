@@ -3,16 +3,15 @@ package com.ecquaria.cloud.moh.iais.validation;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskLegislativeMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLegislativeShowDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Author: jiahao
@@ -24,7 +23,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         Map<String, String> errMap = new HashMap<>();
         RiskLegislativeShowDto legShowDto = (RiskLegislativeShowDto)ParamUtil.getSessionAttr(request, "legShowDto");
         List<HcsaRiskLegislativeMatrixDto> financeList = legShowDto.getLegislativeList();
-        List<HcsaRiskLegislativeMatrixDto> editList = new ArrayList<>();
+        List<HcsaRiskLegislativeMatrixDto> editList = IaisCommonUtils.genNewArrayList();
         for(HcsaRiskLegislativeMatrixDto dto :financeList){
             if(dto.isEdit()){
                 editList.add(dto);

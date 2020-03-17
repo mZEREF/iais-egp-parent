@@ -13,43 +13,6 @@
 
 package com.ecquaria.cloud.moh.iais.aop;
 
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.api.mockito.mockpolicies.Slf4jMockPolicy;
-import org.powermock.core.classloader.annotations.MockPolicy;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.powermock.reflect.Whitebox;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.util.AopTestUtils;
-import sop.iwe.SessionManager;
-import sop.rbac.user.User;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.powermock.api.mockito.PowerMockito.doNothing;
-import static org.powermock.api.mockito.PowerMockito.when;
-
 /**
  * AuditFunctionAspectTest.java
  *
@@ -98,7 +61,7 @@ public class AuditFunctionAspectTest {
     @Test
     public void testAround() throws Exception {
         PowerMockito.mockStatic(AuditLogUtil.class);
-        List<AuditTrailDto> adList = new ArrayList<>();
+        List<AuditTrailDto> adList = IaisCommonUtils.genNewArrayList();
         doNothing().when(AuditLogUtil.class, "callAuditRestApi", adList);
         AopTestUtils.getTargetObject(tft);
         SearchParam param = new SearchParam(tft.getClass().getName());
@@ -111,7 +74,7 @@ public class AuditFunctionAspectTest {
     @Test
     public void testNon() throws Exception {
         PowerMockito.mockStatic(AuditLogUtil.class);
-        List<AuditTrailDto> adList = new ArrayList<>();
+        List<AuditTrailDto> adList = IaisCommonUtils.genNewArrayList();
         doNothing().when(AuditLogUtil.class, "callAuditRestApi", adList);
         AopTestUtils.getTargetObject(tnf);
         tnf.test();

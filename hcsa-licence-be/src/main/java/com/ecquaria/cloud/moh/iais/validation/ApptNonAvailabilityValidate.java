@@ -6,21 +6,20 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonAvailabilityDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Shicheng
@@ -39,7 +38,7 @@ public class ApptNonAvailabilityValidate implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest request) {
         ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = (ApptNonAvailabilityDateDto) ParamUtil.getSessionAttr(request, "inspNonAvailabilityDto");
         List<TaskDto> taskDtoList = organizationClient.getTasksByUserIdAndRole(apptNonAvailabilityDateDto.getUserCorrId(), RoleConsts.USER_ROLE_INSPECTIOR).getEntity();
-        List<Date> inspectionDate = new ArrayList<>();
+        List<Date> inspectionDate = IaisCommonUtils.genNewArrayList();
         Map<String, String> errMap = new HashMap<>();
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH");
         for(TaskDto tDto : taskDtoList){

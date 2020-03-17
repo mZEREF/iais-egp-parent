@@ -8,16 +8,20 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigInboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
+import com.ecquaria.cloud.moh.iais.service.client.InboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -101,7 +105,7 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public Boolean recallApplication(RecallApplicationDto recallApplicationDto) {
         boolean result = false;
-        List<String> refNoList = new ArrayList<>();
+        List<String> refNoList = IaisCommonUtils.genNewArrayList();
         String appId = recallApplicationDto.getAppId();
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = appInboxClient.listAppPremisesCorrelation(appId).getEntity();
         for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtoList

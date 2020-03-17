@@ -3,16 +3,15 @@ package com.ecquaria.cloud.moh.iais.validation;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskInspectionMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.InspectionShowDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Author: jiahao
@@ -24,7 +23,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         InspectionShowDto showDto = (InspectionShowDto) ParamUtil.getSessionAttr(request,"inShowDto");
         Map<String, String> errMap = new HashMap<>();
         List<HcsaRiskInspectionMatrixDto> iDtoList = showDto.getInspectionDtoList();
-        List<HcsaRiskInspectionMatrixDto> editList = new ArrayList<>();
+        List<HcsaRiskInspectionMatrixDto> editList = IaisCommonUtils.genNewArrayList();
         for(HcsaRiskInspectionMatrixDto temp:iDtoList){
             if(temp.isCaEdit()||temp.isMjEdit()||temp.isMiEdit()){
                 editList.add(temp);

@@ -6,20 +6,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskLegislativeMat
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLegislativeShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskLegislativeService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @Author: jiahao
@@ -132,7 +131,7 @@ public class HcsaRiskLegislativeServiceImpl implements HcsaRiskLegislativeServic
     @Override
     public void saveDto(RiskLegislativeShowDto dto) {
         List<HcsaRiskLegislativeMatrixDto> dtoList = dto.getLegislativeList();
-        List<HcsaRiskLegislativeMatrixDto> saveList = new ArrayList<>();
+        List<HcsaRiskLegislativeMatrixDto> saveList = IaisCommonUtils.genNewArrayList();
         for(HcsaRiskLegislativeMatrixDto temp : dtoList){
             if(temp.isEdit()){
                 saveList.add(getFinDto(temp,true));
@@ -187,7 +186,7 @@ public class HcsaRiskLegislativeServiceImpl implements HcsaRiskLegislativeServic
 
     public List<HcsaRiskLegislativeMatrixDto> getLastversionList(HcsaRiskLegislativeMatrixDto temp){
         List<HcsaRiskLegislativeMatrixDto> lastversionList= hcsaConfigClient.getLegislativeRiskBySvcCode(temp.getSvcCode()).getEntity();
-        List<HcsaRiskLegislativeMatrixDto> returnList = new ArrayList<>();
+        List<HcsaRiskLegislativeMatrixDto> returnList = IaisCommonUtils.genNewArrayList();
         if(lastversionList!=null && !lastversionList.isEmpty()){
             for(HcsaRiskLegislativeMatrixDto fin:lastversionList){
                 if(temp.isEdit()){

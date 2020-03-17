@@ -24,11 +24,6 @@ import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -36,7 +31,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
@@ -45,6 +39,10 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Shicheng
@@ -109,7 +107,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     @Override
     public List<String> compressFile(List<ProcessFileTrackDto> processFileTrackDtos) {
-        List<String> reportIds = new ArrayList<>();
+        List<String> reportIds = IaisCommonUtils.genNewArrayList();
         if(new File(zipFile).isDirectory()){
             File[] files = new File(zipFile).listFiles();
             for(File fil:files) {
@@ -174,8 +172,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     public Boolean saveData(AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos, List<String> reportIds) {
         Boolean saveFlag = false;
         File file = new File(download);
-        List<String> appPremCorrIds = new ArrayList<>();
-        List<String> appIds = new ArrayList<>();
+        List<String> appPremCorrIds = IaisCommonUtils.genNewArrayList();
+        List<String> appIds = IaisCommonUtils.genNewArrayList();
         String submissionId = generateIdClient.getSeqId().getEntity();
         //file is backupsRec
         if(file.isDirectory()){
@@ -242,12 +240,12 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         try {
             if(file2.isDirectory()){
                 File[] files2 = file2.listFiles();
-                List<FileRepoDto> list = new ArrayList<>();
+                List<FileRepoDto> list = IaisCommonUtils.genNewArrayList();
                 for (File file3:files2) {
                     //file3 is not Directory, need save
                     String fileReportId = file2.getName();
                     log.debug(StringUtil.changeForLog("fileReportId:" + fileReportId));
-                    List<FileRepoDto> fileList = new ArrayList<>();
+                    List<FileRepoDto> fileList = IaisCommonUtils.genNewArrayList();
                     FileRepoDto fileRepoDto = new FileRepoDto();
                     fileRepoDto.setId(fileReportId);
                     fileRepoDto.setAuditTrailDto(intranet);

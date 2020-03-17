@@ -8,18 +8,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkloadDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigureService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 
 /**
@@ -36,9 +35,9 @@ public class ConfigureDelegator {
     @Autowired
     private ConfigureService configureService;
 
-    private List<HcsaSvcRoutingStageDto> stageNames = new ArrayList<>();
+    private List<HcsaSvcRoutingStageDto> stageNames = IaisCommonUtils.genNewArrayList();
 
-    private List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtoList = new ArrayList<>();
+    private List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtoList = IaisCommonUtils.genNewArrayList();
 
     /**
      * StartStep: AssignedInspectionTask
@@ -51,7 +50,7 @@ public class ConfigureDelegator {
 
         HttpServletRequest request = bpc.request;
         stageNames = configureService.listStage();
-        List<SelectOption> stageSelect = new ArrayList<>();
+        List<SelectOption> stageSelect = IaisCommonUtils.genNewArrayList();
 
         for(HcsaSvcRoutingStageDto sn : stageNames){
             stageSelect.add(new SelectOption(sn.getStageCode(), sn.getStageName()));
@@ -78,7 +77,7 @@ public class ConfigureDelegator {
         hcsaSvcStageWorkloadDtoList = configureService.serviceInStage(stageValue);
         List<HcsaServiceDto> hcsaServiceDtoList = configureService.getActiveServices();
         Map<String,HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtoMap = new HashMap<>();
-        List<HcsaSvcStageWorkloadDto> newlist = new ArrayList<>();
+        List<HcsaSvcStageWorkloadDto> newlist = IaisCommonUtils.genNewArrayList();
         if(hcsaSvcStageWorkloadDtoList != null){
             for (HcsaSvcStageWorkloadDto stage:hcsaSvcStageWorkloadDtoList
             ) {
@@ -114,7 +113,7 @@ public class ConfigureDelegator {
      */
     public void submit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        List<HcsaSvcSpecificStageWorkloadDto> stageSaveData = new ArrayList<>();
+        List<HcsaSvcSpecificStageWorkloadDto> stageSaveData = IaisCommonUtils.genNewArrayList();
         int index = 1;
         for (HcsaSvcStageWorkloadDto item:hcsaSvcStageWorkloadDtoList) {
             HcsaSvcSpecificStageWorkloadDto hcsaSvcSpecificStageWorkloadDto = new HcsaSvcSpecificStageWorkloadDto();

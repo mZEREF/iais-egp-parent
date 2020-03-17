@@ -5,18 +5,17 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author weilu
@@ -44,8 +43,8 @@ public class CessationEffectiveDateBatchjob {
         String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
         String status = ApplicationConsts.LICENCE_STATUS_ACTIVE;
         List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(status, dateStr).getEntity();
-        List<LicenceDto> licenceDtosForSave = new ArrayList<>();
-        List<String> ids = new ArrayList<>();
+        List<LicenceDto> licenceDtosForSave = IaisCommonUtils.genNewArrayList();
+        List<String> ids = IaisCommonUtils.genNewArrayList();
         if(licenceDtos!=null&&!licenceDtos.isEmpty()){
             for(LicenceDto licenceDto :licenceDtos){
                 String id = licenceDto.getId();
@@ -65,8 +64,8 @@ public class CessationEffectiveDateBatchjob {
         String type = ApplicationConsts.CESSATION_TYPE_APPLICATION;
         //get misc corrId
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getAppPreCorrDtos(type, dateStr).getEntity();
-        List<String> appIds = new ArrayList<>();
-        List<String> licIds = new ArrayList<>();
+        List<String> appIds = IaisCommonUtils.genNewArrayList();
+        List<String> licIds = IaisCommonUtils.genNewArrayList();
         //get applicationIds
         if(appPremisesCorrelationDtos!=null&&!appPremisesCorrelationDtos.isEmpty()){
             for(AppPremisesCorrelationDto appPremisesCorrelationDto :appPremisesCorrelationDtos){
@@ -99,7 +98,7 @@ public class CessationEffectiveDateBatchjob {
 
 
     private List<ApplicationDto> updateApplicationStatus(List<ApplicationDto> applicationDtos){
-        List<ApplicationDto> updateApplications = new ArrayList<>();
+        List<ApplicationDto> updateApplications = IaisCommonUtils.genNewArrayList();
         for(ApplicationDto applicationDto :applicationDtos){
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
             updateApplications.add(applicationDto);
@@ -108,7 +107,7 @@ public class CessationEffectiveDateBatchjob {
     }
 
     private List<LicenceDto> updateLicenceStatus(List<LicenceDto> licenceDtos,Date date){
-        List<LicenceDto> updateLicenceDtos = new ArrayList<>();
+        List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
         for(LicenceDto licenceDto :licenceDtos){
             licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
             licenceDto.setEndDate(date);

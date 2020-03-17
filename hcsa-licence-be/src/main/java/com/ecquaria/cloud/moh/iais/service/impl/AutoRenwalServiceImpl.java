@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.AutoRenwalService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -17,20 +18,18 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.ecquaria.sz.commons.util.MsgUtil;
-import freemarker.template.TemplateException;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Wenkang
@@ -57,7 +56,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     private static final String EMAIL_SUBJECT="MOH IAIS – REMINDER TO RENEW LICENCE";
     @Override
     public void startRenwal(HttpServletRequest request) {
-        List<Integer> dayList=new ArrayList<>();
+        List<Integer> dayList= IaisCommonUtils.genNewArrayList();
         dayList.add(30);
         dayList.add(45);
         dayList.add(60);
@@ -187,7 +186,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 emailDto.setSender("MOH");
                 emailDto.setClientQueryCode("sss");
 
-                List<String> receipts=new ArrayList<>();
+                List<String> receipts=IaisCommonUtils.genNewArrayList();
                 for(OrgUserRoleDto orgUserRoleDto :sendMailUser){
                     String emailAddress = orgUserRoleDto.getEmailAddress();
 
@@ -225,13 +224,13 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         List<String> useLicenceIdFindHciNameAndAddress = useLicenceIdFindHciNameAndAddress(id);
 
         Boolean isMigrated = licenceDto.isMigrated();
-        List<String> list=new ArrayList<>();
-        List<LicenceFeeDto> licenceFeeDtos=new ArrayList<>();
+        List<String> list=IaisCommonUtils.genNewArrayList();
+        List<LicenceFeeDto> licenceFeeDtos=IaisCommonUtils.genNewArrayList();
         list.add(id);
         List<HcsaLicenceGroupFeeDto> entity = hcsaLicenClient.retrieveHcsaLicenceGroupFee(list).getEntity();
 
         List<PremisesDto> premisesDtoList = hcsaLicenClient.getPremisess(id).getEntity();
-        List<String> premises=new ArrayList<>();
+        List<String> premises=IaisCommonUtils.genNewArrayList();
         for(PremisesDto premisesDto:premisesDtoList){
             premises.add(premisesDto.getPremisesType());
         }
@@ -287,7 +286,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 emailDto.setSender("MOH");
                 emailDto.setClientQueryCode("");
 
-                List<String> receipts=new ArrayList<>();
+                List<String> receipts=IaisCommonUtils.genNewArrayList();
                 for( OrgUserRoleDto orgUserRoleDto :sendMailUser){
                     String emailAddress = orgUserRoleDto.getEmailAddress();
                     if(!emailAddress.isEmpty()){
@@ -337,7 +336,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
        * */
 
        private  List<String> useLicenceIdFindHciNameAndAddress(String licenceId){
-           List<String> nameAndAddress=new ArrayList<>();
+           List<String> nameAndAddress=IaisCommonUtils.genNewArrayList();
            if(licenceId==null){
              return    nameAndAddress;
            }

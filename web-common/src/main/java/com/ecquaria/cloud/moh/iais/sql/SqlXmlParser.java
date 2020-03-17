@@ -13,17 +13,16 @@
 
 package com.ecquaria.cloud.moh.iais.sql;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import java.io.IOException;
+import java.util.List;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * SqlXmlParser
@@ -54,7 +53,7 @@ public class SqlXmlParser extends DefaultHandler {
     // Document Events - START
     @Override
     public void startDocument() throws SAXException {
-        sqls = new ArrayList<>();
+        sqls = IaisCommonUtils.genNewArrayList();
         sqlStat = new StringBuilder();
     }
 

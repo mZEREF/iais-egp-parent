@@ -14,9 +14,14 @@
 package com.ecquaria.cloud.moh.iais.initializer;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.sql.SqlMapLoader;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.ServletContextEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,12 +34,6 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import javax.servlet.ServletContextEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 import static org.powermock.api.mockito.PowerMockito.doNothing;
@@ -76,7 +75,7 @@ public class AppInitializerTest {
     @Test
     public void testContextInitialized() throws Exception {
         SearchResult<Map<String, String>> sr = new SearchResult<Map<String, String>>();
-        List<Map<String, String>> list = new ArrayList<>();
+        List<Map<String, String>> list = IaisCommonUtils.genNewArrayList();
         Map<String, String> mc = new HashMap<>();
         mc.put("codeKey", "aaaa");
         mc.put("description", "bbbbbb");

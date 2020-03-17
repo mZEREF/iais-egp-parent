@@ -10,15 +10,13 @@ import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayMainClient;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 @Service
@@ -93,7 +91,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
                 String appNo = applicationDto.getApplicationNo();
                 List<ApplicationDto> applicationDtos = result.get(appNo);
                 if(applicationDtos ==null){
-                    applicationDtos = new ArrayList<>();
+                    applicationDtos = IaisCommonUtils.genNewArrayList();
                 }
                 applicationDtos.add(applicationDto);
                 result.put(appNo,applicationDtos);

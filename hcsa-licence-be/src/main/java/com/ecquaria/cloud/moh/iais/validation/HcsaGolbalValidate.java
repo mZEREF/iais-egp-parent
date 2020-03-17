@@ -3,16 +3,15 @@ package com.ecquaria.cloud.moh.iais.validation;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskTotalDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GolbalRiskShowDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Author: jiahao
@@ -24,7 +23,7 @@ public class HcsaGolbalValidate implements CustomizeValidator {
         GolbalRiskShowDto golbalShowDto = (GolbalRiskShowDto) ParamUtil.getSessionAttr(request, "golbalShowDto");
         Map<String, String> errMap = new HashMap<>();
         List<GobalRiskTotalDto> tolList =  golbalShowDto.getGoalbalTotalList();
-        List<GobalRiskTotalDto> updatetolList =  new ArrayList<>();
+        List<GobalRiskTotalDto> updatetolList =  IaisCommonUtils.genNewArrayList();
         for(GobalRiskTotalDto temp:tolList){
             if(temp.isEdit()){
                 updatetolList.add(temp);

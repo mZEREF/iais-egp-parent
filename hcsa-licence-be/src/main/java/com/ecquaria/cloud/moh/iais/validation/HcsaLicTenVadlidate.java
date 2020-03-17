@@ -6,16 +6,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.LicenceTenShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.SubLicenceTenureDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Author: jiahao
@@ -30,7 +29,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
             addMaxVad(showDto,errMap);
         }else{
             List<HcsaRiskLicenceTenureDto> ltDtoList =  showDto.getLicenceTenureDtoList();
-            List<HcsaRiskLicenceTenureDto> updateList = new ArrayList<>();
+            List<HcsaRiskLicenceTenureDto> updateList = IaisCommonUtils.genNewArrayList();
             if(ltDtoList!=null){
                 for(HcsaRiskLicenceTenureDto temp:ltDtoList){
                     if(temp.isEdit()){
@@ -115,7 +114,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
     }
 
     private boolean doMinSortList(List<SubLicenceTenureDto> subList) {
-        List<SubLicenceTenureDto> minList = new ArrayList<>();
+        List<SubLicenceTenureDto> minList = IaisCommonUtils.genNewArrayList();
         CopyUtil.copyMutableObjectList(subList,minList);
         minList.sort((SubLicenceTenureDto s1,SubLicenceTenureDto s2)->s1.getColumRight().compareTo(s2.getColumRight()));
         for(int i=0;i<subList.size();i++){
@@ -127,7 +126,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
     }
 
     private boolean doMaxSortList( List<SubLicenceTenureDto> subList) {
-        List<SubLicenceTenureDto> maxList = new ArrayList<>();
+        List<SubLicenceTenureDto> maxList = IaisCommonUtils.genNewArrayList();
         CopyUtil.copyMutableObjectList(subList,maxList);
         maxList.sort((SubLicenceTenureDto s1,SubLicenceTenureDto s2)->s1.getColumRight().compareTo(s2.getColumRight()));
         for(int i=0;i<subList.size();i++){
@@ -139,9 +138,9 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
     }
 
     private boolean doLtsort(List<SubLicenceTenureDto> subList) {
-        List<SubLicenceTenureDto> monthList = new ArrayList<>();
-        List<SubLicenceTenureDto> yearList = new ArrayList<>();
-        List<SubLicenceTenureDto> ltSortList = new ArrayList<>();
+        List<SubLicenceTenureDto> monthList = IaisCommonUtils.genNewArrayList();
+        List<SubLicenceTenureDto> yearList = IaisCommonUtils.genNewArrayList();
+        List<SubLicenceTenureDto> ltSortList = IaisCommonUtils.genNewArrayList();
         for(SubLicenceTenureDto temp:subList){
             if(RiskConsts.MONTH.equals(temp.getDateType())){
                 monthList.add(temp);

@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -173,7 +172,7 @@ public class InspecAssignTaskDelegator {
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         SelectOption so = new SelectOption(loginContext.getUserId(), "text");
-        List<SelectOption> inspectorCheckList = new ArrayList<>();
+        List<SelectOption> inspectorCheckList = IaisCommonUtils.genNewArrayList();
         inspectorCheckList.add(so);
         inspecTaskCreAndAssDto.setInspectorCheck(inspectorCheckList);
         return inspecTaskCreAndAssDto;

@@ -93,7 +93,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             apptFeConfirmDateDto.setApplicationDtos(applicationDtos);
             List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = inspectionFeClient.getSystemDtosByAppPremCorrIdList(taskRefNo).getEntity();
             if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtoList)){
-                List<String> apptRefNos = new ArrayList<>();
+                List<String> apptRefNos = IaisCommonUtils.genNewArrayList();
                 for(AppPremisesInspecApptDto aDto : appPremisesInspecApptDtoList){
                     apptRefNos.add(aDto.getApptRefNo());
                 }
@@ -114,7 +114,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     }
 
     private List<String> getTaskRefNoList(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos) {
-        List<String> taskRefNo = new ArrayList<>();
+        List<String> taskRefNo = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){
             for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
                 taskRefNo.add(appPremisesCorrelationDto.getId());
@@ -124,7 +124,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     }
 
     private void setSystemDateMap(ApptFeConfirmDateDto apptFeConfirmDateDto) {
-        List<ApptUserCalendarDto> apptUserCalendarDtos = new ArrayList<>();
+        List<ApptUserCalendarDto> apptUserCalendarDtos = IaisCommonUtils.genNewArrayList();
         for(Map.Entry<String, List<ApptUserCalendarDto>> apptInspDateMap : apptFeConfirmDateDto.getApptInspDateMap().entrySet()){
             List<ApptUserCalendarDto> apptUserCalendarDtoList = apptInspDateMap.getValue();
             if(!IaisCommonUtils.isEmpty(apptUserCalendarDtoList)){
@@ -133,7 +133,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         }
         if(!IaisCommonUtils.isEmpty(apptUserCalendarDtos)) {
             Map<String, Date> inspectionDateMap = new HashMap<>();
-            List<SelectOption> inspectionDate = new ArrayList<>();
+            List<SelectOption> inspectionDate = IaisCommonUtils.genNewArrayList();
             for (AppPremisesInspecApptDto appPremisesInspecApptDto : apptFeConfirmDateDto.getAppPremisesInspecApptDtoList()) {
                 for(int i = 0; i < apptUserCalendarDtos.size(); i++){
                     if(appPremisesInspecApptDto.getApptRefNo().equals(apptUserCalendarDtos.get(i).getApptRefNo())){
@@ -160,7 +160,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         //get selected date
         String checkDate = apptFeConfirmDateDto.getCheckDate();
         //Exclude a selected date
-        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = new ArrayList<>();
+        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
         for(AppPremisesInspecApptDto apptDto : apptFeConfirmDateDto.getAppPremisesInspecApptDtoList()){
             if(!(apptDto.getId().equals(checkDate))){
                 appPremisesInspecApptDtoList.add(apptDto);
@@ -179,7 +179,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     }
 
     private void setRecommendationDto(ApptFeConfirmDateDto apptFeConfirmDateDto, ApptInspectionDateDto apptInspectionDateDto) {
-        List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = new ArrayList<>();
+        List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = IaisCommonUtils.genNewArrayList();
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -210,7 +210,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 signature2.date(), signature2.authorization()).getEntity();
 
         Map<String, Date> inspectionNewDateMap = new HashMap<>();
-        List<SelectOption> inspectionNewDate = new ArrayList<>();
+        List<SelectOption> inspectionNewDate = IaisCommonUtils.genNewArrayList();
         Map<String, String> refMap = new HashMap<>();
         int index = 0;
         if(appInspDateMap != null) {
@@ -234,7 +234,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     }
 
     private List<AppointmentUserDto> getUserCalendarDtosByMap(Map<String, List<ApptUserCalendarDto>> apptInspDateMap) {
-        List<AppointmentUserDto> appointmentUserDtos = new ArrayList<>();
+        List<AppointmentUserDto> appointmentUserDtos = IaisCommonUtils.genNewArrayList();
         for(Map.Entry<String, List<ApptUserCalendarDto>> map : apptInspDateMap.entrySet()){
             AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
             List<ApptUserCalendarDto> apptUserCalendarDtos = map.getValue();
@@ -291,7 +291,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     }
 
     private void setCreateInspectionStatus(ApptInspectionDateDto apptInspectionDateDto, String status) {
-        List<AppInspectionStatusDto> appInspectionStatusDtos = new ArrayList<>();
+        List<AppInspectionStatusDto> appInspectionStatusDtos = IaisCommonUtils.genNewArrayList();
         AppInspectionStatusDto appInspectionStatusDto = new AppInspectionStatusDto();
         appInspectionStatusDto.setStatus(status);
         appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -300,7 +300,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     }
 
     private void setCreateHistoryDto(ApptFeConfirmDateDto apptFeConfirmDateDto, ApptInspectionDateDto apptInspectionDateDto) {
-        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = new ArrayList<>();
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = IaisCommonUtils.genNewArrayList();
         for(ApplicationDto applicationDto : apptFeConfirmDateDto.getApplicationDtos()) {
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
             appPremisesRoutingHistoryDto.setApplicationNo(applicationDto.getApplicationNo());
@@ -326,7 +326,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     }
 
     private void setApptCreateList(ApptFeConfirmDateDto apptFeConfirmDateDto, ApptInspectionDateDto apptInspectionDateDto, String processDo) {
-        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = new ArrayList<>();
+        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
         for(String appPremCorrId : apptInspectionDateDto.getRefNo()) {
             AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
             appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -382,7 +382,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     @Override
     public List<SelectOption> getInspectionDateHours() {
-        List<SelectOption> hourOption = new ArrayList<>();
+        List<SelectOption> hourOption = IaisCommonUtils.genNewArrayList();
         for(int i = 1; i < 13; i++){
             SelectOption so = new SelectOption(i + "", i + "");
             hourOption.add(so);
@@ -392,7 +392,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     @Override
     public List<SelectOption> getAmPmOption() {
-        List<SelectOption> amPmOption = new ArrayList<>();
+        List<SelectOption> amPmOption = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption(Formatter.DAY_AM, "am");
         SelectOption so2 = new SelectOption(Formatter.DAY_PM, "pm");
         amPmOption.add(so1);
@@ -453,7 +453,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     }
 
     private ApptFeConfirmDateDto getLicencePeriods(ApptFeConfirmDateDto apptFeConfirmDateDto, List<ApplicationDto> applicationDtos) {
-        List<String> licencePeriods = new ArrayList<>();
+        List<String> licencePeriods = IaisCommonUtils.genNewArrayList();
         for(ApplicationDto applicationDto : applicationDtos) {
             LicenceDto licenceDto = licenceClient.getLicBylicId(applicationDto.getLicenceId()).getEntity();
             if(licenceDto != null) {

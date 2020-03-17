@@ -9,14 +9,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**
@@ -94,8 +92,8 @@ public class ServiceMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, noneerr);
             ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, AppConsts.FALSE);
         }else{
-            List<String> baselist = new ArrayList<>();
-            List<String> sepcifiedlist = new ArrayList<>();
+            List<String> baselist = IaisCommonUtils.genNewArrayList();
+            List<String> sepcifiedlist = IaisCommonUtils.genNewArrayList();
             for (String item:basechks) {
                 baselist.add(item);
             }
@@ -104,7 +102,7 @@ public class ServiceMenuDelegator {
                     sepcifiedlist.add(item);
                 }
                 List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  serviceConfigService.getCorrelation();
-                List<String> necessaryBaseServiceList = new ArrayList<>();
+                List<String> necessaryBaseServiceList = IaisCommonUtils.genNewArrayList();
                 for (String item: sepcifiedlist) {
                     for (HcsaServiceCorrelationDto dto:hcsaServiceCorrelationDtoList) {
                         if(dto.getSpecifiedSvcId().equals(item)){
