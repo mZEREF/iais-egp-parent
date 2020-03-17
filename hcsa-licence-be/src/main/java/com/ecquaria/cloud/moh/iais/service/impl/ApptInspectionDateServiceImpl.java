@@ -187,8 +187,6 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             appointmentDto.setUsers(appointmentUserDtos);
             Map<String, List<ApptUserCalendarDto>> inspectionDateMap = appointmentClient.getUserCalendarByUserId(appointmentDto).getEntity();
             apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
-        } else {
-
         }
         apptInspectionDateDto.setTaskDto(taskDto);
         apptInspectionDateDto.setTaskDtos(taskDtoList);
