@@ -280,7 +280,7 @@
                                   </c:if>
                                 </iais:value>
                               </iais:row>
-                              <iais:action >
+                              <iais:action>
                                 <button class="btn btn-lg btn-login-submit" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
                                 <span style="float:right">&nbsp;</span>
                                 <button class="btn btn-lg btn-login-submit" style="float:right" type="button" onclick="javascript:apptInspectionDateConfirm()">Allow System to Propose Dates</button>
