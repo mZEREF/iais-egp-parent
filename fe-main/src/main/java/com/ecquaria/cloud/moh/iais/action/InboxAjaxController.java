@@ -36,7 +36,7 @@ public class InboxAjaxController {
         SearchParam appParam = (SearchParam) ParamUtil.getSessionAttr(request,InboxConst.APP_PARAM);
         Map<String,Object> map = new HashMap();
         if (appParam != null){
-            appParam.addFilter("appType", request.getParameter("appType"),true);
+            appParam.addFilter("appType", request.getParameter("appNoPath"),true);
             QueryHelp.setMainSql("interInboxQuery","applicationQuery",appParam);
             SearchResult appResult = inboxService.appDoQuery(appParam);
             ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, appParam);

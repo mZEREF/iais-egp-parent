@@ -100,7 +100,7 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public Boolean recallApplication(RecallApplicationDto recallApplicationDto) {
-        Boolean result = false;
+        boolean result = false;
         List<String> refNoList = new ArrayList<>();
         String appId = recallApplicationDto.getAppId();
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = appInboxClient.listAppPremisesCorrelation(appId).getEntity();

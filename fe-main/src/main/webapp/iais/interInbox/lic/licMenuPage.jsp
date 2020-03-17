@@ -65,7 +65,7 @@
                         </c:choose>
                         <li class="divider" role="separator"></li>
                         <li><a href="#">Step-by-step guide to eServices</a></li>
-                        </ul>
+                        </ol>
                     </c:if>
                 </c:when>
                 <c:otherwise>
@@ -73,7 +73,7 @@
                 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" role="button"
                                         aria-haspopup="true" aria-expanded="false"
                                         href="javascript:;"><span>${item.displayLabel}</span></a>
-                    <ul class="dropdown-menu">
+                    <ol class="dropdown-menu">
                         </c:if>
                         <c:if test="${nextDepth == currDepth}">
                         <li>
@@ -95,10 +95,10 @@
     <div class="col-xs-10 col-xs-offset-1 col-lg-offset-0 col-lg-2">
         <div class="dropdown profile-dropdown"><a class="profile-btn btn" id="profileBtn" data-toggle="dropdown"
                                                   aria-haspopup="true" aria-expanded="false" href="javascript:;">${iais_Login_User_Info_Attr.loginId}</a>
-            <ul class="dropdown-menu" aria-labelledby="profileBtn">
+            <ol class="dropdown-menu" aria-labelledby="profileBtn">
                 <li class="management-account"><a href="#">Manage Account</a></li>
                 <li class="logout"><a href="#">Logout</a></li>
-            </ul>
+            </ol>
         </div>
     </div>
 </div>

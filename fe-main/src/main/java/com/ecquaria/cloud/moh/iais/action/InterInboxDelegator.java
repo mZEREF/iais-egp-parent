@@ -54,10 +54,19 @@ public class InterInboxDelegator {
 
     private InterInboxUserDto interInboxUserDto;
 
-    private Map<String,Object> appSearchMap = new HashMap<>();
-    private Map<String,Object> inboxSearchMap = new HashMap<>();
-    private Map<String,Object> licSearchMap = new HashMap<>();
+    private static Map<String,Object> appSearchMap = new HashMap<>();
+    private static Map<String,Object> inboxSearchMap = new HashMap<>();
+    private static Map<String,Object> licSearchMap = new HashMap<>();
+    private static String msgStatus[] = {
+            MessageConstants.MESSAGE_STATUS_READ,
+            MessageConstants.MESSAGE_STATUS_UNREAD,
+            MessageConstants.MESSAGE_STATUS_RESPONSE,
+            MessageConstants.MESSAGE_STATUS_UNRESPONSE,
+    };
 
+    private static String msgArchiverStatus[] = {
+            MessageConstants.MESSAGE_STATUS_ARCHIVER,
+    };
     private FilterParameter appParameter = new FilterParameter.Builder()
             .clz(InboxAppQueryDto.class)
             .searchAttr(InboxConst.APP_PARAM)
@@ -111,10 +120,7 @@ public class InterInboxDelegator {
     public void msgToArchive(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
-        String msgStatus[] = new String[]{
-                MessageConstants.MESSAGE_STATUS_UNREAD
-        };
-        inboxSearchMap.put("msgStatus",msgStatus);
+        inboxSearchMap.put("msgStatus",msgArchiverStatus);
         inboxSearchMap.put("userId",interInboxUserDto.getUserId());
         inboxParameter.setFilters(inboxSearchMap);
         SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter,true);
@@ -175,12 +181,6 @@ public class InterInboxDelegator {
     public void prepareDate(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
-        String msgStatus[] = new String[]{
-                MessageConstants.MESSAGE_STATUS_READ,
-//                MessageConstants.MESSAGE_STATUS_UNREAD,
-                MessageConstants.MESSAGE_STATUS_RESPONSE,
-                MessageConstants.MESSAGE_STATUS_UNRESPONSE,
-        };
         inboxSearchMap.put("userId",interInboxUserDto.getUserId());
         inboxSearchMap.put("msgStatus",msgStatus);
         inboxParameter.setFilters(inboxSearchMap);
@@ -258,7 +258,7 @@ public class InterInboxDelegator {
         String eExpiryDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "eExpiryDate")),
                 SystemAdminBaseConstants.DATE_FORMAT);
         if(licenceNo != null){
-            licSearchMap.put("licNo","%"+licenceNo+"%");
+            licSearchMap.put("licNo",'%'+licenceNo+'%');
         }
         if(serviceType != null){
             if (serviceType.equals(InboxConst.SEARCH_ALL)){
@@ -304,7 +304,7 @@ public class InterInboxDelegator {
     public void licDoAppeal(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
         String licNo = ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_VALUE);
-        StringBuffer url = new StringBuffer();
+        StringBuilder url = new StringBuilder();
         url.append("https://").append(bpc.request.getServerName())
                 .append("/hcsa-licence-web/eservice/INTERNET/MohAppealApplication")
                 .append("?appealingFor=")
@@ -448,7 +448,7 @@ public class InterInboxDelegator {
             if (applicationNo.equals(InboxConst.SEARCH_ALL)){
                 appSearchMap.remove("appNo");
             }
-            else if(applicationNo.indexOf("%") != -1){
+            else if(applicationNo.indexOf('%') != -1){
                 applicationNo = applicationNo.replaceAll("%","//%");
                 appSearchMap.put("appNo","%"+applicationNo+"%");
             }
@@ -483,7 +483,7 @@ public class InterInboxDelegator {
     public void appDoAppeal(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
         String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
-        StringBuffer url = new StringBuffer();
+        StringBuilder url = new StringBuilder();
         url.append("https://").append(bpc.request.getServerName())
                 .append("/hcsa-licence-web/eservice/INTERNET/MohAppealApplication")
                 .append("?appealingFor=")
@@ -497,7 +497,7 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         String appId = ParamUtil.getString(request, InboxConst.ACTION_ID_VALUE);
         String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
-        StringBuffer url = new StringBuffer();
+        StringBuilder url = new StringBuilder();
         url.append("https://").append(bpc.request.getServerName())
                 .append("/hcsa-licence-web/eservice/INTERNET/MohWithdrawalApplication")
                 .append("?appId=")
@@ -513,7 +513,7 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         String appNo = ParamUtil.getMaskedString(request, InboxConst.ACTION_NO_VALUE);
         if("APTY005".equals(ParamUtil.getMaskedString(request, InboxConst.ACTION_TYPE_VALUE))){
-            StringBuffer url = new StringBuffer();
+            StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohRequestForChange/prepareDraft")
                     .append("?DraftNumber=")
@@ -521,7 +521,7 @@ public class InterInboxDelegator {
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }else if("APTY004".equals(ParamUtil.getMaskedString(request, InboxConst.ACTION_TYPE_VALUE))){
-            StringBuffer url = new StringBuffer();
+            StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal")
                     .append("?DraftNumber=")
@@ -531,7 +531,7 @@ public class InterInboxDelegator {
 
         }
         else {
-            StringBuffer url = new StringBuffer();
+            StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication")
                     .append("?DraftNumber=")

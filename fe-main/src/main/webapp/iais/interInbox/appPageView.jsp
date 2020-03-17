@@ -58,6 +58,11 @@
 
     function doSearchApp() {
         submit("appSearch");
+
+    }
+
+    function appClear(){
+        appAjax();
     }
 
     function jumpToPagechangePage() {
@@ -109,5 +114,20 @@
             $("[name='action_no_value']").val(appNo);
             submit('appDoDelete');
         }
+    }
+
+    function appAjax(){
+        alert("^^^^^~~~~~~^^^^^^");
+        $.ajax({
+            data:{
+                appNoPath:$("[name='appNoPath']").val(),
+                appServiceType:$("[name='appServiceType']").val()
+            },
+            type:"POST",
+            dataType: 'json',
+            url:"/main-web/inbox/appInbox.do",
+            success:function(data){
+            }
+        });
     }
 </script>
