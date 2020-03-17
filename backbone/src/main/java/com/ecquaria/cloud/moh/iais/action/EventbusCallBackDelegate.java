@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.submission.client.model.ServiceStatus;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
@@ -38,28 +37,28 @@ public class EventbusCallBackDelegate {
         log.info("<=========== Eventbus Callback Start ===========>");
         HttpServletRequest request = bpc.request;
         String submissionId = ParamUtil.getString(request,"submissionId");
-        log.info("Submission Id ===========> " + submissionId);
+        log.info("Submission Id ===========> {}", submissionId);
         String token = ParamUtil.getString(request, "token");
         String serviceName = ParamUtil.getString(request, "service");
-        log.info("service name ===========> " + serviceName);
+        log.info("service name ===========> {}", serviceName);
         boolean isLeagal = IaisEGPHelper.verifyCallBackToken(submissionId, serviceName, token);
         String eventRefNum = ParamUtil.getString(request, "eventRefNo");
-        log.info("event Ref number ===========> " + eventRefNum);
+        log.info("event Ref number ===========> {}", eventRefNum);
         if (!isLeagal) {
             throw new IaisRuntimeException("Visit without Token!!");
         }
         String operation = ParamUtil.getString(request, "operation");
-        log.info("Event bus operation ===========> " + operation);
+        log.info("Event bus operation ===========> {}", operation);
         Map<String, List<ServiceStatus>> map = submissionClient.getSubmissionStatus(
                 AppConsts.REST_PROTOCOL_TYPE
                         + RestApiUrlConsts.EVENT_BUS, submissionId, operation);
-        log.info("The status map size: ===========> " + map.size());
+        log.info("The status map size: ===========> {}", map.size());
         if (map.size() >= 1) {
             boolean success = true;
             boolean pending = false;
             for (Map.Entry<String, List<ServiceStatus>> ent : map.entrySet()) {
                 for (ServiceStatus status : ent.getValue()) {
-                    log.info("Result status ===========> " + status.getStatus());
+                    log.info("Result status ===========> {}", status.getStatus());
                     if (status.getStatus().contains(GlobalConstants.STATE_PENDING)) {
                         pending = true;
                     } else if (!status.getServiceStatus().contains(GlobalConstants.STATUS_SUCCESS)) {
@@ -117,11 +116,8 @@ public class EventbusCallBackDelegate {
     private void invokeMethod(String submissionId, String eventRefNum, String clsName, String methodName)
             throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Class cls = Class.forName(clsName);
-        log.info(StringUtil.changeForLog("The cls is -->:"+cls));
         Object obj = SpringContextHelper.getContext().getBean(cls);
-        log.info(StringUtil.changeForLog("The obj is -->:"+obj));
         Method med = cls.getMethod(methodName, new Class[]{String.class, String.class});
-        log.info(StringUtil.changeForLog("The med is -->:"+med));
         med.invoke(obj, new String[] {eventRefNum, submissionId});
     }
 }
