@@ -2,16 +2,20 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditSystemPotentialDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.dto.AuditAssginListValidateDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemPotitalListService;
+import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.AuditAssginListValidate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +39,7 @@ public class AuditManualListDelegator {
     AuditSystemPotitalListService auditSystemPotitalListService;
     @Autowired
     AuditSystemListService auditSystemListService;
+    public static String SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME = "auditSystemPotentialDtoForSearch";
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
@@ -43,10 +48,18 @@ public class AuditManualListDelegator {
     public void init(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, null);
     }
     public void pre(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
+        List<HcsaServiceDto> hcsaServiceDtos = auditSystemListService.getActiveHCIServices();
+        ParamUtil.setRequestAttr(request, "activeHCIServiceNames", (Serializable) auditSystemListService.getActiveHCIServicesByNameOrCode(hcsaServiceDtos, HcsaLicenceBeConstant.GET_HCI_SERVICE_SELECTION_NAME_TAG));
+        ParamUtil.setRequestAttr(request, "activeHCIServiceCodes", (Serializable) auditSystemListService.getActiveHCIServicesByNameOrCode(hcsaServiceDtos, HcsaLicenceBeConstant.GET_HCI_SERVICE_SELECTION_COED_TAG));
+        ParamUtil.setRequestAttr(request, "complianceLastResultOptions", (Serializable) LicenceUtil.getResultsLastCompliance());
+        ParamUtil.setRequestAttr(request, "premTypeOp", (Serializable) LicenceUtil.getPremisesType());
+        ParamUtil.setRequestAttr(request, "hclCodeOp", (Serializable) auditSystemListService.getActiveHCICode());
+        ParamUtil.setRequestAttr(request,"riskTypeOp", (Serializable) MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SYSTEM_RISK_TYPE));
     }
     public void remove(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
@@ -93,12 +106,34 @@ public class AuditManualListDelegator {
     public void vad(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
+        String serviceName = ParamUtil.getString(request, "svcName");
+        String postcode = ParamUtil.getString(request, "postcode");
+        String inspectionStartDate = ParamUtil.getDate(request, "inspectionStartDate");
+        String inspectionEndDate = ParamUtil.getDate(request, "inspectionEndDate");
+        String complianceLastResult = ParamUtil.getString(request, "complianceLastResult");
+        String hclSCode = ParamUtil.getString(request, "hclSCode");
+        String hclCode = ParamUtil.getString(request, "hclCode");
+        String premType = ParamUtil.getString(request, "premType");
+        String riskType = ParamUtil.getString(request, "riskType");
         List<SelectOption> aduitTypeOp = auditSystemListService.getAuditOp();
         ParamUtil.setSessionAttr(request,"aduitTypeOp",(Serializable) aduitTypeOp);
         AuditSystemPotentialDto dto = new AuditSystemPotentialDto();
         List<String> serviceNmaeList = new ArrayList<>();
-        // serviceNmaeList.add("Clinical Laboratory");
+        if(!StringUtil.isEmpty(serviceName))
+            serviceNmaeList.add(serviceName);
+        List<String> hcsaServiceCodeList = new ArrayList<>();
+        if(!StringUtil.isEmpty(hclSCode))
+            hcsaServiceCodeList.add(hclSCode);
         dto.setSvcNameList(serviceNmaeList);
+        dto.setHcsaServiceCodeList(hcsaServiceCodeList);
+        dto.setPostalCode(postcode);
+        dto.setLastInspectionStart(inspectionStartDate);
+        dto.setLastInspectionEnd(inspectionEndDate);
+        dto.setHclCode(hclCode);
+        dto.setResultLastCompliance(complianceLastResult);
+        dto.setPremisesType(premType);
+        dto.setTypeOfRisk(riskType);
+        ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, dto);
         List<AuditTaskDataFillterDto> auditTaskDataDtos =  auditSystemPotitalListService.getSystemPotentailAdultList(dto);
         auditSystemListService.getInspectors(auditTaskDataDtos);
         ParamUtil.setSessionAttr(request,"auditTaskDataDtos",(Serializable) auditTaskDataDtos);
