@@ -700,7 +700,6 @@ public class HcsaApplicationDelegator {
     //*************************************
 
     private void routingTask(BaseProcessClass bpc,String stageId,String appStatus,String roleId ) throws FeignException, CloneNotSupportedException {
-
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -709,6 +708,16 @@ public class HcsaApplicationDelegator {
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
 
+        //judge the final status is Approve or Reject.
+        if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
+            AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
+            if(appPremisesRecommendationDto!=null){
+               int recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
+               if(recomInNumber == 0){
+                   appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
+               }
+            }
+        }
         //complated this task and create the history
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
