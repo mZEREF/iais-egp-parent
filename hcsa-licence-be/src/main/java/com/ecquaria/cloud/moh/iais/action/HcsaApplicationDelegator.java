@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -38,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -51,6 +53,7 @@ import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
@@ -117,6 +120,9 @@ public class HcsaApplicationDelegator {
 
     @Autowired
     private GenerateIdClient generateIdClient;
+
+    @Autowired
+    private EmailClient emailClient;
 
 //    public void routingTask(BaseProcessClass bpc) throws FeignException {
 //        log.debug(StringUtil.changeForLog("the do routingTask start ...."));
@@ -656,6 +662,33 @@ public class HcsaApplicationDelegator {
         InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
                 messageNo,applicationDto.getServiceId(),templateMessageByContent, applicationViewDto.getApplicationGroupDto().getSubmitBy(),IaisEGPHelper.getCurrentAuditTrailDto());
         inboxMsgService.saveInterMessage(interMessageDto);
+        //send email
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVAL_OFFICE_ROUTES_ID).getEntity();
+        if(msgTemplateDto != null){
+            String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
+            String username = licenseeDto.getName();
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            String approvalOfficerName = loginContext.getUserName();
+
+            Map<String ,Object> tempMap = new HashMap<>();
+            tempMap.put("userName",StringUtil.viewHtml(username));
+            tempMap.put("applicationNumber",StringUtil.viewHtml(applicationNo));
+            tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+            tempMap.put("approvalOfficerName",StringUtil.viewHtml(approvalOfficerName));
+
+            String mesContext = null;
+            mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(mesContext);
+            emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + applicationNo);
+            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+            emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
+            //send
+            emailClient.sendNotification(emailDto).getEntity();
+        }
+
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
     }
 
