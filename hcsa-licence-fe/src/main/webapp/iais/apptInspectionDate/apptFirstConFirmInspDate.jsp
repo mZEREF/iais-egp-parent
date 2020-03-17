@@ -49,12 +49,12 @@
                               <c:forEach items="${apptFeConfirmDateDto.inspectionDate}" var="date">
                                 <input class="form-check-input" type="radio" name="apptCheckDate" aria-invalid="true" value="${date.value}" <c:if test="${date.value eq apptFeConfirmDateDto.checkDate}">checked</c:if>>
                                 <label><c:out value = "${date.text}"/></label>
-                                <br><span class="error-msg" name="iaisErrorMsg" id="error_checkDate"></span>
                               </c:forEach>
+                              <br><span class="error-msg" name="iaisErrorMsg" id="error_checkDate"></span>
                             </c:if>
                           </iais:value>
                         </iais:row>
-                        <iais:action >
+                        <iais:action>
                           <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:apptFirstConFirmInspDateRej()">Request a particular date</button>
                           <span style="float:right">&nbsp;</span>
                           <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:apptFirstConFirmInspDateRec()">Recompute other dates</button>
