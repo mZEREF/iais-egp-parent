@@ -382,12 +382,16 @@ public class NewApplicationDelegator {
 
         String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
 
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+        if("back".equals(action)||RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)){
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "jump");
+            return;
+        }
+       /* if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
             if(RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)) {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "jump");
                 return;
             }
-        }
+        }*/
 
         String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
