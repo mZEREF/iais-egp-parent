@@ -21,79 +21,88 @@
     <br>
     <form method="post" id="mainReviewForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
       <%@ include file="/include/formHidden.jsp" %>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
       <input type="hidden" name="inspecUserRecUploadType" value="">
       <input type="hidden" id="actionValue" name="actionValue" value="">
       <input type="hidden" id="fileId" name="fileId" value="">
-      <iais:body >
-        <div class="container">
-          <div class="col-xs-12">
-            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-              <h3>
-                <span>Attachments</span>
-              </h3>
-              <div class="panel panel-default">
-                <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
-                  <div class="panel-body">
-                    <div class="panel-main-content">
-                      <iais:section title="" id = "upload_Rectification">
-                        <c:if test="${inspecUserRecUploadDto != null}">
-                          <iais:row>
-                            <iais:field value="NC Clause"/>
-                            <iais:value width="300">
-                              <label><c:out value = "${inspecUserRecUploadDto.checkClause}"></c:out></label>
-                            </iais:value>
-                          </iais:row>
-                          <iais:row>
-                            <iais:field value="Checklist Question"/>
-                            <iais:value width="7">
-                              <label><c:out value = "${inspecUserRecUploadDto.checkQuestion}"/></label>
-                            </iais:value>
-                          </iais:row>
+      <div class="main-content">
+        <div class="row">
+          <div class="col-lg-12 col-xs-12">
+            <div class="center-content">
+              <div class="intranet-content">
+                <iais:body >
+                  <iais:section title="" id = "upload_Rectification">
+                    <div class="table-gp">
+                      <table class="table">
+                        <thead>
+                        <tr align="center">
+                          <th>NC Clause</th>
+                          <th>Checklist Question</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                          <td><c:out value="${inspecUserRecUploadDto.checkClause}"/></td>
+                          <td><c:out value="${inspecUserRecUploadDto.checkQuestion}"/></td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="bg-title">
+                      <h3 style="border-bottom: 0px solid">Attachments</h3>
+                    </div>
+                    <div style="padding:10px">
+                      <c:if test="${inspecUserRecUploadDto != null}">
+                        <div style="padding:10px">
                           <iais:row>
                             <iais:field value="Choose a file to attach"/>
+                          </iais:row>
+                          <iais:row>
                             <iais:value width="7">
                               <input class="selectedFile premDoc" id="recFileUpload" name = "selectedFile" type="file" onchange="javascript:doUserRecUploadConfirmFile(this.value)" style="display: none;" aria-label="selectedFile1"/>
-                              <button type="button" class="btn btn-default btn-sm" onclick="javascript:doUserRecUploadConfirmUpload()">Upload</button>
+                              <button type="button" class="btn btn-file-upload btn-secondary" onclick="javascript:doUserRecUploadConfirmUpload()">Upload</button>
+                              <c:if test="${inspecUserRecUploadDto.fileRepoDtos == null}">
+                                &nbsp;<span>No files selected.</span>
+                              </c:if>
                               <br><span class="error-msg" name="iaisErrorMsg" id="error_recFile"></span>
                             </iais:value>
                           </iais:row>
-                          <iais:row>
-                            <iais:field value="Current File Attachments"/>
-                            <iais:value width="300">
-                              <c:if test="${inspecUserRecUploadDto.fileRepoDtos != null}">
-                                <c:forEach items="${inspecUserRecUploadDto.fileRepoDtos}" var="recFile">
-                                  <label><c:out value="${recFile.fileName}"></c:out></label><button type="button" class="btn btn-default btn-sm" onclick="javascript:doUserRecUploadConfirmDel('<iais:mask name="fileId" value="${recFile.id}"/>')">Delete</button><br>
-                                </c:forEach>
-                              </c:if>
-                              <label id="recFileName"></label>
-                            </iais:value>
-                          </iais:row>
-                          <iais:row>
-                            <iais:field value="Remarks"/>
-                            <iais:value width="300">
-                              <textarea id="uploadRemarks" name="uploadRemarks" cols="70" rows="7"><c:out value="${inspecUserRecUploadDto.uploadRemarks}"></c:out></textarea>
-                            </iais:value>
-                          </iais:row>
-                        </c:if>
-                        <iais:action >
-                          <button class="btn btn-lg btn-login-back" style="float:right" type="button" onclick="javascript:doUserRecUploadConfirmCancel()">Cancel</button>
-                          <span style="float:right">&nbsp;</span>
-                          <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:doUserRecUploadConfirmSave()">Save</button>
-                        </iais:action>
-                      </iais:section>
-                    </div>
-                  </div>
-                </div>
+                        </div>
+                        <iais:row>
+                          <iais:field value="Current File Attachments"/>
+                        </iais:row>
+                        <iais:row>
+                          <iais:value width="300">
+                            <c:if test="${inspecUserRecUploadDto.fileRepoDtos != null}">
+                              <c:forEach items="${inspecUserRecUploadDto.fileRepoDtos}" var="recFile">
+                                <label><c:out value="${recFile.fileName}"></c:out></label>&nbsp;<button type="button" class="btn btn-file-upload btn-secondary" onclick="javascript:doUserRecUploadConfirmDel('<iais:mask name="fileId" value="${recFile.id}"/>')">Delete</button>
+                                <br><br>
+                              </c:forEach>
+                            </c:if>
+                            <label id="recFileName"></label>
+                          </iais:value>
+                        </iais:row>
+                      </div>
+                      <iais:row>
+                        <iais:field value="Remarks"/>
+                      </iais:row>
+                      <iais:row>
+                        <iais:value width="300">
+                          <textarea id="uploadRemarks" name="uploadRemarks" cols="70" rows="7" maxlength="300"><c:out value="${inspecUserRecUploadDto.uploadRemarks}"></c:out></textarea>
+                        </iais:value>
+                      </iais:row>
+                    </c:if>
+                    <iais:action >
+                      <button class="btn btn-secondary" style="float:right" type="button" onclick="javascript:doUserRecUploadConfirmCancel()">Cancel</button>
+                      <span style="float:right">&nbsp;</span>
+                      <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doUserRecUploadConfirmSave()">Save</button>
+                    </iais:action>
+                  </iais:section>
+                </iais:body>
               </div>
             </div>
           </div>
         </div>
-      </iais:body>
+      </div>
     </form>
   </div>
 </div>
