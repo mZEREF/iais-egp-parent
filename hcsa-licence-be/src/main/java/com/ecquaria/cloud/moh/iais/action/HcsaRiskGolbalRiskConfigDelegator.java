@@ -67,7 +67,7 @@ public class HcsaRiskGolbalRiskConfigDelegator {
         log.debug(StringUtil.changeForLog("the doNext start ...."));
         HttpServletRequest request = bpc.request;
         GolbalRiskShowDto golbalShowDto = (GolbalRiskShowDto)ParamUtil.getSessionAttr(request, "golbalShowDto");
-        golbalShowDto = getDataFrompage(request, golbalShowDto);
+        getDataFrompage(request, golbalShowDto);
         HcsaGolbalValidate golBalvad = new HcsaGolbalValidate();
         Map<String, String> errMap = golBalvad.validate(request);
         if(errMap.isEmpty()){

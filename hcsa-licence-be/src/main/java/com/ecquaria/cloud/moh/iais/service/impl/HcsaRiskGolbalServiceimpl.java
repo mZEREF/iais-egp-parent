@@ -18,8 +18,10 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskGolbalService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+
 import java.util.Date;
 import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,6 +47,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
+
     @Override
     public GolbalRiskShowDto getGolbalRiskShowDto() {
         List<HcsaServiceDto> serviceDtoList = hcsaConfigClient.getActiveServices().getEntity();
@@ -69,8 +72,8 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
 
     @Override
     public List<SelectOption> inpTypeOp() {
-        String category[] = {"TOIR001","TOIR002","TOIR003"};
-        List<SelectOption> inpTypeOp =   MasterCodeUtil.retrieveOptionsByCodes(category);
+        String category[] = {"TOIR001", "TOIR002", "TOIR003"};
+        List<SelectOption> inpTypeOp = MasterCodeUtil.retrieveOptionsByCodes(category);
         return inpTypeOp;
     }
 
@@ -92,52 +95,27 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
     public void setGolShowDto(GobalRiskTotalDto fin, String maxLic, String doLast, String autoreop,
                               String newinpTypeOps, String newPreOrPostOps, String renewinpTypeOps,
                               String renewPreOrPostOps, String instartdate, String inEndDate) {
-        int editNum = 0;
-        if(fin.getGalbalId()!=null){
-            if(!fin.getBaseMaxLic().equals(maxLic)){
-                editNum++;
-            }
-            fin.setDoMaxLic(maxLic);
-            if(!fin.getBaseLastInspection().equals(doLast)){
-                editNum++;
-            }
-            fin.setDoLastInspection(doLast);
-            if(!fin.getBaseAutoRenew().equals(autoreop)){
-                editNum++;
-            }
-            fin.setDoAutoRenew(autoreop);
-            if(!fin.getBasenewInspectType().equals(newinpTypeOps)){
-                editNum++;
-            }
-            fin.setDonewInspectType(newinpTypeOps);
-            if(!fin.getBasenewIsPreInspect().equals(newPreOrPostOps)){
-                editNum++;
-            }
-            fin.setDonewIsPreInspect(newPreOrPostOps);
 
-            if(!fin.getBaserenewInspectType().equals(renewinpTypeOps)){
-                editNum++;
-            }
-            fin.setDorenewInspectType(renewinpTypeOps);
-            if(!fin.getBaserenewIsPreInspect().equals(renewPreOrPostOps)){
-                editNum++;
-            }
-            fin.setDorenewIsPreInspect(renewPreOrPostOps);
-
-            if(!fin.getBaseEffectiveDate().equals(instartdate)){
-                editNum++;
-            }
-            fin.setDoEffectiveDate(instartdate);
-
-            if(!fin.getBaseEndDate().equals(inEndDate)){
-                editNum++;
-            }
-            fin.setDoEndDate(inEndDate);
-            if(editNum>=1){
+        if (fin.getGalbalId() != null) {
+            if (!StringUtil.stringEqual(fin.getBaseMaxLic(), maxLic) || !StringUtil.stringEqual(fin.getBaseLastInspection(), doLast) ||
+                    !StringUtil.stringEqual(fin.getBaseAutoRenew(), autoreop) || !StringUtil.stringEqual(fin.getBasenewInspectType(), newinpTypeOps) ||
+                    !StringUtil.stringEqual(fin.getBasenewIsPreInspect(), newPreOrPostOps) || !StringUtil.stringEqual(fin.getBaserenewInspectType(), renewinpTypeOps) ||
+                    !StringUtil.stringEqual(fin.getBaserenewIsPreInspect(), renewPreOrPostOps) || !StringUtil.stringEqual(fin.getBaseEffectiveDate(), instartdate) ||
+                    !StringUtil.stringEqual(fin.getBaseEndDate(), inEndDate)
+                    ) {
                 fin.setEdit(true);
             }
-        }else{
-            getNullGolIdCloum(fin,maxLic,doLast,autoreop,newinpTypeOps,newPreOrPostOps,renewinpTypeOps,renewPreOrPostOps,instartdate,inEndDate);
+            fin.setDoMaxLic(maxLic);
+            fin.setDoLastInspection(doLast);
+            fin.setDoAutoRenew(autoreop);
+            fin.setDonewInspectType(newinpTypeOps);
+            fin.setDonewIsPreInspect(newPreOrPostOps);
+            fin.setDorenewInspectType(renewinpTypeOps);
+            fin.setDorenewIsPreInspect(renewPreOrPostOps);
+            fin.setDoEffectiveDate(instartdate);
+            fin.setDoEndDate(inEndDate);
+        } else {
+            getNullGolIdCloum(fin, maxLic, doLast, autoreop, newinpTypeOps, newPreOrPostOps, renewinpTypeOps, renewPreOrPostOps, instartdate, inEndDate);
         }
 
     }
@@ -145,10 +123,10 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
     private void getNullGolIdCloum(GobalRiskTotalDto fin, String maxLic, String doLast, String autoreop,
                                    String newinpTypeOps, String newPreOrPostOps, String renewinpTypeOps,
                                    String renewPreOrPostOps, String instartdate, String inEndDate) {
-        if(StringUtil.isEmpty(maxLic)&&StringUtil.isEmpty(doLast)&&StringUtil.isEmpty(autoreop)&&StringUtil.isEmpty(newinpTypeOps)&&StringUtil.isEmpty(newPreOrPostOps)&&StringUtil.isEmpty(renewinpTypeOps)&&StringUtil.isEmpty(renewPreOrPostOps)
-        &&StringUtil.isEmpty(instartdate)&&StringUtil.isEmpty(inEndDate)){
+        if (StringUtil.isEmpty(maxLic) && StringUtil.isEmpty(doLast) && StringUtil.isEmpty(autoreop) && StringUtil.isEmpty(newinpTypeOps) && StringUtil.isEmpty(newPreOrPostOps) && StringUtil.isEmpty(renewinpTypeOps) && StringUtil.isEmpty(renewPreOrPostOps)
+                && StringUtil.isEmpty(instartdate) && StringUtil.isEmpty(inEndDate)) {
             fin.setEdit(false);
-        }else{
+        } else {
             fin.setEdit(true);
             fin.setDoMaxLic(maxLic);
             fin.setDoLastInspection(doLast);
@@ -167,14 +145,14 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
     public void saveDto(GolbalRiskShowDto golbalShowDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        List<GobalRiskTotalDto> totalDtoList  = golbalShowDto.getGoalbalTotalList();
-        List<GobalRiskTotalDto> updateList  = IaisCommonUtils.genNewArrayList();
-        for(GobalRiskTotalDto temp:totalDtoList){
-            if(temp.isEdit()){
+        List<GobalRiskTotalDto> totalDtoList = golbalShowDto.getGoalbalTotalList();
+        List<GobalRiskTotalDto> updateList = IaisCommonUtils.genNewArrayList();
+        for (GobalRiskTotalDto temp : totalDtoList) {
+            if (temp.isEdit()) {
                 updateList.add(temp);
             }
         }
-        for(GobalRiskTotalDto temp:updateList){
+        for (GobalRiskTotalDto temp : updateList) {
             dosave(temp);
         }
         HcsaRiskFeSupportDto supportDto = new HcsaRiskFeSupportDto();
@@ -188,29 +166,29 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
         HcsaRiskGlobalDto golDto = new HcsaRiskGlobalDto();
         HcsaRiskGolbalExtDto golExtDto = new HcsaRiskGolbalExtDto();
         List<HcsaRiskGolbalExtDto> extDtoList = IaisCommonUtils.genNewArrayList();
-        if(temp.getId()!=null){
+        if (temp.getId() != null) {
             golDto = transferTogolDto(temp);
             extDtoList = transferToextDtoList(temp);
             updateLastVersion(golDto);
-            create(golDto,extDtoList);
-        }else{
+            create(golDto, extDtoList);
+        } else {
             golDto = transferTogolDto(temp);
             extDtoList = transferToextDtoList(temp);
-            create(golDto,extDtoList);
+            create(golDto, extDtoList);
         }
     }
 
     private void create(HcsaRiskGlobalDto golDto, List<HcsaRiskGolbalExtDto> extDtoList) {
-        if(golDto.getVersion()!=null){
-            golDto.setVersion(golDto.getVersion()+1);
-        }else{
+        if (golDto.getVersion() != null) {
+            golDto.setVersion(golDto.getVersion() + 1);
+        } else {
             golDto.setVersion(1);
         }
         golDto.setId(null);
         golDto.setStatus("CMSTAT001");
         golDto = hcsaConfigClient.saveGoalbalMatrix(golDto).getEntity();
         String golId = golDto.getId();
-        for(HcsaRiskGolbalExtDto temp:extDtoList){
+        for (HcsaRiskGolbalExtDto temp : extDtoList) {
             temp.setRsGolbalId(golId);
             temp.setId(null);
         }
@@ -218,23 +196,23 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
     }
 
     private void updateLastVersion(HcsaRiskGlobalDto golDto) {
-        HcsaRiskGlobalDto lastVersionDto  = hcsaConfigClient.getRiskGolbalRiskMatraixBySvcCode(golDto.getServiceCode()).getEntity();
+        HcsaRiskGlobalDto lastVersionDto = hcsaConfigClient.getRiskGolbalRiskMatraixBySvcCode(golDto.getServiceCode()).getEntity();
         String status = null;
         Date doeffDate = null;
         try {
             doeffDate = golDto.getEffectiveDate();
             Date lastVersionEndDate = lastVersionDto.getEndDate();
-            if(lastVersionEndDate.getTime()<System.currentTimeMillis()){
+            if (lastVersionEndDate.getTime() < System.currentTimeMillis()) {
                 status = "CMSTAT003";
-            }else{
+            } else {
                 status = "CMSTAT001";
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         lastVersionDto.setEndDate(doeffDate);
         lastVersionDto.setStatus(status);
-        List<HcsaRiskGlobalDto> golDtoList= IaisCommonUtils.genNewArrayList();
+        List<HcsaRiskGlobalDto> golDtoList = IaisCommonUtils.genNewArrayList();
         golDtoList.add(lastVersionDto);
         hcsaConfigClient.udpateGoalbalMatrixList(golDtoList);
 
@@ -246,9 +224,9 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
         newExt.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         newExt.setRsGolbalId(temp.getGalbalId());
         newExt.setInspectType(temp.getDonewInspectType());
-        if("Y".equals(temp.getDonewIsPreInspect())){
+        if ("Y".equals(temp.getDonewIsPreInspect())) {
             newExt.setPreInspect(true);
-        }else{
+        } else {
             newExt.setPreInspect(false);
         }
         newExt.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -259,9 +237,9 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
         renewExt.setInspectType(temp.getDorenewInspectType());
         renewExt.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         renewExt.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        if("Y".equals(temp.getDorenewIsPreInspect())){
+        if ("Y".equals(temp.getDorenewIsPreInspect())) {
             renewExt.setPreInspect(true);
-        }else{
+        } else {
             renewExt.setPreInspect(false);
         }
         extList.add(newExt);
@@ -271,9 +249,9 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
 
     private HcsaRiskGlobalDto transferTogolDto(GobalRiskTotalDto temp) {
         HcsaRiskGlobalDto dto = new HcsaRiskGlobalDto();
-        if("Y".equals(temp.getDoAutoRenew())){
+        if ("Y".equals(temp.getDoAutoRenew())) {
             dto.setAutoRenewal(true);
-        }else{
+        } else {
             dto.setAutoRenewal(false);
         }
         try {
@@ -285,7 +263,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
             dto.setMaxLicTenu(Integer.parseInt(temp.getDoMaxLic()));
             dto.setServiceCode(temp.getServiceCode());
             dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return dto;
