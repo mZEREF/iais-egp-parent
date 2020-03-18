@@ -32,13 +32,14 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -146,7 +147,7 @@ public class InspectionSendRecBatchjob {
                 params.put("application_number", aDto.getApplicationNo());
                 String templateMessageByContent = MsgUtil.getTemplateMessageByContent(mtd.getMessageContent(), params);
                 interMessageDto.setMsgContent(templateMessageByContent);
-                interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
                 interMessageDto.setAuditTrailDto(intranet);
                 inboxMsgService.saveInterMessage(interMessageDto);
                 aDto.setAuditTrailDto(intranet);
