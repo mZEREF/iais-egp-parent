@@ -2153,7 +2153,7 @@ input[type=number]::-webkit-outer-spin-button {
   background: white;
 }
 .form-check .form-check-label .check-square:before {
-  content: "\f00c";
+  content: "\f00c";
   font-family: fontawesome;
   position: absolute;
   width: 16px;
