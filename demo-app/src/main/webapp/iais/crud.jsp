@@ -44,8 +44,8 @@
                   </div>
                   <div class="application-tab-footer">
                     <div class="row">
-                      <div class="col-xs-12 col-md-12">
-                        <div class="text-center">
+                      <div class="col-xs-12 col-md-11">
+                        <div class="text-right">
                           <a class="btn btn-secondary" href="#">Clear</a>
                           <a class="btn btn-primary" href="#">Search</a>
                         </div>
@@ -191,7 +191,13 @@
 
             </div>
           </div>
-
+          <div class="application-tab-footer">
+            <div class="row">
+              <div class="col-xs-12 col-sm-11">
+                <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#">PROCEED</a></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       </div>
