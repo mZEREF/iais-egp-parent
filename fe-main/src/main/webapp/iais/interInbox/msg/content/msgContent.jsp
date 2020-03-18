@@ -12,9 +12,27 @@
                                 ${IAIS_MSG_CONTENT}
                             </div>
                         </div>
+                        <div class="row" style="margin-top: 1.5%">
+                            <div class="col-md-12">
+                                <div class="col-md-2 pull-right">
+                                    <button type="button" class="btn btn-primary pull-right" onclick="MsgContToMsgPage()">Back</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    function submit(action) {
+        $("[name='msg_view_type']").val(action);
+        $("#msgContentForm").submit();
+    }
+
+    function MsgContToMsgPage() {
+        submit("toMsg");
+    }
+</script>
