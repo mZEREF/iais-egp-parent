@@ -60,6 +60,10 @@
                                                 <label>
                                                     <input type="checkbox"  /> Information
                                                 </label>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:value width="18">
                                                 <label>
                                                     <input type="checkbox" name="reqType" /> Supporting Documents
                                                 </label>
@@ -67,8 +71,8 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doSubmit('${licenceNo}')">Submit</button>
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doBack()">Back</button>
+                                            <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit('${licenceNo}')">Submit</button>
+                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Back</button>
                                         </iais:action>
                                         <iais:row >
                                             <div class="col-sm-9" style="display: none" id="isAlert">

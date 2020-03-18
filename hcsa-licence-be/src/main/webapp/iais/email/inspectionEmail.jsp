@@ -245,7 +245,7 @@
                                         <td>
                                             <div class="col-sm-9">
                                                 <select id="decision_email" name="decision">
-                                                    <option value="Select" selected>Select</option>
+                                                    <option value="Select" selected>Please Select</option>
                                                     <c:forEach items="${appTypeOption}" var="decision">
                                                         <option  value="${decision.value}">${decision.text}</option>
                                                     </c:forEach>
@@ -269,7 +269,7 @@
                                 <p class="text-right text-center-mobile">
 
                                     <iais:action style="text-align:center;">
-                                        <button type="button" class="search btn" onclick="javascript:doSend();">Submit</button>
+                                        <button type="button" class="btn btn-primary" onclick="javascript:doSend();">Submit</button>
                                     </iais:action>
                                 </p>
                                 <br>

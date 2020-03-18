@@ -861,7 +861,7 @@
                 </div>
             </div>
         </div>
-        <input type="submit" class="btn btn-default" value="BACK">
+        <input type="submit" class="btn btn-secondary" value="BACK">
     </div>
 </form>
 

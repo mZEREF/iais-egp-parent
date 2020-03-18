@@ -25,8 +25,8 @@
                     </h3>
                     <div class="table-gp">
                         <iais:action style="text-align:left;">
-                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doNew()">New</button>
-                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doBack()">Back</button>
+                            <button class="btn btn-primary" type="button"  onclick="javascript:doNew()">New</button>
+                            <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Back</button>
                         </iais:action>
                         <table class="table">
                             <thead>
@@ -56,7 +56,7 @@
                                             <td><c:out value="${pool.requestDate}" /></td>
                                             <td>
                                                 <iais:action style="text-align:center;">
-                                                    <button type="button"  class="btn btn-default" onclick="javascript:doView('${pool.reqInfoId}');" >View</button>
+                                                    <button type="button"  class="btn btn-lg btn-login-submit" onclick="javascript:doView('${pool.reqInfoId}');" >View</button>
                                                 </iais:action>
                                             </td>
                                         </tr>

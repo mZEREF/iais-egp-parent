@@ -44,7 +44,7 @@
                                         <iais:row>
                                             <iais:field value=""/>
                                             <iais:value width="18">
-                                                <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doExtends('${licPreReqForInfoDto.reqInfoId}')">Extends</button>
+                                                <button class="btn btn-primary" type="button"  onclick="javascript:doExtends('${licPreReqForInfoDto.reqInfoId}')">Extends</button>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -58,6 +58,10 @@
                                                 <label>
                                                     <input type="checkbox" name="reqType" checked/>Information
                                                 </label>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:value width="18">
                                                 <label>
                                                     <input type="checkbox" name="reqType" />Supporting Documents
                                                 </label>
@@ -101,8 +105,8 @@
                                         </c:if>
 
                                         <iais:action style="text-align:center;">
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doCancel('${licPreReqForInfoDto.reqInfoId}')">Cancel</button>
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doBack()">Back</button>
+                                            <button class="btn btn-primary" type="button"  onclick="javascript:doCancel('${licPreReqForInfoDto.reqInfoId}')">Cancel</button>
+                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Back</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>

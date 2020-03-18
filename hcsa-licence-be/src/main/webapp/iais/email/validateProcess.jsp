@@ -211,8 +211,8 @@
                                 </table>
                                 <p class="text-right text-center-mobile">
                                     <iais:action style="text-align:center;">
-                                        <button type="button" class="search btn" onclick="javascript:doPreview();">Preview</button>
-                                        <button type="button" class="search btn" onclick="javascript:doReload();">Reload</button>
+                                        <button type="button" class="btn btn-primary" onclick="javascript:doPreview();">Preview</button>&nbsp;
+                                        <button type="button" class="btn btn-primary" onclick="javascript:doReload();">Reload</button>
                                     </iais:action >
                                 </p>
                             </div>
@@ -258,7 +258,7 @@
                                         <td>
                                             <div class="col-sm-9">
                                                 <select id="decision-validate-email" name="decision">
-                                                    <option value="Select" selected>Select</option>
+                                                    <option value="Select" selected>Please Select</option>
                                                     <c:forEach items="${appTypeOption}" var="decision">
                                                         <option  value="${decision.value}">${decision.text}</option>
                                                     </c:forEach>

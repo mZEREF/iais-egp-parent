@@ -30,7 +30,7 @@
                                     <iais:section title="" id = "supPoolList">
 
                                         <iais:action style="text-align:center;">
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doDone()">Done</button>
+                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doDone()">Done</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>
