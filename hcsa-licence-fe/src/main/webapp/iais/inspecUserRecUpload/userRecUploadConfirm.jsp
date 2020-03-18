@@ -91,6 +91,7 @@
                       <iais:row>
                         <iais:value width="300">
                           <textarea id="uploadRemarks" name="uploadRemarks" cols="70" rows="7" maxlength="300"><c:out value="${inspecUserRecUploadDto.uploadRemarks}"></c:out></textarea>
+                          <br><span class="error-msg" name="iaisErrorMsg" id="error_remarks"></span>
                         </iais:value>
                       </iais:row>
                     </c:if>

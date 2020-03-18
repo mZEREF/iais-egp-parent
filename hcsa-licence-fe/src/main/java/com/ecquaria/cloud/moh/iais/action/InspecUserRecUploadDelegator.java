@@ -20,15 +20,16 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspecUserRecUploadService;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Process MohInspecUserRectifiUpload
@@ -164,6 +165,10 @@ public class InspecUserRecUploadDelegator {
                                                     Map<String, String> errorMap, String actionValue, CommonsMultipartFile file) {
         String uploadRemarks = mulReq.getParameter("uploadRemarks");
         inspecUserRecUploadDto.setUploadRemarks(uploadRemarks);
+        int uploadRemarksLen = uploadRemarks.length();
+        if(300 < uploadRemarksLen){
+            errorMap.put("remarks", "The Remarks should not be more than 300 characters.");
+        }
         String errorKey = "recFile";
 
         if(InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)) {
