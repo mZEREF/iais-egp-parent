@@ -475,10 +475,7 @@ public class AppealServiceImpl implements AppealService {
     private AppealPageDto reAppealPage(HttpServletRequest request){
         AppealPageDto appealPageDto=new AppealPageDto();
         List<AppSvcCgoDto> appSvcCgoDtos = reAppSvcCgo(request);
-
         String reasonSelect = request.getParameter("reasonSelect");
-
-        String selectHciNames = request.getParameter("selectHciName");
         String proposedHciName = request.getParameter("proposedHciName");
         String remarks = request.getParameter("remarks");
         appealPageDto.setAppealReason(reasonSelect);
@@ -702,7 +699,7 @@ public class AppealServiceImpl implements AppealService {
             }
         }
 
-        AppPremiseMiscDto appPremiseMiscDto = applicationClient.getAppPremisesMisc("063C400F-F452-EA11-BE79-000C29D29DB0").getEntity();
+        AppPremiseMiscDto appPremiseMiscDto = applicationClient.getAppPremisesMisc("37FB683E-2368-EA11-BE79-000C29D29DB0").getEntity();
         String reason = appPremiseMiscDto.getReason();
         String appPremCorreId = appPremiseMiscDto.getAppPremCorreId();
         AppPremisesSpecialDocDto appPremisesSpecialDocDto = applicationClient.getAppPremisesSpecialDocDtoByCorreId(appPremCorreId).getEntity();

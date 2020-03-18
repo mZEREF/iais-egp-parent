@@ -153,7 +153,7 @@
                           <div class="row">
                             <div class="col-xs-12 col-md-4"></div>
                             <div class="col-xs-6 col-md-5">
-                              <span class="error-msg" name="iaisErrorMsg" id="error_premisesType${status.index}"></span>
+                              <span class="error-msg" name="iaisErrorMsg" id="error_premisesType${status.index}" style="margin-left: 35%"></span>
                             </div>
                           </div>
                           <iais:row cssClass="onSiteSelect hidden">
@@ -182,7 +182,7 @@
                               </c:choose>
                             </iais:value>
                           </iais:row>
-                          <span class="error-msg" id="error_premisesSelect${status.index}" name="iaisErrorMsg"></span>
+                          <span class="error-msg" id="error_premisesSelect${status.index}" style="margin-left: 35%" name="iaisErrorMsg"></span>
                         </div>
                         <div class="prem-summary hidden ">
                           <h3 class="without-header-line">Premises Summary</h3>
@@ -388,6 +388,7 @@
                             <div class="form-group">
                               <div class="col-xs-9 col-sm-5 col-md-4">
                                 <button class="addPubHolDay btn btn-primary" type="button">Add Public Holiday</button>
+                                <button class="addPubHolDay" type="button">Add Public Holiday</button>
                               </div>
                             </div>
                           </div>
@@ -470,9 +471,9 @@
                                 Operating Hours (Start) <span class="mandatory">*</span>
                               </label>
                               <div class="col-xs-9 col-sm-5 col-md-4">
-                                <input type="text" value="${appGrpPremisesDto.conStartHH}" maxlength="2" style="width: 60px" name="conveyanceStartHH"/>(HH)
+                                <input type="text" value="${appGrpPremisesDto.conStartHH}" maxlength="2" style="width: 60px;margin-right: 2%" name="conveyanceStartHH"/>(HH)
                                 :
-                                <input type="text" value="${appGrpPremisesDto.conStartMM}" maxlength="2" style="width: 60px" name="conveyanceStartMM"/>(MM)
+                                <input type="text" value="${appGrpPremisesDto.conStartMM}" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%" name="conveyanceStartMM"/>(MM)
                                 <span class="error-msg" name="isaiErrorMsg" id="error_conStartMM${status.index}"></span>
                               </div>
 
@@ -482,9 +483,9 @@
                                 Operating Hours (End) <span class="mandatory">*</span>
                               </label>
                               <div class="col-xs-9 col-sm-5 col-md-4">
-                                <input type="text" value="${appGrpPremisesDto.conEndHH}" maxlength="2" style="width: 60px" name="conveyanceEndHH"/>(HH)
+                                <input type="text" value="${appGrpPremisesDto.conEndHH}" maxlength="2" style="width: 60px;margin-right: 2%" name="conveyanceEndHH"/>(HH)
                                 :
-                                <input type="text" value="${appGrpPremisesDto.conEndMM}" maxlength="2" style="width: 60px" name="conveyanceEndMM"/>(MM)
+                                <input type="text" value="${appGrpPremisesDto.conEndMM}" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%" name="conveyanceEndMM"/>(MM)
                                 <span class="error-msg" name="iaisErrorMsg" id="error_conEndMM${status.index}"></span>
                               </div>
                             </div>
@@ -512,9 +513,9 @@
                                         Public Holidays Operating Hours (Start)
                                       </label>
                                       <div class="col-xs-9 col-sm-5 col-md-4">
-                                        <input class="PbHolDayStartHH" type="text" name="${premValue}conveyancePbHolDayStartHH${phStat.index}" value="${ph.convStartFromHH}" maxlength="2" style="width: 60px"/>(HH)
+                                        <input class="PbHolDayStartHH" type="text" name="${premValue}conveyancePbHolDayStartHH${phStat.index}" value="${ph.convStartFromHH}" maxlength="2" style="width: 60px;margin-right: 2%"/>(HH)
                                         :
-                                        <input class="PbHolDayStartMM" type="text" name="${premValue}conveyancePbHolDayStartMM${phStat.index}" value="${ph.convStartFromMM}" maxlength="2" style="width: 60px"/>(MM)
+                                        <input class="PbHolDayStartMM" type="text" name="${premValue}conveyancePbHolDayStartMM${phStat.index}" value="${ph.convStartFromMM}" maxlength="2" style="width: 60px;margin-left: 2%;margin-right: 2%"/>(MM)
                                       </div>
                                     </div>
                                     <div class="form-group">
@@ -522,9 +523,9 @@
                                         Public Holidays Operating Hours (End)
                                       </label>
                                       <div class="col-xs-9 col-sm-5 col-md-4">
-                                        <input class="PbHolDayEndHH" type="text" name="${premValue}conveyancePbHolDayEndHH${phStat.index}" value="${ph.convEndToHH}" maxlength="2" style="width: 60px"/>(HH)
+                                        <input class="PbHolDayEndHH" type="text" name="${premValue}conveyancePbHolDayEndHH${phStat.index}" value="${ph.convEndToHH}" maxlength="2" style="width: 60px;margin-right: 2%"/>(HH)
                                         :
-                                        <input class="PbHolDayEndMM" type="text" name="${premValue}conveyancePbHolDayEndMM${phStat.index}" value="${ph.convEndToMM}" maxlength="2" style="width: 60px"/>(MM)
+                                        <input class="PbHolDayEndMM" type="text" name="${premValue}conveyancePbHolDayEndMM${phStat.index}" value="${ph.convEndToMM}" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%"/>(MM)
                                         <span class="error-msg" name="iaisErrorMsg" id="error_convEndToHH${status.index}"></span>
                                       </div>
                                     </div>
@@ -544,9 +545,9 @@
                                       Public Holidays Operating Hours (Start)
                                     </label>
                                     <div class="col-xs-9 col-sm-5 col-md-4">
-                                      <input class="PbHolDayStartHH" type="text" name="${premValue}conveyancePbHolDayStartHH0" value="" maxlength="2" style="width: 60px"/>(HH)
+                                      <input class="PbHolDayStartHH" type="text" name="${premValue}conveyancePbHolDayStartHH0" value="" maxlength="2" style="width: 60px;margin-right: 2%"/>(HH)
                                       :
-                                      <input class="PbHolDayStartMM" type="text" name="${premValue}conveyancePbHolDayStartMM0" value="" maxlength="2" style="width: 60px"/>(MM)
+                                      <input class="PbHolDayStartMM" type="text" name="${premValue}conveyancePbHolDayStartMM0" value="" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%"/>(MM)
                                     </div>
                                   </div>
                                   <div class="form-group">
@@ -554,9 +555,9 @@
                                       Public Holidays Operating Hours (End)
                                     </label>
                                     <div class="col-xs-9 col-sm-5 col-md-4">
-                                      <input class="PbHolDayEndHH" type="text" name="${premValue}conveyancePbHolDayEndHH0" value="" maxlength="2" style="width: 60px"/>(HH)
+                                      <input class="PbHolDayEndHH" type="text" name="${premValue}conveyancePbHolDayEndHH0" value="" maxlength="2" style="width: 60px;margin-right: 2%"/>(HH)
                                       :
-                                      <input class="PbHolDayEndMM" type="text" name="${premValue}conveyancePbHolDayEndMM0" value="" maxlength="2" style="width: 60px"/>(MM)
+                                      <input class="PbHolDayEndMM" type="text" name="${premValue}conveyancePbHolDayEndMM0" value="" maxlength="2" style="width: 60px;margin-left: 2%;margin-right: 2%"/>(MM)
                                     </div>
                                   </div>
                                 </div>

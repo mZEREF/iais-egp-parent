@@ -176,9 +176,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         //need event bus
                         String submissionId = generateIdClient.getSeqId().getEntity();
                         this.download(processFileTrackDto,listApplicationDto, requestForInfList,name,refId,submissionId);
-                        sendTask(listApplicationDto,requestForInfList,submissionId);
 
-                      /*  moveFile(fil);*/
+                        log.info(listApplicationDto.toString()+"******listApplicationDto*********");
+                        log.info(requestForInfList.toString()+"***requestForInfList***");
+
+                        sendTask(listApplicationDto,requestForInfList,submissionId);
+                        moveFile(fil);
                         //save success
                     }catch (Exception e){
                         //save bad
@@ -266,7 +269,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     if(filzz.isFile() &&filzz.getName().endsWith(AppServicesConsts.FILE_FORMAT)){
                         try (  FileInputStream  fileInputStream =new FileInputStream(filzz);
                                 ByteArrayOutputStream by=new ByteArrayOutputStream();) {
-
                             int count=0;
                             byte [] size=new byte[1024];
                             count=fileInputStream.read(size);
@@ -275,17 +277,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                                 count= fileInputStream.read(size);
                             }
 
-                            Boolean aBoolean = fileToDto(by.toString(), listApplicationDto, requestForInfList,processFileTrackDto,submissionId);
+                            fileToDto(by.toString(), listApplicationDto, requestForInfList,processFileTrackDto,submissionId);
 
-                           flag=aBoolean;
-                            if(aBoolean){
-                                if(processFileTrackDto!=null){
+                            changeStatus(processFileTrackDto,submissionId);
 
-                                    changeStatus(processFileTrackDto,submissionId);
+                            saveFileRepo( fileName,groupPath,submissionId);
 
-                                    saveFileRepo( fileName,groupPath,submissionId);
-                                }
-                            }
                         }catch (Exception e){
                             log.error(e.getMessage(),e);
                            throw new Exception();
@@ -443,8 +440,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             every.setAuditTrailDto(intranet);
         }
         applicationListDto.setAuditTrailDto(intranet);
+        log.info(listApplicationDto.toString()+"listApplicationDto size "+listApplicationDto.size());
         update(listApplicationDto,applicationGroup,application);
+        log.info(requestForInfList.toString()+"requestForInfList size" +requestForInfList .size());
         requeOrNew(requestForInfList,applicationGroup,application);
+
         String id = applicationListDto.getApplicationGroup().get(0).getId();
         eventBusHelper.submitAsyncRequest(applicationListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION,id,null);
@@ -709,7 +709,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 if (applicationGroupDto.getId().equals(applicationDto.getAppGrpId())) {
                     list.add(applicationDto);
                 }
-
             }
             map.put(applicationGroupDto.getId(),list);
         }
@@ -724,10 +723,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     private void update(List<ApplicationDto> list,List<ApplicationGroupDto> applicationGroup,List<ApplicationDto>  applicationList){
 
-        List<String> idList=IaisCommonUtils.genNewArrayList();
-        for(ApplicationDto every:applicationList){
-            idList.add(every.getId());
-        }
+
         Map<ApplicationGroupDto,List<ApplicationDto>> map=IaisCommonUtils.genNewHashMap();
         for (ApplicationGroupDto every : applicationGroup) {
             List<ApplicationDto> applicationslist=IaisCommonUtils.genNewArrayList();
@@ -745,7 +741,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             int requestForChange=0;
             int reNew=0;
             Boolean autoRfc = k.isAutoApprove();
-
             String appType = k.getAppType();
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
                 if(autoRfc) {

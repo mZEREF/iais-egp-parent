@@ -10,15 +10,13 @@
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 
+<%@include file="./dashboard.jsp" %>
 <div class="main-content">
   <form id="mainForm" enctype="multipart/form-data" style="margin-left: 15%" class="__egovform" method="post" action=<%=process.runtime.continueURL()%> >
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
-    <div style="margin-top: 20px;margin-left: 2%" >
-      <h1>Appeal Form</h1>
-    </div>
+
   <div class="form-group">
     <div class="col-xs-12 col-md-10" style="margin-left: 1%">
       <label style="font-size: 25px">You are appealing for:</label>
@@ -132,7 +130,7 @@
     <br> <br> <br>
     <div >
       <div class="row">
-        <div class="col-xs-12 col-sm-10">
+        <div class="col-xs-12 col-sm-10" style="margin-bottom: 1%">
           <div class="text-right text-center-mobile">
             <a class="btn btn-primary" href="#" id="save">Save</a>
             <a class="btn btn-primary" href="#" id="submit">Submit</a>
@@ -146,7 +144,7 @@
 </div>
 <style>
   .mandatory{
-    color: #f00;
+    color: rgb(255,0,0);
   }
 
 </style>
