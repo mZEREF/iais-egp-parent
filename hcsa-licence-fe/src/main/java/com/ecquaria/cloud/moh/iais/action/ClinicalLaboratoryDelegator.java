@@ -1323,7 +1323,6 @@ public class ClinicalLaboratoryDelegator {
             String [] deputyIdType = ParamUtil.getStrings(request, "deputyIdType");
             String [] deputyIdNo = ParamUtil.getStrings(request, "deputyIdNo");
             String [] deputyMobileNo = ParamUtil.getStrings(request, "deputyMobileNo");
-            String [] modeOfMedAlert = ParamUtil.getStrings(request, "modeOfMedAlert");
             String [] deputyEmailAddr = ParamUtil.getStrings(request, "deputyEmailAddr");
             if(deputyDesignation != null && deputyDesignation.length>0){
                 for(int i=0 ;i <deputyDesignation.length;i++){
@@ -1336,7 +1335,6 @@ public class ClinicalLaboratoryDelegator {
                     dpoDto.setIdType(deputyIdType[i]);
                     dpoDto.setIdNo(deputyIdNo[i]);
                     dpoDto.setMobileNo(deputyMobileNo[i]);
-                    dpoDto.setModeOfMedAlert(modeOfMedAlert[i]);
                     appSvcPrincipalOfficersDtos.add(dpoDto);
                 }
             }
