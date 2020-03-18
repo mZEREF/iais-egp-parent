@@ -12,7 +12,7 @@
                         </div>
                         <%@ include file="doSearchBody.jsp" %>
                         <table class="table">
-                            <iais:pagination  param="MsgTemplateSearchParam" result="MsgTemplateSearchResult"/>
+                        <iais:pagination  param="MsgTemplateSearchParam" result="MsgTemplateSearchResult"/>
                             <thead>
                             <tr>
                                 <iais:sortableHeader needSort="false" field="subject" value="No."></iais:sortableHeader>
@@ -39,7 +39,7 @@
                                 <tr>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">No.</p>
-                                        <p>#${(MsgTemplateSearchParam.pageNo - 1) * 10 + status.index + 1}</p>
+                                        <p>#${(MsgTemplateSearchParam.pageNo - 1) * MsgTemplateSearchParam.pageSize + status.index + 1}</p>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Message Type.</p>
