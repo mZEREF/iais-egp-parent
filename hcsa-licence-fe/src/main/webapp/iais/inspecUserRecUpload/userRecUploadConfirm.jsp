@@ -60,8 +60,8 @@
                             <iais:value width="7">
                               <input class="selectedFile premDoc" id="recFileUpload" name = "selectedFile" type="file" onchange="javascript:doUserRecUploadConfirmFile(this.value)" style="display: none;" aria-label="selectedFile1"/>
                               <button type="button" class="btn btn-file-upload btn-secondary" onclick="javascript:doUserRecUploadConfirmUpload()">Upload</button>
-                              <c:if test="${inspecUserRecUploadDto.fileRepoDtos == null}">
-                                &nbsp;<span>No files selected.</span>
+                              <c:if test="${empty inspecUserRecUploadDto.fileRepoDtos}">
+                                &nbsp;<label>No files selected.</label>
                               </c:if>
                               <br><span class="error-msg" name="iaisErrorMsg" id="error_recFile"></span>
                             </iais:value>
@@ -73,8 +73,11 @@
                         <iais:row>
                           <iais:value width="300">
                             <c:if test="${inspecUserRecUploadDto.fileRepoDtos != null}">
-                              <c:forEach items="${inspecUserRecUploadDto.fileRepoDtos}" var="recFile">
-                                <label><c:out value="${recFile.fileName}"></c:out></label>&nbsp;<button type="button" class="btn btn-file-upload btn-secondary" onclick="javascript:doUserRecUploadConfirmDel('<iais:mask name="fileId" value="${recFile.id}"/>')">Delete</button>
+                              <c:forEach items="${inspecUserRecUploadDto.fileRepoDtos}" var="recFile" varStatus="status">
+                                <a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${recFile.id}"/>&fileRepoName=${recFile.fileName}" title="Download" class="downloadFile">
+                                    ${recFile.fileName}
+                                </a>
+                                &nbsp;<button type="button" class="btn btn-file-upload btn-secondary" onclick="javascript:doUserRecUploadConfirmDel('<iais:mask name="fileId" value="${recFile.id}"/>')">Delete</button>
                                 <br><br>
                               </c:forEach>
                             </c:if>
