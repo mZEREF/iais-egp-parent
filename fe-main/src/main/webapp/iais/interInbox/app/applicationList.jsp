@@ -11,9 +11,9 @@
             <div class="row">
                 <div class="col-md-6">
                     <iais:value>
-                        <label class="col-xs-6 col-md-6" for="appNoPath" style="margin-top:1%;">Search by Application No
+                        <label class="col-xs-7 col-md-7" for="appNoPath" style="margin-top:1%;">Search by Application No
                             or Part of:</label>
-                        <div class="col-xs-6 col-md-6">
+                        <div class="col-xs-5 col-md-5">
                             <input id="appNoPath" name="appNoPath" type="text" maxlength="15"
                                    value="<%=request.getParameter("appNoPath")==null?"":request.getParameter("appNoPath")%>">
                         </div>
@@ -35,9 +35,9 @@
             <div class="row" style="margin-bottom: 14px">
                 <div class="col-md-6">
                     <iais:value>
-                        <label class="col-xs-6 col-md-6" for="appTypeSelect" style="margin-top:3%;">Application
+                        <label class="col-xs-7 col-md-7" for="appTypeSelect" style="margin-top:3%;">Application
                             Type:</label>
-                        <div class="col-xs-6 col-md-6">
+                        <div class="col-xs-5 col-md-5">
                             <%String appTypeSelect = request.getParameter("appTypeSelect");%>
                             <iais:select name="appTypeSelect" id="appTypeSelect" cssClass="appTypeSelect"
                                          options="appTypeSelect"
@@ -61,8 +61,8 @@
             <div class="row">
                 <div class="col-md-6">
                     <iais:value>
-                        <label class="col-xs-6 col-md-6" for="esd" style="margin-top:3%;">Date Submitted:</label>
-                        <div class="col-xs-6 col-md-6">
+                        <label class="col-xs-7 col-md-7" for="esd" style="margin-top:3%;">Date Submitted:</label>
+                        <div class="col-xs-5 col-md-5">
                             <%Date esd = Formatter.parseDate(request.getParameter("esd"));%>
                             <iais:datePicker id="esd" name="esd" dateVal="<%=esd%>"/>
                         </div>
