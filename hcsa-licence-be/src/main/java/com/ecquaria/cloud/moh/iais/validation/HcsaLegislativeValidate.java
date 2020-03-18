@@ -196,7 +196,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             if(!StringUtil.isEmpty(inRightMod)){
                 inRightModNum = Integer.parseInt(inRightMod);
                 if((inRightModNum +1 != inLeftHighNum)&&inLeftHighNumFlag){
-                    errMap.put(serviceCode + "inLeftHighCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
+                    errMap.put(serviceCode + "inLeftHighCaseCounth", "High Maximum cases and Moderate Minimum can only differ by 1");
                     fdto.setDoLeftHighCaseCountherr(true);
                 }
             }
@@ -229,7 +229,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             if(!StringUtil.isEmpty(inLeftMod)&&inrightflag){
                 inLeftModNum = Integer.parseInt(inLeftMod);
                 if(inLeftModNum -1 != inRightLowNum){
-                    errMap.put(serviceCode + "inRightLowCaseCounth", "Low Maximun cases and Moderate Minimun can only differ by 1");
+                    errMap.put(serviceCode + "inRightLowCaseCounth", "Low Maximum cases and Moderate Minimum can only differ by 1");
                 }
             }
         } catch (Exception e) {
@@ -276,7 +276,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
     }
     public void numberOrderVad(Map<String, String> errMap,Integer lm,Integer rm,String serviceCode,HcsaRiskLegislativeMatrixDto fdto){
         if(lm>rm){
-            errMap.put(serviceCode+"inRightModCaseCounth","Minimun cases should be smaller than Maximun cases");
+            errMap.put(serviceCode+"inRightModCaseCounth","Minimum cases should be smaller than Maximum cases");
             fdto.setDoLeftModCaseCountherr(true);
             fdto.setDoRightModCaseCountherr(true);
         }

@@ -28,7 +28,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
-                        <h2>Configuration Of Leadership And Governance Risk Assessment</h2>
+                        <h2>Leadership and Governance Risk Configuration</h2>
                         <div class="gray-content-box">
                             <div class="table-gp">
                                 <table class="table">
@@ -39,8 +39,8 @@
                                         <th>Source</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
-                                        <th>Mininum Number of Cases</th>
-                                        <th>Maximun Number of Cases</th>
+                                        <th>Minimum Number of Cases</th>
+                                        <th>Maximum Number of Cases</th>
                                         <th>Risk Rating</th>
                                         <th></th>
                                     </tr>

@@ -204,7 +204,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
             Double rightnum =  Double.parseDouble(temp.getColumRight());
             Double leftnum =  Double.parseDouble(temp.getColumLeft());
             if(rightnum<leftnum){
-                errMap.put(svcCode+temp.getOrderNum()+"righterr","Manimun should be granter than Minimun");
+                errMap.put(svcCode+temp.getOrderNum()+"righterr","Maximum should be granter than Minimum");
                 numfalg = false;
             }
         }

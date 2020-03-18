@@ -162,10 +162,10 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
     }
     public void numberOrderVad(Map<String, String> errMap,Integer lm,Integer rm,String serviceCode,boolean isIn,HcsaRiskLeadershipMatrixDto fdto){
         if(lm>rm&&isIn){
-            errMap.put(serviceCode+"inRightModCaseCounth","Minimun cases should be smaller than Maximun cases");
+            errMap.put(serviceCode+"inRightModCaseCounth","Minimum cases should be smaller than Maximum cases");
             fdto.setAdRightModCaseCountherr(true);
         }else if(lm>rm&&!isIn){
-            errMap.put(serviceCode+"prRightModCaseCounth","Minimun cases should be smaller than Maximun cases");
+            errMap.put(serviceCode+"prRightModCaseCounth","Minimum cases should be smaller than Maximum cases");
             fdto.setDpRightModCaseCountherr(true);
         }
     }
@@ -206,10 +206,10 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 inRightModNum = Integer.parseInt(inRightMod);
                 if(inRightModNum +1 != inLeftHighNum){
                     if(isIn&&inLeftHighNumFlag){
-                        errMap.put(serviceCode + "inLeftHighCaseCounth", "High Maximun cases and Moderate Minimax can only differ by 1");
+                        errMap.put(serviceCode + "inLeftHighCaseCounth", "High Maximum cases and Moderate Minimax can only differ by 1");
                         fdto.setAdLeftHighCaseCountherr(true);
                     }else if(!isIn&&prLeftHighNumFlag){
-                        errMap.put(serviceCode + "prLeftHighCaseCounth", "High Maximun cases and Moderate Minimax can only differ by 1");
+                        errMap.put(serviceCode + "prLeftHighCaseCounth", "High Maximum cases and Moderate Minimax can only differ by 1");
                         fdto.setDpLeftHighCaseCountherr(true);
                     }
                 }
@@ -259,10 +259,10 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 inLeftModNum = Integer.parseInt(inLeftMod);
                 if(inLeftModNum -1 != inRightLowNum){
                     if(isIn){
-                        errMap.put(serviceCode + "inRightLowCaseCounth", "Low Maximun cases and Moderate Minimun can only differ by 1");
+                        errMap.put(serviceCode + "inRightLowCaseCounth", "Low Maximum cases and Moderate Minimum can only differ by 1");
                         fdto.setAdRightLowCaseCountherr(true);
                     }else{
-                        errMap.put(serviceCode + "prRightLowCaseCounth", "Low Maximun cases and Moderate Minimun can only differ by 1");
+                        errMap.put(serviceCode + "prRightLowCaseCounth", "Low Maximum cases and Moderate Minimum can only differ by 1");
                         fdto.setDpRightLowCaseCountherr(true);
                     }
                 }

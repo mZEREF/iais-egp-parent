@@ -36,8 +36,8 @@
                                         <th>Source</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
-                                        <th>Mininum Number of Cases</th>
-                                        <th>Maximun Number of Cases</th>
+                                        <th>Minimum Number of Cases</th>
+                                        <th>Maximum Number of Cases</th>
                                         <th>Risk Rating</th>
                                     </tr>
                                     </thead>

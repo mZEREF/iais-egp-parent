@@ -287,13 +287,13 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 inRightModNum = Integer.parseInt(inRightMod);
                 if(inRightModNum +1 != inLeftHighNum){
                     if("C".equals(level)&&caLeftHighNumFlag){
-                        errMap.put(serviceCode + "caRightLowCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
+                        errMap.put(serviceCode + "caRightLowCaseCounth", "High Maximum cases and Moderate Minimum can only differ by 1");
                         fdto.setDoCaLeftHighCountherr(true);
                     }else if("I".equals(level)&&miLeftHighNumFlag){
-                        errMap.put(serviceCode + "miRightLowCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
+                        errMap.put(serviceCode + "miRightLowCaseCounth", "High Maximum cases and Moderate Minimum can only differ by 1");
                         fdto.setDoMiLeftHighCountherr(true);
                     }else if("A".equals(level)&&mjLeftHighNumFlag){
-                        errMap.put(serviceCode + "mjRightLowCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
+                        errMap.put(serviceCode + "mjRightLowCaseCounth", "High Maximum cases and Moderate Minimum can only differ by 1");
                         fdto.setDoMjLeftHighCountherr(true);
                     }
                 }
@@ -350,17 +350,17 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 if(inLeftModNum -1 != inRightLowNum){
                     if("C".equals(level)){
                         if(caRightLowNumFlag){
-                            errMap.put(serviceCode + "caRightLowCaseCounth", "Low Maximun cases and Moderate Minimun can only differ by 1");
+                            errMap.put(serviceCode + "caRightLowCaseCounth", "Low Maximum cases and Moderate Minimum can only differ by 1");
                             fdto.setDoCaRightLowCountherr(true);
                         }
                     }else if("I".equals(level)){
                         if(miRightLowNumFlag){
-                            errMap.put(serviceCode + "miRightLowCaseCounth", "Low Maximun cases and Moderate Minimun can only differ by 1");
+                            errMap.put(serviceCode + "miRightLowCaseCounth", "Low Maximum cases and Moderate Minimum can only differ by 1");
                             fdto.setDoMiRightLowCountherr(true);
                         }
                     }else if("A".equals(level)){
                         if(mjRightLowNumFlag){
-                            errMap.put(serviceCode + "mjRightLowCaseCounth", "Low Maximun cases and Moderate Minimun can only differ by 1");
+                            errMap.put(serviceCode + "mjRightLowCaseCounth", "Low Maximum cases and Moderate Minimum can only differ by 1");
                             fdto.setDoMjRightLowCountherr(true);
                         }
                     }
@@ -444,15 +444,15 @@ public class HcsaInspectionValidate implements CustomizeValidator {
     }
     public void numberOrderVad(Map<String, String> errMap,Integer lm,Integer rm,String serviceCode,String level,HcsaRiskInspectionMatrixDto fdto){
         if(lm>rm&&"C".equals(level)){
-            errMap.put(serviceCode+"caRightModCaseCounth","Minimun cases should be smaller than Maximun cases");
+            errMap.put(serviceCode+"caRightModCaseCounth","Minimum cases should be smaller than Maximum cases");
             fdto.setDoCaRightModCountherr(true);
             fdto.setDoCaLeftModCountherr(true);
         }else if(lm>rm&&"I".equals(level)){
-            errMap.put(serviceCode+"miRightModCaseCounth","Minimun cases should be smaller than Maximun cases");
+            errMap.put(serviceCode+"miRightModCaseCounth","Minimum cases should be smaller than Maximum cases");
             fdto.setDoMiRightModCountherr(true);
             fdto.setDoMiLeftModCountherr(true);
         }else if(lm>rm&&"A".equals(level)){
-            errMap.put(serviceCode+"miRightModCaseCounth","Minimun cases should be smaller than Maximun cases");
+            errMap.put(serviceCode+"miRightModCaseCounth","Minimum cases should be smaller than Maximum cases");
             fdto.setDoMjRightModCountherr(true);
             fdto.setDoMjLeftModCountherr(true);
         }
