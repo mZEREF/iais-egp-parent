@@ -36,6 +36,13 @@
     <JavaCode defClass="" executor="" methodName="beforeJump_OnStepProcess_0" name="beforeJump_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doBeforStart" x="700" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doBeforStart_OnStepProcess_0" name="doBeforStart_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ServiceSelection" stageIndicator="" x="290" y="100">
@@ -85,6 +92,12 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/JumptoNewApp" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beforeJump" style="oblique">
    <position>{(940,120)(1060,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doBeforStart" linkstyle="Rectangle" name="" sourceName="/Steps/InvokeStep/JumptoNewApp" style="rectanular">
+   <position>{(1060,260)(720,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/appBeforeStart" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doBeforStart" style="oblique">
+   <position>{(720,260)(690,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
