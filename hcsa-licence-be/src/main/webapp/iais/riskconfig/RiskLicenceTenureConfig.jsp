@@ -155,14 +155,14 @@
                                                         <c:forEach var="sub" items="${ten.subDtoList}" varStatus="status">
                                                             <c:set var="tenName" value="${ten.svcCode}${sub.orderNum}"> </c:set>
                                                             <div style="width: 120px;height:50px;margin-bottom:15px;" id ="<c:out value="${tenName}timediv"/>">
-                                                                <iais:select name="${tenName}type" options="timeType" firstOption="Please select" value="${sub.dateType}" ></iais:select>
+                                                                <iais:select name="${tenName}type" options="timeType" firstOption="Please Select" value="${sub.dateType}" ></iais:select>
                                                             </div>
                                                             <span class="error-msg" id="<c:out value="error_${tenName}timeerr"/>" name="iaisErrorMsg"></span>
                                                         </c:forEach>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <div style="width: 120px;height:50px;margin-bottom:15px;">
-                                                            <iais:select name="${sub.id}type" options="timeType" firstOption="Please select" value="${sub.dateType}" ></iais:select>
+                                                            <iais:select name="${sub.id}type" options="timeType" firstOption="Please Select" value="${sub.dateType}" ></iais:select>
                                                         </div>
                                                     </c:otherwise>
                                                 </c:choose>

@@ -27,7 +27,7 @@
             <iais:row>
                 <iais:field value="Service Name:"/>
                 <iais:value width="8">
-                    <iais:select name="svcName" options="activeHCIServiceNames" firstOption="Please select"
+                    <iais:select name="svcName" options="activeHCIServiceNames" firstOption="Please Select"
                                  value=""/>
                     <span id="error_svcName" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
@@ -60,7 +60,7 @@
             <iais:row>
                 <iais:field value="Results of last compliance:"/>
                 <iais:value width="8">
-                    <iais:select name="complianceLastResult" options="complianceLastResultOptions" firstOption="Please select"
+                    <iais:select name="complianceLastResult" options="complianceLastResultOptions" firstOption="Please Select"
                                  value="${auditSystemPotentialDtoForSearch.resultLastCompliance}"/>
                     <span id="error_complianceLastResult" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
@@ -70,7 +70,7 @@
             <iais:row>
                 <iais:field value="HSCA Service Code:"/>
                 <iais:value width="8">
-                    <iais:select name="hclSCode" options="activeHCIServiceCodes" firstOption="Please select" value=""/>
+                    <iais:select name="hclSCode" options="activeHCIServiceCodes" firstOption="Please Select" value=""/>
                     <span id="error_hclSCode" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
             </iais:row>
@@ -78,7 +78,7 @@
             <iais:row>
                 <iais:field value="HCI Code:"/>
                 <iais:value width="8">
-                    <iais:select name="hclCode" options="hclCodeOp" firstOption="Please select" value="${auditSystemPotentialDtoForSearch.hclCode}"/>
+                    <iais:select name="hclCode" options="hclCodeOp" firstOption="Please Select" value="${auditSystemPotentialDtoForSearch.hclCode}"/>
                     <span id="error_hclCode" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
             </iais:row>
@@ -86,7 +86,7 @@
             <iais:row>
                 <iais:field value="Premises Type:"/>
                 <iais:value width="8">
-                    <iais:select name="premType" options="premTypeOp" firstOption="Please select" value="${auditSystemPotentialDtoForSearch.premisesType}"/>
+                    <iais:select name="premType" options="premTypeOp" firstOption="Please Select" value="${auditSystemPotentialDtoForSearch.premisesType}"/>
                     <span id="error_premType" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
             </iais:row>
@@ -94,7 +94,7 @@
             <iais:row>
                 <iais:field value="Type of Risk:"/>
                 <iais:value width="8">
-                    <iais:select name="riskType" options="riskTypeOp" firstOption="Please select" value="${auditSystemPotentialDtoForSearch.typeOfRisk}"/>
+                    <iais:select name="riskType" options="riskTypeOp" firstOption="Please Select" value="${auditSystemPotentialDtoForSearch.typeOfRisk}"/>
                     <span id="error_riskType" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
             </iais:row>

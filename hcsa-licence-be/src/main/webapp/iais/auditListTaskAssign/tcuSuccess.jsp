@@ -54,7 +54,7 @@
                                             <td><c:out value="${item.hclName}"/></td>
                                             <td><c:out value="${item.address}"/></td>
                                             <td><c:out value="${item.svcName}"/></td>
-                                            <td><iais:select name="${id}" options="aduitTypeOp" firstOption="Please select" value=""></iais:select></td>
+                                            <td><iais:select name="${id}" options="aduitTypeOp" firstOption="Please Select" value=""></iais:select></td>
                                             <td>
                                                 <select name="<c:out value="${id}insOp"/>">
                                                     <c:forEach var="inspOp" items="${item.inspectors}">

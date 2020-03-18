@@ -68,23 +68,23 @@
                                             </td>
                                             <td>
                                                 <c:set var="svc" value="${go.serviceCode}"></c:set>
-                                                <iais:select name="${svc}autoreop" options="autoRenewOp" firstOption="Please select" value="${go.doAutoRenew}"></iais:select>
+                                                <iais:select name="${svc}autoreop" options="autoRenewOp" firstOption="Please Select" value="${go.doAutoRenew}"></iais:select>
 
                                             </td>
                                             <td>
-                                                <iais:select name="${svc}newinpTypeOps" options="inpTypeOp" firstOption="Please select" value="${go.donewInspectType}"></iais:select>
+                                                <iais:select name="${svc}newinpTypeOps" options="inpTypeOp" firstOption="Please Select" value="${go.donewInspectType}"></iais:select>
 
                                             </td>
                                             <td>
-                                                <iais:select name="${svc}newPreOrPostOps" options="PreOrPostOp" firstOption="Please select" value="${go.donewIsPreInspect}"></iais:select>
+                                                <iais:select name="${svc}newPreOrPostOps" options="PreOrPostOp" firstOption="Please Select" value="${go.donewIsPreInspect}"></iais:select>
 
                                             </td>
                                             <td>
-                                                <iais:select name="${svc}renewinpTypeOps" options="inpTypeOp" firstOption="Please select" value="${go.dorenewInspectType}"></iais:select>
+                                                <iais:select name="${svc}renewinpTypeOps" options="inpTypeOp" firstOption="Please Select" value="${go.dorenewInspectType}"></iais:select>
 
                                             </td>
                                             <td>
-                                                <iais:select name="${svc}renewPreOrPostOps" options="PreOrPostOp" firstOption="Please select" value="${go.dorenewIsPreInspect}"></iais:select>
+                                                <iais:select name="${svc}renewPreOrPostOps" options="PreOrPostOp" firstOption="Please Select" value="${go.dorenewIsPreInspect}"></iais:select>
 
                                             </td>
                                             <td>

@@ -60,7 +60,7 @@
                                                         <p>Audit Confirmed</p>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <p><iais:select name="${id}auditType" options="aduitTypeOp" firstOption="Please select" value="${item.auditType}"/></p>
+                                                        <p><iais:select name="${id}auditType" options="aduitTypeOp" firstOption="Please Select" value="${item.auditType}"/></p>
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>

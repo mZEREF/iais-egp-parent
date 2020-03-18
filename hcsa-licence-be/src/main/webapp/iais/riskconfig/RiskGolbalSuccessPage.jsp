@@ -70,27 +70,27 @@
                                             </td>
                                             <td>
                                                 <c:set var="svc" value="${go.serviceCode}"></c:set>
-                                                <iais:select name="${svc}autoreop" options="autoRenewOp" firstOption="Please select" value="${go.doAutoRenew}"></iais:select>
+                                                <iais:select name="${svc}autoreop" options="autoRenewOp" firstOption="Please Select" value="${go.doAutoRenew}"></iais:select>
                                                 <c:set value = "error_${leg.serviceCode}auto" var = "auto"/>
                                                 <span class="error-msg" id="<c:out value="${auto}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
-                                                <iais:select name="${svc}newinpTypeOps" options="inpTypeOp" firstOption="Please select" value="${go.donewInspectType}"></iais:select>
+                                                <iais:select name="${svc}newinpTypeOps" options="inpTypeOp" firstOption="Please Select" value="${go.donewInspectType}"></iais:select>
                                                 <c:set value = "error_${leg.serviceCode}newit" var = "newit"/>
                                                 <span class="error-msg" id="<c:out value="${newit}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
-                                                <iais:select name="${svc}newPreOrPostOps" options="PreOrPostOp" firstOption="Please select" value="${go.donewIsPreInspect}"></iais:select>
+                                                <iais:select name="${svc}newPreOrPostOps" options="PreOrPostOp" firstOption="Please Select" value="${go.donewIsPreInspect}"></iais:select>
                                                 <c:set value = "error_${leg.serviceCode}newpp" var = "newpp"/>
                                                 <span class="error-msg" id="<c:out value="${newpp}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
-                                                <iais:select name="${svc}renewinpTypeOps" options="inpTypeOp" firstOption="Please select" value="${go.dorenewInspectType}"></iais:select>
+                                                <iais:select name="${svc}renewinpTypeOps" options="inpTypeOp" firstOption="Please Select" value="${go.dorenewInspectType}"></iais:select>
                                                 <c:set value = "error_${leg.serviceCode}renewit" var = "renewit"/>
                                                 <span class="error-msg" id="<c:out value="${renewit}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
-                                                <iais:select name="${svc}renewPreOrPostOps" options="PreOrPostOp" firstOption="Please select" value="${go.dorenewIsPreInspect}"></iais:select>
+                                                <iais:select name="${svc}renewPreOrPostOps" options="PreOrPostOp" firstOption="Please Select" value="${go.dorenewIsPreInspect}"></iais:select>
                                                 <c:set value = "error_${leg.serviceCode}renewpp" var = "renewpp"/>
                                                 <span class="error-msg" id="<c:out value="${renewpp}"/>" name="iaisErrorMsg"></span>
                                             </td>

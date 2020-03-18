@@ -52,7 +52,7 @@
                                             <td><c:out value="${item.hclName}"/></td>
                                             <td><c:out value="${item.address}"/></td>
                                             <td><c:out value="${item.svcName}"/></td>
-                                            <td><iais:select name="${id}auditType" options="aduitTypeOp" firstOption="Please select" value=""></iais:select>
+                                            <td><iais:select name="${id}auditType" options="aduitTypeOp" firstOption="Please Select" value=""></iais:select>
                                                 <c:set value = "error_${id}adtype" var = "erradtype"/>
                                                 <span class="error-msg" id="<c:out value="${erradtype}"/>" name="iaisErrorMsg"></span>
                                             </td>
