@@ -228,30 +228,23 @@ public class InsReportDelegator {
         if (appPremisesRecommendationDto != null) {
             String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
-            String option = recomInNumber + chronoUnit;
+            String period = recomInNumber + chronoUnit;
             List<String> periods = insRepService.getPeriods(applicationViewDto);
-            if (periods != null && !periods.isEmpty()) {
-                for (String period : periods) {
-                    if (option.equals(period)) {
-                        ParamUtil.setRequestAttr(bpc.request, "option", option);
-                        break;
-                    } else {
-                        ParamUtil.setRequestAttr(bpc.request, "option", "Others");
-                        ParamUtil.setRequestAttr(bpc.request, "recnumber", recomInNumber);
-                        ParamUtil.setRequestAttr(bpc.request, "recchrono", chronoUnit);
-                        break;
+            if(periods!=null&&!periods.isEmpty()){
+                for(String per :periods){
+                    if(per.equals(period)){
+                        initRecommendationDto.setPeriod(period);
+                    }else {
+                        initRecommendationDto.setPeriod("Others");
                     }
                 }
             }
             String recomDecision = appPremisesRecommendationDto.getRecomDecision();
             String codeDesc = MasterCodeUtil.getCodeDesc(recomDecision);
             initRecommendationDto.setRecommendation(codeDesc);
-            initRecommendationDto.setPeriod(option);
+
             initRecommendationDto.setRecomInNumber(recomInNumber);
             initRecommendationDto.setChronoUnit(chronoUnit);
-            ParamUtil.setRequestAttr(bpc.request, "recomDecision", codeDesc);
-        } else {
-            ParamUtil.setRequestAttr(bpc.request, "option", null);
         }
 
         if (appPremisesRecommendationDto != null) {

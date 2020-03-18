@@ -181,12 +181,7 @@
         <iais:row>
             <iais:field value="Marked for Audit"/>
             <iais:value width="18">
-                <c:if test="${insRepDto.markedForAudit}">
-                <p>Yes <fmt:formatDate value="${insRepDto.tcuDate}" pattern="dd/MM/yyyy"></fmt:formatDate></p>
-            </c:if>
-                <c:if test="${!insRepDto.markedForAudit}">
-                    <p>No</p>
-                </c:if>
+                <p><c:out value="${insRepDto.markedForAudit}"/> <fmt:formatDate value="${insRepDto.tcuDate}" pattern="dd/MM/yyyy"/></p>
             </iais:value>
         </iais:row>
         <iais:row>

@@ -187,12 +187,8 @@
         <iais:row>
             <iais:field value="Marked for Audit"/>
             <iais:value width="18">
-                <c:if test="${insRepDto.markedForAudit}">
-                    <p>Yes <c:out value="${insRepDto.tcuDate}"/></p>
-                </c:if>
-                <c:if test="${!insRepDto.markedForAudit}">
-                    <p>No</p>
-                </c:if>
+                <p><c:out value="${insRepDto.markedForAudit}"/> <fmt:formatDate value="${insRepDto.tcuDate}" pattern="dd/MM/yyyy"/></p>
+
             </iais:value>
         </iais:row>
         <iais:row>
@@ -245,8 +241,7 @@
         <iais:row>
             <iais:field value="Risk Level" required="true"/>
             <iais:value width="18">
-                <c:if test="${preapreRecommendationDto.riskLevel == null}"> <iais:select name="riskLevel" options="riskLevelOptions"  firstOption="Please select" value="${riskLevel}"/></c:if>
-                <c:if test="${preapreRecommendationDto.riskLevel != null}"> <iais:select name="riskLevel" options="riskLevelOptions"  firstOption="Please select" value="${preapreRecommendationDto.riskLevel}"/></c:if>
+                <iais:select name="riskLevel" options="riskLevelOptions"  firstOption="Please select" value="${appPremisesRecommendationDto.riskLevel}"/>
                 <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
             </iais:value>
         </iais:row>
@@ -300,14 +295,9 @@
             </iais:value>
         </iais:row>
         <iais:row>
-            <iais:field value="Remarks" required="true"/>
+            <iais:field value="Remarks"/>
             <iais:value width="18">
-            <textarea style="resize:none" name="remarks" cols="50" rows="6" title="content" maxlength="8000"><c:if
-                    test="${appPremisesRecommendationDto.remarks ==null}">${reportRemarks}</c:if><c:if
-                    test="${appPremisesRecommendationDto.remarks !=null}"><c:out
-                    value="${appPremisesRecommendationDto.remarks}"/></c:if></textarea>
-                <br/>
-                <span id="error_remarks" name="iaisErrorMsg" class="error-msg"></span>
+            <textarea readonly style="resize:none" name="remarks" cols="50" rows="6" title="content" maxlength="8000"><c:out value="${appPremisesRecommendationDto.remarks}"/></textarea>
             </iais:value>
         </iais:row>
         <iais:row>
@@ -323,7 +313,7 @@
         <iais:row>
             <iais:field value="Recommendation" required="true"/>
             <iais:value width="18">
-                <p><c:out value="${option}"/></p>
+                <p><c:out value="${appPremisesRecommendationDto.period}"/></p>
             </iais:value>
         </iais:row>
     </iais:section>
@@ -333,11 +323,7 @@
         <iais:row>
             <iais:field value="Follow up Action"/>
             <iais:value width="18">
-            <textarea name="followUpAction" cols="50" rows="6" title="content" maxlength="8000"><c:if
-                    test="${appPremisesRecommendationDto.followUpAction == null}"><c:out
-                    value="${followRemarks}"/></c:if><c:if
-                    test="${appPremisesRecommendationDto.followUpAction != null}"><c:out
-                    value="${appPremisesRecommendationDto.followUpAction}"/></c:if></textarea>
+            <textarea name="followUpAction" cols="50" rows="6" title="content" maxlength="8000"><c:out value="${appPremisesRecommendationDto.followUpAction}"/></textarea>
             </iais:value>
         </iais:row>
 
@@ -345,19 +331,14 @@
             <iais:field value="To Engage Enforcement?"/>
             <iais:value width="18">
                 <input type="checkbox" id="enforcement" name="engageEnforcement" onchange="javascirpt:changeEngage();"
-                       <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if>
-                       <c:if test="${engage =='on'}">checked</c:if>>
+                       <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if>>
             </iais:value>
         </iais:row>
         <div id="engageRemarks" hidden>
             <iais:row>
                 <iais:field value="Enforcement Remarks" required="true"/>
                 <iais:value width="18">
-                <textarea name="enforcementRemarks" cols="50" rows="6" title="content" MAXLENGTH="4000"><c:if
-                        test="${appPremisesRecommendationDto.engageEnforcementRemarks ==null}"><c:out
-                        value="${remarks}"/></c:if><c:if
-                        test="${appPremisesRecommendationDto.engageEnforcementRemarks !=null}"><c:out
-                        value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></c:if></textarea>
+                <textarea name="enforcementRemarks" cols="50" rows="6" title="content" MAXLENGTH="4000"><c:out value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
                     <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
             </iais:row>
