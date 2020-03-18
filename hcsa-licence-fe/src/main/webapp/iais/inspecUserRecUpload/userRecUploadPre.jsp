@@ -21,11 +21,6 @@
     <br>
     <form method="post" id="mainReviewForm" action=<%=process.runtime.continueURL()%>>
       <%@ include file="/include/formHidden.jsp" %>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
       <input type="hidden" name="inspecUserRecUploadType" value="">
       <input type="hidden" id="itemId" name="itemId" value="">
       <input type="hidden" id="actionValue" name="actionValue" value="">
