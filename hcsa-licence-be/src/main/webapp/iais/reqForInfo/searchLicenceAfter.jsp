@@ -22,7 +22,7 @@
                     <h3>
                         <span>Advanced Search Criteria For Licence</span>
                     </h3>
-                    <div class="panel panel-default">
+
                         <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                             <div class="panel-body">
                                 <div class="panel-main-content">
@@ -73,7 +73,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+
                 </div>
             </div>
         </div>

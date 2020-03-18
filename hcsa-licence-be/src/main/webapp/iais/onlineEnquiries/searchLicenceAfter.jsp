@@ -42,7 +42,7 @@
                             </span>
 
                         </h4>
-                        <div class="panel panel-default">
+
                             <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                                 <div class="panel-body">
                                     <div class="panel-main-content">
@@ -136,7 +136,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+
                     </c:if>
                     <c:if test="${choose[0]==1}">
                         <h4>
@@ -155,7 +155,7 @@
                             </c:choose>
                         </span>
                         </h4>
-                        <div class="panel panel-default">
+
                             <div class="panel-collapse collapse in" id="collapseTwo" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                                 <div class="panel-body">
                                     <div class="panel-main-content">
@@ -197,7 +197,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+
                     </c:if>
                     <c:if test="${choose[3]==4}">
                         <h4>
@@ -216,7 +216,7 @@
                             </c:choose>
                         </span>
                         </h4>
-                        <div class="panel panel-default">
+
                             <div class="panel-collapse collapse in" id="collapseThree" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                                 <div class="panel-body">
                                     <div class="panel-main-content">
@@ -249,7 +249,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+
                     </c:if>
                     <c:if test="${choose[4]==5}">
                         <h4>
@@ -269,7 +269,7 @@
 
                         </span>
                         </h4>
-                        <div class="panel panel-default">
+
                             <div class="panel-collapse collapse in" id="collapseFour" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                                 <div class="panel-body">
                                     <div class="panel-main-content">
@@ -310,7 +310,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+
                     </c:if>
                     <iais:action style="text-align:center;">
                         <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Search</button>
