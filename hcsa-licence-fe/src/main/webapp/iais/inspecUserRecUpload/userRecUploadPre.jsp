@@ -29,70 +29,62 @@
       <input type="hidden" name="inspecUserRecUploadType" value="">
       <input type="hidden" id="itemId" name="itemId" value="">
       <input type="hidden" id="actionValue" name="actionValue" value="">
-      <iais:body >
-        <div class="container">
-          <div class="col-xs-12">
-            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-              <h3>
-                <span>Rectification NC</span>
-              </h3>
-              <div class="panel panel-default">
-                <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
-                  <div class="panel-body">
-                    <div class="panel-main-content">
-                      <iais:section title="" id = "upload_Rectification">
-                        <div class="table-gp">
-                          <table class="table">
-                            <thead>
-                            <tr align="center">
-                              <th>No</th>
-                              <th>NC Clause</th>
-                              <th>Checklist Question</th>
-                              <th>Actions</th>
-                              <th>Rectified?</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <c:choose>
-                              <c:when test="${empty inspecUserRecUploadDtos}">
+      <div class="main-content">
+        <div class="row">
+          <div class="col-lg-12 col-xs-12">
+            <div class="center-content">
+              <div class="intranet-content">
+                <iais:body >
+                  <iais:section title="" id = "upload_Rectification">
+                      <div class="table-gp">
+                        <table class="table">
+                          <thead>
+                          <tr align="center">
+                            <th>No</th>
+                            <th>NC Clause</th>
+                            <th>Checklist Question</th>
+                            <th>Actions</th>
+                            <th>Rectified?</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <c:choose>
+                            <c:when test="${empty inspecUserRecUploadDtos}">
+                              <tr>
+                                <td colspan="7">
+                                  <iais:message key="ACK018" escape="true"></iais:message>
+                                </td>
+                              </tr>
+                            </c:when>
+                            <c:otherwise>
+                              <c:forEach var="feRecNc" items="${inspecUserRecUploadDtos}" varStatus = "recNo">
                                 <tr>
-                                  <td colspan="7">
-                                    <iais:message key="ACK018" escape="true"></iais:message>
+                                  <td><c:out value="${recNo.count}"/></td>
+                                  <td><c:out value="${feRecNc.checkClause}"/></td>
+                                  <td><iais:code code="${feRecNc.checkQuestion}"/></td>
+                                  <td>
+                                    <c:if test="${'SUCCESS' eq feRecNc.buttonFlag}">
+                                      <button class="btn btn-default btn-sm disabled" type="button" disabled>Rectify</button>
+                                    </c:if>
+                                    <c:if test="${'SUCCESS' ne feRecNc.buttonFlag}">
+                                      <button class="btn btn-default btn-sm" type="button" onclick="javascript:doUserRecUploadRectify('<iais:mask name="itemId" value="${feRecNc.itemId}"/>')">Rectify</button>
+                                    </c:if>
                                   </td>
+                                  <td><c:out value="${feRecNc.buttonFlag}"/></td>
                                 </tr>
-                              </c:when>
-                              <c:otherwise>
-                                <c:forEach var="feRecNc" items="${inspecUserRecUploadDtos}" varStatus = "recNo">
-                                  <tr>
-                                    <td><c:out value="${recNo.count}"/></td>
-                                    <td><c:out value="${feRecNc.checkClause}"/></td>
-                                    <td><iais:code code="${feRecNc.checkQuestion}"/></td>
-                                    <td>
-                                      <c:if test="${'SUCCESS' eq feRecNc.buttonFlag}">
-                                        <button class="btn btn-default btn-sm disabled" type="button" disabled>Rectify</button>
-                                      </c:if>
-                                      <c:if test="${'SUCCESS' ne feRecNc.buttonFlag}">
-                                        <button class="btn btn-default btn-sm" type="button" onclick="javascript:doUserRecUploadRectify('<iais:mask name="itemId" value="${feRecNc.itemId}"/>')">Rectify</button>
-                                      </c:if>
-                                    </td>
-                                    <td><c:out value="${feRecNc.buttonFlag}"/></td>
-                                  </tr>
-                                </c:forEach>
-                              </c:otherwise>
-                            </c:choose>
-                            </tbody>
-                          </table>
-                        </div>
-
-                      </iais:section>
-                    </div>
-                  </div>
-                </div>
+                              </c:forEach>
+                            </c:otherwise>
+                          </c:choose>
+                          </tbody>
+                        </table>
+                      </div>
+                    </iais:section>
+                </iais:body>
               </div>
             </div>
           </div>
         </div>
-      </iais:body>
+      </div>
     </form>
   </div>
 </div>
