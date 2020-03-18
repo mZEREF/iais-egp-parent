@@ -9,12 +9,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import java.io.Serializable;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -141,6 +142,13 @@ public class ServiceMenuDelegator {
             }
         }
     }
+
+    public void doBeforStart(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the doBeforStart start ...."));
+
+        log.debug(StringUtil.changeForLog("the doBeforStart end ...."));
+    }
+
 
 
 }
