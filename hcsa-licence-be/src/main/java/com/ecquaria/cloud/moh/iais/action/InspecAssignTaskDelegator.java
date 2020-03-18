@@ -18,15 +18,16 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Process: MohInspectionAllotTaskInspector
@@ -84,7 +85,11 @@ public class InspecAssignTaskDelegator {
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorPre start ...."));
         SearchParam searchParam = getSearchParam(bpc);
         SearchResult<InspectionCommonPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchResult");
-
+        if(searchResult == null){
+            QueryHelp.setMainSql("inspectionQuery", "assignInspector",searchParam);
+            searchResult = inspectionAssignTaskService.getSearchResultByParam(searchParam);
+            searchResult = inspectionAssignTaskService.getAddressByResult(searchResult);
+        }
         List<SelectOption> appTypeOption = inspectionAssignTaskService.getAppTypeOption();
 
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchResult", searchResult);
