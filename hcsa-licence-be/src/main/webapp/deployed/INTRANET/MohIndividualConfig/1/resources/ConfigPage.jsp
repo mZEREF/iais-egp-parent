@@ -1,1 +1,1 @@
-<%@include file="/iais/riskconfig/RiskIndividualConfig.jsp"%>MohRiskFinancialConfig
+<%@include file="/iais/riskconfig/RiskIndividualConfig.jsp"%>

@@ -30,7 +30,8 @@
                         <h2>Risk Success</h2>
                         <div class="gray-content-box">
                             <div class="table-gp">
-                                <table class="table-gp">
+                                <div style="overflow-x: auto; width: 100%;">
+                                <table class="table-gp" >
                                     <thead>
                                     <tr>
                                         <th><span>Service Name</span></th>
@@ -110,6 +111,7 @@
                                 </table>
                                 <div class="table-footnote">
                                 </div>
+                            </div>
                             </div>
                         </div>
                     </div>

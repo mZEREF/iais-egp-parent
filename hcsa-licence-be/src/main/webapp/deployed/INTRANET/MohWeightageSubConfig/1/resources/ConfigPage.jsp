@@ -1,1 +1,1 @@
-<%@include file="/iais/riskconfig/RiskWeightageAdd.jsp"%>MohRiskFinancialConfig
+<%@include file="/iais/riskconfig/RiskWeightageAdd.jsp"%>
