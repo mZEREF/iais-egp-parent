@@ -204,9 +204,9 @@
                         </label>
 
                         <div class="col-xs-9 col-sm-5 col-md-6">
-                            <input type="text" value="${appGrpPremisesDto.onsiteStartHH}" maxlength="2" style="width: 60px" name="onSiteStartHH"/>(HH)
+                            <input type="text" value="${appGrpPremisesDto.onsiteStartHH}" maxlength="2" style="width: 60px;margin-right: 2%" name="onSiteStartHH"/>(HH)
                             :
-                            <input type="text" value="${appGrpPremisesDto.onsiteStartMM}" maxlength="2" style="width: 60px"  name="onSiteStartMM"/>(MM)
+                            <input type="text" value="${appGrpPremisesDto.onsiteStartMM}" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%"  name="onSiteStartMM"/>(MM)
                             <span class="error-msg" name="iaisErrorMsg" id="error_onsiteStartMM${status.index}"></span>
                         </div>
                     </div>
@@ -216,9 +216,9 @@
                         </label>
 
                         <div class="col-xs-9 col-sm-5 col-md-6">
-                            <input type="text" value="${appGrpPremisesDto.onsiteEndHH}" maxlength="2" style="width: 60px" name="onSiteEndHH"/>(HH)
+                            <input type="text" value="${appGrpPremisesDto.onsiteEndHH}" maxlength="2" style="width: 60px;margin-right: 2%" name="onSiteEndHH"/>(HH)
                             :
-                            <input type="text" value="${appGrpPremisesDto.onsiteEndMM}" maxlength="2" style="width: 60px" name="onSiteEndMM"/>(MM)
+                            <input type="text" value="${appGrpPremisesDto.onsiteEndMM}" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%" name="onSiteEndMM"/>(MM)
                             <span class="error-msg" name="iaisErrorMsg" id="error_onsiteEndMM${status.index}"></span>
                         </div>
                     </div>
@@ -246,9 +246,9 @@
                                             Public Holidays Operating Hours (Start)
                                         </label>
                                         <div class="col-xs-9 col-sm-5 col-md-4">
-                                            <input class="PbHolDayStartHH" type="text" name="${premValue}onSitePbHolDayStartHH${phStat.index}" value="${ph.onsiteStartFromHH}" maxlength="2" style="width: 60px"/>(HH)
+                                            <input class="PbHolDayStartHH" type="text" name="${premValue}onSitePbHolDayStartHH${phStat.index}" value="${ph.onsiteStartFromHH}" maxlength="2" style="width: 60px;margin-right: 2%"/>(HH)
                                             :
-                                            <input class="PbHolDayStartMM" type="text" name="${premValue}onSitePbHolDayStartMM${phStat.index}" value="${ph.onsiteStartFromMM}" maxlength="2" style="width: 60px"/>(MM)
+                                            <input class="PbHolDayStartMM" type="text" name="${premValue}onSitePbHolDayStartMM${phStat.index}" value="${ph.onsiteStartFromMM}" maxlength="2" style="width: 60px;;margin-right: 2%;margin-left: 2%"/>(MM)
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -256,9 +256,9 @@
                                             Public Holidays Operating Hours (End)
                                         </label>
                                         <div class="col-xs-9 col-sm-5 col-md-4">
-                                            <input class="PbHolDayEndHH" type="text" name="${premValue}onSitePbHolDayEndHH${phStat.index}" value="${ph.onsiteEndToHH}" maxlength="2" style="width: 60px"/>(HH)
+                                            <input class="PbHolDayEndHH" type="text" name="${premValue}onSitePbHolDayEndHH${phStat.index}" value="${ph.onsiteEndToHH}" maxlength="2" style="width: 60px;margin-right: 2%"/>(HH)
                                             :
-                                            <input class="PbHolDayEndMM" type="text" name="${premValue}onSitePbHolDayEndMM${phStat.index}" value="${ph.onsiteEndToMM}" maxlength="2" style="width: 60px"/>(MM)
+                                            <input class="PbHolDayEndMM" type="text" name="${premValue}onSitePbHolDayEndMM${phStat.index}" value="${ph.onsiteEndToMM}" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%"/>(MM)
                                             <span class="error-msg" name="iaisErrorMsg" id="error_onsiteEndToMM${status.index}"></span>
                                         </div>
                                     </div>
@@ -278,9 +278,9 @@
                                         Public Holidays Operating Hours (Start)
                                     </label>
                                     <div class="col-xs-9 col-sm-5 col-md-4">
-                                        <input class="PbHolDayStartHH" type="text" name="${premValue}onSitePbHolDayStartHH0" value="" maxlength="2" style="width: 60px"/>(HH)
+                                        <input class="PbHolDayStartHH" type="text" name="${premValue}onSitePbHolDayStartHH0" value="" maxlength="2" style="width: 60px;margin-right: 2%"/>(HH)
                                         :
-                                        <input class="PbHolDayStartMM" type="text" name="${premValue}onSitePbHolDayStartMM0" value="" maxlength="2" style="width: 60px"/>(MM)
+                                        <input class="PbHolDayStartMM" type="text" name="${premValue}onSitePbHolDayStartMM0" value="" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%"/>(MM)
                                         <span  class="error-msg"  name="iaisErrorMsg" id="error_"></span>
                                     </div>
                                 </div>
@@ -289,9 +289,9 @@
                                         Public Holidays Operating Hours (End)
                                     </label>
                                     <div class="col-xs-9 col-sm-5 col-md-4">
-                                        <input class="PbHolDayEndHH" type="text" name="${premValue}onSitePbHolDayEndHH0" value="" maxlength="2" style="width: 60px"/>(HH)
+                                        <input class="PbHolDayEndHH" type="text" name="${premValue}onSitePbHolDayEndHH0" value="" maxlength="2" style="width: 60px;margin-right: 2%"/>(HH)
                                         :
-                                        <input class="PbHolDayEndMM" type="text" name="${premValue}onSitePbHolDayEndMM0" value="" maxlength="2" style="width: 60px"/>(MM)
+                                        <input class="PbHolDayEndMM" type="text" name="${premValue}onSitePbHolDayEndMM0" value="" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%"/>(MM)
                                     </div>
                                 </div>
 

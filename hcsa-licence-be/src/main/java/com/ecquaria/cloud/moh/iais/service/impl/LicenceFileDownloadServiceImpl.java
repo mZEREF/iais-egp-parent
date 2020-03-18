@@ -83,8 +83,8 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadService {
-   /* @Value("${iais.syncFileTracking.shared.path}")*/
-    private     String sharedPath="D:/";
+    @Value("${iais.syncFileTracking.shared.path}")
+    private     String sharedPath;
 
 
     @Value("${iais.hmac.keyId}")
@@ -321,7 +321,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             try {
                 if(!zipEntry.getName().endsWith(File.separator)){
 
-                    String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf("/"));
+                    String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
                     File file =new File( sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring);
                     if(!file.exists()){
                         file.mkdirs();
