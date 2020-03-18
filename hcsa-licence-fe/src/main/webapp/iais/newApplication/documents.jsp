@@ -154,9 +154,6 @@
                     <c:otherwise>
                       <div class="row">
                         <div class="col-xs-12 col-sm-6"><a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a></div>
-      <%--                  <div class="col-xs-12 col-sm-6">
-                          <p><a id = "Back" class="back"><em class="fa fa-angle-left"></em> Back</a></p>
-                        </div>--%>
                         <div class="col-xs-12 col-sm-6">
                           <div class="button-group"><a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a><a class="btn btn-primary next" id="Next">Next</a></div>
                         </div>

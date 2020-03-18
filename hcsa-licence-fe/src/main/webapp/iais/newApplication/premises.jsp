@@ -387,7 +387,7 @@
                             </c:choose>
                             <div class="form-group">
                               <div class="col-xs-9 col-sm-5 col-md-4">
-                                <button class="addPubHolDay" type="button">add Public Holiday</button>
+                                <button class="addPubHolDay btn btn-primary" type="button">Add Public Holiday</button>
                               </div>
                             </div>
                           </div>
@@ -564,7 +564,7 @@
                             </c:choose>
                             <div class="form-group">
                               <div class="col-xs-9 col-sm-5 col-md-4">
-                                <button class="addPubHolDay" type="button">Add Public Holiday</button>
+                                <button class="addPubHolDay btn btn-primary" type="button">Add Public Holiday</button>
                               </div>
                             </div>
                           </div>
@@ -576,7 +576,7 @@
                 <div class="row">
                   <div class="col-xs-12">
                     <c:if test="${requestInformationConfig==null && 'APTY005' !=AppSubmissionDto.appType && !multiBase && 'APTY004' !=AppSubmissionDto.appType}">
-                      <button id="addPremBtn" type="button">Add Premises</button>
+                      <button id="addPremBtn" class="btn btn-primary" type="button">Add Premises</button>
                     </c:if>
                   </div>
                 </div>
@@ -588,7 +588,7 @@
                         <c:otherwise>
                             <div class="row">
                                 <div class="col-xs-12 col-sm-6 ">
-                                    <p><a class="back hidden" href="#"><em class="fa fa-angle-left"></em> Back</a></p>
+                                  <a class="back" id="Back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                                 </div>
                                 <div class="col-xs-12 col-sm-6">
                                     <div class="button-group">
@@ -684,6 +684,9 @@
         removePH();
 
         //Binding method
+        $('#Back').click(function(){
+            submit(null,'back',null);
+        });
         $('#Next').click(function(){
             submit('documents',null,null);
         });
