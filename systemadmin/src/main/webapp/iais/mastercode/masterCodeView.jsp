@@ -42,6 +42,12 @@
         submit('changePage');
     }
 
+    function sortRecords(sortFieldName, sortType) {
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        submit('appSort');
+    }
+
     $('.selectedFile').change(function () {
         $("[name='crud_action_type']").val('doUpload');
         $("#MasterCodeFileForm").submit();

@@ -16,23 +16,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.FileUtils;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
-import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +27,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author Hua_Chong
@@ -58,6 +52,8 @@ public class MasterCodeDelegator {
 
 
     private final MasterCodeService masterCodeService;
+
+    private static boolean flage = false;
 
     @Autowired
     private MasterCodeDelegator(MasterCodeService masterCodeService){
@@ -89,22 +85,28 @@ public class MasterCodeDelegator {
     public void prepareData(BaseProcessClass bpc){
         logAboutStart("prepareData");
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = SearchResultHelper.getSearchParam(request,filterParameter,true);
-        QueryHelp.setMainSql(MasterCodeConstants.MSG_TEMPLATE_FILE, MasterCodeConstants.MSG_TEMPLATE_SQL,searchParam);
-        SearchResult searchResult = masterCodeService.doQuery(searchParam);
-        List<MasterCodeQueryDto> masterCodeQueryDtoList = searchResult.getRows();
-        for (MasterCodeQueryDto masterCodeQueryDto:masterCodeQueryDtoList
-             ) {
-            if (StringUtil.isEmpty(masterCodeQueryDto.getCodeValue())){
-                masterCodeQueryDto.setCodeValue("N.A");
+        if (flage){
+            SearchParam searchParam = SearchResultHelper.getSearchParam(request,filterParameter,true);
+            QueryHelp.setMainSql(MasterCodeConstants.MSG_TEMPLATE_FILE, MasterCodeConstants.MSG_TEMPLATE_SQL,searchParam);
+            SearchResult searchResult = masterCodeService.doQuery(searchParam);
+            List<MasterCodeQueryDto> masterCodeQueryDtoList = searchResult.getRows();
+            for (MasterCodeQueryDto masterCodeQueryDto:masterCodeQueryDtoList
+                    ) {
+                if (StringUtil.isEmpty(masterCodeQueryDto.getCodeValue())){
+                    masterCodeQueryDto.setCodeValue("N.A");
+                }
+                masterCodeQueryDto.setStatus(MasterCodeUtil.getCodeDesc(masterCodeQueryDto.getStatus()));
             }
-            masterCodeQueryDto.setStatus(MasterCodeUtil.getCodeDesc(masterCodeQueryDto.getStatus()));
+
+            if(!StringUtil.isEmpty(searchResult)){
+                ParamUtil.setSessionAttr(request,MasterCodeConstants.SEARCH_PARAM, searchParam);
+                ParamUtil.setRequestAttr(request,MasterCodeConstants.SEARCH_RESULT, searchResult);
+            }
+        }else{
+            ParamUtil.setSessionAttr(request,MasterCodeConstants.SEARCH_PARAM, null);
+            ParamUtil.setRequestAttr(request,MasterCodeConstants.SEARCH_RESULT, null);
         }
 
-        if(!StringUtil.isEmpty(searchResult)){
-            ParamUtil.setSessionAttr(request,MasterCodeConstants.SEARCH_PARAM, searchParam);
-            ParamUtil.setRequestAttr(request,MasterCodeConstants.SEARCH_RESULT, searchResult);
-        }
 
     }
 
@@ -149,10 +151,14 @@ public class MasterCodeDelegator {
         String codeEndDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO)),
                 SystemAdminBaseConstants.DATE_FORMAT);
         Map<String,Object> masterCodeMap = IaisCommonUtils.genNewHashMap();
-
         if (!StringUtil.isEmpty(categoryDescription)){
             String codeCategory = masterCodeService.findCodeCategoryByDescription(categoryDescription);
-            masterCodeMap.put(MasterCodeConstants.MASTER_CODE_CATEGORY,codeCategory);
+            if (!StringUtil.isEmpty(codeCategory)){
+                masterCodeMap.put(MasterCodeConstants.MASTER_CODE_CATEGORY,codeCategory);
+                flage = true;
+            }
+        }else{
+            flage = true;
         }
         if(!StringUtil.isEmpty(codeStatus)){
             masterCodeMap.put(MasterCodeConstants.MASTER_CODE_STATUS,codeStatus);
@@ -168,23 +174,11 @@ public class MasterCodeDelegator {
         }
         filterParameter.setFilters(masterCodeMap);
     }
-    /**
-     * AutoStep: doSorting
-     *
-     * @param bpc
-     * @throws
-     */
-    public void doSorting(BaseProcessClass bpc){
-        logAboutStart("doSorting");
-        HttpServletRequest request = bpc.request;
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        CrudHelper.doSorting(searchParam,bpc.request);
-    }
+
 
     @GetMapping(value = "master-code-file")
     public @ResponseBody void fileHandler(HttpServletRequest request, HttpServletResponse response){
         log.debug(StringUtil.changeForLog("fileHandler start ...."));
-        String action = ParamUtil.getString(request, "action");
         File file = null;
         List<MasterCodeToExcelDto> masterCodeToExcelDtoList = masterCodeService.findAllMasterCode();
         if (masterCodeToExcelDtoList != null){
@@ -204,7 +198,6 @@ public class MasterCodeDelegator {
         MultipartFile file = mulReq.getFile("selectedFile");
         File toFile = FileUtils.multipartFileToFile(file);
         List<MasterCodeToExcelDto> masterCodeToExcelDtoList = FileUtils.transformToJavaBean(toFile, MasterCodeToExcelDto.class);
-
     }
     /**
      * AutoStep: doPaging
@@ -215,8 +208,19 @@ public class MasterCodeDelegator {
     public void doPaging(BaseProcessClass bpc){
         logAboutStart("doPaging");
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter);
-        CrudHelper.doPaging(searchParam,bpc.request);
+        SearchResultHelper.doPage(request,filterParameter);
+    }
+
+    /**
+     * AutoStep: doSorting
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doSorting(BaseProcessClass bpc){
+        logAboutStart("doSorting");
+        HttpServletRequest request = bpc.request;
+        SearchResultHelper.doSort(request,filterParameter);
     }
 
     /**

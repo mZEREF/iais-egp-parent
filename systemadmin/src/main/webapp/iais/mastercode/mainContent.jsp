@@ -13,7 +13,6 @@
                         </div>
                         <%@ include file="doSearchBody.jsp" %>
                         <table class="table">
-                        <iais:pagination  param="MasterCodeSearchParam" result="MasterCodeSearchResult"/>
                             <thead>
                             <tr>
                                 <th>No.</th>
@@ -43,7 +42,7 @@
                                         <tr>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">No.</p>
-                                                <p>#${(MasterCodeSearchParam.pageNo - 1) * 10 + status.index + 1}</p>
+                                                <p>#${(MasterCodeSearchParam.pageNo - 1) * MasterCodeSearchParam.pageSize + status.index + 1}</p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Code Category</p>
