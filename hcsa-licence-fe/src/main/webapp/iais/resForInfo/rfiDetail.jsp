@@ -96,8 +96,8 @@
                                             </iais:row>
                                         </c:if>
                                         <iais:action style="text-align:center;">
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doBack()">Back</button>
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doSubmit('${licPreReqForInfoDto.reqInfoId}')">Proceed to Submit</button>
+                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Back</button>
+                                            <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit('${licPreReqForInfoDto.reqInfoId}')">Proceed to Submit</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>

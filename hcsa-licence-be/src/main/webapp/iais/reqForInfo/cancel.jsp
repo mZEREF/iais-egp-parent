@@ -31,7 +31,7 @@
                                         <iais:row>
                                             <iais:field value="Select Category"/>
                                             <iais:value width="18">
-                                                <iais:select name="Select_category"  options="selectOptions" firstOption="Please select"  value="${selectOptions}" ></iais:select>
+                                                <iais:select name="Select_category"  options="selectOptions" firstOption="Please Select"  value="${selectOptions}" ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -76,8 +76,8 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doRemind()">Remind</button>
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doSubmit()">Submit Request</button>
+                                            <button class="btn btn-lg btn-login-submit" type="button"  onclick="javascript:doRemind()">Remind</button>
+                                            <button class="btn btn-lg btn-login-submit" type="button"  onclick="javascript:doSubmit()">Submit Request</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>

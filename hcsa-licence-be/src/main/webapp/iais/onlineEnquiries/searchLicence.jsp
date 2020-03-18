@@ -56,13 +56,13 @@
                                             <iais:row>
                                                 <iais:field value="Application Type"/>
                                                 <iais:value width="18">
-                                                    <iais:select name="application_type" options="appTypeOption" firstOption="Please select" value="${SearchParam.filters['appType']}" ></iais:select>
+                                                    <iais:select name="application_type" options="appTypeOption" firstOption="Please Select" value="${SearchParam.filters['appType']}" ></iais:select>
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
                                                 <iais:field value="Application Status"/>
                                                 <iais:value width="18">
-                                                    <iais:select name="application_status" options="appStatusOption" firstOption="Please select" value="${SearchParam.filters['appStatus']}" ></iais:select>
+                                                    <iais:select name="application_status" options="appStatusOption" firstOption="Please Select" value="${SearchParam.filters['appStatus']}" ></iais:select>
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
@@ -94,19 +94,19 @@
                                             <iais:row>
                                                 <iais:field value="Service Licence:"/>
                                                 <iais:value width="18">
-                                                    <iais:select name="service_licence_type" options="licSvcTypeOption" firstOption="Please select" value="${serviceLicenceType}" ></iais:select>
+                                                    <iais:select name="service_licence_type" options="licSvcTypeOption" firstOption="Please Select" value="${serviceLicenceType}" ></iais:select>
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
                                                 <iais:field value="Service Sub-Type:"/>
                                                 <iais:value width="18">
-                                                    <iais:select name="service_sub_type" options="licSvcSubTypeOption" firstOption="Please select" value="${SearchParam.filters['serviceSubTypeName']}" ></iais:select>
+                                                    <iais:select name="service_sub_type" options="licSvcSubTypeOption" firstOption="Please Select" value="${SearchParam.filters['serviceSubTypeName']}" ></iais:select>
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
                                                 <iais:field value="Licence Status:"/>
                                                 <iais:value width="18">
-                                                    <iais:select name="licence_status" options="licStatusOption" firstOption="Please select" value="${SearchParam.filters['licence_status']}" ></iais:select>
+                                                    <iais:select name="licence_status" options="licStatusOption" firstOption="Please Select" value="${SearchParam.filters['licence_status']}" ></iais:select>
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
@@ -312,9 +312,9 @@
                     </c:if>
 
                     <iais:action style="text-align:center;">
-                        <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doLicSearch()">Search</button>
-                        <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doLicBack()">Back</button>
-                        <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doLicClear()">Clear</button>
+                        <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Search</button>
+                        <button class="btn btn-primary" type="button"  onclick="javascript:doLicBack()">Back</button>
+                        <button class="btn btn-secondary" type="button"  onclick="javascript:doLicClear()">Clear</button>
                     </iais:action>
                 </div>
             </div>
@@ -332,12 +332,12 @@
     }
     function doLicClear(){
         $('input[type="text"]').val("");
-        $("#service_licence_type option[text = 'Please select']").val("selected", "selected");
-        $("#service_sub_type option[text = 'Please select']").val("selected", "selected");
-        $("#licence_status option[text = 'Please select']").val("selected", "selected");
-        $("#application_type option[text = 'Please select']").val("selected", "selected");
-        $("#application_status option[text = 'Please select']").val("selected", "selected");
-        $(".current").text("Please select");
+        $("#service_licence_type option[text = 'Please Select']").val("selected", "selected");
+        $("#service_sub_type option[text = 'Please Select']").val("selected", "selected");
+        $("#licence_status option[text = 'Please Select']").val("selected", "selected");
+        $("#application_type option[text = 'Please Select']").val("selected", "selected");
+        $("#application_status option[text = 'Please Select']").val("selected", "selected");
+        $(".current").text("Please Select");
         $('input[name="to_date"]').val("");
         $('input[name="sub_date"]').val("");
         $('input[name="start_date"]').val("");

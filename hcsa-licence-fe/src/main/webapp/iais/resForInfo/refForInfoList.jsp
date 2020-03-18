@@ -25,7 +25,7 @@
                     </h3>
                     <div class="table-gp">
                         <iais:action style="text-align:left;">
-                            <div align="left"><span><a href="/main-web/eservicecontinue/INTERNET/MohInternetInbox">Bcak</a></span></div>
+                            <div align="left"><span><a class="btn btn-secondary" href="/main-web/eservicecontinue/INTERNET/MohInternetInbox">Bcak</a></span></div>
                         </iais:action>
                         <table class="table">
                             <thead>
@@ -55,7 +55,7 @@
                                             <td><c:out value="${pool.requestUser}" /></td>
                                             <td>
                                                 <iais:action style="text-align:center;">
-                                                    <button type="button"  class="btn btn-default" onclick="javascript:doView('${pool.reqInfoId}');" >View</button>
+                                                    <button type="button"  class="btn btn-lg btn-login-submit" onclick="javascript:doView('${pool.reqInfoId}');" >View</button>
                                                 </iais:action>
                                             </td>
                                         </tr>

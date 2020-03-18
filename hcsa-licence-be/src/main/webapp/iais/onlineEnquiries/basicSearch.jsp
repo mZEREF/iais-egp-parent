@@ -66,12 +66,12 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">
-                                            <button type="button" class="btn btn-lg btn-login-submit" type="button"
-                                                    style="background:#2199E8; color: white" onclick="javascript:doSearch();">Search</button>
-                                            <button type="button" class="btn btn-lg btn-login-submit" type="button"
-                                                    style="background:#2199E8; color: white" onclick="javascript:doAdvancedSearch();">Advanced Search</button>
-                                            <button type="button" class="btn btn-lg btn-login-clear" type="button"
-                                                    style="background:#2199E8; color: white" onclick="javascript:doClear();">Clear</button>
+                                            <button type="button" class="btn btn-primary" type="button"
+                                                     onclick="javascript:doSearch();">Search</button>
+                                            <button type="button" class="btn btn-primary" type="button"
+                                                     onclick="javascript:doAdvancedSearch();">Advanced Search</button>
+                                            <button type="button" class="btn btn-secondary" type="button"
+                                                     onclick="javascript:doClear();">Clear</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>
@@ -141,12 +141,12 @@
                                             <td>
                                                 <c:if test="${pool.isCessation==1}">
                                                     <iais:action style="text-align:center;">
-                                                        <button type="button"  class="btn btn-default" onclick="javascript:doCessation('${pool.licenceId}');" >Cessation</button>
+                                                        <button type="button"  class="btn btn-lg btn-login-submit" onclick="javascript:doCessation('${pool.licenceId}');" >Cessation</button>
                                                     </iais:action>
                                                 </c:if>
                                                 <c:if test="${pool.isCessation==0}">
                                                     <iais:action style="text-align:center;">
-                                                        <button type="button"  class="btn btn-default" data-toggle="modal" data-target="#editUser"  >Cessation</button>
+                                                        <button type="button"  class="btn btn-lg btn-login-submit" data-toggle="modal" data-target="#editUser"  >Cessation</button>
                                                     </iais:action>
                                                 </c:if>
                                             </td>
@@ -165,7 +165,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close"><span
                                 aria-hidden="true">&times;</span></button>
                             <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
                     </div>

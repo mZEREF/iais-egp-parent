@@ -340,7 +340,7 @@
                 </div>
             </div>
         </div>
-        <input type="button" class="btn btn-default" value="BACK" onclick="doBack()">
+        <input type="button" class="btn btn-secondary" value="BACK" onclick="doBack()">
     </div>
 </form>
 <script type="text/javascript">

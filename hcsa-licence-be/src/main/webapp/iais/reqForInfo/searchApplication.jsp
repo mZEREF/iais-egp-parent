@@ -37,13 +37,13 @@
                                         <iais:row>
                                             <iais:field value="Application Type"/>
                                             <iais:value width="18">
-                                                <iais:select  name="application_type" options="appTypeOption" firstOption="Please select" value="${SearchParam.filters['appType']}" ></iais:select>
+                                                <iais:select  name="application_type" options="appTypeOption" firstOption="Please Select" value="${SearchParam.filters['appType']}" ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Application Status"/>
                                             <iais:value width="18">
-                                                <iais:select  name="application_status" options="appStatusOption" firstOption="Please select" value="${SearchParam.filters['appStatus']}" ></iais:select>
+                                                <iais:select  name="application_status" options="appStatusOption" firstOption="Please Select" value="${SearchParam.filters['appStatus']}" ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -64,9 +64,9 @@
                                             </p>
                                         </iais:row>
                                         <iais:action style="text-align:center;">
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doAppSearch()">Search</button>
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doAppBack()">Back</button>
-                                            <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doAppClear()">Clear</button>
+                                            <button class="btn btn-primary" type="button"  onclick="javascript:doAppSearch()">Search</button>
+                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doAppBack()">Back</button>
+                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doAppClear()">Clear</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>
@@ -98,9 +98,9 @@
     }
     function doAppClear(){
         $('input[name="application_no"]').val("");
-        $("#application_type option[text = 'Please select']").val("selected", "selected");
-        $("#application_status option[text = 'Please select']").val("selected", "selected");
-        $(".current").text("Please select");
+        $("#application_type option[text = 'Please Select']").val("selected", "selected");
+        $("#application_status option[text = 'Please Select']").val("selected", "selected");
+        $(".current").text("Please Select");
         $('input[name="to_date"]').val("");
         $('input[name="sub_date"]').val("");
     }
