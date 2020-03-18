@@ -36,4 +36,9 @@ public class INTERNET___MohServiceFeMenu___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "beforeJump", this);
 	}
 
+	public void doBeforStart_OnStepProcess_0() throws Exception {
+	// 		doBeforStart->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doBeforStart", this);
+	}
+
 }
