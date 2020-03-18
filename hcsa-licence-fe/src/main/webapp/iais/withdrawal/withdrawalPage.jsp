@@ -21,7 +21,7 @@
                         </div>
                         <div class="row">
                             <div class="center-content">
-                                <label class="col-md-12">You are withdrawing for:</label>
+                                <iais:field value="You are withdrawing for." required="false"/>
                             </div>
                         </div>
                         <div class="row">
@@ -33,7 +33,7 @@
                         </div>
                         <div class="row">
                             <div class="center-content">
-                                <label class="col-md-12">Reason for Withdrawal:<span class="mandatory">*</span></label>
+                                <iais:field value="Reason for Withdrawal." required="true"/>
                             </div>
                         </div>
                         <div class="row">
@@ -50,7 +50,7 @@
                         <div id="reason" hidden>
                             <div class="row">
                                 <div class="center-content">
-                                    <label class="col-md-4">Any supporting remarks:</label>
+                                    <label class="col-md-4">Any supporting remarks.</label>
                                 </div>
                             </div>
                             <div class="row">
@@ -66,7 +66,7 @@
                         </div>
                         <div class="row">
                             <div class="center-content">
-                                <label class="col-md-12">File Upload for Appeal Reasons:<span class="mandatory">*</span></label>
+                                <iais:field value="File Upload for Appeal Reasons." required="true"/>
                             </div>
                         </div>
                         <div class="row">
@@ -82,7 +82,7 @@
                         </div>
                         <div class="row">
                             <div class="center-content">
-                                <div class="col-md-2  col-md-offset-7">
+                                <div class="col-md-2 col-md-offset-8">
                                     <div class="components">
                                         <a class="btn btn-primary">Cancel</a>
                                     </div>
