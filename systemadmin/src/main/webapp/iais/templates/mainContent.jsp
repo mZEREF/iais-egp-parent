@@ -56,12 +56,12 @@
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Effective Start Date.</p>
                                         <p><fmt:formatDate value="${msgTemplateResult.effectiveFrom}"
-                                                           pattern="MM/dd/yyyy HH:mm:ss"/></p>
+                                                           pattern="dd/MM/yyyy"/></p>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Effective End Date</p>
                                         <p><fmt:formatDate value="${msgTemplateResult.effectiveTo}"
-                                                           pattern="MM/dd/yyyy HH:mm:ss"/></p>
+                                                           pattern="dd/MM/yyyy"/></p>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Action</p>
