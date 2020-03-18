@@ -166,15 +166,15 @@ public class InspecUserRecUploadDelegator {
         String uploadRemarks = mulReq.getParameter("uploadRemarks");
         inspecUserRecUploadDto.setUploadRemarks(uploadRemarks);
         int uploadRemarksLen = uploadRemarks.length();
-        if(300 < uploadRemarksLen){
-            errorMap.put("remarks", "The Remarks should not be more than 300 characters.");
-        }
         String errorKey = "recFile";
 
         if(InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)) {
             if (IaisCommonUtils.isEmpty(inspecUserRecUploadDto.getFileRepoDtos())) {
                 errorMap.put(errorKey, "ERR0009");
                 return errorMap;
+            }
+            if(300 < uploadRemarksLen){
+                errorMap.put("remarks", "The Remarks should not be more than 300 characters.");
             }
         } else {
             Boolean flag = false;
