@@ -119,7 +119,7 @@
                     <div class="application-tab-footer">
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
-                                <a class="back" href="#" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a>
+                                <a class="back" href="javascript:void(0);" onclick="javascript: doBack()"><em class="fa fa-angle-left"></em> Back</a>
                             </div>
                             <div class="col-xs-12 col-sm-6">
                                 <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doNext();">Submit</a></div>

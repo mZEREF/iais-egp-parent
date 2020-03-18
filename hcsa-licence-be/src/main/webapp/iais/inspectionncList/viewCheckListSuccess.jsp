@@ -197,9 +197,7 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div align="right">
-                                        <button type="button" class="btn btn-primary" onclick="javascript: doBack();">
-                                            Back
-                                        </button>
+                                        <a class="back" href="#" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a>
                                     </div>
                                 </div>
                             </div>
