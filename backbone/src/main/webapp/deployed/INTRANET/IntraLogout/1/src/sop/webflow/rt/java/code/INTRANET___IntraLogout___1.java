@@ -10,13 +10,15 @@
  * reasons.
  */
 package sop.webflow.rt.java.code;
-import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
 
+import sop.webflow.rt.api.BaseProcessClass;
+
 public class INTRANET___IntraLogout___1 extends BaseProcessClass {
-    private static final String DELEGATOR ="iaisLogoutDelegate";
+	private static final String DELEGATOR ="iaisLogoutDelegate";
     public void step1_OnStepProcess_0() throws Exception {
         // 		Step1->OnStepProcess
         EngineHelper.delegate(DELEGATOR, "logout", this);
     }
+
 }
