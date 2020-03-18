@@ -30,13 +30,13 @@
             <div class="row">
                   <div class="form-horizontal">
                     <div class="form-group">
-                      <label class="col-xs-12 col-md-4 control-label" for="mobileNo">Mobile No.</label>
+                      <label class="col-xs-12 col-md-4 control-label" >Mobile No.</label>
                       <div class="col-xs-8 col-sm-6 col-md-5">
                         <input id="formfill1" type="text">
                       </div>
                     </div>
                     <div class="form-group">
-                      <label class="col-xs-12 col-md-4 control-label" for="emailAddress">Email Address.</label>
+                      <label class="col-xs-12 col-md-4 control-label" >Email Address.</label>
                       <div class="col-xs-8 col-sm-6 col-md-5">
                         <input id="formfill1" type="text">
                       </div>
@@ -52,7 +52,6 @@
                       </div>
                     </div>
                   </div>
-
             </div>
             <!---------------->
             <!--- Pagination and display---->
