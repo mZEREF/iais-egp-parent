@@ -384,9 +384,9 @@
     <sql key="resend"  remarks="resend">
         <![CDATA[
             SELECT
-            T1.notification_id,T1.request_ref_num,T1.recipient,T1.sender,T1.subject,T1.status,T3.log_msg,T3.sent_time
+            T1.notification_id,T1.REQUEST_REF_NO,T1.recipient,T1.sender,T1.subject,T1.status,T3.log_msg,T3.sent_time
             FROM notification T1
-            JOIN notification_annex T2 ON T1.request_ref_num = T2.request_ref_num
+            JOIN notification_annex T2 ON T1.REQUEST_REF_NO = T2.request_ref_num
             left JOIN (select N1.history_id,N1.notification_id,N1.sent_time,N1.log_msg from notification_history N1 JOIN
              (select max(history_id) as history_id from notification_history GROUP BY notification_id) N2
              on N1.history_id = N2.history_id) T3 ON T1.notification_id = T3.notification_id
