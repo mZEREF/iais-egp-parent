@@ -27,3 +27,6 @@
     background-position: 0 bottom;
 }
 
+.mandatory{
+    color: rgb(255,0,0);
+}
