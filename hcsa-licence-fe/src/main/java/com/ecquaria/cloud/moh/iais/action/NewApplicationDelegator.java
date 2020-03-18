@@ -49,6 +49,7 @@ import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
@@ -58,6 +59,16 @@ import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.servlet.webflow.HttpHandler;
+import sop.util.CopyUtil;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Time;
@@ -68,15 +79,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.servlet.webflow.HttpHandler;
-import sop.util.CopyUtil;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * egator
@@ -225,7 +227,7 @@ public class NewApplicationDelegator {
         conveyancePremSel.add(cps2);
         if (licAppGrpPremisesDtoMap != null && !licAppGrpPremisesDtoMap.isEmpty()) {
             for (AppGrpPremisesDto item : licAppGrpPremisesDtoMap.values()) {
-                SelectOption sp2 = new SelectOption(item.getPremisesIndexNo(), item.getAddress());
+                SelectOption sp2 = new SelectOption(item.getPremisesSelect(), item.getAddress());
                 if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())) {
                     premisesSelect.add(sp2);
                 }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())){
@@ -236,6 +238,13 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);
         ParamUtil.setSessionAttr(bpc.request, "premisesSelect", (Serializable) premisesSelect);
         ParamUtil.setSessionAttr(bpc.request, "conveyancePremSel", (Serializable) conveyancePremSel);
+
+        //addressType
+        List<SelectOption> addrTypeOpt = new ArrayList<>();
+        SelectOption addrTypeSp = new SelectOption("",FIRESTOPTION);
+        addrTypeOpt.add(addrTypeSp);
+        addrTypeOpt.addAll(MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE));
+        ParamUtil.setRequestAttr(bpc.request,"addressType",addrTypeOpt);
         //get premises type
         if (!IaisCommonUtils.isEmpty(svcIds)) {
             log.info(StringUtil.changeForLog("svcId not null"));
@@ -1393,6 +1402,7 @@ public class NewApplicationDelegator {
         if(premisesType != null){
             count = premisesType.length;
         }
+        String [] premisesIndexNo = ParamUtil.getStrings(request,"premisesIndexNo");
         //onsite
         String [] premisesSelect = ParamUtil.getStrings(request, "onSiteSelect");
         String [] postalCode = ParamUtil.getStrings(request,  "onSitePostalCode");
@@ -1424,8 +1434,7 @@ public class NewApplicationDelegator {
         String [] conStartMM = ParamUtil.getStrings(request, "conveyanceStartMM");
         String [] conEndHHS = ParamUtil.getStrings(request, "conveyanceEndHH");
         String [] conEndMMS = ParamUtil.getStrings(request, "conveyanceEndMM");
-        /*String [] conSalutation = ParamUtil.getStrings(request,"conveyanceSalutation");
-        String [] conVehicleOwnerName = ParamUtil.getStrings(request,"conveyanceVehicleOwnerName");*/
+
         //every prem's ph length
         String [] phLength = ParamUtil.getStrings(request,"phLength");
         String [] premValue = ParamUtil.getStrings(request, "premValue");
@@ -1445,8 +1454,9 @@ public class NewApplicationDelegator {
                     continue;
                 }
             }
-
-
+            if(StringUtil.isEmpty(premisesIndexNo[i])){
+                appGrpPremisesDto.setPremisesIndexNo(String.valueOf(System.currentTimeMillis()));
+            }
             appGrpPremisesDto.setPremisesType(premisesType[i]);
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = IaisCommonUtils.genNewArrayList();
             int length = 0;

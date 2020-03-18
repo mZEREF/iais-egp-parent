@@ -90,7 +90,9 @@
                     <div class="row premContent <c:if test="${!status.first}">underLine</c:if>  " id="mainPrem">
                       <c:set var="onSite" value="ONSITE" ></c:set>
                       <c:set var="conv" value="CONVEYANCE" ></c:set>
+                      <!--for ph -->
                       <input class="premValue" type="hidden" name="premValue" value="${status.index}"/>
+                      <input class="premisesIndexNo" type="hidden" name="premisesIndexNo" value="${appGrpPremisesDto.premisesIndexNo}"/>
                       <c:choose>
                         <c:when test="${appGrpPremisesDto.appPremPhOpenPeriodList != null && appGrpPremisesDto.appPremPhOpenPeriodList.size()>0}">
                           <input class="phLength" type="hidden" name="phLength" value="${appGrpPremisesDto.appPremPhOpenPeriodList.size()}"/>
@@ -210,7 +212,7 @@
                             <iais:row>
                               <iais:field value="Address Type " mandatory="true" width="12"/>
                               <iais:value id="onSiteAddressType${premValue}" cssClass="col-xs-7 col-sm-4 col-md-5 addressType">
-                                <iais:select cssClass="siteAddressType" name="onSiteAddressType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Please Select" value="${appGrpPremisesDto.addrType}"></iais:select>
+                                <iais:select cssClass="siteAddressType" name="onSiteAddressType" id="siteAddressType" options="addressType" value="${appGrpPremisesDto.addrType}"></iais:select>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_addrType${status.index}"></span>
                               </iais:value>
                             </iais:row>
@@ -622,7 +624,7 @@
 
         $('.table-condensed').css("background-color","#d9edf7");
 
-
+        <!--for reload -->
         $('.premTypeValue').each(function (k,v) {
             checkedType = $(this).val();
             var $premCountEle = $(this).closest('div.premContent');
@@ -637,6 +639,12 @@
 
                 }else{
                     $premCountEle.find('.new-premise-form-on-site').removeClass('hidden');
+                    <!--disable this form -->
+                    var $premFormOnsite = $premCountEle.find('div.new-premise-form-on-site');
+                    readonlyPartPage($premFormOnsite);
+                    <!--hidden btn -->
+                    $premCountEle.find('a.retrieveAddr').addClass('hidden');
+                    $premCountEle.find('button.addPubHolDay').addClass('hidden');
                 }
             }else if('CONVEYANCE' == checkedType){
                 $premCountEle.find('.conveyanceSelect').removeClass('hidden');
@@ -649,6 +657,12 @@
 
                 }else{
                     $premCountEle.find('.new-premise-form-conv').removeClass('hidden');
+                    <!--disable this form -->
+                    var $premFormConveyance = $premCountEle.find('div.new-premise-form-conv');
+                    readonlyPartPage($premFormConveyance);
+                    <!--hidden btn -->
+                    $premCountEle.find('a.retrieveAddr').addClass('hidden');
+                    $premCountEle.find('button.addPubHolDay').addClass('hidden');
                 }
             }
         });
@@ -668,6 +682,7 @@
         addPubHolDay();
 
         removePH();
+
         //Binding method
         $('#Next').click(function(){
             submit('documents',null,null);
@@ -682,19 +697,9 @@
             $('#premisesli').addClass('incomplete');
         }
 
-        //request for information
-        // if($('#isPremisesEdit').val() == 'true'){
-        //     disabledPage();
-        // }
-
         <c:if test="${AppSubmissionDto.appEditSelectDto!=null && !AppSubmissionDto.appEditSelectDto.premisesEdit}">
         disabledPage();
         </c:if>
-
-        <%--<c:if test="${'APTY005' ==AppSubmissionDto.appType}">
-          $('input[name="onSiteHciName"]').prop('disabled',true);
-        </c:if>--%>
-
         <!-- init end-->
         init = 1;
     });
@@ -911,6 +916,7 @@
 
                 premSelect();
 
+                $('.removeBtn').unbind('click');
                 removePremises();
 
                 retrieveAddr();
@@ -944,8 +950,14 @@
 
     var removePremises = function () {
         $('.removeBtn').click(function () {
-            var $removeEle= $(this).closest('div.premContent');
-            $removeEle.remove();
+            var $premContentEle= $(this).closest('div.premContent');
+            var $pageContentEle =  $(this).closest('div.premises-content');
+            $premContentEle.remove();
+            <!--reset premval -->
+            $pageContentEle.find('div.premContent').each(function (k,v) {
+                $(this).find('input[name="premValue"]').val(k);
+            });
+
         });
 
     }
@@ -1055,7 +1067,6 @@
             $pubHolidayContentEle.remove();
             <!--change hidden length value -->
             var length =  $contentDivEle.find('div.pubHolidayContent').length;
-            console.log("length"+length);
             $premContentEle.find('.phLength').val(length);
 
             <!-- get current premValue-->
@@ -1086,11 +1097,11 @@
 
 
     var setAddress = function(data,$Ele){
-        /*var $AddrEle = $Ele;
+        var $AddrEle = $Ele;
         $AddrEle.find('select[name="onSiteAddressType"]').val(data);
         var addressVal = $AddrEle.find('option[value="' + data + '"]').html();
         $AddrEle.find('select[name="onSiteAddressType"]').next().find('.current').html(addressVal);
-        $AddrEle.find('select[name="conveyanceAddressType"]').next().find('.current').html(addressVal);*/
+        $AddrEle.find('select[name="conveyanceAddressType"]').next().find('.current').html(addressVal);
     }
 
     var fillForm = function (premisesType,data,$Ele) {

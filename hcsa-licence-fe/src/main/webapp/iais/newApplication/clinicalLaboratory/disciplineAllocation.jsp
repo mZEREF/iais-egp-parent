@@ -93,7 +93,7 @@
                                         <p class="visible-xs visible-sm table-row-title">Clinical Governance Officers</p>
                                         <c:set var="cgoSelKey" value="${premisesIndexNo}${chkLst.chkLstConfId}"/>
 
-                                        <iais:select cssClass="${premisesIndexNo}" name="${cgoName}" firstOption="select cgo"  options="CgoSelect"  value="${ReloadAllocationMap[cgoSelKey]}"></iais:select>
+                                        <iais:select cssClass="${premisesIndexNo}" name="${cgoName}" firstOption="Please Select"  options="CgoSelect"  value="${ReloadAllocationMap[cgoSelKey]}"></iais:select>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_disciplineAllocation${status.index}"></span>
                                       </td>
                                     </tr>

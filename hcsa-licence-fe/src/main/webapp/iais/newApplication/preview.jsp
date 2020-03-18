@@ -70,9 +70,7 @@
                                 </div>
                                 <div class="application-tab-footer">
                                     <div class="row">
-                                        <div class="col-xs-12 col-sm-6">
-                                            <p><a id = "Back" class="back" ><em class="fa fa-angle-left"></em> Back</a></p>
-                                        </div>
+                                        <div class="col-xs-12 col-sm-6"><a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a></div>
                                         <div class="col-xs-12 col-sm-6">
                                             <div class="button-group">
                                                 <c:if test="${requestInformationConfig==null}">

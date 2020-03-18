@@ -276,7 +276,7 @@
                             <span class="mandatory">*</span>
                           </div>
                           <div class="col-sm-4 " id="deputySalutation${suffix}">
-                            <iais:select cssClass="deputySalutation"  name="deputySalutation" codeCategory="CATE_ID_SALUTATION" value="${deputy.salutation}" firstOption="Select Salution"></iais:select>
+                            <iais:select cssClass="deputySalutation"  name="deputySalutation" codeCategory="CATE_ID_SALUTATION" value="${deputy.salutation}" firstOption="Please Select"></iais:select>
                           </div>
                           <div class="col-sm-4">
                             <input name="deputyName"  type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.name}"  size="30">
@@ -315,7 +315,7 @@
                             <span class="mandatory">*</span>
                           </div>
                           <div class="col-sm-5 col-md-8" id="deputyDesignation${suffix}">
-                            <iais:select cssClass="deputyDesignation" name="deputyDesignation" codeCategory="CATE_ID_DESIGNATION" value="${deputy.designation}" firstOption="Select Designation"></iais:select>
+                            <iais:select cssClass="deputyDesignation" name="deputyDesignation" codeCategory="CATE_ID_DESIGNATION" value="${deputy.designation}" firstOption="Please Select"></iais:select>
                             <span class="error-msg" id="error_deputyDesignation${status.index}" name="iaisErrorMsg"></span>
                           </div>
                         </div>
@@ -349,7 +349,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="row ">
+                    <%--<div class="row ">
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                           <div class="col-sm-3 control-label formtext col-md-4">
@@ -362,7 +362,7 @@
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div>--%>
                     <div class="row"></div>
                     <div class="row"></div>
                     <div class="row"></div>

@@ -4,6 +4,7 @@
         <![CDATA[
 <div class="row premContent underLine" id="mainPrem">
     <input class="premValue" type="hidden" name="premValue" value="(0)"/>
+    <input class="premisesIndexNo" type="hidden" name="premisesIndexNo" value="prem(0)"/>
     <input class="phLength" type="hidden" name="phLength" value="1"/>
     <div class="col-xs-12">
       <div class="form-horizontal">

@@ -32,18 +32,19 @@ import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.sz.commons.util.FileUtil;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -214,7 +215,7 @@ public class ClinicalLaboratoryDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request, "CgoMandatoryCount", mandatoryCount);
         List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();
-        SelectOption sp0 = new SelectOption("-1", "Select Personnel");
+        SelectOption sp0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
         cgoSelectList.add(sp0);
         SelectOption sp1 = new SelectOption("newOfficer", "I'd like to add a new personnel");
         cgoSelectList.add(sp1);

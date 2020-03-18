@@ -204,20 +204,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="row ">
-                  <div class="control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                      <div class="col-sm-3 control-label formtext col-md-4">
-                        <label class="control-label control-set-font control-font-label">Preferred Mode of Receiving MedAlert</label>
-                        <span class="mandatory">*</span>
-                      </div>
-                      <div class="col-sm-4 col-md-8">
-                        (4)
-                        <span class="error-msg" name="iaisErrorMsg" id="error_modeOfMedAlert"></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+
                 <div class="row"></div>
                 <div class="row"></div>
                 <div class="row"></div>

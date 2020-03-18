@@ -21,12 +21,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
+import sop.util.CopyUtil;
+
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import sop.util.CopyUtil;
 
 /**
  * NewApplicationHelper
@@ -414,6 +415,9 @@ public class NewApplicationHelper {
             sBuffer.append(entry.getKey()+"=\""+entry.getValue()+"\" ");
         }
         sBuffer.append(" >");
+        if(!StringUtil.isEmpty(firestOption)){
+            sBuffer.append("<option value=\"\">"+ firestOption +"</option>");
+        }
         for(SelectOption sp:selectOptionList){
             sBuffer.append("<option value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
         }
@@ -424,20 +428,30 @@ public class NewApplicationHelper {
             className =  classNameValue;
         }
         sBuffer.append("<div class=\"nice-select "+className+"\" tabindex=\"0\">");
-        if(StringUtil.isEmpty(firestOption)){
-            sBuffer.append("<span class=\"current\">"+selectOptionList.get(0).getText()+"</span>");
-        }else {
+        if(!StringUtil.isEmpty(firestOption)){
             sBuffer.append("<span class=\"current\">"+firestOption+"</span>");
+        }else{
+            sBuffer.append("<span class=\"current\">"+selectOptionList.get(0).getText()+"</span>");
         }
         sBuffer.append("<ul class=\"list mCustomScrollbar _mCS_2 mCS_no_scrollbar\">")
                 .append("<div id=\"mCSB_2\" class=\"mCustomScrollBox mCS-light mCSB_vertical mCSB_inside\" tabindex=\"0\" style=\"max-height: none;\">")
                 .append("<div id=\"mCSB_2_container\" class=\"mCSB_container mCS_y_hidden mCS_no_scrollbar_y\" style=\"position:relative; top:0; left:0;\" dir=\"ltr\">");
         if(!StringUtil.isEmpty(firestOption)){
-            sBuffer.append("<li data-value=\"-1\" class=\"option selected\">"+firestOption+"</li>");
+            sBuffer.append("<li data-value=\"\" class=\"option selected\">"+firestOption+"</li>");
+            for(SelectOption kv:selectOptionList){
+                sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+            }
+        }else{
+            for(int i = 0;i<selectOptionList.size();i++){
+                SelectOption kv = selectOptionList.get(i);
+                if(i == 0){
+                    sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option selected\">"+kv.getText()+"</li>");
+                }else{
+                    sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+                }
+            }
         }
-        for(SelectOption kv:selectOptionList){
-            sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
-        }
+
         sBuffer.append("</div>")
                 .append("<div id=\"mCSB_2_scrollbar_vertical\" class=\"mCSB_scrollTools mCSB_2_scrollbar mCS-light mCSB_scrollTools_vertical\" style=\"display: none;\">")
                 .append("<div class=\"mCSB_draggerContainer\">")

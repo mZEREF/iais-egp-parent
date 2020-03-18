@@ -246,7 +246,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-5" id="designation${suffix}">
                                       <div class="">
-                                        <iais:select cssClass="designationSel" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${currentCgo.designation}" firstOption="Select Designation"></iais:select>
+                                        <iais:select cssClass="designationSel" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${currentCgo.designation}" firstOption="Please Select"></iais:select>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_designation${status.index}"></span>
                                       </div>
                                     </div>
@@ -265,7 +265,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-5" id="professionType${suffix}">
                                       <div class="professionRegoType">
-                                        <iais:select cssClass="professionTypeSel" name="professionType" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${currentCgo.professionType}" firstOption="Select professionRegoType"></iais:select>
+                                        <iais:select cssClass="professionTypeSel" name="professionType" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${currentCgo.professionType}" firstOption="Please Select"></iais:select>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_professionType${status.index}"></span>
                                       </div>
                                     </div>
@@ -364,7 +364,7 @@
                                 <div id="control--runtime--33" class="control control-caption-horizontal">
                                   <div class=" form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext ">
-                                      <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">Email address
+                                      <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">Email Address
                                       </label>                                                                                                                                                        <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>
