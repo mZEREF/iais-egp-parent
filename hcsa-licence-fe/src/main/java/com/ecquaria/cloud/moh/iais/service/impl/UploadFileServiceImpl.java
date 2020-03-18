@@ -282,6 +282,19 @@ public class UploadFileServiceImpl implements UploadFileService {
         return s;
     }
 
+    private void deleteFile(String groupId){
+        File fileRepPath=new File(sharedPath+AppServicesConsts.FILE_NAME+File.separator+groupId);
+        MiscUtil.checkDirs(fileRepPath);
+        if(fileRepPath.isDirectory()){
+            File[] files = fileRepPath.listFiles();
+            for(File f :files){
+                if(f.exists()&&f.isFile()){
+                    MiscUtil.deleteFile(f);
+                }
+            }
+        }
+
+    }
     @Override
     public  List<ApplicationListFileDto> parse(String str){
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
@@ -522,6 +535,9 @@ public class UploadFileServiceImpl implements UploadFileService {
               return;
             }
             String groupId = applicationGroup.get(0).getId();
+
+            deleteFile(groupId);
+
             List<AppSvcDocDto> appSvcDoc = applicationListFileDto.getAppSvcDoc();
             List<AppGrpPrimaryDocDto> appGrpPrimaryDoc = applicationListFileDto.getAppGrpPrimaryDoc();
             List<AppPremisesSpecialDocDto> appPremisesSpecialDocEntities = applicationListFileDto.getAppPremisesSpecialDocEntities();
