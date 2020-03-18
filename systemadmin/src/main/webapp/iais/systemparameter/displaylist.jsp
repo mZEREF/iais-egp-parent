@@ -23,16 +23,14 @@
 <div class="main-content">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/include/formHidden.jsp" %>
-        <input type="hidden" name="crud_action_type" value="">
-        <input type="hidden" name="crud_action_value" value="">
-        <input type="hidden" name="crud_action_additional" value="">
         <input type="hidden" name="currentValidateId" value="">
+
+        <br><br>
         <div class="bg-title"><h2>System Parameters</h2></div>
 
         <div class="form-horizontal">
             <div class="form-group">
-                <label class="col-md-1">Type of System Parameter:
-                </label>
+                <iais:field value="Type of System Parameter:"   required="true"/>
                 <div class="col-md-3">
                     <iais:select name="domainType" id="domainType"
                                  firstOption="Please select" codeCategory="CATE_ID_SYSTEM_PARAMETER_TYPE" value="${domainType}"></iais:select>
@@ -41,8 +39,7 @@
             </div>
 
             <div class="form-group">
-                <label class="col-md-1">Module:
-                </label>
+                <iais:field value="Module:"  />
                 <div class="col-md-3">
                     <iais:select name="module" id="module"  codeCategory = "CATE_ID_SYSTEM_PARAMETER_MODULE" firstOption="Please select" value="${module}"></iais:select>
                     <span id="error_module" name="iaisErrorMsg" class="error-msg"></span>
@@ -51,8 +48,7 @@
             </div>
 
             <div class="form-group">
-                <label class="col-md-1">Parameter Description:
-                </label>
+                <iais:field value="Parameter Description:"  />
                 <div class="col-md-3">
                     <input id="description" name="description" maxlength="500" type="text" value="${description}">
                     <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
@@ -60,8 +56,7 @@
             </div>
 
             <div class="form-group">
-                <label class="col-md-1">Status:
-                </label>
+                <iais:field value="Status:"  />
                 <div class="col-md-3">
                     <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
                                  firstOption="Select Status" filterValue="CMSTAT002,CMSTAT004" value="${status}"></iais:select>
@@ -69,10 +64,18 @@
                 <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
             </div>
 
-            <iais:action style="text-align:center;">
-                <button class="btn btn-lg btn-login-search" type="button" style="background:#2199E8; color: white" value="doQuery">Search</button>
-                <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" >Clear</button>
-            </iais:action>
+
+            <div class="application-tab-footer">
+                <div class="row">
+                    <div class="col-xs-12 col-md-11">
+                        <div class="text-right">
+                            <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
+                            <a class="btn btn-primary" id="crud_search_button" value="doQuery" href="#">Search</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
             <div class="tab-pane active" id="tabInbox" role="tabpanel">
                 <div class="tab-content">

@@ -20,13 +20,14 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import com.ecquaria.cloud.moh.iais.service.PrefDateRangePeriodService;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author: yichen
@@ -132,7 +133,6 @@ public class PrefDateRangePeriodDelegator {
                     periodDto.setNonReplyWindow(periodQuery.getNonReplyWindow());
                     periodDto.setStatus(periodQuery.getStatus());
                     ParamUtil.setSessionAttr(request, REQUEST_PERIOD_ATTR, periodDto);
-                    return;
                 }
             }
 

@@ -46,8 +46,7 @@
       <c:if test="${switchPageAction == 'create'}">
         <div class="form-group">
           <div class="col-md-12">
-            <label class="col-md-2">Blacked Out Date: From
-            </label>
+            <iais:field value="Blacked Out Date: From" required="true"></iais:field>
             <div class="col-md-5">
               <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt" options="wrlGrpNameOpt"
                            firstOption="Please Select" value="${shortName}"></iais:select>
@@ -62,8 +61,7 @@
 
       <div class="form-group">
           <div class="col-md-12">
-            <label class="col-md-2">Blacked Out Date Start :
-            </label>
+            <iais:field value="Blacked Out Date Start :" required="true"></iais:field>
             <div class="col-md-5">
               <%Date ssd = Formatter.parseDate((String) request.getAttribute("startDate"));%>
               <iais:datePicker name="startDate"
@@ -76,8 +74,8 @@
 
       <div class="form-group">
           <div class="col-md-12">
-            <label class="col-md-2">Blacked Out Date End:
-            </label>
+            <iais:field value="Blacked Out Date End:" required="true"></iais:field>
+
             <div class="col-md-5">
               <%Date esd = Formatter.parseDate((String) request.getAttribute("endDate"));%>
               <iais:datePicker name="endDate"
@@ -90,8 +88,8 @@
 
       <div class="form-group">
           <div class="col-md-12">
-            <label class="col-md-2">Blacked Out Date Description:
-            </label>
+            <iais:field value="Blacked Out Date Description:" required="true"></iais:field>
+
             <div class="col-md-5">
               <input type="text" max="255" name="desc"
                      value="${desc}">
@@ -102,11 +100,10 @@
 
       <div class="form-group">
           <div class="col-md-12">
-            <label class="col-md-2">Status:
-            </label>
+            <iais:field value="Status:" required="true"></iais:field>
             <div class="col-md-5">
               <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
-                           firstOption="Select Status" filterValue="CMSTAT002" value="${status}"></iais:select>
+                           firstOption="Select Status" filterValue="CMSTAT002, CMSTAT004" value="${status}"></iais:select>
             </div>
         </div>
       </div>

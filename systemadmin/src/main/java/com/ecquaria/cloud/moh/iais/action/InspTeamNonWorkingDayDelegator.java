@@ -28,7 +28,13 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.sql.Time;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author: yichen
@@ -105,7 +111,7 @@ public class InspTeamNonWorkingDayDelegator {
 
 		List<WorkingGroupQueryDto> workingGroupQueryList = searchResult.getRows();
 
-		List<ApptNonWorkingDateDto> nonWorkingDateListByWorkGroupId = IaisCommonUtils.genNewArrayList();
+		List<ApptNonWorkingDateDto> nonWorkingDateListByWorkGroupId = null;
 		String shotName = ParamUtil.getString(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT);
 
 		if (shotName != null){
@@ -127,6 +133,10 @@ public class InspTeamNonWorkingDayDelegator {
 			wrlGrpNameOpt.add(new SelectOption(groupId, groupName));
 		});
 
+
+		if (IaisCommonUtils.isEmpty(IaisCommonUtils.genNewArrayList())){
+			nonWorkingDateListByWorkGroupId = IaisCommonUtils.genNewArrayList();
+		}
 
 		ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT, (Serializable) wrlGrpNameOpt);
 

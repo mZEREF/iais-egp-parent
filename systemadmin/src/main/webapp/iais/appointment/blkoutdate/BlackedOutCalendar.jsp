@@ -29,7 +29,7 @@
 
     <iais:section title="" id = "demoList">
       <iais:row>
-        <iais:field value="Working Group"/>
+        <iais:field value="Working Group" required="true"/>
         <iais:value width="18">
           <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  onchange="doSearch()" options = "wrlGrpNameOpt" firstOption="Please Select" value="${shortName}" ></iais:select>
         </iais:value>
@@ -63,17 +63,20 @@
                          firstOption="Please Select" filterValue="CMSTAT002,CMSTAT004" value="${status}"></iais:select>
           </iais:value>
         </iais:row>
-
-        <iais:action style="text-align:center;">
-          <button class="btn btn-lg btn-login-search" type="button" value="doSearch" style="background:#2199E8; color: white ">Search</button>
-          <button class="btn btn-lg btn-login-clear-inner" onclick="doClear()" type="button" style="background:#2199E8; color: white">Clear</button>
-        </iais:action>
       </div>
-
-
 
     </iais:section>
 
+    <div class="application-tab-footer">
+      <div class="row">
+        <div class="col-xs-12 col-md-11">
+          <div class="text-right">
+            <a class="btn btn-secondary" onclick="doClear()"  href="#">Clear</a>
+            <a class="btn btn-primary" id="crud_search_button" value="doSearch" href="#">Search</a>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div>
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
@@ -99,11 +102,9 @@
                     <tbody>
                     <c:choose>
                       <c:when test="${empty blackedOutDateResultAttr.rows}">
-                        <tr>
                           <td colspan="6">
                             No Record!!
                           </td>
-                        </tr>
                       </c:when>
                       <c:otherwise>
                         <c:forEach var="blackDateAttr" items="${blackedOutDateResultAttr.rows}" varStatus="status">
@@ -131,29 +132,19 @@
                     </c:choose>
                     </tbody>
                   </table>
-                  <div class="table-footnote">
-                    <div class="row">
-                      <div class="col-xs-6 col-md-4">
-
-                      </div>
-                      <div class="col-xs-6 col-md-8 text-right">
-                        <div class="nav">
-
-                        </div>
-                        <br><br>
-
-
-
-                        <div class="text-right text-center-mobile">
-                          <a class="btn btn-primary next" id="addBtnId" >Create</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
 
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="application-tab-footer">
+        <div class="row">
+          <div class="col-xs-12 col-md-11">
+            <div class="text-right">
+              <a class="btn btn-primary" id="addBtnId" value="doSearch" href="#">Create</a>
             </div>
           </div>
         </div>
@@ -190,10 +181,6 @@
           var str = date.toString();
           return str.substring(str.length - 4);
       }
-  }
-
-  function doSearch() {
-    SOP.Crud.cfxSubmit("mainForm", "doSearch");
   }
 
   function doClear() {

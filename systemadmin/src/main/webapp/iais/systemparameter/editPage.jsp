@@ -27,18 +27,15 @@
 <div class="main-content">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/include/formHidden.jsp" %>
-        <input type="hidden" name="crud_action_type" value="">
-        <input type="hidden" name="crud_action_value" value="">
-        <input type="hidden" name="crud_action_additional" value="">
         <input type="hidden" name="currentValidateId" value="">
-        <div class="bg-title"><h2>System Parameters</h2></div>
+        <br><br>
+        <div class="bg-title"><h2>System Parameters Update</h2></div>
 
       <span id="error_customErrorMessage" name="iaisErrorMsg" class="error-msg"></span>
       <br><br>
-
         <div class="form-horizontal">
             <div class="form-group">
-                <label class="col-md-1">System Parameter Type:
+                <iais:field value="Type of System Parameter:"  />
                 </label>
                 <div class="col-md-3">
                     <iais:select name="domainType" id="domainType"
@@ -49,7 +46,7 @@
             </div>
 
             <div class="form-group">
-                <label class="col-md-1">Module:
+                <iais:field value="Module:"  />
                 </label>
                 <div class="col-md-3">
                     <iais:select name="module" id="module"  codeCategory = "CATE_ID_SYSTEM_PARAMETER_MODULE" disabled="true" firstOption="Please select" value="${parameterRequestDto.module}"></iais:select>
@@ -58,8 +55,7 @@
             </div>
 
             <div class="form-group">
-                <label class="col-md-1">Type of Value:
-                </label>
+                <iais:field value="Type of Value:"  />
                 <div class="col-md-3">
                     <iais:select name="paramType" id="paramType"
                                  firstOption="Please select" codeCategory="CATE_ID_SYSTEM_PARAMETER_TYPE_OF_VALUE" disabled="true" value="${parameterRequestDto.paramType}"></iais:select>
@@ -68,8 +64,7 @@
             </div>
 
             <div class="form-group">
-                <label class="col-md-1">Value:
-                </label>
+                <iais:field value="Value:" required="true" />
                 <div class="col-md-3">
                     <c:choose>
                         <c:when test="${parameterRequestDto.paramType == 'TPOF00007' || parameterRequestDto.paramType == 'TPOF00008'}">
@@ -93,8 +88,7 @@
             </div>
 
             <div class="form-group">
-                <label class="col-md-1">Parameter Description:
-                </label>
+                <iais:field value="Parameter Description:" required="true" />
                 <div class="col-md-3">
                     <textarea cols="70" rows="7" name="description" id="description" maxlength="500"><c:out value="${parameterRequestDto.description}"></c:out></textarea>
                     <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
@@ -102,8 +96,7 @@
             </div>
 
             <div class="form-group">
-                <label class="col-md-1">Update On
-                </label>
+                <iais:field value="Update On:"  />
                 <div class="col-md-3">
                     <p><fmt:formatDate value="${parameterRequestDto.modifiedAt}" pattern="dd/MM/yyyy"/></p>
                 </div>
@@ -111,8 +104,7 @@
 
 
             <div class="form-group">
-                <label class="col-md-1">Update By
-                </label>
+                <iais:field value="Update By:"  />
                 <div class="col-md-3">
                     <p><input name="modifiedAt" type="text" id="modifiedBy" title="modifiedBy"  readonly value="${parameterRequestDto.modifiedBy}"></p>
                 </div>
@@ -129,32 +121,28 @@
                 </div>
             </div>--%>
         </div>
-        <td>
+
+
+        <%--<td>
             <div class="text-right text-center-mobile">
                 <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doCancel();">Cancel</a>
                 <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doEdit('${parameterRequestDto.id}');">Edit</a>
             </div>
 
-        </td>
+        </td>--%>
 
 
 
-
-
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <p><a class="back" href="#" id="crud_cancel_link" value="doCancel"><i class="fa fa-angle-left"></i>Back</a></p>
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-offset-3">
+                <div class="button-group">
+                    <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doEdit', '${parameterRequestDto.id}')">Edit</a></div>
+            </div>
+        </div>
     </form>
 </div>
 <%@include file="/include/validation.jsp"%>
-<script type="text/javascript">
-
-
-    function doEdit(id){
-        if(confirm('Are you sure you want to edit ? ')){
-            SOP.Crud.cfxSubmit("mainForm", "doEdit", id);
-        }
-    }
-
-    function doCancel(){
-        SOP.Crud.cfxSubmit("mainForm","doCancel");
-    }
-
-</script>
+<%@include file="/include/utils.jsp"%>

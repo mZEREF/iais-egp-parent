@@ -12,9 +12,9 @@
 
 <iais:section title="" id="atmList">
   <iais:row>
-    <iais:field value="Operation Type" required="false"></iais:field>
+    <iais:field value="Operation Type" required="true"></iais:field>
     <iais:value width="7">
-      <iais:select name="operationType" id="operationType" value="${operationType}" options="operationTypeSelect" firstOption="Please select" onchange="displaySection()"></iais:select>
+      <iais:select name="operationType" id="operationType" value="${operationType}" options="operationTypeSelect" firstOption="Please select" ></iais:select>
       <span id="error_domain" name="iaisErrorMsg" class="error-msg"></span>
     </iais:value>
 
@@ -32,14 +32,14 @@
 
 
 
-    <iais:field value="Operation Start Date Time" required="false"></iais:field>
+    <iais:field value="Operation Start Date Time" required="true"></iais:field>
     <iais:value width="7">
       <iais:datePicker id = "startDate" name = "startDate"  value="${startDate}"></iais:datePicker>
      <%--// <span id="error_startDate" name="iaisErrorMsg" class="error-msg"></span>--%>
       <span id="error_actionTime" name="iaisErrorMsg" class="error-msg"></span>
     </iais:value>
 
-    <iais:field value="Operation End Date Time" required="false"></iais:field>
+    <iais:field value="Operation End Date Time" required="true"></iais:field>
     <iais:value width="7">
       <iais:datePicker id = "endDate" name = "endDate"  value="${endDate}"></iais:datePicker>
      <%-- <span id="error_endDate" name="iaisErrorMsg" class="error-msg"></span>--%>
@@ -48,9 +48,18 @@
   </iais:row>
 
   <iais:action style="text-align:center;">
+    <div class="row">
+      <div class="col-xs-12 col-md-11">
+        <div class="text-right">
+          <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
+          <a class="btn btn-primary" id="crud_search_button" value="doQuery" href="#">Search</a>
+        </div>
+      </div>
+    </div>
+    <%--
     <button class="btn btn-lg btn-login-search" type="button" value="doQuery" style="background:#2199E8; color: white" >Search</button>
-    <a class="btn btn-lg btn-login-export" type="button" href="${pageContext.request.contextPath}/audit-trail-file" target="_blank" style="background:#2199E8; color: white" >Export</a>
-    <button class="btn btn-lg btn-login-clear" type="button"  style="background:#2199E8; color: white" >Clear</button>
+
+    <button class="btn btn-lg btn-login-clear" type="button"  style="background:#2199E8; color: white" >Clear</button>--%>
   </iais:action>
 
 </iais:section>
@@ -109,7 +118,7 @@
                         <td class="row_no">${(status.index + 1) + (auditTrailSearch.pageNo - 1) * auditTrailSearch.pageSize}</td>
                           <%-- <td>${resultRow.operationType}</td>--%>
                         <td><c:out value="${resultRow.operation}"></c:out></td>
-                        <td><c:out value="${resultRow.domain}"></c:out></td>
+                        <td><iais:code code="${resultRow.domain}"></iais:code></td>
                         <td><%--<c:out value="${resultRow.batchjobId}"></c:out>--%></td>
                         <td><%--<c:out value="${resultRow.corpPassId}"></c:out>--%></td>
                         <td></td>
@@ -136,22 +145,40 @@
                 </c:choose>
                 </tbody>
               </table>
-              <div class="table-footnote">
-                <div class="row">
-                  <div class="col-xs-6 col-md-8 text-right">
-                    <br><br>
-
-
-                  </div>
-                </div>
-              </div>
-
-
             </div>
           </div>
         </div>
       </div>
+
+
+
     </div>
+
+
+    <div class="table-footnote">
+      <div class="row">
+        <div class="col-xs-6 col-md-4">
+
+        </div>
+        <div class="col-xs-6 col-md-8 text-right">
+          <div class="nav">
+
+          </div>
+          <br><br>
+
+
+
+          <c:if test="${! empty auditTrailSearchResult.rows}">
+            <div class="text-right text-center-mobile">
+              <a class="btn btn-primary" id="crud_search_export" href="${pageContext.request.contextPath}/audit-trail-file">Export</a>
+            </div>
+
+          </c:if>
+
+        </div>
+      </div>
+    </div>
+
   </div>
 
 

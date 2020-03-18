@@ -37,7 +37,7 @@
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
   <div class="main-content">
-    <div class="container">
+    <div class="">
       <div class="form-horizontal">
         <span id="error_configCustomValidation" name="iaisErrorMsg" class="error-msg"></span>
         <br><br>
@@ -79,8 +79,10 @@
         </div>
 
         <iais:action style="text-align:center;">
-          <button class="btn btn-lg btn-login-search" type="button" style="background:#2199E8; color: white" value="doSearch">Search</button>
-          <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" >Clear</button>
+          <div class="text-right">
+            <a class="btn btn-secondary" id="crud_clear_button" href="#">Clear</a>
+            <a class="btn btn-primary" id="crud_search_button" value="doSearch" href="#">Search</a>
+          </div>
         </iais:action>
 
       </div>
@@ -89,7 +91,7 @@
 
 
       <div class="components">
-        <h2 class="component-title">Search &amp; Result</h2>
+        <h2 class="component-title">Search Result</h2>
         <iais:pagination  param="checklistConfigSearch" result="checklistConfigResult"/>
         <div class="table-gp">
           <table class="table">
@@ -177,15 +179,11 @@
         </div>
 
 
-        <div class="application-tab-footer">
               <td>
                 <div class="text-right text-center-mobile">
                   <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: prepareAddConfig();">Add Configuration</a>
-
                 </div>
-
               </td>
-        </div>
 
       </div>
     </div>

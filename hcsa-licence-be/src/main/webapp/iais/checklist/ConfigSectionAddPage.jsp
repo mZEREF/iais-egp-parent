@@ -60,16 +60,11 @@
   }
 
 </style>
-
+<div class="main-content">
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
   <%@ include file="/include/formHidden.jsp" %>
-  <input type="hidden" name="crud_action_type" value="">
-  <input type="hidden" name="crud_action_value" value="">
-  <input type="hidden" name="crud_action_additional" value="">
   <input type="hidden" name="currentValidateId" value="">
-
-  <div class="main-content">
-    <div class="container">
+    <div class="">
       <div class="row">
         <br><br>
         <span id="error_configErrorMsg" name="iaisErrorMsg" class="error-msg"></span>
@@ -165,27 +160,26 @@
               </c:forEach>
               </div>
 
-            <div class="application-tab-footer">
               <div class="row">
                 <div class="col-xs-12 col-sm-6">
+                  <p><a class="back" onclick="doBack()();"><em class="fa fa-angle-left"></em> Back</a></p>
                 </div>
                 <div class="col-xs-12 col-sm-6">
                   <div class="text-right text-center-mobile">
-                    <a class="btn btn-primary next" href="javascript:void(0);" onclick="doBack()">Cancel</a>
                     <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:addSectionItem();">Add Section Item</a>
                     <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:preViewConfig();">Next</a>
                   </div>
                 </div>
               </div>
-            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 </>
 
-  </div>
+
 
 <%@include file="/include/validation.jsp"%>
 <script type="text/javascript">

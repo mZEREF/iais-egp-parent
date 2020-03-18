@@ -34,8 +34,15 @@
         }
     }
 
-    $(".btn-login-search").click(function () {
-        var val = $(".btn-login-search").attr("value");
+    $("#crud_search_button").click(function () {
+        var val = $("#crud_search_button").attr("value");
+        if (val != null && val != ''){
+            SOP.Crud.cfxSubmit("mainForm", val);
+        }
+    })
+
+    $("#crud_cancel_link").click(function () {
+        var val = $("#crud_cancel_link").attr("value");
         if (val != null && val != ''){
             SOP.Crud.cfxSubmit("mainForm", val);
         }
@@ -48,7 +55,7 @@
         }
     })
 
-    $(".btn-login-clear").click(function () {
+    $("#crud_clear_button").click(function () {
         $(".form-horizontal input").val("");
         $(".form-horizontal input[type='checkbox']").removeAttr('checked');
         $(".form-horizontal input[type='radio']").removeAttr('checked');

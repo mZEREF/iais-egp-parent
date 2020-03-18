@@ -33,25 +33,23 @@
 
       <div class="form-group">
         <div class="col-md-12">
-          <label class="col-md-1">Day:
-          </label>
-          <div class="col-md-2">
-            &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;<c:out value="${nonWorkingDayAttr.recursivceDate}"></c:out>
+          <iais:field value="Day:" required="false"></iais:field>
+          <div class="col-md-3">
+            &nbsp; &nbsp;<c:out value="${nonWorkingDayAttr.recursivceDate}"></c:out>
           </div>
         </div>
       </div>
 
       <div class="form-group">
         <div class="col-md-12">
-          <label class="col-md-2">AM Availability:
-          </label>
+          <iais:field value="AM Availability:" required="true"></iais:field>
           <c:if test="${nonWorkingDayAttr.am == true}">
-            Yes<input type="radio" name="amAvailability" value="N" >
-            No<input type="radio" name="amAvailability" value="Y" checked>
+            Yes &nbsp;<input type="radio" name="amAvailability" value="N" >
+            No &nbsp;<input type="radio" name="amAvailability" value="Y" checked>
           </c:if>
           <c:if test="${nonWorkingDayAttr.am == false}">
-            Yes<input type="radio" name="amAvailability" value="N" checked>
-            No<input type="radio" name="amAvailability" value="Y" >
+            Yes &nbsp; <input type="radio" name="amAvailability" value="N" checked>
+            No &nbsp;<input type="radio" name="amAvailability" value="Y" >
           </c:if>
 
           <span id="error_startAt" name="iaisErrorMsg" class="error-msg"></span>
@@ -61,15 +59,14 @@
 
       <div class="form-group">
         <div class="col-md-12">
-          <label class="col-md-2">PM Availability:
-          </label>
+          <iais:field value="PM Availability:" required="true"></iais:field>
           <c:if test="${nonWorkingDayAttr.pm == true}">
-            Yes<input type="radio" name="pmAvailability" value="N" >
-            No<input type="radio" name="pmAvailability" value="Y" checked>
+            Yes &nbsp;<input type="radio" name="pmAvailability" value="N" >
+            No &nbsp;<input type="radio" name="pmAvailability" value="Y" checked>
           </c:if>
           <c:if test="${nonWorkingDayAttr.pm == false}">
-            Yes<input type="radio" name="pmAvailability" value="N" checked>
-            No<input type="radio" name="pmAvailability" value="Y" >
+            Yes &nbsp;<input type="radio" name="pmAvailability" value="N" checked>
+            No &nbsp;<input type="radio" name="pmAvailability" value="Y" >
           </c:if>
 
           <span id="error_endAt" name="iaisErrorMsg" class="error-msg"></span>

@@ -29,9 +29,6 @@
 <div class="main-content">
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
     <input type="hidden" name="currentValidateId" value="">
      <div class="bg-title"><h2>Checklist Item Management</h2></div>
 
@@ -83,12 +80,22 @@
             </div>
           </div>
 
-          <iais:action style="text-align:center;">
-            <button class="btn btn-lg btn-login-search" type="button" style="background:#2199E8; color: white" value="doSearch">Search</button>
-            <a class="btn btn-lg btn-login-export" type="button" href="${pageContext.request.contextPath}/checklist-item-file?action=checklistItem" target="_blank" style="background:#2199E8; color: white" >Export Checklist Item</a>
-            <a class="btn btn-lg btn-login-export" type="button" href="${pageContext.request.contextPath}/checklist-item-file?action=regulation" target="_blank" style="background:#2199E8; color: white" >Export Regulation</a>
-            <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" >Clear</button>
-          </iais:action>
+          <div class="application-tab-footer">
+            <div class="row">
+              <div class="col-xs-12 col-md-11">
+                <div class="text-right">
+                  <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
+
+                  <c:if test="${!empty checklistItemResult.rows}">
+                    <a class="btn btn-secondary"  href="${pageContext.request.contextPath}/checklist-item-file?action=checklistItem">Export Checklist Item</a>
+                  </c:if>
+
+                  <a class="btn btn-secondary"   href="${pageContext.request.contextPath}/checklist-item-file?action=regulation">Export Regulation</a>
+                  <a class="btn btn-primary" id="crud_search_button" value="doSearch" href="#">Search</a>
+                </div>
+              </div>
+            </div>
+          </div>
 
         </div>
         <div class="tab-content">

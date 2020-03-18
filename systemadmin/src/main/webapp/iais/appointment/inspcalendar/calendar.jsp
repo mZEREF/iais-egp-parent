@@ -26,9 +26,8 @@
 
 
           <iais:section title="" id = "demoList">
-
              <iais:row>
-                <iais:field value="Working Group:"/>
+                <iais:field value="Working Group:" required="true"/>
                 <iais:value width="18">
                   <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  options = "wrlGrpNameOpt" firstOption="Please Select" value="${shortName}" ></iais:select>
                   <span id="error_groupName" name="iaisErrorMsg" class="error-msg"></span>
@@ -41,14 +40,14 @@
               <iais:row>
                 <iais:field value="Inspector ID:"/>
                 <iais:value width="18">
-                  <input type="text" name="userName" value="${userName}" />
+                  <input type="text" name="userName" value="${userName}" maxlength="255" />
                   <span id="error_userName" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
               </iais:row>
               </c:if>
 
             <iais:row>
-              <iais:field value="Year:"/>
+              <iais:field value="Year:" required="true"/>
               <iais:value width="18">
                 <iais:select name="dropYearOpt" id="dropYearOpt"
                              options = "dropYearOpt" firstOption="Please Select" value="${dropYear}" ></iais:select>
@@ -75,7 +74,7 @@
             <iais:row>
               <iais:field value="Non-Available Date Description:"/>
               <iais:value width="18">
-                <input type="text" name="userBlockDateDescription" value="${userBlockDateDescription}" />
+                <input type="text" name="userBlockDateDescription" maxlength="255" value="${userBlockDateDescription}" />
                 <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
               </iais:value>
             </iais:row>
@@ -90,8 +89,10 @@
             </iais:row>
 
             <iais:action style="text-align:center;">
-              <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doSearch()">Search</button>
-              <button class="btn btn-lg btn-login-clear-inner" type="button"  style="background:#2199E8; color: white" onclick="javascript:doClear()">Clear</button>
+              <div class="text-right">
+                <a class="btn btn-secondary" onclick="javascript:doClear()" href="#">Clear</a>
+                <a class="btn btn-primary" id="crud_search_button" value="doQuery" href="#">Search</a>
+              </div>
             </iais:action>
 
             </div>
@@ -187,9 +188,6 @@
 <%@include file="/include/validation.jsp"%>
 <%@include file="/include/utils.jsp"%>
 <script>
-    function doSearch() {
-        SOP.Crud.cfxSubmit("mainForm", "doQuery");
-    }
 
     function doAdd() {
         SOP.Crud.cfxSubmit("mainForm", "add");

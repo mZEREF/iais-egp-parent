@@ -14,39 +14,50 @@
 
     <br><br>
     <div class="main-content">
+        <br>
+        <div class="bg-title"><h2>ErrorMessage management</h2></div>
         <div class="container">
             <div class="form-horizontal">
                 <div class="form-group">
-                    <label class="col-xs-4 col-md-2 control-label" >Type</label>
-                    <div class="col-xs-5 col-md-3">
-                        <iais:select name="domainType" id="domainType" value="${domainType}" options="domainTypeSelect" firstOption="Please select" onchange="displaySection()"></iais:select>
-                    </div>
+                    <iais:field value="Type" required="true"/>
+                    <iais:value width="7">
+                        <iais:select name="domainType" id="domainType" value="${domainType}" options="domainTypeSelect" firstOption="Please Select" onchange="displaySection()"></iais:select>
+                    </iais:value>
                     <span id="error_domainType" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
 
                 <div id = "msgTypeRow" class="form-group" style="display:none">
-                    <label class="col-xs-4 col-md-2 control-label" >Message Type</label>
-                    <div class="col-xs-5 col-md-3">
-                        <iais:select name="msgType" id="msgType" value="${msgType}" options="msgTypeSelect" firstOption="Please select" onchange="displaySection()"></iais:select>
-                    </div>
+                    <iais:field value="Message Type" />
+                    <iais:value width="7">
+                        <iais:select name="msgType" id="msgType" value="${msgType}" options="msgTypeSelect" firstOption="Please Select" onchange="displaySection()"></iais:select>
+                    </iais:value>
                 </div>
 
                 <div id = "moduleTypeRow" class="form-group" style="display:none">
-                    <label class="col-xs-4 col-md-2 control-label" >Module</label>
-                    <div class="col-xs-5 col-md-3">
-                        <iais:select name="module"  id="module" value="${module}" options="moduleTypeSelect" firstOption="Please select" ></iais:select>
+                    <iais:field value="Module" />
+                    <iais:value width="7">
+                        <iais:select name="module"  id="module" value="${module}" options="moduleTypeSelect" firstOption="Please Select" ></iais:select>
+                    </iais:value>
+                </div>
+
+                <div class="application-tab-footer">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-11">
+                            <div class="text-right">
+                                <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
+                                <a class="btn btn-primary" id="crud_search_button" value="doQuery" href="#">Search</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-
-            <iais:action style="text-align:center;">
-                <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doSearch()">Search</button>
-                <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doClear()">Clear</button>
-            </iais:action>
             </div>
+
+
 
             <div class="components">
                 <iais:pagination  param="msgSearchParam" result="msgSearchResult"/>
+                <br><br>
                 <h2 class="component-title">Search Results</h2>
                 <div class="table-gp">
                     <table class="table">
@@ -94,9 +105,6 @@
                     </table>
 
                 </div>
-
-
-
             </div>
             </div>
 
@@ -104,6 +112,7 @@
     </div>
 </form>
 <%@include file="/include/validation.jsp"%>
+<%@include file="/include/utils.jsp"%>
 <script type="text/javascript">
     function doSearch(){
         SOP.Crud.cfxSubmit("mainForm", "doSearch");
@@ -131,13 +140,13 @@
 
 
     function doClear() {
-        $("#domainType option[text = 'Please select']").val("selected", "selected");
+        $("#domainType option[text = 'Please Select']").val("selected", "selected");
         $("#domainType").val("");
-        $("#msgType option[text = 'Please select']").val("selected", "selected");
+        $("#msgType option[text = 'Please Select']").val("selected", "selected");
         $("#msgType").val("");
-        $("#module option[text = 'Please select']").val("selected", "selected");
+        $("#module option[text = 'Please Select']").val("selected", "selected");
         $("#module").val("");
-        $(".form-horizontal .current").text("Please select");
+        $(".form-horizontal .current").text("Please Select");
     }
 
     $(document).ready(function() {
