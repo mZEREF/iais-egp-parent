@@ -222,16 +222,15 @@
                                                 </td>
                                             </tr>
                                             <tr height="1">
-                                                <td class="col-xs-2" >
+                                                <td class="col-xs-4" >
                                                     <p >Internal Remarks:</p>
                                                 </td>
-                                                <td><div class="col-sm-9"><p><textarea name="processRemarks" cols="50" rows="6"  title="content" MAXLENGTH="8000"></textarea></p></div>
-                                                </td>
+                                                <td colspan="2" class="col-sm-8"><p><textarea style="resize:none" name="processRemarks" cols="50" rows="6"  title="content" MAXLENGTH="8000"><c:out value="${appPremisesRecommendationDto.processRemarks}"/></textarea></p></td>
                                             </tr>
 
                                             <tr>
                                                 <td class="col-xs-4">
-                                                    <p>Processing Decision:<b style="color:#ff0000;">*</b></p>
+                                                    <p>Processing Decision:<span style="color:#ff0000;">*</span></p>
                                                 </td>
                                                 <td class="col-xs-4">
                                                     <iais:select name="processingDecision" options="processingDe" firstOption="Please select" value="${appPremisesRecommendationDto.processingDecision}"/>
@@ -246,6 +245,7 @@
                                                 </button>
                                             </div>
                                         </div>
+                                        <br/>
                                         <div class="alert alert-info" role="alert">
                                             <strong>
                                                 <h4>Processing History</h4>

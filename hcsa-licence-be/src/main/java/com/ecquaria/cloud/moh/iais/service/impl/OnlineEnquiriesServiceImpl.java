@@ -283,9 +283,9 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         }
         AppPremisesRecommendationDto NcRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_TCU).getEntity();
         if(NcRecommendationDto==null){
-            inspectionReportDto.setMarkedForAudit(false);
+           // inspectionReportDto.setMarkedForAudit(false);
         }else if(NcRecommendationDto!=null&&NcRecommendationDto.getRecomInDate()!=null) {
-            inspectionReportDto.setMarkedForAudit(true);
+           // inspectionReportDto.setMarkedForAudit(true);
             Date recomInDate = NcRecommendationDto.getRecomInDate();
             inspectionReportDto.setTcuDate(recomInDate);
         }

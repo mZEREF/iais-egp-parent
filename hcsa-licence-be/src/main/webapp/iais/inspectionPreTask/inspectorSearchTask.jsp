@@ -75,7 +75,7 @@
                       </iais:row>
                       <iais:row>
                         <iais:field value="Inspector Name"/>
-                        <iais:value width="18">
+                        <iais:value >
                           <div onload="inspectorSearchTask_optionNameAuto(${inspectorValue})">
                             <select name = "inspectorSearchTask_inspectorName" id="inspectorSearchTask_inspectorName" onclick="javascript:doInspectorSearchTaskSelect()">
                               <option value="-">Please select</option>

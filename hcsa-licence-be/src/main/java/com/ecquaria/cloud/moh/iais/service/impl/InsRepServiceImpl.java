@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -65,6 +66,7 @@ import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sop.util.DateUtil;
 
 /**
  * @author weilu
@@ -222,9 +224,9 @@ public class InsRepServiceImpl implements InsRepService {
         }
         AppPremisesRecommendationDto NcRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_TCU).getEntity();
         if(NcRecommendationDto==null){
-            inspectionReportDto.setMarkedForAudit(false);
+            inspectionReportDto.setMarkedForAudit("No");
         }else if(NcRecommendationDto!=null&&NcRecommendationDto.getRecomInDate()!=null) {
-            inspectionReportDto.setMarkedForAudit(true);
+            inspectionReportDto.setMarkedForAudit("Yes");
             Date recomInDate = NcRecommendationDto.getRecomInDate();
             inspectionReportDto.setTcuDate(recomInDate);
         }
@@ -250,10 +252,13 @@ public class InsRepServiceImpl implements InsRepService {
             inspectionDate = appPreRecommentdationDtoDate.getRecomInDate();
         }
         if(appPreRecommentdationDtoStart!=null){
-            inspectionStartTime = appPreRecommentdationDtoStart.getRecomInDate();
+            String recomDecision = appPreRecommentdationDtoStart.getRecomDecision();
+            inspectionStartTime = DateUtil.parseDate(recomDecision, "dd/MM/yyyy");
+
         }
         if(appPreRecommentdationDtoEnd!=null){
-            inspectionEndTime = appPreRecommentdationDtoEnd.getRecomInDate();
+            String recomDecision = appPreRecommentdationDtoStart.getRecomDecision();
+            inspectionEndTime = DateUtil.parseDate(recomDecision, "dd/MM/yyyy");
         }
         String bestPractice = null;
         String remarks = null;

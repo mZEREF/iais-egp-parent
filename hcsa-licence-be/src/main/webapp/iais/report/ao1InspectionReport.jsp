@@ -232,21 +232,19 @@
                                                     </td>
                                                 </tr>
                                                 <tr height="1">
-                                                    <td class="col-xs-2">
-                                                        <p>
-                                                            Internal Remarks:
-                                                        </p>
+                                                    <td class="col-xs-4">
+                                                        <p>Internal Remarks:</p>
                                                     </td>
                                                     <td>
-                                                        <div class="col-sm-9">
-                                                            <p><textarea name="remarks" cols="50" rows="6" maxlength="8000" title="content"></textarea></p>
+                                                        <div class="col-sm-8">
+                                                            <p><textarea style="resize:none" name="remarks" cols="50" rows="6" maxlength="8000" title="content"><c:out value="${appPremisesRecommendationDto.processRemarks}"/></textarea></p>
                                                         </div>
                                                     </td>
                                                 </tr>
 
                                                 <tr>
                                                     <td class="col-xs-4">
-                                                        <p>Processing Decision:<b style="color:#ff0000;">*</b></p>
+                                                        <p>Processing Decision:<span style="color:#ff0000;">*</span></p>
                                                     </td>
                                                     <td class="col-xs-4">
                                                         <iais:select name="processingDecision" id="processingDecision" options="processingDe" firstOption="Please select" value="${appPremisesRecommendationDto.processingDecision}"/>
@@ -261,6 +259,7 @@
                                                 </button>
                                             </div>
                                         </div>
+                                        <br/>
                                         <div class="alert alert-info" role="alert">
                                             <strong>
                                                 <h4>Processing History</h4>

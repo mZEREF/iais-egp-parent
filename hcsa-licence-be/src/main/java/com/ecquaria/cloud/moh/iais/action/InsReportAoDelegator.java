@@ -168,14 +168,12 @@ public class InsReportAoDelegator {
         String riskLevel = ParamUtil.getRequestString(bpc.request, "riskLevel");
         String processingDecision = ParamUtil.getRequestString(bpc.request, "processingDecision");
         String followUpAction = ParamUtil.getRequestString(bpc.request, "followUpAction");
+        String processRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
         String number = ParamUtil.getRequestString(bpc.request, NUMBER);
         ParamUtil.setSessionAttr(bpc.request, CHRONO, chrono);
         ParamUtil.setSessionAttr(bpc.request, NUMBER, number);
-        String tcuNeeded = ParamUtil.getRequestString(bpc.request, "tcuNeed");
-        String tcuDateStr = ParamUtil.getRequestString(bpc.request, "tcuDate");
-        Date tcuDate = DateUtil.parseDate(tcuDateStr, "dd/MM/yyyy");
         String enforcement = ParamUtil.getRequestString(bpc.request, "engageEnforcement");
         String enforcementRemarks = ParamUtil.getRequestString(bpc.request, "enforcementRemarks");
         ParamUtil.setSessionAttr(bpc.request, CHRONO, chrono);
@@ -188,6 +186,7 @@ public class InsReportAoDelegator {
         appPremisesRecommendationDto.setRiskLevel(riskLevel);
         appPremisesRecommendationDto.setFollowUpAction(followUpAction);
         appPremisesRecommendationDto.setProcessingDecision(processingDecision);
+        appPremisesRecommendationDto.setProcessRemarks(processRemarks);
         return appPremisesRecommendationDto;
     }
 

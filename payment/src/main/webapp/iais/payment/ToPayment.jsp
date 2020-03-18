@@ -1,34 +1,41 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%
-    /*
-      You can customize this default file:
-      /D:/Users/ecquaria/Desktop/eclipse/plugins/com.ecquaria.eclipse.sit_6.1.1/WebPage.jsp.default
-    */
-
-//handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
-
-<webui:setAttribute name="header-ext">
-    <%
-        /* You can add additional content (SCRIPT, STYLE elements)
-         * which need to be placed inside HEAD element here.
-         */
-    %>
-</webui:setAttribute>
-
 <webui:setAttribute name="title">
-    <%
-        /* You can set your page title here. */
-    %>
-
     <%=process.runtime.getCurrentComponentName()%>
-
 </webui:setAttribute>
 
 <form method="post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <h1>This is Bank!!!</h1>
-    <button type="submit">pay</button>
+    <h1>This is a dummy bank payment page</h1>
+    <iais:section title="bank">
+    <iais:row>
+        <iais:field value="Card Holder Name"/>
+        <iais:value width="7">
+            <input type="text">
+        </iais:value>
+    </iais:row>
+    <iais:row>
+        <iais:field value="Card Number"/>
+        <iais:value width="7">
+            <input type="text">
+        </iais:value>
+    </iais:row>
+    <iais:row>
+        <iais:field value="Expiry Date"/>
+        <iais:value width="7">
+            <input type="text"> / <input type="text">
+        </iais:value>
+    </iais:row>
+    <iais:row>
+        <iais:field value="CVV No."/>
+        <iais:value width="7">
+            <input type="text">
+        </iais:value>
+    </iais:row>
+    </iais:section>
+    <button type="submit">Proceed to pay</button>
 </form>
