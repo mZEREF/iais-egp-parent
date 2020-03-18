@@ -1,13 +1,8 @@
 
 
-<style>
 
 
-
-</style>
-
-
-<div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">
+<div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;margin-left: 2%">
   <div id="wizard-page-title">A Clinical Governance Officer is responsible for the clinical and technical oversight of a medical service.</div>
   <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
     <div id="control--runtime--0" class="page control control-area  container-p-1">
@@ -446,6 +441,9 @@
         }
 
         doEdit();
+
+        $('#control--runtime--0').children().remove()
+
     });
 
     var disabledAll = function () {

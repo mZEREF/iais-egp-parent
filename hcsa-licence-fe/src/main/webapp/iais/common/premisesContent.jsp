@@ -95,7 +95,9 @@
                         </c:choose>
                     </iais:value>
                 </iais:row>
-                <span class="error-msg" id="error_premisesSelect${status.index}" style="margin-left: 35%" name="iaisErrorMsg"></span>
+                <div class="col-xs-12 col-md-4 "></div>
+                <div class=" col-xs-11 col-sm-7 col-md-5"><span class="error-msg" id="error_premisesSelect${status.index}"  name="iaisErrorMsg"></span></div>
+
             </div>
             <div class="prem-summary hidden ">
                 <h3 class="without-header-line">Premises Summary</h3>
@@ -207,9 +209,14 @@
                             <input type="text" value="${appGrpPremisesDto.onsiteStartHH}" maxlength="2" style="width: 60px;margin-right: 2%" name="onSiteStartHH"/>(HH)
                             :
                             <input type="text" value="${appGrpPremisesDto.onsiteStartMM}" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%"  name="onSiteStartMM"/>(MM)
+                        </div>
+                        <div  class="col-xs-12 col-md-4 "></div>
+                        <div  class="col-xs-9 col-sm-5 col-md-6">
                             <span class="error-msg" name="iaisErrorMsg" id="error_onsiteStartMM${status.index}"></span>
                         </div>
+
                     </div>
+
                     <div class="form-group">
                         <label class="col-xs-12 col-md-4 control-label">
                             Operating Hours (End) <span class="mandatory">*</span>
@@ -219,6 +226,10 @@
                             <input type="text" value="${appGrpPremisesDto.onsiteEndHH}" maxlength="2" style="width: 60px;margin-right: 2%" name="onSiteEndHH"/>(HH)
                             :
                             <input type="text" value="${appGrpPremisesDto.onsiteEndMM}" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%" name="onSiteEndMM"/>(MM)
+
+                        </div>
+                        <div  class="col-xs-12 col-md-4 "></div>
+                        <div class="col-xs-9 col-sm-5 col-md-6">
                             <span class="error-msg" name="iaisErrorMsg" id="error_onsiteEndMM${status.index}"></span>
                         </div>
                     </div>

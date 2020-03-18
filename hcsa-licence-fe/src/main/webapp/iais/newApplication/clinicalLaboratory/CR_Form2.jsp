@@ -1,9 +1,11 @@
+
+
 <style>
-
-
+  table.control-grid.columns1 > tbody > tr > td > .section.control input[type=text], table.control-grid.columns1 > tbody > tr > td > .section.control input[type=email], table.control-grid.columns1 > tbody > tr > td > .section.control input[type=number], table.control-grid.columns1 > tbody > tr > td > .section.control .nice-select {
+    margin-bottom: 15px;margin-top: 25px;
+  }
 
 </style>
-
 
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">
   <h4>A Clinical Governance Officer is responsible for the clinical and technical oversight of a medical service.</h4>
@@ -154,7 +156,7 @@
                         </div>
 
                         <div id="newOfficer" class="new-officer-form ${cgoIndeNo}-new hidden">
-                          <table class="control-grid">
+                          <table class="control-grid" >
                             <tbody>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">

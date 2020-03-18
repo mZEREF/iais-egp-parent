@@ -46,11 +46,6 @@
 
           <div> <span  class="error-msg" name="iaisErrorMsg" id="error_reason"></span></div>
 
-          <div style="display: none;margin-top: 10px" id="cgo" class="col-xs-12 col-md-12" >
-       <%--     <a class="btn  btn-secondary" onclick="deletes()" style="margin-left: 20px;"  >delete</a>--%>
-            <%@include file="cgo.jsp"%>
-
-          </div>
 
           <div class="col-xs-12 col-md-10" id="othersReason" style="display: none" >
             <label style="font-size: 20px;margin-top: 1%">Others reason</label>
@@ -81,7 +76,11 @@
 
       </div>
       </div>
+    <div style="display: none;margin-top: 10px;margin-left: 1%" id="cgo" class="col-xs-12 col-md-9" >
+      <%--     <a class="btn  btn-secondary" onclick="deletes()" style="margin-left: 20px;"  >delete</a>--%>
+      <%@include file="cgo.jsp"%>
 
+    </div>
       <div class="col-xs-12 col-md-10" style="margin-left: 1%">
 
         <label style="font-size: 25px">Any supporting remarks<span class="mandatory"> *</span></label>

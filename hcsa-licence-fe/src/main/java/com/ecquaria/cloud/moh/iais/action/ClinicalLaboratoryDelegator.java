@@ -1370,6 +1370,7 @@ public class ClinicalLaboratoryDelegator {
     private void  doValidateSvcDocument(HttpServletRequest request,Map<String,String> errorMap){
 
         AppSubmissionDto appSubmissionDto =(AppSubmissionDto)request.getSession().getAttribute("AppSubmissionDto");
+
         if(appSubmissionDto!=null){
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if(appSvcRelatedInfoDtoList!=null){
@@ -1378,7 +1379,6 @@ public class ClinicalLaboratoryDelegator {
                     if(appSvcDocDtoLit!=null){
 
                         for(int i=0;i<appSvcDocDtoLit.size();i++){
-
                             Integer docSize = appSvcDocDtoLit.get(i).getDocSize();
                             String docName = appSvcDocDtoLit.get(i).getDocName();
                             if(docSize>4*1024*1024){

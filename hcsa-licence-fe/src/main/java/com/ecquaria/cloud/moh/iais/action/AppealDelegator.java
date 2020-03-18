@@ -115,7 +115,7 @@ public class AppealDelegator {
     public @ResponseBody String genGovernanceOfficerHtmlList(HttpServletRequest request){
 
         List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();
-        SelectOption sp0 = new SelectOption("-1", "Select Personnel");
+        SelectOption sp0 = new SelectOption("-1", "Please Select");
         cgoSelectList.add(sp0);
         SelectOption sp1 = new SelectOption("newOfficer", "I'd like to add a new personnel");
         cgoSelectList.add(sp1);
