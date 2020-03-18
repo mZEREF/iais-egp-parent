@@ -221,6 +221,6 @@ public interface ApplicationClient  {
     FeignResponseEntity<List<AppSvcKeyPersonnelDto>> getAppSvcKeyPersonnel(@RequestBody ApplicationDto applicationDto);
     @PostMapping(value = "/file-existence",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ProcessFileTrackDto> isFileExistence(@RequestBody Map<String,String> map);
-    @GetMapping(value = "/reason-used")
+    @GetMapping(value = "/appeal/reason-used")
     FeignResponseEntity<Boolean> isUseReason(@RequestParam("id") String id,@RequestParam("reason") String reason);
 }

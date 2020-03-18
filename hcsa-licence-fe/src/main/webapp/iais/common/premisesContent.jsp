@@ -256,7 +256,7 @@
                                         <label class="col-xs-12 col-md-4 control-label">
                                             Public Holidays Operating Hours (Start)
                                         </label>
-                                        <div class="col-xs-9 col-sm-5 col-md-4">
+                                        <div class="col-xs-9 col-sm-5 col-md-6">
                                             <input class="PbHolDayStartHH" type="text" name="${premValue}onSitePbHolDayStartHH${phStat.index}" value="${ph.onsiteStartFromHH}" maxlength="2" style="width: 60px;margin-right: 2%"/>(HH)
                                             :
                                             <input class="PbHolDayStartMM" type="text" name="${premValue}onSitePbHolDayStartMM${phStat.index}" value="${ph.onsiteStartFromMM}" maxlength="2" style="width: 60px;;margin-right: 2%;margin-left: 2%"/>(MM)
@@ -266,10 +266,13 @@
                                         <label class="col-xs-12 col-md-4 control-label">
                                             Public Holidays Operating Hours (End)
                                         </label>
-                                        <div class="col-xs-9 col-sm-5 col-md-4">
+                                        <div class="col-xs-9 col-sm-5 col-md-6">
                                             <input class="PbHolDayEndHH" type="text" name="${premValue}onSitePbHolDayEndHH${phStat.index}" value="${ph.onsiteEndToHH}" maxlength="2" style="width: 60px;margin-right: 2%"/>(HH)
                                             :
                                             <input class="PbHolDayEndMM" type="text" name="${premValue}onSitePbHolDayEndMM${phStat.index}" value="${ph.onsiteEndToMM}" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%"/>(MM)
+                                        </div>
+                                        <div class="col-xs-12 col-md-4"></div>
+                                        <div class="col-xs-9 col-sm-5 col-md-6">
                                             <span class="error-msg" name="iaisErrorMsg" id="error_onsiteEndToMM${status.index}"></span>
                                         </div>
                                     </div>

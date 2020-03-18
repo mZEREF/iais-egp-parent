@@ -2,6 +2,12 @@
 
 
 
+<style>
+  table.control-grid.columns1 > tbody > tr > td > .section.control input[type=text], table.control-grid.columns1 > tbody > tr > td > .section.control input[type=email], table.control-grid.columns1 > tbody > tr > td > .section.control input[type=number], table.control-grid.columns1 > tbody > tr > td > .section.control .nice-select {
+    margin-bottom: 15px;margin-top: 25px;
+  }
+
+</style>
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;margin-left: 2%">
   <div id="wizard-page-title">A Clinical Governance Officer is responsible for the clinical and technical oversight of a medical service.</div>
   <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
@@ -442,7 +448,7 @@
 
         doEdit();
 
-        $('#control--runtime--0').children().remove()
+        $('#control--runtime--0').children().remove("hr")
 
     });
 

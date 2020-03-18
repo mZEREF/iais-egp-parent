@@ -535,7 +535,7 @@ public class UploadFileServiceImpl implements UploadFileService {
               return;
             }
             String groupId = applicationGroup.get(0).getId();
-
+            //delete old grp history (that the document is blank before zip)
             deleteFile(groupId);
 
             List<AppSvcDocDto> appSvcDoc = applicationListFileDto.getAppSvcDoc();
