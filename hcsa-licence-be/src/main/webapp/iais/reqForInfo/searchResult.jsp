@@ -41,7 +41,7 @@
                                                 <input type="radio" name="select_search" value="licence"  /> Licence No
                                             </iais:value>
                                         </iais:row>
-                                        <iais:action style="text-align:center;">
+                                        <iais:action style="text-align:right;">
                                             <button type="button" class="btn btn-primary" type="button"
                                                      onclick="javascript:doSearch();">Search</button>
                                             <button type="button" class="btn btn-primary" type="button"

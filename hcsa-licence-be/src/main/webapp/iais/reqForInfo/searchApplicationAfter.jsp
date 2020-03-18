@@ -65,7 +65,7 @@
                                                 &nbsp;System detects that user enters Effective end date before Effective start date in predefined format.
                                             </p>
                                         </iais:row>
-                                        <iais:action style="text-align:center;">
+                                        <iais:action style="text-align:right;">
                                             <button class="btn btn-primary" type="button"  onclick="javascript:doAppSearch()">Search</button>
                                             <button class="btn btn-secondary" type="button"  onclick="javascript:doAppBack()">Back</button>
                                             <button class="btn btn-secondary" type="button"  onclick="javascript:doAppClear()">Clear</button>

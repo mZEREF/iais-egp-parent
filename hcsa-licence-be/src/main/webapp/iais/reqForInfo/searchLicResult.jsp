@@ -43,7 +43,7 @@
                                                 <input type="radio" name="select_search" value="licence" checked /> Licence No
                                             </iais:value>
                                         </iais:row>
-                                        <iais:action style="text-align:center;">
+                                        <iais:action style="text-align:right;">
                                             <button type="button" class="btn btn-primary" type="button"
                                                      onclick="javascript:doSearch();">Search</button>
                                             <button type="button" class="btn btn-primary" type="button"
@@ -111,7 +111,7 @@
                                             <td>
                                                <c:if test="${pool.licenceStatus=='Active'}">
                                                    <iais:action style="text-align:center;">
-                                                       <button type="button"  class="btn btn-lg btn-login-submit" onclick="javascript:doReqForInfo('${pool.licPremId}');" >ReqForInfo</button>
+                                                       <a onclick="javascript:doReqForInfo('${pool.licPremId}');" >ReqForInfo</a>
                                                    </iais:action>
                                                </c:if>
                                             </td>

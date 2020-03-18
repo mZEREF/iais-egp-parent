@@ -26,7 +26,7 @@
                                 <div class="panel-main-content">
                                     <iais:section title="" id = "supPoolList">
                                         <iais:row>
-                                            <iais:field value="Search No:"/>
+                                            <iais:field value="Search No"/>
                                             <iais:value width="18">
                                                 <label>
                                                     <input type="text"  style="width:180%; font-weight:normal;" name="searchNo" maxlength="100" value="${searchNo}" />
@@ -65,7 +65,7 @@
                                                 </c:choose>
                                             </iais:value>
                                         </iais:row>
-                                        <iais:action style="text-align:center;">
+                                        <iais:action style="text-align:right;">
                                             <button type="button" class="btn btn-primary" type="button"
                                                      onclick="javascript:doSearch();">Search</button>
                                             <button type="button" class="btn btn-primary" type="button"
@@ -141,12 +141,12 @@
                                             <td>
                                                 <c:if test="${pool.isCessation==1}">
                                                     <iais:action style="text-align:center;">
-                                                        <button type="button"  class="btn btn-lg btn-login-submit" onclick="javascript:doCessation('${pool.licenceId}');" >Cessation</button>
+                                                        <a onclick="javascript:doCessation('${pool.licenceId}');" >Cessation</a>
                                                     </iais:action>
                                                 </c:if>
                                                 <c:if test="${pool.isCessation==0}">
                                                     <iais:action style="text-align:center;">
-                                                        <button type="button"  class="btn btn-lg btn-login-submit" data-toggle="modal" data-target="#editUser"  >Cessation</button>
+                                                        <a  data-toggle="modal" data-target="#editUser"  >Cessation</a>
                                                     </iais:action>
                                                 </c:if>
                                             </td>

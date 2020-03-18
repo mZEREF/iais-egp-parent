@@ -55,7 +55,7 @@
                                             <td><c:out value="${pool.requestUser}" /></td>
                                             <td>
                                                 <iais:action style="text-align:center;">
-                                                    <button type="button"  class="btn btn-lg btn-login-submit" onclick="javascript:doView('${pool.reqInfoId}');" >View</button>
+                                                    <a onclick="javascript:doView('${pool.reqInfoId}');" >View</a>
                                                 </iais:action>
                                             </td>
                                         </tr>

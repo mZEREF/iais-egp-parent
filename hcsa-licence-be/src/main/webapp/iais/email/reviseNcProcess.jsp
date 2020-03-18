@@ -250,7 +250,7 @@
                                     <tr height="1">
                                         <td class="col-xs-2" >
                                             <p >
-                                                Processing Decision:<b style="color:#ff0000;">*</b>
+                                                Processing Decision:<b style="color:#ff0000;"> *</b>
                                             </p>
                                         </td>
                                         <td>

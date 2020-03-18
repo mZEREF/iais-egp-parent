@@ -312,7 +312,7 @@
                             </div>
 
                     </c:if>
-                    <iais:action style="text-align:center;">
+                    <iais:action style="text-align:right;">
                         <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Search</button>
                         <button class="btn btn-primary" type="button"  onclick="javascript:doLicBack()">Back</button>
                         <button class="btn btn-secondary" type="button"  onclick="javascript:doLicClear()">Clear</button>
@@ -379,12 +379,12 @@
                                             <td>
                                                 <c:if test="${pool.isCessation==1}">
                                                     <iais:action style="text-align:center;">
-                                                        <button type="button"  class="btn btn-lg btn-login-submit" onclick="javascript:doCessation('${pool.licenceId}');" >Cessation</button>
+                                                        <a onclick="javascript:doCessation('${pool.licenceId}');" >Cessation</a>
                                                     </iais:action>
                                                 </c:if>
                                                 <c:if test="${pool.isCessation==0}">
                                                     <iais:action style="text-align:center;">
-                                                        <button type="button"  class="btn btn-lg btn-login-submit" data-toggle="modal" data-target="#editUser"  >Cessation</button>
+                                                        <a data-toggle="modal" data-target="#editUser"  >Cessation</a>
                                                     </iais:action>
                                                 </c:if>
                                             </td>

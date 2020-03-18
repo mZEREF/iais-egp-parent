@@ -83,7 +83,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -798,8 +797,12 @@ public class RequestForInformationDelegator {
         }
 
         if(!licPremisesReqForInfoDtoList.isEmpty()) {
-            //for
-            ParamUtil.setSessionAttr(request, "licenceNo", licPremisesReqForInfoDtoList.get(0).getLicenceNo());
+            for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
+                 ) {
+                if(StringUtil.isEmpty(licPreRfi.getUserReply())){
+                    ParamUtil.setSessionAttr(request, "licenceNo", licPreRfi.getLicenceNo());
+                }
+            }
         }
         else {
             ParamUtil.setSessionAttr(request, "licenceNo", "");

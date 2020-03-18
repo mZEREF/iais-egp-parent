@@ -311,7 +311,7 @@
 
                     </c:if>
 
-                    <iais:action style="text-align:center;">
+                    <iais:action style="text-align:right;">
                         <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Search</button>
                         <button class="btn btn-primary" type="button"  onclick="javascript:doLicBack()">Back</button>
                         <button class="btn btn-secondary" type="button"  onclick="javascript:doLicClear()">Clear</button>

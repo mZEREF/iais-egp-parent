@@ -39,10 +39,13 @@
 
 
 
-<form method="post" action=<%=process.runtime.continueURL()%>>
+<form method="post" action=<%=process.runtime.continueURL()%> >
     <br><br><br><br><br><br>
+
     <h3>${subject}</h3>
-    <hr>
-    ${messageContent}
-    <input type="submit" class="backspace-icon" value="Back">
+    <div class="panel panel-default">
+        ${messageContent}
+    </div>
+
+    <input type="submit" class="btn btn-secondary" value="Back">
 </form>

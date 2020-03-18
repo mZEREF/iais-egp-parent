@@ -252,7 +252,7 @@
                                     <tr height="1">
                                         <td class="col-xs-2" >
                                             <p >
-                                                Processing Decision:<b style="color:#ff0000;">*</b>
+                                                Processing Decision:<b style="color:#ff0000;"> *</b>
                                             </p>
                                         </td>
                                         <td>
@@ -281,7 +281,7 @@
                                 </table>
                                 <p class="text-right text-center-mobile">
                                     <iais:action style="text-align:center;">
-                                        <button type="button" class="search btn" onclick="javascript:doSend();">Submit</button>
+                                        <button type="button" class="btn btn-primary" onclick="javascript:doSend();">Submit</button>
                                     </iais:action >
                                 </p>
                                 <div class="alert alert-info" role="alert">
