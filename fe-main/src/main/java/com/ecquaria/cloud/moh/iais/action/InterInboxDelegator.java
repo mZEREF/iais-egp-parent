@@ -21,23 +21,18 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.InboxConst;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
-import java.io.IOException;
-import java.io.Serializable;
-import java.text.ParseException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.Serializable;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Hc
@@ -95,7 +90,8 @@ public class InterInboxDelegator {
         AccessUtil.initLoginUserInfo(bpc.request);
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         interInboxUserDto = inboxService.getUserInfoByUserId(loginContext.getUserId());
-        ParamUtil.setSessionAttr(bpc.request,"inter-inbox-user-info", interInboxUserDto);
+        log.debug(StringUtil.changeForLog("Login role information --->> ##User-Id:"+interInboxUserDto.getUserId()+"### Licensee-Id:"+interInboxUserDto.getLicenseeId()));
+        ParamUtil.setSessionAttr(bpc.request,InboxConst.INTER_INBOX_USER_INFO, interInboxUserDto);
         AuditTrailHelper.auditFunction("main-web", "main web");
     }
 
@@ -106,8 +102,7 @@ public class InterInboxDelegator {
      * >>>>>>>>Message Inbox<<<<<<<
      */
     public void toMsgPage(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("Step ---> toMsgPage"));
-
+        log.info(StringUtil.changeForLog("Step ---> toMsgPage"));
     }
 
     public void msgDoPage(BaseProcessClass bpc){
@@ -123,7 +118,7 @@ public class InterInboxDelegator {
     public void msgToArchive(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
-        inboxSearchMap.put("msgStatus",msgArchiverStatus);
+        inboxSearchMap.put(InboxConst.MESSAGE_ARCHIVER_STATUS,msgArchiverStatus);
         inboxSearchMap.put("userId",interInboxUserDto.getUserId());
         inboxParameter.setFilters(inboxSearchMap);
         SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter,true);
@@ -184,10 +179,11 @@ public class InterInboxDelegator {
     }
 
     public void prepareDate(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("Step ---> Into Message Page"));
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
         inboxSearchMap.put("userId",interInboxUserDto.getUserId());
-        inboxSearchMap.put("msgStatus",msgStatus);
+        inboxSearchMap.put(InboxConst.MESSAGE_STATUS,msgStatus);
         inboxParameter.setFilters(inboxSearchMap);
         SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter,true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
@@ -228,7 +224,6 @@ public class InterInboxDelegator {
         SearchParam licParam = SearchResultHelper.getSearchParam(request,licenceParameter,true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.LICENCE_QUERY_KEY,licParam);
         SearchResult licResult = inboxService.licenceDoQuery(licParam);
-        log.debug(licParam.getMainSql());
         List<InboxLicenceQueryDto> inboxLicenceQueryDtoList = licResult.getRows();
         for (InboxLicenceQueryDto inboxLicenceQueryDto:inboxLicenceQueryDtoList){
             if ("LICEST001".equals(inboxLicenceQueryDto.getStatus())){

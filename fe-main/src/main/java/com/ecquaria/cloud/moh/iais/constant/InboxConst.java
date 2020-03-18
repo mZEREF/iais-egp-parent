@@ -42,7 +42,12 @@ public class InboxConst {
     public static final String MESSAGE_VIEW                = "msgView";
     public static final String MESSAGE_CONTENT_VIEW        = "msgContentView";
 
+
+    public static final String MESSAGE_STATUS              = "msgStatus";
+    public static final String MESSAGE_ARCHIVER_STATUS     = "msgArchiverStatus";
+
     public static final String MESSAGE_CONTENT             = "IAIS_MSG_CONTENT";
+    public static final String INTER_INBOX_USER_INFO       = "inter-inbox-user-info";
 
 
     public static final String APP_RECALL_RESULT           = "recall_result";
