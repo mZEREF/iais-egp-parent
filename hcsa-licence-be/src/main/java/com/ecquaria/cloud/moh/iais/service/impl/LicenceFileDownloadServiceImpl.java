@@ -177,10 +177,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         String submissionId = generateIdClient.getSeqId().getEntity();
                         this.download(processFileTrackDto,listApplicationDto, requestForInfList,name,refId,submissionId);
 
-                        log.info(listApplicationDto.toString()+"******listApplicationDto*********");
+                        log.info(listApplicationDto.size()+"******listApplicationDto*********");
                         log.info(requestForInfList.toString()+"***requestForInfList***");
 
-                        sendTask(listApplicationDto,requestForInfList,submissionId);
+                    /*    sendTask(listApplicationDto,requestForInfList,submissionId);*/
                         moveFile(fil);
                         //save success
                     }catch (Exception e){
@@ -279,7 +279,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                             fileToDto(by.toString(), listApplicationDto, requestForInfList,processFileTrackDto,submissionId);
 
-                            changeStatus(processFileTrackDto,submissionId);
 
                             saveFileRepo( fileName,groupPath,submissionId);
 
@@ -440,10 +439,15 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             every.setAuditTrailDto(intranet);
         }
         applicationListDto.setAuditTrailDto(intranet);
-        log.info(listApplicationDto.toString()+"listApplicationDto size "+listApplicationDto.size());
         update(listApplicationDto,applicationGroup,application);
-        log.info(requestForInfList.toString()+"requestForInfList size" +requestForInfList .size());
+        log.info(listApplicationDto.toString()+"listApplicationDto size "+listApplicationDto.size());
+
         requeOrNew(requestForInfList,applicationGroup,application);
+        log.info(requestForInfList.toString()+"requestForInfList size" +requestForInfList .size());
+
+        applicationListDto.setListNewApplicationDto(listApplicationDto);
+        applicationListDto.setRequestForInfList(requestForInfList);
+        applicationListDto.setProcessFileTrackDto(processFileTrackDto);
 
         String id = applicationListDto.getApplicationGroup().get(0).getId();
         eventBusHelper.submitAsyncRequest(applicationListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
@@ -628,7 +632,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
 
 
-    private void  sendTask(List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,String submissionId) throws  Exception{
+        public void  sendTask(List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,String submissionId) throws  Exception{
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
 
         TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(listApplicationDto, HcsaConsts.ROUTING_STAGE_ASO, RoleConsts.USER_ROLE_ASO,intranet);

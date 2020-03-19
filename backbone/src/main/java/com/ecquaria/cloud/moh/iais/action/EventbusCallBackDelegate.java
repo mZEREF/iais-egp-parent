@@ -2,10 +2,14 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.client.ApplicationClientFallback;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -32,6 +36,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class EventbusCallBackDelegate {
     @Autowired
     private SubmissionClient submissionClient;
+    @Autowired
+    private ApplicationClientFallback applicationClientFallback;
+
 
     public void callback(BaseProcessClass bpc) throws ClassNotFoundException,
             NoSuchMethodException, InvocationTargetException, IllegalAccessException {
@@ -99,6 +106,22 @@ public class EventbusCallBackDelegate {
                                 "com.ecquaria.cloud.moh.iais.service.impl.AppealServiceImpl",
                                 "updateFEAppealLicenceDto");
                     }
+                }else if(EventBusConsts.SERVICE_NAME_APPSUBMIT.equals(serviceName)){
+
+                    if(EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION.equals(operation)){
+
+                        AppEicRequestTrackingDto entity = applicationClientFallback.getAppEicRequestTracking(eventRefNum).getEntity();
+                        String dtoObj = entity.getDtoObj();
+                        Map<String,List<ApplicationDto>> map1 = JsonUtil.parseToObject(dtoObj, Map.class);
+
+                        List<ApplicationDto> applicationDtoList = map1.get("listNewApplicationDto");
+                        List<ApplicationDto> list = map1.get("requestForInfList");
+                        invokeMethod(applicationDtoList,list,submissionId,
+                                "com.ecquaria.cloud.moh.iais.service.impl.LicenceFileDownloadServiceImpl",
+                                "sendTask");
+                        applicationClientFallback.updateAppEicRequestTracking(eventRefNum);
+                    }
+
                 }
             }
         }
@@ -120,5 +143,15 @@ public class EventbusCallBackDelegate {
         Object obj = SpringContextHelper.getContext().getBean(cls);
         Method med = cls.getMethod(methodName, new Class[]{String.class, String.class});
         med.invoke(obj, new String[] {eventRefNum, submissionId});
+    }
+
+    private void invokeMethod(List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,String submissionId,
+                              String clsName, String methodName) throws ClassNotFoundException,NoSuchMethodException,InvocationTargetException,
+    IllegalAccessException{
+        Class cls = Class.forName(clsName);
+
+        Object obj =    SpringContextHelper.getContext().getBean(cls);
+        Method med = cls.getMethod(methodName, new Class[]{String.class, String.class});
+        med.invoke(obj,listApplicationDto,requestForInfList,submissionId);
     }
 }
