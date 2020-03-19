@@ -53,9 +53,6 @@ public class InterInboxDelegator {
 
     private InterInboxUserDto interInboxUserDto;
 
-    private static Map<String,Object> appSearchMap = IaisCommonUtils.genNewHashMap();
-    private static Map<String,Object> inboxSearchMap = IaisCommonUtils.genNewHashMap();
-    private static Map<String,Object> licSearchMap = IaisCommonUtils.genNewHashMap();
     private static String msgStatus[] = {
             MessageConstants.MESSAGE_STATUS_READ,
             MessageConstants.MESSAGE_STATUS_UNREAD,
@@ -118,7 +115,8 @@ public class InterInboxDelegator {
     public void msgToArchive(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
-        inboxSearchMap.put(InboxConst.MESSAGE_ARCHIVER_STATUS,msgArchiverStatus);
+        Map<String,Object> inboxSearchMap = IaisCommonUtils.genNewHashMap();
+        inboxSearchMap.put(InboxConst.MESSAGE_STATUS,msgArchiverStatus);
         inboxSearchMap.put("userId",interInboxUserDto.getUserId());
         inboxParameter.setFilters(inboxSearchMap);
         SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter,true);
@@ -153,6 +151,7 @@ public class InterInboxDelegator {
 
     public void msgDoSearch(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        Map<String,Object> inboxSearchMap = IaisCommonUtils.genNewHashMap();
         String inboxType = ParamUtil.getString(request,InboxConst.MESSAGE_TYPE);
         String inboxService = ParamUtil.getString(request,InboxConst.MESSAGE_SERVICE);
         String msgSubject = ParamUtil.getString(request,InboxConst.MESSAGE_SEARCH);
@@ -182,6 +181,7 @@ public class InterInboxDelegator {
         log.debug(StringUtil.changeForLog("Step ---> Into Message Page"));
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
+        Map<String,Object> inboxSearchMap = IaisCommonUtils.genNewHashMap();
         inboxSearchMap.put("userId",interInboxUserDto.getUserId());
         inboxSearchMap.put(InboxConst.MESSAGE_STATUS,msgStatus);
         inboxParameter.setFilters(inboxSearchMap);
@@ -219,6 +219,7 @@ public class InterInboxDelegator {
         log.debug(StringUtil.changeForLog("Step ---> toLicencePage"));
         HttpServletRequest request = bpc.request;
         prepareLicSelectOption(request);
+        Map<String,Object> licSearchMap = IaisCommonUtils.genNewHashMap();
         licSearchMap.put("licenseeId",interInboxUserDto.getLicenseeId());
         licenceParameter.setFilters(licSearchMap);
         SearchParam licParam = SearchResultHelper.getSearchParam(request,licenceParameter,true);
@@ -246,6 +247,7 @@ public class InterInboxDelegator {
 
     public void licDoSearch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
+        Map<String,Object> licSearchMap = IaisCommonUtils.genNewHashMap();
         String licenceNo = ParamUtil.getString(request,"licNoPath");
         String serviceType = ParamUtil.getString(request,"licType");
         String licStatus = ParamUtil.getString(request,"licStatus");
@@ -398,6 +400,7 @@ public class InterInboxDelegator {
         /**
          * Application SearchResult
          */
+        Map<String,Object> appSearchMap = IaisCommonUtils.genNewHashMap();
         appSearchMap.put("licenseeId",interInboxUserDto.getLicenseeId());
         appParameter.setFilters(appSearchMap);
         SearchParam appParam = SearchResultHelper.getSearchParam(request,appParameter,true);
@@ -427,6 +430,7 @@ public class InterInboxDelegator {
     public void appDoSearch(BaseProcessClass bpc) throws ParseException {
         log.debug(StringUtil.changeForLog("Step ---> appDoSearch"));
         HttpServletRequest request = bpc.request;
+        Map<String,Object> appSearchMap = IaisCommonUtils.genNewHashMap();
         String applicationType = ParamUtil.getString(request,"appTypeSelect");
         String serviceType = ParamUtil.getString(request,"appServiceType");
         String applicationStatus = ParamUtil.getString(request,"appStatusSelect");
@@ -561,11 +565,9 @@ public class InterInboxDelegator {
     public void appDoRecall(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("Step ---> appDoRecall"));
         HttpServletRequest request = bpc.request;
-        String appId = ParamUtil.getString(request, InboxConst.ACTION_ID_VALUE);
-        String appGrpId = ParamUtil.getString(request, InboxConst.ACTION_GRP_VALUE);
+        String appId = ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
         RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
         recallApplicationDto.setAppId(appId);
-        recallApplicationDto.setAppGrpId(appGrpId);
         Boolean recallResult = inboxService.recallApplication(recallApplicationDto);
         ParamUtil.setRequestAttr(request,InboxConst.APP_RECALL_RESULT, recallResult);
     }
@@ -665,23 +667,23 @@ public class InterInboxDelegator {
     }
 
     private void cleanParameter(String tabName){
-        if ("MSG".equals(tabName)){
-            appSearchMap.clear();
-            licSearchMap.clear();
-        }
-        if ("APP".equals(tabName)){
-            licSearchMap.clear();
-            inboxSearchMap.clear();
-        }
-        if ("LIC".equals(tabName)){
-            appSearchMap.clear();
-            inboxSearchMap.clear();
-        }
+//        if ("MSG".equals(tabName)){
+//            appSearchMap.clear();
+//            licSearchMap.clear();
+//        }
+//        if ("APP".equals(tabName)){
+//            licSearchMap.clear();
+//            inboxSearchMap.clear();
+//        }
+//        if ("LIC".equals(tabName)){
+//            appSearchMap.clear();
+//            inboxSearchMap.clear();
+//        }
     }
 
     private void clearMsgFilter(){
-        inboxSearchMap.remove("interService");
-        inboxSearchMap.remove("messageType");
+//        inboxSearchMap.remove("interService");
+//        inboxSearchMap.remove("messageType");
     }
     
 }
