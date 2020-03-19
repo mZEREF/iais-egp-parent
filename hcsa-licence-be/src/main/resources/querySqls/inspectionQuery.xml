@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sqls catalog="inspectionQuery">
-    <sql key = "assignInspector" remarks = "AO Assign Task For Inspector">
+    <sql key = "assignCommonTask" remarks = "Search Common Pool Task By Application Group">
         <![CDATA[
-            SELECT T5.ID, T5.APPLICATION_ID, T5.APPLICATION_NO, T5.APP_TYPE, T5.STATUS, T5.HCI_CODE, T5.HCI_NAME, T5.SUBMIT_DT FROM
-            (SELECT T1.ID, T1.APPLICATION_ID, T2.APPLICATION_NO, T2.APP_TYPE, T2.STATUS, T3.HCI_CODE, T3.HCI_NAME, T4.SUBMIT_DT,
-             (T3.BLK_NO + ' ' + T3.STREET_NAME + ' ' + T3.BUILDING_NAME + ' # '+ T3.FLOOR_NO + '-' + T3.UNIT_NO + ', ' + T3.POSTAL_CODE) AS PREMISE
+            SELECT DISTINCT T5.GROUP_NO, T5.PMT_STATUS, T5.APPLICATION_NO, T5.APP_TYPE, T5.SUBMIT_DT, T5.COU FROM
+            (SELECT DISTINCT T4.GROUP_NO, T4.PMT_STATUS, T1.ID, T2.APPLICATION_NO, T2.APP_TYPE, T2.STATUS, T3.HCI_CODE, T3.HCI_NAME, T4.SUBMIT_DT,
+             (T3.BLK_NO + ' ' + T3.STREET_NAME + ' ' + T3.BUILDING_NAME + ' # '+ T3.FLOOR_NO + '-' + T3.UNIT_NO + ', ' + T3.POSTAL_CODE) AS PREMISE,
+             T6.COU
              FROM APP_PREMISES_CORRELATION T1
              JOIN APPLICATION T2 ON T2.ID = T1.APPLICATION_ID
              JOIN APP_GRP_PREMISES T3 ON T3.ID = T1.APP_GRP_PREM_ID
              JOIN APPLICATION_GROUP T4 ON T4.ID = T2.APP_GRP_ID
+             JOIN (SELECT COUNT(ID) COU, APP_GRP_ID FROM application GROUP BY app_grp_id) as T6 ON T4.ID = T6.app_grp_id
              WHERE 1 = 1
              <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T1.ID) IN ${appCorrId_list} </#if>
             ) T5
