@@ -6,8 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -134,5 +134,5 @@ public interface InspectionAssignTaskService {
       * @return: SearchResult<InspectionAppInGroupQueryDto>
       * @Descripation: getAjaxResultByParam
       */
-    SearchResult<InspectionAppInGroupQueryDto> getAjaxResultByParam(SearchParam searchParam);
+    SearchResult<ComPoolAjaxQueryDto> getAjaxResultByParam(SearchParam searchParam);
 }

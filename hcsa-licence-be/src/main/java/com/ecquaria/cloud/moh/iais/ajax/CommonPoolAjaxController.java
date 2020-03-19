@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.ajax;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComPoolAjaxQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -43,7 +42,7 @@ public class CommonPoolAjaxController {
             searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
             searchParam.addFilter("groupNo", groupNo, true);
             QueryHelp.setMainSql("inspectionQuery", "commonPoolAjax", searchParam);
-            SearchResult<InspectionAppInGroupQueryDto> ajaxResult = inspectionAssignTaskService.getAjaxResultByParam(searchParam);
+            SearchResult<ComPoolAjaxQueryDto> ajaxResult = inspectionAssignTaskService.getAjaxResultByParam(searchParam);
             map.put("result", "Success");
             map.put("result", ajaxResult);
         } else {
