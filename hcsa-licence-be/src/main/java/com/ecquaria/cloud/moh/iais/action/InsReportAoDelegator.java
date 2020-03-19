@@ -190,11 +190,15 @@ public class InsReportAoDelegator {
         AppPremisesRecommendationDto followRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
 
         AppPremisesRecommendationDto initRecommendationDto = new AppPremisesRecommendationDto();
-        String period = null;
-        String inspectorRemarks = null;
+        String period;
         if (appPremisesRecommendationDto != null) {
+
             String reportRemarks = appPremisesRecommendationDto.getRemarks();
             initRecommendationDto.setRemarks(reportRemarks);
+            String recomDecision = appPremisesRecommendationDto.getRecomDecision();
+            if(!REJECT.equals(recomDecision)){
+
+            }
             String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
             if(StringUtil.isEmpty(chronoUnit)&&StringUtil.isEmpty(recomInNumber)){

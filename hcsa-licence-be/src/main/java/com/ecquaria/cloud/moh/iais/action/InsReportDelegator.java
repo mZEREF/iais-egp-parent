@@ -103,7 +103,7 @@ public class InsReportDelegator {
     }
 
     public void inspectionReportPre(BaseProcessClass bpc) {
-
+        log.debug(StringUtil.changeForLog("the inspectionReportPre start ...."));
     }
 
     public void inspectorReportSave(BaseProcessClass bpc) throws FeignException {
@@ -114,7 +114,7 @@ public class InsReportDelegator {
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         AppPremisesRecommendationDto appPremisesRecommendationDto = prepareRecommendation(bpc);
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, appPremisesRecommendationDto);
-        Map<String, String> errorMap = new HashMap<>(34);
+        Map<String, String> errorMap;
         ValidationResult validationResult = WebValidationHelper.validateProperty(appPremisesRecommendationDto, "save");
         if (validationResult.isHasErrors()) {
             String report = "Y";
@@ -128,30 +128,35 @@ public class InsReportDelegator {
         saveRecommendations(appPremisesRecommendationDtoList);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         AppPremisesRecommendationDto appPremisesRecDto = appPremisesRecommendationDtoList.get(0);
-        insRepService.routingTaskToAo1(taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecDto);
+        insRepService.routingTaskToAo1(taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecommendationDto);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
 
     }
 
     private AppPremisesRecommendationDto prepareRecommendation(BaseProcessClass bpc) {
         String riskLevel = ParamUtil.getRequestString(bpc.request, "riskLevel");
-        String processingDecision = ParamUtil.getRequestString(bpc.request, "processingDecision");
-        String processRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
         String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
         String periods = ParamUtil.getRequestString(bpc.request, "periods");
-        String followUpAction = ParamUtil.getRequestString(bpc.request, "followUpAction");
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
         String number = ParamUtil.getRequestString(bpc.request, NUMBER);
+        String followUpAction = ParamUtil.getRequestString(bpc.request, "followUpAction");
         String enforcement = ParamUtil.getRequestString(bpc.request, "engageEnforcement");
         String enforcementRemarks = ParamUtil.getRequestString(bpc.request, "enforcementRemarks");
+        String processRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
+        String processingDecision = ParamUtil.getRequestString(bpc.request, "processingDecision");
 
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         appPremisesRecommendationDto.setRemarks(remarks);
         appPremisesRecommendationDto.setRecommendation(recommendation);
         appPremisesRecommendationDto.setPeriod(periods);
         if(!StringUtil.isEmpty(number)){
-            appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
+            try {
+                appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
+            }catch (NumberFormatException e){
+                appPremisesRecommendationDto.setRecomInNumber(null);
+            }
+
         }
         appPremisesRecommendationDto.setChronoUnit(chrono);
         appPremisesRecommendationDto.setEngageEnforcement(enforcement);
@@ -167,11 +172,11 @@ public class InsReportDelegator {
         List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = IaisCommonUtils.genNewArrayList();
         String riskLevel = ParamUtil.getRequestString(bpc.request, "riskLevel");
         String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
-        String followUpAction = ParamUtil.getRequestString(bpc.request, "followUpAction");
-        String periods = ParamUtil.getRequestString(bpc.request, "periods");
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
+        String periods = ParamUtil.getRequestString(bpc.request, "periods");
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
         String number = ParamUtil.getRequestString(bpc.request, NUMBER);
+        String followUpAction = ParamUtil.getRequestString(bpc.request, "followUpAction");
         String enforcementRemarks = ParamUtil.getRequestString(bpc.request, "enforcementRemarks");
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         appPremisesRecommendationDto.setRemarks(remarks);
@@ -191,7 +196,7 @@ public class InsReportDelegator {
             appPremisesRecommendationDto.setChronoUnit(chronoRe);
             appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(numberRe));
             appPremisesRecommendationDto.setRecommendation(recommendation);
-        }else if("Reject".equals(recommendation)) {
+        }else if("Rejected".equals(recommendation)) {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
             appPremisesRecommendationDto.setRecomDecision(ApplicationConsts.APPLICATION_STATUS_REJECTED);
         }
@@ -234,17 +239,16 @@ public class InsReportDelegator {
                 for(String per :periods){
                     if(per.equals(period)){
                         initRecommendationDto.setPeriod(period);
-                    }else {
+                    }else if(!StringUtil.isEmpty(chronoUnit)) {
                         initRecommendationDto.setPeriod("Others");
+                        initRecommendationDto.setRecomInNumber(recomInNumber);
+                        initRecommendationDto.setChronoUnit(chronoUnit);
                     }
                 }
             }
             String recomDecision = appPremisesRecommendationDto.getRecomDecision();
             String codeDesc = MasterCodeUtil.getCodeDesc(recomDecision);
             initRecommendationDto.setRecommendation(codeDesc);
-
-            initRecommendationDto.setRecomInNumber(recomInNumber);
-            initRecommendationDto.setChronoUnit(chronoUnit);
         }
 
         if (appPremisesRecommendationDto != null) {
@@ -289,7 +293,6 @@ public class InsReportDelegator {
             insRepService.updateFollowRecommendation(appPremisesRecommendationDto5);
         }
     }
-
 
     private List<SelectOption> getChronoOption() {
         List<SelectOption> ChronoResult = IaisCommonUtils.genNewArrayList();

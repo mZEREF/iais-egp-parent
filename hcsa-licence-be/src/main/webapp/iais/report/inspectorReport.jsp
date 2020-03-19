@@ -16,46 +16,46 @@
 <iais:body >
 
     <iais:section title="">
-        <div><h2><strong>Section A (HCI Details)</strong></h2></div>
+        <div><h3 style="border-bottom: none"><strong style="border-bottom: 1px solid #333333">Section A (HCI Details)</strong></h3></div>
         <iais:row>
             <iais:field value="Licence No."/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <p><c:out value="${insRepDto.licenceNo}"/></p>
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="Service Name"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <p><c:out value="${insRepDto.serviceName}"/></p>
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="HCI Code"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <p><c:out value="${insRepDto.hciCode}"/></p>
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="HCI Name"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <p><c:out value="${insRepDto.hciName}"/></p>
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="HCI Address"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <p><c:out value="${insRepDto.hciAddress}"/></p>
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="Licensee Name"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <p><c:out value="${insRepDto.licenseeName}"/></p>
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="Principal Officers"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <c:if test="${insRepDto.principalOfficers != null && not empty insRepDto.principalOfficers}">
                     <p><c:forEach items="${insRepDto.principalOfficers}" var="poName">
                         <c:out value="${poName}"/><br>
@@ -65,7 +65,7 @@
         </iais:row>
         <iais:row>
             <iais:field value="Subsumed Services"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <c:if test="${insRepDto.subsumedServices != null && not empty insRepDto.subsumedServices}">
                     <c:forEach var="service" items="${insRepDto.subsumedServices}">
                         <p><c:out value="${service}"></c:out></p>
@@ -76,16 +76,16 @@
     </iais:section>
 
     <iais:section title="">
-        <div><h2><strong>Section B (Type of Inspection)</strong></h2></div>
+        <div><h3 style="border-bottom: none"><strong style="border-bottom: 1px solid #333333">Section B (Type of Inspection)</strong></h3></div>
         <iais:row>
             <iais:field value="Date of Inspection"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <p><fmt:formatDate value="${insRepDto.inspectionDate}" pattern="dd/MM/yyyy"></fmt:formatDate></p>
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="Time of Inspection"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <p><fmt:formatDate value="${insRepDto.inspectionStartTime}"
                                    pattern="dd/MM/yyyy"></fmt:formatDate>-
                     <fmt:formatDate value="${insRepDto.inspectionEndTime}"
@@ -94,13 +94,13 @@
         </iais:row>
         <iais:row>
             <iais:field value="Reason for Visit"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <p><c:out value="${insRepDto.reasonForVisit}"/></p>
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="Inspected By"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <c:if test="${insRepDto.inspectors != null && not empty insRepDto.inspectors}">
                 <c:forEach items="${insRepDto.inspectors}" var="inspector" varStatus="status">
                 <p><c:out value="${inspector}"></c:out></p>
@@ -110,21 +110,21 @@
         </iais:row>
         <iais:row>
             <iais:field value="Reported By"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <p><c:out value="${insRepDto.reportedBy}"/></p>
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="Report Noted By"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <p><c:out value="${insRepDto.reportNoteBy}"/></p>
             </iais:value>
         </iais:row>
     </iais:section>
 
     <iais:section title="">
-        <div><h2><strong>Section C (Inspection Findings)</strong></h2></div>
-        <div><h3><strong>Part I: Inspection Checklist</strong></h3></div>
+        <div><h3 style="border-bottom: none"><strong style="border-bottom: 1px solid #333333">Section C (Inspection Findings)</strong></h3></div>
+        <div><h4 style="border-bottom: none"><strong style="border-bottom: 1px solid #333333">Part I: Inspection Checklist</strong></h4></div>
         <iais:row>
             <iais:field value="Checklist Used"/>
             <iais:value>
@@ -171,28 +171,28 @@
             </c:if>
             </iais:value>
         </iais:row>
-        <div><h3><strong>Part II: Findings</strong></h3></div>
+        <div><h4 style="border-bottom: none"><strong style="border-bottom: 1px solid #333333">Part II: Findings</strong></h4></div>
         <iais:row>
             <iais:field value="Remarks"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <p><c:out value="${insRepDto.taskRemarks}"/></p>
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="Marked for Audit"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <p><c:out value="${insRepDto.markedForAudit}"/> <fmt:formatDate value="${insRepDto.tcuDate}" pattern="dd/MM/yyyy"/></p>
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="Recommended Best Practices"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <p><c:out value="${insRepDto.bestPractice}"/></p>
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="Non-Compliances"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <c:if test="${insRepDto.ncRegulation != null && not empty insRepDto.ncRegulation}">
                 <table class="table">
                 <thead>
@@ -227,20 +227,20 @@
         </iais:row>
         <iais:row>
             <iais:field value="Status"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <p><c:out value="${insRepDto.status}"/></p>
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="Risk Level" required="true"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <iais:select name="riskLevel" options="riskLevelOptions" firstOption="Please select" value="${appPremisesRecommendationDto.riskLevel}"/>
                 <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="Subsumed Services"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <c:if test="${insRepDto.subsumedServices != null && not empty insRepDto.subsumedServices}">
                     <c:forEach var="service" items="${insRepDto.subsumedServices}">
                         <p><c:out value="${service}"></c:out></p>
@@ -251,10 +251,10 @@
     </iais:section>
 
     <iais:section title="">
-        <div><h2><strong>Section D (Rectification)</strong></h2></div>
+        <div><h3 style="border-bottom: none"><strong style="border-bottom: 1px solid #333333">Section D (Rectification)</strong></h3></div>
         <iais:row>
             <iais:field value="Rectified"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <c:if test="${insRepDto.ncRectification != null}">
                     <table class="table">
                         <thead>
@@ -288,25 +288,25 @@
         </iais:row>
         <iais:row>
             <iais:field value="Remarks" required="true"/>
-            <iais:value width="18">
-                <textarea style="resize:none"  name="remarks" cols="50" rows="6" title="content" maxlength="8000"><c:out value="${appPremisesRecommendationDto.remarks}"/></textarea>
+            <iais:value width="6">
+                <textarea style="resize:none"  name="remarks" cols="65" rows="6" title="content" maxlength="8000"><c:out value="${appPremisesRecommendationDto.remarks}"/></textarea>
                 <br/>
                 <span id="error_remarks" name="iaisErrorMsg" class="error-msg"></span>
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="Rectified Within KPI?"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <p><c:out value="${insRepDto.rectifiedWithinKPI}"/></p>
             </iais:value>
         </iais:row>
     </iais:section>
 
     <iais:section title="">
-        <div><h2><strong>Section E (Recommendations)</strong></h2></div>
+        <div><h3 style="border-bottom: none"><strong style="border-bottom: 1px solid #333333">Section E (Recommendations)</strong></h3></div>
         <iais:row>
             <iais:field value="Recommendation" required="true"/>
-            <iais:value width="18">
+            <iais:value width="6">
                         <iais:select name="recommendation" options="recommendationOption" firstOption="Please select" value="${appPremisesRecommendationDto.recommendation}" onchange="javascirpt:changeRecommendation(this.value);"/>
                 <br/>
                 <span id="error_remarks" name="iaisErrorMsg" class="error-msg"></span>
@@ -315,7 +315,7 @@
         <div id = "period" hidden>
         <iais:row>
             <iais:field value="Period" required="true"/>
-            <iais:value width="18">
+            <iais:value width="6">
                         <iais:select name="periods" options="riskOption" firstOption="Please select" onchange="javascirpt:changePeriod(this.value);" value="${appPremisesRecommendationDto.period}"/>
                         <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
             </iais:value>
@@ -324,36 +324,36 @@
         <div id="selfPeriod" hidden>
         <iais:row>
             <iais:field value="Other Period" required="true"/>
-            <iais:value width="18">
-                <input id=recomInNumber type="text" name="number" value="${appPremisesRecommendationDto.recomInNumber}">
-                <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
+            <iais:value width="6">
+                <input id=recomInNumber type="text" name="number" maxlength="2" value="${appPremisesRecommendationDto.recomInNumber}">
                 <iais:select id="chronoUnit" name="chrono" options="chronoOption" firstOption="Please select" value="${appPremisesRecommendationDto.chronoUnit}"/>
-                <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
+                <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"/>
+                <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"/>
             </iais:value>
         </iais:row>
         </div>
     </iais:section>
 
     <iais:section title="">
-        <div><h2><strong>Section F (After Action)</strong></h2></div>
+        <div><h3 style="border-bottom: none"><strong style="border-bottom: 1px solid #333333">Section F (After Action)</strong></h3></div>
         <iais:row>
             <iais:field value="Follow up Action"/>
-            <iais:value width="18">
-                <textarea name="followUpAction" cols="50" rows="6" title="content" maxlength="8000"><c:if test="${appPremisesRecommendationDto.followUpAction == null}"><c:out value="${followRemarks}"/></c:if><c:if test="${appPremisesRecommendationDto.followUpAction != null}"><c:out value="${appPremisesRecommendationDto.followUpAction}"/></c:if></textarea>
+            <iais:value width="6">
+                <textarea style="resize:none" name="followUpAction" cols="65" rows="6" title="content" maxlength="8000"><c:out value="${appPremisesRecommendationDto.followUpAction}"/></textarea>
             </iais:value>
         </iais:row>
 
         <iais:row>
             <iais:field value="To Engage Enforcement?"/>
-            <iais:value width="18">
+            <iais:value width="6">
                 <input type="checkbox" id="enforcement" name="engageEnforcement" onchange="javascirpt:changeEngage();" <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if> >
             </iais:value>
         </iais:row>
         <div id="engageRemarks" hidden>
         <iais:row>
             <iais:field value="Enforcement Remarks" required="true"/>
-            <iais:value width="18">
-                <textarea name="enforcementRemarks" cols="50" rows="6" title="content" MAXLENGTH="4000"><c:out value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
+            <iais:value width="6">
+                <textarea style="resize:none" name="enforcementRemarks" cols="65" rows="6" title="content" MAXLENGTH="4000"><c:out value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
                 <br/>
                 <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
             </iais:value>
@@ -373,29 +373,29 @@
 
     function changePeriod(obj) {
         if (obj == "Others") {
-            document.getElementById("selfPeriod").style.display = "";
+            $("#selfPeriod").hide();
             $("#selfPeriod").show();
         } else {
-            document.getElementById("selfPeriod").style.display = "none";
+            $("#selfPeriod").hide();
         }
     }
 
     function changeRecommendation(obj) {
         if (obj == "Approved") {
-            document.getElementById("period").style.display = "";
+            $("#period").hide();
             $("#period").show();
         } else {
-            document.getElementById("period").style.display = "none";
+            $("#period").hide();
         }
     }
 
 
     function changeEngage() {
         if ($('#enforcement').is(':checked')) {
-            document.getElementById("engageRemarks").style.display = "";
+            $("#engageRemarks").hide();
             $("#engageRemarks").show();
         } else {
-            document.getElementById("engageRemarks").style.display = "none";
+            $("#engageRemarks").hide();
         }
     }
 

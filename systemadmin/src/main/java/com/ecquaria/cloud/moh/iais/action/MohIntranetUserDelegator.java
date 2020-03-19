@@ -150,8 +150,12 @@ public class MohIntranetUserDelegator {
 
     public void prepareEdit(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String id = ParamUtil.getRequestString(request, IntranetUserConstant.CRUD_ACTION_VALUE);
+        if(request==null){
+            return;
+        }
+        String id = request.getParameter(IntranetUserConstant.CRUD_ACTION_VALUE);
         OrgUserDto orgUserDto = (OrgUserDto)ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
+
         if (id != null&&orgUserDto==null) {
             OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
             ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, intranetUserById);
@@ -219,9 +223,11 @@ public class MohIntranetUserDelegator {
             return;
         }
         ParamUtil.setSessionAttr(bpc.request, "ids", ids);
-        String s = "https://egp.sit.intra.iais.com/system-admin-web/eservice/INTRANET/IntranetUserDownload";
-        String url = RedirectUtil.changeUrlToCsrfGuardUrlUrl(s, request);
-        bpc.response.sendRedirect(url);
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(bpc.request.getServerName())
+                .append("/system-admin-web/eservice/INTRANET/IntranetUserDownload");
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        bpc.response.sendRedirect(tokenUrl);
         return;
     }
 

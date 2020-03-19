@@ -19,12 +19,12 @@
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                            <li class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
+                            <li id="info" class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
                                                                       data-toggle="tab">Info</a></li>
                             <li class="complete" role="presentation"><a href="#tabDocuments"
                                                                         aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
-                            <li class="complete" role="presentation"><a id="report" href="#tabInspectionReport"
+                            <li id="report" class="complete" role="presentation"><a id="reportClink" href="#tabInspectionReport"
                                                                         aria-controls="tabProcessing" role="tab"
                                                                         data-toggle="tab">Inspection Report</a></li>
                             <li class="complete" role="presentation"><a href="#tabProcessing"
@@ -218,46 +218,36 @@
                                     <div class="table-gp">
                                         <div class="alert alert-info" role="alert">
                                             <strong>
-                                                <h4>Processing Status Update</h4>
+                                                <h2 style="border-bottom: none">Processing Status Update</h2>
                                             </strong>
                                         </div>
                                         <div class="table-gp">
-                                            <table class="table">
-                                                <tr>
-                                                    <td class="col-xs-4">
-                                                        <p>Current Status:</p>
-                                                    </td>
-                                                    <td class="col-xs-8">
-                                                        <p><iais:code code="${insRepDto.currentStatus}"></iais:code></p>
-                                                    </td>
-                                                </tr>
-                                                <tr height="1">
-                                                    <td class="col-xs-4">
-                                                        <p>Internal Remarks:</p>
-                                                    </td>
-                                                    <td>
-                                                        <div class="col-sm-8">
-                                                            <p><textarea style="resize:none" name="remarks" cols="50" rows="6" maxlength="8000" title="content"><c:out value="${appPremisesRecommendationDto.processRemarks}"/></textarea></p>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                            <iais:section title="">
+                                                <iais:row>
+                                                    <iais:field value="Current Status"/>
+                                                    <iais:value width="18">
+                                                        <p><iais:code code="${insRepDto.currentStatus}"/></p>
+                                                    </iais:value>
+                                                </iais:row>
 
-                                                <tr>
-                                                    <td class="col-xs-4">
-                                                        <p>Processing Decision:<span style="color:#ff0000;">*</span></p>
-                                                    </td>
-                                                    <td class="col-xs-4">
+                                                <iais:row>
+                                                    <iais:field value="Internal Remarks"/>
+                                                    <iais:value width="18">
+                                                        <textarea style="resize:none" name="processRemarks" cols="65" rows="6"  title="content" MAXLENGTH="8000"><c:out value="${appPremisesRecommendationDto.processRemarks}"/></textarea>
+                                                    </iais:value>
+                                                </iais:row>
+
+                                                <iais:row>
+                                                    <iais:field value="Internal Remarks" required="true"/>
+                                                    <iais:value width="18">
                                                         <iais:select name="processingDecision" id="processingDecision" options="processingDe" firstOption="Please select" value="${appPremisesRecommendationDto.processingDecision}"/>
-                                                        <span id="error_processingDecision" name="iaisErrorMsg" class="error-msg"></span>
-                                                    </td>
-                                                    <td class="col-xs-4"></td>
-                                                </tr>
-                                            </table>
-                                            <div align="center">
-                                                <button id="submitButton" type="button" class="btn btn-primary" onclick="reportaosubmit()">
-                                                    SUBMIT
-                                                </button>
-                                            </div>
+                                                        <span id="error_processingDecision" name="iaisErrorMsg" class="error-msg"/>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </iais:section>
+                                            <iais:action style="text-align:right;">
+                                                <button id="submitButton" type="button" class="btn btn-primary" onclick="reportaosubmit()">SUBMIT</button>
+                                            </iais:action>
                                         </div>
                                         <br/>
                                         <div class="alert alert-info" role="alert">
@@ -324,7 +314,9 @@
 <script>
     $(document).ready(function () {
         if("Y"=='${report}'){
-            $('#report').click();
+            $('#reportClink').click();
+            $('#info').removeClass("active");
+            $('#report').addClass("active");
         }
     });
 </script>

@@ -26,6 +26,13 @@ public class InsRepRecValidate implements CustomizeValidator {
         String enforcement = ParamUtil.getRequestString(httpServletRequest, "engageEnforcement");
         String enforcementRemarks = ParamUtil.getRequestString(httpServletRequest, "enforcementRemarks");
         String periods = ParamUtil.getRequestString(httpServletRequest, "periods");
+        String recommendation = ParamUtil.getRequestString(httpServletRequest, "recommendation");
+        if(!"Rejected".equals(recommendation)){
+            if(StringUtil.isEmpty(periods)){
+                errorMap.put("period", "ERR0009");
+            }
+        }
+
         if (OTHERS.equals(periods)) {
             if (StringUtil.isEmpty(chrono)) {
                 errorMap.put("chronoUnit", "ERR0009");
@@ -35,7 +42,7 @@ public class InsRepRecValidate implements CustomizeValidator {
                 try {
                     Integer.parseInt(number);
                 } catch (NumberFormatException e) {
-                    errorMap.put("recomInNumber", "ERR003");
+                    errorMap.put("recomInNumber", "GENERAL_ERR0002");
                 }
             }
         }

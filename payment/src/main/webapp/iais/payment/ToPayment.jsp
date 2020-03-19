@@ -26,8 +26,8 @@
     </iais:row>
     <iais:row>
         <iais:field value="Expiry Date"/>
-        <iais:value width="7">
-            <input type="text"> / <input type="text">
+        <iais:value width="18">
+            <input type="text">
         </iais:value>
     </iais:row>
     <iais:row>
