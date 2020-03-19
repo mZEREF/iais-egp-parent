@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -44,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -57,10 +59,12 @@ import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -149,6 +153,18 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto",null);
         ParamUtil.setSessionAttr(bpc.request,"isSaveRfiSelect",null);
         log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
+
+        List<SelectOption> nextStageList = IaisCommonUtils.genNewArrayList();
+        nextStageList.add(new SelectOption("", "Please Select"));
+        nextStageList.add(new SelectOption("VERIFIED", "Verified"));
+        nextStageList.add(new SelectOption("ROLLBACK", "Roll Back"));
+        ParamUtil.setSessionAttr(bpc.request, "nextStages", (Serializable)nextStageList);
+
+
+        List<SelectOption> nextStageReplyList = IaisCommonUtils.genNewArrayList();
+        nextStageReplyList.add(new SelectOption("", "Please Select"));
+        nextStageReplyList.add(new SelectOption("PROCREP", "Give Clarification"));
+        ParamUtil.setSessionAttr(bpc.request, "nextStageReply", (Serializable)nextStageReplyList);
     }
 
     /**
@@ -161,6 +177,11 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareData start ..."));
         //get the task
        String  taskId = ParamUtil.getString(bpc.request,"taskId");
+       if(StringUtil.isEmpty(taskId)){
+           taskId = (String)ParamUtil.getSessionAttr(bpc.request,"taskId");
+       }else{
+           ParamUtil.setSessionAttr(bpc.request,"taskId",taskId);
+       }
        TaskDto taskDto = taskService.getTaskById(taskId);
 
         String correlationId = taskDto.getRefNo();
@@ -283,52 +304,62 @@ public class HcsaApplicationDelegator {
      */
     public void chooseStage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do chooseStage start ...."));
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
-        String appPremCorreId=taskDto.getRefNo();
-        //save recommendation
-        String recommendationStr = ParamUtil.getString(bpc.request,"recommendation");
-        if(("---select---").equals(recommendationStr)){
-
-        }else if(("reject").equals(recommendationStr)){
-            AppPremisesRecommendationDto appPremisesRecommendationDto=new AppPremisesRecommendationDto();
-            appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
-            appPremisesRecommendationDto.setRecomInNumber(0);
-            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
-            insRepService.updateRecommendation(appPremisesRecommendationDto);
+        //validate
+        HcsaApplicationViewValidate hcsaApplicationViewValidate = new HcsaApplicationViewValidate();
+        Map<String, String> errorMap = hcsaApplicationViewValidate.validate(bpc.request);
+        if(!errorMap.isEmpty()){
+            String doProcess = "Y";
+            ParamUtil.setRequestAttr(bpc.request, "doProcess",doProcess);
+            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "PREPARE");
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
         }else{
-            AppPremisesRecommendationDto appPremisesRecommendationDto=new AppPremisesRecommendationDto();
-            String[] strs=recommendationStr.split("\\s+");
-            appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
-            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
-            appPremisesRecommendationDto.setRecomInNumber( Integer.valueOf(strs[0]));
-            appPremisesRecommendationDto.setChronoUnit(strs[1]);
-            insRepService.updateRecommendation(appPremisesRecommendationDto);
-        }
-        String verified = ParamUtil.getString(bpc.request,"verified");
-        String rollBack=ParamUtil.getString(bpc.request,"rollBack");
-        String nextStage=null;
-        if(("---select---").equals(rollBack)){
-            nextStage=verified;
-        }else{
-            nextStage="PROCRB";
-        }
+            TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+            String appPremCorreId=taskDto.getRefNo();
+            //save recommendation
+            String recommendationStr = ParamUtil.getString(bpc.request,"recommendation");
+            if(StringUtil.isEmpty(recommendationStr)){
 
-        String reply=ParamUtil.getString(bpc.request,"nextStageReply");
-        if(!("---select---").equals(reply)){
-            nextStage=reply;
-        }
-
-        log.debug(StringUtil.changeForLog("the nextStage is -->:"+nextStage));
-        ParamUtil.setRequestAttr(bpc.request, "crud_action_type", nextStage);
-
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
-        if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())){
-            String[] fastTracking =  ParamUtil.getStrings(bpc.request,"fastTracking");
-            if(fastTracking!=null){
-                applicationViewDto.getApplicationDto().setFastTracking(true);
+            }else if(("reject").equals(recommendationStr)){
+                AppPremisesRecommendationDto appPremisesRecommendationDto=new AppPremisesRecommendationDto();
+                appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
+                appPremisesRecommendationDto.setRecomInNumber(0);
+                appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
+                insRepService.updateRecommendation(appPremisesRecommendationDto);
+            }else{
+                AppPremisesRecommendationDto appPremisesRecommendationDto=new AppPremisesRecommendationDto();
+                String[] strs=recommendationStr.split("\\s+");
+                appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
+                appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
+                appPremisesRecommendationDto.setRecomInNumber( Integer.valueOf(strs[0]));
+                appPremisesRecommendationDto.setChronoUnit(strs[1]);
+                insRepService.updateRecommendation(appPremisesRecommendationDto);
             }
+            String verified = ParamUtil.getString(bpc.request,"verified");
+            String rollBack=ParamUtil.getString(bpc.request,"rollBack");
+            String nextStage=null;
+            if(StringUtil.isEmpty(rollBack)){
+                nextStage=verified;
+            }else{
+                nextStage="PROCRB";
+            }
+
+            String reply=ParamUtil.getString(bpc.request,"nextStageReply");
+            if(!StringUtil.isEmpty(reply)){
+                nextStage=reply;
+            }
+
+            log.debug(StringUtil.changeForLog("the nextStage is -->:"+nextStage));
+            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", nextStage);
+
+            ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+            if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())){
+                String[] fastTracking =  ParamUtil.getStrings(bpc.request,"fastTracking");
+                if(fastTracking!=null){
+                    applicationViewDto.getApplicationDto().setFastTracking(true);
+                }
+            }
+            log.debug(StringUtil.changeForLog("the do chooseStage end ...."));
         }
-        log.debug(StringUtil.changeForLog("the do chooseStage end ...."));
     }
 
     /**
@@ -381,8 +412,6 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO1 end ...."));
     }
 
-
-
     /**
      * StartStep: rontingTaskToAO2
      *
@@ -395,7 +424,6 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
     }
 
-
     /**
      * StartStep: rontingTaskToAO3
      *
@@ -407,7 +435,6 @@ public class HcsaApplicationDelegator {
         routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,RoleConsts.USER_ROLE_AO3);
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
     }
-
 
     /**
      * StartStep: approve

@@ -1,37 +1,34 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
-<%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
-<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+<div class="main-content" style="padding-top: 1%">
+    <div class="container">
+        <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
 
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <input type="hidden" name="iaisErrorFlag" id="iaisErrorFlag"/>
-    <input type="hidden" name="crud_action_additional" id="crud_action_additional"/>
-
-    <div class="main-content">
-        <div class="container">
+            <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+            <input type="hidden" name="iaisErrorFlag" id="iaisErrorFlag"/>
+            <input type="hidden" name="crud_action_additional" id="crud_action_additional"/>
             <div class="row">
-                <br/>
-                <br/>
-                <br/>
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                            <li class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
+                            <li class="active" id="info" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
                                                                       data-toggle="tab">Info</a></li>
                             <li class="complete" role="presentation"><a href="#tabDocuments"
                                                                         aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
-                            <li id="ApplicationViewInspection" class="complete" role="presentation" style="display: block"><a href="#tabInspection"
-                                                                        aria-controls="tabInspection" role="tab"
-                                                                        data-toggle="tab">Inspection</a></li>
-                            <li class="incomplete" role="presentation"><a href="#tabProcessing"
+                            <li id="ApplicationViewInspection" class="complete" role="presentation"
+                                style="display: block"><a href="#tabInspection"
+                                                          aria-controls="tabInspection" role="tab"
+                                                          data-toggle="tab">Inspection</a></li>
+                            <li class="incomplete" id="process" role="presentation"><a href="#tabProcessing"
                                                                           aria-controls="tabProcessing" role="tab"
                                                                           data-toggle="tab">Processing</a></li>
                         </ul>
@@ -44,7 +41,7 @@
 
                                 <div class="swiper-slide"><a href="#tabInspection" aria-controls="tabInspection"
                                                              role="tab" data-toggle="tab">Inspection</a></div>
-                                <div class="swiper-slide"><a href="#tabProcessing" aria-controls="tabProcessing"
+                                <div class="swiper-slide"><a href="#tabProcessing" id="doProcess" aria-controls="tabProcessing"
                                                              role="tab" data-toggle="tab">Processing</a></div>
                             </div>
                             <div class="swiper-button-prev"></div>
@@ -62,6 +59,10 @@
                                                 <table class="table table-bordered">
                                                     <tbody>
                                                     <tr>
+                                                        <td align="right">Application Type</td>
+                                                        <td>${applicationViewDto.applicationType}</td>
+                                                    </tr>
+                                                    <tr>
                                                         <td class="col-xs-6" align="right">Application No. (Overall)
                                                         </td>
                                                         <td class="col-xs-6">${applicationViewDto.applicationNoOverAll}</td>
@@ -71,11 +72,7 @@
                                                         <td>${applicationViewDto.applicationDto.applicationNo}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">Application Type</td>
-                                                        <td>${applicationViewDto.applicationType}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Clinical Laboratory</td>
+                                                        <td align="right">Service Type</td>
                                                         <td>${applicationViewDto.serviceType}</td>
                                                     </tr>
                                                     <tr>
@@ -93,11 +90,11 @@
                                     </div>
                                 </div>
                                 <div align="center">
-                                  <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService" target="_blank">
-                                    <button type="button" class="btn btn-primary">
-                                        View Application
-                                    </button>
-                                  </a>
+                                    <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService" target="_blank">
+                                        <button type="button" class="btn btn-primary">
+                                            View Application
+                                        </button>
+                                    </a>
                                 </div>
                                 <div>&nbsp</div>
                                 <div class="panel panel-default">
@@ -165,7 +162,8 @@
                                                             <p><c:out value="${appSupDocDto.file}"></c:out></p>
                                                         </td>
                                                         <td>
-                                                            <p><a href="#"><c:out value="${appSupDocDto.document}"></c:out></a></p>
+                                                            <p><a href="#"><c:out
+                                                                    value="${appSupDocDto.document}"></c:out></a></p>
                                                         </td>
                                                         <td>
                                                             <p><c:out value="${appSupDocDto.size}"></c:out></p>
@@ -455,124 +453,147 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="table-gp">
-                                                <table class="table">
-                                                    <tr>
-                                                        <td class="col-xs-4"><p>Current Status:</p></td>
-                                                        <td class="col-xs-8"><p>${applicationViewDto.currentStatus}</p>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><span>Internal Remarks(</span><span
-                                                                style="color: red">*</span><span>):</span></td>
-                                                        <td>
-                                                            <div class="input-group">
-                                                                <div class="ax_default text_area">
-                                                                    <textarea id="internalRemarksId"
-                                                                              name="internalRemarks" cols="70"
-                                                                              rows="7"></textarea>
+                                                <iais:section title="">
+                                                <%--<table class="table">--%>
+                                                    <%--<div>--%>
+                                                        <%--<td class="col-xs-4"><p>Current Status:</p></td>--%>
+                                                        <iais:row>
+                                                            <iais:field value="Current Status:" required="false"/>
+                                                        <%--<td class="col-xs-8"><p>${applicationViewDto.currentStatus}</p></td>--%>
+                                                            <iais:value width="10">${applicationViewDto.currentStatus}</iais:value>
+                                                        </iais:row>
+                                                    <%--</div>--%>
+                                                    <%--<div>--%>
+                                                        <iais:row>
+                                                            <iais:field value="Internal Remarks:" required="true"  width="12"/>
+                                                            <iais:value width="10">
+                                                                <div class="input-group">
+                                                                    <div class="ax_default text_area">
+                                                                        <textarea id="internalRemarksId"
+                                                                                  name="internalRemarks" cols="70"
+                                                                                  rows="7" maxlength="4000"></textarea>
+                                                                        <span id="error_internalRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr id="processingDecision">
-                                                        <td>
-                                                            <span>Processing Decision(</span><span
-                                                                style="color: red">*</span><span>):</span></span>
-                                                        </td>
-                                                        <td>
-                                                            <select name="nextStage" class="table-select processing-Decision">
-                                                                <option>---select---</option>
-                                                                <option value="VERIFIED">Verified</option>
-                                                                <option value="ROLLBACK">Roll back</option>
-                                                            </select>
-                                                        </td>
-                                                    </tr>
-                                                    <tr id="replytr" class="hidden">
-                                                        <td>
-                                                            <span>Processing Decision(</span><span
-                                                                style="color: red">*</span><span>):</span></span>
-                                                        </td>
-                                                        <td>
-                                                            <select name="nextStageReply" class="table-select processing-Decision">
-                                                                <option>---select---</option>
-                                                                <option value="PROCREP">Give Clarification</option>
-                                                            </select>
-                                                        </td>
-                                                    </tr>
-                                                    <tr id="verifiedDropdown" class="hidden">
-                                                        <td>
-                                                            <span>Verified</span>
-                                                        </td>
-                                                        <td>
-                                                            <select name="verified" class="table-select processing-Verified">
-                                                                <option>---select---</option>
-                                                                <c:forEach items="${applicationViewDto.verified}" var="verified">
-                                                                    <option value="${verified.key}">${verified.value}</option>
-                                                                </c:forEach>
-                                                            </select>
-                                                        </td>
-                                                    </tr>
-                                                    <tr id="rollBackDropdown" class="hidden">
-                                                        <td>
-                                                            <span>Roll Back</span>
-                                                        </td>
-                                                        <td>
-                                                            <select name="rollBack" class="table-select processing-RollBack">
-                                                                <option>---select---</option>
-                                                                <c:forEach items="${applicationViewDto.rollBack}" var="rollBack">
-                                                                    <option value="${rollBack.value}">${rollBack.key}</option>
-                                                                </c:forEach>
-                                                            </select>
-                                                        </td>
-                                                    </tr>
-                                                    <tr id="licenceStartDate">
-                                                        <td>
-                                                            <span>Licence Start Date</span>
-                                                        </td>
-                                                        <td>
-                                                            <iais:datePicker id = "licenceStartDate" name = "tuc" value=""></iais:datePicker>
-                                                        </td>
-                                                    </tr>
-                                                    <tr id="recommendationDropdown" class="hidden">
-                                                        <td>
-                                                            <span>Recommendation:</span>
-                                                        </td>
-                                                        <td>
-                                                            <select name="recommendation" class="table-select recommendation-type">
-                                                                <option>---select---</option>
-                                                                   <c:forEach items="${applicationViewDto.recomeDation}" var="recommendation">
-                                                                       <option><c:out value="${recommendation}"></c:out></option>
-                                                                   </c:forEach>
-                                                                <option>reject</option>
-                                                            </select>
-                                                        </td>
-                                                    </tr>
+                                                            </iais:value>
+                                                        </iais:row>
+                                                    <%--</div>--%>
+                                                    <div id="processingDecision">
+                                                        <iais:row>
+                                                            <%--<span>Processing Decision(</span><span--%>
+                                                            <%--style="color: red">*</span><span>):</span></span>--%>
+                                                            <iais:field value="Processing Decision:" required="true"/>
+                                                            <%String nextStage = request.getParameter("nextStage");%>
+                                                            <iais:value width="10">
+                                                                <iais:select name="nextStage" id="nextStage"
+                                                                             options="nextStages"
+                                                                             value="<%=nextStage%>" ></iais:select>
+                                                            </iais:value>
+                                                        </iais:row>
+                                                    </div>
+                                                    <div id="replytr" class="hidden">
+                                                        <iais:row>
+                                                            <iais:field value="Processing Decision:" required="true"/>
+                                                            <%String nextStageReply = request.getParameter("nextStage");%>
+                                                            <iais:value width="10">
+                                                                <iais:select name="nextStageReply" id="nextStageReply"
+                                                                             options="nextStageReply"
+                                                                             value="<%=nextStageReply%>"></iais:select>
+                                                            </iais:value>
+                                                            <%--<select name="nextStageReply" class="table-select processing-Decision">--%>
+                                                            <%--<option>---select---</option>--%>
+                                                            <%--<option value="PROCREP">Give Clarification</option>--%>
+                                                            <%--</select>--%>
+                                                        </iais:row>
+                                                    </div>
+                                                    <div id="rollBackDropdown" class="hidden">
+                                                        <iais:row>
+                                                            <%--<span>Roll Back</span>--%>
+                                                            <iais:field value="Roll Back:" required="false"/>
+                                                            <iais:value width="10">
+                                                                <select name="rollBack" class="nice-select input-large">
+                                                                    <option value="">Please Select</option>
+                                                                    <c:forEach items="${applicationViewDto.rollBack}"
+                                                                               var="rollBack">
+                                                                        <option value="${rollBack.value}" <c:if test="${rollBack.value == selectRollBack}">selected</c:if>>${rollBack.key}</option>
+                                                                    </c:forEach>
+                                                                </select>
+                                                                <span id="error_rollBack" name="iaisErrorMsg" class="error-msg"></span>
+                                                            </iais:value>
+                                                        </iais:row>
+                                                    </div>
+                                                    <div id="verifiedDropdown" class="hidden">
+                                                        <iais:row>
+                                                            <iais:field value="Verified:" required="false"/>
+                                                            <iais:value width="10">
+                                                                <select name="verified" class="nice-select input-large">
+                                                                    <option value="">Please Select</option>
+                                                                    <c:forEach items="${applicationViewDto.verified}"
+                                                                               var="verified">
+                                                                        <option value="${verified.key}" <c:if test="${verified.key == selectVerified}">selected</c:if>>${verified.value}</option>
+                                                                    </c:forEach>
+                                                                </select>
+                                                                <span id="error_verified" name="iaisErrorMsg" class="error-msg"></span>
+                                                            </iais:value>
+                                                        </iais:row>
+                                                    </div>
+                                                    <div id="licenceStartDate">
+                                                        <iais:row>
+                                                            <%--<span>Licence Start Date</span>--%>
+                                                            <iais:field value="Licence Start Date:" required="false"/>
+                                                            <iais:value width="10">
+                                                                <iais:datePicker id="licenceStartDate" name="tuc"
+                                                                                 value=""></iais:datePicker>
+                                                            </iais:value>
+                                                        </iais:row>
+                                                    </div>
+                                                    <div id="recommendationDropdown" class="hidden">
+                                                        <iais:row>
+                                                            <iais:field value="Recommendation:" required="false"/>
+                                                            <iais:value width="10">
+                                                                <select name="recommendation"
+                                                                        class="nice-select input-large">
+                                                                    <option value="">Please Select</option>
+                                                                    <c:forEach items="${applicationViewDto.recomeDation}"
+                                                                               var="recommendation">
+                                                                        <option><c:out
+                                                                                value="${recommendation}"></c:out></option>
+                                                                    </c:forEach>
+                                                                    <option>reject</option>
+                                                                </select>
+                                                                <span id="error_recommendation" name="iaisErrorMsg" class="error-msg"></span>
+                                                            </iais:value>
+                                                        </iais:row>
+                                                    </div>
 
-                                                        <tr>
-                                                            <td>
-                                                                <span>Fast Tracking:</span>
-                                                            </td>
-                                                            <td >
-                                                           <c:choose>
-                                                                <c:when test="${applicationViewDto.applicationDto.status=='APST007'}">
-                                                                    <input type="checkbox" name = "fastTracking" value="Y"/>
-                                                                </c:when>
-                                                               <c:otherwise>
-                                                                   <p>${applicationViewDto.applicationDto.fastTracking}</p>
-                                                               </c:otherwise>
-                                                           </c:choose>
-                                                            </td>
-                                                        </tr>
+                                                    <%--<div>--%>
+                                                        <iais:row>
+                                                            <iais:field value="Fast Tracking:" required="false"/>
+                                                            <iais:value width="10">
+                                                                <c:choose>
+                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007'}">
+                                                                        <input type="checkbox" name="fastTracking"
+                                                                               value="Y"/>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <p>${applicationViewDto.applicationDto.fastTracking}</p>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </iais:value>
+                                                        </iais:row>
+                                                    <%--</div>--%>
 
-                                                    <tr id="rfiSelect">
-                                                        <td>
-                                                            <span>Sections Allowed for Change:</span>
-                                                        </td>
-                                                        <td >
-                                                            <p id = "selectDetail"></p>
-                                                        </td>
-                                                    </tr>
-                                                </table>
+                                                    <div id="rfiSelect">
+                                                        <iais:row>
+                                                            <iais:field value="Sections Allowed for Change:"
+                                                                        required="false"/>
+                                                            <iais:value width="10">
+                                                                <p id="selectDetail"></p>
+                                                            </iais:value>
+                                                        </iais:row>
+                                                    </div>
+                                                <%--</table>--%>
+                                                </iais:section>
                                                 <div align="center">
                                                     <button id="submitButton" type="button" class="btn btn-primary">
                                                         Submit
@@ -638,81 +659,93 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
+        <%@include file="/include/validation.jsp" %>
     </div>
-</form>
-
+</div>
 
 <script type="text/javascript">
-    $(document).ready(function(){
-        if('${taskDto.taskKey}' == '12848A70-820B-EA11-BE7D-000C29F371DC'||'${taskDto.taskKey}' == '13848A70-820B-EA11-BE7D-000C29F371DC'){
-            $('#ApplicationViewInspection').css('display','none');
+    $(document).ready(function () {
+        if ('${taskDto.taskKey}' == '12848A70-820B-EA11-BE7D-000C29F371DC' || '${taskDto.taskKey}' == '13848A70-820B-EA11-BE7D-000C29F371DC') {
+            $('#ApplicationViewInspection').css('display', 'none');
             $('#recommendationDropdown').removeClass('hidden');
         }
-        if('${applicationViewDto.applicationDto.status}' == 'APST000'){
+        if ('${applicationViewDto.applicationDto.status}' == 'APST000') {
             $('#processingDecision').addClass('hidden');
             $('#recommendationDropdown').addClass('hidden');
             $('#replytr').removeClass('hidden');
             $('#licenceStartDate').addClass('hidden');
         }
         $('#rfiSelect').hide();
+        check();
+        validate();
     });
-
-
 
 
     $("#submitButton").click(function () {
         showWaiting();
-        var textarea = $("#internalRemarksId").val();
-        if (textarea == "") {
-            $('#notNull').remove();
-            $("#internalRemarksId").after("<span id='notNull' style='color: red;'>*NOT NULL!</span>");
-            dismissWaiting();
-            return false;
-        }
+        // var textarea = $("#internalRemarksId").val();
+        // if (textarea == "") {
+        //     $('#notNull').remove();
+        //     $("#internalRemarksId").after("<span id='notNull' style='color: red;'>*NOT NULL!</span>");
+        //     dismissWaiting();
+        //     return false;
+        // }
 
-        if('${applicationViewDto.applicationDto.status}' == 'APST000'){
-            var nextStageReply= $("[name='nextStageReply']").val();
-            if(nextStageReply == "---select---"){
-                $('#NSRnotNull').remove();
-                $("[name='nextStageReply']").after("<span id='NSRnotNull' style='color: red;'>*PLEASE SELECT!</span>");
-                dismissWaiting();
-                return false;
-            }else{
-                document.getElementById("mainForm").submit();
-            }
-        }
+        <%--if ('${applicationViewDto.applicationDto.status}' == 'APST000') {--%>
+            <%--var nextStageReply = $("[name='nextStageReply']").val();--%>
+            <%--if (nextStageReply == "---select---") {--%>
+                <%--$('#NSRnotNull').remove();--%>
+                <%--$("[name='nextStageReply']").after("<span id='NSRnotNull' style='color: red;'>*PLEASE SELECT!</span>");--%>
+                <%--dismissWaiting();--%>
+                <%--return false;--%>
+            <%--} else {--%>
+                <%--document.getElementById("mainForm").submit();--%>
+            <%--}--%>
+        <%--}--%>
 
-        var selectValue = $("[name='nextStage']").val();
-        if(selectValue == "---select---"){
-            $('#NSnotNull').remove();
-            $("[name='nextStage']").after("<span id='NSnotNull' style='color: red;'>*PLEASE SELECT!</span>");
-            dismissWaiting();
-            return false;
-        }
-        if(selectValue == "VERIFIED"){
-            var verified=$("[name='verified']").val();
-            if(verified == "---select---"){
-                $('#VnotNull').remove();
-                $("[name='verified']").after("<span id='VnotNull' style='color: red;'>*PLEASE SELECT!</span>");
-                dismissWaiting();
-                return false;
-            }
-        }else if(selectValue == "ROLLBACK"){
-            var rollBack=$("[name='rollBack']").val();
-            if(rollBack == "---select---"){
-                $('#BnotNull').remove();
-                $("[name='rollBack']").after("<span id='BnotNull' style='color: red;'>*PLEASE SELECT!</span>");
-                dismissWaiting();
-                return false;
-            }
-        }
+        // var selectValue = $("[name='nextStage']").val();
+        // if (selectValue == "---select---") {
+        //     $('#NSnotNull').remove();
+        //     $("[name='nextStage']").after("<span id='NSnotNull' style='color: red;'>*PLEASE SELECT!</span>");
+        //     dismissWaiting();
+        //     return false;
+        // }
+        // if (selectValue == "VERIFIED") {
+        //     var verified = $("[name='verified']").val();
+        //     if (verified == "---select---") {
+        //         $('#VnotNull').remove();
+        //         $("[name='verified']").after("<span id='VnotNull' style='color: red;'>*PLEASE SELECT!</span>");
+        //         dismissWaiting();
+        //         return false;
+        //     }
+        // } else if (selectValue == "ROLLBACK") {
+        //     var rollBack = $("[name='rollBack']").val();
+        //     if (rollBack == "---select---") {
+        //         $('#BnotNull').remove();
+        //         $("[name='rollBack']").after("<span id='BnotNull' style='color: red;'>*PLEASE SELECT!</span>");
+        //         dismissWaiting();
+        //         return false;
+        //     }
+        // }
         document.getElementById("mainForm").submit();
-        $("#submitButton").attr("disabled",true);
+        $("#submitButton").attr("disabled", true);
     });
 
+    function check(){
+        var selectValue = $("[name='nextStage']").val();
+        if (selectValue == "VERIFIED") {
+            $('#verifiedDropdown').removeClass('hidden');
+            $('#rollBackDropdown').addClass('hidden');
+        } else if (selectValue == "ROLLBACK") {
+            $('#rollBackDropdown').removeClass('hidden');
+            $('#verifiedDropdown').addClass('hidden');
+        } else {
+            $('#rollBackDropdown').addClass('hidden');
+            $('#verifiedDropdown').addClass('hidden');
 
-
+        }
+    }
 
 
     $("[name='nextStage']").change(function selectChange() {
@@ -720,10 +753,10 @@
         if (selectValue == "VERIFIED") {
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
-        }else if(selectValue == "ROLLBACK"){
+        } else if (selectValue == "ROLLBACK") {
             $('#rollBackDropdown').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
-        }else{
+        } else {
             $('#rollBackDropdown').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
 
@@ -733,7 +766,7 @@
         var selectValue = $("[name='verified']").val();
         if (selectValue == "PROCRFI") {
             showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService');
-        }else{
+        } else {
             $('#rfiSelect').hide();
         }
     });
@@ -747,15 +780,26 @@
         //     $('#licenceStartDate').addClass('hidden');
         // }
     });
+
     function showWaiting() {
-        $.blockUI({message: '<div style="padding:3px;">We are processing your request now, please do not click the Back or Refresh buttons in the browser.</div>',
+        $.blockUI({
+            message: '<div style="padding:3px;">We are processing your request now, please do not click the Back or Refresh buttons in the browser.</div>',
             css: {width: '25%', border: '1px solid #aaa'},
-            overlayCSS: {opacity: 0.2}});
+            overlayCSS: {opacity: 0.2}
+        });
     }
+
     function dismissWaiting() {
         $.unblockUI();
     }
 
+    function validate(){
+        if("Y"=='${doProcess}'){
+            $('#info').removeClass("active");
+            $('#process').addClass("active");
+            $('#doProcess').click();
+        }
+    }
 
 
 </script>
