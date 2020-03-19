@@ -30,6 +30,7 @@
         FROM (SELECT
                 app.id,
                 app.application_no,
+                app.app_grp_id,
                 (select LICENSEE_ID from application_group as ag where ag.ID =  app.APP_GRP_ID) as licensee_id,
                 app.app_type,
                 app.status,
@@ -41,7 +42,7 @@
             on app.APPLICATION_NO = app2.application_no and app.version = app2.version
             union
             select
-                A.ID,A.DRAFT_NO AS application_no,A.licensee_id,A.app_type,'APST008' as status,NULL as service_id, A.CREATED_DT,1
+                A.ID,A.DRAFT_NO AS application_no,A.app_grp_id,A.licensee_id,A.app_type,'APST008' as status,NULL as service_id, A.CREATED_DT,1
             from
                 app_grp_submission_draft AS A
             where  A.status = 'CMSTAT001') AS B

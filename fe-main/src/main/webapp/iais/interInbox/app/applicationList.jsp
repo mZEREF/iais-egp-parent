@@ -5,6 +5,7 @@
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="crud_action_additional" value="">
         <input type="hidden" name="action_no_value" value="">
+        <input type="hidden" name="action_grp_value" value="">
         <input type="hidden" name="action_id_value" value="">
         <input type="hidden" name="action_type_value" value="">
         <div id="clearBody">
@@ -81,7 +82,7 @@
         </div>
         <div class="row">
             <div class="text-right text-center-mobile" style="margin-right:3%">
-                <button type="button" class="btn btn-primary" onclick="doAppClear()">Clear</button>
+                <button type="button" class="btn btn-secondary" onclick="doAppClear()">Clear</button>
                 <button type="button" class="btn btn-primary" onclick="doSearchApp()">Search</button>
             </div>
         </div>
@@ -154,7 +155,7 @@
                                             <iais:select name="appAction" id="appAction"
                                                          options="selectApplication"
                                                          firstOption="Select"
-                                                         onchange="doAppAction('${app.id}','${app.applicationNo}',this.value)"></iais:select>
+                                                         onchange="doAppAction('${app.id}','${app.applicationNo}','${app.appGrpId}',this.value)"></iais:select>
                                         </c:otherwise>
                                     </c:choose>
                                 </td>

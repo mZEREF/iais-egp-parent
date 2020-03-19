@@ -561,9 +561,11 @@ public class InterInboxDelegator {
     public void appDoRecall(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("Step ---> appDoRecall"));
         HttpServletRequest request = bpc.request;
-        String appId = ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
+        String appId = ParamUtil.getString(request, InboxConst.ACTION_ID_VALUE);
+        String appGrpId = ParamUtil.getString(request, InboxConst.ACTION_GRP_VALUE);
         RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
         recallApplicationDto.setAppId(appId);
+        recallApplicationDto.setAppGrpId(appGrpId);
         Boolean recallResult = inboxService.recallApplication(recallApplicationDto);
         ParamUtil.setRequestAttr(request,InboxConst.APP_RECALL_RESULT, recallResult);
     }

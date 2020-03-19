@@ -11,17 +11,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
-import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
-import com.ecquaria.cloud.moh.iais.service.client.ConfigInboxClient;
-import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
-import com.ecquaria.cloud.moh.iais.service.client.InboxClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
-import java.util.List;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -130,6 +126,9 @@ public class InboxServiceImpl implements InboxService {
                 log.error(e.getMessage(),e);
                 return result;
             }
+        }
+        if(result){
+
         }
         return result;
     }

@@ -20,6 +20,7 @@ public class InboxConst {
     public static final String SWITCH_ACTION                = "crud_action_type";
     public static final String ACTION_NO_VALUE              = "action_no_value";
     public static final String ACTION_ID_VALUE              = "action_id_value";
+    public static final String ACTION_GRP_VALUE              = "action_grp_value";
     public static final String ACTION_TYPE_VALUE            = "action_type_value";
 
 
