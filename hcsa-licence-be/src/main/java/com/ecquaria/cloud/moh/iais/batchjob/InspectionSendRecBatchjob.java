@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
@@ -123,6 +124,7 @@ public class InspectionSendRecBatchjob {
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         for(ApplicationViewDto dto : mapApp){
             ApplicationDto aDto = dto.getApplicationDto();
+            ApplicationGroupDto applicationGroupDto = dto.getApplicationGroupDto();
             String appPremCorrId = dto.getAppPremisesCorrelationId();
             JobRemindMsgTrackingDto jobRemindMsgTrackingDto2 = systemBeLicClient.getJobRemindMsgTrackingDto(aDto.getId(), MessageConstants.JOB_REMIND_MSG_KEY_SEND_REC_TO_FE).getEntity();
             if(jobRemindMsgTrackingDto2 == null) {
@@ -133,7 +135,7 @@ public class InspectionSendRecBatchjob {
                 String mesNO = inboxMsgService.getMessageNo();
                 interMessageDto.setRefNo(mesNO);
                 interMessageDto.setService_id(aDto.getServiceId());
-                interMessageDto.setUserId(intranet.getMohUserGuid());
+                interMessageDto.setUserId(applicationGroupDto.getLicenseeId());
                 String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName() +
                              MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION + appPremCorrId;
                 MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION).getEntity();
