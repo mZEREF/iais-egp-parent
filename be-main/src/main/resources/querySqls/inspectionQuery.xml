@@ -73,7 +73,7 @@
     </sql>
     <sql key="AppGroup"  remarks="query AppGroup items">
         <![CDATA[
-                SELECT DISTINCT T5.GROUP_NO, T5.APP_TYPE, T5.SUBMIT_DT, T5.PMT_STATUS, T5.cou, T5.ID,T5.address FROM
+                SELECT DISTINCT T5.GROUP_NO, T5.APP_TYPE, T5.SUBMIT_DT, T5.PMT_STATUS, T5.cou, T5.ID FROM
                (SELECT DISTINCT T4.GROUP_NO, T1.APP_TYPE, T4.SUBMIT_DT, T4.PMT_STATUS,T4.ID,T6.cou,T2.ID as corrid,T1.APPLICATION_NO,T1.STATUS,T3.HCI_CODE,T3.HCI_NAME,
                CONCAT(T3.BLK_NO ,
                case T3.STREET_NAME

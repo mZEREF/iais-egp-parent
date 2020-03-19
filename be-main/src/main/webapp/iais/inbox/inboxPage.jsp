@@ -69,7 +69,7 @@
                             <label class="col-xs-12 col-md-4 control-label">Application Type</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <iais:select name="application_type" options="appTypeOption" cssClass="application_type"
-                                             firstOption="Please select"
+                                             firstOption="Please Select"
                                              value="${supTaskSearchParam.filters['application_type']}"></iais:select>
                             </div>
                         </div>
@@ -78,7 +78,7 @@
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <iais:select name="application_status" options="appStatusOption"
                                              cssClass="application_status"
-                                             firstOption="Please select"
+                                             firstOption="Please Select"
                                              value="${supTaskSearchParam.filters['application_status']}"></iais:select>
                             </div>
                         </div>
@@ -100,16 +100,13 @@
 
             <iais:pagination param="supTaskSearchParam" result="supTaskSearchResult"/>
 
-            <div class="col-xs-12">
+            <div class="col-xs-12" style="margin-top: 2.5em;">
                 <div class="components">
                     <h3>
                         <span>Search Results</span>
                     </h3>
 
 
-                    <div class="tab-pane active" id="tabinfo" role="tabpanel">
-                        <div class="row">
-                            <div class="col-xs-12">
                                 <div class="table-gp">
                                     <table class="table" style="border-collapse:collapse;">
                                         <thead>
@@ -184,9 +181,6 @@
                                         </c:choose>
                                     </table>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <c:choose>
@@ -232,9 +226,8 @@
         </div>
     </form>
 </div>
-
 <script type="text/javascript">
-    var dividlist = [];
+    var dividajaxlist = [];
 
     function inspectorSearchTask_optionNameAuto(value) {
         if (value != null && value != null) {
@@ -261,7 +254,7 @@
         $("#application_type option:first").prop("selected", 'selected');
         $("#application_status option:first").prop("selected", 'selected');
         $("#inspector_name option:first").prop("selected", 'selected');
-        $("#searchCondition .current").text("Please select");
+        $("#searchCondition .current").text("Please Select");
     }
 
     function submit(action) {
@@ -277,8 +270,8 @@
     }
 
     function getAppByGroupId(applicationGroupNo, divid) {
-        var excute = dividlist.indexOf(divid);
-        if (excute < 0) {
+        if (!isInArray(dividajaxlist,divid)) {
+            dividajaxlist.push(divid);
             $.post(
                 '/main-web/backend/appGroup.do',
                 {groupno: applicationGroupNo},
@@ -350,7 +343,6 @@
                     }
                     html += '</tbody></table></div></td></tr>';
                     $('#advfilter' + divid).after(html);
-                    dividlist.push(divid);
                 }
             )
 
@@ -369,7 +361,7 @@
 
     function jumpToPagechangePage() {
         showWaiting();
-        submit('search');
+        submit('page');
     }
 
     function approve() {
@@ -423,6 +415,15 @@
     function chooseCurRole() {
         showWaiting();
         submit('page');
+    }
+
+    function isInArray(arr,value){
+        for(var i = 0; i < arr.length; i++){
+            if(value === arr[i]){
+                return true;
+            }
+        }
+        return false;
     }
 
 </script>

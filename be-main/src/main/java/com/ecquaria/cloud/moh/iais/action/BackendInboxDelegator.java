@@ -40,18 +40,18 @@ import com.ecquaria.cloud.moh.iais.service.BroadcastMainService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloudfeign.FeignException;
-import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * BankedInboxDelegator
@@ -86,6 +86,7 @@ public class BackendInboxDelegator {
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if (loginContext == null) {
             AccessUtil.initLoginUserInfo(bpc.request);
+            loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         }
         List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
         for (String item : loginContext.getRoleIds()) {
@@ -94,11 +95,11 @@ public class BackendInboxDelegator {
         log.debug(StringUtil.changeForLog("the BackendInboxDelegator start ...."));
         String curRole = "";
         if(StringUtil.isEmpty(loginContext.getCurRoleId())){
-            curRole = "Please select";
+            curRole = "Please Select";
         }else{
             curRole = loginContext.getCurRoleId();
         }
-
+        initSearchParam();
         ParamUtil.setSessionAttr(bpc.request, "searchParamAjax",null);
         ParamUtil.setSessionAttr(bpc.request, "taskList",null);
         ParamUtil.setSessionAttr(bpc.request, "hastaskList",null);
@@ -114,14 +115,12 @@ public class BackendInboxDelegator {
 
     public void searchInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchInit start ...."));
-        AccessUtil.initLoginUserInfo(bpc.request);
         application_no = "";
         application_type = "";
         application_status = "";
         hci_code = "";
         hci_address = "";
         ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
-        initSearchParam();
     }
 
     /**
@@ -239,6 +238,7 @@ public class BackendInboxDelegator {
         String curRole = ParamUtil.getRequestString(bpc.request, "roleIds");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         loginContext.setCurRoleId(curRole);
+        CrudHelper.doPaging(searchParam,bpc.request);
         ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
         commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
     }
@@ -435,8 +435,6 @@ public class BackendInboxDelegator {
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
 
         SearchParam searchParamGroup = new SearchParam(InspectionAppGroupQueryDto.class.getName());
-        searchParamGroup.setPageSize(10);
-        searchParamGroup.setPageNo(1);
 
         searchParamGroup.setSort("SUBMIT_DT", SearchParam.ASCENDING);
 
