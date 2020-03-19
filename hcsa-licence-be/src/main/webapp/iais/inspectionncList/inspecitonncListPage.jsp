@@ -168,6 +168,14 @@
                                                 </thead>
 
                                                 <tbody>
+                                                <c:if test="${empty applicationViewDto.appSupDocDtoList}">
+                                                    <tr>
+                                                        <td colspan="5">
+                                                            <iais:message key="ACK018"
+                                                                          escape="true"/>
+                                                        </td>
+                                                    </tr>
+                                                </c:if>
                                                 <c:forEach items="${applicationViewDto.appSupDocDtoList}"
                                                            var="appSupDocDto">
                                                     <tr>
@@ -188,6 +196,7 @@
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
+
                                                 </tbody>
 
                                             </table>
@@ -211,8 +220,8 @@
                                                 </thead>
                                                 <tbody>
                                                 <tr>
-                                                    <td colspan="5" align="center">
-                                                        <p>No record found.</p>
+                                                    <td colspan="5">
+                                                           <iais:message key="ACK018" escape="true"/>
                                                     </td>
                                                 </tr>
                                                 </tbody>

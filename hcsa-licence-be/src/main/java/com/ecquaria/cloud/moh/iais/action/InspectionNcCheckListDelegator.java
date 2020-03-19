@@ -98,8 +98,9 @@ public class InspectionNcCheckListDelegator {
         if (StringUtil.isEmpty(taskId)) {
             taskId = "B3A5C76D-9C3A-EA11-BE7E-000C29F371DC";
         }
-        String serviceType = "Inspection";
+         String serviceType = "Inspection";
         TaskDto taskDto = taskService.getTaskById(taskId);
+        if( taskDto == null) return;
         String appPremCorrId = taskDto.getRefNo();
         //fillupChklistService.getDraftByTaskId(taskId,serviceType);
         //fillupChklistService.getAllAppChklDraftList(appPremCorrId);

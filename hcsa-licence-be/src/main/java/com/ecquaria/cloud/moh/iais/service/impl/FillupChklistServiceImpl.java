@@ -1086,7 +1086,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         AppPremInsDraftDto draftDto = null;
         if(!IaisCommonUtils.isEmpty(chkList)){
             for(AppPremisesPreInspectChklDto temp:chkList){
-                if(temp.getChkLstConfId().equals(maxVersionAppDto.getConfigId())){
+                if(maxVersionAppDto != null && temp.getChkLstConfId().equals(maxVersionAppDto.getConfigId())){
                     draftDto = fillUpCheckListGetAppClient.getAppInsDraftByChkId(temp.getId()).getEntity();
                     if(draftDto!=null){
                         comDto = JsonUtil.parseToObject(draftDto.getAnswer(),InspectionFillCheckListDto.class);
@@ -1228,7 +1228,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         InspectionFDtosDto fdto= null;
         List<InspectionFillCheckListDto> comList = getServiceChkDtoListByAppPremId(chkList,appPremCorrId,"common");
         String comfigId = null;
-        if(!IaisCommonUtils.isEmpty(fillChkDtoList)){
+        if(!IaisCommonUtils.isEmpty(comList)){
             comfigId = comList.get(0).getConfigId();
         }
         try {
