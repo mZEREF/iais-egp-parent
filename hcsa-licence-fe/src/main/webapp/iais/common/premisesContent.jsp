@@ -69,6 +69,7 @@
                         <span class="error-msg" name="iaisErrorMsg" id="error_premisesType${status.index}" style="margin-left: 35%"></span>
                     </div>
                 </div>
+
                 <iais:row cssClass="onSiteSelect hidden">
                     <iais:field value="Add or select a premises from the list : " width="12" mandatory="true"/>
                     <iais:value id="onSiteSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
@@ -95,9 +96,12 @@
                         </c:choose>
                     </iais:value>
                 </iais:row>
-                <div class="col-xs-12 col-md-4 "></div>
-                <div class=" col-xs-11 col-sm-7 col-md-5"><span class="error-msg" id="error_premisesSelect${status.index}"  name="iaisErrorMsg"></span></div>
-
+                <iais:row>
+                    <div class="col-xs-12 col-md-4 "></div>
+                    <div class=" col-xs-11 col-sm-7 col-md-5" style="margin-bottom: 2%">
+                        <span class="error-msg" id="error_premisesSelect${status.index}"  name="iaisErrorMsg"></span>
+                    </div>
+                </iais:row>
             </div>
             <div class="prem-summary hidden ">
                 <h3 class="without-header-line">Premises Summary</h3>
@@ -396,22 +400,29 @@
                         <label class="col-xs-12 col-md-4 control-label">
                             Operating Hours (Start) <span class="mandatory">*</span>
                         </label>
-                        <div class="col-xs-9 col-sm-5 col-md-4">
+                        <div class="col-xs-9 col-sm-5 col-md-6">
                             <input type="text" value="${appGrpPremisesDto.conStartHH}" maxlength="2" style="width: 60px;margin-right: 2%" name="conveyanceStartHH"/>(HH)
                             :
                             <input type="text" value="${appGrpPremisesDto.conStartMM}" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%" name="conveyanceStartMM"/>(MM)
+
+                        </div>
+                        <div  class="col-xs-12 col-md-4 "></div>
+                        <div class="col-xs-9 col-sm-5 col-md-6">
                             <span class="error-msg" name="isaiErrorMsg" id="error_conStartMM${status.index}"></span>
                         </div>
-
                     </div>
                     <div class="form-group">
                         <label class="col-xs-12 col-md-4 control-label">
                             Operating Hours (End) <span class="mandatory">*</span>
                         </label>
-                        <div class="col-xs-9 col-sm-5 col-md-4">
+                        <div class="col-xs-9 col-sm-5 col-md-6">
                             <input type="text" value="${appGrpPremisesDto.conEndHH}" maxlength="2" style="width: 60px;margin-right: 2%" name="conveyanceEndHH"/>(HH)
                             :
                             <input type="text" value="${appGrpPremisesDto.conEndMM}" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%" name="conveyanceEndMM"/>(MM)
+
+                        </div>
+                        <div  class="col-xs-12 col-md-4 "></div>
+                        <div class="col-xs-9 col-sm-5 col-md-6">
                             <span class="error-msg" name="iaisErrorMsg" id="error_conEndMM${status.index}"></span>
                         </div>
                     </div>
@@ -448,12 +459,18 @@
                                         <label class="col-xs-12 col-md-4 control-label">
                                             Public Holidays Operating Hours (End)
                                         </label>
-                                        <div class="col-xs-9 col-sm-5 col-md-4">
+                                        <div class="col-xs-9 col-sm-5 col-md-6">
                                             <input class="PbHolDayEndHH" type="text" name="${premValue}conveyancePbHolDayEndHH${phStat.index}" value="${ph.convEndToHH}" maxlength="2" style="width: 60px;margin-right: 2%"/>(HH)
                                             :
                                             <input class="PbHolDayEndMM" type="text" name="${premValue}conveyancePbHolDayEndMM${phStat.index}" value="${ph.convEndToMM}" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%"/>(MM)
+
+                                        </div>
+
+                                        <div  class="col-xs-12 col-md-4 "></div>
+                                        <div class="col-xs-9 col-sm-5 col-md-6">
                                             <span class="error-msg" name="iaisErrorMsg" id="error_convEndToHH${status.index}"></span>
                                         </div>
+
                                     </div>
                                 </div>
                             </c:forEach>

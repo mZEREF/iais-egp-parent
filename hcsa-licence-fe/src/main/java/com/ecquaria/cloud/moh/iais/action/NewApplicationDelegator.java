@@ -2225,10 +2225,18 @@ public class NewApplicationDelegator {
                         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
                         if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
                             for(AppPremPhOpenPeriodDto every :appPremPhOpenPeriodList){
+
                                 String convStartFromHH = every.getOnsiteStartFromHH();
                                 String convStartFromMM = every.getOnsiteStartFromMM();
                                 String onsiteEndToHH = every.getOnsiteEndToHH();
                                 String onsiteEndToMM = every.getOnsiteEndToMM();
+                                Date phDate = every.getPhDate();
+                                if(!StringUtil.isEmpty(phDate)){
+                                    if(StringUtil.isEmpty(convStartFromHH)||StringUtil.isEmpty(convStartFromMM)
+                                    ||StringUtil.isEmpty(onsiteEndToHH)||StringUtil.isEmpty(onsiteEndToMM)){
+                                        errorMap.put("onsiteEndToMM"+i,"UC_CHKLMD001_ERR001");
+                                    }
+                                }
                                 if(!StringUtil.isEmpty(convStartFromHH)&&!StringUtil.isEmpty(convStartFromMM)&&!StringUtil.isEmpty(onsiteEndToHH)
                                         &&!StringUtil.isEmpty(onsiteEndToMM)||StringUtil.isEmpty(convStartFromHH)&&StringUtil.isEmpty(convStartFromMM)
                                         &&StringUtil.isEmpty(onsiteEndToHH)&&StringUtil.isEmpty(onsiteEndToMM)){
@@ -2245,7 +2253,6 @@ public class NewApplicationDelegator {
                                             else if((i1*60+i2)>(i3*60+i4)){
                                                 errorMap.put("onsiteEndToMM"+i,"UC_CHKLMD001_ERR003");
                                             }
-
 
                                         }catch (Exception e){
                                             errorMap.put("onsiteEndToMM"+i,"UC_CHKLMD001_ERR003");

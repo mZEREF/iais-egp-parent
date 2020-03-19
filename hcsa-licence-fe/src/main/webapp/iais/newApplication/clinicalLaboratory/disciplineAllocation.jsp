@@ -1,5 +1,4 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
@@ -8,6 +7,12 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@ include file="../dashboard.jsp" %>
+<style>
+  .padding-left{
+    padding-left: 0px;
+  }
+
+</style>
 <form method="post" id="mainForm" class="__egovform" action=<%=process.runtime.continueURL()%>>
   <%@ include file="/include/formHidden.jsp" %>
   <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
@@ -71,7 +76,8 @@
                                   <th>Clinical Governance Officers</th>
                                 </tr>
                                 </thead>
-                                <c:forEach var="premisesAndChkLst" items="${PremisesAndChkLst}" >
+                                <c:set var="row_count" value="0"></c:set>
+                                <c:forEach var="premisesAndChkLst" items="${PremisesAndChkLst}" varStatus="sta">
                                   <c:set value="${premisesAndChkLst.premiseVal}" var="premisesIndexNo"/>
                                   <tbody>
                                   <c:forEach var="chkLst" items="${premisesAndChkLst.appSvcChckListDtoList}" varStatus="status"  >
@@ -92,8 +98,12 @@
                                       <td>
                                         <p class="visible-xs visible-sm table-row-title">Clinical Governance Officers</p>
                                         <c:set var="cgoSelKey" value="${premisesIndexNo}${chkLst.chkLstConfId}"/>
-                                        <iais:select cssClass="${premisesIndexNo}" name="${cgoName}" firstOption="Please Select"  options="CgoSelect"  value="${ReloadAllocationMap[cgoSelKey]}"></iais:select>
-                                        <span  class="error-msg" name="iaisErrorMsg" id="error_disciplineAllocation${status.index}"></span>
+                                        <iais:select  cssClass="${premisesIndexNo}" name="${cgoName}" firstOption="Please Select"  options="CgoSelect"  value="${ReloadAllocationMap[cgoSelKey]}"></iais:select>
+                                        <div class="col-sm-10 padding-left" style="margin-top: 2%">
+                                          <span  class="error-msg" name="iaisErrorMsg" id="error_disciplineAllocation${row_count}"></span>
+                                          <c:set var="row_count" value="${row_count+1}" />
+                                        </div>
+
                                       </td>
                                     </tr>
                                   </c:forEach>

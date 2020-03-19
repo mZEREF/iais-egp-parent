@@ -246,16 +246,18 @@ public class NewApplicationHelper {
     //todo change
     public static Map<String,  String> doValidatePo(List<AppSvcPrincipalOfficersDto> poDto) {
         Map<String, String> oneErrorMap = IaisCommonUtils.genNewHashMap();
-        StringBuilder stringBuilder =new StringBuilder();
+        List<String> stringList=IaisCommonUtils.genNewArrayList();
         int poIndex=0;
         int dpoIndex=0;
         if(IaisCommonUtils.isEmpty(poDto)){
             return oneErrorMap;
         }
         for (int i=0;i< poDto.size();i++) {
-            StringBuilder stringBuilder1 =new StringBuilder();
             String psnType = poDto.get(i).getPsnType();
             if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)){
+
+                StringBuilder stringBuilder =new StringBuilder();
+
                 String assignSelect = poDto.get(i).getAssignSelect();
                 if ("-1".equals(assignSelect)) {
                     oneErrorMap.put("assignSelect"+i, "UC_CHKLMD001_ERR001");
@@ -288,7 +290,8 @@ public class NewApplicationHelper {
                             if(!b){
                                 oneErrorMap.put("NRICFIN","CHKLMD001_ERR005");
                             }else {
-                                stringBuilder1.append(idType).append(idNo);
+                                stringBuilder.append(idType).append(idNo);
+
                             }
                         }
                         if("NRIC".equals(idType)){
@@ -296,7 +299,8 @@ public class NewApplicationHelper {
                             if(!b1){
                                 oneErrorMap.put("NRICFIN","CHKLMD001_ERR005");
                             }else {
-                                stringBuilder1.append(idType).append(idNo);
+                                stringBuilder.append(idType).append(idNo);
+
                             }
                         }
                     }else {
@@ -325,9 +329,19 @@ public class NewApplicationHelper {
                     }
                 }
                 poIndex++;
+                String s = stringBuilder.toString();
+
+                if(stringList.contains(s)) {
+
+                    oneErrorMap.put("NRICFIN", "UC_CHKLMD001_ERR002");
+
+                }else {
+                    stringList.add(stringBuilder.toString());
+                }
             }
 
             if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)){
+                StringBuilder stringBuilder =new StringBuilder();
                 String salutation = poDto.get(i).getSalutation();
                 String name = poDto.get(i).getName();
                 String idType = poDto.get(i).getIdType();
@@ -361,7 +375,7 @@ public class NewApplicationHelper {
                     if(!b){
                         oneErrorMap.put("deputyIdNo"+dpoIndex,"CHKLMD001_ERR005");
                     }else {
-                        stringBuilder1.append(idType).append(idNo);
+                        stringBuilder.append(idType).append(idNo);
                     }
                 }
                 if("NRIC".equals(idType)){
@@ -369,7 +383,7 @@ public class NewApplicationHelper {
                     if(!b1){
                         oneErrorMap.put("deputyIdNo"+dpoIndex,"CHKLMD001_ERR005");
                     }else {
-                        stringBuilder1.append(idType).append(idNo);
+                        stringBuilder.append(idType).append(idNo);
                     }
                 }
 
@@ -388,21 +402,19 @@ public class NewApplicationHelper {
                         oneErrorMap.put("deputyEmailAddr"+dpoIndex, "CHKLMD001_ERR006");
                     }
                 }
-
                 dpoIndex++;
-            }
-            String s = stringBuilder.toString();
 
-            if(!StringUtil.isEmpty(stringBuilder1.toString())){
-                if(s.contains(stringBuilder1.toString())){
+                String s = stringBuilder.toString();
 
-                    oneErrorMap.put("NRICFIN","UC_CHKLMD001_ERR002");
+                if(stringList.contains(s)) {
+
+                    oneErrorMap.put("NRICFIN", "UC_CHKLMD001_ERR002");
 
                 }else {
-                    stringBuilder.append(stringBuilder1.toString());
+                    stringList.add(stringBuilder.toString());
                 }
-
             }
+
 
         }
         return oneErrorMap;

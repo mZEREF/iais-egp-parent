@@ -194,7 +194,7 @@
               <div class="row">
                 <div class="form-group form-horizontal formgap">
                   <div class="col-sm-6 col-md-4">
-                    Deputy Principal Officer(Optional):
+                    Deputy Principal Officer (Optional)
                   </div>
                   <c:if test="${DeputyPrincipalOfficersMandatory> 0}">
                   <div class="col-sm-5 col-md-8" >
@@ -256,7 +256,7 @@
       </div>
       <div class="deputy-content panel panel-default hidden">
         <div class="panel-heading " id="headingDeputy" role="tab">
-          <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#deputyContent" aria-expanded="true" aria-controls="deputyContent">Deputy Principal Officer(Optional)</a></h4>
+          <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#deputyContent" aria-expanded="true" aria-controls="deputyContent">Deputy Principal Officer (Optional)</a></h4>
         </div>
         <div class="deputy-content panel-collapse collapse <c:if test="${DeputyPrincipalOfficersMandatory> 0}">in</c:if>" id="deputyContent" role="tabpanel" aria-labelledby="headingDeputy">
           <div class="panel-body">
