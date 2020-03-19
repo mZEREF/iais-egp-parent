@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
@@ -55,14 +56,15 @@ import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Shicheng
@@ -153,6 +155,10 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         InspRectificationSaveDto inspRectificationSaveDto = new InspRectificationSaveDto();
 
+        //get licenseeId
+        ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+        String licenseeId = applicationGroupDto.getLicenseeId();
+        //get application, task score
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         applicationDtos.add(applicationDto);
@@ -221,7 +227,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             String templateMessageByContent = MsgUtil.getTemplateMessageByContent(mtd.getMessageContent(), params);
             interMessageDto.setMsgContent(templateMessageByContent);
             interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            interMessageDto.setUserId(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+            interMessageDto.setUserId(licenseeId);
             interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             inboxMsgService.saveInterMessage(interMessageDto);
 
