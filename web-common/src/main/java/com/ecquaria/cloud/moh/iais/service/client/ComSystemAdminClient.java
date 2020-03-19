@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -24,4 +25,6 @@ public interface ComSystemAdminClient {
     FeignResponseEntity<List<String>> getWorkGrpsByUserId(@PathVariable(name = "userId") String userId);
     @GetMapping(value = "/iais-orgUserRole/user-roles/{user_id}")
     FeignResponseEntity<List<String>> retrieveUserRoles(@PathVariable("user_id") String userId);
+    @GetMapping(value = "/iais-licensee/licensee-by-org-id/{orgId}")
+    FeignResponseEntity<LicenseeDto> getLicenseeByOrgId(@PathVariable("orgId") String orgId);
 }

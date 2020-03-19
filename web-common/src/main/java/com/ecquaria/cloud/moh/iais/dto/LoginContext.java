@@ -20,10 +20,14 @@ public class LoginContext implements Serializable {
     @Setter private String userId;
     @Setter private String userDomain;
     @Setter private String userName;
-    private Set<String> wrkGrpIds;
     private Set<String> roleIds;
     @Setter private String curRoleId;
+    // BE User Info
+    private Set<String> wrkGrpIds;
 
+    // FE User Info
+    @Setter private String licenseeId;
+    @Setter private String orgId;
 
     public LoginContext() {
         wrkGrpIds = IaisCommonUtils.genNewHashSet();
