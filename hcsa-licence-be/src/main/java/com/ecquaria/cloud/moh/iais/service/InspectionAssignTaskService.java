@@ -116,4 +116,13 @@ public interface InspectionAssignTaskService {
       * @Descripation: routing Task By CommonPool
       */
     void routingTaskByCommonPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/3/19
+      * @Param: appGrpPremisesDto
+      * @return: String
+      * @Descripation: getAddress
+      */
+    String getAddress(AppGrpPremisesDto appGrpPremisesDto);
 }
