@@ -10,10 +10,7 @@ import org.springframework.http.HttpHeaders;
  * @author Wenkang
  * @date 2020/3/19 16:54
  */
-@FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
-        fallback = ApplicationClientFallback.class)
 public class ApplicationBeClient implements ApplicationClientFallback {
-
 
 
     @Override
