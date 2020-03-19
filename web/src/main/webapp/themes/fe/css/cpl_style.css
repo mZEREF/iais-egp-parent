@@ -2273,6 +2273,8 @@ span.error-msg {
   -ms-transition: all 0.1s ease;
   -o-transition: all 0.1s ease;
   transition: all 0.1s ease;
+  white-space: normal;
+  text-overflow: inherit;
 }
 .nice-select span.current {
   line-height: 22px;
