@@ -93,7 +93,25 @@ public class EventbusCallBackDelegate {
                          invokeMethod(submissionId, eventRefNum,
                                  "com.ecquaria.cloud.moh.iais.service.impl.AppealApplicaionServiceImpl",
                                  "updateFEAppealApplicationDto");
+                    } else if(EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION.equals(operation)){
+                        log.info("eventRefNum ****"+eventRefNum);
+                        AppEicRequestTrackingDto entity = applicationClientFallback.getAppEicRequestTracking(eventRefNum).getEntity();
+                        if(entity!=null){
+
+                            String dtoObj = entity.getDtoObj();
+                            Map<String,List<ApplicationDto>> map1 = JsonUtil.parseToObject(dtoObj, Map.class);
+                            log.info("send task callback *****");
+                            List<ApplicationDto> applicationDtoList = map1.get("listNewApplicationDto");
+                            List<ApplicationDto> list = map1.get("requestForInfList");
+                            invokeMethod(applicationDtoList,list,submissionId,
+                                    "com.ecquaria.cloud.moh.iais.service.impl.LicenceFileDownloadServiceImpl",
+                                    "sendTask");
+
+                            log.info("***send task callback end *****");
+                        }
+
                     }
+
                 }else if (EventBusConsts.SERVICE_NAME_ROUNTINGTASK.equals(serviceName)) {
 
                 }else if (EventBusConsts.SERVICE_NAME_LICENCESAVE.equals(serviceName)) {
@@ -106,23 +124,6 @@ public class EventbusCallBackDelegate {
                                 "com.ecquaria.cloud.moh.iais.service.impl.AppealServiceImpl",
                                 "updateFEAppealLicenceDto");
                     }
-                }else if(EventBusConsts.SERVICE_NAME_APPSUBMIT.equals(serviceName)){
-
-                    if(EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION.equals(operation)){
-                        log.info("eventRefNum ****"+eventRefNum);
-                        AppEicRequestTrackingDto entity = applicationClientFallback.getAppEicRequestTracking(eventRefNum).getEntity();
-                        String dtoObj = entity.getDtoObj();
-                        Map<String,List<ApplicationDto>> map1 = JsonUtil.parseToObject(dtoObj, Map.class);
-                        log.info("send task callback *****");
-                        List<ApplicationDto> applicationDtoList = map1.get("listNewApplicationDto");
-                        List<ApplicationDto> list = map1.get("requestForInfList");
-                        invokeMethod(applicationDtoList,list,submissionId,
-                                "com.ecquaria.cloud.moh.iais.service.impl.LicenceFileDownloadServiceImpl",
-                                "sendTask");
-
-                        log.info("***send task callback end *****");
-                    }
-
                 }
             }
         }
