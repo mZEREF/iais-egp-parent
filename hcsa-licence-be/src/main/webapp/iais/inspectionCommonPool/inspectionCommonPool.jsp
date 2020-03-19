@@ -81,11 +81,11 @@
                   <thead>
                     <tr align="center">
                       <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"  field="APPLICATION_NO" value="Application No."></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"  field="APP_TYPE" value="Application Type"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name / Address"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"  field="SUBMIT_DT" value="Submission Date"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false" field="COU" value="Submission Type"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false" field="SUBMIT_DT" value="Application Date"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false" field="PMT_STATUS" value="Payment Status"></iais:sortableHeader>
                     </tr>
                   </thead>
                   <tbody>
@@ -99,13 +99,20 @@
                       </c:when>
                       <c:otherwise>
                         <c:forEach var="pool" items="${cPoolSearchResult.rows}" varStatus="status">
-                          <tr>
+                          <tr style = "display: table-row;" id = "advfilter${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}">
                             <td class="row_no"><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
-                            <td><u><a onclick="javascript:doInspectionCommonPoolAssign('<iais:mask name="appCorrelationId" value="${pool.id}"/>');"><c:out value="${pool.applicationNo}"/></a></u></td>
-                            <td><iais:code code="${pool.applicationType}"/></td>
-                            <td><c:out value="${pool.hciCode}"/></td>
-                            <td><c:out value="${pool.hciName}"/></td>
+                            <td>
+                              <c:out value="${pool.appGroupNo}"/>
+                              <a class="accordion-toggle  collapsed"
+                                 data-toggle="collapse" aria-expanded="false"
+                                 data-target="#advfilter${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}"
+                                 onclick="commonPoolByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}')">
+                              </a>
+                            </td>
+                            <td><c:out value="${pool.applicationType}"/></td>
+                            <td><c:out value="${pool.submissionType}"/></td>
                             <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>
+                            <td><c:out value="${pool.paymentStatus}"/></td>
                           </tr>
                         </c:forEach>
                       </c:otherwise>
@@ -154,6 +161,54 @@
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
         inspectionCommonPoolSubmit('sort');
+    }
+
+    function commonPoolByGroupId(applicationGroupNo, divid) {
+        var excute = dividlist.indexOf(divid);
+        if (excute < 0) {
+            $.post(
+                '/hcsa-licence-be/common-pool/common.do',
+                {groupNo: applicationGroupNo},
+                function (data) {
+                    var res = data.ajaxResult;
+                    var html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
+                                '<td colspan="6" style="padding: 0px 8px !important;">' +
+                                  '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
+                                    '<table class="table" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                                      '<thead>' +
+                                      '<tr>';
+
+                    html += '<th>Application No</th>' +
+                        '<th>Service</th>' +
+                        '<th>Application Status</th>' +
+                        '<th>HCI Code</th>' +
+                        '<th>HCI Address</th>' +
+                        '</tr>' +
+                        '</thead>' +
+                        '<tbody>';
+                    for (var i = 0; i < res.rowCount; i++) {
+                        var address = res.rows[i].address;
+                        html += '<tr>';
+                        html += '<td><p class="visible-xs visible-sm table-row-title">Application No</p><p><a ' + res.rows[i].taskId + '>' + res.rows[i].applicationNo + '</a></p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + res.rows[i].serviceName + '<p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].appStatus + '</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">HCi Code</p><p>' + res.rows[i].hciCode + '</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">HCi Address</p><p>' + res.rows[i].hciAddress + '</p></td>' +
+                            '</tr>';
+                    }
+                    html += '</tbody></table></div></td></tr>';
+                    $('#advfilter' + divid).after(html);
+                    dividlist.push(divid);
+                }
+            )
+        } else {
+            var display = $('#advfilterson' + divid).css('display');
+            if (display == 'none') {
+                $('#advfilterson' + divid).show();
+            } else {
+                $('#advfilterson' + divid).hide();
+            }
+        }
     }
 </script>
 

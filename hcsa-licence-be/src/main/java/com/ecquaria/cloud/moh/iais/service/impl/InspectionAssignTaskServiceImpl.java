@@ -281,11 +281,11 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     public SearchResult<InspectionCommonPoolQueryDto> getAddressByResult(SearchResult<InspectionCommonPoolQueryDto> searchResult) {
         for(InspectionCommonPoolQueryDto icpqDto: searchResult.getRows()){
             if(1 == icpqDto.getAppCount()){
-
+                icpqDto.setSubmissionType(AppConsts.PAYMENT_STATUS_SINGLE);
             } else if(1 < icpqDto.getAppCount()) {
-
+                icpqDto.setSubmissionType(AppConsts.PAYMENT_STATUS_MULTIPLE);
             } else {
-
+                icpqDto.setSubmissionType("-");
             }
         }
         return searchResult;

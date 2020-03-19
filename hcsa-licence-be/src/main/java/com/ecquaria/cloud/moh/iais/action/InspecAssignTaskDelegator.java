@@ -337,7 +337,7 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorQuery2(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorQuery2 start ...."));
         SearchParam searchParam = getSearchParam(bpc);
-        QueryHelp.setMainSql("inspectionQuery", "assignInspector",searchParam);
+        QueryHelp.setMainSql("inspectionQuery", "assignCommonTask",searchParam);
         SearchResult<InspectionCommonPoolQueryDto> searchResult = inspectionAssignTaskService.getSearchResultByParam(searchParam);
         searchResult = inspectionAssignTaskService.getAddressByResult(searchResult);
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
