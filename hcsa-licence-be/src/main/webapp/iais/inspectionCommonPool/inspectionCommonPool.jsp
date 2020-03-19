@@ -164,51 +164,53 @@
     }
 
     function commonPoolByGroupId(applicationGroupNo, divid) {
-        var excute = dividlist.indexOf(divid);
-        if (excute < 0) {
-            $.post(
-                '/hcsa-licence-be/common-pool/common.do',
-                {groupNo: applicationGroupNo},
-                function (data) {
-                    var res = data.ajaxResult;
-                    var html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
-                                '<td colspan="6" style="padding: 0px 8px !important;">' +
-                                  '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                                    '<table class="table" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
-                                      '<thead>' +
-                                      '<tr>';
+      var excute = dividlist.indexOf(divid);
+      if (excute < 0) {
+        $.post(
+          '/hcsa-licence-be/common-pool/common.do',
+          {groupNo: applicationGroupNo},
+          function (data) {
+            var result = data.result;
+            if('Success' == result){
+              var res = data.ajaxResult;
+              var html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
+                  '<td colspan="6" style="padding: 0px 8px !important;">' +
+                  '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
+                  '<table class="table" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                  '<thead>' +
+                  '<tr>';
 
-                    html += '<th>Application No</th>' +
-                        '<th>Service</th>' +
-                        '<th>Application Status</th>' +
-                        '<th>HCI Code</th>' +
-                        '<th>HCI Address</th>' +
-                        '</tr>' +
-                        '</thead>' +
-                        '<tbody>';
-                    for (var i = 0; i < res.rowCount; i++) {
-                        var address = res.rows[i].address;
-                        html += '<tr>';
-                        html += '<td><p class="visible-xs visible-sm table-row-title">Application No</p><p><a ' + res.rows[i].taskId + '>' + res.rows[i].applicationNo + '</a></p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + res.rows[i].serviceName + '<p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].appStatus + '</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">HCi Code</p><p>' + res.rows[i].hciCode + '</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">HCi Address</p><p>' + res.rows[i].hciAddress + '</p></td>' +
-                            '</tr>';
-                    }
-                    html += '</tbody></table></div></td></tr>';
-                    $('#advfilter' + divid).after(html);
-                    dividlist.push(divid);
-                }
-            )
-        } else {
-            var display = $('#advfilterson' + divid).css('display');
-            if (display == 'none') {
-                $('#advfilterson' + divid).show();
-            } else {
-                $('#advfilterson' + divid).hide();
+              html += '<th>Application No</th>' +
+                  '<th>Service</th>' +
+                  '<th>Application Status</th>' +
+                  '<th>HCI Code</th>' +
+                  '<th>HCI Address</th>' +
+                  '</tr>' +
+                  '</thead>' +
+                  '<tbody>';
+              for (var i = 0; i < res.rowCount; i++) {
+                html += '<tr>';
+                  html += '<td><p class="visible-xs visible-sm table-row-title">Application No</p><p><a onclick="javascript:doInspectionCommonPoolAssign(' + "'" + res.rows[i].appPremCorrId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>' +
+                      '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + res.rows[i].serviceName + '<p></td>' +
+                      '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].appStatus + '</p></td>' +
+                      '<td><p class="visible-xs visible-sm table-row-title">HCi Code</p><p>' + res.rows[i].hciCode + '</p></td>' +
+                      '<td><p class="visible-xs visible-sm table-row-title">HCi Address</p><p>' + res.rows[i].hciAddress + '</p></td>' +
+                      '</tr>';
+              }
+              html += '</tbody></table></div></td></tr>';
+              $('#advfilter' + divid).after(html);
+              dividlist.push(divid);
             }
+          }
+        )
+      } else {
+        var display = $('#advfilterson' + divid).css('display');
+        if (display == 'none') {
+          $('#advfilterson' + divid).show();
+        } else {
+          $('#advfilterson' + divid).hide();
         }
+      }
     }
 </script>
 
