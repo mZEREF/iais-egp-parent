@@ -140,11 +140,13 @@
                 <artifactId>ecq-sz-commons</artifactId>
                 <version>0.4</version>
             </dependency>
+
             <dependency>
                 <groupId>com.ecquaria.submission.client</groupId>
                 <artifactId>submissionclient</artifactId>
                 <version>0.59</version>
             </dependency>
+
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi</artifactId>
@@ -152,15 +154,34 @@
                 <exclusions>
                     <exclusion>
                         <groupId>org.apache.poi</groupId>
-                        <artifactId>poi-ooxml</artifactId>
+                        <artifactId>poi</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
+
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
                 <version>4.1.2</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.poi</groupId>
+                        <artifactId>poi-ooxml</artifactId>
+                    </exclusion>
+
+                    <exclusion>
+                        <groupId>org.apache.poi</groupId>
+                        <artifactId>poi-ooxml-schemas</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
+
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml-schemas</artifactId>
+                <version>4.1.2</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.ecquaria.kafka</groupId>
                 <artifactId>servicewrapper</artifactId>

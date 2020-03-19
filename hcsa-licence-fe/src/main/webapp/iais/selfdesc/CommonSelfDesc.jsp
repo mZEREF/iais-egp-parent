@@ -9,7 +9,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
-<webui:setLayout name="iais-intranet"/>
+<webui:setLayout name="iais-internet"/>
 
 <%
   sop.webflow.rt.api.BaseProcessClass process =

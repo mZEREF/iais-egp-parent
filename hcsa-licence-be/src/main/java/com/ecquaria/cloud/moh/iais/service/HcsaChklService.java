@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.message.MessageContent;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -103,7 +104,7 @@ public interface HcsaChklService {
 
     Boolean isExistsRecord(ChecklistConfigDto dto);
 
-    String submitUploadRegulation(List<HcsaChklSvcRegulationDto> regulationDtoList);
+    List<MessageContent> submitUploadRegulation(List<HcsaChklSvcRegulationDto> regulationDtoList);
 
-    String submitUploadItem(List<ChecklistItemDto> checklistItemExcelList);
+    List<MessageContent> submitUploadItems(List<ChecklistItemDto> uploadItems);
 }

@@ -86,9 +86,7 @@
                 <div class="text-right">
                   <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
 
-                  <c:if test="${!empty checklistItemResult.rows}">
                     <a class="btn btn-secondary"  href="${pageContext.request.contextPath}/checklist-item-file?action=checklistItem">Export Checklist Item</a>
-                  </c:if>
 
                   <a class="btn btn-secondary"   href="${pageContext.request.contextPath}/checklist-item-file?action=regulation">Export Regulation</a>
                   <a class="btn btn-primary" id="crud_search_button" value="doSearch" href="#">Search</a>
@@ -199,7 +197,7 @@
 
                             <c:choose>
                               <c:when test="${!empty sessionScope.currentValidateId}">
-                                <a class="btn btn-primary next" href="javascript:void(0);"
+                                <a class="btn btn-secondary" href="javascript:void(0);"
                                    onclick="javascript: cancelConfig();">Cancel</a>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: configToChecklist();">Add to Config</a>

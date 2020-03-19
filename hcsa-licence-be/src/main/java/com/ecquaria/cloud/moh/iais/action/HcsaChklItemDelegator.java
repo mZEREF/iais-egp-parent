@@ -40,16 +40,6 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +49,17 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Delegator(value = "hcsaChklItemDelegator")
 @Slf4j
@@ -146,7 +147,7 @@ public class HcsaChklItemDelegator {
     }
 
     private Map<String, String> validationFile(HttpServletRequest request, MultipartFile file){
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
         if (file == null){
             errorMap.put(FILE_UPLOAD_ERROR, MessageCodeKey.GENERAL_ERR0004);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -171,7 +172,7 @@ public class HcsaChklItemDelegator {
             return errorMap;
         }
 
-        return null;
+        return errorMap;
     }
 
     /**
@@ -194,20 +195,19 @@ public class HcsaChklItemDelegator {
         }
 
         String json = "";
+
+        List<MessageContent> messageContentList = IaisCommonUtils.genNewArrayList();
         File toFile = FileUtils.multipartFileToFile(file);
-        errorMap = new HashMap<>(1);
-        errorMap.put(FILE_UPLOAD_ERROR, "Please remove the same data from Excel.");
-        ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         try {
             switch (value){
                 case REGULATION:
                     List<HcsaChklSvcRegulationDto> regulationDtoList = FileUtils.transformToJavaBean(toFile, HcsaChklSvcRegulationDto.class);
-                    json = hcsaChklService.submitUploadRegulation(regulationDtoList);
+                    messageContentList = hcsaChklService.submitUploadRegulation(regulationDtoList);
                     break;
                 case CHECKLIST_ITEM:
                     List<ChecklistItemDto> checklistItemDtoList = FileUtils.transformToJavaBean(toFile, ChecklistItemDto.class);
                     checklistItemDtoList = checklistItemDtoList.stream().filter(i -> !StringUtil.isEmpty(i.getChecklistItem())).collect(Collectors.toList());
-                    json  = hcsaChklService.submitUploadItem(checklistItemDtoList);
+                    messageContentList  = hcsaChklService.submitUploadItems(checklistItemDtoList);
                     break;
                 default:
             }
@@ -219,7 +219,6 @@ public class HcsaChklItemDelegator {
             return;
         }
 
-        List<MessageContent> messageContentList = JsonUtil.parseToList(json, MessageContent.class);
         for (MessageContent messageContent : messageContentList){
             String msg = MessageUtil.getMessageDesc(messageContent.getResult());
             messageContent.setResult(msg);
@@ -310,7 +309,6 @@ public class HcsaChklItemDelegator {
         //Business check
         IaisApiResult<ChecklistItemDto> itemDtoIaisApiResult = hcsaChklService.saveChklItem(itemDto);
         if(itemDtoIaisApiResult.isHasError()){
-            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             int errorCode = itemDtoIaisApiResult.getErrorCode();
             if (IaisApiStatusCode.DUPLICATION_RECORD.getStatusCode() == errorCode){
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("messageContent", IaisApiStatusCode.DUPLICATION_RECORD.getMessage()));
@@ -736,19 +734,17 @@ public class HcsaChklItemDelegator {
                 SearchParam  searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
                 QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
                 SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
-                if (!IaisCommonUtils.isEmpty(searchResult.getRows())){
 
-                    //master code to description
-                    List<CheckItemQueryDto> checkItemQueryDtoList = searchResult.getRows();
-                    for (CheckItemQueryDto checkItemQueryDto : checkItemQueryDtoList){
-                        checkItemQueryDto.setAnswerType(MasterCodeUtil.getCodeDesc(checkItemQueryDto.getAnswerType()));
-                        String riskLvl = MasterCodeUtil.getCodeDesc(checkItemQueryDto.getRiskLevel());
-                        checkItemQueryDto.setRiskLevel("".equals(riskLvl) ? "-" : riskLvl);
-                        checkItemQueryDto.setStatus(MasterCodeUtil.getCodeDesc(checkItemQueryDto.getStatus()));
-                    }
+                //master code to description
+                List<CheckItemQueryDto> checkItemQueryDtoList = searchResult.getRows();
+                for (CheckItemQueryDto checkItemQueryDto : checkItemQueryDtoList){
+                    checkItemQueryDto.setAnswerType(MasterCodeUtil.getCodeDesc(checkItemQueryDto.getAnswerType()));
+                    String riskLvl = MasterCodeUtil.getCodeDesc(checkItemQueryDto.getRiskLevel());
+                    checkItemQueryDto.setRiskLevel("".equals(riskLvl) ? "-" : riskLvl);
+                    checkItemQueryDto.setStatus(MasterCodeUtil.getCodeDesc(checkItemQueryDto.getStatus()));
+                }
 
                     file = ExcelWriter.exportExcel(checkItemQueryDtoList, CheckItemQueryDto.class, "Checklist_Items_Upload_Template");
-                }
                 break;
             default:
         }

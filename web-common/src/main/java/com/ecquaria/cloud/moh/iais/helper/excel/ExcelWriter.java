@@ -9,7 +9,6 @@ package com.ecquaria.cloud.moh.iais.helper.excel;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
@@ -60,7 +59,7 @@ public final class ExcelWriter {
     }
 
     public static File exportExcel(final List<?> source, final Class<?> clz, final String fileName){
-        if (IaisCommonUtils.isEmpty(source) || clz == null){
+        if (source == null || clz == null){
             throw new IaisRuntimeException("Please check the export excel parameters.");
         }
 

@@ -100,10 +100,10 @@
                                            onclick="javascript: doBack();">Back</a>
                                     </c:when>
                                     <c:otherwise>
+                                        <a class="btn btn-secondary" href="javascript:void(0);"
+                                           onclick="javascript: doBack();">Cancel</a>
                                         <a class="btn btn-primary next" href="javascript:void(0);"
                                            onclick="javascript: submitConfig();">Submit</a>
-                                        <a class="btn btn-primary next" href="javascript:void(0);"
-                                           onclick="javascript: doBack();">Back</a>
                                     </c:otherwise>
 
                                 </c:choose>
