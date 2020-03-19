@@ -123,7 +123,7 @@ public class InspecAssignTaskDelegator {
             searchParam = new SearchParam(InspectionCommonPoolQueryDto.class.getName());
             searchParam.setPageSize(10);
             searchParam.setPageNo(1);
-            searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
+            searchParam.setSort("GROUP_NO", SearchParam.ASCENDING);
         }
         return searchParam;
     }
