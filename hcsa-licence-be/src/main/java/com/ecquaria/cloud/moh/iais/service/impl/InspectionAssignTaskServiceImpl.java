@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -411,6 +412,12 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         }
 
         return result;
+    }
+
+    @Override
+    @SearchTrack(catalog = "inspectionQuery",key = "assignCommonTask")
+    public SearchResult<InspectionAppInGroupQueryDto> getAjaxResultByParam(SearchParam searchParam) {
+        return null;
     }
 
     private String getOtherAddress(AppGrpPremisesDto appGrpPremisesDto, String result) {
