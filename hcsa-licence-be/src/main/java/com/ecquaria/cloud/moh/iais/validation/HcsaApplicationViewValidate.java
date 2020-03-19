@@ -20,6 +20,12 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         String internalRemarks = ParamUtil.getRequestString(request, "internalRemarks");
         if(StringUtil.isEmpty(internalRemarks)){
             errMap.put("internalRemarks","The field is mandatory.");
+        }else{
+            ParamUtil.setRequestAttr(request,"internalRemarks",internalRemarks);
+        }
+        String date = ParamUtil.getDate(request, "tuc");
+        if(!StringUtil.isEmpty(date)){
+            ParamUtil.setRequestAttr(request,"date",date);
         }
 
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");

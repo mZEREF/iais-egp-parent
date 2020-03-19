@@ -458,20 +458,20 @@
                                                     <%--<div>--%>
                                                         <%--<td class="col-xs-4"><p>Current Status:</p></td>--%>
                                                         <iais:row>
-                                                            <iais:field value="Current Status:" required="false"/>
+                                                            <iais:field value="Current Status" required="false"/>
                                                         <%--<td class="col-xs-8"><p>${applicationViewDto.currentStatus}</p></td>--%>
                                                             <iais:value width="10">${applicationViewDto.currentStatus}</iais:value>
                                                         </iais:row>
                                                     <%--</div>--%>
                                                     <%--<div>--%>
                                                         <iais:row>
-                                                            <iais:field value="Internal Remarks:" required="true"  width="12"/>
+                                                            <iais:field value="Internal Remarks" required="true"  width="12"/>
                                                             <iais:value width="10">
                                                                 <div class="input-group">
                                                                     <div class="ax_default text_area">
                                                                         <textarea id="internalRemarksId"
                                                                                   name="internalRemarks" cols="70"
-                                                                                  rows="7" maxlength="4000"></textarea>
+                                                                                  rows="7" maxlength="4000">${internalRemarks}</textarea>
                                                                         <span id="error_internalRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
@@ -482,7 +482,7 @@
                                                         <iais:row>
                                                             <%--<span>Processing Decision(</span><span--%>
                                                             <%--style="color: red">*</span><span>):</span></span>--%>
-                                                            <iais:field value="Processing Decision:" required="true"/>
+                                                            <iais:field value="Processing Decision" required="true"/>
                                                             <%String nextStage = request.getParameter("nextStage");%>
                                                             <iais:value width="10">
                                                                 <iais:select name="nextStage" id="nextStage"
@@ -493,7 +493,7 @@
                                                     </div>
                                                     <div id="replytr" class="hidden">
                                                         <iais:row>
-                                                            <iais:field value="Processing Decision:" required="true"/>
+                                                            <iais:field value="Processing Decision" required="true"/>
                                                             <%String nextStageReply = request.getParameter("nextStage");%>
                                                             <iais:value width="10">
                                                                 <iais:select name="nextStageReply" id="nextStageReply"
@@ -509,7 +509,7 @@
                                                     <div id="rollBackDropdown" class="hidden">
                                                         <iais:row>
                                                             <%--<span>Roll Back</span>--%>
-                                                            <iais:field value="Roll Back:" required="false"/>
+                                                            <iais:field value="Roll Back" required="false"/>
                                                             <iais:value width="10">
                                                                 <select name="rollBack" class="nice-select input-large">
                                                                     <option value="">Please Select</option>
@@ -524,7 +524,7 @@
                                                     </div>
                                                     <div id="verifiedDropdown" class="hidden">
                                                         <iais:row>
-                                                            <iais:field value="Verified:" required="false"/>
+                                                            <iais:field value="Verified" required="false"/>
                                                             <iais:value width="10">
                                                                 <select name="verified" class="nice-select input-large">
                                                                     <option value="">Please Select</option>
@@ -540,16 +540,16 @@
                                                     <div id="licenceStartDate">
                                                         <iais:row>
                                                             <%--<span>Licence Start Date</span>--%>
-                                                            <iais:field value="Licence Start Date:" required="false"/>
+                                                            <iais:field value="Licence Start Date" required="false"/>
                                                             <iais:value width="10">
                                                                 <iais:datePicker id="licenceStartDate" name="tuc"
-                                                                                 value=""></iais:datePicker>
+                                                                                 value="${date}"></iais:datePicker>
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
                                                     <div id="recommendationDropdown" class="hidden">
                                                         <iais:row>
-                                                            <iais:field value="Recommendation:" required="false"/>
+                                                            <iais:field value="Recommendation" required="false"/>
                                                             <iais:value width="10">
                                                                 <select name="recommendation"
                                                                         class="nice-select input-large">
@@ -568,7 +568,7 @@
 
                                                     <%--<div>--%>
                                                         <iais:row>
-                                                            <iais:field value="Fast Tracking:" required="false"/>
+                                                            <iais:field value="Fast Tracking" required="false"/>
                                                             <iais:value width="10">
                                                                 <c:choose>
                                                                     <c:when test="${applicationViewDto.applicationDto.status=='APST007'}">
@@ -585,7 +585,7 @@
 
                                                     <div id="rfiSelect">
                                                         <iais:row>
-                                                            <iais:field value="Sections Allowed for Change:"
+                                                            <iais:field value="Sections Allowed for Change"
                                                                         required="false"/>
                                                             <iais:value width="10">
                                                                 <p id="selectDetail"></p>
