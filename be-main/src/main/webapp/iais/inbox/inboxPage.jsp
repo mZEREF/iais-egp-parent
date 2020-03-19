@@ -191,30 +191,44 @@
             </div>
             <c:choose>
                 <c:when test="${\"AO1\".equals(curRole)}">
-                    <button class="btn btn-lg btn-login-submit" type="button"
-                            style="background:#2199E8; color: white"
-                            onclick="javascript:approve()">Support
-                    </button>
+                    <div class="application-tab-footer">
+                        <div class="row">
+                            <div class="col-xs-11 col-md-11">
+                                <div class="text-right">
+                                    <a class="btn btn-primary"
+                                       onclick="javascript:approve()">Support</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </c:when>
                 <c:when test="${\"AO2\".equals(curRole)}">
-                    <button class="btn btn-lg btn-login-submit" type="button"
-                            style="background:#2199E8; color: white"
-                            onclick="javascript:approve()">Support
-                    </button>
+                    <div class="application-tab-footer">
+                        <div class="row">
+                            <div class="col-xs-11 col-md-11">
+                                <div class="text-right">
+                                    <a class="btn btn-primary"
+                                       onclick="javascript:approve()">Support</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </c:when>
                 <c:when test="${\"AO3\".equals(curRole)}">
-                    <button class="btn btn-lg btn-login-submit" type="button"
-                            style="background:#2199E8; color: white"
-                            onclick="javascript:approve()">Approve
-                    </button>
-                    <button class="btn btn-lg btn-login-submit" type="button"
-                            style="background:#2199E8; color: white"
-                            onclick="javascript:trigger()">Trigger to DMS
-                    </button>
+                    <div class="application-tab-footer">
+                        <div class="row">
+                            <div class="col-xs-11 col-md-11">
+                                <div class="text-right">
+                                    <a class="btn btn-primary"
+                                       onclick="javascript:approve()">Approve</a>
+                                    <a class="btn btn-primary"
+                                       onclick="javascript:trigger()">Trigger to DMS</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </c:when>
-
             </c:choose>
-
         </div>
     </form>
 </div>
