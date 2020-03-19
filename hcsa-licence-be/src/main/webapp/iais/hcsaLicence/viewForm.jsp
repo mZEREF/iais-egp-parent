@@ -12,7 +12,11 @@
 <c:set var="appGrpPremisesDtoList" value="${appSubmissionDto.appGrpPremisesDtoList}"></c:set>
 <c:set var="oldAppGrpPremisesDtoList" value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList}"></c:set>
 <input style="display: none" value="${NOT_VIEW}" id="view">
-
+<style>
+  body{
+    font-size: 14px;padding: 2%;
+  }
+</style>
 <div class="panel-main-content">
 
   <div class="amended-service-info-gp">
@@ -28,7 +32,7 @@
 
           <div class="form-check-gp">
             <div class="row">
-              <div class="col-xs-12">
+              <div class="col-xs-12" style="margin-left: 2%">
                 <c:forEach var="checkList" items="${appSvcLaboratoryDisciplinesDto.appSvcChckListDtoList}" varStatus="statuss">
                 <div class="form-check active">
                   <p class="form-check-label " aria-label="premise-1-cytology"><span class="check-square "></span><span class="col-xs-6 col-md-4">${checkList.chkName}</span>
