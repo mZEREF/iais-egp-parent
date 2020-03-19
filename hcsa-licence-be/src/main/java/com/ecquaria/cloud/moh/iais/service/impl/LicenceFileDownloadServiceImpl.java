@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesSco
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationNewAndRequstDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
@@ -444,9 +445,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         requeOrNew(requestForInfList,applicationGroup,application);
         log.info(requestForInfList.toString()+"requestForInfList size" +requestForInfList .size());
-
-        applicationListDto.setListNewApplicationDto(listApplicationDto);
-        applicationListDto.setRequestForInfList(requestForInfList);
+        ApplicationNewAndRequstDto applicationNewAndRequstDto=new ApplicationNewAndRequstDto();
+        applicationNewAndRequstDto.setListNewApplicationDto(listApplicationDto);
+        applicationNewAndRequstDto.setRequestForInfList(requestForInfList);
+        applicationListDto.setApplicationNewAndRequstDto(applicationNewAndRequstDto);
         processFileTrackDto.setStatus("PFT003");
         applicationListDto.setProcessFileTrackDto(processFileTrackDto);
         Long l = System.currentTimeMillis();

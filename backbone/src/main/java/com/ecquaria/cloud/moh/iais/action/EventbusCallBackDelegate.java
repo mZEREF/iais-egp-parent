@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationNewAndRequstDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -18,6 +19,7 @@ import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.kafka.GlobalConstants;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -99,11 +101,10 @@ public class EventbusCallBackDelegate {
                         if(entity!=null){
 
                             String dtoObj = entity.getDtoObj();
-                            Map<String,List<ApplicationDto>> map1 = JsonUtil.parseToObject(dtoObj, Map.class);
+                            ApplicationNewAndRequstDto applicationNewAndRequstDto= JsonUtil.parseToObject(dtoObj, ApplicationNewAndRequstDto.class);
                             log.info("send task callback *****");
-                            List<ApplicationDto> applicationDtoList = map1.get("listNewApplicationDto");
-                            List<ApplicationDto> list = map1.get("requestForInfList");
-                            invokeMethod(applicationDtoList,list,submissionId,
+
+                            invokeMethod(applicationNewAndRequstDto.getListNewApplicationDto(),applicationNewAndRequstDto.getRequestForInfList(),submissionId,
                                     "com.ecquaria.cloud.moh.iais.service.impl.LicenceFileDownloadServiceImpl",
                                     "sendTask");
 
@@ -156,4 +157,5 @@ public class EventbusCallBackDelegate {
         Method med = cls.getMethod(methodName, new Class[]{List.class, List.class,String.class});
         med.invoke(obj,listApplicationDto,requestForInfList,submissionId);
     }
+
 }
