@@ -258,7 +258,7 @@
 
                                     <div class="input-group">
                                         <div class="ax_default text_area">
-                                            <span style="font-size: 18px"><strong>Inspection Lead</strong></span> <c:out value="${serListDto.inspectionLeader}"/>
+                                            <span style="font-size: 18px"><strong>Inspector Lead</strong></span> <c:out value="${serListDto.inspectionLeader}"/>
                                         </div>
                                     </div>
 

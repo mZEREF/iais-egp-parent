@@ -416,15 +416,15 @@
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
                                                     <h4>Other Inspection Officers</h4>
-                                                    <textarea cols="70" rows="7" name="otherinspector" id="otherinspector" disabled><c:out value="${serListDto.otherinspectionofficer}"></c:out></textarea>
+                                                    <textarea cols="70" rows="7" name="otherinspector" id="otherinspector" disabled maxlength="300"><c:out value="${serListDto.otherinspectionofficer}"></c:out></textarea>
                                                     <span class="error-msg" id="error_otherofficer" name="iaisErrorMsg"></span>
                                                 </div>
                                             </div>
 
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
-                                                    <h4>Best Practice</h4>
-                                                    <textarea cols="70" rows="7" name="bestpractice" id="bestpractice" disabled><c:out value="${serListDto.bestPractice}"></c:out></textarea>
+                                                    <h4>Best Practices</h4>
+                                                    <textarea cols="70" rows="7" name="bestpractice" id="bestpractice" disabled maxlength="500"><c:out value="${serListDto.bestPractice}"></c:out></textarea>
                                                     <span class="error-msg" id="error_bestPractice" name="iaisErrorMsg"></span>
                                                 </div>
                                             </div>
