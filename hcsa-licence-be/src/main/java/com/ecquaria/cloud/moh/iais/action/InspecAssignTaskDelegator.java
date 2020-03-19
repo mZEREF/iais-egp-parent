@@ -101,7 +101,7 @@ public class InspecAssignTaskDelegator {
                 searchParam.addFilter("appCorrId" + i, appCorrId_list.get(i));
             }
 
-            QueryHelp.setMainSql("inspectionQuery", "assignInspector",searchParam);
+            QueryHelp.setMainSql("inspectionQuery", "assignCommonTask",searchParam);
             searchResult = inspectionAssignTaskService.getSearchResultByParam(searchParam);
             searchResult = inspectionAssignTaskService.getAddressByResult(searchResult);
             ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
