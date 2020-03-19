@@ -2569,7 +2569,7 @@ span.error-msg {
   font-weight: 400;
 }
 .nice-select ul.list li:first-child {
-  display: none;
+  /** display: none; */
 }
 .nice-select:hover, .nice-select.hover {
   border-color: #1989BF;
