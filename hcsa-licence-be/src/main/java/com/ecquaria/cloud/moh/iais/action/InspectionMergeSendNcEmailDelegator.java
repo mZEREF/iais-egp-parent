@@ -130,7 +130,7 @@ public class InspectionMergeSendNcEmailDelegator {
                     mesContext.append(oneEmail.substring(0,oneEmail.indexOf(BELOW_REVIEW)));
                     break;
                 }
-            }catch (NullPointerException e){
+            }catch (Exception e){
                 log.info(e.getMessage());
             }
         }
@@ -151,7 +151,7 @@ public class InspectionMergeSendNcEmailDelegator {
                 else {
                     mesContext.append(ncEmail);
                 }
-            }catch (NullPointerException e){
+            }catch (Exception e){
                 log.info(e.getMessage());
             }
         }
@@ -163,7 +163,7 @@ public class InspectionMergeSendNcEmailDelegator {
                     mesContext.append(oneEmail.substring(oneEmail.indexOf(THANKS)));
                     break;
                 }
-            }catch (NullPointerException e){
+            }catch (Exception e){
                 log.info(e.getMessage());
             }
         }
