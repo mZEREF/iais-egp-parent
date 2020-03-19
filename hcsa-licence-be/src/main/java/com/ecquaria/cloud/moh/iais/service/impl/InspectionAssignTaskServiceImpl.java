@@ -106,6 +106,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
         ApplicationDto applicationDto = searchByAppCorrId(appCorrelationId).getApplicationDto();
         AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(appCorrelationId);
+        String address = getAddress(appGrpPremisesDto);
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId());
 
@@ -113,7 +114,12 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         inspecTaskCreAndAssDto.setAppCorrelationId(appCorrelationId);
         inspecTaskCreAndAssDto.setApplicationType(applicationDto.getApplicationType());
         inspecTaskCreAndAssDto.setApplicationStatus(applicationDto.getStatus());
-        inspecTaskCreAndAssDto.setHciName(appGrpPremisesDto.getHciName() + " / " + appGrpPremisesDto.getAddress());
+        if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
+            inspecTaskCreAndAssDto.setHciName(appGrpPremisesDto.getHciName() + " / " + address);
+        } else {
+            inspecTaskCreAndAssDto.setHciName(address);
+        }
+        inspecTaskCreAndAssDto.setHciName(appGrpPremisesDto.getHciName() + " / " + address);
         inspecTaskCreAndAssDto.setHciCode(appGrpPremisesDto.getHciCode());
         inspecTaskCreAndAssDto.setServiceName(hcsaServiceDto.getSvcName());
         inspecTaskCreAndAssDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? "Post":"Pre");
@@ -275,11 +281,12 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     public SearchResult<InspectionCommonPoolQueryDto> getAddressByResult(SearchResult<InspectionCommonPoolQueryDto> searchResult) {
         for(InspectionCommonPoolQueryDto icpqDto: searchResult.getRows()){
             AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(icpqDto.getId());
+            String address = getAddress(appGrpPremisesDto);
             icpqDto.setHciCode(appGrpPremisesDto.getHciCode());
             if(!StringUtil.isEmpty(icpqDto.getHciName())) {
-                icpqDto.setHciName(icpqDto.getHciName() + " / " + appGrpPremisesDto.getAddress());
+                icpqDto.setHciName(icpqDto.getHciName() + " / " + address);
             } else {
-                icpqDto.setHciName(appGrpPremisesDto.getAddress());
+                icpqDto.setHciName(address);
             }
         }
         return searchResult;
