@@ -449,11 +449,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         applicationListDto.setRequestForInfList(requestForInfList);
         processFileTrackDto.setStatus("PFT003");
         applicationListDto.setProcessFileTrackDto(processFileTrackDto);
-
         Long l = System.currentTimeMillis();
-        applicationGroup.get(0).setPmtRefNo(l.toString());
+        applicationListDto.setEventRefNo(l.toString());
+
         eventBusHelper.submitAsyncRequest(applicationListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION,l.toString(),null);
+                EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION,applicationListDto.getEventRefNo(),null);
 
         Boolean flag=true;
        /* try {
