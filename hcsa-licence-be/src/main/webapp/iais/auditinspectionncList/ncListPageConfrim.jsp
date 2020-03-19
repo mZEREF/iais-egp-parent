@@ -273,14 +273,14 @@
 
                                     <div class="input-group">
                                         <div class="ax_default text_area">
-                                            <h4><strong>Remarks</strong></h4> <textarea cols="70" rows="7" name="tcuRemark" disabled id="tcuRemark"><c:out value="${serListDto.tcuRemark}"></c:out></textarea>
+                                            <h4><strong>Remarks</strong></h4> <textarea cols="70" rows="7" name="tcuRemark"  maxlength="300" disabled id="tcuRemark"><c:out value="${serListDto.tcuRemark}"></c:out></textarea>
                                             <span class="error-msg" id="error_tcuRemark" name="iaisErrorMsg"></span>
                                         </div>
                                     </div>
                                     <div class="input-group">
                                         <div class="ax_default text_area">
                                             <h4><strong>Best Practices</strong></h4>
-                                            <textarea cols="70" rows="7" name="bestpractice" id="bestpractice" disabled><c:out value="${serListDto.bestPractice}"></c:out></textarea>
+                                            <textarea cols="70" rows="7" name="bestpractice" id="bestpractice" maxlength="500"disabled><c:out value="${serListDto.bestPractice}"></c:out></textarea>
                                             <span class="error-msg" id="error_bestPractice" name="iaisErrorMsg"></span>
                                         </div>
                                     </div>
