@@ -450,8 +450,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         applicationListDto.setProcessFileTrackDto(processFileTrackDto);
 
         String id = applicationListDto.getApplicationGroup().get(0).getId();
+        Long l = System.currentTimeMillis();
+
         eventBusHelper.submitAsyncRequest(applicationListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION,id,null);
+                EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION,l.toString(),null);
 
         Boolean flag=true;
        /* try {
