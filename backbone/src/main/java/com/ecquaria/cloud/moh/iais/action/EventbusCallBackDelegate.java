@@ -113,13 +113,14 @@ public class EventbusCallBackDelegate {
                         AppEicRequestTrackingDto entity = applicationClientFallback.getAppEicRequestTracking(eventRefNum).getEntity();
                         String dtoObj = entity.getDtoObj();
                         Map<String,List<ApplicationDto>> map1 = JsonUtil.parseToObject(dtoObj, Map.class);
-
+                        log.info("send task callback *****");
                         List<ApplicationDto> applicationDtoList = map1.get("listNewApplicationDto");
                         List<ApplicationDto> list = map1.get("requestForInfList");
                         invokeMethod(applicationDtoList,list,submissionId,
                                 "com.ecquaria.cloud.moh.iais.service.impl.LicenceFileDownloadServiceImpl",
                                 "sendTask");
                         applicationClientFallback.updateAppEicRequestTracking(eventRefNum);
+                        log.info("***send task callback end *****");
                     }
 
                 }
