@@ -200,9 +200,9 @@
                             <c:choose>
                               <c:when test="${!empty sessionScope.currentValidateId}">
                                 <a class="btn btn-primary next" href="javascript:void(0);"
-                                   onclick="javascript: configToChecklist();">Add to Config</a>
-                                <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: cancelConfig();">Cancel</a>
+                                <a class="btn btn-primary next" href="javascript:void(0);"
+                                   onclick="javascript: configToChecklist();">Add to Config</a>
                               </c:when>
                               <c:otherwise>
                                 <a class="btn btn-primary next" href="javascript:void(0);"

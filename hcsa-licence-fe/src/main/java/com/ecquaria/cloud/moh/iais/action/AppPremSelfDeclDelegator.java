@@ -7,14 +7,12 @@ package com.ecquaria.cloud.moh.iais.action;
  */
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremSelfDeclService;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +22,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +30,8 @@ import java.util.Map;
 @Slf4j
 public class AppPremSelfDeclDelegator {
 
-    private static final String INSPECTION_START_PERIOD = "inspStartDate";
-    private static final String INSPECTION_END_PERIOD = "inspEndDate";
+    /*private static final String INSPECTION_START_PERIOD = "inspStartDate";
+    private static final String INSPECTION_END_PERIOD = "inspEndDate";*/
 
     private final AppPremSelfDeclService appPremSelfDesc;
 
@@ -54,8 +51,10 @@ public class AppPremSelfDeclDelegator {
         AuditTrailHelper.auditFunction("Hcsa Application", "Self desc");
 
         ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", null);
+
+        /*
         ParamUtil.setSessionAttr(request, INSPECTION_START_PERIOD, null);
-        ParamUtil.setSessionAttr(request, INSPECTION_END_PERIOD, null);
+        ParamUtil.setSessionAttr(request, INSPECTION_END_PERIOD, null);*/
 
     }
 
@@ -83,12 +82,6 @@ public class AppPremSelfDeclDelegator {
         if (selfDeclList == null){
             List<SelfDecl> selfDeclByGroupId = appPremSelfDesc.getSelfDeclByGroupId(groupId);
             ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", (Serializable) selfDeclByGroupId);
-
-            if(selfDeclByGroupId != null){
-                Date date = appPremSelfDesc.getBlockPeriodByAfterApp(groupId, selfDeclByGroupId);
-                ParamUtil.setSessionAttr(request, INSPECTION_START_PERIOD, IaisEGPHelper.parseToString(date, "dd/MM/yyyy"));
-            }
-
         }
 
     }
@@ -104,11 +97,11 @@ public class AppPremSelfDeclDelegator {
 
         String currentPage = ParamUtil.getString(request, "tabIndex");
 
-        String inspStartDate = ParamUtil.getString(request, "inspStartDate");
+       /* String inspStartDate = ParamUtil.getString(request, "inspStartDate");
         String inspEndDate = ParamUtil.getString(request, "inspEndDate");
 
         ParamUtil.setSessionAttr(request, INSPECTION_START_PERIOD, inspStartDate);
-        ParamUtil.setSessionAttr(request, INSPECTION_END_PERIOD, inspEndDate);
+        ParamUtil.setSessionAttr(request, INSPECTION_END_PERIOD, inspEndDate);*/
 
         List<SelfDecl> selfDeclByGroupId = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
 
@@ -176,28 +169,7 @@ public class AppPremSelfDeclDelegator {
         List<SelfDecl> selfDeclList = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
 
         //Once transaction
-
-        String inspStartDate = ParamUtil.getString(request, "inspStartDate");
-        String inspEndDate = ParamUtil.getString(request, "inspEndDate");
-
-        ParamUtil.setRequestAttr(request, "inspStartDate", inspStartDate);
-        ParamUtil.setRequestAttr(request, "inspEndDate", inspEndDate);
-
         Map<String, String> errorMap = new HashMap<>(4);
-        if (StringUtils.isEmpty(inspStartDate)){
-            errorMap.put("inspStartDate", MessageCodeKey.ERR0010);
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            return;
-        }
-
-        if (StringUtils.isEmpty(inspEndDate)){
-            errorMap.put("inspEndDate", MessageCodeKey.ERR0010);
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            return;
-        }
-
         boolean hasWriteAnswer = hasWtriteAnswer(selfDeclList).booleanValue();
         if (!hasWriteAnswer){
             errorMap.put("premItemAnswer", "Please fill in the necessary answers.");
@@ -206,19 +178,9 @@ public class AppPremSelfDeclDelegator {
             return;
         }
 
-        Date startDate = IaisEGPHelper.parseToDate(inspStartDate, "dd/MM/yyyy");
-        Date endDate = IaisEGPHelper.parseToDate(inspEndDate, "dd/MM/yyyy");
-
-        if (endDate.compareTo(startDate) < 0){
-            errorMap.put("inspectionDateErr", MessageCodeKey.CHKL_ERR002);
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            return;
-        }
-
         if (errorMap != null && errorMap.isEmpty()){
             String groupId = (String) ParamUtil.getSessionAttr(request, "currentSelfDeclGroupId");
-            appPremSelfDesc.saveSelfDeclAndInspectionDate(selfDeclList, groupId, startDate, endDate);
+            appPremSelfDesc.saveSelfDecl(selfDeclList, groupId);
             ParamUtil.setRequestAttr(request,"ackMsg", "You have successfully submitted self-assessment");
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         }

@@ -67,16 +67,6 @@
         </div>
       </div>
 
-      <div class="col-xs-8 col-sm-6 col-md-5">
-        Inspection Start Date: <iais:datePicker id = "inspStartDate" name = "inspStartDate"  value="${inspStartDate}"></iais:datePicker>
-        <span id="error_inspStartDate" name="iaisErrorMsg" class="error-msg"></span>
-      </div>
-
-      <div class="col-xs-8 col-sm-6 col-md-5">
-        Inspection End Date: <iais:datePicker id = "inspEndDate" name = "inspEndDate" value="${inspEndDate}"></iais:datePicker>
-        <span id="error_inspEndDate" name="iaisErrorMsg" class="error-msg"></span>
-      </div>
-
       <div class="tab-content">
         <div class="tab-pane active" id="tabInbox" role="tabpanel">
 
@@ -89,7 +79,6 @@
                     <th>No.</th>
                     <th>Regulation Clause</th>
                     <th>Item</th>
-                    <th>Address</th>
                     <th>Yes</th>
                     <th>No</th>
                     <th>Na</th>
@@ -111,9 +100,9 @@
         <div class="application-tab-footer">
           <td>
             <div class="text-right text-center-mobile">
-              <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doCancel();">Cancel</a>
-              <a class="btn btn-primary next" href="javascript:void(0);" onclick="doClear();">Clear</a>
-              <a class="btn btn-primary secondary" href="javascript:void(0);" onclick="javascript: doSave('${tabIndex}');">Draft</a>
+              <a class="btn btn-secondary" href="javascript:void(0);" onclick="javascript: doCancel();">Cancel</a>
+              <a class="btn btn-secondary"  onclick="javascript:doClear()" href="#">Clear</a>
+              <a class="btn btn-secondary"  onclick="javascript: doSave('${tabIndex}');" href="#">Draft</a>
               <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSubmit();">Submit</a>
             </div>
 
@@ -154,7 +143,6 @@
       }
 
       function doClear() {
-        $("input[type='radio']").removeAttr('checked');
         $("input[type='radio']").removeAttr('checked');
       }
 

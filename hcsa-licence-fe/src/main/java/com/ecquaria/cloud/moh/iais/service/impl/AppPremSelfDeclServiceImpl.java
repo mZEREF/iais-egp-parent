@@ -25,15 +25,16 @@ import com.ecquaria.cloud.moh.iais.service.AppPremSelfDeclService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * @author yichen
@@ -53,10 +54,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     @Autowired
     private FeEicGatewayClient gatewayClient;
 
-
     private List<AppSvcPremisesScopeDto> premScopeList;
-
-    private List<String> svcCodeList;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -150,11 +148,6 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
             HcsaServiceDto hcsa = HcsaServiceCacheHelper.getServiceById(svcId);
             String svcCode = hcsa.getSvcCode();
-
-            // search inspection period
-            HcsaServicePrefInspPeriodDto inspPeriod = appConfigClient.getHcsaServicePrefInspPeriod(svcCode).getEntity();
-            selfDecl.setPeriodDto(inspPeriod);
-
             String svcName = hcsa.getSvcName();
             List<PremCheckItem> premItemList = IaisCommonUtils.genNewArrayList();
             Map<String, List<PremCheckItem>> premiseAnswerMap = new HashMap<>(16);
@@ -168,15 +161,19 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
                 setServiceSelfDeclConfig(premItemList, confList, svcCode, type, module, grpPremId);
                 setSubTypeSelfDeclConfig(premItemList, confList, svcCode, type, module, grpPremId);
 
-                selfDecl.setPremAnswerMap(premiseAnswerMap);
-                selfDecl.setSvcCode(svcCode);
-                selfDecl.setSvcName(svcName);
-                selfDecl.setConfIdList(confList);
-                selfDecl.setSvcId(svcId);
-                premiseAnswerMap.put(correId, premItemList);
-                selfDecl.setPremAnswerMap(premiseAnswerMap);
-                premiseList.add(correId);
-                selfDeclList.add(selfDecl);
+
+                //Do not display without config
+                if (!IaisCommonUtils.isEmpty(confList)){
+                    selfDecl.setPremAnswerMap(premiseAnswerMap);
+                    selfDecl.setSvcCode(svcCode);
+                    selfDecl.setSvcName(svcName);
+                    selfDecl.setConfIdList(confList);
+                    selfDecl.setSvcId(svcId);
+                    premiseAnswerMap.put(correId, premItemList);
+                    selfDecl.setPremAnswerMap(premiseAnswerMap);
+                    premiseList.add(correId);
+                    selfDeclList.add(selfDecl);
+                }
 
                 //only save one time
                 if (!commonFlag){
@@ -267,25 +264,23 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     * @param: [selfDeclList]
     * @return: void
     */
-    public void saveSelfDeclAndInspectionDate(List<SelfDecl> selfDeclList, String groupId, Date inspStartDate, Date inspEndDate) {
+    public void saveSelfDecl(List<SelfDecl> selfDeclList, String groupId) {
         //save fe after return data
         List<String> contentJsonList = applicationClient.saveAllSelfDecl(selfDeclList).getEntity();
 
-        //route to be
-        if (contentJsonList != null && !contentJsonList.isEmpty()){
-            ApplicationGroupDto applicationGroupDto = new ApplicationGroupDto();
-            applicationGroupDto.setId(groupId);
-            applicationGroupDto.setPrefInspStartDate(inspStartDate);
-            applicationGroupDto.setPrefInspEndDate(inspEndDate);
-            applicationClient.doUpDate(applicationGroupDto);
+        try {
+            //route to be
+            if (contentJsonList != null && !contentJsonList.isEmpty()){
+                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-
-            int statusCode = gatewayClient.routeSelfDeclData(contentJsonList, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getStatusCode();
-            System.out.println(statusCode);
+                int statusCode = gatewayClient.routeSelfDeclData(contentJsonList, signature.date(), signature.authorization(),
+                        signature2.date(), signature2.authorization()).getStatusCode();
+            }
+        }catch (Exception e){
+            log.error("encounter failure when sync self decl to be" + e.getMessage());
         }
+
     }
 
     @Override

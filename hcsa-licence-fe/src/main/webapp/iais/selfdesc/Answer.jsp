@@ -26,10 +26,10 @@
               <p>${list.checklistItem}</p>
             </td>
 
-            <td>
+            <%--<td>
               <p class="visible-xs visible-sm table-row-title"></p>
               <p>${list.address}</p>
-            </td>
+            </td>--%>
 
             <td>
               <p><input name="${list.answerKey}" type="radio"  <c:if test="${list.answer == 'YES'}">checked="checked"</c:if> onclick="javascript:selectAnswer('YES', '${list.answerKey}')"/></p>
@@ -68,10 +68,10 @@
             <p>${list.checklistItem}</p>
           </td>
 
-          <td>
+         <%-- <td>
             <p class="visible-xs visible-sm table-row-title"></p>
             <p>${list.address}</p>
-          </td>
+          </td>--%>
 
           <td>
             <p><input name="${list.answerKey}" type="radio"  <c:if test="${list.answer == 'YES'}">checked="checked"</c:if> onclick="javascript:selectAnswer('YES', '${list.answerKey}')"/></p>
