@@ -44,7 +44,21 @@
     </c:when>
   </c:choose>
   <fieldset id="fieldset-content" <c:if test="${AppSubmissionDto.needEditController && !isClickEdit}">disabled</c:if> >
-  <p>Please select the service disciplines you would like to apply at your premises${status.index+1}.</p>
+  <p class="underline" >Please select the service disciplines you would like to apply at your premises.</p>
+  <p><strong class="cgo-header">Premises ${status.index+1}</strong></p>
+  <p>
+    <strong class="cgo-header">
+      <c:choose>
+        <c:when test="${'ONSITE' == appGrpPremisesDto.premisesType}">
+          <c:out value="On-site"/>
+        </c:when>
+        <c:when test="${'CONVEYANCE' == appGrpPremisesDto.premisesType}">
+          <c:out value="Conveyance"/>
+        </c:when>
+      </c:choose>
+      :<c:out value="${appGrpPremisesDto.address}"/>
+    </strong>
+  </p>
   <span class="error-msg" name="iaisErrorMsg" id="error_checkError"></span>
 <div class="wrapper">
   <div class="form-inner-content editableMode">

@@ -51,39 +51,39 @@
                                             <div class="form-horizontal">
                                                 <iais:row>
                                                     <iais:field value="Name " width="12"/>
-                                                    <iais:value cssClass="col-xs-11 col-sm-7 col-md-2 input-with-label">
+                                                    <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
                                                         <iais:select cssClass="salutationSel"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${onePersonnel.salutation}" firstOption="Please Select"></iais:select>
                                                     </iais:value>
-                                                    <iais:value cssClass="col-xs-11 col-sm-7 col-md-4 input-with-label">
+                                                    <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
                                                         <iais:input maxLength="66" type="text" needDisabled="true" name="emailAddress" value="${onePersonnel.psnName}"></iais:input>
                                                     </iais:value>
                                                 </iais:row>
                                                 <iais:row>
                                                     <iais:field value="Id No. " width="12" />
-                                                    <iais:value cssClass="col-xs-11 col-sm-7 col-md-2 input-with-label">
+                                                    <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
                                                         <iais:select cssClass="idTypeSel"  name="idType" value="${onePersonnel.idType}" options="IdTypeSelect"></iais:select>
                                                     </iais:value>
-                                                    <iais:value cssClass="col-xs-11 col-sm-7 col-md-4 input-with-label">
+                                                    <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
                                                         <iais:input maxLength="66" needDisabled="true" type="text" name="emailAddress" value="${onePersonnel.idNo}"></iais:input>
                                                     </iais:value>
                                                 </iais:row>
                                                 <iais:row>
                                                     <iais:field value="Designation " width="12" mandatory="true"/>
-                                                    <iais:value cssClass="col-xs-11 col-sm-7 col-md-2 input-with-label">
+                                                    <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
                                                         <iais:select cssClass="designationSel" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${onePersonnel.designation}" firstOption="Please Select"></iais:select>
                                                     </iais:value>
                                                     <span class="error-msg" name="iaisErrorMsg" id="error_designation"></span>
                                                 </iais:row>
                                                 <iais:row>
                                                     <iais:field value="Professional  Regn Type " width="12" mandatory="true"/>
-                                                    <iais:value cssClass="col-xs-11 col-sm-7 col-md-6 input-with-label">
+                                                    <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
                                                         <iais:select cssClass="professionTypeSel" name="professionType" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${onePersonnel.professionType}" firstOption="Please Select"></iais:select>
                                                     </iais:value>
                                                     <span class="error-msg" name="iaisErrorMsg" id="error_professionType"></span>
                                                 </iais:row>
                                                 <iais:row>
                                                     <iais:field value="Professional Regn No. " width="12" mandatory="true"/>
-                                                    <iais:value cssClass="col-xs-11 col-sm-7 col-md-6 input-with-label">
+                                                    <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
                                                         <iais:input maxLength="20" type="text" name="professionRegnNo" value="${onePersonnel.professionRegnNo}"></iais:input>
                                                     </iais:value>
                                                     <span class="error-msg" name="iaisErrorMsg" id="error_professionRegnNor"></span>
@@ -92,14 +92,14 @@
 
                                                 <iais:row>
                                                     <iais:field value="Email " width="12" mandatory="true"/>
-                                                    <iais:value cssClass="col-xs-11 col-sm-7 col-md-6 input-with-label">
+                                                    <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
                                                         <iais:input maxLength="66" type="text" name="emailAddress" value="${onePersonnel.emailAddr}"></iais:input>
                                                     </iais:value>
                                                     <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr"></span>
                                                 </iais:row>
                                                 <iais:row>
                                                     <iais:field value="Mobile " width="12" mandatory="true"/>
-                                                    <iais:value cssClass="col-xs-11 col-sm-7 col-md-6 input-with-label">
+                                                    <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
                                                         <iais:input maxLength="8" type="text" name="mobileNo" value="${onePersonnel.mobileNo}"></iais:input>
                                                     </iais:value>
                                                     <span class="error-msg" name="iaisErrorMsg" id="error_mobileNo"></span>
@@ -110,7 +110,7 @@
                                     <div class="application-tab-footer">
                                         <div class="row">
                                             <div class="col-xs-12 col-sm-6 ">
-                                                <p><a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a></p>
+                                                <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
                                             </div>
                                             <div class="col-xs-12 col-sm-6">
                                                 <div class="button-group">

@@ -24,46 +24,7 @@
                 </div>
               </div>
               <div class="profile-info-gp hidden">
-                <div class="officer-info">
-                  <h3>Linda Tan</h3>
-                  <div class="row profile-line">
-                    <div class="col-xs-6 col-md-3">
-                      <p>Name</p>
-                    </div>
-                    <div class="col-xs-6 col-md-7">
-                      <p>Linda Tan</p>
-                    </div>
-                  </div>
-                  <div class="row profile-line">
-                    <div class="col-xs-6 col-md-3">
-                      <p>ID No.</p>
-                    </div>
-                    <div class="col-xs-6 col-md-7">
-                      <p>XXXX422 (NRIC)</p>
-                    </div>
-                  </div>
-                  <div class="row profile-line">
-                    <div class="col-xs-6 col-md-3">
-                      <p>Mobile No.</p>
-                    </div>
-                    <div class="col-xs-6 col-md-7">
-                      <p>+65 90009098</p>
-                    </div>
-                  </div>
-                  <div class="row profile-line">
-                    <div class="col-xs-6 col-md-3">
-                      <p>Email Address</p>
-                    </div>
-                    <div class="col-xs-6 col-md-7">
-                      <p>lindatan@hotmail.com</p>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-xs-12">
-                      <p>To edit these details, you will need to <a data-toggle="modal" data-target="#officerAmend">amend</a> it first before proceeding with your application.</p>
-                    </div>
-                  </div>
-                </div>
+
               </div>
 
               <div id="newOfficer" class="new-officer-form hidden">

@@ -113,7 +113,7 @@
                     <iais:row>
                         <iais:field value="Name of HCI " mandatory="true" width="11"/>
                         <iais:value width="11" cssClass="col-md-5 disabled">
-                            <iais:input cssClass="disabled" maxLength="100" type="text" name="onSiteHciName" id="sitePremiseName" value="${appGrpPremisesDto.hciName}"></iais:input>
+                            <iais:input cssClass="" maxLength="100" type="text" name="onSiteHciName" id="sitePremiseName" value="${appGrpPremisesDto.hciName}"></iais:input>
                             <span id="error_hciName${status.index}" name="iaisErrorMsg" class="error-msg"></span>
                         </iais:value>
                     </iais:row>
@@ -131,7 +131,7 @@
                     <iais:row>
                         <iais:field value="Address Type " mandatory="true" width="12"/>
                         <iais:value id="onSiteAddressType${premValue}" cssClass="col-xs-7 col-sm-4 col-md-5 addressType">
-                            <iais:select cssClass="siteAddressType" name="onSiteAddressType" id="siteAddressType" options="addressType" value="${appGrpPremisesDto.addrType}"></iais:select>
+                            <iais:select cssClass="siteAddressType" name="onSiteAddressType" id="siteAddressType" options="addressType" value="${appGrpPremisesDto.addrType}" ></iais:select>
                             <span class="error-msg" name="iaisErrorMsg" id="error_addrType${status.index}"></span>
                         </iais:value>
                     </iais:row>
@@ -179,7 +179,7 @@
                     <iais:row>
                         <iais:field value="Fire Safety Certificate Issued Date" width="12"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
-                            <iais:datePicker cssClass="fireIssuedDate" name="onSiteFireSafetyCertIssuedDate" value="${appGrpPremisesDto.certIssuedDtStr}" />
+                            <iais:datePicker cssClass="fireIssuedDate " name="onSiteFireSafetyCertIssuedDate" value="${appGrpPremisesDto.certIssuedDtStr}" />
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -194,11 +194,11 @@
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-6">
                             <input type="hidden" name="onSiteIsOtherLic" value="${appGrpPremisesDto.locateWithOthers}"/>
                             <div class="form-check col-sm-3">
-                                <input <c:if test="${'0'==appGrpPremisesDto.locateWithOthers}">checked="checked"</c:if> class="form-check-input other-lic"  type="radio" name="otherLicence${status.index}" value = "0" aria-invalid="false">
+                                <input <c:if test="${'0'==appGrpPremisesDto.locateWithOthers}">checked="checked"</c:if> class="form-check-input other-lic"  type="radio" name="otherLicence${status.index}" value = "1" aria-invalid="false">
                                 <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
                             </div>
                             <div class="form-check col-sm-3">
-                                <input <c:if test="${'1'==appGrpPremisesDto.locateWithOthers}">checked="checked"</c:if> class="form-check-input other-lic"  type="radio" name="otherLicence${status.index}" value = "1" aria-invalid="false">
+                                <input <c:if test="${'1'==appGrpPremisesDto.locateWithOthers}">checked="checked"</c:if> class="form-check-input other-lic"  type="radio" name="otherLicence${status.index}" value = "0" aria-invalid="false">
                                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
                             </div>
                             <span class="error-msg" name="iaisErrorMsg" id="error_isOtherLic${status.index}"></span>

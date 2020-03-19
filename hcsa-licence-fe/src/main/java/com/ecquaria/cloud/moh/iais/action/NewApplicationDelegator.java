@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -46,7 +45,6 @@ import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -208,13 +206,10 @@ public class NewApplicationDelegator {
         }
         List premisesSelect = new ArrayList<SelectOption>();
         List conveyancePremSel = new ArrayList<SelectOption>();
-        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-        //todo:
         String licenseeId = appSubmissionDto.getLicenseeId();
-        String loginId = AccessUtil.getLoginId(bpc.request);
-        log.info(StringUtil.changeForLog("The preparePremises loginId is -->:"+loginId));
+        log.info(StringUtil.changeForLog("The preparePremises licenseeId is -->:"+licenseeId));
         Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = null;
-        if(!StringUtil.isEmpty(loginId)){
+        if(!StringUtil.isEmpty(licenseeId)){
             licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
         }
         SelectOption sp0 = new SelectOption("-1", FIRESTOPTION);
@@ -274,6 +269,27 @@ public class NewApplicationDelegator {
         }else{
             ParamUtil.setRequestAttr(bpc.request, "multiBase", AppConsts.FALSE);
         }
+        //when rfc/renew check is select existing premises
+        String appType = appSubmissionDto.getAppType();
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO);
+            if(appSubmissionDto.getAppGrpPremisesDtoList().size() == oldAppSubmissionDto.getAppGrpPremisesDtoList().size()){
+                int length = appSubmissionDto.getAppGrpPremisesDtoList().size();
+                for(int i=0;i<length;i++){
+                    AppGrpPremisesDto appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(i);
+                    AppGrpPremisesDto oldAppGrpPremisesDto = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(i);
+                    if(appGrpPremisesDto != null && oldAppGrpPremisesDto != null){
+                        String premSel = appGrpPremisesDto.getPremisesSelect();
+                        String oldPremSel = oldAppGrpPremisesDto.getPremisesSelect();
+                        if(oldPremSel.equals(premSel) || "-1".equals(premSel)){
+                            ParamUtil.setRequestAttr(bpc.request,"PageCanEdit",AppConsts.TRUE);
+                        }
+                    }
+                }
+            }
+        }
+
+
 
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.info(StringUtil.changeForLog("the do preparePremises end ...."));
@@ -1386,13 +1402,14 @@ public class NewApplicationDelegator {
      * @param: request
      * @return: AppGrpPremisesDto
      */
-    private List<AppGrpPremisesDto> genAppGrpPremisesDtoList(HttpServletRequest request){
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+    //todo:move to NewApplicationHelper
+    public static List<AppGrpPremisesDto> genAppGrpPremisesDtoList(HttpServletRequest request){
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,APPSUBMISSIONDTO);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
         int count = 0;
         String [] premisesType = ParamUtil.getStrings(request, "premType");
         String [] hciName = ParamUtil.getStrings(request, "onSiteHciName");
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+        /*if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             int i = 0;
             if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
@@ -1402,7 +1419,7 @@ public class NewApplicationDelegator {
                 }
             }
             //todo:Grandfather Rights(RFC)
-        }
+        }*/
         if(premisesType != null){
             count = premisesType.length;
         }
@@ -2157,7 +2174,7 @@ public class NewApplicationDelegator {
         list.sort((h1, h2) -> h1.getSvcName().compareTo(h2.getSvcName()));
     }
 
-    private void validateTime(Map<String, String> errorMap,String onsiteHH,String onsiteMM,int date,String key,int i,String error){
+    private static void validateTime(Map<String, String> errorMap, String onsiteHH, String onsiteMM, int date, String key, int i, String error){
         try {
             int i1 = Integer.parseInt(onsiteHH);
             int i2= Integer.parseInt(onsiteMM);
@@ -2170,13 +2187,14 @@ public class NewApplicationDelegator {
         }
     }
 
-
-    private Map<String, String> doValidatePremiss(BaseProcessClass bpc) {
+    //todo:move to NewApplicationHelper
+    public static Map<String, String> doValidatePremiss(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         //do validate one premiss
 
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,APPSUBMISSIONDTO);
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         for(int i=0;i<appGrpPremisesDtoList.size();i++){
             String premiseType = appGrpPremisesDtoList.get(i).getPremisesType();
@@ -2184,9 +2202,17 @@ public class NewApplicationDelegator {
                 errorMap.put("premisesType"+i, "UC_CHKLMD001_ERR001");
             }else {
                 String premisesSelect = appGrpPremisesDtoList.get(i).getPremisesSelect();
+                String appType = appSubmissionDto.getAppType();
+                boolean needValidate = false;
+                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                    String oldPremSel = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0).getPremisesSelect();
+                    if(!StringUtil.isEmpty(oldPremSel) && oldPremSel.equals(premisesSelect)){
+                        needValidate = true;
+                    }
+                }
                 if (StringUtil.isEmpty(premisesSelect) || "-1".equals(premisesSelect)) {
                     errorMap.put("premisesSelect"+i, "UC_CHKLMD001_ERR001");
-                } else if ("newPremise".equals(premisesSelect)) {
+                } else if ("newPremise".equals(premisesSelect) || needValidate) {
                     if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
                         String onsiteStartHH = appGrpPremisesDtoList.get(i).getOnsiteStartHH();
                         String onsiteStartMM = appGrpPremisesDtoList.get(i).getOnsiteStartMM();

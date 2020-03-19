@@ -136,6 +136,8 @@
         $('input[type="file"]').prop('disabled',true);
         $('input[type="checkbox"]').prop('disabled',true);
         $('div.nice-select').addClass('disabled');
+        $Ele.find('input[type="text"]').css('border-color','#ededed');
+        $Ele.find('input[type="text"]').css('color','#999');
     }
 
     function readonlyPartPage($Ele) {
@@ -144,6 +146,10 @@
         $Ele.find('input[type="file"]').prop('readonly',true);
         $Ele.find('input[type="checkbox"]').prop('readonly',true);
         $Ele.find('div.nice-select').addClass('disabled');
+        <!--add disabled bg color-->
+        $Ele.find('input[type="text"]').css('border-color','#ededed');
+        $Ele.find('input[type="text"]').css('color','#999');
+        $Ele.find('.date_picker').unbind();
     }
 
     function unreadonlyPartPage($Ele) {
@@ -152,6 +158,12 @@
         $Ele.find('input[type="file"]').prop('readonly',false);
         $Ele.find('input[type="checkbox"]').prop('readonly',false);
         $Ele.find('div.nice-select').removeClass('disabled');
+        <!--remove disabled bg color-->
+        $Ele.find('input[type="text"]').css('border-color','');
+        $Ele.find('input[type="text"]').css('color','');
+        $Ele.find('.date_picker').datepicker({
+            format:"dd/mm/yyyy"
+        });
     }
 
     var unbindAllTabs = function () {

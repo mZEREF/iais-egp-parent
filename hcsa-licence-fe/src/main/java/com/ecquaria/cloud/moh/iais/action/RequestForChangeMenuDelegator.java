@@ -25,25 +25,29 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import java.io.IOException;
-import java.io.Serializable;
-import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESSAGE;
 
@@ -79,7 +83,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG,null);
-
+        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO, null);
         requestForInformation(bpc);
 
         log.debug(StringUtil.changeForLog("the do start end ...."));
@@ -191,6 +195,9 @@ public class RequestForChangeMenuDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
 
+        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
+        String licenseeId = interInboxUserDto.getLicenseeId();
+        appSubmissionDto.setLicenseeId(licenseeId);
         List<AppGrpPremisesDto> reloadPremisesDtoList = IaisCommonUtils.genNewArrayList();
         AppGrpPremisesDto appGrpPremisesDto = null;
         Object rfi = ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
@@ -206,6 +213,10 @@ public class RequestForChangeMenuDelegator {
                         premHciOrConvName = premisesListQueryDto.getVehicleNo();
                     }
                     appGrpPremisesDto = getAppGrpPremisesDtoFromAppGrpPremisesDtoList(appGrpPremisesDtoList, premType, premHciOrConvName);
+                    if(appGrpPremisesDto == null){
+                        //todo:get prem by indexNo
+                        appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(0);
+                    }
                     reloadPremisesDtoList.add(appGrpPremisesDto);
                 }
             }else{
@@ -213,8 +224,52 @@ public class RequestForChangeMenuDelegator {
             }
 
         }
-        ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, reloadPremisesDtoList);
+        if(appGrpPremisesDto != null){
+            log.info(StringUtil.changeForLog("The preparePremises licenseeId is -->:"+licenseeId));
+            List premisesSelect = new ArrayList<SelectOption>();
+            List conveyancePremSel = new ArrayList<SelectOption>();
+            Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = null;
+            if(!StringUtil.isEmpty(licenseeId)){
+                licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
+            }
+            SelectOption sp0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
+            premisesSelect.add(sp0);
+            SelectOption sp1 = new SelectOption("newPremise", "Add a new premises");
+            premisesSelect.add(sp1);
+            SelectOption cps1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
+            SelectOption cps2 = new SelectOption("newPremise", "Add a new premises");
+            conveyancePremSel.add(cps1);
+            conveyancePremSel.add(cps2);
+            if (licAppGrpPremisesDtoMap != null && !licAppGrpPremisesDtoMap.isEmpty()) {
+                for (AppGrpPremisesDto item : licAppGrpPremisesDtoMap.values()) {
+                    SelectOption sp2 = new SelectOption(item.getPremisesSelect(), item.getAddress());
+                    if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())) {
+                        premisesSelect.add(sp2);
+                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())){
+                        conveyancePremSel.add(sp2);
+                    }
+                }
+            }
+            //addressType
+            List<SelectOption> addrTypeOpt = new ArrayList<>();
+            SelectOption addrTypeSp = new SelectOption("",NewApplicationDelegator.FIRESTOPTION);
+            addrTypeOpt.add(addrTypeSp);
+            addrTypeOpt.addAll(MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE));
+            ParamUtil.setRequestAttr(bpc.request,"addressType",addrTypeOpt);
+            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);
+            ParamUtil.setSessionAttr(bpc.request, "premisesSelect", (Serializable) premisesSelect);
+            ParamUtil.setSessionAttr(bpc.request, "conveyancePremSel", (Serializable) conveyancePremSel);
 
+            //when rfc/renew check is select existing premises
+            String oldPremSel = IaisCommonUtils.genPremisesKey(premisesListQueryDto.getPostalCode(),premisesListQueryDto.getBlkNo(),premisesListQueryDto.getFloorNo(),premisesListQueryDto.getUnitNo());
+            if(oldPremSel.equals(appGrpPremisesDto.getPremisesSelect()) || "-1".equals(appGrpPremisesDto.getPremisesSelect())){
+                ParamUtil.setRequestAttr(bpc.request,"PageCanEdit",AppConsts.TRUE);
+            }
+        }
+        appSubmissionDto.setAppGrpPremisesDtoList(reloadPremisesDtoList);
+        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+        ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, reloadPremisesDtoList);
+        ParamUtil.setSessionAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do preparePremisesEdit end ...."));
     }
 
@@ -271,6 +326,7 @@ public class RequestForChangeMenuDelegator {
         }
 
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO, premisesListQueryDto);
 
 
@@ -291,16 +347,12 @@ public class RequestForChangeMenuDelegator {
             return;
         }
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
-        PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
-        AppGrpPremisesDto newPremisesDto = genAppGrpPremisesDto(premisesListQueryDto, bpc.request);
-
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
-        appGrpPremisesDtoList.add(newPremisesDto);
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = NewApplicationDelegator.genAppGrpPremisesDtoList(bpc.request);
         ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, appGrpPremisesDtoList);
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
 
-
-        Map<String, String>  errorMap = doValidatePremiss(bpc.request, newPremisesDto);
+        ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
+        Map<String, String>  errorMap = NewApplicationDelegator.doValidatePremiss(bpc);
 
         if(errorMap.size() >0){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg",WebValidationHelper.generateJsonStr(errorMap));
@@ -309,7 +361,8 @@ public class RequestForChangeMenuDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request,RfcConst.SWITCH_VALUE,"dosubmit");
         ParamUtil.setSessionAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
-
+        //test
+        //ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
         log.debug(StringUtil.changeForLog("the do doPremisesEdit end ...."));
     }
 
@@ -334,7 +387,16 @@ public class RequestForChangeMenuDelegator {
             personnelListQueryDtos.add(personnelListQueryDto);
             personnelListMap.put(idNo,personnelListQueryDtos);
         }
+        List<SelectOption> personelRoles = IaisCommonUtils.genNewArrayList();
+        SelectOption sp1 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, "Clinical Governance Officer");
+        SelectOption sp2 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, "Principal Officer");
+        SelectOption sp3 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, "Deputy Principal Officer");
+        personelRoles.add(sp1);
+        personelRoles.add(sp2);
+        personelRoles.add(sp3);
+        ParamUtil.setRequestAttr(bpc.request,"PersonnelRoleList",personelRoles);
         ParamUtil.setSessionAttr(bpc.request,RfcConst.PERSONNELLISTMAP, (Serializable) personnelListMap);
+        ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"PersonnelList");
         log.debug(StringUtil.changeForLog("the do preparePersonnelList end ...."));
     }
 
@@ -369,6 +431,7 @@ public class RequestForChangeMenuDelegator {
         List<SelectOption> idTypeSelectList = NewApplicationHelper.getIdTypeSelOp();
         ParamUtil.setRequestAttr(bpc.request, ClinicalLaboratoryDelegator.DROPWOWN_IDTYPESELECT, idTypeSelectList);
         ParamUtil.setSessionAttr(bpc.request,RfcConst.PERSONNELEDITLIST, (Serializable) personnelEditList);
+        ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"Personnel Amendment");
         log.debug(StringUtil.changeForLog("the do preparePersonnelEdit end ...."));
     }
 
@@ -376,7 +439,7 @@ public class RequestForChangeMenuDelegator {
     /**
      *
      * @param bpc
-     * @Decription preparePersonnelList
+     * @Decription doPersonnelEdit
      */
     public void doPersonnelEdit(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit start ...."));
@@ -448,8 +511,11 @@ public class RequestForChangeMenuDelegator {
         List<AppSubmissionDto> appSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(licenceIds);
         String appGroupNo = requestForChangeService.getApplicationGroupNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         List<String> names = IaisCommonUtils.genNewArrayList();
+        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
+        String licenseeId = interInboxUserDto.getLicenseeId();
         for(AppSubmissionDto appSubmissionDto:appSubmissionDtos){
             if(appSubmissionDto != null ) {
+                appSubmissionDto.setLicenseeId(licenseeId);
                 // from draft,rfi
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
                 if (appSvcRelatedInfoDtoList != null && appSvcRelatedInfoDtoList.size() > 0) {
@@ -815,98 +881,6 @@ public class RequestForChangeMenuDelegator {
             appGrpPremisesDto.setConveyanceAddressType(conSiteAddressType);
         }
         return appGrpPremisesDto;
-    }
-
-    private Map<String, String> doValidatePremiss(HttpServletRequest request, AppGrpPremisesDto appGrpPremisesDto) {
-        String premiseType = appGrpPremisesDto.getPremisesType();
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
-            String postalCode = appGrpPremisesDto.getPostalCode();
-            if (!StringUtil.isEmpty(postalCode)) {
-                if (!postalCode.matches("^[0-9]{6}$")) {
-                    errorMap.put("postalCode", "CHKLMD001_ERR003");
-                }
-            }else {
-                errorMap.put("postalCode", "UC_CHKLMD001_ERR001");
-            }
-
-            String streetName = appGrpPremisesDto.getStreetName();
-            if(StringUtil.isEmpty(streetName)){
-                errorMap.put("streetName","UC_CHKLMD001_ERR001");
-            }
-
-            String addrType = appGrpPremisesDto.getAddrType();
-            if(StringUtil.isEmpty(addrType)){
-                errorMap.put("addrType", "UC_CHKLMD001_ERR001");
-            }else {
-                boolean empty = StringUtil.isEmpty(appGrpPremisesDto.getFloorNo());
-                boolean empty1 = StringUtil.isEmpty(appGrpPremisesDto.getBlkNo());
-                boolean empty2 = StringUtil.isEmpty(appGrpPremisesDto.getUnitNo());
-                if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
-                    if (empty) {
-                        errorMap.put("floorNo", "UC_CHKLMD001_ERR001");
-                    }else{
-                        //todo validate
-                    }
-                    if (empty1) {
-                        errorMap.put("blkNo", "UC_CHKLMD001_ERR001");
-                    }else{
-                        //todo validate
-                    }
-                    if (empty2) {
-                        errorMap.put("unitNo", "UC_CHKLMD001_ERR001");
-                    }else{
-                        //todo validate
-                    }
-                }else if(ApplicationConsts.ADDRESS_TYPE_WITHOUT_APT_BLK.equals(addrType)){
-                    if (!empty) {
-                        //todo validate
-                    }
-                    if (!empty1) {
-                        //todo validate
-                    }
-                    if (!empty2) {
-                        //todo validate
-                    }
-                }
-            }
-        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
-
-            String conveyancePostalCode = appGrpPremisesDto.getConveyancePostalCode();
-            if(StringUtil.isEmpty(conveyancePostalCode)){
-                errorMap.put("conveyancePostalCode","UC_CHKLMD001_ERR001");
-            }else {
-                if(!conveyancePostalCode.matches("^[0-9]{6}$")){
-                    errorMap.put("conveyancePostalCode", "CHKLMD001_ERR003");
-                }
-            }
-
-            String cStreetName = appGrpPremisesDto.getConveyanceStreetName();
-
-            if(StringUtil.isEmpty(cStreetName)){
-                errorMap.put("conveyanceStreetName","UC_CHKLMD001_ERR001");
-            }
-            String conveyanceAddressType = appGrpPremisesDto.getConveyanceAddressType();
-            if(StringUtil.isEmpty(conveyanceAddressType)){
-                errorMap.put("conveyanceAddressType", "UC_CHKLMD001_ERR001");
-            }else {
-                if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(conveyanceAddressType)) {
-                    boolean empty = StringUtil.isEmpty(appGrpPremisesDto.getConveyanceFloorNo());
-                    boolean empty1 = StringUtil.isEmpty(appGrpPremisesDto.getConveyanceBlockNo());
-                    boolean empty2 = StringUtil.isEmpty(appGrpPremisesDto.getConveyanceUnitNo());
-                    if (empty) {
-                        errorMap.put("conveyanceFloorNo", "UC_CHKLMD001_ERR001");
-                    }
-                    if (empty1) {
-                        errorMap.put("conveyanceBlockNos", "UC_CHKLMD001_ERR001");
-                    }
-                    if (empty2) {
-                        errorMap.put("conveyanceUnitNo", "UC_CHKLMD001_ERR001");
-                    }
-                }
-            }
-        }
-        return  errorMap;
     }
 
 

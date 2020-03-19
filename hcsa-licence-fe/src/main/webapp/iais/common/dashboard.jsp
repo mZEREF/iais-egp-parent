@@ -8,6 +8,9 @@
         <div class="navigation-gp">
             <div class="row">
                 <%@ include file="./dashboardDropDown.jsp" %>
+                <div style="margin-top: 20px;margin-left: 2%" >
+                    <h1>${DashboardTitle}</h1>
+                </div>
             </div>
         </div>
     </div>

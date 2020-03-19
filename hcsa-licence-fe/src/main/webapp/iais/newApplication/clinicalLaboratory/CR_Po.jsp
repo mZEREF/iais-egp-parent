@@ -427,6 +427,8 @@
             var selectVal = $(this).val();
             if("newOfficer" == selectVal){
                 $poContentEle.find('div.principalOfficers').removeClass('hidden');
+            }else if('-1' == selectVal){
+                $poContentEle.find('div.principalOfficers').addClass('hidden');
             }
         });
     };
