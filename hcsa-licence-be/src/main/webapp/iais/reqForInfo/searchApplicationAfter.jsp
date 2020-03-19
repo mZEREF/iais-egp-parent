@@ -150,7 +150,7 @@
         showWaiting();
         var to=$('#to_date').val();
         var sub=$('#sub_date').val();
-        if(sub>to){
+        if(sub>to&&to!=""){
             $("#submittedDateError").show();
             dismissWaiting();
         }
@@ -165,9 +165,10 @@
     }
     function doAppClear(){
         $('input[name="application_no"]').val("");
-        $("#application_type option[text = 'Please Select']").val("selected", "selected");
-        $("#application_status option[text = 'Please Select']").val("selected", "selected");
-        $(".current").text("Please Select");
+        $("#application_type option:first").prop("selected", 'selected');
+        $("#application_status option:first").prop("selected", 'selected');
+        $("#application_type .current").text("Please Select");
+        $("#application_status .current").text("Please Select");
         $('input[name="to_date"]').val("");
         $('input[name="sub_date"]').val("");
     }

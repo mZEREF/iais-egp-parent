@@ -14,18 +14,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplate
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsEmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
-import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * InspEmailServiceImpl
@@ -44,7 +45,7 @@ public class InspEmailServiceImpl implements InspEmailService {
     private SystemBeLicClient systemClient;
 
     @Autowired
-    private ApplicationClient applicationClient;
+    private ApplicationViewService applicationViewService;
     @Autowired
     private HcsaChklClient hcsaChklClient;
     @Autowired
@@ -70,7 +71,7 @@ public class InspEmailServiceImpl implements InspEmailService {
 
     @Override
     public ApplicationViewDto getAppViewByCorrelationId(String correlationId) {
-        return applicationClient.getAppViewByCorrelationId(correlationId).getEntity();
+        return applicationViewService.getApplicationViewDtoByCorrId(correlationId);
     }
 
     @Override

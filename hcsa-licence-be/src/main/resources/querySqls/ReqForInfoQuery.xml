@@ -67,6 +67,7 @@
             LEFT JOIN LIC_APP_CORRELATION licApp ON licApp.LICENCE_ID = lic.ID
 
             WHERE 1=1
+            AND lic.STATUS != 'LICEST002'
             <#if licence_status??> AND lic.STATUS = :licence_status</#if>
             <#if start_date??> AND lic.start_date >= :start_date</#if>
             <#if start_to_date??> AND lic.start_date <= :start_to_date</#if>

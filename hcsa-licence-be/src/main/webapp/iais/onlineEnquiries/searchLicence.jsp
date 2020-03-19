@@ -332,11 +332,11 @@
     }
     function doLicClear(){
         $('input[type="text"]').val("");
-        $("#service_licence_type option[text = 'Please Select']").val("selected", "selected");
-        $("#service_sub_type option[text = 'Please Select']").val("selected", "selected");
-        $("#licence_status option[text = 'Please Select']").val("selected", "selected");
-        $("#application_type option[text = 'Please Select']").val("selected", "selected");
-        $("#application_status option[text = 'Please Select']").val("selected", "selected");
+        $("#service_licence_type option:first").prop("selected", 'selected');
+        $("#service_sub_type option:first").prop("selected", 'selected');
+        $("#licence_status option:first").prop("selected", 'selected');
+        $("#application_type option:first").prop("selected", 'selected');
+        $("#application_status option:first").prop("selected", 'selected');
         $(".current").text("Please Select");
         $('input[name="to_date"]').val("");
         $('input[name="sub_date"]').val("");
