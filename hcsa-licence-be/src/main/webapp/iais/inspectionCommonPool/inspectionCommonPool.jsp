@@ -27,7 +27,7 @@
           <div class="intranet-content">
             <div class="bg-title">
               <h2>
-                <span>Common Pool Search Criteria</span>
+                <span>Common Pool</span>
               </h2>
             </div>
             <iais:body >
@@ -86,7 +86,6 @@
                       <iais:sortableHeader needSort="true"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name / Address"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"  field="SUBMIT_DT" value="Submission Date"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
                     </tr>
                   </thead>
                   <tbody>
@@ -102,12 +101,11 @@
                         <c:forEach var="pool" items="${cPoolSearchResult.rows}" varStatus="status">
                           <tr>
                             <td class="row_no"><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
-                            <td><c:out value="${pool.applicationNo}"/></td>
+                            <td><u><a onclick="javascript:doInspectionCommonPoolAssign('<iais:mask name="appCorrelationId" value="${pool.id}"/>');"><c:out value="${pool.applicationNo}"/></a></u></td>
                             <td><iais:code code="${pool.applicationType}"/></td>
                             <td><c:out value="${pool.hciCode}"/></td>
                             <td><c:out value="${pool.hciName}"/></td>
                             <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>
-                            <td><button type="button"  class="btn btn-default" onclick="javascript:doInspectionCommonPoolAssign('<iais:mask name="appCorrelationId" value="${pool.id}"/>');">Assign</button></td>
                           </tr>
                         </c:forEach>
                       </c:otherwise>

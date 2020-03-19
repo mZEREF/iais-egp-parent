@@ -86,9 +86,25 @@ public class InspecAssignTaskDelegator {
         SearchParam searchParam = getSearchParam(bpc);
         SearchResult<InspectionCommonPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchResult");
         if(searchResult == null){
+            LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            //get task by user workGroupId
+            List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
+            setMapTaskId(bpc, commPools);
+            List<String> appCorrId_list = inspectionAssignTaskService.getAppCorrIdListByPool(commPools);
+            StringBuilder sb = new StringBuilder("(");
+            for(int i = 0; i < appCorrId_list.size(); i++){
+                sb.append(":appCorrId" + i).append(",");
+            }
+            String inSql = sb.substring(0, sb.length() - 1) + ")";
+            searchParam.addParam("appCorrId_list", inSql);
+            for(int i = 0; i < appCorrId_list.size(); i++){
+                searchParam.addFilter("appCorrId" + i, appCorrId_list.get(i));
+            }
+
             QueryHelp.setMainSql("inspectionQuery", "assignInspector",searchParam);
             searchResult = inspectionAssignTaskService.getSearchResultByParam(searchParam);
             searchResult = inspectionAssignTaskService.getAddressByResult(searchResult);
+            ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
         }
         List<SelectOption> appTypeOption = inspectionAssignTaskService.getAppTypeOption();
 
@@ -231,14 +247,14 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorSearch(BaseProcessClass bpc) throws ParseException {
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorSearch start ...."));
         SearchParam searchParam = getSearchParam(bpc, true);
-        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<TaskDto> commPools = (List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
         String application_no = ParamUtil.getRequestString(bpc.request, "application_no");
         String application_type = ParamUtil.getRequestString(bpc.request, "application_type");
         String hci_code = ParamUtil.getRequestString(bpc.request, "hci_code");
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
         String sub_date2 = ParamUtil.getRequestString(bpc.request, "sub_date");
         String hci_address = ParamUtil.getRequestString(bpc.request, "hci_address");
-        List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
+
         setMapTaskId(bpc, commPools);
         List<String> appCorrId_list = inspectionAssignTaskService.getAppCorrIdListByPool(commPools);
 
