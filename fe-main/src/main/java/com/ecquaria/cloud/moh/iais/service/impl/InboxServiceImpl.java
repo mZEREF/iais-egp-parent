@@ -50,6 +50,8 @@ public class InboxServiceImpl implements InboxService {
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
 
+    private static final String ACTIVE ="CMSTAT001";
+
     @Override
     public String getServiceNameById(String serviceId) {
         return configInboxClient.getServiceNameById(serviceId).getEntity();
@@ -128,7 +130,8 @@ public class InboxServiceImpl implements InboxService {
             }
         }
         if(result){
-
+            String draftNo = appInboxClient.getDraftNumber(recallApplicationDto.getAppNo()).getEntity();
+            appInboxClient.updateDraftStatus(draftNo,ACTIVE).getEntity();
         }
         return result;
     }

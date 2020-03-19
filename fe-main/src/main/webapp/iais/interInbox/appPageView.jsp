@@ -90,7 +90,7 @@
         }
     }
 
-    function doAppAction(appId,appNo,appGrpId,actionName) {
+    function doAppAction(appId,appNo,actionName) {
         if ("Withdraw" == actionName) {
             showWaiting();
             $("[name='action_no_value']").val(appNo);
@@ -105,7 +105,6 @@
             showWaiting();
             $("[name='action_no_value']").val(appNo);
             $("[name='action_id_value']").val(appId);
-            $("[name='action_grp_value']").val(appGrpId);
             submit("appDoRecall");
         }
     };

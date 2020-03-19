@@ -155,7 +155,7 @@
                                             <iais:select name="appAction" id="appAction"
                                                          options="selectApplication"
                                                          firstOption="Select"
-                                                         onchange="doAppAction('${app.id}','${app.applicationNo}','${app.appGrpId}',this.value)"></iais:select>
+                                                         onchange="doAppAction('${app.id}','${app.applicationNo}',this.value)"></iais:select>
                                         </c:otherwise>
                                     </c:choose>
                                 </td>

@@ -50,6 +50,11 @@ public class InboxConst {
     public static final String INTER_INBOX_USER_INFO       = "inter-inbox-user-info";
 
 
+    public static final String INTER_INBOX_MESSAGE_TAB           = "IIMS";
+    public static final String INTER_INBOX_APPLICATION_TAB       = "IIAT";
+    public static final String INTER_INBOX_LICENSE_TAB           = "IILT";
+
+
     public static final String APP_RECALL_RESULT           = "recall_result";
     public static final String SEARCH_ALL                  = "All";
 
