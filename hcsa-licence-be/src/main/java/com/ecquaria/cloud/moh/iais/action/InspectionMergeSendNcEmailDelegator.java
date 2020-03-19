@@ -124,10 +124,14 @@ public class InspectionMergeSendNcEmailDelegator {
         String oneEmail="";
         for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
         ) {
-            oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
-            if(oneEmail.contains(BELOW_REVIEW)){
-                mesContext.append(oneEmail.substring(0,oneEmail.indexOf(BELOW_REVIEW)));
-                break;
+            try{
+                oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
+                if(oneEmail.contains(BELOW_REVIEW)){
+                    mesContext.append(oneEmail.substring(0,oneEmail.indexOf(BELOW_REVIEW)));
+                    break;
+                }
+            }catch (NullPointerException e){
+                log.info(e.getMessage());
             }
         }
 
@@ -136,23 +140,31 @@ public class InspectionMergeSendNcEmailDelegator {
 
         for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
         ) {
-            String ncEmail= inspEmailService.getInsertEmail(appPremisesCorrelationDto.getId()).getMessageContent();
-            appPremCorrIds.add(appPremisesCorrelationDto.getId());
-            ApplicationViewDto appViewDto = inspEmailService.getAppViewByCorrelationId(appPremisesCorrelationDto.getId());
-            svcNames.add(inspectionService.getHcsaServiceDtoByServiceId(appViewDto.getApplicationDto().getServiceId()).getSvcName());
-            if(oneEmail.contains(BELOW_REVIEW) && oneEmail.contains(THANKS)){
-                mesContext.append(ncEmail.substring(ncEmail.indexOf(BELOW_REVIEW),ncEmail.indexOf(THANKS)));
-            }
-            else {
-                mesContext.append(ncEmail);
+            try{
+                String ncEmail= inspEmailService.getInsertEmail(appPremisesCorrelationDto.getId()).getMessageContent();
+                appPremCorrIds.add(appPremisesCorrelationDto.getId());
+                ApplicationViewDto appViewDto = inspEmailService.getAppViewByCorrelationId(appPremisesCorrelationDto.getId());
+                svcNames.add(inspectionService.getHcsaServiceDtoByServiceId(appViewDto.getApplicationDto().getServiceId()).getSvcName());
+                if(oneEmail.contains(BELOW_REVIEW) && oneEmail.contains(THANKS)){
+                    mesContext.append(ncEmail.substring(ncEmail.indexOf(BELOW_REVIEW),ncEmail.indexOf(THANKS)));
+                }
+                else {
+                    mesContext.append(ncEmail);
+                }
+            }catch (NullPointerException e){
+                log.info(e.getMessage());
             }
         }
         for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
         ) {
-            oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
-            if(oneEmail.contains(THANKS)){
-                mesContext.append(oneEmail.substring(oneEmail.indexOf(THANKS)));
-                break;
+            try{
+                oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
+                if(oneEmail.contains(THANKS)){
+                    mesContext.append(oneEmail.substring(oneEmail.indexOf(THANKS)));
+                    break;
+                }
+            }catch (NullPointerException e){
+                log.info(e.getMessage());
             }
         }
         InspectionEmailTemplateDto inspectionEmailTemplateDto= new InspectionEmailTemplateDto();
