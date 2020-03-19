@@ -60,9 +60,7 @@
         <div class="container">
             <div class="col-xs-14">
                 <div class="components">
-                    <h3>
-                        <span>Search Results</span>
-                    </h3>
+
                     <iais:pagination  param="SearchParam" result="SearchResult"/>
                     <div class="table-gp">
                         <table class="table">

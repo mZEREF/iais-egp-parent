@@ -44,7 +44,7 @@
                                         <iais:row>
                                             <iais:field value=""/>
                                             <iais:value width="18">
-                                                <button class="btn btn-primary" type="button"  onclick="javascript:doExtends('${licPreReqForInfoDto.reqInfoId}')">Extends</button>
+                                                <button class="btn btn-secondary" type="button"  onclick="javascript:doExtends('${licPreReqForInfoDto.reqInfoId}')">Extends</button>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -105,7 +105,7 @@
                                         </c:if>
 
                                         <iais:action style="text-align:center;">
-                                            <button class="btn btn-primary" type="button"  onclick="javascript:doCancel('${licPreReqForInfoDto.reqInfoId}')">Cancel</button>
+                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doCancel('${licPreReqForInfoDto.reqInfoId}')">Cancel</button>
                                             <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Back</button>
                                         </iais:action>
                                     </iais:section>

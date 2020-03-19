@@ -30,6 +30,16 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.RequestForInformationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -47,15 +57,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItem;
-import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * RequestForInformationServiceImpl
@@ -102,14 +103,17 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_TYPE_RENEWAL,
             ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
             ApplicationConsts.APPLICATION_TYPE_APPEAL,
-            ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT,
+            ApplicationConsts.APPLICATION_TYPE_CESSATION,
             ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL
     };
     private final String[] appStatus=new String[]{
-            ApplicationConsts.APPLICATION_STATUS_APPROVED,
-            ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,
             ApplicationConsts.APPLICATION_STATUS_DRAFT,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING
+            ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION,
+            ApplicationConsts.APPLICATION_STATUS_RECALLED,
+            ApplicationConsts.APPLICATION_STATUS_APPROVED,
+            ApplicationConsts.APPLICATION_STATUS_REJECTED
+//            ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED,
+//            ApplicationConsts.APPLICATION_STATUS_WITHDRAWN
     };
     private final String[] licServiceType=new String[]{
             ApplicationConsts.SERVICE_CONFIG_TYPE_BASE,
