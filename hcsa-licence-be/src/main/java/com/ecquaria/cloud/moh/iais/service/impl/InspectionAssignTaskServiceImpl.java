@@ -189,7 +189,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    @SearchTrack(catalog = "inspectionQuery",key = "assignInspector")
+    @SearchTrack(catalog = "inspectionQuery",key = "assignCommonTask")
     public SearchResult<InspectionCommonPoolQueryDto> getSearchResultByParam(SearchParam searchParam) {
         return inspectionTaskClient.searchInspectionPool(searchParam).getEntity();
     }
@@ -280,13 +280,12 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     @Override
     public SearchResult<InspectionCommonPoolQueryDto> getAddressByResult(SearchResult<InspectionCommonPoolQueryDto> searchResult) {
         for(InspectionCommonPoolQueryDto icpqDto: searchResult.getRows()){
-            AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(icpqDto.getId());
-            String address = getAddress(appGrpPremisesDto);
-            icpqDto.setHciCode(appGrpPremisesDto.getHciCode());
-            if(!StringUtil.isEmpty(icpqDto.getHciName())) {
-                icpqDto.setHciName(icpqDto.getHciName() + " / " + address);
+            if(1 == icpqDto.getAppCount()){
+
+            } else if(1 < icpqDto.getAppCount()) {
+
             } else {
-                icpqDto.setHciName(address);
+
             }
         }
         return searchResult;
