@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
@@ -14,7 +15,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -25,20 +28,25 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcQueryDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComplianceHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRectifiedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.SectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
@@ -52,14 +60,15 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * OnlineEnquiriesServiceImpl
@@ -89,6 +98,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     private InsepctionNcCheckListService insepctionNcCheckListService;
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+    @Autowired
+    FillupChklistService fillupChklistService;
     @Autowired
     private InsRepService insRepService;
     @Autowired
@@ -166,6 +177,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 
             }catch (Exception e){
                 log.info(e.getMessage());
+                complianceHistoryDtos.add(complianceHistoryDto);
             }
         }
 
@@ -290,14 +302,15 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             inspectionReportDto.setTcuDate(recomInDate);
         }
         //checkList
-//        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
-//        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
+
+        List<InspectionFillCheckListDto> cDtoList = getInspectionFillCheckListDtoListForReview(applicationViewDto.getAppPremisesCorrelationId(),"service");
+        List<InspectionFillCheckListDto> commonList =getInspectionFillCheckListDtoListForReview(applicationViewDto.getAppPremisesCorrelationId(),"common");
         InspectionFillCheckListDto commonDto = null;
-//        if(commonList!=null && !commonList.isEmpty()){
-//            commonDto = commonList.get(0);
-//        }
+        if(commonList!=null && !commonList.isEmpty()){
+            commonDto = commonList.get(0);
+        }
         InspectionFDtosDto subType = new InspectionFDtosDto();
-        //subType.setFdtoList(cDtoList);
+        subType.setFdtoList(cDtoList);
         inspectionReportDto.setCommonCheckList(commonDto);
         inspectionReportDto.setSubTypeCheckList(subType);
         inspectionReportDto.setRectifiedWithinKPI("Yes");
@@ -341,7 +354,177 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         inspectionReportDto.setCurrentStatus(status);
         return inspectionReportDto;
     }
+    public List<InspectionFillCheckListDto> getInspectionFillCheckListDtoListForReview(String appCorrId, String service) {
+        List<InspectionFillCheckListDto> fillCheckDtoList = getInspectionFillCheckListDtoList(appCorrId,service);
+        if(fillCheckDtoList!=null&&!fillCheckDtoList.isEmpty()){
+            for(InspectionFillCheckListDto temp:fillCheckDtoList){
+                AppPremisesPreInspectChklDto appPremPreCklDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appCorrId,temp.getConfigId()).getEntity();
+                insepctionNcCheckListService.getCommonDto(temp,appPremPreCklDto);
+            }
+        }
+        return fillCheckDtoList;
+    }
+    public List<InspectionFillCheckListDto> getInspectionFillCheckListDtoList(String appCorrId,String conifgType) {
+        List<InspectionFillCheckListDto> fillChkDtoList = null;
 
+        if(appCorrId!=null){
+            List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklList(appCorrId).getEntity();
+            if(chkList!=null && !chkList.isEmpty()){
+                fillChkDtoList = getServiceChkDtoListByAppPremId(chkList,appCorrId,conifgType);
+            }
+        }
+        return fillChkDtoList;
+    }
+    private List<InspectionFillCheckListDto> getServiceChkDtoListByAppPremId(List<AppPremisesPreInspectChklDto> chkList,String appPremCorrId,String conifgType) {
+        List<InspectionFillCheckListDto> chkDtoList = IaisCommonUtils.genNewArrayList();
+        for(AppPremisesPreInspectChklDto temp:chkList){
+            String configId  = temp.getChkLstConfId();
+            ChecklistConfigDto dto = hcsaChklClient.getChecklistConfigById(configId).getEntity();
+            InspectionFillCheckListDto fDto =null;
+            if("common".equals(conifgType)&&dto.isCommon()){
+                fDto = transferToInspectionCheckListDto(dto,appPremCorrId);
+                fDto.setConfigId(temp.getChkLstConfId());
+                chkDtoList.add(fDto);
+            }else if("service".equals(conifgType)&&!dto.isCommon()){
+                fDto = transferToInspectionCheckListDto(dto,appPremCorrId);
+                if(!StringUtil.isEmpty(dto.getSvcName())){
+                    fDto.setSvcName(dto.getSvcName());
+                }
+                fDto.setConfigId(temp.getChkLstConfId());
+                fDto.setSvcCode(dto.getSvcCode());
+                if(dto.getSvcSubType()!=null){
+                    fDto.setSubName(dto.getSvcSubType().replace(" ",""));
+                    fDto.setSubType(dto.getSvcSubType());
+                }else{
+                    fDto.setSubName(dto.getSvcCode());
+                }
+                chkDtoList.add(fDto);
+            }
+        }
+        return chkDtoList;
+    }
+
+    public InspectionFillCheckListDto transferToInspectionCheckListDto(ChecklistConfigDto commonCheckListDto, String appPremCorrId) {
+        InspectionFillCheckListDto dto = new InspectionFillCheckListDto();
+        List<ChecklistSectionDto> sectionDtos = commonCheckListDto.getSectionDtos();
+        List<InspectionCheckQuestionDto> checkList = IaisCommonUtils.genNewArrayList();
+        InspectionCheckQuestionDto inquest = null;
+        if(sectionDtos!=null && !sectionDtos.isEmpty()){
+            for(ChecklistSectionDto temp:sectionDtos){
+                for(ChecklistItemDto item: temp.getChecklistItemDtos()){
+                    inquest= new InspectionCheckQuestionDto();
+                    inquest.setItemId(item.getItemId());
+                    inquest.setAppPreCorreId(appPremCorrId);
+                    inquest.setSectionName(temp.getSection());
+                    inquest.setConfigId(temp.getConfigId());
+                    inquest.setRegClauseNo(item.getRegulationClauseNo());
+                    inquest.setRegClause(item.getRegulationClause());
+                    if(temp.getSection()!=null){
+                        inquest.setSectionNameSub(temp.getSection().replace(" ",""));
+                    }
+                    inquest.setChecklistItem(item.getChecklistItem());
+                    checkList.add(inquest);
+                }
+            }
+        }
+        dto.setCheckList(checkList);
+        if(checkList!=null && !checkList.isEmpty()){
+            List<InspectionCheckQuestionDto> cqDtoList = IaisCommonUtils.genNewArrayList();
+            for(ChecklistQuestionDto temp:checkList){
+                InspectionCheckQuestionDto inspectionCheckQuestionDto = null;
+                inspectionCheckQuestionDto = transferQuestionDtotoInDto(temp);
+                inspectionCheckQuestionDto.setAppPreCorreId(appPremCorrId);
+                cqDtoList.add(inspectionCheckQuestionDto);
+            }
+            dto.setCheckList(checkList);
+            fillInspectionFillCheckListDto(dto);
+            return dto;
+        }
+        return dto;
+    }
+    public InspectionFillCheckListDto fillInspectionFillCheckListDto(InspectionFillCheckListDto infillCheckListDto){
+        List<InspectionCheckQuestionDto> iqdDtolist = infillCheckListDto.getCheckList();
+        List<SectionDto> sectionDtoList = IaisCommonUtils.genNewArrayList();
+        for(InspectionCheckQuestionDto temp:iqdDtolist){
+            SectionDto sectionDto = new SectionDto();
+            sectionDto.setSectionName(temp.getSectionName());
+            if(isHaveSameSection(temp.getSectionName(),sectionDtoList)){
+                sectionDtoList.add(sectionDto);
+            }
+        }
+        infillCheckListDto.setSectionDtoList(sectionDtoList);
+        itemDto(infillCheckListDto);
+        return infillCheckListDto;
+    }
+    public boolean isHaveSameSection(String sectionName,List<SectionDto> sectionDtoList){
+        if(sectionDtoList!=null && !sectionDtoList.isEmpty()){
+            for(SectionDto temp:sectionDtoList){
+                if(temp.getSectionName().equals(sectionName)){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    public InspectionFillCheckListDto itemDto(InspectionFillCheckListDto infillCheckListDto){
+        List<SectionDto> sectionDtoList = infillCheckListDto.getSectionDtoList();
+        List<InspectionCheckQuestionDto> iqdDtolist = infillCheckListDto.getCheckList();
+        for(SectionDto temp:sectionDtoList){
+            List<ItemDto> itemDtoList = IaisCommonUtils.genNewArrayList();
+            for(InspectionCheckQuestionDto iq:iqdDtolist){
+                ItemDto itemDto = new ItemDto();
+                if(temp.getSectionName().equals(iq.getSectionName())){
+                    itemDto.setItemId(iq.getItemId());
+                    itemDtoList.add(itemDto);
+                }
+            }
+            temp.setItemDtoList(itemDtoList);
+        }
+        getItemCheckListDto(infillCheckListDto);
+        return infillCheckListDto;
+    }
+    public InspectionFillCheckListDto getItemCheckListDto(InspectionFillCheckListDto infillCheckListDto){
+        List<SectionDto> sectionDtoList = infillCheckListDto.getSectionDtoList();
+        List<InspectionCheckQuestionDto> iqdDtolist = infillCheckListDto.getCheckList();
+        for(InspectionCheckQuestionDto temp:iqdDtolist){
+            for(SectionDto section :sectionDtoList){
+                if(temp.getSectionName().equals(section.getSectionName())){
+                    List<ItemDto> itemDtoList = section.getItemDtoList();
+                    for(ItemDto itemDto :itemDtoList){
+                        if(itemDto.getItemId().equals(temp.getItemId())){
+                            itemDto.setIncqDto(temp);
+                        }
+                    }
+                }
+            }
+        }
+        return infillCheckListDto;
+    }
+    public InspectionCheckQuestionDto transferQuestionDtotoInDto(ChecklistQuestionDto cdto){
+        InspectionCheckQuestionDto icDto = new InspectionCheckQuestionDto();
+        icDto.setAnswerType(cdto.getAnswerType());
+        icDto.setAnswer(cdto.getAnswer());
+        icDto.setChecklistItem(cdto.getChecklistItem());
+        icDto.setCommon(cdto.getCommon());
+        icDto.setConfigId(cdto.getConfigId());
+        icDto.setHciCode(cdto.getHciCode());
+        icDto.setId(cdto.getId());
+        icDto.setItemId(cdto.getItemId());
+        icDto.setModule(cdto.getModule());
+        icDto.setSvcName(cdto.getSvcName());
+        icDto.setSvcType(cdto.getSvcType());
+        icDto.setRegClause(cdto.getRegClause());
+        icDto.setRegClauseNo(cdto.getRegClauseNo());
+        icDto.setRiskLvl(cdto.getRiskLvl());
+        icDto.setSecOrder(cdto.getSecOrder());
+        icDto.setSectionDesc(cdto.getSectionDesc());
+        icDto.setSectionName(cdto.getSectionName());
+        icDto.setSubTypeName(cdto.getSubTypeName());
+        icDto.setSvcCode(cdto.getSvcCode());
+        icDto.setSvcId(cdto.getSvcId());
+        icDto.setRectified(false);
+        return icDto;
+    }
     @Override
     public void preInspReport(HttpServletRequest request) {
         log.info("=======>>>>>preInspReport>>>>>>>>>>>>>>>>requestForInformation");
