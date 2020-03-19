@@ -57,7 +57,7 @@ public class INTERNET___MohInternetInbox___1 extends BaseProcessClass {
 
 	public void msgToArchive_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "msgToArchive", this);
-		}
+	}
 
 	public void msgViewStep_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "msgViewStep", this);
@@ -66,7 +66,9 @@ public class INTERNET___MohInternetInbox___1 extends BaseProcessClass {
 	public void msgToView_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "msgToView", this);
 	}
-
+	public void doArchive_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "msgDoArchive", this);
+	}
 	/**
 	 * 
 	 * @throws Exception
@@ -160,6 +162,8 @@ public class INTERNET___MohInternetInbox___1 extends BaseProcessClass {
 	public void appDoReload_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "appDoReload", this);
 	}
+
+	
 
 	
 	

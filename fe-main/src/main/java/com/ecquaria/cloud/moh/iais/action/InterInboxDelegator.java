@@ -116,7 +116,7 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
         SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter,true);
-        inboxParam.addFilter("userId", interInboxUserDto.getLicenseeId(),true);
+        inboxParam.addFilter("userId", interInboxUserDto.getUserId(),true);
         inboxParam.addFilter(InboxConst.MESSAGE_STATUS, msgArchiverStatus,true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
         SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
@@ -137,6 +137,14 @@ public class InterInboxDelegator {
 
     public void msgViewStep(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+    }
+
+    public void msgDoArchive(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("Step ---> msgDoArchive"));
+        HttpServletRequest request = bpc.request;
+        String[] msgIdList = ParamUtil.getStrings(request,"msgIdList");
+        boolean archiveResult = inboxService.updateMsgStatus(msgIdList);
+        ParamUtil.setRequestAttr(request,InboxConst.MESSAGE_ARCHIVE_RESULT, archiveResult);
     }
 
     public void msgToView(BaseProcessClass bpc){
@@ -169,6 +177,7 @@ public class InterInboxDelegator {
         if(msgSubject != null){
             inboxSearchMap.put("msgSubject",msgSubject);
         }else{
+
             inboxSearchMap.remove("msgSubject");
         }
         inboxParameter.setFilters(inboxSearchMap);
@@ -179,7 +188,7 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
         SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter,true);
-        inboxParam.addFilter("userId", interInboxUserDto.getLicenseeId(),true);
+        inboxParam.addFilter("userId", interInboxUserDto.getUserId(),true);
         inboxParam.addFilter(InboxConst.MESSAGE_STATUS, msgStatus,true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
         SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);

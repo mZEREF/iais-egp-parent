@@ -101,6 +101,11 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
+    public boolean updateMsgStatus(String[] msgId) {
+        return inboxClient.updateMsgStatusToArchive(msgId).getEntity();
+    }
+
+    @Override
     public Boolean recallApplication(RecallApplicationDto recallApplicationDto) {
         boolean result = false;
         List<String> refNoList = IaisCommonUtils.genNewArrayList();

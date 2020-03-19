@@ -10,6 +10,7 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @FeignClient(name = "inter-inbox",configuration = FeignConfiguration.class,fallback = InboxFallback.class)
 public interface InboxClient {
@@ -18,6 +19,9 @@ public interface InboxClient {
 
     @GetMapping(path = "/iais-inter-inbox/inbox/unread-unresponse-num", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Integer> searchUnreadAndUnresponseNum(String userId);
+
+    @PutMapping(path = "/iais-inter-inbox/archive", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Boolean> updateMsgStatusToArchive(String[] msgIds);
 
 
 }

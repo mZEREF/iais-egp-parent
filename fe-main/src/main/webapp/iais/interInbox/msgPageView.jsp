@@ -97,6 +97,13 @@
         submit('msgToArchive');
     }
 
+    function doArchive() {
+        // pageAction();
+        // alert($("[name='msgIdList']").val())
+
+        submit('msgDoArchive');
+    }
+
     function toMsgPage() {
         doClearMsg();
         submit('toMsgPage');

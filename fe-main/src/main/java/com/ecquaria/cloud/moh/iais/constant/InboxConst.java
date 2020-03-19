@@ -60,4 +60,7 @@ public class InboxConst {
 
     public static final String ASCENDING                   = "ASC";
     public static final String DESCENDING                  = "DESC";
+
+
+    public static final String MESSAGE_ARCHIVE_RESULT     = "archiveResult";
 }

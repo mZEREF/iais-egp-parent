@@ -1,6 +1,6 @@
 <%@ taglib prefix="C" uri="http://java.sun.com/jsp/jstl/core" %>
-<div class="tab-search">
-    <form class="" method="post" id="msgForm" action=<%=process.runtime.continueURL()%>>
+<form class="" method="post" id="msgForm" action=<%=process.runtime.continueURL()%>>
+    <div class="tab-search">
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input type="hidden" name="msg_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
@@ -38,32 +38,35 @@
             </div>
         </div>
         <iais:pagination param="inboxParam" result="inboxResult"/>
-    </form>
-</div>
-<div class="row">
-    <div class="col-xs-12">
-        <div class="table-gp">
-            <table class="table">
-                <thead>
-                <tr>
-                    <iais:sortableHeader needSort="true" field="subject" value="Subject"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true" field="message_type" value="Message Type"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true" field="ref_no" value="Ref. No."></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true" field="service_id" value="Service"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true" field="CREATED_DT" value="Date"></iais:sortableHeader>
-                </tr>
-                </thead>
-                <tbody>
-                <c:choose>
-                    <c:when test="${empty inboxResult.rows}">
-                        <tr>
-                            <td colspan="6">
-                                <p class="table-row-title" style="text-align:center">No Record !</p>
-                            </td>
-                        </tr>
-                    </c:when>
-                    <c:otherwise>
-                        <c:forEach var="inboxQuery" items="${inboxResult.rows}" varStatus="status">
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="table-gp">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <C:if test="${msgPage == 'msgView'}">
+                            <iais:sortableHeader needSort="false" field="" value=" "></iais:sortableHeader>
+                        </C:if>
+                        <iais:sortableHeader needSort="true" field="subject" value="Subject"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="message_type"
+                                             value="Message Type"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="ref_no" value="Ref. No."></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="service_id" value="Service"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="CREATED_DT" value="Date"></iais:sortableHeader>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:choose>
+                        <c:when test="${empty inboxResult.rows}">
+                            <tr>
+                                <td colspan="6">
+                                    <p class="table-row-title" style="text-align:center">No Record !</p>
+                                </td>
+                            </tr>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach var="inboxQuery" items="${inboxResult.rows}" varStatus="status">
                                 <c:choose>
                                     <c:when test="${inboxQuery.status == 'MSGRS001' || inboxQuery.status == 'MSGRS002'}">
                                         <tr style="font-weight:bold">
@@ -72,9 +75,23 @@
                                         <tr>
                                     </c:otherwise>
                                 </c:choose>
+                                <C:if test="${msgPage == 'msgView'}">
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input msgCheck" id="msgCheck" type="checkbox"
+                                                   name="msgIdList" aria-invalid="false" value="${inboxQuery.id}">
+                                            <label class="form-check-label" for="msgCheck"><span
+                                                    class="check-square"></span>
+                                            </label>
+
+                                        </div>
+                                    </td>
+                                </C:if>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Subject</p>
-                                    <p><a href="#" onclick="toMsgView('<iais:mask name="crud_action_value" value="${inboxQuery.msgContent}"/>')">${inboxQuery.subject}</a></p>
+                                    <p><a href="#" onclick="toMsgView('<iais:mask name="crud_action_value"
+                                                                                  value="${inboxQuery.msgContent}"/>')">${inboxQuery.subject}</a>
+                                    </p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Message Type</p>
@@ -93,26 +110,32 @@
                                     <p><fmt:formatDate value="${inboxQuery.createdAt}"
                                                        pattern="dd/MM/yyyy HH:mm:ss"/></p>
                                 </td>
-                            </tr>
-                        </c:forEach>
-                    </c:otherwise>
-                </c:choose>
-                </tbody>
-            </table>
-            <div class="row" style="margin-top: 1.5%">
-                <div class="col-md-12">
-                    <C:if test="${msgPage == 'msgView'}">
-                        <div class="col-md-2 pull-right">
-                            <button type="button" class="btn btn-primary pull-right" onclick="toArchiveView()">Archive</button>
-                        </div>
-                    </C:if>
-                    <c:if test="${msgPage == 'msgContentView'}">
-                        <div class="col-md-2 pull-right">
-                            <button type="button" class="btn btn-primary pull-right" onclick="toMsgPage()">Back</button>
-                        </div>
-                    </c:if>
+                                </tr>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
+                    </tbody>
+                </table>
+                <div class="row" style="margin-top: 1.5%">
+                    <div class="col-md-12">
+                        <C:if test="${msgPage == 'msgView'}">
+                            <div class="col-md-6 pull-right">
+                                <button type="button" class="btn btn-primary pull-right" onclick="toArchiveView()">View
+                                    Archive
+                                </button>
+                                <button type="button" class="btn btn-primary pull-right" onclick="doArchive()">Archive
+                                </button>
+                            </div>
+                        </C:if>
+                        <c:if test="${msgPage == 'msgContentView'}">
+                            <div class="col-md-2 pull-right">
+                                <button type="button" class="btn btn-primary pull-right" onclick="toMsgPage()">Back
+                                </button>
+                            </div>
+                        </c:if>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</form>
