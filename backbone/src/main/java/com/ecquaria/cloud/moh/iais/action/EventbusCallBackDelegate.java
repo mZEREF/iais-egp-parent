@@ -151,7 +151,7 @@ public class EventbusCallBackDelegate {
         Class cls = Class.forName(clsName);
 
         Object obj =    SpringContextHelper.getContext().getBean(cls);
-        Method med = cls.getMethod(methodName, new Class[]{String.class, String.class});
+        Method med = cls.getMethod(methodName, new Class[]{List.class, List.class,String.class});
         med.invoke(obj,listApplicationDto,requestForInfList,submissionId);
     }
 }
