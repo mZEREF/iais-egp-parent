@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +56,7 @@ public class CommonPoolAjaxController {
                     } else {
                         comPoolAjaxQueryDto.setHciAddress(address);
                     }
+                    comPoolAjaxQueryDto.setAppStatus(MasterCodeUtil.getCodeDesc(comPoolAjaxQueryDto.getAppStatus()));
                 }
             }
             map.put("result", "Success");
