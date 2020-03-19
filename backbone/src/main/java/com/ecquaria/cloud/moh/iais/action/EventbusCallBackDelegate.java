@@ -109,7 +109,7 @@ public class EventbusCallBackDelegate {
                 }else if(EventBusConsts.SERVICE_NAME_APPSUBMIT.equals(serviceName)){
 
                     if(EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION.equals(operation)){
-
+                        log.info("eventRefNum ****"+eventRefNum);
                         AppEicRequestTrackingDto entity = applicationClientFallback.getAppEicRequestTracking(eventRefNum).getEntity();
                         String dtoObj = entity.getDtoObj();
                         Map<String,List<ApplicationDto>> map1 = JsonUtil.parseToObject(dtoObj, Map.class);
@@ -119,7 +119,7 @@ public class EventbusCallBackDelegate {
                         invokeMethod(applicationDtoList,list,submissionId,
                                 "com.ecquaria.cloud.moh.iais.service.impl.LicenceFileDownloadServiceImpl",
                                 "sendTask");
-                        applicationClientFallback.updateAppEicRequestTracking(eventRefNum);
+
                         log.info("***send task callback end *****");
                     }
 

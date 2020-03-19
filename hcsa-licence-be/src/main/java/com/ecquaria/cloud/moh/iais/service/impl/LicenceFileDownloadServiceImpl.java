@@ -449,7 +449,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         applicationListDto.setRequestForInfList(requestForInfList);
         applicationListDto.setProcessFileTrackDto(processFileTrackDto);
 
-        String id = applicationListDto.getApplicationGroup().get(0).getId();
         Long l = System.currentTimeMillis();
 
         eventBusHelper.submitAsyncRequest(applicationListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
