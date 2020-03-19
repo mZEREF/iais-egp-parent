@@ -31,7 +31,14 @@
           <c:if test="${requestInformationConfig==null}">
             <a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a>
           </c:if>
-          <a class="next btn btn-primary" id = "Next">Next</a></div>
+          <c:choose>
+            <c:when test="${serviceStepDto.isStepEnd() && serviceStepDto.isServiceEnd()}">
+              <a class="btn btn-primary" id="Next" >Preview & Submit</a>
+            </c:when>
+            <c:otherwise>
+              <a class="btn btn-primary" id="Next" >Next</a>
+            </c:otherwise>
+          </c:choose>
         <input name="nextStep" value="" type="hidden">
       </div>
     </div>
