@@ -30,3 +30,9 @@
 .mandatory{
     color: rgb(255,0,0);
 }
+
+.disabledColor{
+    border-color: #ededed;
+    color: #999;
+}
+
