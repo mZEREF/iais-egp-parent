@@ -7,6 +7,7 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
+<%@include file="./dashboard.jsp" %>
 <div class="main-content">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="app_action_type" value="">
@@ -14,11 +15,6 @@
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
                     <div class="internet-content">
-                        <div class="bg-title">
-                            <div class="center-content">
-                                <h2>Withdrawal Form</h2>
-                            </div>
-                        </div>
                         <div class="row">
                             <div class="center-content">
                                 <iais:field value="You are withdrawing for." required="false"/>
@@ -84,7 +80,7 @@
                             <div class="center-content">
                                 <div class="col-md-2 col-md-offset-8">
                                     <div class="components">
-                                        <a class="btn btn-primary">Cancel</a>
+                                        <a class="btn btn-secondary" href="/main-web/eservice/INTERNET/MohInternetInbox">Cancel</a>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
