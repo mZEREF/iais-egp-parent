@@ -10,8 +10,6 @@
 <div class="main-content">
     <form class="form-horizontal" method="post" id="InternetUserEditForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/include/formHidden.jsp" %>
-        <input type="hidden" name="crud_action_type" value="">
-        <input type="hidden" name="crud_action_value" value="">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -157,15 +155,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-2 col-sm-2">
-                            <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#"
-                                                                          onclick="submit('back')">BACK</a></div>
-                        </div>
-                        <div class="col-xs-10 col-sm-10">
-                            <div class="text-right text-center-mobile"><a type="button" class="btn btn-primary"
-                                                                          data-toggle="modal" data-target="#editUser">SUBMIT</a>
-                            </div>
-                        </div>
+                            <iais:action>
+                                <a style="margin-left: 0%" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em>Back</a>
+                                <a style="margin-left: 90%" class="btn btn-primary" href="#" data-target="#editUser">SUBMIT</a>
+                            </iais:action>
                     </div>
                 </div>
 

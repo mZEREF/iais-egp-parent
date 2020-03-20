@@ -7,62 +7,32 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
-<div class="main-content">
-    <form class="form-horizontal" method="post" id="ChangeStatusForm" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/include/formHidden.jsp" %>
-        <input type="hidden" name="crud_action_type" value="">
-        <input type="hidden" name="crud_action_value" value="">
-        <div class="row">
-            <div class="col-lg-12 col-xs-12">
-                <div class="center-content">
-                    <div class="intranet-content">
-                        <div class="bg-title">
-                            <h2>Change Status</h2>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="userId">UserId:<span style="color:red">*</span></label>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="userId" type="text" name="userId" value="${userId}">
-                                    <span id="error_userId" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
+<form class="form-horizontal" style="margin-left: 1%;margin-right:1%;width: 100%"  method="post" id="ChangeStatusForm" action=<%=process.runtime.continueURL()%>>
+    <%@ include file="/include/formHidden.jsp" %>
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <br><br><br><br><br><br>
+                    <h2>Change Status</h2>
+                    <iais:section title="" id="inspection_date">
+                        <iais:row>
+                            <iais:field value="UserId" required="true"/>
+                            <iais:value width="7">
+                                <input id="userId" type="text" name="statusUserId" value="${statusUserId}">
+                                <span id="error_userId" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:value>
-                        </div>
-                    </div>
+                        </iais:row>
+                        <iais:action>
+                            <a style="margin-left: 0%" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em>Back</a>
+                            <a style="margin-left: 51%" class="btn btn-primary" href="#" onclick="submit('doDeactivate')">Deactivate</a>
+                            <a style="margin-left: 1%" class="btn btn-primary" href="#" onclick="submit('doReactivate')">Reactivate</a>
+                            <a style="margin-left: 1%" class="btn btn-primary" href="#" onclick="submit('doTerminate')">Terminate</a>
+                            <a style="margin-left: 1%" class="btn btn-primary" href="#" onclick="submit('doUnlock')">Unlock</a>
+                        </iais:action>
+                    </iais:section>
                 </div>
-        </div>
-</div>
-        <div>
-            <div class="row">
-                <div class="col-xs-2 col-sm-2">
-                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('back')">BACK</a>
-                    </div>
-                </div>
-                <div class="col-xs-2 col-sm-2">
-                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('doDeactivate')">Deactivate</a>
-                    </div>
-                </div>
-                <div class="col-xs-2 col-sm-2">
-                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('doReactivate')">Reactivate</a>
-                    </div>
-                </div>
-                <div class="col-xs-2 col-sm-2">
-                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('doTerminate')">Terminate</a>
-                    </div>
-                </div>
-                <div class="col-xs-2 col-sm-2">
-                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('doUnlock')">Unlock</a>
-                    </div>
-                </div>
-
-            </div>
-        </div>
 </form>
 <%@include file="/include/validation.jsp" %>
-</div>
-
 <script type="text/javascript">
-    function submit(action){
+    function submit(action) {
         $("[name='crud_action_type']").val(action);
         $("#ChangeStatusForm").submit();
     }

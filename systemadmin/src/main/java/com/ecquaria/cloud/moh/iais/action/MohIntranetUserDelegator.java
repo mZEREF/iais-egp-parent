@@ -236,8 +236,8 @@ public class MohIntranetUserDelegator {
     }
 
     public void saveStatus(BaseProcessClass bpc) {
-        String userId = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_USERID);
-        ParamUtil.setSessionAttr(bpc.request,"userId",userId);
+        String userId = ParamUtil.getRequestString(bpc.request, "statusUserId");
+        ParamUtil.setRequestAttr(bpc.request,"statusUserId",userId);
         String actionType = ParamUtil.getString(bpc.request, "crud_action_type");
         if ("back".equals(actionType)) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
@@ -256,7 +256,7 @@ public class MohIntranetUserDelegator {
                     clientUser.setAccountStatus(ClientUser.STATUS_INACTIVE);
                     intranetUserService.updateEgpUser(clientUser);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "This user has been deactivated");
+                    errorMap.put("userId", "This user is already in Deactivated status.");
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
                 } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType)) {
@@ -265,7 +265,7 @@ public class MohIntranetUserDelegator {
                     clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
                     intranetUserService.updateEgpUser(clientUser);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "This user has been reactivated");
+                    errorMap.put("userId", "This user is already in Active status.");
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
                 } else if (IntranetUserConstant.TERMINATE.equals(actionType)) {
@@ -274,7 +274,7 @@ public class MohIntranetUserDelegator {
                     clientUser.setAccountStatus(ClientUser.STATUS_TERMINATED);
                     intranetUserService.updateEgpUser(clientUser);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "This user has been terminated");
+                    errorMap.put("userId", "This user is already in Terminated status.");
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
                 } else if (IntranetUserConstant.UNLOCK.equals(actionType)) {
@@ -283,7 +283,7 @@ public class MohIntranetUserDelegator {
                     clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
                     intranetUserService.updateEgpUser(clientUser);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "This user has been active");
+                    errorMap.put("userId", "This user is already in Active status.");
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
                 }
@@ -301,54 +301,20 @@ public class MohIntranetUserDelegator {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;
         }
-//        Boolean validatepassword = false ;
-//        if(intranetUser!=null) {
-//            UserIdentifier userIdentifier = new UserIdentifier();
-//            userIdentifier.setId(userId);
-//            userIdentifier.setUserDomain("intranet");
-//            validatepassword = intranetUserService.validatepassword(password, userIdentifier);
-//        }
-//        if(validatepassword){
-
-
-//        if(validatepassword){
-//           // ClientUser userByIdentifier = intranetUserService.getUserByIdentifier(userId,userDomain);
-//            if(IntranetUserConstant.DEACTIVATE.equals(actionType)){
-//                userByIdentifier.setAccountStatus(ClientUser.STATUS_INACTIVE);
-//                intranetUserService.updateEgpUser(userByIdentifier);
-//                ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
-//                return;
-//            }else if(IntranetUserConstant.REDEACTIVATE.equals(actionType)){
-//                userByIdentifier.setAccountStatus(ClientUser.STATUS_ACTIVE);
-//                intranetUserService.updateEgpUser(userByIdentifier);
-//                ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
-//                return;
-//            }else if(IntranetUserConstant.TERMINATE.equals(actionType)){
-//                userByIdentifier.setAccountStatus(ClientUser.STATUS_TERMINATED);
-//                intranetUserService.updateEgpUser(userByIdentifier);
-//                ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
-//                return;
-//            }else {
-//                userByIdentifier.setAccountStatus(ClientUser.STATUS_ACTIVE);
-//                intranetUserService.updateEgpUser(userByIdentifier);
-//                ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
-//                return;
-//            }
-//        }
     }
 
     public void doSearch(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String displayName = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_DISPLAYNAME);
-        String userId = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_USERID);
-        String email = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_EMAILADDR);
-        String status = ParamUtil.getRequestString(request, "accountStatus");
+        String displayName = ParamUtil.getRequestString(request, "searchDisplayName");
+        String userId = ParamUtil.getRequestString(request, "searchUserId");
+        String email = ParamUtil.getRequestString(request, "searchEmail");
+        String status = ParamUtil.getRequestString(request, "searchStatus");
         String privilege = ParamUtil.getRequestString(request, "privilege");
         String role = ParamUtil.getRequestString(request, "role");
-        ParamUtil.setRequestAttr(request, "displayName", displayName);
-        ParamUtil.setRequestAttr(request, "userId", userId);
-        ParamUtil.setRequestAttr(request, "email", email);
-        ParamUtil.setRequestAttr(request, "status", status);
+        ParamUtil.setRequestAttr(request, "searchDisplayName", displayName);
+        ParamUtil.setRequestAttr(request, "searchUserId", userId);
+        ParamUtil.setRequestAttr(request, "searchEmail", email);
+        ParamUtil.setRequestAttr(request, "searchStatus", status);
         ParamUtil.setRequestAttr(request, "privilege", privilege);
         ParamUtil.setRequestAttr(request, "role", role);
 
@@ -529,45 +495,6 @@ public class MohIntranetUserDelegator {
     }
 
 
-//    private Map<String,  String> doValidatePo(OrgUserDto orgUserDto) {
-//        Map<String,String> errorMap = new HashMap<>(34);
-//        String userDomain = orgUserDto.getUserDomain();
-//        String userId = orgUserDto.getUserId();
-//        String displayName = orgUserDto.getDisplayName();
-////        String email = orgUserDto.getEmail();
-//        Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
-//        Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
-//        //userId
-//        if(!StringUtil.isEmpty(userId)){
-//            if(!userId.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(.{1,64})$")){
-//                errorMap.put("userId","USER_ERR002");
-//            }else{
-//                ClientUser userByIdentifier = intranetUserService.getUserByIdentifier(userId,userDomain);
-//                if(userByIdentifier!=null){
-//                    String userid = userByIdentifier.getUserIdentifier().getId();
-//                    if(userId.equals(userid)){
-//                        errorMap.put("userId","USER_ERR003");
-//                    }
-//                }
-//            }
-//        }
-//        //date
-//        if(accountActivateDatetime!=null) {
-//            int i = accountActivateDatetime.compareTo(new Date());
-//            if(i<0){
-//                errorMap.put("accountActivateDatetime", "USER_ERR007");
-//            }
-//        }
-//
-//        if(accountDeactivateDatetime!=null&&accountActivateDatetime!=null) {
-//            int i = accountDeactivateDatetime.compareTo(accountActivateDatetime);
-//            if(i<0){
-//                errorMap.put("accountDeactivateDatetime", "USER_ERR006");
-//            }
-//        }
-//        return errorMap;
-//    }
-
 
     private void prepareOption(BaseProcessClass bpc) {
         HttpServletRequest request =bpc.request;
@@ -726,7 +653,7 @@ public class MohIntranetUserDelegator {
     private List<SelectOption> getStatusOption() {
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("CMSTAT001", "Active");
-        SelectOption so2 = new SelectOption("CMSTAT003", "Inactive");
+        SelectOption so2 = new SelectOption("OUSTAT005", "Deactivated");
         SelectOption so3 = new SelectOption("OUSTAT004", "Terminated");
         SelectOption so4 = new SelectOption("OUSTAT001", "Expired");
         SelectOption so5 = new SelectOption("OUSTAT002", "Locked");
@@ -740,14 +667,12 @@ public class MohIntranetUserDelegator {
 
     private List<SelectOption> getRoleOption() {
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();
-        SelectOption so = new SelectOption("", "Please Select");
         SelectOption so1 = new SelectOption("Admin", "Admin");
         SelectOption so2 = new SelectOption("Professional", "Professional");
         SelectOption so3 = new SelectOption("Inspector", "Inspector");
         result.add(so1);
         result.add(so2);
         result.add(so3);
-        result.add(so);
         return result;
     }
 

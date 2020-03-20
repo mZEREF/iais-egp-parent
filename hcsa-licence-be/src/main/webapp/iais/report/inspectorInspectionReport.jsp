@@ -51,6 +51,10 @@
                                                 <table class="table table-bordered">
                                                     <tbody>
                                                     <tr>
+                                                        <td align="right">Application Type</td>
+                                                        <td>${applicationViewDto.applicationType}</td>
+                                                    </tr>
+                                                    <tr>
                                                         <td class="col-xs-6" align="right">Application No. (Overall)
                                                         </td>
                                                         <td class="col-xs-6">${applicationViewDto.applicationNoOverAll}</td>
@@ -60,11 +64,7 @@
                                                         <td>${applicationViewDto.applicationDto.applicationNo}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">Application Type</td>
-                                                        <td>${applicationViewDto.applicationType}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Clinical Laboratory</td>
+                                                        <td align="right">Service Type</td>
                                                         <td>${applicationViewDto.serviceType}</td>
                                                     </tr>
                                                     <tr>
@@ -82,7 +82,7 @@
                                     </div>
                                 </div>
                                 <div align="center">
-                                    <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?appId=${applicationViewDto.applicationDto.id}" target="_blank">
+                                    <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService" target="_blank">
                                         <button type="button" class="btn btn-primary">
                                             View Application
                                         </button>
@@ -153,7 +153,8 @@
                                                             <p><c:out value="${appSupDocDto.file}"></c:out></p>
                                                         </td>
                                                         <td>
-                                                            <p><a href="#"><c:out value="${appSupDocDto.document}"></c:out></a></p>
+                                                            <p><a href="#"><c:out
+                                                                    value="${appSupDocDto.document}"></c:out></a></p>
                                                         </td>
                                                         <td>
                                                             <p><c:out value="${appSupDocDto.size}"></c:out></p>

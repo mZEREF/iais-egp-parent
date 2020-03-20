@@ -72,7 +72,7 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, null);
         String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
         if (StringUtil.isEmpty(taskId)) {
-            taskId = "BB8C47A3-9B37-EA11-BE7E-000C29F371DC";
+            taskId = "F7AAA918-516A-EA11-BE82-000C29F371DC";
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
@@ -80,6 +80,7 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");
+
         if (insRepDto == null) {
             insRepDto = insRepService.getInsRepDto(taskDto, applicationViewDto, loginContext);
             InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);

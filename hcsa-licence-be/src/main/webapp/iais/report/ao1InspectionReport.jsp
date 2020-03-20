@@ -58,6 +58,10 @@
                                                 <table class="table table-bordered">
                                                     <tbody>
                                                     <tr>
+                                                        <td align="right">Application Type</td>
+                                                        <td>${applicationViewDto.applicationType}</td>
+                                                    </tr>
+                                                    <tr>
                                                         <td class="col-xs-6" align="right">Application No. (Overall)
                                                         </td>
                                                         <td class="col-xs-6">${applicationViewDto.applicationNoOverAll}</td>
@@ -67,11 +71,7 @@
                                                         <td>${applicationViewDto.applicationDto.applicationNo}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">Application Type</td>
-                                                        <td>${applicationViewDto.applicationType}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Clinical Laboratory</td>
+                                                        <td align="right">Service Type</td>
                                                         <td>${applicationViewDto.serviceType}</td>
                                                     </tr>
                                                     <tr>
@@ -89,8 +89,7 @@
                                     </div>
                                 </div>
                                 <div align="center">
-                                    <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?appId=${applicationViewDto.applicationDto.id}"
-                                       target="_blank">
+                                    <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService" target="_blank">
                                         <button type="button" class="btn btn-primary">
                                             View Application
                                         </button>
@@ -131,7 +130,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
                                 <div class="alert alert-info" role="alert"><strong>
                                     <h4>Supporting Document</h4>
@@ -225,21 +223,21 @@
                                             <iais:section title="">
                                                 <iais:row>
                                                     <iais:field value="Current Status"/>
-                                                    <iais:value width="18">
+                                                    <iais:value width="6">
                                                         <p><iais:code code="${insRepDto.currentStatus}"/></p>
                                                     </iais:value>
                                                 </iais:row>
 
                                                 <iais:row>
                                                     <iais:field value="Internal Remarks"/>
-                                                    <iais:value width="18">
+                                                    <iais:value width="6">
                                                         <textarea style="resize:none" name="processRemarks" cols="65" rows="6"  title="content" MAXLENGTH="8000"><c:out value="${appPremisesRecommendationDto.processRemarks}"/></textarea>
                                                     </iais:value>
                                                 </iais:row>
 
                                                 <iais:row>
                                                     <iais:field value="Internal Remarks" required="true"/>
-                                                    <iais:value width="18">
+                                                    <iais:value width="6">
                                                         <iais:select name="processingDecision" id="processingDecision" options="processingDe" firstOption="Please select" value="${appPremisesRecommendationDto.processingDecision}"/>
                                                         <span id="error_processingDecision" name="iaisErrorMsg" class="error-msg"/>
                                                     </iais:value>

@@ -187,18 +187,10 @@
                             </div>
                         </div>
 
-                        <div>
-                            <div class="row">
-                                <div class="col-xs-2 col-sm-2">
-                                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('back')">BACK</a>
-                                    </div>
-                                </div>
-                                <div class="col-xs-10 col-sm-10">
-                                    <div class="text-right text-center-mobile"><a type="button" class="btn btn-primary" onclick="doCreate()">SUBMIT</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <iais:action>
+                            <a style="margin-left: 0%" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em>Back</a>
+                            <a style="margin-left: 90%" class="btn btn-primary" href="#" onclick="doCreate()">SUBMIT</a>
+                        </iais:action>
                     </div>
                 </div>
             </div>

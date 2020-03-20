@@ -14,13 +14,11 @@
                             <thead>
                             <tr>
                                 <th><input type="checkbox" name="userUids" id="checkboxAll" onchange="javascirpt:checkAll();"/></th>
-                                <th>No.</th>
-                                <th>User ID</th>
-                                <th>Email address</th>
-                                <th>Account Status</th>
-                                <%--                                <th>Roles Assigned</th>--%>
-                                <%--                                <th>Privileges Assigned</th>--%>
-                                <th>Action</th>
+                                <iais:sortableHeader needSort="false" field="index" value="No."/>
+                                <iais:sortableHeader needSort="true" field="USER_ID" value="User ID"/>
+                                <iais:sortableHeader needSort="true" field="EMAIL_ADDR" value="Email address"/>
+                                <iais:sortableHeader needSort="true" field="STATUS" value="Account Status"/>
+                                <iais:sortableHeader needSort="false" field="action" value="Action"/>
                             </tr>
                             </thead>
                             <tbody>
@@ -28,15 +26,14 @@
                                 <c:when test="${empty IntranetUserSearchResult.rows}">
                                     <tr>
                                         <td colspan="12">
-                                            No Record!!
+                                            <iais:message key="ACK018" escape="true"/>
                                         </td>
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
                                     <c:forEach var="user" items="${IntranetUserSearchResult.rows}" varStatus="status">
                                         <tr>
-                                            <td><input type="checkbox" value="<c:out value='${user.id}'/>"
-                                                       name="userUid" id="userUid<c:out value='${user.id}'/>"></td>
+                                            <td><input type="checkbox" value="<c:out value='${user.id}'/>" name="userUid" id="userUid<c:out value='${user.id}'/>"></td>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Code Category</p>
@@ -70,6 +67,16 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <iais:action style="text-align:center;">
+                        <div class="text-right">
+                            <a class="btn btn-primary" onclick="doCreate()">Create</a>
+                            <a class="btn btn-primary" onclick="doStatus()">Change</a>
+                            <a class="btn btn-primary" onclick="doExport()">Export</a>
+                            <input type="file" id="inputFile" name="xmlFile" style="display:none" onchange="javascript:doImport();"/>
+                            <input type="button" class="btn btn-primary" onclick="document.getElementById('inputFile').click()" value="Import"/>
+                        </div>
+                    </iais:action>
                 </div>
             </div>
         </div>
