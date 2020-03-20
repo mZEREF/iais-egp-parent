@@ -15,7 +15,7 @@
             <h2>The appointment date has been sent to the applicant for confirmation.</h2>
           </div>
         </div>
-        <div align="left"><span><a class="back" id="Back" href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"/>Back</a></span></div>
+        <div align="left"><span><a href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"/>Back</a></span></div>
       </div>
     </div>
   </div>
