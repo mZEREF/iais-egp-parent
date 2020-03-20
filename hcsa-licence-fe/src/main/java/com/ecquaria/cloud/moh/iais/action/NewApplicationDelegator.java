@@ -2331,10 +2331,11 @@ public class NewApplicationDelegator {
                         if(StringUtil.isEmpty(addrType)){
                             errorMap.put("addrType"+i, "UC_CHKLMD001_ERR001");
                         }else {
+                            boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getFloorNo());
+                            boolean empty1 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getBlkNo());
+                            boolean empty2 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getUnitNo());
                             if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
-                                boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getFloorNo());
-                                boolean empty1 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getBlkNo());
-                                boolean empty2 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getUnitNo());
+
                                 if (empty) {
                                     errorMap.put("floorNo"+i, "UC_CHKLMD001_ERR001");
                                 }
@@ -2344,11 +2345,11 @@ public class NewApplicationDelegator {
                                 if (empty2) {
                                     errorMap.put("unitNo"+i, "UC_CHKLMD001_ERR001");
                                 }
-                                if(!empty&&!empty1&&!empty2){
-                                    stringBuilder.append(appGrpPremisesDtoList.get(i).getFloorNo())
-                                            .append(appGrpPremisesDtoList.get(i).getBlkNo())
-                                            .append(appGrpPremisesDtoList.get(i).getUnitNo());
-                                }
+                            }
+                            if(!empty&&!empty1&&!empty2){
+                                stringBuilder.append(appGrpPremisesDtoList.get(i).getFloorNo())
+                                        .append(appGrpPremisesDtoList.get(i).getBlkNo())
+                                        .append(appGrpPremisesDtoList.get(i).getUnitNo());
                             }
                         }
                         String postalCode = appGrpPremisesDtoList.get(i).getPostalCode();
@@ -2356,12 +2357,11 @@ public class NewApplicationDelegator {
                             if (!postalCode.matches("^[0-9]{6}$")) {
                                 errorMap.put("postalCode"+i, "CHKLMD001_ERR003");
                             }else {
-                                boolean empty = stringBuilder.toString().isEmpty();
 
-                                if(!empty){
+                                if(!StringUtil.isEmpty(stringBuilder.toString())){
                                     stringBuilder.append(postalCode);
                                     if(list.contains(stringBuilder.toString())){
-                                        errorMap.put("postalCode","There is a duplicated entry for this premises address.");
+                                        errorMap.put("postalCode"+i,"There is a duplicated entry for this premises address.");
 
                                     }else {
                                         list.add(stringBuilder.toString());
@@ -2376,6 +2376,7 @@ public class NewApplicationDelegator {
                         String conStartMM = appGrpPremisesDtoList.get(i).getConStartMM();
                         int conStartDate=0;
                         int conEndDate=0;
+                        StringBuilder stringBuilder=new StringBuilder();
                         if(StringUtil.isEmpty(conStartHH)||StringUtil.isEmpty(conStartMM)){
                             errorMap.put("conStartMM"+i,"UC_CHKLMD001_ERR001");
                         }else {
@@ -2466,14 +2467,6 @@ public class NewApplicationDelegator {
                                 errorMap.put("conveyanceVehicleNo"+i,"CHKLMD001_ERR008");
                             }
                         }
-                        String conveyancePostalCode = appGrpPremisesDtoList.get(i).getConveyancePostalCode();
-                        if(StringUtil.isEmpty(conveyancePostalCode)){
-                            errorMap.put("conveyancePostalCode"+i,"UC_CHKLMD001_ERR001");
-                        }else {
-                            if(!conveyancePostalCode.matches("^[0-9]{6}$")){
-                                errorMap.put("conveyancePostalCode"+i, "CHKLMD001_ERR003");
-                            }
-                        }
 
                         String cStreetName = appGrpPremisesDtoList.get(i).getConveyanceStreetName();
 
@@ -2484,10 +2477,11 @@ public class NewApplicationDelegator {
                         if(StringUtil.isEmpty(conveyanceAddressType)){
                             errorMap.put("conveyanceAddressType"+i, "UC_CHKLMD001_ERR001");
                         }else {
+                            boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceFloorNo());
+                            boolean empty1 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceBlockNo());
+                            boolean empty2 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceUnitNo());
                             if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(conveyanceAddressType)) {
-                                boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceFloorNo());
-                                boolean empty1 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceBlockNo());
-                                boolean empty2 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceUnitNo());
+
                                 if (empty) {
                                     errorMap.put("conveyanceFloorNo"+i, "UC_CHKLMD001_ERR001");
                                 }
@@ -2497,8 +2491,35 @@ public class NewApplicationDelegator {
                                 if (empty2) {
                                     errorMap.put("conveyanceUnitNo"+i, "UC_CHKLMD001_ERR001");
                                 }
+
+                            }
+                            if(!empty&&!empty1&&!empty2){
+                                stringBuilder.append(appGrpPremisesDtoList.get(i).getConveyanceFloorNo())
+                                        .append(appGrpPremisesDtoList.get(i).getConveyanceBlockNo())
+                                        .append(appGrpPremisesDtoList.get(i).getConveyanceUnitNo());
+
                             }
                         }
+                        String conveyancePostalCode = appGrpPremisesDtoList.get(i).getConveyancePostalCode();
+                        if(StringUtil.isEmpty(conveyancePostalCode)){
+                            errorMap.put("conveyancePostalCode"+i,"UC_CHKLMD001_ERR001");
+                        }else {
+                            if(!conveyancePostalCode.matches("^[0-9]{6}$")){
+                                errorMap.put("conveyancePostalCode"+i, "CHKLMD001_ERR003");
+                            }else {
+                                if(!StringUtil.isEmpty(stringBuilder.toString())){
+                                    stringBuilder.append(conveyancePostalCode);
+                                }
+
+                            }
+                        }
+
+                        if(list.contains(stringBuilder.toString())){
+                            errorMap.put("conveyancePostalCode"+i,"There is a duplicated entry for this premises address.");
+                        }else {
+                            list.add(stringBuilder.toString());
+                        }
+
                     }
                 } else {
                     //premiseSelect = organization hci code

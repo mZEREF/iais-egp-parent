@@ -47,10 +47,13 @@ import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppealClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.EventClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -74,6 +77,7 @@ import java.util.zip.ZipFile;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -107,6 +111,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private BroadcastService broadcastService;
     @Autowired
     private ApplicationClient applicationClient;
+    @Autowired
+    private EventClient eventClient;
     @Autowired
     private SystemBeLicClient systemClient;
     @Autowired
@@ -642,15 +648,28 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
-
-            AppEicRequestTrackingDto entity = appealClient.getAppEicRequestTrackingDto(eventRefNum).getEntity();
-            log.info(eventRefNum+"******");
-            String dtoObj = entity.getDtoObj();
-            ApplicationNewAndRequstDto applicationNewAndRequstDto= JsonUtil.parseToObject(dtoObj, ApplicationNewAndRequstDto.class);
-
-        TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationNewAndRequstDto.getListNewApplicationDto(), HcsaConsts.ROUTING_STAGE_ASO, RoleConsts.USER_ROLE_ASO,intranet);
+        List<ApplicationDto> listNewApplicationDto =IaisCommonUtils.genNewArrayList();
+        List<ApplicationDto> requestForInfList  =IaisCommonUtils.genNewArrayList();
+            List<Submission> submissionList = eventClient.getSubmission(submissionId).getEntity();
+            ApplicationListFileDto dto = null;
+            log.info(submissionList .size() +"submissionList .size()");
+            for(Submission submission : submissionList){
+               if(EventBusConsts.SERVICE_NAME_APPSUBMIT.equals(submission.getSubmissionIdentity().getService())){
+                    dto = JsonUtil.parseToObject(submission.getData(), ApplicationListFileDto.class);
+                    break;
+               }
+            }
+            if(dto!=null){
+                List<ApplicationGroupDto> applicationGroup = dto.getApplicationGroup();
+                List<ApplicationDto> application = dto.getApplication();
+                update(listNewApplicationDto ,applicationGroup,application);
+                requeOrNew(requestForInfList,applicationGroup,application);
+            }
+            log.info(listNewApplicationDto.size()+"listNewApplicationDto size");
+            log.info(requestForInfList.size()+"requestForInfList size");
+        TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(listNewApplicationDto, HcsaConsts.ROUTING_STAGE_ASO, RoleConsts.USER_ROLE_ASO,intranet);
         //for reqeust for information
-        TaskHistoryDto requestTaskHistoryDto  = getRoutingTaskForRequestForInformation(applicationNewAndRequstDto.getRequestForInfList(),intranet);
+        TaskHistoryDto requestTaskHistoryDto  = getRoutingTaskForRequestForInformation(requestForInfList,intranet);
         //
         if(taskHistoryDto!=null || requestTaskHistoryDto!=null){
             BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();

@@ -32,9 +32,9 @@
     <div class="form-group">
       <div class="col-xs-12 col-md-10">
         <div class="col-xs-12 col-md-6" style="margin-bottom: 20px">
-          <label style="font-size: 25px">Reason for Appeal<span class="mandatory"> *</span></label>
+          <label style="font-size: 25px">Reason For Appeal<span class="mandatory"> *</span></label>
           <select id="reasonSelect" name="reasonSelect">
-            <option value="">Please select an appeal reason</option>
+            <option value="">Please Select</option>
           <c:if test="${type=='application'}"><option value="MS001" <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option></c:if>
           <c:if test="${type=='application'}"><option value="MS002" <c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option></c:if>
           <c:if test="${type=='application'}"><option value="MS003" <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option></c:if>
@@ -44,7 +44,7 @@
              <%--<option value="MS006" <c:if test="${appPremiseMiscDto.reason=='MS006'}">selected="selected"</c:if>>Appeal against revocation</option>--%>
           </select>
 
-          <div> <span  class="error-msg" name="iaisErrorMsg" id="error_reason"></span></div>
+          <div style="margin-top: 1%"> <span  class="error-msg" name="iaisErrorMsg" id="error_reason"></span></div>
 
 
           <div class="col-xs-12 col-md-10" id="othersReason" style="display: none" >
@@ -131,9 +131,9 @@
       <div class="row">
         <div class="col-xs-12 col-sm-10" style="margin-bottom: 1%">
           <div class="text-right text-center-mobile">
+            <a class="btn btn-primary" href="#" id="cancel">Cancel</a>
             <a class="btn btn-primary" href="#" id="save">Save</a>
             <a class="btn btn-primary" href="#" id="submit">Submit</a>
-            <a class="btn btn-primary" href="#" id="cancel">Cancel</a>
           </div>
         </div>
       </div>
