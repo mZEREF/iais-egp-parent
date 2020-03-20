@@ -341,10 +341,10 @@ public class InspectReviseNcEmailDelegator {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_AO1);
         log.info("=====>AO1 history "+appPremisesRoutingHistoryDto1.toString());
         log.info("=====>INSP leader history "+appPremisesRoutingHistoryDto.toString());
-        if(appPremisesRoutingHistoryDto==null){ appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW});}
-            else if(appPremisesRoutingHistoryDto1!=null&&appPremisesRoutingHistoryDto.getUpdatedDt().compareTo(appPremisesRoutingHistoryDto1.getUpdatedDt())<0||appPremisesRoutingHistoryDto.getActionby().equals(userId)) {
-                     appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW});
-                }
+
+        if(appPremisesRoutingHistoryDto1!=null&&appPremisesRoutingHistoryDto.getUpdatedDt().compareTo(appPremisesRoutingHistoryDto1.getUpdatedDt())<0) {
+            appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW});
+        }
 
         String content= (String) ParamUtil.getSessionAttr(request,MSG_CON);
         if(content!=null){

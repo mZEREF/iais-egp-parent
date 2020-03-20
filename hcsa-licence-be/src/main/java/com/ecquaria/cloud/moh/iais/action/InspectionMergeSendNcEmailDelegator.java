@@ -278,7 +278,7 @@ public class InspectionMergeSendNcEmailDelegator {
                     taskDto2.setRefNo(appPremCorrIds.get(i));
                     taskDto2.setTaskType(taskDto.getTaskType());
                     taskDto2.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
-                    taskDto2.setUserId(appPremisesRoutingHisDto.getActionby());
+                    taskDto2.setUserId(userId);
                     taskDto2.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
                     taskDto2.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
                     taskDto2.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());

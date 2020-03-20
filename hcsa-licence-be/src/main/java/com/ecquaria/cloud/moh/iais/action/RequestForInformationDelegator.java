@@ -861,6 +861,9 @@ public class RequestForInformationDelegator {
         }
         licPremisesReqForInfoDto.setNeedDocument(isNeedDoc);
         licPremisesReqForInfoDto.setOfficerRemarks(officerRemarks.toString());
+        licPremisesReqForInfoDto.setRequestDate(new Date());
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        licPremisesReqForInfoDto.setRequestUser(loginContext.getUserId());
 
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.createLicPremisesReqForInfo(licPremisesReqForInfoDto);
 
@@ -887,7 +890,7 @@ public class RequestForInformationDelegator {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         licPremisesReqForInfoDto1.setAction("create");
-        log.info("=======>>>>>Create Lic Request for Information licPremId "+licPremisesReqForInfoDto1.getReqInfoId());
+        log.info("=======>>>>>Create Lic Request for Information reqInfoId "+licPremisesReqForInfoDto1.getReqInfoId());
         gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1,
                 signature.date(), signature.authorization(), signature2.date(), signature2.authorization());
 
