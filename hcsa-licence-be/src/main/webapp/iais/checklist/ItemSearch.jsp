@@ -21,10 +21,6 @@
     width: 100%;
   }
 
-.btn.btn-primary {
-  font-size: 12px;
-}
-
 </style>
 <div class="main-content">
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
@@ -41,7 +37,7 @@
 
         <div class="form-horizontal">
           <div class="form-group">
-            <label class="col-xs-4 col-md-2 control-label">Regulation Clause Number</label>
+            <iais:field value="Regulation Clause Number" ></iais:field>
             <div class="col-xs-5 col-md-3">
               <input type="text" name="regulationClauseNo" maxlength="100" value="${regulationClauseNo}"/>
               <span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>
@@ -49,7 +45,7 @@
           </div>
 
           <div class="form-group">
-            <label class="col-xs-4 col-md-2 control-label">Regulation</label>
+            <iais:field value="Regulation" ></iais:field>
             <div class="col-xs-5 col-md-3">
               <input type="text" name="regulationClause" maxlength="2000" value="${regulationClause}"/>
               <span id="error_regulationClause" name="iaisErrorMsg" class="error-msg"></span>
@@ -57,7 +53,7 @@
           </div>
 
           <div class="form-group">
-            <label class="col-xs-4 col-md-2 control-label">Checklist Item</label>
+            <iais:field value="Checklist Item" ></iais:field>
             <div class="col-xs-5 col-md-3">
               <input type="text" name="checklistItem" maxlength="500" value="${checklistItem}"/>
               <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
@@ -65,31 +61,29 @@
           </div>
 
           <div class="form-group">
-            <label class="col-md-2">Risk Level</label>
-            <div class="col-md-3">
+            <iais:field value="Risk Level" ></iais:field>
+            <div class="col-xs-5 col-md-3">
               <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL"
-                           firstOption="Select Risk Level" value="${riskLevel}"></iais:select>
+                           firstOption="Please Select" value="${riskLevel}"></iais:select>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="col-xs-2">Status</label>
-            <div class="col-md-3">
+            <iais:field value="Status" ></iais:field>
+            <div class="col-xs-5 col-md-3">
               <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
-                           firstOption="Select Status" filterValue="CMSTAT002,CMSTAT004" value="${status}"></iais:select>
+                           firstOption="Please Select" filterValue="CMSTAT002,CMSTAT004" value="${status}"></iais:select>
             </div>
           </div>
 
-          <div class="application-tab-footer">
+          <div class="application-tab-fo  oter">
             <div class="row">
-              <div class="col-xs-12 col-md-11">
+              <div class="col-xs-12 col-md-10">
                 <div class="text-right">
                   <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
-
-                    <a class="btn btn-secondary"  href="${pageContext.request.contextPath}/checklist-item-file?action=checklistItem">Export Checklist Item</a>
-
+                  <a class="btn btn-secondary"  href="${pageContext.request.contextPath}/checklist-item-file?action=checklistItem">Export Checklist Item</a>
                   <a class="btn btn-secondary"   href="${pageContext.request.contextPath}/checklist-item-file?action=regulation">Export Regulation</a>
-                  <a class="btn btn-primary" id="crud_search_button" value="doSearch" href="#">Search</a>
+                  <a class="btn btn-primary next" id="crud_search_button" value="doSearch" href="#">Search</a>
                 </div>
               </div>
             </div>
@@ -100,7 +94,6 @@
           <div class="row">
             <div class="col-xs-12">
               <div class="components">
-                <h2 class="component-title">Search Result</h2>
                 <iais:pagination  param="checklistItemSearch" result="checklistItemResult"/>
                 <div class="table-gp">
                   <table class="table">
@@ -167,10 +160,6 @@
                                   </div>
 
                                 </c:if>
-
-
-
-
                                 <c:if test="${item.status == 'CMSTAT003'}">
                                   <button type="button" class="btn btn-default btn-sm"
                                           onclick="javascript:prepareEditItem('${item.itemId}');">Edit

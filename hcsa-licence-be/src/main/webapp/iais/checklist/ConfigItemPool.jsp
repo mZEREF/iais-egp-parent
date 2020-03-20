@@ -81,7 +81,6 @@
           <div class="row">
             <div class="col-xs-12">
               <div class="components">
-                <h2 class="component-title">Search &amp; Result</h2>
                 <div class="table-gp">
                   <table class="table">
                     <thead>

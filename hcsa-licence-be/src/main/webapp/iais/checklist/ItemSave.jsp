@@ -27,7 +27,7 @@
 }
 </style>
 
-
+<div class="main-content">
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="crud_action_type" value="">
@@ -36,8 +36,7 @@
     <input type="hidden" name="itemId" value="<iais:mask name="itemId" value="${itemRequestAttr.itemId}"/><%--don't remove--%>">
     <br><br>
     <span id="error_question" name="iaisErrorMsg" class="error-msg"></span>
-    <div class="main-content">
-        <div class="container">
+
 
             <span id="error_messageContent" name="iaisErrorMsg" class="error-msg"></span>
             <br><br>
@@ -102,7 +101,7 @@
                 <p><a class="back" onclick="doCancel();"><em class="fa fa-angle-left" ></em> Back</a></p>
             </div>
             <div class="text-right text-center-mobile">
-                <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>
+                <a class="btn btn-secondary" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>
                 <c:choose>
                     <c:when test="${btnTag eq 'SubmitButton'}">
                         <a class="btn btn-primary next" onclick="javascript:doSubmit();">Submit</a>
@@ -112,13 +111,13 @@
                     </c:when>
                 </c:choose>
             </div>
-        </div>
 
 
-    </div>
+
 
 
 </>
+</div>
 <%@include file="/include/utils.jsp"%>
 <%@include file="/include/validation.jsp"%>
 <script>

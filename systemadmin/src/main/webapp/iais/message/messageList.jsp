@@ -58,7 +58,6 @@
             <div class="components">
                 <iais:pagination  param="msgSearchParam" result="msgSearchResult"/>
                 <br><br>
-                <h2 class="component-title">Search Results</h2>
                 <div class="table-gp">
                     <table class="table">
                         <thead>
