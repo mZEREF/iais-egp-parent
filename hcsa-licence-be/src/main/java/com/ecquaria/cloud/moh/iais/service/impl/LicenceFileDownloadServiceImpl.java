@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
@@ -44,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppealClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
@@ -117,6 +119,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private EventBusHelper eventBusHelper;
     @Autowired
     private GenerateIdClient generateIdClient;
+    @Autowired
+    private AppealClient appealClient;
     @Override
     public boolean decompression() throws Exception{
         log.info("-------------decompression start ---------");
@@ -636,12 +640,17 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
 
 
-        public void  sendTask(List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,String submissionId) throws  Exception{
+        public void  sendTask(String submissionId,String eventRefNum) throws  Exception{
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
 
-        TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(listApplicationDto, HcsaConsts.ROUTING_STAGE_ASO, RoleConsts.USER_ROLE_ASO,intranet);
+            AppEicRequestTrackingDto entity = appealClient.getAppEicRequestTrackingDto(eventRefNum).getEntity();
+            log.info(eventRefNum+"******");
+            String dtoObj = entity.getDtoObj();
+            ApplicationNewAndRequstDto applicationNewAndRequstDto= JsonUtil.parseToObject(dtoObj, ApplicationNewAndRequstDto.class);
+
+        TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationNewAndRequstDto.getListNewApplicationDto(), HcsaConsts.ROUTING_STAGE_ASO, RoleConsts.USER_ROLE_ASO,intranet);
         //for reqeust for information
-        TaskHistoryDto requestTaskHistoryDto  = getRoutingTaskForRequestForInformation(requestForInfList,intranet);
+        TaskHistoryDto requestTaskHistoryDto  = getRoutingTaskForRequestForInformation(applicationNewAndRequstDto.getRequestForInfList(),intranet);
         //
         if(taskHistoryDto!=null || requestTaskHistoryDto!=null){
             BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
