@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
@@ -135,4 +136,13 @@ public interface InspectionAssignTaskService {
       * @Descripation: getAjaxResultByParam
       */
     SearchResult<ComPoolAjaxQueryDto> getAjaxResultByParam(SearchParam searchParam);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/3/20
+      * @Param: loginContext
+      * @return: GroupRoleFieldDto
+      * @Descripation: get Group Role Field
+      */
+    GroupRoleFieldDto getGroupRoleField(LoginContext loginContext);
 }

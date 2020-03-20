@@ -6,8 +6,10 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -17,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +46,12 @@ public class InspecAssignTaskDelegator {
     private InspectionAssignTaskService inspectionAssignTaskService;
 
     @Autowired
-    private InspecAssignTaskDelegator(InspectionAssignTaskService inspectionAssignTaskService){
+    private ApplicationViewService applicationViewService;
+
+    @Autowired
+    private InspecAssignTaskDelegator(ApplicationViewService applicationViewService, InspectionAssignTaskService inspectionAssignTaskService){
         this.inspectionAssignTaskService = inspectionAssignTaskService;
+        this.applicationViewService = applicationViewService;
     }
 
     /**
@@ -73,6 +80,7 @@ public class InspecAssignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", null);
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchResult", null);
         ParamUtil.setSessionAttr(bpc.request, "commPools", null);
+        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
     }
 
     /**
@@ -87,6 +95,7 @@ public class InspecAssignTaskDelegator {
         SearchResult<InspectionCommonPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchResult");
         if(searchResult == null){
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            GroupRoleFieldDto groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
             //get task by user workGroupId
             List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
             List<String> appCorrId_list = inspectionAssignTaskService.getAppCorrIdListByPool(commPools);
@@ -150,6 +159,7 @@ public class InspecAssignTaskDelegator {
         String appCorrelationId = ParamUtil.getMaskedString(bpc.request,"appCorrelationId");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(!StringUtil.isEmpty(appCorrelationId) && !(AppConsts.NO.equals(appCorrelationId))){
+            ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appCorrelationId);
             List<TaskDto> commPools = (List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
             Map<String, String> map = (Map<String, String>)ParamUtil.getSessionAttr(bpc.request, "appCorrIdTaskIdMap");
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
@@ -158,6 +168,7 @@ public class InspecAssignTaskDelegator {
             inspecTaskCreAndAssDto.setTaskId(taskId);
             inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(appCorrelationId, commPools, loginContext, inspecTaskCreAndAssDto);
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
+            ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         }
 
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);

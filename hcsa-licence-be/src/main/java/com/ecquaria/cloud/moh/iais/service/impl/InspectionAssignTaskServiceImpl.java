@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -111,6 +112,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId());
 
+        inspecTaskCreAndAssDto.setApplicationId(applicationDto.getId());
         inspecTaskCreAndAssDto.setApplicationNo(applicationDto.getApplicationNo());
         inspecTaskCreAndAssDto.setAppCorrelationId(appCorrelationId);
         inspecTaskCreAndAssDto.setApplicationType(applicationDto.getApplicationType());
@@ -123,7 +125,8 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         inspecTaskCreAndAssDto.setHciName(appGrpPremisesDto.getHciName() + " / " + address);
         inspecTaskCreAndAssDto.setHciCode(appGrpPremisesDto.getHciCode());
         inspecTaskCreAndAssDto.setServiceName(hcsaServiceDto.getSvcName());
-        inspecTaskCreAndAssDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? "Post":"Pre");
+        //todo:inspection type
+        inspecTaskCreAndAssDto.setInspectionTypeName(InspectionConstants.INSPECTION_TYPE_ONSITE);
         inspecTaskCreAndAssDto.setInspectionType(applicationGroupDto.getIsPreInspection());
         inspecTaskCreAndAssDto.setSubmitDt(applicationGroupDto.getSubmitDt());
         //set inspector checkbox list
@@ -418,6 +421,23 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     @SearchTrack(catalog = "inspectionQuery",key = "assignCommonTask")
     public SearchResult<ComPoolAjaxQueryDto> getAjaxResultByParam(SearchParam searchParam) {
         return inspectionTaskClient.commonPoolResult(searchParam).getEntity();
+    }
+
+    @Override
+    public GroupRoleFieldDto getGroupRoleField(LoginContext loginContext) {
+        GroupRoleFieldDto groupRoleFieldDto = new GroupRoleFieldDto();
+        String curRole = loginContext.getCurRoleId();
+        String groupLeadName = "";
+        if(curRole.contains("_LEAD")){
+
+        }
+        String roleField = "";
+            if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(curRole)){
+                roleField = MasterCodeUtil.getCodeDesc(RoleConsts.USER_MASTER_INSPECTION_LEAD);
+            } else {
+                roleField = MasterCodeUtil.getCodeDesc(curRole);
+            }
+        return groupRoleFieldDto;
     }
 
     private String getOtherAddress(AppGrpPremisesDto appGrpPremisesDto, String result) {
