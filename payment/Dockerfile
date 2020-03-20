@@ -1,5 +1,8 @@
 FROM tomcat:9.0.31-jdk8-adoptopenjdk-hotspot
 
+ENV TZ=Asia/Singapore
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 COPY target/payment-web.war /usr/local/tomcat/webapps/payment-web.war
 
 COPY docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
