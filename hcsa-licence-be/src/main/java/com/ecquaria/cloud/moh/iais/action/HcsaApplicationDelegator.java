@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -289,7 +290,10 @@ public class HcsaApplicationDelegator {
                 applicationViewDto.setAppEditSelectDto(appEditSelectDto);
             }
         }
-
+        List<AppSupDocDto> appSupDocDtoList = applicationViewDto.getAppSupDocDtoList();
+        if(appSupDocDtoList == null || (appSupDocDtoList.size() == 0)){
+            ParamUtil.setRequestAttr(bpc.request, "appSupDocDtoListNull","Y");
+        }
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));

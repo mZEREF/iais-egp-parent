@@ -176,6 +176,13 @@
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
+                                                <c:if test="${appSupDocDtoListNull == 'Y'}">
+                                                    <tr>
+                                                        <td colspan="5" align="center">
+                                                            <p>No record found.</p>
+                                                        </td>
+                                                    </tr>
+                                                </c:if>
                                                 </tbody>
 
                                             </table>
