@@ -48,13 +48,6 @@
         }
     })
 
-    $(".btn-login-cancel").click(function () {
-        var val = $(".btn-login-cancel").attr("value");
-        if (val != null && val != '') {
-            SOP.Crud.cfxSubmit("mainForm", val);
-        }
-    })
-
     $("#crud_clear_button").click(function () {
         $(".form-horizontal input").val("");
         $(".form-horizontal input[type='checkbox']").removeAttr('checked');
@@ -65,12 +58,6 @@
         $(".form-horizontal option").val("");
     })
 
-    $(".btn btn-primary cencel").click(function () {
-        var val = $(".btn-login-cancel").value;
-        SOP.Crud.cfxSubmit("mainForm", 'doCancel', val);
-    })
-
-
     function jumpToPagechangePage(){
         SOP.Crud.cfxSubmit("mainForm", "changePage");
     }
@@ -78,7 +65,4 @@
     function sortRecords(sortFieldName,sortType){
         SOP.Crud.cfxSubmit("mainForm","sortRecords",sortFieldName,sortType);
     }
-
-
-
 </script>

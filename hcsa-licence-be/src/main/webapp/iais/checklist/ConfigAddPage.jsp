@@ -102,7 +102,7 @@
 
         <div class="row">
           <div class="col-xs-12 col-sm-6">
-            <p><a class="back" onclick="doBack()();"><em class="fa fa-angle-left"></em> Back</a></p>
+            <a class="back" onclick="doBack()();"><em class="fa fa-angle-left"></em> Back</a>
           </div>
           <div class="col-xs-12 col-sm-6">
             <div class="text-right text-center-mobile">

@@ -74,7 +74,7 @@
           <p></p>
         </div>
         <div class="col-xs-12 col-sm-6">
-          <div class="button-group"><a id="docBack" class="btn btn-secondary" >Done</a></div>
+          <div class="button-group"><a id="docBack" class="btn btn-primary next" >Done</a></div>
         </div>
       </div>
     </div>

@@ -30,18 +30,19 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.AuditTrailService;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Delegator(value = "auditTrailDelegator")
 @Slf4j
@@ -169,14 +170,14 @@ public class AuditTrailDelegator {
         }
 
         SearchResult<AuditTrailQueryDto> searchResult = auditTrailService.listAuditTrailDto(searchParam);
-        if (searchResult == null || searchResult.getRows().isEmpty()){
+        if (searchResult == null){
             log.info("==export audit trail log , the record is empty>>>>");
             return;
         }
 
         File file = ExcelWriter.exportExcel(searchResult.getRows(), AuditTrailQueryDto.class, "Audit Trail Logging");
         try {
-            FileUtils.writeFileResponeContent(response, file);
+            FileUtils.writeFileResponseContent(response, file);
             FileUtils.deleteTempFile(file);
         } catch (IOException e) {
             log.debug(e.getMessage());

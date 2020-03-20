@@ -751,7 +751,7 @@ public class HcsaChklItemDelegator {
 
         if(file != null){
             try {
-                FileUtils.writeFileResponeContent(response, file);
+                FileUtils.writeFileResponseContent(response, file);
                 FileUtils.deleteTempFile(file);
             } catch (IOException e) {
                 log.debug(e.getMessage());

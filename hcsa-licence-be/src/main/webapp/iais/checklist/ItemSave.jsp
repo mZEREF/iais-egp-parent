@@ -30,9 +30,6 @@
 <div class="main-content">
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
     <input type="hidden" name="itemId" value="<iais:mask name="itemId" value="${itemRequestAttr.itemId}"/><%--don't remove--%>">
     <br><br>
     <span id="error_question" name="iaisErrorMsg" class="error-msg"></span>
@@ -47,7 +44,7 @@
                         <div class="col-xs-5 col-md-3">
                             <iais:field value="Regulation Clause Number" required="true"></iais:field>
                             <div class="col-xs-5 col-md-3">
-                                <iais:select name="regulationClauseNo"  options="clauseSelect" firstOption="Select Clause Number"  value="${itemRequestAttr.regulationClauseNo}"></iais:select>
+                                <iais:select name="regulationClauseNo"  options="clauseSelect" firstOption="Please Select"  value="${itemRequestAttr.regulationClauseNo}"></iais:select>
                                 <span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
@@ -69,7 +66,7 @@
                             <iais:field value="Status" required="true"></iais:field>
 
                             <div class="col-xs-5 col-md-3">
-                                    <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS" firstOption="Select Status" value="${itemRequestAttr.status}" filterValue="CMSTAT002,CMSTAT003,CMSTAT004"></iais:select>
+                                    <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS" firstOption="Please Select" value="${itemRequestAttr.status}" filterValue="CMSTAT002,CMSTAT003,CMSTAT004"></iais:select>
                                 <span id="error_status" name="iaisErrorMsg" class="error-msg" ></span>
                             </div>
                         </div>
@@ -79,7 +76,7 @@
                         <div class="col-xs-5 col-md-3">
                             <iais:field value="Risk Level" required="true"></iais:field>
                             <div class="col-xs-5 col-md-3">
-                                <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL" firstOption="Select Risk Level" value="${itemRequestAttr.riskLevel}"></iais:select>
+                                <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL" firstOption="Please Select" value="${itemRequestAttr.riskLevel}"></iais:select>
                                 <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
@@ -90,7 +87,7 @@
                         <div class="col-xs-5 col-md-3">
                             <iais:field value="Answer Type" required="true"></iais:field>
                             <div class="col-xs-5 col-md-3">
-                                <iais:select name="answerType" id="answerType" codeCategory="CATE_ID_ANSWER_TYPE" firstOption="Select Answer Type" value="${itemRequestAttr.answerType}"></iais:select>
+                                <iais:select name="answerType" id="answerType" codeCategory="CATE_ID_ANSWER_TYPE" firstOption="Please Select" value="${itemRequestAttr.answerType}"></iais:select>
                                 <span id="error_answerType" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
@@ -98,7 +95,7 @@
                 </div>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <p><a class="back" onclick="doCancel();"><em class="fa fa-angle-left" ></em> Back</a></p>
+                <a class="back" onclick="doCancel();"><em class="fa fa-angle-left" ></em> Back</a>
             </div>
             <div class="text-right text-center-mobile">
                 <a class="btn btn-secondary" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>

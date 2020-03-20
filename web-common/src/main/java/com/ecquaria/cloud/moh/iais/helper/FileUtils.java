@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +27,7 @@ public final class FileUtils {
         throw new IaisRuntimeException("FileUtils structure error.");
     }
 
-    public static void writeFileResponeContent(final HttpServletResponse response, final File file) throws IOException {
+    public static void writeFileResponseContent(final HttpServletResponse response, final File file) throws IOException {
         Objects.requireNonNull(response);
         Objects.requireNonNull(file);
 

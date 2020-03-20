@@ -65,7 +65,7 @@
 
     <div class="row">
       <div class="col-xs-12 col-sm-8">
-        <p><a class="back" href="#" id="crud_cancel_link"  value = "doCancel"><em class="fa fa-angle-left"></em> Back</a></p>
+        <a class="back" href="#" id="crud_cancel_link"  value = "doCancel"><em class="fa fa-angle-left"></em> Back</a>
       </div>
       <div class="col-xs-12 col-sm-4">
         <div class="button-group">

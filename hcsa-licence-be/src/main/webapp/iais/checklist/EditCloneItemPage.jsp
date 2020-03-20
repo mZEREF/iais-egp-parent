@@ -73,7 +73,7 @@
     </div>
 
     <div class="col-xs-12 col-sm-6">
-      <p><a class="back" onclick="doCancel();"><em class="fa fa-angle-left"></em> Back</a></p>
+      <a class="back" onclick="doCancel();"><em class="fa fa-angle-left"></em> Back</a>
     </div>
     <div class="text-right text-center-mobile">
       <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>

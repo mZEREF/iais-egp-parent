@@ -135,7 +135,7 @@
 
         <div class="row">
             <div class="col-xs-12 col-sm-6">
-                <p><a class="back" href="#" id="crud_cancel_link" value="doCancel"><i class="fa fa-angle-left"></i>Back</a></p>
+                <a class="back" href="#" id="crud_cancel_link" value="doCancel"><i class="fa fa-angle-left"></i>Back</a>
             </div>
             <div class="col-xs-3 col-sm-3 col-md-offset-3">
                 <div class="button-group">

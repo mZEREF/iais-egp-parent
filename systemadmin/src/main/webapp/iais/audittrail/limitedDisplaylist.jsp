@@ -21,6 +21,7 @@
 <div class="main-content">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/include/formHidden.jsp" %>
+        <br><br>
         <div class="bg-title"><h2>Audit Trail Mask Module</h2></div>
 
         <%@ include file="maincontent.jsp"%>

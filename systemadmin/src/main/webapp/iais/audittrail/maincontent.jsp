@@ -168,12 +168,10 @@
 
 
 
-          <c:if test="${! empty auditTrailSearchResult.rows}">
             <div class="text-right text-center-mobile">
               <a class="btn btn-primary" id="crud_search_export" href="${pageContext.request.contextPath}/audit-trail-file">Export</a>
             </div>
 
-          </c:if>
 
         </div>
       </div>

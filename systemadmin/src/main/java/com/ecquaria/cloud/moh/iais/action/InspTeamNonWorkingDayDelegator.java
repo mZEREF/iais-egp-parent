@@ -133,8 +133,7 @@ public class InspTeamNonWorkingDayDelegator {
 			wrlGrpNameOpt.add(new SelectOption(groupId, groupName));
 		});
 
-
-		if (IaisCommonUtils.isEmpty(IaisCommonUtils.genNewArrayList())){
+		if (IaisCommonUtils.isEmpty(nonWorkingDateListByWorkGroupId)){
 			nonWorkingDateListByWorkGroupId = IaisCommonUtils.genNewArrayList();
 		}
 

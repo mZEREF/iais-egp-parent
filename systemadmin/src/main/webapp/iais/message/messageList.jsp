@@ -8,15 +8,14 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
-
+<div class="main-content">
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
 
     <br><br>
-    <div class="main-content">
+
         <br>
         <div class="bg-title"><h2>ErrorMessage management</h2></div>
-        <div class="container">
             <div class="form-horizontal">
                 <div class="form-group">
                     <iais:field value="Type" required="true"/>
@@ -40,16 +39,14 @@
                     </iais:value>
                 </div>
 
-                <div class="application-tab-footer">
                     <div class="row">
-                        <div class="col-xs-12 col-md-11">
+                        <div class="col-xs-12 col-md-12">
                             <div class="text-right">
                                 <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
-                                <a class="btn btn-primary" id="crud_search_button" value="doQuery" href="#">Search</a>
+                                <a class="btn btn-primary" id="crud_search_button" value="doSearch" href="#">Search</a>
                             </div>
                         </div>
                     </div>
-                </div>
 
             </div>
 
@@ -105,11 +102,11 @@
 
                 </div>
             </div>
-            </div>
 
 
-    </div>
+
 </form>
+</div>
 <%@include file="/include/validation.jsp"%>
 <%@include file="/include/utils.jsp"%>
 <script type="text/javascript">
