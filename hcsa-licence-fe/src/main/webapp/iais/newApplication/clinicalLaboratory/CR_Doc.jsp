@@ -39,7 +39,7 @@
   <c:set var="svcDelFlag" value="${docConfig.id}flag"/>
   <div class="row">
     <div class="col-xs-12">
-      <h2>${docConfig.docTitle}</h2>
+      <h3>${docConfig.docTitle}</h3>
     </div>
     <div class="col-xs-12">
       <p>${docConfig.docDesc}</p>

@@ -28,7 +28,7 @@
                                             <div class="tab-pane active" id="clinicalLab" role="tabpanel">
                                                 <%@ include file="step.jsp" %>
                                                 <div class="application-service-steps">
-                                                    <div class="clinical-governance-officer">
+                                                    <div class="Service-related-Documents">
                                                         <h2>Service-related Documents</h2>
                                                         <%@include file="CR_Doc.jsp"%>
                                                     </div>
