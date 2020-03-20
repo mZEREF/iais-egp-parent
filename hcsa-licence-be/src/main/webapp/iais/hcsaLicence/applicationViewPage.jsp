@@ -556,10 +556,10 @@
                                                                     <option value="">Please Select</option>
                                                                     <c:forEach items="${applicationViewDto.recomeDation}"
                                                                                var="recommendation">
-                                                                        <option><c:out
+                                                                        <option value="${recommendation}" <c:if test="${recommendationStr == recommendation}">selected</c:if>><c:out
                                                                                 value="${recommendation}"></c:out></option>
                                                                     </c:forEach>
-                                                                    <option>reject</option>
+                                                                    <option value="reject" <c:if test="${recommendationStr == 'reject'}">selected</c:if>>reject</option>
                                                                 </select>
                                                                 <span id="error_recommendation" name="iaisErrorMsg" class="error-msg"></span>
                                                             </iais:value>

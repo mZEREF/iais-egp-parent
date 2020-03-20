@@ -28,6 +28,11 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             ParamUtil.setRequestAttr(request,"date",date);
         }
 
+        String recommendationStr = ParamUtil.getString(request,"recommendation");
+        if(!StringUtil.isEmpty(recommendationStr)){
+            ParamUtil.setRequestAttr(request,"recommendationStr",recommendationStr);
+        }
+
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
         String status = applicationViewDto.getApplicationDto().getStatus();
         if(STATUS.equals(status)){

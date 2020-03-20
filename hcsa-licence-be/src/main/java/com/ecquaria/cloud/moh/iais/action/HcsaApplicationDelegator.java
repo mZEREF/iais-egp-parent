@@ -34,11 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
@@ -65,6 +61,7 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -177,14 +174,16 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareData start ..."));
         //get the task
        String  taskId = ParamUtil.getString(bpc.request,"taskId");
-       if(StringUtil.isEmpty(taskId)){
-           taskId = (String)ParamUtil.getSessionAttr(bpc.request,"taskId");
-       }else{
-           ParamUtil.setSessionAttr(bpc.request,"taskId",taskId);
-       }
+//       if(StringUtil.isEmpty(taskId)){
+//           taskId = (String)ParamUtil.getSessionAttr(bpc.request,"taskId");
+//       }else{
+//           ParamUtil.setSessionAttr(bpc.request,"taskId",taskId);
+//       }
        TaskDto taskDto = taskService.getTaskById(taskId);
-
-        String correlationId = taskDto.getRefNo();
+        String correlationId = "";
+       if(taskDto != null){
+           correlationId = taskDto.getRefNo();
+       }
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
         appPremisesCorrelationDto.setOldCorrelationId(correlationId);
         String newCorrelationId = appPremisesCorrelationDto.getId();
@@ -302,7 +301,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void chooseStage(BaseProcessClass bpc){
+    public void chooseStage(BaseProcessClass bpc) throws ParseException {
         log.debug(StringUtil.changeForLog("the do chooseStage start ...."));
         //validate
         HcsaApplicationViewValidate hcsaApplicationViewValidate = new HcsaApplicationViewValidate();
@@ -320,10 +319,22 @@ public class HcsaApplicationDelegator {
             if(StringUtil.isEmpty(recommendationStr)){
 
             }else if(("reject").equals(recommendationStr)){
-                AppPremisesRecommendationDto appPremisesRecommendationDto=new AppPremisesRecommendationDto();
+//                ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+//                AppPremisesRecommendationDto oldAppPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
+//                if(oldAppPremisesRecommendationDto != null){
+//                    oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+//                    insRepService.updateRecommendation(oldAppPremisesRecommendationDto);
+//                }
+                AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
                 appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
                 appPremisesRecommendationDto.setRecomInNumber(0);
                 appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
+                appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                String dateStr = ParamUtil.getDate(bpc.request, "tuc");
+                if(!StringUtil.isEmpty(dateStr)){
+                    Date date = Formatter.parseDate(dateStr);
+                    appPremisesRecommendationDto.setRecomInDate(date);
+                }
                 insRepService.updateRecommendation(appPremisesRecommendationDto);
             }else{
                 AppPremisesRecommendationDto appPremisesRecommendationDto=new AppPremisesRecommendationDto();
@@ -332,6 +343,11 @@ public class HcsaApplicationDelegator {
                 appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
                 appPremisesRecommendationDto.setRecomInNumber( Integer.valueOf(strs[0]));
                 appPremisesRecommendationDto.setChronoUnit(strs[1]);
+                String dateStr = ParamUtil.getDate(bpc.request, "tuc");
+                if(!StringUtil.isEmpty(dateStr)){
+                    Date date = Formatter.parseDate(dateStr);
+                    appPremisesRecommendationDto.setRecomInDate(date);
+                }
                 insRepService.updateRecommendation(appPremisesRecommendationDto);
             }
             String verified = ParamUtil.getString(bpc.request,"verified");
