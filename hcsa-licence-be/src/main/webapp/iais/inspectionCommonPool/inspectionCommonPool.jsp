@@ -100,19 +100,21 @@
                       <c:otherwise>
                         <c:forEach var="pool" items="${cPoolSearchResult.rows}" varStatus="status">
                           <tr style = "display: table-row;" id = "advfilter${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}">
-                            <td class="row_no"><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
+                            <td class="row_no"><c:out value="${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}"/></td>
                             <td>
-                              <c:out value="${pool.appGroupNo}"/>
-                              <a class="accordion-toggle  collapsed"
-                                 data-toggle="collapse" aria-expanded="false"
-                                 data-target="#advfilter${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}"
-                                 onclick="commonPoolByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}')">
-                              </a>
+                              <p>
+                                <c:out value="${pool.appGroupNo}"/>
+                                <a class="accordion-toggle  collapsed"
+                                   data-toggle="collapse" aria-expanded="false"
+                                   data-target="#advfilter${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}"
+                                   onclick="javascript:commonPoolByGroupId('${pool.appGroupNo}','${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}')">
+                                </a>
+                              </p>
                             </td>
                             <td><c:out value="${pool.applicationType}"/></td>
                             <td><c:out value="${pool.submissionType}"/></td>
                             <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>
-                            <td><c:out value="${pool.paymentStatus}"/></td>
+                            <td><iais:code code="${pool.paymentStatus}"/></td>
                           </tr>
                         </c:forEach>
                       </c:otherwise>
@@ -163,11 +165,20 @@
         inspectionCommonPoolSubmit('sort');
     }
 
+    function isInArray(arr,value){
+        for(var i = 0; i < arr.length; i++){
+            if(value === arr[i]){
+                return true;
+            }
+        }
+        return false;
+    }
+    var dividajaxlist = [];
     function commonPoolByGroupId(applicationGroupNo, divid) {
-      var excute = dividlist.indexOf(divid);
-      if (excute < 0) {
+      if (!isInArray(dividajaxlist,divid)) {
+        dividajaxlist.push(divid);
         $.post(
-          '/hcsa-licence-be/common-pool/common.do',
+          '/hcsa-licence-web/common-pool/common.do',
           {groupNo: applicationGroupNo},
           function (data) {
             var result = data.result;
@@ -198,7 +209,7 @@
                       '</tr>';
               }
               html += '</tbody></table></div></td></tr>';
-              $('#advfilter' + divid).after(html);
+              $("#advfilter" + divid).after(html);
               dividlist.push(divid);
             }
           }

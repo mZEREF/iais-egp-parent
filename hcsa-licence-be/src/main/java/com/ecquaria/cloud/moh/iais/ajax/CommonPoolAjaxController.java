@@ -3,12 +3,14 @@ package com.ecquaria.cloud.moh.iais.ajax;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,9 +35,12 @@ public class CommonPoolAjaxController {
     @Autowired
     private InspectionAssignTaskService inspectionAssignTaskService;
 
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
+
     @RequestMapping(value = "common.do", method = RequestMethod.POST)
-    public @ResponseBody
-    Map<String, Object> appGroup(HttpServletRequest request) {
+
+    public @ResponseBody Map<String, Object> appGroup(HttpServletRequest request) {
         String groupNo = request.getParameter("groupNo");
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         if(!StringUtil.isEmpty(groupNo)){
@@ -57,10 +62,12 @@ public class CommonPoolAjaxController {
                         comPoolAjaxQueryDto.setHciAddress(address);
                     }
                     comPoolAjaxQueryDto.setAppStatus(MasterCodeUtil.getCodeDesc(comPoolAjaxQueryDto.getAppStatus()));
+                    HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(comPoolAjaxQueryDto.getServiceId()).getEntity();;
+                    comPoolAjaxQueryDto.setServiceName(hcsaServiceDto.getSvcName());
                 }
             }
             map.put("result", "Success");
-            map.put("result", ajaxResult);
+            map.put("ajaxResult", ajaxResult);
         } else {
             map.put("result", "Fail");
         }
