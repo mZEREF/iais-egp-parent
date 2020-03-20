@@ -19,6 +19,7 @@
         <input id="action" type="hidden" name="crud_action_type" value="">
         <input type="hidden" id="hiddenIndex" name="hiddenIndex" value=""/>
         <input id="EditValue" type="hidden" name="EditValue" value="" />
+        <input type="hidden"  name="switch_value" value=""/>
         <div class="main-content">
             <%@include file="../common/dashboard.jsp" %>
             <div class="container">
@@ -109,10 +110,11 @@
         $('#menuListForm').submit();
     });
 
-    $('#doSvcPoEdit').click(function () {
-        $('#EditValue').val('po');
+    $('#Back').click(function () {
+        $('[name="switch_value"]').val('back');
         $('#menuListForm').submit();
     });
+
 
 
 

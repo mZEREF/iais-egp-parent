@@ -122,20 +122,8 @@
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/jump" style="oblique">
    <position>{(430,260)(430,370)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(430,370)(263,372)(270,70)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doFirstView" linkstyle="Direct" name="" sourceName="/Pages/WebPage/firstView" style="oblique">
    <position>{(160,500)(160,600)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/InvokeStep/MohNewApplication" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(310,610)(260,730)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareFirstView" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(310,610)(250,440)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doFirstView" style="rectanular">
-   <position>{(160,600)(310,610)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/firstView" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareFirstView" style="oblique">
    <position>{(250,440)(160,500)}</position>
@@ -154,7 +142,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareTranfer" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(430,370)(510,440)}</position>
-
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/tranferPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareTranfer" style="rectanular">
    <position>{(510,440)(510,600)}</position>
@@ -171,24 +158,47 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareTranfer" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/compareChangePercentage" style="rectanular">
    <position>{(640,600)(510,440)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Direct" name="" sourceName="/Merges/Merge/toChoosePage" style="oblique">
+   <position>{(340,480)(270,70)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/toChoosePage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(430,370)(340,480)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doFirstView" style="oblique">
+   <position>{(160,600)(300,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/MohNewApplication" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(300,600)(260,730)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/toChoosePage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(300,600)(340,480)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareFirstView" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(300,600)(250,440)}</position>
+  </SynchronousLink>
  </Links>
- <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/prepareFirstView" componentIfTrue="/Steps/InvokeStep/MohNewApplication" defClass="" executor="" icon="" leftOperand="isSuccess" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="290" y="590">
-   <Description/>
-  </Condition>
- </Conditions>
+ <Conditions/>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_form" name="Switch1" x="410" y="350">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/prepare" value="&quot;prepare&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareFirstView" value="&quot;doAmend&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareTranfer" value="&quot;doTranfer&quot;"/>
    <SwitchCase component="/Pages/WebPage/ack" value="&quot;error&quot;"/>
+   <SwitchCase component="/Merges/Merge/toChoosePage" value="&quot;prepare&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="switch" name="Switch2" x="280" y="580">
+   <Description/>
+   <SwitchCase component="/Steps/InvokeStep/MohNewApplication" value="&quot;doEdit&quot;"/>
+   <SwitchCase component="/Merges/Merge/toChoosePage" value="&quot;prepare&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/prepareFirstView" value="&quot;prepareFirstView&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
  <Merges>
   <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="10" y="700">
+   <Description/>
+  </Merge>
+  <Merge defClass="" executor="" icon="" name="toChoosePage" type="Or" x="320" y="460">
    <Description/>
   </Merge>
  </Merges>

@@ -26,13 +26,14 @@ import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /****
  *
@@ -208,12 +209,17 @@ public class RequestForChangeDelegator {
      */
     public void doFirstView(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doFirstView start ...."));
+        String switchValue = ParamUtil.getString(bpc.request,RfcConst.SWITCH_VALUE);
+        if("back".equals(switchValue)){
+            ParamUtil.setRequestAttr(bpc.request,RfcConst.SWITCH,"prepare");
+            return;
+        }
         String editValue = ParamUtil.getString(bpc.request,"EditValue");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto()==null? new AppEditSelectDto():appSubmissionDto.getAppEditSelectDto();
-        String isSuccess = AppConsts.FALSE;
+        String switchVal = "prepareFirstView";
         if(!StringUtil.isEmpty(editValue)){
-            isSuccess = "Y";
+            switchVal = "doEdit";
             if(RfcConst.EDIT_PREMISES.equals(editValue)){
                 appEditSelectDto.setPremisesEdit(true);
                 ParamUtil.setRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT,RfcConst.EDIT_PREMISES);
@@ -229,7 +235,7 @@ public class RequestForChangeDelegator {
             ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTORFCATTR,appSubmissionDto);
             ParamUtil.setRequestAttr(bpc.request,"appType",ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         }
-        ParamUtil.setRequestAttr(bpc.request,"isSuccess",isSuccess);
+        ParamUtil.setRequestAttr(bpc.request,RfcConst.SWITCH,switchVal);
         log.debug(StringUtil.changeForLog("the do doFirstView end ...."));
     }
 

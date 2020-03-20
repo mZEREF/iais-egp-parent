@@ -10,11 +10,17 @@
                 <%@ include file="./dashboardDropDown.jsp" %>
             </div>
             <div class="row">
-                <h1>${DashboardTitle}</h1>
                 <c:choose>
-                    <c:when test="${'APTY005' == AppSubmissionDto.appType}">
-                        <%@include file="../resForChange/amendHeader.jsp"%>
+                    <c:when test="${DashboardTitle != null && DashboardTitle !=''}">
+                        <h1>${DashboardTitle}</h1>
                     </c:when>
+                    <c:otherwise>
+                        <c:choose>
+                            <c:when test="${'APTY005' == AppSubmissionDto.appType}">
+                                <%@include file="../resForChange/amendHeader.jsp"%>
+                            </c:when>
+                        </c:choose>
+                    </c:otherwise>
                 </c:choose>
             </div>
         </div>

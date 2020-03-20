@@ -179,7 +179,7 @@ public class RequestForChangeMenuDelegator {
         String licenseeId = interInboxUserDto.getLicenseeId();
         List<PremisesListQueryDto> premisesDtos = requestForChangeService.getPremisesList(licenseeId);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, (Serializable) premisesDtos);
-
+        ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"Premises List");
 
         log.debug(StringUtil.changeForLog("the do preparePremisesList end ...."));
     }
@@ -270,6 +270,7 @@ public class RequestForChangeMenuDelegator {
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, reloadPremisesDtoList);
         ParamUtil.setSessionAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
+        ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"Premises Amendment");
         log.debug(StringUtil.changeForLog("the do preparePremisesEdit end ...."));
     }
 

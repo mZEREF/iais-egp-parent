@@ -24,8 +24,8 @@
     <div class="container">
       <div class="row">
         <div class="col-xs-12">
-          <div class="tab-gp steps-tab">
-            <div class="tab-content">
+          <div class="">
+            <div class="">
               <div class="tab-pane active" id="premisesTab" role="tabpanel">
                 <div class="row premContent">
                   <div class="col-xs-12" style="margin-top:3%;">

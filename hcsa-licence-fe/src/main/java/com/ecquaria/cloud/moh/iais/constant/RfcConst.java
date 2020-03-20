@@ -13,6 +13,7 @@ public class RfcConst {
     public static final String FORM_TAB_VALUE  = "form_tab_value";
     public static final String CRUD_ACTION_TYPE_MENU = "crud_action_type_menu";
     public static final String SWITCH_VALUE = "switch_value";
+    public static final String SWITCH = "switch";
 
 
     public static final String LICENCEID = "LicenceId";
