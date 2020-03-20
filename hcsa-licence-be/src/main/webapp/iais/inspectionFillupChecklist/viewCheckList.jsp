@@ -31,7 +31,7 @@
                         </div>
                         <div class="tab-pane <c:if test="${serListDto.checkListTab=='chkList'}">active</c:if>" id="tabPayment" role="tabpanel">
                             <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                                <li class="active" role="presentation"><a href="#General" aria-controls="General" role="tab" data-toggle="tab">General</a></li>
+                                <li class="active" role="presentation"><a href="#General" aria-controls="General" role="tab" data-toggle="tab">General Regulations</a></li>
                                 <li class="complete" role="presentation"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab"
                                                                             data-toggle="tab"><c:out value="${serListDto.serviceName}"/></a></li>
                             </ul>
@@ -227,10 +227,8 @@
                             </div>
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <div align="right">
-                                        <button type="button" class="btn btn-primary" onclick="javascript: doBack();">
-                                            Back
-                                        </button>
+                                    <div align="left">
+                                        <a class="back" href="#" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a>
                                     </div>
                                 </div>
                             </div>
