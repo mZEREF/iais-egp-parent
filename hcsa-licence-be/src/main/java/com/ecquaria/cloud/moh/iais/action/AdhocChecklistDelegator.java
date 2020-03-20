@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -42,7 +43,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -101,11 +101,10 @@ public class AdhocChecklistDelegator {
         if (!isIntranet){
             return;
         }*/
-
         List<ChecklistConfigDto> inspectionChecklist = (List<ChecklistConfigDto>)ParamUtil.getSessionAttr(request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR);
-        //TaskDto task = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
-        /*if (task != null) {*/
-            String refNo = "7A94D4B0-2164-EA11-BE79-000C29D29DB0";
+        TaskDto task = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        if (task != null) {
+            String refNo = task.getRefNo();
             ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(refNo);
             if (applicationViewDto != null) {
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -114,7 +113,7 @@ public class AdhocChecklistDelegator {
                     log.info("inspectionChecklist info =====>>>>>>>>>>> " + inspectionChecklist.toString());
                 }
             }
-        /*}*/
+        }
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH, null);
         ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
     }
@@ -305,9 +304,7 @@ public class AdhocChecklistDelegator {
 
         String[] checkBoxItemId = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
         if (checkBoxItemId == null || checkBoxItemId.length == 0) {
-            Map<String, String> errorMap = new HashMap<>(1);
-            errorMap.put("checklistItem", "please select item!");
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("checklistItem", "please select item!"));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             return;
         }
@@ -399,9 +396,7 @@ public class AdhocChecklistDelegator {
             ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocCheckListConifgDto);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         }else {
-            Map<String, String> errorMap = new HashMap<>(1);
-            errorMap.put("customItemError", "can no add sample item!");
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("customItemError", "can no add sample item!"));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         }
        }
