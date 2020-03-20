@@ -25,8 +25,8 @@
                     </h3>
                     <div class="table-gp">
                         <iais:action style="text-align:left;">
+                            <a  onclick="javascript:doBack()">< Back</a>
                             <button class="btn btn-primary" type="button"  onclick="javascript:doNew()">New</button>
-                            <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Back</button>
                         </iais:action>
                         <table class="table">
                             <thead>

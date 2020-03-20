@@ -103,10 +103,11 @@
                                                 </iais:value>
                                             </iais:row>
                                         </c:if>
-
+                                        <iais:action style="text-align:left;">
+                                            <a  onclick="javascript:doBack()">< Back</a>
+                                        </iais:action>
                                         <iais:action style="text-align:center;">
                                             <button class="btn btn-secondary" type="button"  onclick="javascript:doCancel('${licPreReqForInfoDto.reqInfoId}')">Cancel</button>
-                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Back</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>

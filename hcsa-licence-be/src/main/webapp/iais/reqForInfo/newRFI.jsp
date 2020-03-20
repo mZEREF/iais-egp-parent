@@ -70,9 +70,11 @@
 
                                             </iais:value>
                                         </iais:row>
-                                        <iais:action style="text-align:center;">
+                                        <iais:action style="text-align:left;">
+                                            <a  onclick="javascript:doBack()">< Back</a>
+                                        </iais:action>
+                                        <iais:action style="text-align:right;">
                                             <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit('${licenceNo}')">Submit</button>
-                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Back</button>
                                         </iais:action>
                                         <iais:row >
                                             <div class="col-sm-9" style="display: none" id="isAlert">

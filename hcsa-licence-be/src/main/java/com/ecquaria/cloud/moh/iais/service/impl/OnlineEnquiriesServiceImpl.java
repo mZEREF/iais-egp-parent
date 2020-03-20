@@ -177,7 +177,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 
             }catch (Exception e){
                 log.info(e.getMessage());
-                complianceHistoryDtos.add(complianceHistoryDto);
+                //complianceHistoryDtos.add(complianceHistoryDto);
             }
         }
 

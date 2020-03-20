@@ -25,7 +25,7 @@
                     </h3>
                     <div class="table-gp">
                         <iais:action style="text-align:left;">
-                            <div align="left"><span><a class="btn btn-secondary" href="/main-web/eservicecontinue/INTERNET/MohInternetInbox">Bcak</a></span></div>
+                            <div align="left"><span><a  href="/main-web/eservicecontinue/INTERNET/MohInternetInbox">< Bcak</a></span></div>
                         </iais:action>
                         <table class="table">
                             <thead>

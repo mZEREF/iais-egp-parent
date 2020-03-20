@@ -805,7 +805,7 @@
                 </div>
             </div>
         </div>
-        <input type="submit" class="btn btn-secondary" value="BACK">
+        <a  onclick="javascript:SOP.Crud.cfxSubmit('mainForm');" >< BACK</a>
     </div>
 </form>
 

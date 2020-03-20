@@ -320,10 +320,11 @@
                             </div>
 
                     </c:if>
-
+                    <iais:action style="text-align:left;">
+                        <a  onclick="javascript:doLicBack()">< Back</a>
+                    </iais:action>
                     <iais:action style="text-align:right;">
                         <button class="btn btn-secondary" type="button"  onclick="javascript:doLicClear()">Clear</button>
-                        <button class="btn btn-primary" type="button"  onclick="javascript:doLicBack()">Back</button>
                         <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Search</button>
                     </iais:action>
                 </div>
