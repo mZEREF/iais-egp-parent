@@ -258,11 +258,17 @@ public class RequestForChangeDelegator {
      * @Decription compareChangePercentage
      */
     public void prepareTranfer(BaseProcessClass bpc) {
-        String licenceId= (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
-        AppSubmissionDto appSubmissionDto=requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
-        String serviceName=appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
-        //appSubmissionDto.setServiceName(serviceName);
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
+        //String svcName = appSubmissionDto.getServiceName();
+//        String licenceId= (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
+//        AppSubmissionDto appSubmissionDto=requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
+        //String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
+//
+        String serviceName = (String)ParamUtil.getSessionAttr(bpc.request,"SvcName");
+        appSubmissionDto.setServiceName(serviceName);
+//        ParamUtil.setRequestAttr(bpc.request, "SvcName", svcName);
         ParamUtil.setRequestAttr(bpc.request, "prepareTranfer", appSubmissionDto);
+        ParamUtil.setRequestAttr(bpc.request, "AppSubmissionDto", appSubmissionDto);
     }
 
     /**

@@ -8,55 +8,56 @@
                 (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
     %>
             <webui:setLayout name="iais-internet"/>
-            <div class="main-content">
-                <div class="alert alert-info" role="alert">
-                    <strong>
-                        <h1>Amendment</h1>
-                    </strong>
-                </div>
-                <div>&nbsp</div>
-                <h3>You are amending the Clinical Laboratory licence (Licence No. <strong>${prepareTranfer.licenceNo}</strong>)</h3>
-                <div>&nbsp</div>
-                <div>&nbsp</div>
+            <br/>
+            <%@include file="../common/dashboard.jsp" %>
              <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
                 <div class="row">
+                    <div class="container">
                  <div class="col-xs-12">
-                     <div class="table-gp">
-                         <table class="table">
-                             <tr>
-                              <td class="col-xs-6">Licence No.</td>
-                              <td class="col-xs-6">${prepareTranfer.licenceNo}</td>
-                             </tr>
-                             <tr>
-                                <td>Service Name</td>
-                                <td>${prepareTranfer.serviceName}</td>
-                             </tr>
-                             <tr>
-                                 <td>Select Premises</td>
-                                 <td><c:forEach items="${prepareTranfer.appGrpPremisesDtoList}"
-                                                var="premises">
-                                     <input type="checkbox" name="premisesInput" value="${premises.premisesIndexNo}">${premises.tranferSelect}&nbsp;
-                                 </c:forEach>
-                                 </td>
-                             </tr>
-                             <tr>
-                                 <td>UEN of Licence to transfer licence to</td>
-                                 <td><input type="text" name="UNID"></td>
-                             </tr>
-                          </table>
-                      </div>
+                         <iais:section title="">
+                                 <iais:row>
+                                     <iais:field value="Licence No."></iais:field>
+                                     <iais:value width="10"><p>${prepareTranfer.licenceNo}</p></iais:value>
+                                 </iais:row>
+                                 <iais:row>
+                                     <iais:field value="Service Name"></iais:field>
+                                     <iais:value width="10"><p>${prepareTranfer.serviceName}</p></iais:value>
+                                 </iais:row>
+                                 <iais:row>
+                                     <iais:field value="Select Premises"></iais:field>
+                                     <iais:value width="10">
+                                         <p>
+                                         <c:forEach items="${prepareTranfer.appGrpPremisesDtoList}"
+                                                    var="premises">
+                                             <input type="checkbox" name="premisesInput" value="${premises.premisesIndexNo}">${premises.tranferSelect}&nbsp;
+                                         </c:forEach>
+                                         </p>
+                                     </iais:value>
+                                 </iais:row>
+                                 <iais:row>
+                                     <iais:field value="UEN of Licence to transfer licence to"></iais:field>
+                                     <iais:value width="10"><input type="text" name="UNID"></iais:value>
+                                 </iais:row>
+                         </iais:section>
                      <p><span class="error-msg">${ErrorMsg}</span></p>
-                     <div class="col-xs-12 col-md-4">
-                         <a class="back" href="https://egp.sit.inter.iais.com/hcsa-licence-web/eservice/INTERNET/MohRequestForChange?licenceId=${prepareTranfer.licenceId}"><em class="fa fa-angle-left"></em> Back</a>
-                     </div>
-                     <div class="col-xs-12 col-md-3">
-                         <a class="btn btn-primary next premiseId" id="Next">Next</a>
-                     </div>
-
                   </div>
+                </div>
+                 </div>
+                 <div class="row">
+                     <div class="container">
+                         <div class="col-xs-12 col-md-6 text-left">
+                             <a class="back" href="https://egp.sit.inter.iais.com/hcsa-licence-web/eservice/INTERNET/MohRequestForChange?licenceId=${prepareTranfer.licenceId}"><em class="fa fa-angle-left"></em> Back</a>
+                         </div>
+                         <div class="col-xs-12 col-md-6 text-right">
+                             <a class="btn btn-primary next premiseId" id="Next">Next</a>
+                         </div>
+                     </div>
                  </div>
                 </form>
-            </div>
+
+
+
+
         <script>
             $(document).ready(function(){
 
