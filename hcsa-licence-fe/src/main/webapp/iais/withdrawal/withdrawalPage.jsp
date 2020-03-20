@@ -99,7 +99,6 @@
 </div>
 <script type="text/javascript">
     function withdrawalReasons(obj) {
-        console.log(obj)
         if (obj == "Others") {
             $("#reason").show();
         } else {

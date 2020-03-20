@@ -24,8 +24,7 @@
                             Type:</label>
                         <div class="col-xs-8 col-md-8">
                             <%String licType = request.getParameter("licType");%>
-                            <iais:select name="licType" id="licType" options="licType" firstOption="<%=licType%>"
-                                         value="<%=licType%>"></iais:select>
+                            <iais:select name="licType" id="licType" options="licType" value="<%=licType%>"></iais:select>
                         </div>
                     </iais:value>
                 </div>
@@ -37,8 +36,7 @@
                             Status:</label>
                         <div class="col-xs-8 col-md-8">
                             <%String licStatus = request.getParameter("licStatus");%>
-                            <iais:select name="licStatus" id="licStatus" options="licStatus"
-                                         firstOption="<%=licStatus%>" value="<%=licStatus%>"></iais:select>
+                            <iais:select name="licStatus" id="licStatus" options="licStatus" value="<%=licStatus%>"></iais:select>
                         </div>
                     </iais:value>
                 </div>
