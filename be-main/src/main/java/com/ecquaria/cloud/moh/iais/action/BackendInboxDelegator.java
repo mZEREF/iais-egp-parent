@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -80,7 +79,7 @@ public class BackendInboxDelegator {
     private String hci_code;
     private String hci_address;
     private List<String> applicationDtoIds;
-    private SearchParam searchParam;
+    private SearchParam searchParamGroup;
     private List<TaskDto> commPools;
     public void start(BaseProcessClass bpc){
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -142,7 +141,7 @@ public class BackendInboxDelegator {
         ParamUtil.setRequestAttr(bpc.request,"curRole",loginContext.getCurRoleId());
         ParamUtil.setRequestAttr(bpc.request,"hci_address",hci_address);
         ParamUtil.setRequestAttr(bpc.request,"application_no",application_no);
-        ParamUtil.setRequestAttr(bpc.request, "supTaskSearchParam", searchParam);
+        ParamUtil.setRequestAttr(bpc.request, "supTaskSearchParam", searchParamGroup);
         ParamUtil.setRequestAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
         ParamUtil.setRequestAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
         ParamUtil.setRequestAttr(bpc.request, "workGroupIds", (Serializable) workGroupIds);
@@ -154,10 +153,10 @@ public class BackendInboxDelegator {
     }
 
     private void initSearchParam(){
-        searchParam = new SearchParam(InspectionSubPoolQueryDto.class.getName());
-        searchParam.setPageSize(10);
-        searchParam.setPageNo(1);
-        searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
+        searchParamGroup = new SearchParam(InspectionAppGroupQueryDto.class.getName());
+        searchParamGroup.setPageSize(10);
+        searchParamGroup.setPageNo(1);
+        searchParamGroup.setSort("SUBMIT_DT", SearchParam.ASCENDING);
 
     }
 
@@ -195,37 +194,6 @@ public class BackendInboxDelegator {
             applicationNo_list = new String[]{SystemParameterConstants.PARAM_FALSE};
         }
         String applicationStr = SqlHelper.constructInCondition("T1.APPLICATION_NO",applicationNo_list.length);
-        if(!StringUtil.isEmpty(applicationStr)){
-            searchParam.addParam("applicationNo_list", applicationStr);
-            for (int i = 0; i<applicationNo_list.length; i++ ) {
-                searchParam.addFilter("T1.APPLICATION_NO"+i, applicationNo_list[i]);
-            }
-        }
-
-        if(!StringUtil.isEmpty(application_no)){
-            searchParam.addFilter("application_no", application_no,true);
-        }
-        String[] appNoStrs;
-        if(!(StringUtil.isEmpty(inspectorValue))) {
-            appNoStrs = inspectorValue.split(",");
-            String appNoStr = SqlHelper.constructInCondition("T5.APPLICATION_NO", appNoStrs.length);
-            searchParam.addParam("appNo_list",appNoStr);
-            for (int i = 0; i < appNoStrs.length; i++) {
-                searchParam.addFilter("T5.APPLICATION_NO"+i, appNoStrs[i]);
-            }
-        }
-        if(!StringUtil.isEmpty(application_type)){
-            searchParam.addFilter("application_type", application_type,true);
-        }
-        if(!StringUtil.isEmpty(application_status)){
-            searchParam.addFilter("application_status", application_status,true);
-        }
-        if(!StringUtil.isEmpty(hci_code)){
-            searchParam.addFilter("hci_code", hci_code,true);
-        }
-        if(!StringUtil.isEmpty(hci_address)){
-            searchParam.addFilter("address", "%" +hci_address +"%",true);
-        }
     }
 
     /**
@@ -238,7 +206,8 @@ public class BackendInboxDelegator {
         String curRole = ParamUtil.getRequestString(bpc.request, "roleIds");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         loginContext.setCurRoleId(curRole);
-        CrudHelper.doPaging(searchParam,bpc.request);
+
+        CrudHelper.doPaging(searchParamGroup,bpc.request);
         ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
         commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
     }
@@ -434,10 +403,6 @@ public class BackendInboxDelegator {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchQuery1 start ...."));
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
 
-        SearchParam searchParamGroup = new SearchParam(InspectionAppGroupQueryDto.class.getName());
-
-        searchParamGroup.setSort("SUBMIT_DT", SearchParam.ASCENDING);
-
         SearchParam searchParamAjax = new SearchParam(InspectionAppInGroupQueryDto.class.getName());
         searchParamAjax.setPageSize(100);
         searchParamAjax.setPageNo(1);
@@ -501,7 +466,6 @@ public class BackendInboxDelegator {
                 searchParamAjax.removeFilter("address");
             }
 
-            CrudHelper.doPaging(searchParamGroup,bpc.request);
             QueryHelp.setMainSql("inspectionQuery", "AppGroup",searchParamGroup);
             log.debug(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
             SearchResult<InspectionAppGroupQueryDto> searchResult3 = inspectionService.searchInspectionBeAppGroup(searchParamGroup);

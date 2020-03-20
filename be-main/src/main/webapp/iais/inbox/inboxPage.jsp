@@ -123,9 +123,7 @@
                                             <c:when test="${empty supTaskSearchResult.rows}">
                                                 <tr>
                                                     <td colspan="6">
-                                                        <iais:message key="No Result Found."
-                                                                      escape="true"></iais:message>
-                                                        <!--No Record!!-->
+                                                        <iais:message key="ACK018" escape="true"></iais:message>
                                                     </td>
                                                 </tr>
                                             </c:when>
