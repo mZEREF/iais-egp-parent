@@ -154,7 +154,7 @@ public class HcsaApplicationDelegator {
         List<SelectOption> nextStageList = IaisCommonUtils.genNewArrayList();
         nextStageList.add(new SelectOption("", "Please Select"));
         nextStageList.add(new SelectOption("VERIFIED", "Verified"));
-        nextStageList.add(new SelectOption("ROLLBACK", "Roll Back"));
+        nextStageList.add(new SelectOption("ROLLBACK", "Internal Route Back"));
         ParamUtil.setSessionAttr(bpc.request, "nextStages", (Serializable)nextStageList);
 
 
@@ -215,7 +215,7 @@ public class HcsaApplicationDelegator {
             OrgUserDto user=applicationViewService.getUserById(userId);
             String actionBy=user.getDisplayName();
 
-            rollBackMap.put(actionBy+"("+stageName+")",e.getStageId()+","+wrkGrpId+","+userId);
+            rollBackMap.put(actionBy+"("+e.getRoleId()+")",e.getStageId()+","+wrkGrpId+","+userId);
           }
         }
         applicationViewDto.setRollBack(rollBackMap);
