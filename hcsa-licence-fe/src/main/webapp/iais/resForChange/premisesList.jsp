@@ -8,7 +8,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
     <%@include file="dashboard.jsp"%>
-  <h1>Premises List</h1>
+    <%@include file="../common/dashboard.jsp" %>
 <div class="tab-pane" id="tabApp" role="tabpanel">
   <form class="form-inline" method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -62,7 +62,7 @@
 
   <div class="row col-xs-11 ">
     <div class="col-xs-12">
-    <a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a>
+      <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
     </div>
   </div>
 

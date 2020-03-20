@@ -7,13 +7,13 @@
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
-<br/>
 <form method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
   <input type="hidden" name="crud_action_type_form_value" value="">
   <input type="hidden" name="crud_action_type_value" value="">
 
   <%@include file="dashboard.jsp" %>
+  <%@include file="../common/dashboard.jsp" %>
   <%--Validation fields Start--%>
   <input type="hidden" name="paramController" id="paramController"
          value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
@@ -28,10 +28,7 @@
             <div class="tab-content">
               <div class="tab-pane active" id="premisesTab" role="tabpanel">
                 <div class="row premContent">
-                  <div class="col-xs-12">
-                    <div>
-                      <h1 style="margin-top: 10px;">Premises Amendment</h1>
-                    </div>
+                  <div class="col-xs-12" style="margin-top:3%;">
                     <div>
                       <h2>${PremisesListQueryDto.svcId}:${PremisesListQueryDto.premisesType}:${PremisesListQueryDto.address}</h2>
                     </div>

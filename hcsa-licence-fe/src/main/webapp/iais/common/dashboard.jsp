@@ -8,9 +8,14 @@
         <div class="navigation-gp">
             <div class="row">
                 <%@ include file="./dashboardDropDown.jsp" %>
-                <div style="margin-top: 20px;margin-left: 2%" >
-                    <h1>${DashboardTitle}</h1>
-                </div>
+            </div>
+            <div class="row">
+                <h1>${DashboardTitle}</h1>
+                <c:choose>
+                    <c:when test="${'APTY005' == AppSubmissionDto.appType}">
+                        <%@include file="../resForChange/amendHeader.jsp"%>
+                    </c:when>
+                </c:choose>
             </div>
         </div>
     </div>
