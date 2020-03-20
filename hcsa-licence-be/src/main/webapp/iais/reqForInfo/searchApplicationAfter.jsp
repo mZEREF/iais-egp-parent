@@ -66,8 +66,7 @@
                                         </iais:row>
                                         <iais:row>
                                             <p style="color:#ff0000; display: none" id="submittedDateError">
-                                                &nbsp;System detects that user enters Effective end date before Effective start date in predefined format.
-                                            </p>
+                                                Application Submitted Date From cannot be later than Application Submitted Date To.                                            </p>
                                         </iais:row>
                                         <iais:action style="text-align:left;">
                                             <a   onclick="javascript:doAppBack()">< Back</a>

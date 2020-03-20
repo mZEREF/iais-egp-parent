@@ -80,6 +80,10 @@
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
+                                                <p style="color:#ff0000; display: none" id="submittedDateError">
+                                                    Application Submitted Date From cannot be later than Application Submitted Date To.                                            </p>
+                                            </iais:row>
+                                            <iais:row>
                                                 <iais:field value="Licence No."/>
                                                 <iais:value width="18">
                                                     <label>
@@ -130,6 +134,11 @@
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
+                                                <p style="color:#ff0000; display: none" id="startDateError">
+                                                    Licence Start From cannot be later than Licence Start To.                                            </p>
+                                                </p>
+                                            </iais:row>
+                                            <iais:row>
                                                 <iais:field value="Licence Expiry Date From"/>
                                                 <iais:value width="18">
                                                     <iais:datePicker id = "expiry_start_date" name = "expiry_start_date" value="${SearchParam.filters['expiry_start_date']}" ></iais:datePicker>
@@ -139,6 +148,11 @@
                                                 <iais:value width="18">
                                                     <iais:datePicker id = "expiry_date" name = "expiry_date" value="${SearchParam.filters['expiry_date']}"></iais:datePicker>
                                                 </iais:value>
+                                            </iais:row>
+                                            <iais:row>
+                                                <p style="color:#ff0000; display: none" id="expiryDateError">
+                                                    Licence Expiry From cannot be later than Licence Expiry To.                                            </p>
+                                                </p>
                                             </iais:row>
                                         </iais:section>
                                     </div>
@@ -336,7 +350,33 @@
 </form>
 <script type="text/javascript">
     function doLicSearch(){
-        showWaiting(); SOP.Crud.cfxSubmit("mainForm", "search");
+        showWaiting();
+        showWaiting();
+        var startTo=$('#start_to_date').val();
+        var startSub=$('#start_date').val();
+        var expiryTo=$('#expiry_date').val();
+        var expirySub=$('#expiry_start_date').val();
+        var periodTo=$('#to_date').val();
+        var periodSub=$('#sub_date').val();
+        var flag=true;
+        if(startSub>startTo&&startTo!=""){
+            $("#startDateError").show();
+            flag=false;
+        }
+        if(expirySub>expiryTo&&expiryTo!=""){
+            $("#expiryDateError").show();
+            flag=false;
+        }
+        if(periodSub>periodTo&&periodTo!=""){
+            $("#submittedDateError").show();
+            flag=false;
+        }
+        if(flag)
+        {
+            SOP.Crud.cfxSubmit("mainForm", "search");
+        }else {
+            dismissWaiting();
+        }
     }
     function doLicBack(){
         showWaiting(); SOP.Crud.cfxSubmit("mainForm", "back");

@@ -65,7 +65,7 @@
                                         </iais:row>
                                         <iais:row>
                                             <p style="color:#ff0000; display: none" id="periodDateError">
-                                                &nbsp;System detects that user enters Effective end date before Effective start date in predefined format.
+                                                Licence Period From cannot be later than Licence Period To.                                            </p>
                                             </p>
                                         </iais:row>
                                         <iais:action style="text-align:left;">

@@ -780,21 +780,22 @@ public class RequestForInformationDelegator {
             }
         }
 
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String userId = loginContext.getUserId();
-        //ParamUtil.setRequestAttr(request, "isValid", "Y");
-        ParamUtil.setRequestAttr(request, "isValid", "N");
-        try{
-            List<String> userIds=requestForInformationService.getActionBysByLicPremCorrId(licPremId);
-            for (String id:userIds
-            ) {
-                if (userId.equals(id)){
-                    ParamUtil.setRequestAttr(request, "isValid", "Y");
-                }
-            }
-        }catch (Exception e){
-            log.info(e.getMessage());
-        }
+        ParamUtil.setRequestAttr(request, "isValid", "Y");
+//        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+
+//        String userId = loginContext.getUserId();
+//        ParamUtil.setRequestAttr(request, "isValid", "N");
+//        try{
+//            List<String> userIds=requestForInformationService.getActionBysByLicPremCorrId(licPremId);
+//            for (String id:userIds
+//            ) {
+//                if (userId.equals(id)){
+//                    ParamUtil.setRequestAttr(request, "isValid", "Y");
+//                }
+//            }
+//        }catch (Exception e){
+//            log.info(e.getMessage());
+//        }
 
         if(!licPremisesReqForInfoDtoList.isEmpty()) {
             for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList

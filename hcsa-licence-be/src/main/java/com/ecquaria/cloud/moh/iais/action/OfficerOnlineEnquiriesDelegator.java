@@ -119,13 +119,13 @@ public class OfficerOnlineEnquiriesDelegator {
             .clz(LicenseeQueryDto.class)
             .searchAttr("licenseeParam")
             .resultAttr("licenseeResult")
-            .sortField("id").sortType(SearchParam.ASCENDING).pageNo(0).pageSize(10).build();
+            .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(10).build();
 
     FilterParameter serviceParameter = new FilterParameter.Builder()
             .clz(HcsaSvcQueryDto.class)
             .searchAttr("svcParam")
             .resultAttr("svcResult")
-            .sortField("id").pageNo(0).pageSize(10).sortType(SearchParam.ASCENDING).build();
+            .sortField("id").pageNo(1).pageSize(10).sortType(SearchParam.ASCENDING).build();
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>requestForInformation");
