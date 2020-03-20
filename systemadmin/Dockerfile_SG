@@ -1,5 +1,8 @@
 FROM tomcat:9.0.31-jdk8-adoptopenjdk-hotspot
 
+ENV TZ=Asia/Singapore
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 COPY target/system-admin-web.war /usr/local/tomcat/webapps/system-admin-web.war
 COPY docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
 COPY docker/server.xml /usr/local/tomcat/conf/server.xml
