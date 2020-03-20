@@ -44,7 +44,7 @@
                                     <c:when test="${empty SearchResult.rows}">
                                         <tr>
                                             <td  colspan="10" >
-                                                <iais:message key="No Result!" escape="true"></iais:message>
+                                                <iais:message key="ACK018" escape="true"></iais:message>
                                                 <!--No Record!!-->
                                             </td>
                                         </tr>

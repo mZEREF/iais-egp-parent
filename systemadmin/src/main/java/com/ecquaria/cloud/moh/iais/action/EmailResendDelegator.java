@@ -71,7 +71,7 @@ public class EmailResendDelegator {
         String end = ParamUtil.getRequestString(bpc.request,"end");
         searchParam.getParams().clear();
         searchParam.getFilters().clear();
-        searchParam.setPageNo(1);
+        CrudHelper.doPaging(searchParam,bpc.request);
         if(!StringUtil.isEmpty(start)){
             searchParam.addFilter("start", start,true);
         }
@@ -99,11 +99,10 @@ public class EmailResendDelegator {
         ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDtoById);
         String status;
         if(blastManagementDtoById.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
-             status = "acitve";
+            blastManagementDtoById.setStatus("acitve");
         }else{
-            status = "inacitve";
+            blastManagementDtoById.setStatus("inacitve");
         }
-        ParamUtil.setSessionAttr(bpc.request,"status",status);
         ParamUtil.setSessionAttr(bpc.request,"schedule",schedule);
     }
 

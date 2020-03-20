@@ -82,7 +82,7 @@ public class BlastManagementDelegator {
         searchParam.setSort("ID", SearchParam.ASCENDING);
         AuditTrailHelper.auditFunction("blastManagement", "BlastManagementDelegator");
 
-        ParamUtil.setRequestAttr(bpc.request, "firstOption", "Please select");
+        ParamUtil.setRequestAttr(bpc.request, "firstOption", "Please Select");
         ParamUtil.setRequestAttr(bpc.request, "firstValue", " ");
     }
     /**
@@ -107,6 +107,10 @@ public class BlastManagementDelegator {
     public void create(BaseProcessClass bpc){
         ParamUtil.setSessionAttr(bpc.request,"emailAddress",null);
         ParamUtil.setSessionAttr(bpc.request,"schedule",null);
+        ParamUtil.setSessionAttr(bpc.request,"hour",null);
+        ParamUtil.setSessionAttr(bpc.request,"minutes",null);
+        ParamUtil.setSessionAttr(bpc.request,"edit",null);
+        ParamUtil.setSessionAttr(bpc.request,"editBlastId",null);
         setStatusSelection(bpc,null);
         setModeSelection(bpc,null);
     }
@@ -121,7 +125,7 @@ public class BlastManagementDelegator {
                 selectOptions.add(new SelectOption(EMAIL,EMAIL));
             }
         }else{
-            selectOptions.add(new SelectOption("","Pleast select"));
+            selectOptions.add(new SelectOption("","Please Select"));
             selectOptions.add(new SelectOption(EMAIL,EMAIL));
             selectOptions.add(new SelectOption(SMS,SMS));
         }
@@ -139,7 +143,7 @@ public class BlastManagementDelegator {
                 selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_ACTIVE,"active"));
             }
         }else{
-            selectOptionArrayList.add(new SelectOption("","Pleast select"));
+            selectOptionArrayList.add(new SelectOption("","Please Select"));
             selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_ACTIVE,"active"));
             selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_IACTIVE,"inactive"));
         }
@@ -190,13 +194,24 @@ public class BlastManagementDelegator {
         ParamUtil.setRequestAttr(bpc.request,"end",end);
     }
 
+    public void switchBackFill(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+
+        String currentAction = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
+    }
+
     /**
      * edit
      * @param bpc
      */
     public void edit(BaseProcessClass bpc){
 
-        String id =  ParamUtil.getString(bpc.request, "editBlast");
+        String id =  ParamUtil.getRequestString(bpc.request, "editBlast");
+        if(id == null ){
+            id = (String) ParamUtil.getSessionAttr(bpc.request,"editBlastId");
+        }
         BlastManagementDto blastManagementDtoById = blastManagementListService.getBlastById(id);
         setStatusSelection(bpc,blastManagementDtoById.getStatus());
         setModeSelection(bpc,blastManagementDtoById.getMode());
@@ -209,6 +224,7 @@ public class BlastManagementDelegator {
         blastManagementDto.setDistributionId(blastManagementDtoById.getDistributionId());
         blastManagementDto.setDistributionName(blastManagementDtoById.getDistributionName());
         String emailAddress = StringUtils.join(blastManagementDtoById.getEmailAddress(),"\n");
+        ParamUtil.setSessionAttr(bpc.request,"editBlastId",id);
         ParamUtil.setSessionAttr(bpc.request,"hour",hour);
         ParamUtil.setSessionAttr(bpc.request,"minutes",minute);
         ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDtoById);
@@ -240,15 +256,15 @@ public class BlastManagementDelegator {
         blastManagementDto.setMsgName(name);
         blastManagementDto.setMode(mode);
         blastManagementDto.setStatus(status);
-        if(!(MM != null && StringUtils.isNumeric(HH) &&  Integer.valueOf(HH) < 24)){
+        if(!(HH != null && StringUtils.isNumeric(HH) &&  Integer.valueOf(HH) < 24)){
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-            errorMap.put("date","HH should be hours");
+            errorMap.put("date","Field format is wrong");
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
             ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
-        }else if(!(HH != null && StringUtils.isNumeric(MM) &&  Integer.valueOf(MM) < 60)){
+        }else if(!(MM != null && StringUtils.isNumeric(MM) &&  Integer.valueOf(MM) < 60)){
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-            errorMap.put("date","MM should be minutes");
+            errorMap.put("date","Field format is wrong");
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
             ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
@@ -272,8 +288,10 @@ public class BlastManagementDelegator {
                 ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
                 ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
+            }else{
+                ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
             }
-            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
+
         }
 
     }
@@ -325,7 +343,7 @@ public class BlastManagementDelegator {
             if(blastManagementDto.getDistributionId() != null){
                 selectOptions.add(new SelectOption(blastManagementDto.getDistributionId(),blastManagementDto.getDistributionName()));
             }else{
-                selectOptions.add(new SelectOption("","Pleast select"));
+                selectOptions.add(new SelectOption("","Please Select"));
             }
 
             for (DistributionListDto item :distributionListDtos

@@ -16,8 +16,6 @@
 <div class="main-content">
     <form class="form-horizontal" method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
         <%@ include file="/include/formHidden.jsp" %>
-        <input type="hidden" name="crud_action_type" value="">
-        <input type="hidden" name="crud_action_value" value="">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -44,9 +42,7 @@
                         <div class="form-group">
                             <label class="col-xs-4 col-md-4 control-label">Content:</label>
                             <div class="form-group">
-                            <textarea name="messageContent" class="textarea" id="htmlEditor" title="content">
-                                ${edit.msgContent}
-                            </textarea>
+                            <textarea name="messageContent" class="textarea" id="htmlEditor" title="content">${edit.msgContent}</textarea>
                                 <label class="col-xs-4 col-md-4 control-label"></label>
                                 <span id="error_msgContent" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
@@ -66,14 +62,18 @@
                     </div>
                     <div class="application-tab-footer">
                         <div class="row">
-                            <div class="col-xs-12 col-sm-12">
-                                <div class="text-right text-center-mobile"><button id="saveDis" type="button" class="btn btn-primary">Continue</button></div>
+                            <div class="col-xs-11 col-sm-11">
+                                <div class="text-right">
+                                    <a class="btn btn-primary" id="back" >Back</a>
+                                    <a class="btn btn-primary" id="saveDis" >Continue</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <input hidden value="${id}" id="blastId" >
     </form>
     <%@include file="/include/validation.jsp"%>
 </div>
@@ -82,7 +82,15 @@
 
 <script type="text/javascript">
     $('#saveDis').click(function(){
-        SOP.Crud.cfxSubmit("mainForm");
+        SOP.Crud.cfxSubmit("mainForm","");
+    });
+    $('#back').click(function(){
+        if($("#blastId").val() ==null){
+            SOP.Crud.cfxSubmit("mainForm","create");
+        }else{
+            SOP.Crud.cfxSubmit("mainForm", "edit");
+        }
+
     });
     $(function () {
         tinymce.init({

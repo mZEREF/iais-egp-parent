@@ -18,52 +18,46 @@
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="crud_action_additional" value="">
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-lg-12 col-xs-12">
             <div class="center-content">
-                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <h3>
-                        <span>Distribution List</span>
-                    </h3>
-                    <iais:section title="" id="supPoolList">
-                        <iais:row>
-                            <iais:field value="Distribution Name"/>
-                            <iais:value width="18">
-                                <input type="text" name="distributionSwitch" id="distributionSwitch" value="${distributionSwitch}"/>
-                            </iais:value>
-                        </iais:row>
-                        <iais:row>
-                            <iais:field value="Recipients Role"/>
-                            <iais:value width="18">
-                                <input type="text" name="recipientsSwitch" id="recipientsSwitch" maxlength="500" value="${recipientsSwitch}"/>
-                            </iais:value>
-                        </iais:row>
-                        <iais:row>
-                            <iais:field value="Select Service"/>
-                            <iais:value width="10">
-                                <iais:select name="service" options="service" id="service"  onchange="getServiceName()"
-                                             firstOption="${firstOption}" value="${firstValue}"></iais:select>
-                            </iais:value>
-                        </iais:row>
-                        <iais:action style="text-align:center;">
-                            <button class="btn btn-lg" id="searchbtn" type="button"
-                                    style="background:#2199E8; color: white"
-                                    onclick="javascript:search()">Search
-                            </button>
-                            <button class="btn btn-lg" id="clearbtn" type="button"
-                                    style="background:#2199E8; color: white"
-                                    onclick="javascript:clearSearch()">Clear
-                            </button>
-                        </iais:action>
-                    </iais:section>
-                    <iais:pagination param="distributionSearchParam" result="distributionSearchResult"/>
-                    <div class="col-xs-12 col-sm-12">
-                        <div class="button-group col-xs-6 col-sm-6">
-                            <a class="btn btn-file-upload btn-secondary" id="addlist" onclick="addList()">Add new distribution list</a>
+                <div class="intranet-content">
+                    <div class="bg-title">
+                        <h2>Distribution List</h2>
+                    </div>
+                    <div class="row">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-4 control-label" >Distribution Name</label>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <input type="text" name="distributionSwitch" id="distributionSwitch" value="${distributionSwitch}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-4 control-label" >Recipients Role</label>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <input type="text" name="recipientsSwitch" id="recipientsSwitch" maxlength="500" value="${recipientsSwitch}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-4 control-label" >Select Service</label>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <iais:select name="service" options="service" id="service"  onchange="getServiceName()"
+                                                 firstOption="${firstOption}" value="${firstValue}"></iais:select>
+                                </div>
+                            </div>
                         </div>
-                        <div class="button-group col-xs-6 col-sm-6" style="float: right">
-                            <a class="btn btn-file-upload btn-secondary" id="delete" onclick="deleteList()">Delete</a>
+                        <div class="application-tab-footer">
+                            <div class="row">
+                                <div class="col-xs-11 col-md-11">
+                                    <div class="text-right">
+                                        <a class="btn btn-secondary" onclick="javascript:clearSearch()">Clear</a>
+                                        <a class="btn btn-primary" onclick="javascript:search()">Search</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <iais:pagination param="distributionSearchParam" result="distributionSearchResult"/>
                     <div class="table-gp">
                         <table class="table">
                             <thead>
@@ -126,6 +120,16 @@
                                 </c:choose>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="application-tab-footer">
+            <div class="row">
+                <div class="col-xs-11 col-md-11">
+                    <div class="text-right">
+                        <a class="btn btn-primary" oid="addlist" onclick="addList()">Add new distribution list</a>
+                        <a class="btn btn-primary" id="delete" onclick="deleteList()">Delete</a>
                     </div>
                 </div>
             </div>

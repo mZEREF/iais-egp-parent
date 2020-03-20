@@ -21,7 +21,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="col-xs-4 col-md-4 control-label" >Name:</label>
+                            <iais:field value="Name" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="name" type="text" name="name" maxlength="500" value="${distribution.getDisname()}">
@@ -31,7 +31,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="col-xs-4 col-md-4 control-label">Recipients Roles:</label>
+                            <iais:field value="Recipients Roles" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="role" type="text" name="role" value="${distribution.getRole()}">
@@ -41,7 +41,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="col-xs-4 col-md-4 control-label">Service:</label>
+                            <iais:field value="Service" required="true"/>
                             <iais:value>
                                 <iais:value width="10">
                                             <iais:select name="service" options="service"
@@ -52,7 +52,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">Mode of Delivery:</label>
+                            <iais:field value="Mode of Delivery" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <div class="form-check">

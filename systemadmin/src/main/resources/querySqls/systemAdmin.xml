@@ -374,10 +374,10 @@
             T1.notification_id,T3.history_id,T1.notification_type,T1.recipient,T1.sender,T1.subject,T1.content,T1.number_of_attempts,
             T2.file_name,T3.log_msg,T3.sent_time
             FROM notification T1
-            JOIN notification_annex T2 ON T1.request_ref_num = T2.request_ref_num
+            JOIN notification_annex T2 ON T1.REQUEST_REF_NO = T2.request_ref_num
             JOIN notification_history T3 ON T1.notification_id = T3.notification_id
             WHERE  1 = 1
-            <#if refNum??> AND T1.request_ref_num =:refNum</#if>
+            <#if refNum??> AND T1.REQUEST_REF_NO =:refNum</#if>
         ]]>
     </sql>
 

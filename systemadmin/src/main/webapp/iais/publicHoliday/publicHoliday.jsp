@@ -18,39 +18,40 @@
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="crud_action_additional" value="">
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-lg-12 col-xs-12">
             <div class="center-content">
-                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <h3>
-                        <span>Public Holiday</span>
-                    </h3>
-                    <div class="form-group">
-                        <iais:value>
-                            <label class="col-xs-2 col-md-2 control-label">Description</label>
-                            <div class="col-xs-4 col-sm-4 col-md-4">
-                                <input id="descriptionSwitch" name="descriptionSwitch" type="text"
-                                       value="${descriptionSwitch}">
-                            </div>
-                        </iais:value>
-                    </div>
-                    <div class="form-group">
-                        <iais:value>
-                            <label class="col-xs-2 col-md-2 control-label">Year</label>
-                            <div class="col-xs-4 col-sm-4 col-md-4">
-                                <input id="yearSwitch" name="yearSwitch" type="text" value="${yearSwitch}">
-                            </div>
-                        </iais:value>
+                <div class="intranet-content">
+                    <div class="bg-title">
+                        <h2>Public Holiday</h2>
                     </div>
                     <div class="row">
-                        <div class="col-xs-12 col-md-12">
-                            <div class="text-right"><a class="btn btn-primary" id="search">Search</a></div>
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-4 control-label">Description</label>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <input id="descriptionSwitch" name="descriptionSwitch" type="text"
+                                           value="${descriptionSwitch}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-4 control-label">Year</label>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <input id="yearSwitch" name="yearSwitch" type="text" value="${yearSwitch}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="application-tab-footer">
+                            <div class="row">
+                                <div class="col-xs-11 col-md-11">
+                                    <div class="text-right">
+                                        <a class="btn btn-secondary" id="clear">Clear</a>
+                                        <a class="btn btn-primary" id="search">Search</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-6">
-                        <div class="button-group">
-                            <a class="btn btn-file-upload btn-secondary" id="createholiday">Create</a>
-                        </div>
-                    </div>
+
                     <div class="table-gp">
                         <table class="table">
                             <thead>
@@ -77,7 +78,15 @@
                     </div>
                 </div>
             </div>
-
+        </div>
+        <div class="application-tab-footer">
+            <div class="row">
+                <div class="col-xs-11 col-md-11">
+                    <div class="text-right">
+                        <a class="btn btn-primary" id="createholiday">Create</a>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <input type="hidden" name="holidayId" id="holidayId" value="">

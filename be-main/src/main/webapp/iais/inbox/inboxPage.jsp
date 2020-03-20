@@ -368,7 +368,7 @@
             showWaiting();
             submit('approve');
         } else {
-            alert('No checked');
+            alert('Please select at least one application');
         }
 
     }

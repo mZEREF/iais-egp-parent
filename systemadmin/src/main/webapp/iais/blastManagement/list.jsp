@@ -18,62 +18,54 @@
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="crud_action_additional" value="">
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-lg-12 col-xs-12">
             <div class="center-content">
-                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <h3>
-                        <span>Blast Management</span>
-                    </h3>
-                    <iais:section title="" id="supPoolList">
-                        <div class="form-group">
-                            <iais:value>
-                                <label class="col-xs-2 col-md-2 control-label">DescriptionName</label>
-                                <div class="col-xs-4 col-sm-4 col-md-4">
-                                    <input type="text" name="descriptionSwitch" id="descriptionSwitch" value="${descriptionSwitch}"/>
+                <div class="intranet-content">
+                    <div class="bg-title">
+                        <h2>Blast Management</h2>
+                    </div>
+                    <div class="row">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-4 control-label">DescriptionName</label>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <input type="text" name="descriptionSwitch" id="descriptionSwitch"
+                                           value="${descriptionSwitch}"/>
                                 </div>
-                            </iais:value>
-                            <iais:value>
-                                <label class="col-xs-2 col-md-2 control-label">MsgName</label>
-                                <div class="col-xs-4 col-sm-4 col-md-4">
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-4 control-label">MsgName</label>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input type="text" name="msgName" maxlength="500" id="msgName" value="${msgName}"/>
                                 </div>
-                            </iais:value>
-                        </div>
-                        <div class="form-group">
-                            <iais:value>
-                                <label class="col-xs-2 col-md-2 control-label">SendDate Start</label>
-                                <div class="col-xs-4 col-sm-4 col-md-4">
-                                    <iais:datePicker id="start" name="start"  value="${start}" />
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-4 control-label">SendDate Start</label>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <iais:datePicker id="start" name="start" value="${start}"/>
                                 </div>
-                            </iais:value>
-                            <iais:value>
-                                <label class="col-xs-2 col-md-2 control-label">SendDate End</label>
-                                <div class="col-xs-4 col-sm-4 col-md-4">
-                                    <iais:datePicker id="end" name="end"  value="${end}" />
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-4 control-label">SendDate End</label>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <iais:datePicker id="end" name="end" value="${end}"/>
                                 </div>
-                            </iais:value>
+                            </div>
                         </div>
-                        <iais:action style="text-align:center;">
-                            <button class="btn btn-lg" id="searchbtn" type="button"
-                                    style="background:#2199E8; color: white"
-                                    onclick="javascript:search()">Search
-                            </button>
-                            <button class="btn btn-lg" id="clearbtn" type="button"
-                                    style="background:#2199E8; color: white"
-                                    onclick="javascript:clearSearch()">Clear
-                            </button>
-                        </iais:action>
-                    </iais:section>
-
-                    <iais:pagination param="blastSearchParam" result="blastSearchResult"/>
-                    <div class="col-xs-12 col-sm-12">
-                        <div class="button-group col-xs-6 col-sm-6">
-                            <a class="btn btn-file-upload btn-secondary" id="addlist" onclick="addList()">Add Blast Management</a>
-                        </div>
-                        <div class="button-group col-xs-6 col-sm-6">
-                            <a class="btn btn-file-upload btn-secondary"  style="float: right" id="delete" onclick="deleteList()">Delete</a>
+                        <div class="application-tab-footer">
+                            <div class="row">
+                                <div class="col-xs-11 col-md-11">
+                                    <div class="text-right">
+                                        <a class="btn btn-secondary" onclick="javascript:clearSearch()">Clear</a>
+                                        <a class="btn btn-primary" onclick="javascript:search()">Search</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <iais:pagination param="blastSearchParam" result="blastSearchResult"/>
+
                     <div class="table-gp">
                         <table class="table">
                             <thead>
@@ -87,98 +79,113 @@
                                 <th>Actual send date</th>
                                 <th>Attachment</th>
                                 <th>Status</th>
-                                <th>Eidt</th>
+                                <th>Edit</th>
                             </tr>
                             </thead>
                             <tbody>
-                                <c:choose>
-                                    <c:when test="${empty blastSearchResult.rows}">
-                                        <tr>
-                                            <td  colspan="10" >
-                                                <iais:message key="No Result!" escape="true"></iais:message>
-                                                <!--No Record!!-->
+                            <c:choose>
+                                <c:when test="${empty blastSearchResult.rows}">
+                                    <tr>
+                                        <td colspan="10">
+                                            <iais:message key="No Result!" escape="true"></iais:message>
+                                            <!--No Record!!-->
+                                        </td>
+                                    </tr>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="item" items="${blastSearchResult.rows}" varStatus="status">
+                                        <tr style="display: table-row;">
+                                            <td>
+                                                <p><input type="checkbox" name="checkboxlist" value="${item.id}"></p>
+                                            </td>
+                                            <td>
+                                                <p><c:out
+                                                        value="${(status.index + 1) + (blastSearchParam.pageNo - 1) * blastSearchParam.pageSize}"/></p>
+                                            </td>
+                                            <td>
+                                                <p><a onclick="audit('${item.id}')"><c:out value="${item.msgName}"/></a>
+                                                </p>
+                                            </td>
+                                            <td>
+                                                <p><c:out value="${item.distributionName}"/></p>
+                                            </td>
+                                            <td>
+                                                <p><c:out value="${item.mode}"/></p>
+                                            </td>
+                                            <td>
+                                                <p><fmt:formatDate value="${item.schedule}"
+                                                                   pattern="MM/dd/yyyy HH:mm"/></p>
+                                            </td>
+                                            <td>
+                                                <p><fmt:formatDate value="${item.actual}"
+                                                                   pattern="MM/dd/yyyy HH:mm"/></p>
+                                            </td>
+                                            <td>
+                                                <p><c:out value="${item.docName}"/></p>
+                                            </td>
+                                            <td>
+                                                <p><iais:code code="${item.status}"></iais:code></p>
+                                            </td>
+                                            <td>
+                                                <p><a onclick="edit('${item.id}')">edit</a></p>
                                             </td>
                                         </tr>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:forEach var="item" items="${blastSearchResult.rows}" varStatus="status">
-                                            <tr style="display: table-row;">
-                                                <td>
-                                                    <p><input type="checkbox" name="checkboxlist" value="${item.id}"></p>
-                                                </td>
-                                                <td>
-                                                    <p><c:out value="${item.id}"/></p>
-                                                </td>
-                                                <td>
-                                                    <p><a onclick="audit('${item.id}')"><c:out value="${item.msgName}"/></a></p>
-                                                </td>
-                                                <td>
-                                                    <p><c:out value="${item.distributionName}"/></p>
-                                                </td>
-                                                <td>
-                                                    <p><c:out value="${item.mode}"/></p>
-                                                </td>
-                                                <td>
-                                                    <p><fmt:formatDate value="${item.schedule}" pattern="MM/dd/yyyy HH:mm"/></p>
-                                                </td>
-                                                <td>
-                                                    <p><fmt:formatDate value="${item.actual}" pattern="MM/dd/yyyy HH:mm"/></p>
-                                                </td>
-                                                <td>
-                                                    <p><c:out value="${item.docName}"/></p>
-                                                </td>
-                                                <td>
-                                                    <p><iais:code code="${item.status}"></iais:code></p>
-                                                </td>
-                                                <td>
-                                                    <p><a onclick="edit('${item.id}')">eidt</a></p>
-                                                </td>
-                                            </tr>
-                                        </c:forEach>
-                                    </c:otherwise>
-                                </c:choose>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
                             </tbody>
                         </table>
-                    </div>
-                    <div class="col-xs-12 col-sm-12">
-                        <div class="button-group col-xs-6 col-sm-6">
-                            <a href="${pageContext.request.contextPath}/file-repo" title="Download" class="downloadFile">
-                                Download Excel
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
-      <input hidden id="editBlast" name="editBlast" value="">
+        <div class="application-tab-footer">
+            <div class="row">
+                <div class="col-xs-11 col-md-11">
+                    <div class="text-right">
+                        <a class="btn btn-primary" id="addlist" onclick="addList()">Add Blast Management</a>
+                        <a class="btn btn-primary" id="delete" onclick="deleteList()">Delete</a>
+                        <a class="btn btn-primary" href="${pageContext.request.contextPath}/file-repo" title="Download">Download Excel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input hidden id="editBlast" name="editBlast" value="">
     </form>
 </div>
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
-function addList() {
-    showWaiting();
-    SOP.Crud.cfxSubmit("mainForm","create");
-}
-function deleteList() {
-    SOP.Crud.cfxSubmit("mainForm","delete");
-}
-function edit(id) {
-    $("#editBlast").val(id);
-    SOP.Crud.cfxSubmit("mainForm","edit");
-}
-function audit(id) {
-    $("#editBlast").val(id);
-    SOP.Crud.cfxSubmit("mainForm","audit");
-}
+    function addList() {
+        showWaiting();
+        SOP.Crud.cfxSubmit("mainForm", "create");
+    }
 
-function jumpToPagechangePage() {
-    SOP.Crud.cfxSubmit("mainForm","search");
-}
-function search() {
-    SOP.Crud.cfxSubmit("mainForm","search");
-}
-function clearSearch(){
-    $('input[name="descriptionSwitch"]').val("");
-    $('input[name="msgName"]').val("");
-}
+    function deleteList() {
+        SOP.Crud.cfxSubmit("mainForm", "delete");
+    }
+
+    function edit(id) {
+        $("#editBlast").val(id);
+        SOP.Crud.cfxSubmit("mainForm", "edit");
+    }
+
+    function audit(id) {
+        $("#editBlast").val(id);
+        SOP.Crud.cfxSubmit("mainForm", "audit");
+    }
+
+    function jumpToPagechangePage() {
+        SOP.Crud.cfxSubmit("mainForm", "search");
+    }
+
+    function search() {
+        SOP.Crud.cfxSubmit("mainForm", "search");
+    }
+
+    function clearSearch() {
+        $('input[name="descriptionSwitch"]').val("");
+        $('input[name="msgName"]').val("");
+        $('input[name="start"]').val("");
+        $('input[name="end"]').val("");
+    }
 </script>

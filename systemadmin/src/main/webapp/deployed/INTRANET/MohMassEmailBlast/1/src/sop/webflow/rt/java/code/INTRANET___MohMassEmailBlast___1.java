@@ -82,4 +82,8 @@ public class INTRANET___MohMassEmailBlast___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "writeMessageSuccess", this); 
 	}
 
+	public void step3_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "switchBackFill", this); 
+	}
+
 }

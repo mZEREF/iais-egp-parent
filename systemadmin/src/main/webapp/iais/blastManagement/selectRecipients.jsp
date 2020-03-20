@@ -10,8 +10,6 @@
 <div class="main-content">
     <form class="form-horizontal" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/include/formHidden.jsp" %>
-        <input type="hidden" name="crud_action_type" value="">
-        <input type="hidden" name="crud_action_value" value="">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -28,9 +26,7 @@
                             <label class="col-xs-4 col-md-4 control-label" >Add Email Addresses:</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <textarea cols="50" rows="10" name="email" class="textarea" id="email" title="content">
-                                    ${emailAddress}
-                                    </textarea>
+                                    <textarea cols="50" rows="10" name="email" class="textarea" id="email" title="content">${emailAddress}</textarea>
                                     <span id="error_addr" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -49,8 +45,11 @@
                     </div>
                     <div class="application-tab-footer">
                         <div class="row">
-                            <div class="col-xs-12 col-sm-12">
-                                <div class="text-right text-center-mobile"><button id="saveDis" type="button" class="btn btn-primary">Send</button></div>
+                            <div class="col-xs-11 col-sm-11">
+                                <div class="text-right">
+                                    <a class="btn btn-primary" id="back" >Back</a>
+                                    <a class="btn btn-primary" id="saveDis" >Send</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -65,7 +64,10 @@
 
 <script type="text/javascript">
     $('#saveDis').click(function(){
-        SOP.Crud.cfxSubmit("mainForm");
-    });
+        SOP.Crud.cfxSubmit("mainForm","");
 
+    });
+    $('#back').click(function(){
+        SOP.Crud.cfxSubmit("mainForm","back");
+    });
 </script>
