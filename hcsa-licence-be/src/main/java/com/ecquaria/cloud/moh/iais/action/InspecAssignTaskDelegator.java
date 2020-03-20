@@ -81,6 +81,7 @@ public class InspecAssignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchResult", null);
         ParamUtil.setSessionAttr(bpc.request, "commPools", null);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", null);
     }
 
     /**
@@ -113,6 +114,7 @@ public class InspecAssignTaskDelegator {
             searchResult = inspectionAssignTaskService.getSearchResultByParam(searchParam);
             searchResult = inspectionAssignTaskService.getAddressByResult(searchResult);
             ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
+            ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
         }
         List<SelectOption> appTypeOption = inspectionAssignTaskService.getAppTypeOption();
 

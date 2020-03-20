@@ -161,7 +161,16 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         List<SelectOption> inspectorList = IaisCommonUtils.genNewArrayList();
         Set<String> roles = loginContext.getRoleIds();
         List<String> roleList = new ArrayList<>(roles);
-        if(roleList.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)){
+        //get current lead role
+        String curRole = loginContext.getCurRoleId();
+        //get member role
+        String leadRole;
+        if(curRole.contains(RoleConsts.USER_LEAD)){
+            leadRole = curRole;
+        } else {
+            leadRole = curRole + RoleConsts.USER_LEAD;
+        }
+        if(roleList.contains(leadRole)){
             addInspector(inspectorList, orgUserDtos, loginContext, roleList);
         } else {
             for(OrgUserDto oDto:orgUserDtos){
@@ -176,7 +185,15 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     private void addInspector(List<SelectOption> inspectorList, List<OrgUserDto> orgUserDtos, LoginContext loginContext, List<String> roleList) {
         String flag = AppConsts.FALSE;
-        if(roleList.contains(RoleConsts.USER_ROLE_INSPECTIOR)){
+        String curRole = loginContext.getCurRoleId();
+        //get member role
+        String memberRole;
+        if(curRole.contains(RoleConsts.USER_LEAD)){
+            memberRole = curRole.replaceFirst(RoleConsts.USER_LEAD, "");
+        } else {
+            memberRole = curRole;
+        }
+        if(roleList.contains(memberRole)){
             flag = AppConsts.TRUE;
         }
         for(OrgUserDto oDto:orgUserDtos){
@@ -427,16 +444,29 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     public GroupRoleFieldDto getGroupRoleField(LoginContext loginContext) {
         GroupRoleFieldDto groupRoleFieldDto = new GroupRoleFieldDto();
         String curRole = loginContext.getCurRoleId();
+        String otherRole;
+        String leadRole;
         String groupLeadName = "";
-        if(curRole.contains("_LEAD")){
-
+        String groupMemBerName = "";
+        if(curRole.contains(RoleConsts.USER_LEAD)){
+            leadRole = curRole;
+            otherRole = curRole.replaceFirst(RoleConsts.USER_LEAD, "");
+        } else {
+            leadRole = curRole + RoleConsts.USER_LEAD;
+            otherRole = curRole;
         }
-        String roleField = "";
-            if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(curRole)){
-                roleField = MasterCodeUtil.getCodeDesc(RoleConsts.USER_MASTER_INSPECTION_LEAD);
+        if(!StringUtil.isEmpty(leadRole)) {
+            if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(curRole)) {
+                groupLeadName = MasterCodeUtil.getCodeDesc(RoleConsts.USER_MASTER_INSPECTION_LEAD);
             } else {
-                roleField = MasterCodeUtil.getCodeDesc(curRole);
+                groupLeadName = MasterCodeUtil.getCodeDesc(leadRole);
             }
+        }
+        if(!StringUtil.isEmpty(otherRole)) {
+            groupMemBerName = MasterCodeUtil.getCodeDesc(otherRole);
+        }
+        groupRoleFieldDto.setGroupLeadName(groupLeadName);
+        groupRoleFieldDto.setGroupMemBerName(groupMemBerName);
         return groupRoleFieldDto;
     }
 

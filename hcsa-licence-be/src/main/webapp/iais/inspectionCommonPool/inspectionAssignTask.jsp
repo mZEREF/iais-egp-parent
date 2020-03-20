@@ -72,7 +72,7 @@
                   </iais:row>
                   <c:if test="${inspecTaskCreAndAssDto.inspectionLeads != null}">
                     <iais:row>
-                      <iais:field value="Inspection Lead"/>
+                      <iais:field value="${groupRoleFieldDto.groupLeadName}"/>
                       <iais:value width="7">
                         <c:forEach var="lead" items="${inspecTaskCreAndAssDto.inspectionLeads}">
                           <p><label><c:out value="${lead}"/></label></p>
