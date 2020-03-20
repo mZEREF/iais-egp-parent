@@ -2191,7 +2191,7 @@ public class NewApplicationDelegator {
     public static Map<String, String> doValidatePremiss(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         //do validate one premiss
-
+        List<String> list=IaisCommonUtils.genNewArrayList();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,APPSUBMISSIONDTO);
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO);
@@ -2326,6 +2326,8 @@ public class NewApplicationDelegator {
                         }
 
                         String addrType = appGrpPremisesDtoList.get(i).getAddrType();
+
+                        StringBuilder stringBuilder =new StringBuilder();
                         if(StringUtil.isEmpty(addrType)){
                             errorMap.put("addrType"+i, "UC_CHKLMD001_ERR001");
                         }else {
@@ -2342,12 +2344,29 @@ public class NewApplicationDelegator {
                                 if (empty2) {
                                     errorMap.put("unitNo"+i, "UC_CHKLMD001_ERR001");
                                 }
+                                if(!empty&&!empty1&&!empty2){
+                                    stringBuilder.append(appGrpPremisesDtoList.get(i).getFloorNo())
+                                            .append(appGrpPremisesDtoList.get(i).getBlkNo())
+                                            .append(appGrpPremisesDtoList.get(i).getUnitNo());
+                                }
                             }
                         }
                         String postalCode = appGrpPremisesDtoList.get(i).getPostalCode();
                         if (!StringUtil.isEmpty(postalCode)) {
                             if (!postalCode.matches("^[0-9]{6}$")) {
                                 errorMap.put("postalCode"+i, "CHKLMD001_ERR003");
+                            }else {
+                                boolean empty = stringBuilder.toString().isEmpty();
+
+                                if(!empty){
+                                    stringBuilder.append(postalCode);
+                                    if(list.contains(stringBuilder.toString())){
+                                        errorMap.put("postalCode","There is a duplicated entry for this premises address.");
+
+                                    }else {
+                                        list.add(stringBuilder.toString());
+                                    }
+                                }
                             }
                         }else {
                             errorMap.put("postalCode"+i, "UC_CHKLMD001_ERR001");

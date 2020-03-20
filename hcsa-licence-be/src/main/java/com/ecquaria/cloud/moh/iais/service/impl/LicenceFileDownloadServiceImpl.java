@@ -640,7 +640,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
 
 
-        public void  sendTask(String submissionId,String eventRefNum) throws  Exception{
+        public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
 
             AppEicRequestTrackingDto entity = appealClient.getAppEicRequestTrackingDto(eventRefNum).getEntity();
