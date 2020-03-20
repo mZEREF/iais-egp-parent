@@ -89,7 +89,6 @@ public class InspecAssignTaskDelegator {
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             //get task by user workGroupId
             List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
-            setMapTaskId(bpc, commPools);
             List<String> appCorrId_list = inspectionAssignTaskService.getAppCorrIdListByPool(commPools);
             StringBuilder sb = new StringBuilder("(");
             for(int i = 0; i < appCorrId_list.size(); i++){
@@ -255,7 +254,6 @@ public class InspecAssignTaskDelegator {
         String sub_date2 = ParamUtil.getRequestString(bpc.request, "sub_date");
         String hci_address = ParamUtil.getRequestString(bpc.request, "hci_address");
 
-        setMapTaskId(bpc, commPools);
         List<String> appCorrId_list = inspectionAssignTaskService.getAppCorrIdListByPool(commPools);
 
         StringBuilder sb = new StringBuilder("(");
@@ -292,16 +290,6 @@ public class InspecAssignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "sub_date2", sub_date2);
         ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
-    }
-
-    private void setMapTaskId(BaseProcessClass bpc, List<TaskDto> commPools) {
-        Map<String, String> appCorrIdTaskIdMap = IaisCommonUtils.genNewHashMap();
-        if(!IaisCommonUtils.isEmpty(commPools)){
-            for(TaskDto td:commPools){
-                appCorrIdTaskIdMap.put(td.getRefNo(), td.getId());
-            }
-        }
-        ParamUtil.setSessionAttr(bpc.request, "appCorrIdTaskIdMap", (Serializable) appCorrIdTaskIdMap);
     }
 
     /**
