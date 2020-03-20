@@ -73,7 +73,7 @@ public class CommonPoolAjaxController {
             List<ComPoolAjaxQueryDto> comPoolAjaxQueryDtos = ajaxResult.getRows();
             if(!IaisCommonUtils.isEmpty(comPoolAjaxQueryDtos)){
                 for(ComPoolAjaxQueryDto comPoolAjaxQueryDto : comPoolAjaxQueryDtos){
-                    AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(comPoolAjaxQueryDto.getAppPremCorrId());
+                    AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(comPoolAjaxQueryDto.getId());
                     String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
                     if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
                         comPoolAjaxQueryDto.setHciAddress(appGrpPremisesDto.getHciName() + " / " + address);
