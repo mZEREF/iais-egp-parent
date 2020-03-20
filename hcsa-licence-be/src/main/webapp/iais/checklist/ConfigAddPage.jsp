@@ -106,7 +106,7 @@
           </div>
           <div class="col-xs-12 col-sm-6">
             <div class="text-right text-center-mobile">
-              <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>
+              <a class="btn btn-secondary" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>
               <a class="btn btn-primary next"  onclick="javascript: doNext();">Next</a>
             </div>
           </div>
