@@ -86,7 +86,7 @@
                     JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID
                     JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
                     JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
-                    <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T1.ID) IN ${appCorrId_list} </#if>
+                    <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T2.ID) IN ${appCorrId_list} </#if>
                 ) T5
             WHERE 1 = 1
             <#if groupNo??> and T5.GROUP_NO = :groupNo</#if>
