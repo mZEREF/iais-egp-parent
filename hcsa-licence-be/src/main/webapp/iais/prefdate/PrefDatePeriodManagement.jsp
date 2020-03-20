@@ -124,9 +124,11 @@
                                                         <td>${prefItem.periodAfterApp}</td>
                                                         <td>${prefItem.periodBeforeExp}</td>
                                                         <td>${prefItem.nonReplyWindow}</td>
-                                                        <td><a class="btn btn-secondary" id="prefItemId"
-                                                               name="prefItemId"
-                                                               onclick="preUpdateData('${prefItem.id}')">Update</a></td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-default btn-sm"
+                                                                    onclick="preUpdateData('${prefItem.id}')">Edit
+                                                            </button>
+                                                        </td>
                                                     </tr>
                                                 </c:forEach>
 

@@ -37,15 +37,14 @@
 
 </style>
 
-
+<div class="main-content">
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
   <%@ include file="/include/formHidden.jsp" %>
   <input type="hidden" name="crud_action_type" value="">
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
   <br><br><br>
-  <div class="main-content">
-    <div class="container">
+
       <span id="error_customItemError" name="iaisErrorMsg" class="error-msg"></span>
       <br><br>
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
@@ -91,14 +90,13 @@
       <div class="text-right text-center-mobile">
             <a class="btn btn-primary appendClass " id = "customItemId">Custom</a>
       </div>
-    </div>
 
 
-  </div>
+
 
 
 </>
-
+</div>
 <%@include file="/include/validation.jsp"%>
 <script>
     "use strict";
