@@ -39,13 +39,17 @@
                                         <iais:row>
                                             <iais:field value="Application Type"/>
                                             <iais:value width="18">
-                                                <iais:select  name="application_type" options="appTypeOption" firstOption="Please Select" value="${SearchParam.filters['appType']}" ></iais:select>
+                                                <div id="application_type">
+                                                    <iais:select  name="application_type" options="appTypeOption" firstOption="Please Select" value="${SearchParam.filters['appType']}" ></iais:select>
+                                                </div>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Application Status"/>
                                             <iais:value width="18">
-                                                <iais:select  name="application_status" options="appStatusOption" firstOption="Please Select" value="${SearchParam.filters['appStatus']}" ></iais:select>
+                                                <div id="application_status">
+                                                    <iais:select  name="application_status" options="appStatusOption" firstOption="Please Select" value="${SearchParam.filters['appStatus']}" ></iais:select>
+                                                </div>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -66,9 +70,9 @@
                                             </p>
                                         </iais:row>
                                         <iais:action style="text-align:right;">
-                                            <button class="btn btn-primary" type="button"  onclick="javascript:doAppSearch()">Search</button>
-                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doAppBack()">Back</button>
                                             <button class="btn btn-secondary" type="button"  onclick="javascript:doAppClear()">Clear</button>
+                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doAppBack()">Back</button>
+                                            <button class="btn btn-primary" type="button"  onclick="javascript:doAppSearch()">Search</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>

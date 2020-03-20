@@ -42,12 +42,12 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:right;">
+                                            <button type="button" class="btn btn-secondary" type="button"
+                                                    onclick="javascript:doClear();">Clear</button>
                                             <button type="button" class="btn btn-primary" type="button"
                                                      onclick="javascript:doSearch();">Search</button>
                                             <button type="button" class="btn btn-primary" type="button"
                                                      onclick="javascript:doAdvancedSearch();">Advanced Search</button>
-                                            <button type="button" class="btn btn-secondary" type="button"
-                                                     onclick="javascript:doClear();">Clear</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>

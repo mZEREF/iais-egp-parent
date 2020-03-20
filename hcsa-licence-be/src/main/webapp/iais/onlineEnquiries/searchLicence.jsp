@@ -56,13 +56,17 @@
                                             <iais:row>
                                                 <iais:field value="Application Type"/>
                                                 <iais:value width="18">
-                                                    <iais:select name="application_type" options="appTypeOption" firstOption="Please Select" value="${SearchParam.filters['appType']}" ></iais:select>
+                                                    <div id="application_type">
+                                                        <iais:select name="application_type" options="appTypeOption" firstOption="Please Select" value="${SearchParam.filters['appType']}" ></iais:select>
+                                                    </div>
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
                                                 <iais:field value="Application Status"/>
                                                 <iais:value width="18">
-                                                    <iais:select name="application_status" options="appStatusOption" firstOption="Please Select" value="${SearchParam.filters['appStatus']}" ></iais:select>
+                                                    <div id="application_status">
+                                                        <iais:select name="application_status" options="appStatusOption" firstOption="Please Select" value="${SearchParam.filters['appStatus']}" ></iais:select>
+                                                    </div>
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
@@ -94,19 +98,25 @@
                                             <iais:row>
                                                 <iais:field value="Service Licence:"/>
                                                 <iais:value width="18">
-                                                    <iais:select name="service_licence_type" options="licSvcTypeOption" firstOption="Please Select" value="${serviceLicenceType}" ></iais:select>
+                                                    <div id="service_licence_type">
+                                                        <iais:select name="service_licence_type" options="licSvcTypeOption" firstOption="Please Select" value="${serviceLicenceType}" ></iais:select>
+                                                    </div>
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
                                                 <iais:field value="Service Sub-Type:"/>
                                                 <iais:value width="18">
-                                                    <iais:select name="service_sub_type" options="licSvcSubTypeOption" firstOption="Please Select" value="${SearchParam.filters['serviceSubTypeName']}" ></iais:select>
+                                                    <div id="service_sub_type">
+                                                        <iais:select name="service_sub_type" options="licSvcSubTypeOption" firstOption="Please Select" value="${SearchParam.filters['serviceSubTypeName']}" ></iais:select>
+                                                    </div>
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
                                                 <iais:field value="Licence Status:"/>
                                                 <iais:value width="18">
-                                                    <iais:select name="licence_status" options="licStatusOption" firstOption="Please Select" value="${SearchParam.filters['licence_status']}" ></iais:select>
+                                                    <div id="licence_status">
+                                                        <iais:select name="licence_status" options="licStatusOption" firstOption="Please Select" value="${SearchParam.filters['licence_status']}" ></iais:select>
+                                                    </div>
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
@@ -312,9 +322,9 @@
                     </c:if>
 
                     <iais:action style="text-align:right;">
-                        <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Search</button>
-                        <button class="btn btn-primary" type="button"  onclick="javascript:doLicBack()">Back</button>
                         <button class="btn btn-secondary" type="button"  onclick="javascript:doLicClear()">Clear</button>
+                        <button class="btn btn-primary" type="button"  onclick="javascript:doLicBack()">Back</button>
+                        <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Search</button>
                     </iais:action>
                 </div>
             </div>

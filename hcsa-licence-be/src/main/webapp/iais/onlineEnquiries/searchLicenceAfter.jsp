@@ -43,99 +43,109 @@
 
                         </h4>
 
-                            <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
-                                <div class="panel-body">
-                                    <div class="panel-main-content">
-                                        <iais:section title="" id = "supPoolList">
-                                            <iais:row>
-                                                <iais:field value="Application No."/>
-                                                <iais:value width="18">
-                                                    <label>
-                                                        <input type="text" style="width:180%; font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
-                                                    </label>
-                                                </iais:value>
-                                            </iais:row>
-                                            <iais:row>
-                                                <iais:field value="Application Type"/>
-                                                <iais:value width="18">
+                        <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                            <div class="panel-body">
+                                <div class="panel-main-content">
+                                    <iais:section title="" id = "supPoolList">
+                                        <iais:row>
+                                            <iais:field value="Application No."/>
+                                            <iais:value width="18">
+                                                <label>
+                                                    <input type="text" style="width:180%; font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
+                                                </label>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Application Type"/>
+                                            <iais:value width="18">
+                                                <div id="application_type">
                                                     <iais:select name="application_type" options="appTypeOption" firstOption="Please Select" value="${SearchParam.filters['appType']}" ></iais:select>
-                                                </iais:value>
-                                            </iais:row>
-                                            <iais:row>
-                                                <iais:field value="Application Status"/>
-                                                <iais:value width="18">
+                                                </div>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Application Status"/>
+                                            <iais:value width="18">
+                                                <div id="application_status">
                                                     <iais:select name="application_status" options="appStatusOption" firstOption="Please Select" value="${SearchParam.filters['appStatus']}" ></iais:select>
-                                                </iais:value>
-                                            </iais:row>
-                                            <iais:row>
-                                                <iais:field value="Application Submitted Date From"/>
-                                                <iais:value width="18">
-                                                    <iais:datePicker id = "sub_date" name = "sub_date" value="${SearchParam.filters['subDate']}" ></iais:datePicker>
-                                                </iais:value>
-                                                <iais:field value="Application Submitted Date To"/>
-                                                <iais:value width="18">
-                                                    <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['toDate']}"></iais:datePicker>
-                                                </iais:value>
-                                            </iais:row>
-                                            <iais:row>
-                                                <iais:field value="Licence No."/>
-                                                <iais:value width="18">
-                                                    <label>
-                                                        <input type="text" style="width:180%; font-weight:normal;" name="licence_no" value="${SearchParam.filters['licence_no']}" />
-                                                    </label>
-                                                </iais:value>
-                                            </iais:row>
-                                            <iais:row>
-                                                <iais:field value="UEN No."/>
-                                                <iais:value width="18">
-                                                    <label>
-                                                        <input type="text" style="width:180%; font-weight:normal;" name="uen_no" value="${SearchParam.filters['uen_no']}" />
-                                                    </label>
-                                                </iais:value>
-                                            </iais:row>
-                                            <iais:row>
-                                                <iais:field value="Service Licence:"/>
-                                                <iais:value width="18">
+                                                </div>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Application Submitted Date From"/>
+                                            <iais:value width="18">
+                                                <iais:datePicker id = "sub_date" name = "sub_date" value="${SearchParam.filters['subDate']}" ></iais:datePicker>
+                                            </iais:value>
+                                            <iais:field value="Application Submitted Date To"/>
+                                            <iais:value width="18">
+                                                <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['toDate']}"></iais:datePicker>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Licence No."/>
+                                            <iais:value width="18">
+                                                <label>
+                                                    <input type="text" style="width:180%; font-weight:normal;" name="licence_no" value="${SearchParam.filters['licence_no']}" />
+                                                </label>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="UEN No."/>
+                                            <iais:value width="18">
+                                                <label>
+                                                    <input type="text" style="width:180%; font-weight:normal;" name="uen_no" value="${SearchParam.filters['uen_no']}" />
+                                                </label>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Service Licence:"/>
+                                            <iais:value width="18">
+                                                <div id="service_licence_type">
                                                     <iais:select name="service_licence_type" options="licSvcTypeOption" firstOption="Please Select" value="${serviceLicenceType}" ></iais:select>
-                                                </iais:value>
-                                            </iais:row>
-                                            <iais:row>
-                                                <iais:field value="Service Sub-Type:"/>
-                                                <iais:value width="18">
+                                                </div>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Service Sub-Type:"/>
+                                            <iais:value width="18">
+                                                <div id="service_sub_type">
                                                     <iais:select name="service_sub_type" options="licSvcSubTypeOption" firstOption="Please Select" value="${SearchParam.filters['serviceSubTypeName']}" ></iais:select>
-                                                </iais:value>
-                                            </iais:row>
-                                            <iais:row>
-                                                <iais:field value="Licence Status:"/>
-                                                <iais:value width="18">
+                                                </div>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Licence Status:"/>
+                                            <iais:value width="18">
+                                                <div id="licence_status">
                                                     <iais:select name="licence_status" options="licStatusOption" firstOption="Please Select" value="${SearchParam.filters['licence_status']}" ></iais:select>
-                                                </iais:value>
-                                            </iais:row>
-                                            <iais:row>
-                                                <iais:field value="Licence Start Date From"/>
-                                                <iais:value width="18">
-                                                    <iais:datePicker id = "start_date" name = "start_date" value="${SearchParam.filters['start_date']}" ></iais:datePicker>
-                                                </iais:value>
-                                                <iais:field value="Licence Start Date To"/>
-                                                <iais:value width="18">
-                                                    <iais:datePicker id = "start_to_date" name = "start_to_date" value="${SearchParam.filters['start_to_date']}"></iais:datePicker>
-                                                </iais:value>
-                                            </iais:row>
-                                            <iais:row>
-                                                <iais:field value="Licence Expiry Date From"/>
-                                                <iais:value width="18">
-                                                    <iais:datePicker id = "expiry_start_date" name = "expiry_start_date" value="${SearchParam.filters['expiry_start_date']}" ></iais:datePicker>
-                                                </iais:value>
+                                                </div>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Licence Start Date From"/>
+                                            <iais:value width="18">
+                                                <iais:datePicker id = "start_date" name = "start_date" value="${SearchParam.filters['start_date']}" ></iais:datePicker>
+                                            </iais:value>
+                                            <iais:field value="Licence Start Date To"/>
+                                            <iais:value width="18">
+                                                <iais:datePicker id = "start_to_date" name = "start_to_date" value="${SearchParam.filters['start_to_date']}"></iais:datePicker>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Licence Expiry Date From"/>
+                                            <iais:value width="18">
+                                                <iais:datePicker id = "expiry_start_date" name = "expiry_start_date" value="${SearchParam.filters['expiry_start_date']}" ></iais:datePicker>
+                                            </iais:value>
 
-                                                <iais:field value="Licence Expiry Date To"/>
-                                                <iais:value width="18">
-                                                    <iais:datePicker id = "expiry_date" name = "expiry_date" value="${SearchParam.filters['expiry_date']}"></iais:datePicker>
-                                                </iais:value>
-                                            </iais:row>
-                                        </iais:section>
-                                    </div>
+                                            <iais:field value="Licence Expiry Date To"/>
+                                            <iais:value width="18">
+                                                <iais:datePicker id = "expiry_date" name = "expiry_date" value="${SearchParam.filters['expiry_date']}"></iais:datePicker>
+                                            </iais:value>
+                                        </iais:row>
+                                    </iais:section>
                                 </div>
                             </div>
+                        </div>
 
                     </c:if>
                     <c:if test="${choose[0]==1}">
@@ -313,9 +323,9 @@
 
                     </c:if>
                     <iais:action style="text-align:right;">
-                        <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Search</button>
-                        <button class="btn btn-primary" type="button"  onclick="javascript:doLicBack()">Back</button>
                         <button class="btn btn-secondary" type="button"  onclick="javascript:doLicClear()">Clear</button>
+                        <button class="btn btn-primary" type="button"  onclick="javascript:doLicBack()">Back</button>
+                        <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Search</button>
                     </iais:action>
                 </div>
             </div>

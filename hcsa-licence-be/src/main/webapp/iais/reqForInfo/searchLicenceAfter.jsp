@@ -38,13 +38,17 @@
                                         <iais:row>
                                             <iais:field value="Service Licence Type"/>
                                             <iais:value width="18">
-                                                <iais:select  name="service_licence_type" options="licSvcTypeOption" firstOption="Please Select" value="${serviceLicenceType}" ></iais:select>
+                                                <div id="service_licence_type">
+                                                    <iais:select  name="service_licence_type" options="licSvcTypeOption" firstOption="Please Select" value="${serviceLicenceType}" ></iais:select>
+                                                </div>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Licence Status"/>
                                             <iais:value width="18">
-                                                <iais:select  name="licence_status" options="licStatusOption" firstOption="Please Select" value="${SearchParam.filters['licence_status']}"  ></iais:select>
+                                                <div id="licence_status">
+                                                    <iais:select  name="licence_status" options="licStatusOption" firstOption="Please Select" value="${SearchParam.filters['licence_status']}"  ></iais:select>
+                                                </div>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -65,9 +69,9 @@
                                             </p>
                                         </iais:row>
                                         <iais:action style="text-align:right;">
-                                            <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Search</button>
-                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doLicBack()">Back</button>
                                             <button class="btn btn-secondary" type="button"  onclick="javascript:doLicClear()">Clear</button>
+                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doLicBack()">Back</button>
+                                            <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Search</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>
@@ -164,9 +168,9 @@
     }
     function doLicClear(){
         $('input[name="licence_no"]').val("");
-        $("#licence_type option:first").prop("selected", 'selected');
+        $("#service_licence_type option:first").prop("selected", 'selected');
         $("#licence_status option:first").prop("selected", 'selected');
-        $("#licence_type .current").text("Please Select");
+        $("#service_licence_type .current").text("Please Select");
         $("#licence_status .current").text("Please Select");
         $('input[name="to_date"]').val("");
         $('input[name="sub_date"]').val("");
