@@ -126,9 +126,9 @@
                             </div>
                         </C:if>
                         <c:if test="${msgPage == 'msgContentView'}">
-                            <div class="col-md-2 pull-right">
-                                <button type="button" class="btn btn-primary pull-right" onclick="toMsgPage()">Back
-                                </button>
+                            <div class="col-md-2">
+                                <a onclick="toMsgPage()"><em class="fa fa-angle-left"></em> Back
+                                </a>
                             </div>
                         </c:if>
                     </div>

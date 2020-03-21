@@ -14,8 +14,8 @@
                         </div>
                         <div class="row" style="margin-top: 1.5%">
                             <div class="col-md-12">
-                                <div class="col-md-2 pull-right">
-                                    <button type="button" class="btn btn-primary pull-right" onclick="MsgContToMsgPage()">Back</button>
+                                <div class="col-md-2">
+                                    <a onclick="MsgContToMsgPage()"><em class="fa fa-angle-left"></em> Back</a>
                                 </div>
                             </div>
                         </div>
