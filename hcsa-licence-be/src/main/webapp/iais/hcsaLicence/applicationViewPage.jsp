@@ -462,15 +462,10 @@
                                         <div class="col-xs-12">
                                             <div class="table-gp">
                                                 <iais:section title="">
-                                                <%--<table class="table">--%>
-                                                    <%--<div>--%>
-                                                        <%--<td class="col-xs-4"><p>Current Status:</p></td>--%>
                                                         <iais:row>
                                                             <iais:field value="Current Status" required="false"/>
-                                                        <%--<td class="col-xs-8"><p>${applicationViewDto.currentStatus}</p></td>--%>
                                                             <iais:value width="10">${applicationViewDto.currentStatus}</iais:value>
                                                         </iais:row>
-                                                    <%--</div>--%>
                                                     <%--<div>--%>
                                                         <iais:row>
                                                             <iais:field value="Internal Remarks" required="true"  width="12"/>
@@ -488,8 +483,6 @@
                                                     <%--</div>--%>
                                                     <div id="processingDecision">
                                                         <iais:row>
-                                                            <%--<span>Processing Decision(</span><span--%>
-                                                            <%--style="color: red">*</span><span>):</span></span>--%>
                                                             <iais:field value="Processing Decision" required="true"/>
                                                             <%String nextStage = request.getParameter("nextStage");%>
                                                             <iais:value width="10">
@@ -499,24 +492,21 @@
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
-                                                    <div id="replytr" class="hidden">
-                                                        <iais:row>
-                                                            <iais:field value="Processing Decision" required="true"/>
-                                                            <%String nextStageReply = request.getParameter("nextStage");%>
-                                                            <iais:value width="10">
-                                                                <iais:select name="nextStageReply" id="nextStageReply"
-                                                                             options="nextStageReply"
-                                                                             value="<%=nextStageReply%>"></iais:select>
-                                                            </iais:value>
-                                                            <%--<select name="nextStageReply" class="table-select processing-Decision">--%>
-                                                            <%--<option>---select---</option>--%>
-                                                            <%--<option value="PROCREP">Give Clarification</option>--%>
-                                                            <%--</select>--%>
-                                                        </iais:row>
-                                                    </div>
+                                                    <c:if test="${applicationViewDto.applicationDto.status == 'APST000' || applicationViewDto.applicationDto.status == 'APST014'}">
+                                                        <div id="replytr" class="hidden">
+                                                            <iais:row>
+                                                                <iais:field value="Processing Decision" required="true"/>
+                                                                <%String nextStageReply = request.getParameter("nextStage");%>
+                                                                <iais:value width="10">
+                                                                    <iais:select name="nextStageReply" id="nextStageReply"
+                                                                                 options="nextStageReply"
+                                                                                 value="<%=nextStageReply%>"></iais:select>
+                                                                </iais:value>
+                                                            </iais:row>
+                                                        </div>
+                                                    </c:if>
                                                     <div id="rollBackDropdown" class="hidden">
                                                         <iais:row>
-                                                            <%--<span>Roll Back</span>--%>
                                                             <iais:field value="Route Back To" required="false"/>
                                                             <iais:value width="10">
                                                                 <select name="rollBack" class="nice-select input-large">
@@ -691,7 +681,7 @@
             $('#ApplicationViewInspection').css('display', 'none');
             $('#recommendationDropdown').removeClass('hidden');
         }
-        if ('${applicationViewDto.applicationDto.status}' == 'APST000' || '${applicationViewDto.applicationDto.status}' == 'APST014') {
+        if ('${applicationViewDto.applicationDto.status}' == 'APST000' || '${applicationViewDto.applicationDto.status}' == 'APST014' || '${applicationViewDto.applicationDto.status}' == 'APST013') {
             $('#processingDecision').addClass('hidden');
             $('#recommendationDropdown').addClass('hidden');
             $('#replytr').removeClass('hidden');
@@ -777,6 +767,8 @@
         } else if (selectValue == "ROLLBACK") {
             $('#rollBackDropdown').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
+        } else if (selectValue == "PROCRFI") {
+            showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
         } else {
             $('#rollBackDropdown').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
