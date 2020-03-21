@@ -105,6 +105,7 @@ public class NewApplicationDelegator {
     public static final String SERVICEALLPSNCONFIGMAP = "ServiceAllPsnConfigMap";
     public static final String FIRESTOPTION = "Please Select";
     public static final String LICAPPGRPPREMISESDTOMAP = "LicAppGrpPremisesDtoMap";
+    private static final String DRAFTCONFIG = "DraftConfig";
 
     //page name
     public static final String APPLICATION_PAGE_NAME_PREMISES                       = "APPPN01";
@@ -151,6 +152,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO, null);
         ParamUtil.setSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO, null);
         ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, null);
+        ParamUtil.setSessionAttr(bpc.request,DRAFTCONFIG,null);
 
         //request For Information Loading
         ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,null);
@@ -1998,6 +2000,7 @@ public class NewApplicationDelegator {
         if(!StringUtil.isEmpty(draftNo)){
             log.info(StringUtil.changeForLog("draftNo is not empty"));
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
+            ParamUtil.setSessionAttr(bpc.request,DRAFTCONFIG,"test");
             if(appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() >0){
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             }else{
@@ -2060,6 +2063,7 @@ public class NewApplicationDelegator {
 
         String appNo = ParamUtil.getString(bpc.request,"appNo");
         if(!StringUtil.isEmpty(appNo)){
+            ParamUtil.setSessionAttr(bpc.request,DRAFTCONFIG,"test");
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
             if(appSubmissionDto != null){
                 String appType =  appSubmissionDto.getAppType();

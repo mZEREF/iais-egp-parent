@@ -52,4 +52,7 @@ public class RfcConst {
     public static final String EDIT_PRIMARY_DOC = "doc";
     public static final String EDIT_SERVICE = "service";
 
+    public static final String PERSONNEL_PARAM = "personnelParam";
+    public static final String PERSONNEL_RESULT = "personnelResult";
+
 }

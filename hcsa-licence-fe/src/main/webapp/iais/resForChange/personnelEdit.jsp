@@ -134,6 +134,10 @@
             doSubmitForm('preAck','', '');
         });
 
+        $('#back').click(function () {
+            doBack('prePersonnelList');
+        });
+
         $('.idTypeSel').addClass('disabled');
         $('.salutationSel').addClass('disabled');
     });

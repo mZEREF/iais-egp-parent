@@ -84,7 +84,7 @@
                                     <c:set value="${premisesIndexNo}${status.index}" var="cgoName"/>
                                     <tr>
                                       <c:if test="${status.first}">
-                                        <td rowspan="${premisesAndChkLst.appSvcChckListDtoList.size()}">
+                                        <td rowspan="${premisesAndChkLst.appSvcChckListDtoList.size()}" style="width:38%">
                                           <p class="visible-xs visible-sm table-row-title">Premises</p>
                                           <input type="hidden" name="${premisesIndexNo}" value="${premisesIndexNo}" />
                                           <p>${premisesAndChkLst.premiseGetAddress} </p>
@@ -95,7 +95,7 @@
                                         <input type="hidden" name="${cgoName}" value="${chkLst.chkLstConfId}"/>
                                         <p>${chkLst.chkName}</p>
                                       </td>
-                                      <td>
+                                      <td style="width:30%">
                                         <p class="visible-xs visible-sm table-row-title">Clinical Governance Officers</p>
                                         <c:set var="cgoSelKey" value="${premisesIndexNo}${chkLst.chkLstConfId}"/>
                                         <iais:select  cssClass="${premisesIndexNo}" name="${cgoName}" firstOption="Please Select"  options="CgoSelect"  value="${ReloadAllocationMap[cgoSelKey]}"></iais:select>
@@ -136,6 +136,8 @@
         if(${AppSubmissionDto.needEditController && AppSubmissionDto.appEditSelectDto.serviceEdit && !isClickEdit}){
             $('div.nice-select').addClass('disabled');
         }
+
+        $('div.discipline-allocation').find('.nice-select').css('width','100%');
 
         //Binding method
         $('#disciplineAllocationBack').click(function(){

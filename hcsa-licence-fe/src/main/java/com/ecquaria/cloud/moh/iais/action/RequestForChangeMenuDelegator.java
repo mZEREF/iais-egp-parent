@@ -444,6 +444,11 @@ public class RequestForChangeMenuDelegator {
      */
     public void doPersonnelEdit(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit start ...."));
+        String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
+        if("back".equals(action)){
+            return;
+        }
+
         List<PersonnelListQueryDto> personnelEditList = (List<PersonnelListQueryDto>) ParamUtil.getSessionAttr(bpc.request,RfcConst.PERSONNELEDITLIST);
         String email = ParamUtil.getString(bpc.request ,"emailAddress" ) ;
         String mobile = ParamUtil.getString(bpc .request, "mobileNo");

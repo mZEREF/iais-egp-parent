@@ -425,7 +425,7 @@
             'success':function (data) {
                 console.log("suc");
                 var length = $('.assignContent').length;
-                if(length>0){
+                if(length>1){
                     data = "<hr/>" + data;
                 }
                 $('.assignContent:last').after(data);
