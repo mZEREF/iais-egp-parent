@@ -114,10 +114,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     @Autowired
     private EventClient eventClient;
     @Autowired
-    private SystemBeLicClient systemClient;
-    @Autowired
-    private FileRepoClient fileRepoClient;
-    @Autowired
     private ApplicationService applicationService;
     @Autowired
     private OrganizationClient organizationClient;
@@ -125,10 +121,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private EventBusHelper eventBusHelper;
     @Autowired
     private GenerateIdClient generateIdClient;
-    @Autowired
-    private AppealClient appealClient;
     @Override
-    public boolean decompression() throws Exception{
+    public boolean decompression() {
         log.info("-------------decompression start ---------");
 
         File[] files = new File(sharedPath+File.separator+AppServicesConsts.BACKUPS+File.separator).listFiles();
@@ -306,23 +300,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         return flag;
     }
 
-    /*************************/
-    /*
-    * to update fe data
-    * */
-    private void changeStatus( ProcessFileTrackDto processFileTrackDto,String submissionId){
-        processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-        AuditTrailDto batchJobDto = AuditTrailHelper.getBatchJobDto("INTRANET");
-        processFileTrackDto.setAuditTrailDto(batchJobDto);
-        processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_COMPLETE);
-
-        eventBusHelper.submitAsyncRequest(processFileTrackDto,submissionId,EventBusConsts.SERVICE_NAME_APPSUBMIT
-        ,EventBusConsts.OPERATION_CHANGE_STATUS_FILE_TRACK,processFileTrackDto.getRefId(),null);
-       /* systemClient.updateProcessFileTrack(processFileTrackDto);*/
-
-    }
-
-
 
         private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos,String fileName
         ,String groupPath)  {
@@ -394,7 +371,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     private Boolean fileToDto(String str,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,ProcessFileTrackDto processFileTrackDto,
                               String submissionId)
-            throws Exception {
+           {
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
         List<AppGrpPersonnelDto> appGrpPersonnel = applicationListDto.getAppGrpPersonnel();
@@ -467,30 +444,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         eventBusHelper.submitAsyncRequest(applicationListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION,applicationListDto.getEventRefNo(),null);
 
-        Boolean flag=true;
-       /* try {
-
-            flag=applicationClient.getDownloadFile(applicationListDto).getStatusCode() == 200;
-            if(flag){
-                log.info("-----------getDownloadFile-------");
-                List<ApplicationDto> list = this.listApplication();
-                this. requestForInfList(requestForInfList);
-
-                listApplicationDto.addAll(list);
-
-            }
-
-        }catch (Exception e){
-             log.info("have error is save data" +e);
-            processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-            AuditTrailDto batchJobDto = AuditTrailHelper.getBatchJobDto("INTRANET");
-            processFileTrackDto.setAuditTrailDto(batchJobDto);
-            processFileTrackDto.setStatus("PFT004");
-            systemClient.updateProcessFileTrack(processFileTrackDto);
-            throw new Exception();
-        }*/
-
-        return flag;
+        return true;
 
     }
 
@@ -523,15 +477,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         } catch (IOException e) {
                           log.error(e.getMessage(),e);
                         }
-                      /*  try ( InputStream input = new FileInputStream(f)){
-                            if(fileItem!=null){
-                                OutputStream os = fileItem.getOutputStream();
-                                IOUtils.copy(input, os);
-                            }
-                        } catch (IOException ex) {
-                           log.error(ex.getMessage(),ex);
-                        }
-                        MultipartFile multipartFile = new CommonsMultipartFile(fileItem);*/
+
 
                         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
                         FileRepoDto fileRepoDto = new FileRepoDto();
@@ -548,19 +494,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
                                 EventBusConsts.OPERATION_BE_REC_DATA_COPY, groupPath, null);
 
-/*
-
-                        fileRepoDto.setId(split[0]);
-                        fileRepoDto.setAuditTrailDto(intranet);
-                        fileRepoDto.setFileName(fileName.toString());
-                        fileRepoDto.setRelativePath(sharedPath+File.separator+AppServicesConsts.COMPRESS
-                                +File.separator+fileNames+File.separator+AppServicesConsts.FILE_NAME+File.separator+AppServicesConsts.FILES);
-                        aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
-*/
-
-                        if(aBoolean){
-                         /*   removeFilePath(f);*/
-                        }
                     }catch (Exception e){
                         continue;
                     }

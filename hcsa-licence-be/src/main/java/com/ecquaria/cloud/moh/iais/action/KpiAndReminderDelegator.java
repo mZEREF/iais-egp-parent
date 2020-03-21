@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,6 +52,19 @@ public class KpiAndReminderDelegator {
     }
 
 
+    public void cancel(BaseProcessClass bpc){
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(bpc.request.getServerName())
+                .append("/main-web/eservice/INTRANET/MohBackendInbox");
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(),bpc.request);
+        try {
+            bpc.response.sendRedirect(tokenUrl);
+
+        } catch (IOException e) {
+            log.info(e.getMessage(),e);
+        }
+
+    }
     public void prepareData(BaseProcessClass bpc){
     log.info("-------------start prepareData  KpiAndReminderDelegator--------------");
 

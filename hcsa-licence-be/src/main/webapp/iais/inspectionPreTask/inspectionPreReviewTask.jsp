@@ -107,7 +107,7 @@
                   </div>
                 </div>
                 <div align="center">
-                  <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?appId=${applicationViewDto.applicationDto.id}" target="_blank">
+                  <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService" target="_blank">
                     <button type="button" class="btn btn-primary">
                       View Application
                     </button>

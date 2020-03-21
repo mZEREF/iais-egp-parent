@@ -34,6 +34,13 @@
    <probepoint type="none"/>
    <OnStepProcess/>
   </ReturnInvokeProcessStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Step6" x="1060" y="120">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step6_OnStepProcess_0" name="step6_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="480" y="100">
@@ -74,6 +81,12 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(730,120)(597,273)(500,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step6" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Page2" style="oblique">
+   <position>{(910,70)(1080,140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Step4" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Step6" style="oblique">
+   <position>{(1080,140)(1090,240)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>

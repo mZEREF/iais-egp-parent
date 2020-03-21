@@ -78,6 +78,10 @@ public class LicenceViewServiceDelegator {
      */
     public void PrepareViewData(BaseProcessClass bpc) throws Exception{
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData start ..."));
+        String rfi = bpc.request.getParameter("rfi");
+        if(!StringUtil.isEmpty(rfi)){
+            bpc.request.setAttribute("rfi","rfi");
+        }
         bpc.request.getSession().removeAttribute(NOT_VIEW);
         ApplicationViewDto applicationViewDto=(ApplicationViewDto) bpc.request.getSession().getAttribute("applicationViewDto");
         AppSubmissionDto appSubmissionDto;

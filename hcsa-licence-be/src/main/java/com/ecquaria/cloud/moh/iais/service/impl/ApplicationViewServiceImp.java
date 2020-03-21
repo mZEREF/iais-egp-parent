@@ -103,6 +103,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
     @Override
     public ApplicationViewDto getApplicationViewDtoByCorrId(String appCorId) {
+        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(appCorId);
         ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(appCorId);
         List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
         List<OrgUserDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
@@ -163,7 +164,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                 }
             }
         }
-
+        applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         return applicationViewDto;
     }
 

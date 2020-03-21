@@ -509,8 +509,10 @@
 
   <div class="amended-service-info-gp">
     <h2>SERVICE SPECIFIC DOCUMENTS &nbsp;&nbsp;&nbsp;&nbsp;
-      <c:if test="${applicationViewDto.appEditSelectDto.docEdit}">
-      <input class="form-check-input" id="serviceCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="doc">
+      <c:if test="${rfi=='rfi'}">
+        <c:if test="${applicationViewDto.appEditSelectDto.docEdit}">
+          <input class="form-check-input" id="serviceCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="doc">
+        </c:if>
       </c:if>
     </h2>
       <div class="amend-preview-info">

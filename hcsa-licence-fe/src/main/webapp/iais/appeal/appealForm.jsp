@@ -99,7 +99,7 @@
   <div >
     <div>
       <div class="col-xs-12 col-md-10" >
-        <label style="font-size: 25px;margin-top: 25px;" >File Upload for Appeal Reasons</label>
+        <label style="font-size: 25px;margin-top: 25px;" >File Upload For Appeal Reasons</label>
       </div>
 
       <div class="col-xs-12">

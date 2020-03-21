@@ -43,8 +43,10 @@
                           <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
                             <div class="panel-body">
                               <p class="text-right">
-                                <c:if test="${appEdit.premisesEdit || appEdit.premisesListEdit }" >
-                                  <input class="form-check-input" id="premisesCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="premises">
+                                <c:if test="${rfi=='rfi'}">
+                                  <c:if test="${appEdit.premisesEdit || appEdit.premisesListEdit }" >
+                                    <input class="form-check-input" id="premisesCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="premises">
+                                  </c:if>
                                 </c:if>
                                  </p>
                               <c:forEach var="appGrpPremDto" items="${appSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
@@ -181,8 +183,10 @@
                             <div class=" panel-collapse collapse" id="collapseServiceInfo0" role="tabpanel" aria-labelledby="headingServiceInfo0">
                               <div class="panel-body">
                                 <p class="text-right">
-                                  <c:if test="${appEdit.serviceEdit}" >
-                                    <input class="form-check-input" id="serviceCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="service">
+                                  <c:if test="${rfi=='fri'}">
+                                    <c:if test="${appEdit.serviceEdit}" >
+                                      <input class="form-check-input" id="serviceCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="service">
+                                    </c:if>
                                   </c:if>
                                 </p>
                                 <iframe  class="svc-iframe" title="" src="${pageContext.request.contextPath}/eservice/INTRANET/MOHServiceView" id="elemId-0"  width="100%" height="100%" ></iframe> <!--scrolling="no" scrollbar="no" -->
@@ -193,14 +197,16 @@
                     </div>
                   </div>
                 </div>
+
                 <div class="application-tab-footer">
                   <div class="row">
                     <div class="col-xs-12 col-sm-6">
 
                     </div>
-                    <div class="col-xs-12 col-sm-6">
-                      <div class="button-group"><a class="next btn btn-primary" id = "previewNext">SUBMIT </a></div>
-                    </div>
+                    <c:if test="${rfi=='rfi'}">
+                      <div class="col-xs-12 col-sm-6">
+                       <div class="button-group"><a class="next btn btn-primary" id = "previewNext">SUBMIT </a></div>
+                    </div></c:if>
                   </div>
                 </div>
               </div>

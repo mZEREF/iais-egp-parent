@@ -602,9 +602,9 @@
                                                 <%--</table>--%>
                                                 </iais:section>
                                                 <div align="center">
-                                                    <button id="submitButton" type="button" class="btn btn-primary">
-                                                        Submit
-                                                    </button>
+                                                        <button id="submitButton" type="button" class="btn btn-primary">
+                                                            Submit
+                                                        </button>
                                                 </div>
                                                 <div>&nbsp</div>
                                             </div>
@@ -772,7 +772,7 @@
     $("[name='verified']").change(function selectChange() {
         var selectValue = $("[name='verified']").val();
         if (selectValue == "PROCRFI") {
-            showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService');
+            showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
         } else {
             $('#rfiSelect').hide();
         }

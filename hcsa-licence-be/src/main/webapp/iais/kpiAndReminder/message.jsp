@@ -15,16 +15,26 @@
   <input type="hidden" name="crud_action_type" value="">
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
-  <div class="bg-title">
+  <div class="bg-title" style="margin-top:1%;margin-left: 1%  ">
 
       <h2>Acknowledgement</h2>
 
 
   </div>
   <input style="display: none" value="${message}" id="message">
-  <label class="complete" ></label>
+  <label class="complete" style="margin-left: 1%"></label>
 
+  <div class="application-tab-footer">
+    <div class="row">
+      <div class="col-xs-12 col-sm-10">
+        <div class="text-right text-center-mobile">
 
+          <a class="btn btn-primary" href="#" id="cancel">Cancel</a>
+
+        </div>
+      </div>
+    </div>
+  </div>
 
 </form>
 </div>
@@ -34,5 +44,8 @@
       $("#message +label").html($('#message').val());
   });
 
+  $('#cancel').click(function () {
+      SOP.Crud.cfxSubmit("mainForm", "cancel");
+  });
 </script>
 </>

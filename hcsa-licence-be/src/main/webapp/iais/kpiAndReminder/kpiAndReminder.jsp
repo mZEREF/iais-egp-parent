@@ -20,7 +20,7 @@
     <div class="center-content">
       <div class="intranet-content">
         <div class="bg-title">
-                <h2>Add KPI and Reminder Threshold</h2>
+                <h2>Add KPI And Reminder Threshold</h2>
         </div>
 
       <div class="form-group">
@@ -28,7 +28,7 @@
           <label class="col-xs-12 col-md-4 control-label">Module:</label>
           <div class="col-xs-8 col-sm-6 col-md-5" style="margin-bottom: 1%">
             <select  name="module"  id="module" >
-              <option  value="">Select one</option>
+              <option  value="">Please Select</option>
               <option <c:if test="${module=='APTY002'}">selected="selected"</c:if>  value="APTY002" >New</option>
               <option <c:if test="${module=='APTY004'}">selected="selected"</c:if>  value="APTY004"  >Renewal</option>
               <option  <c:if test="${module=='APTY005'}">selected="selected"</c:if> value="APTY005">Request for Change</option>
@@ -49,7 +49,7 @@
                <label class="col-xs-12 col-md-4 control-label">Service</label>
                <div class="col-xs-8 col-sm-6 col-md-5" style="margin-top: 1%;margin-bottom: 1%">
                  <select name="service"  id="service">
-                   <option value="" >Select one</option>
+                   <option value="" >Please Select</option>
                    <c:forEach items="${hcsaServiceDtos}" var="hcsaServiceDto">
                      <option value="${hcsaServiceDto.svcCode}"   <c:if test="${service==hcsaServiceDto.svcCode}">selected="selected" </c:if>>${hcsaServiceDto.svcDesc}</option>
                    </c:forEach>
@@ -122,8 +122,10 @@
          <div class="row">
            <div class="col-xs-12 col-sm-10">
              <div class="text-right text-center-mobile">
-                  <a class="btn btn-primary" href="#" id="createRole">Submit</a>
+
                   <a class="btn btn-primary" href="#" id="cancel">Cancel</a>
+                  <a class="btn btn-primary" href="#" id="createRole">Submit</a>
+
              </div>
            </div>
            </div>
