@@ -347,8 +347,10 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         inspectionReportDto.setHciAddress(appInsRepDto.getHciAddress());
         inspectionReportDto.setReasonForVisit(reasonForVisit);
         inspectionReportDto.setInspectionDate(inspectionDate);
-        inspectionReportDto.setInspectionStartTime(inspectionStartTime);
-        inspectionReportDto.setInspectionEndTime(inspectionEndTime);
+        assert inspectionStartTime != null;
+        inspectionReportDto.setInspectionStartTime(inspectionStartTime.toString());
+        assert inspectionEndTime != null;
+        inspectionReportDto.setInspectionEndTime(inspectionEndTime.toString());
         inspectionReportDto.setBestPractice(bestPractice);
         inspectionReportDto.setTaskRemarks(remarks);
         inspectionReportDto.setCurrentStatus(status);
