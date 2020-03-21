@@ -116,7 +116,7 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
         SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter,true);
-        inboxParam.addFilter("userId", interInboxUserDto.getUserId(),true);
+        inboxParam.addFilter("userId", interInboxUserDto.getLicenseeId(),true);
         inboxParam.addFilter(InboxConst.MESSAGE_STATUS, msgArchiverStatus,true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
         SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
@@ -188,7 +188,7 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
         SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter,true);
-        inboxParam.addFilter("userId", interInboxUserDto.getUserId(),true);
+        inboxParam.addFilter("userId", interInboxUserDto.getLicenseeId(),true);
         inboxParam.addFilter(InboxConst.MESSAGE_STATUS, msgStatus,true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
         SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
@@ -575,7 +575,7 @@ public class InterInboxDelegator {
     private void setNumInfoToRequest(HttpServletRequest request,InterInboxUserDto interInboxUserDto){
         Integer licActiveNum = inboxService.licActiveStatusNum(interInboxUserDto.getLicenseeId());
         Integer appDraftNum = inboxService.appDraftNum(interInboxUserDto.getLicenseeId());
-        Integer unreadAndresponseNum = inboxService.unreadAndUnresponseNum(interInboxUserDto.getUserId());
+        Integer unreadAndresponseNum = inboxService.unreadAndUnresponseNum(interInboxUserDto.getLicenseeId());
         ParamUtil.setRequestAttr(request,"unreadAndresponseNum", unreadAndresponseNum);
         ParamUtil.setRequestAttr(request,"licActiveNum", licActiveNum);
         ParamUtil.setRequestAttr(request,"appDraftNum", appDraftNum);
