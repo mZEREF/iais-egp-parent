@@ -54,21 +54,22 @@
                     $premContent.find('.new-premise-form-conv').addClass('hidden');
                     var data = {};
                     fillForm('onSite',data,$premContent);
-                    setAddress('',$premContent);
+                    setAddress('onSite',data,$premContent);
                 }else if ("conveyanceSel" == thisId) {
                     $premContent.find('.new-premise-form-conv').removeClass('hidden');
                     $premContent.find('.new-premise-form-on-site').addClass('hidden');
                     var data = {};
-                    fillForm('conveyanceSel',data,$premContent);
-                    setAddress('',$premContent);
+                    fillForm('conveyance',data,$premContent);
+                    setAddress('conveyance',data,$premContent);
                 }
             }else if("-1" == premSelectVal){
                 $premContent.find('.new-premise-form-conv').addClass('hidden');
                 $premContent.find('.new-premise-form-on-site').addClass('hidden');
                 var data = {};
                 fillForm('onSite',data,$premContent);
-                fillForm('conveyanceSel',data,$premContent);
-                setAddress('',$premContent);
+                fillForm('conveyance',data,$premContent);
+                setAddress('onSite',data,$premContent);
+                setAddress('conveyance',data,$premContent);
             }else{
                 <!--choose already exist premises -->
                 var premisesType = '';
@@ -97,10 +98,9 @@
                         if(data == null){
                             return;
                         }
-
                         if(premisesType != ''){
                             fillForm(premisesType,data,$premContent);
-                            setAddress(data.addrType,$premContent);
+                            setAddress(premisesType,data,$premContent);
                             <!--set ph -->
                             fillPhForm(premisesType,data.appPremPhOpenPeriodList,$premContent);
 
@@ -390,34 +390,59 @@
     }
 
 
-    var setAddress = function(data,$Ele){
+    var setAddress = function(premisesType,data,$Ele){
         var $AddrEle = $Ele;
-        $AddrEle.find('select[name="onSiteAddressType"]').val(data);
-        var addressVal = $AddrEle.find('option[value="' + data + '"]').html();
-        $AddrEle.find('select[name="onSiteAddressType"]').next().find('.current').html(addressVal);
-        $AddrEle.find('select[name="conveyanceAddressType"]').next().find('.current').html(addressVal);
+
+        if('onSite' == premisesType){
+            var addrVal = data.addrType;
+            if(addrVal == undefined){
+                addrVal = '';
+            }
+            $AddrEle.find('select[name="onSiteAddressType"]').val(addrVal);
+            var addressVal = $AddrEle.find('option[value="' + addrVal + '"]').html();
+            $AddrEle.find('select[name="onSiteAddressType"]').next().find('.current').html(addressVal);
+        }else if('conveyance' == premisesType){
+            var addrVal = data.conveyanceAddressType;
+            if(addrVal == undefined){
+                addrVal = '';
+            }
+            $AddrEle.find('select[name="conveyanceAddressType"]').val(addrVal);
+            var addressVal = $AddrEle.find('option[value="' + addrVal + '"]').html();
+            $AddrEle.find('select[name="conveyanceAddrType"]').next().find('.current').html(addressVal);
+        }
     }
 
     var fillForm = function (premisesType,data,$Ele) {
         var $premSelect = $Ele;
-        $premSelect.find('input[name="'+premisesType+'VehicleNo"]').val(data.hciName);
-        $premSelect.find('input[name="'+premisesType+'BlockNo"]').val(data.blkNo);
-        $premSelect.find('input[name="'+premisesType+'HciName"]').val(data.hciName);
-        $premSelect.find('input[name="'+premisesType+'PostalCode"]').val(data.postalCode);
-        $premSelect.find('input[name="'+premisesType+'BlkNo"]').val(data.blkNo);
-        $premSelect.find('input[name="'+premisesType+'FloorNo"]').val(data.floorNo);
-        $premSelect.find('input[name="'+premisesType+'UnitNo"]').val(data.unitNo);
-        $premSelect.find('input[name="'+premisesType+'BuildingName"]').val(data.buildingName);
-        $premSelect.find('input[name="'+premisesType+'StreetName"]').val(data.streetName);
-        $premSelect.find('input[name="'+premisesType+'ScdfRefNo"]').val(data.scdfRefNo);
-        $premSelect.find('input[name="'+premisesType+'FireSafetyCertIssuedDate"]').val(data.certIssuedDtStr);
-        $premSelect.find('input[name="'+premisesType+'OffTelNo"]').val(data.offTelNo);
-        $premSelect.find('input[name="'+premisesType+'IsOtherLic"]').val(data.locateWithOthers);
-        $premSelect.find('input[name="'+premisesType+'StartHH"]').val(data.onsiteStartHH);
-        $premSelect.find('input[name="'+premisesType+'StartMM"]').val(data.onsiteStartMM);
-        $premSelect.find('input[name="'+premisesType+'EndHH"]').val(data.onsiteEndHH);
-        $premSelect.find('input[name="'+premisesType+'EndMM"]').val(data.onsiteEndMM);
-
+        if('onSite' == premisesType){
+            $premSelect.find('input[name="'+premisesType+'HciName"]').val(data.hciName);
+            $premSelect.find('input[name="'+premisesType+'PostalCode"]').val(data.postalCode);
+            $premSelect.find('input[name="'+premisesType+'BlkNo"]').val(data.blkNo);
+            $premSelect.find('input[name="'+premisesType+'FloorNo"]').val(data.floorNo);
+            $premSelect.find('input[name="'+premisesType+'UnitNo"]').val(data.unitNo);
+            $premSelect.find('input[name="'+premisesType+'BuildingName"]').val(data.buildingName);
+            $premSelect.find('input[name="'+premisesType+'StreetName"]').val(data.streetName);
+            $premSelect.find('input[name="'+premisesType+'ScdfRefNo"]').val(data.scdfRefNo);
+            $premSelect.find('input[name="'+premisesType+'FireSafetyCertIssuedDate"]').val(data.certIssuedDtStr);
+            $premSelect.find('input[name="'+premisesType+'OffTelNo"]').val(data.offTelNo);
+            $premSelect.find('input[name="'+premisesType+'IsOtherLic"]').val(data.locateWithOthers);
+            $premSelect.find('input[name="'+premisesType+'StartHH"]').val(data.onsiteStartHH);
+            $premSelect.find('input[name="'+premisesType+'StartMM"]').val(data.onsiteStartMM);
+            $premSelect.find('input[name="'+premisesType+'EndHH"]').val(data.onsiteEndHH);
+            $premSelect.find('input[name="'+premisesType+'EndMM"]').val(data.onsiteEndMM);
+        }else if('conveyance' == premisesType){
+            $premSelect.find('input[name="'+premisesType+'VehicleNo"]').val(data.conveyanceVehicleNo);
+            $premSelect.find('input[name="'+premisesType+'BlockNo"]').val(data.conveyanceBlockNo);
+            $premSelect.find('input[name="'+premisesType+'PostalCode"]').val(data.conveyancePostalCode);
+            $premSelect.find('input[name="'+premisesType+'FloorNo"]').val(data.conveyanceFloorNo);
+            $premSelect.find('input[name="'+premisesType+'UnitNo"]').val(data.conveyanceUnitNo);
+            $premSelect.find('input[name="'+premisesType+'BuildingName"]').val(data.conveyanceBuildingName);
+            $premSelect.find('input[name="'+premisesType+'StreetName"]').val(data.conveyanceStreetName);
+            $premSelect.find('input[name="'+premisesType+'StartHH"]').val(data.conStartHH);
+            $premSelect.find('input[name="'+premisesType+'StartMM"]').val(data.conStartMM);
+            $premSelect.find('input[name="'+premisesType+'EndHH"]').val(data.conEndHH);
+            $premSelect.find('input[name="'+premisesType+'EndMM"]').val(data.conEndMM);
+        }
     }
 
     var fillPhForm = function (premisesType,phList,$Ele) {
