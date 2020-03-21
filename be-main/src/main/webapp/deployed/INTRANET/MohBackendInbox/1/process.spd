@@ -65,6 +65,13 @@
     <JavaCode defClass="" executor="" methodName="approve_OnStepProcess_0" name="approve_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ChangeRole" x="460" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="changeRole_OnStepProcess_0" name="changeRole_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InboxPage" stageIndicator="" x="410" y="100">
@@ -133,6 +140,12 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/SearchInit" linkstyle="Direct" name="" sourceName="/Pages/WebPage/successPage" style="oblique">
    <position>{(870,440)(180,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ChangeRole" linkstyle="Direct" name="" sourceName="/Switches/Switch/SearchStartSwitch" style="oblique">
+   <position>{(720,120)(480,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SearchQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ChangeRole" style="oblique">
+   <position>{(480,250)(750,440)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/SearchStart" componentIfTrue="/Pages/WebPage/InboxPage" defClass="" executor="" icon="" leftOperand="flag" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="350" y="100">
@@ -146,6 +159,7 @@
    <SwitchCase component="/Steps/AutomaticStep/SearchPage" value="&quot;page&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/SearchSort" value="&quot;sort&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Approve" value="&quot;approve&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/ChangeRole" value="&quot;changeRole&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

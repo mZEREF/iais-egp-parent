@@ -411,7 +411,7 @@
 
     function chooseCurRole() {
         showWaiting();
-        submit('page');
+        submit('changeRole');
     }
 
     function isInArray(arr,value){

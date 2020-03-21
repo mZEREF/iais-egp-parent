@@ -56,6 +56,11 @@ public class INTRANET___MohBackendInbox___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doApprove", this);
 	}
 
+	public void changeRole_OnStepProcess_0() throws Exception {
+	// 		ChangeRole->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "changeRole", this);
+	}
+
 	
 
 }

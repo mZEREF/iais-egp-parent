@@ -82,11 +82,8 @@ public class BackendInboxDelegator {
     private SearchParam searchParamGroup;
     private List<TaskDto> commPools;
     public void start(BaseProcessClass bpc){
+        AccessUtil.initLoginUserInfo(bpc.request);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if (loginContext == null) {
-            AccessUtil.initLoginUserInfo(bpc.request);
-            loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        }
         List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
         for (String item : loginContext.getRoleIds()) {
             selectOptionArrayList.add(new SelectOption(item,item));
@@ -198,14 +195,20 @@ public class BackendInboxDelegator {
      * @throws
      */
     public void searchPage(BaseProcessClass bpc){
+        CrudHelper.doPaging(searchParamGroup,bpc.request);
+    }
+
+    public void changeRole(BaseProcessClass bpc){
+        initSearchParam();
         String curRole = ParamUtil.getRequestString(bpc.request, "roleIds");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         loginContext.setCurRoleId(curRole);
         ParamUtil.setSessionAttr(bpc.request,"curRole",curRole);
-        CrudHelper.doPaging(searchParamGroup,bpc.request);
         ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
         commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
     }
+
+
 
     private List<TaskDto> getCommPoolBygetUserId(String getUserId, String curRole) {
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
