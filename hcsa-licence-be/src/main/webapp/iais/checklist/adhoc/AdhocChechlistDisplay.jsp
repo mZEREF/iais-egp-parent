@@ -21,7 +21,7 @@
     <c:when test="${empty inspectionChecklistAttr}">
         <tr>
             <td colspan="6">
-                No Record!!
+                <iais:message key="ACK018" escape="true"></iais:message>
             </td>
         </tr>
     </c:when>

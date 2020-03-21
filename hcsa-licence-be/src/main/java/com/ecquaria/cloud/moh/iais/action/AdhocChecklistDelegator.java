@@ -272,17 +272,17 @@ public class AdhocChecklistDelegator {
         if (adhocCheckListConifgDto != null){
             List<AdhocChecklistItemDto> allAdhocItem = adhocCheckListConifgDto.getAllAdhocItem();
             log.debug("indicates that a record has been selected ");
-
-            allAdhocItem.removeIf(i -> StringUtil.isEmpty(i.getItemId()));
-
-            String statusStr = SqlHelper.constructNotInCondition("item.id", allAdhocItem.size());
-            // <#if adhocItemId??> and ${adhocItemId} </#if>
-            searchParam.addParam("adhocItemId", statusStr);
-            int indx = 0;
-            for (AdhocChecklistItemDto adhocChecklistItemDto : allAdhocItem){
-                String itemId = adhocChecklistItemDto.getItemId();
-                searchParam.addFilter("item.id"+indx, itemId);
-                indx++;
+            if (!IaisCommonUtils.isEmpty(allAdhocItem)){
+                allAdhocItem.removeIf(i -> StringUtil.isEmpty(i.getItemId()));
+                String statusStr = SqlHelper.constructNotInCondition("item.id", allAdhocItem.size());
+                // <#if adhocItemId??> and ${adhocItemId} </#if>
+                searchParam.addParam("adhocItemId", statusStr);
+                int indx = 0;
+                for (AdhocChecklistItemDto adhocChecklistItemDto : allAdhocItem){
+                    String itemId = adhocChecklistItemDto.getItemId();
+                    searchParam.addFilter("item.id"+indx, itemId);
+                    indx++;
+                }
             }
         }
 

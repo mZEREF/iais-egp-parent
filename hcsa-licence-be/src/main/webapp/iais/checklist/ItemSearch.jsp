@@ -116,7 +116,7 @@
                       <c:when test="${empty checklistItemResult.rows}">
                         <tr>
                           <td colspan="6">
-                            No Record!!
+                            <iais:message key="ACK018" escape="true"></iais:message>
                           </td>
                         </tr>
                       </c:when>

@@ -52,7 +52,10 @@
                     <p style="width: 300px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">${result.subject}</p>
                   </td>
                   <td>
-                    <p>${result.result}</p>
+                    <c:forEach var="msg" items="${result.errorMsgList}">
+                      <c:out value="${msg}"></c:out><br>
+                    </c:forEach>
+
                   </td>
                 </tr>
               </c:forEach>

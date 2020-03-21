@@ -38,7 +38,7 @@
           <div class="col-xs-12">
             <c:if test="${messageContent != null}">
               <c:forEach var = "msg" items="${messageContent}">
-                <strong>${msg.subject}: ${msg.result}</strong><br>
+                <strong>${msg.subject}: ${msg.errorMsg}</strong><br>
               </c:forEach>
             </c:if>
             <br><br>
@@ -60,7 +60,7 @@
                     <c:when test="${empty cloneItems}">
                       <tr>
                         <td colspan="6">
-                          No Record!!
+                          <iais:message key="ACK018" escape="true"></iais:message>
                         </td>
                       </tr>
                     </c:when>

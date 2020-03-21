@@ -29,7 +29,7 @@
                             <c:when test="${empty MsgTemplateSearchResult.rows}">
                                 <tr>
                                     <td colspan="12">
-                                        No Record!!
+                                        <iais:message key="ACK018" escape="true"></iais:message>
                                     </td>
                                 </tr>
                             </c:when>

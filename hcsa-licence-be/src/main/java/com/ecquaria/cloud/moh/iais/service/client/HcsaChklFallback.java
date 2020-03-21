@@ -16,7 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQuer
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.message.MessageContent;
+import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
@@ -106,7 +106,7 @@ public class HcsaChklFallback implements HcsaChklClient{
     }
 
     @Override
-    public FeignResponseEntity<IaisApiResult<List<MessageContent>>> saveUploadItems(List<ChecklistItemDto> checklistItemList) {
+    public FeignResponseEntity<IaisApiResult<List<ErrorMsgContent>>> saveUploadItems(List<ChecklistItemDto> checklistItemList) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -210,10 +210,11 @@ public class HcsaChklFallback implements HcsaChklClient{
     }
 
     @Override
-    public FeignResponseEntity<IaisApiResult<List<MessageContent>>> submitHcsaChklSvcRegulation(List<HcsaChklSvcRegulationDto> regulationList) {
+    public FeignResponseEntity<IaisApiResult<List<ErrorMsgContent>>> submitHcsaChklSvcRegulation(List<HcsaChklSvcRegulationDto> regulationList) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
+
 }

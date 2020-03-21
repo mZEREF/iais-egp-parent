@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -55,11 +56,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Delegator(value = "hcsaChklItemDelegator")
 @Slf4j
@@ -194,38 +195,37 @@ public class HcsaChklItemDelegator {
             return;
         }
 
-        String json = "";
-
-        List<MessageContent> messageContentList = IaisCommonUtils.genNewArrayList();
+        List<ErrorMsgContent> errorMsgContentList = new ArrayList<>();
         File toFile = FileUtils.multipartFileToFile(file);
         try {
             switch (value){
                 case REGULATION:
                     List<HcsaChklSvcRegulationDto> regulationDtoList = FileUtils.transformToJavaBean(toFile, HcsaChklSvcRegulationDto.class);
-                    messageContentList = hcsaChklService.submitUploadRegulation(regulationDtoList);
+                    errorMsgContentList = hcsaChklService.submitUploadRegulation(regulationDtoList);
                     break;
                 case CHECKLIST_ITEM:
                     List<ChecklistItemDto> checklistItemDtoList = FileUtils.transformToJavaBean(toFile, ChecklistItemDto.class);
-                    checklistItemDtoList = checklistItemDtoList.stream().filter(i -> !StringUtil.isEmpty(i.getChecklistItem())).collect(Collectors.toList());
-                    messageContentList  = hcsaChklService.submitUploadItems(checklistItemDtoList);
+                    errorMsgContentList  = hcsaChklService.submitUploadItems(checklistItemDtoList);
                     break;
                 default:
             }
         }catch (IaisRuntimeException e){
-            errorMap.put(FILE_UPLOAD_ERROR, MessageCodeKey.CHKL_ERR011);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(FILE_UPLOAD_ERROR, "CHKL_ERR011"));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             log.error(e.getMessage());
             return;
         }
 
-        for (MessageContent messageContent : messageContentList){
-            String msg = MessageUtil.getMessageDesc(messageContent.getResult());
-            messageContent.setResult(msg);
+        for (ErrorMsgContent errorMsgContent : errorMsgContentList){
+            int idx = 0;
+            for(String error : errorMsgContent.getErrorMsgList()){
+                String msg = MessageUtil.getMessageDesc(error);
+                errorMsgContent.getErrorMsgList().set(idx++, msg);
+            }
         }
 
         ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
-        ParamUtil.setRequestAttr(request, "messageContent", messageContentList);
+        ParamUtil.setRequestAttr(request, "messageContent", errorMsgContentList);
         FileUtils.deleteTempFile(toFile);
     }
 

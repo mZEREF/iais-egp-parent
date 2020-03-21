@@ -15,7 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.message.MessageContent;
+import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -139,8 +139,8 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     }
 
     @Override
-    public List<MessageContent> submitUploadRegulation(List<HcsaChklSvcRegulationDto> regulationExcelList) {
-        IaisApiResult<List<MessageContent>> iaisApiResult = chklClient.submitHcsaChklSvcRegulation(regulationExcelList).getEntity();
+    public List<ErrorMsgContent> submitUploadRegulation(List<HcsaChklSvcRegulationDto> regulationExcelList) {
+        IaisApiResult<List<ErrorMsgContent>> iaisApiResult = chklClient.submitHcsaChklSvcRegulation(regulationExcelList).getEntity();
         try {
             //sync to fe
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -158,8 +158,8 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     }
 
     @Override
-    public List<MessageContent> submitUploadItems(List<ChecklistItemDto> uploadItems) {
-        IaisApiResult<List<MessageContent>> iaisApiResult = chklClient.saveUploadItems(uploadItems).getEntity();
+    public List<ErrorMsgContent> submitUploadItems(List<ChecklistItemDto> uploadItems) {
+        IaisApiResult<List<ErrorMsgContent>> iaisApiResult = chklClient.saveUploadItems(uploadItems).getEntity();
         return iaisApiResult.getEntity();
     }
 }

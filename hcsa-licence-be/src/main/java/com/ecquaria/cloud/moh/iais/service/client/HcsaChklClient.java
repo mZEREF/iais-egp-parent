@@ -16,7 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQuer
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.message.MessageContent;
+import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -64,7 +64,7 @@ public interface HcsaChklClient {
     FeignResponseEntity<String> submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos);
 
     @PostMapping(path = "/iais-hcsa-checklist/item/items-upload", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<IaisApiResult<List<MessageContent>>> saveUploadItems(List<ChecklistItemDto> checklistItemList);
+    FeignResponseEntity<IaisApiResult<List<ErrorMsgContent>>> saveUploadItems(List<ChecklistItemDto> checklistItemList);
 
     @PostMapping(path = "/iais-hcsa-checklist/config", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ChecklistConfigDto> submitConfig(ChecklistConfigDto checklistConfigDto);
@@ -108,5 +108,5 @@ public interface HcsaChklClient {
     FeignResponseEntity<Boolean> isExistsRecord(@RequestBody ChecklistConfigDto configDto);
 
     @PostMapping(value = "/iais-hcsa-checklist/regulation/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<IaisApiResult<List<MessageContent>>> submitHcsaChklSvcRegulation(@RequestBody List<HcsaChklSvcRegulationDto> regulationList);
+    FeignResponseEntity<IaisApiResult<List<ErrorMsgContent>>> submitHcsaChklSvcRegulation(@RequestBody List<HcsaChklSvcRegulationDto> regulationList);
 }
