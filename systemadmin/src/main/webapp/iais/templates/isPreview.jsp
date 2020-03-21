@@ -91,7 +91,7 @@
                         </div>
                         <div class="row" style="padding-bottom: 40px;">
                             <div class="col-xs-12 col-md-12">
-                                <div class="text-right"><a class="btn btn-primary" id="BackMain">Back</a></div>
+                                <a id="BackMain"><em class="fa fa-angle-left"></em> Back</a>
                             </div>
                         </div>
                     </div>

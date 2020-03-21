@@ -307,13 +307,16 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="input-group">
                                     <div class="ax_default text_area">
                                         <h4><strong>TCU</strong></h4> <input type="checkbox" id="tcuType"  value="tcuType"  <c:if test="${serListDto.tcuFlag == true}">checked</c:if>  name="tcuType" onclick="javascript: showTcuLabel(this);">
+                                    </div>
                                     </div>
 
                                     <div class="input-group" id="tcuLabel">
                                         <div class="ax_default text_area">
-                                            <h4><strong>TCU Date</strong></h4> &nbsp;<iais:datePicker id = "tuc" name = "tuc" value="${serListDto.tuc}"></iais:datePicker><br>
+                                            <span  style="font-size: 18px"><strong>TCU Date</strong></span>
+                                            <iais:datePicker id = "tuc" name = "tuc" value="${serListDto.tuc}"></iais:datePicker>
                                             <span class="error-msg" id="error_tcuDate" name="iaisErrorMsg"></span>
                                         </div>
                                     </div>

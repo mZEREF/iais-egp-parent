@@ -167,6 +167,13 @@
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
+                                                <c:if test="${appSupDocDtoListNull == 'Y'}">
+                                                    <tr>
+                                                        <td colspan="5" align="center">
+                                                            <p>No record found.</p>
+                                                        </td>
+                                                    </tr>
+                                                </c:if>
                                                 </tbody>
 
                                             </table>
@@ -209,7 +216,7 @@
                                     <div class="table-gp">
                                         <div class="alert alert-info" role="alert">
                                             <strong>
-                                                <h2 style="border-bottom: none">Processing Status Update</h2>
+                                                <h4 style="border-bottom: none">Processing Status Update</h4>
                                             </strong>
                                         </div>
                                         <div class="table-gp">
@@ -231,14 +238,14 @@
                                                     <iais:row>
                                                         <iais:field value="Internal Remarks" required="true"/>
                                                         <iais:value width="6">
-                                                            <iais:select name="processingDecision" options="processingDe" firstOption="Please select" value="${appPremisesRecommendationDto.processingDecision}"/>
-                                                            <span id="error_processingDecision" name="iaisErrorMsg" class="error-msg"/>
+                                                            <iais:select id="processSubmit" name="processingDecision" options="processingDe" firstOption="Please select" value="${appPremisesRecommendationDto.processingDecision}"/>
+                                                            <span id="error_submit" class="error-msg" hidden> The field is mandatory.</span>
                                                         </iais:value>
                                                     </iais:row>
                                             </iais:section>
 
                                             <iais:action style="text-align:right;">
-                                                <button id="submitButton" type="button" class="btn btn-primary" onclick="insRepsubmit()">SUBMIT</button>
+                                                <a id="submitButton"  class="btn btn-primary" onclick="insSubmit()">SUBMIT</a>
                                             </iais:action>
                                         </div>
                                         <br/>
@@ -303,7 +310,7 @@
     </div>
 </form>
 
-<script>
+<script >
     $(document).ready(function () {
         if("Y"=='${report}'){
             $('#reportClink').click();
@@ -311,5 +318,15 @@
             $('#report').addClass("active");
         }
     });
+
+    function insSubmit() {
+        var s = $("#processSubmit").val();
+        if(s=="" || s==null){
+            $("#error_submit").show();
+        }else if("submit"==s) {
+            $("#mainForm").submit();
+            $("#error_submit").hide();
+        }
+    }
 </script>
 

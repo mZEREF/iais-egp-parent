@@ -51,21 +51,20 @@ public class PostInspectionBatchJob {
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         Map<String, List<String>> map = hcsaLicenceClient.getPostInspectionMap().getEntity();
         map.forEach((insGrpId, licPremisIds) -> {
-            AppSubmissionDto appSubmissionDto = new AppSubmissionDto();
             String appNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT,signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
-            String appType = "APTY009";
+            String appType = "APTY008";
             Double amount = 0.0;
             AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
-
-//            hcsaLicenceClient.getAppSubmissionDto()
-
-            appSubmissionDto.setAppGrpNo(appNo);
-            appSubmissionDto.setAppType(appType);
-            appSubmissionDto.setAmount(amount);
-            appSubmissionDto.setAuditTrailDto(intranet);
-            appSubmissionDto.setPreInspection(true);
-            appSubmissionDto.setRequirement(true);
-
+            List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licPremisIds).getEntity();
+            for(AppSubmissionDto entity : appSubmissionDtoList){
+                entity.setAppGrpNo(appNo);
+                entity.setAppType(appType);
+                entity.setAmount(amount);
+                entity.setAuditTrailDto(intranet);
+                entity.setPreInspection(true);
+                entity.setRequirement(true);
+            }
+            applicationClient.saveAppsByPostInspection(appSubmissionDtoList);
         });
 
     }

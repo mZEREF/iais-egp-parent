@@ -9,7 +9,7 @@
 </webui:setAttribute>
 <webui:setLayout name="iais-internet"/>
 
-<form method="post" style="margin: 10%;" action=<%=process.runtime.continueURL()%>>
+<form method="post" style="margin: 10%;" id="bank" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <h2 style="border-bottom: none">This is a dummy bank payment page</h2>
     <iais:section title="">
@@ -42,9 +42,13 @@
     </iais:row>
     </iais:section>
     <iais:action style="margin-left: 10%">
-        <div style="margin-left: 10%">
-            <button type="submit">Proceed to pay</button>
-        </div>
+        <a class="btn btn-primary" href="#" onclick="submit()">Proceed to pay</a>
     </iais:action>
     <br/><br/>
 </form>
+<script type="text/javascript">
+    function submit() {
+        $("#bank").submit();
+    }
+
+</script>

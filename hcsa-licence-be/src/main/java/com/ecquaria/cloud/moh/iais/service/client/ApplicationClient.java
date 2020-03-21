@@ -193,4 +193,8 @@ public interface ApplicationClient {
     @PostMapping(value = "/iais-apppreinsncitem-be/nc-doc-zip", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String, List<AppPremPreInspectionNcDocDto>>> zipIsReadyByApplicationId(@RequestBody List<ProcessFileTrackDto> processFileTrackDtos);
+    @PostMapping(value = "/iais-application-be/application-rfc-licences",  consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppSubmissionDto>> saveAppsByPostInspection(@RequestBody List<AppSubmissionDto> appSubmissionDtos);
+
+
 }

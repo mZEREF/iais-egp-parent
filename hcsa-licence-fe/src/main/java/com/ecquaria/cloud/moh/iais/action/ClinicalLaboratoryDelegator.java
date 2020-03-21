@@ -42,6 +42,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -657,8 +658,8 @@ public class ClinicalLaboratoryDelegator {
 
             String crud_action_additional = ParamUtil.getRequestString(bpc.request, "nextStep");
             if ("next".equals(crud_action_additional)) {
-                doValidateDisciplineAllocation(errorMap, daList);
 
+                doValidateDisciplineAllocation(errorMap, daList,bpc.request);
                 if (appSubmissionDto.isNeedEditController()) {
                     Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DISCIPLINE_ALLOCATION);
@@ -1358,13 +1359,23 @@ public class ClinicalLaboratoryDelegator {
 
         return appSubmissionDto;
     }
-    private void doValidateDisciplineAllocation(Map<String ,String> map, List<AppSvcDisciplineAllocationDto> daList){
+    private void doValidateDisciplineAllocation(Map<String ,String> map, List<AppSvcDisciplineAllocationDto> daList,HttpServletRequest request){
+        Map<String,String> cgoMap=new HashMap<>();
         for(int i=0;i< daList.size();i++){
             String idNo = daList.get(i).getIdNo();
             if(StringUtil.isEmpty(idNo)){
                 map.put("disciplineAllocation"+i,"UC_CHKLMD001_ERR001");
+            }else {
+                cgoMap.put(idNo,idNo);
             }
         }
+        List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
+        if(appSvcCgoList!=null){
+            if(appSvcCgoList.size()!=cgoMap.size()){
+
+            }
+        }
+
     }
     private void  doValidateSvcDocument(HttpServletRequest request,Map<String,String> errorMap){
 
@@ -1459,7 +1470,7 @@ public class ClinicalLaboratoryDelegator {
                     AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode) ||
                     AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)){
                 specialtySelectList = IaisCommonUtils.genNewArrayList();
-                SelectOption ssl1 = new SelectOption("-1", "Please select");
+                SelectOption ssl1 = new SelectOption("-1", "Please Select");
                 SelectOption ssl2 = new SelectOption("Pathology", "Pathology");
                 SelectOption ssl3 = new SelectOption("Haematology", "Haematology");
                 SelectOption ssl4 = new SelectOption("other", "Others");
@@ -1471,7 +1482,7 @@ public class ClinicalLaboratoryDelegator {
                     AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode) ||
                     AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)){
                 specialtySelectList = IaisCommonUtils.genNewArrayList();
-                SelectOption ssl1 = new SelectOption("-1", "Please select");
+                SelectOption ssl1 = new SelectOption("-1", "Please Select");
                 SelectOption ssl2 = new SelectOption("Diagnostic Radiology", "Diagnostic Radiology");
                 SelectOption ssl3 = new SelectOption("Nuclear Medicine", "Nuclear Medicine");
                 SelectOption ssl4 = new SelectOption("other", "Others");

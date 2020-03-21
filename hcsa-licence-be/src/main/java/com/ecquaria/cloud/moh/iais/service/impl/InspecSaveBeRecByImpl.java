@@ -1,10 +1,10 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.InspecSaveBeRecByService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -40,7 +39,6 @@ import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
@@ -59,6 +57,9 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     private String download;
     private String zipFile;
     private String compressPath;
+
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     @Autowired
     private SystemBeLicClient systemBeLicClient;
@@ -80,9 +81,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     @Autowired
     private GenerateIdClient generateIdClient;
-
-    @Autowired
-    private FileRepoClient fileRepoClient;
 
     @Override
     public List<ProcessFileTrackDto> getFileTypeAndStatus(String applicationStatusFeToBeRectification, String commonStatusActive) {
@@ -181,61 +179,57 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         //file is backupsRec
         if(file.isDirectory()){
             File[] files = file.listFiles();
-            //save file
-            for(File file2:files){
-                //file2 is upload Directory, name is file report id
-                String reportId = file2.getName();
-                if(reportIds.contains(reportId)) {
-                    saveDataDtoAndFile(file2, intranet, submissionId);
-                }
-            }
-            processFileTrackDtos = zipIsReadyByApplicationId(processFileTrackDtos);
             for(ProcessFileTrackDto pDto:processFileTrackDtos){
-                String eventRefNo = pDto.getRefId();
-
                 appIds.add(pDto.getRefId());
-                pDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SAVE_SUCCESSFUL);
-                pDto.setAuditTrailDto(intranet);
-                pDto.setEventRefNo(eventRefNo);
+                for(File file2:files){
+                    //file2 is upload Directory, name is file report id
+                    String reportId = file2.getName();
+                    if(reportIds.contains(reportId)) {
+                        String eventRefNo = pDto.getRefId();
+                        saveDataDtoAndFile(file2, intranet, submissionId, reportIds);
+                        pDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SAVE_SUCCESSFUL);
+                        pDto.setAuditTrailDto(intranet);
+                        pDto.setEventRefNo(eventRefNo);
 
-                SubmitResp submitResp = eventBusHelper.submitAsyncRequest(pDto, submissionId, EventBusConsts.SERVICE_NAME_SYSTEM_ADMIN,
-                        EventBusConsts.OPERATION_BE_REC_DATA_COPY, pDto.getEventRefNo(), null);
-            }
-
-            log.debug(StringUtil.changeForLog("appIds:" + appIds.toString()));
-            if(!IaisCommonUtils.isEmpty(appIds)){
-                Set<String> appIdSet = new HashSet<>(appIds);
-                for(String appId : appIdSet){
-                    AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
-                    appPremCorrIds.add(appPremisesCorrelationDto.getId());
-                }
-                log.debug(StringUtil.changeForLog("appPremCorrIds:" + appPremCorrIds.toString()));
-            }
-            if(!IaisCommonUtils.isEmpty(appPremCorrIds)){
-                EventInspRecItemNcDto eventInspRecItemNcDto = new EventInspRecItemNcDto();
-                //get Task
-                eventInspRecItemNcDto.setAppPremCorrIds(appPremCorrIds);
-                eventInspRecItemNcDto.setAuditTrailDto(intranet);
-                eventInspRecItemNcDto = organizationClient.getEventInspRecItemNcTaskByCorrIds(eventInspRecItemNcDto).getEntity();
-
-                SubmitResp createTask = eventBusHelper.submitAsyncRequest(eventInspRecItemNcDto, submissionId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK,
-                        EventBusConsts.OPERATION_BE_REC_DATA_COPY, eventInspRecItemNcDto.getEventRefNo(), null);
-
-                //get Application / History / Inspection Status
-                if(eventInspRecItemNcDto.getTaskDtos() != null) {
-                    eventInspRecItemNcDto.setAuditTrailDto(intranet);
-                    eventInspRecItemNcDto = inspectionTaskClient.getEventInspRecItemNcDtoByCorrIds(eventInspRecItemNcDto).getEntity();
-                }
-
-                SubmitResp updateApp = eventBusHelper.submitAsyncRequest(eventInspRecItemNcDto, submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                        EventBusConsts.OPERATION_BE_REC_DATA_COPY, eventInspRecItemNcDto.getEventRefNo(), null);
-
-                //update Fe application
-                if(!IaisCommonUtils.isEmpty(eventInspRecItemNcDto.getApplicationDtos())){
-                    for(ApplicationDto applicationDto : eventInspRecItemNcDto.getApplicationDtos()){
-                        applicationDto.setAuditTrailDto(intranet);
-                        applicationService.updateFEApplicaiton(applicationDto);
+                        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(pDto, submissionId, EventBusConsts.SERVICE_NAME_SYSTEM_ADMIN,
+                                EventBusConsts.OPERATION_BE_REC_DATA_COPY, pDto.getEventRefNo(), null);
                     }
+                }
+            }
+        }
+        log.debug(StringUtil.changeForLog("appIds:" + appIds.toString()));
+        if(!IaisCommonUtils.isEmpty(appIds)){
+            Set<String> appIdSet = new HashSet<>(appIds);
+            for(String appId : appIdSet){
+                AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
+                appPremCorrIds.add(appPremisesCorrelationDto.getId());
+            }
+            log.debug(StringUtil.changeForLog("appPremCorrIds:" + appPremCorrIds.toString()));
+        }
+        if(!IaisCommonUtils.isEmpty(appPremCorrIds)){
+            EventInspRecItemNcDto eventInspRecItemNcDto = new EventInspRecItemNcDto();
+            //get Task
+            eventInspRecItemNcDto.setAppPremCorrIds(appPremCorrIds);
+            eventInspRecItemNcDto.setAuditTrailDto(intranet);
+            eventInspRecItemNcDto = organizationClient.getEventInspRecItemNcTaskByCorrIds(eventInspRecItemNcDto).getEntity();
+
+            SubmitResp createTask = eventBusHelper.submitAsyncRequest(eventInspRecItemNcDto, submissionId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK,
+                    EventBusConsts.OPERATION_BE_REC_DATA_COPY, eventInspRecItemNcDto.getEventRefNo(), null);
+
+            //get Application / History / Inspection Status
+            if(eventInspRecItemNcDto.getTaskDtos() != null) {
+                eventInspRecItemNcDto.setAuditTrailDto(intranet);
+                eventInspRecItemNcDto = inspectionTaskClient.getEventInspRecItemNcDtoByCorrIds(eventInspRecItemNcDto).getEntity();
+            }
+
+            SubmitResp updateApp = eventBusHelper.submitAsyncRequest(eventInspRecItemNcDto, submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                    EventBusConsts.OPERATION_BE_REC_DATA_COPY, eventInspRecItemNcDto.getEventRefNo(), null);
+
+            //update Fe application
+            if(!IaisCommonUtils.isEmpty(eventInspRecItemNcDto.getApplicationDtos())){
+                for(ApplicationDto applicationDto : eventInspRecItemNcDto.getApplicationDtos()){
+                    applicationDto.setAuditTrailDto(intranet);
+                    applicationService.updateFEApplicaiton(applicationDto);
                 }
             }
         }
@@ -243,45 +237,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         return saveFlag;
     }
 
-    private List<ProcessFileTrackDto> zipIsReadyByApplicationId(List<ProcessFileTrackDto> processFileTrackDtos) {
-        Map<String, List<AppPremPreInspectionNcDocDto>> appNcDocMap = applicationClient.zipIsReadyByApplicationId(processFileTrackDtos).getEntity();
-        List<String> noReadyAppId = IaisCommonUtils.genNewArrayList();
-        for(Map.Entry<String, List<AppPremPreInspectionNcDocDto>> map : appNcDocMap.entrySet()){
-            List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = map.getValue();
-            List<String> fileReportId = IaisCommonUtils.genNewArrayList();
-            if(!IaisCommonUtils.isEmpty(map.getValue())){
-                for(AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto : appPremPreInspectionNcDocDtos){
-                    fileReportId.add(appPremPreInspectionNcDocDto.getFileRepoId());
-                }
-                List<FileRepoDto> fileRepoDtos = fileRepoClient.getFilesByIds(fileReportId).getEntity();
-                int fileSize = fileRepoDtos.size();
-                int ncDocSize = appPremPreInspectionNcDocDtos.size();
-                if(fileSize != ncDocSize){
-                    noReadyAppId.add(map.getKey());
-                }
-            } else {
-                noReadyAppId.add(map.getKey());
-            }
-        }
-        processFileTrackDtos = getReadyFileTrack(processFileTrackDtos, noReadyAppId);
-        return processFileTrackDtos;
-    }
-
-    private List<ProcessFileTrackDto> getReadyFileTrack(List<ProcessFileTrackDto> processFileTrackDtos, List<String> noReadyAppId) {
-        if(!IaisCommonUtils.isEmpty(noReadyAppId) && !IaisCommonUtils.isEmpty(processFileTrackDtos)){
-            for(int i = 0; i < processFileTrackDtos.size(); i++){
-                for(String appId : noReadyAppId){
-                    if(appId.equals(processFileTrackDtos.get(i).getRefId())){
-                        processFileTrackDtos.remove(i);
-                        i--;
-                    }
-                }
-            }
-        }
-        return processFileTrackDtos;
-    }
-
-    private void saveDataDtoAndFile(File file2, AuditTrailDto intranet, String submissionId) {
+    private void saveDataDtoAndFile(File file2, AuditTrailDto intranet, String submissionId, List<String> reportIds) {
         try {
             if(file2.isDirectory()){
                 File[] files2 = file2.listFiles();

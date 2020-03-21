@@ -27,12 +27,13 @@ import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Process: MohInspectionPreInspector
@@ -119,6 +120,18 @@ public class InspectionPreDelegator {
         setInboxUrlToSession(bpc);
         List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption();
         List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
+
+        Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> mapInDto = inspectionPreTaskService.getSelfCheckListByCorrId(taskDto.getRefNo());
+        InspectionFillCheckListDto inspectionFillCheckListDto = new InspectionFillCheckListDto();
+        List<InspectionFillCheckListDto> ifcDtos = IaisCommonUtils.genNewArrayList();
+        if(mapInDto != null) {
+            for (Map.Entry<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> entry : mapInDto.entrySet()) {
+                inspectionFillCheckListDto = entry.getKey();
+                ifcDtos = entry.getValue();
+            }
+        }
+        ParamUtil.setSessionAttr(bpc.request,"commonDto",inspectionFillCheckListDto);
+        ParamUtil.setSessionAttr(bpc.request,"serListDto", (Serializable) ifcDtos);
 
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
@@ -248,18 +261,6 @@ public class InspectionPreDelegator {
      */
     public void inspectionPreInspectorSelf(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorSelf start ...."));
-        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
-        Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> mapInDto = inspectionPreTaskService.getSelfCheckListByCorrId(taskDto.getRefNo());
-        InspectionFillCheckListDto inspectionFillCheckListDto = new InspectionFillCheckListDto();
-        List<InspectionFillCheckListDto> ifcDtos = IaisCommonUtils.genNewArrayList();
-        if(mapInDto != null) {
-            for (Map.Entry<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> entry : mapInDto.entrySet()) {
-                inspectionFillCheckListDto = entry.getKey();
-                ifcDtos = entry.getValue();
-            }
-        }
-        ParamUtil.setSessionAttr(bpc.request,"commonDto",inspectionFillCheckListDto);
-        ParamUtil.setSessionAttr(bpc.request,"serListDto", (Serializable) ifcDtos);
     }
 
     /**

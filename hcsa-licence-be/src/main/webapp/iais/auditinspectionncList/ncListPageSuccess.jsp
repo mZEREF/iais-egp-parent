@@ -436,7 +436,7 @@
                                             </div>
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
-                                                    <h4>Remark</h4> <textarea cols="70" rows="7" name="tcuRemark" id="tcuRemark" disabled><c:out value="${serListDto.tcuRemark}"></c:out></textarea>
+                                                    <h4>Remarks</h4> <textarea cols="70" rows="7" name="tcuRemark" id="tcuRemark"  maxlength="300" disabled><c:out value="${serListDto.tcuRemark}"></c:out></textarea>
                                                     <span class="error-msg" id="error_tcuRemark" name="iaisErrorMsg"></span>
                                                 </div>
                                             </div>

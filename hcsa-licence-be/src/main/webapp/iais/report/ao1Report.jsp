@@ -13,7 +13,8 @@
     <input type="hidden" name="action_type" value="">
     <div class="row">
         <div class="alert alert-info" role="alert">
-            <p><span><strong>Section A (HCI Details)</strong></span></p>
+            <strong>
+                <h4>Section A (HCI Details)</h4></strong>
         </div>
         <div class="row">
             <div class="col-xs-12">
@@ -104,7 +105,8 @@
             </div>
         </div>
         <div class="alert alert-info" role="alert">
-            <p><span><strong>Section B (Type of Inspection)</strong></span></p>
+            <strong>
+                <h4>Section B (Type of Inspection)</h4></strong>
         </div>
         <div class="row">
             <div class="col-xs-12">
@@ -125,10 +127,7 @@
                                 <p>Time of Inspection</p>
                             </td>
                             <td class="col-xs-4">
-                                <fmt:formatDate value="${insRepDto.inspectionStartTime}"
-                                                pattern="dd/MM/yyyy"></fmt:formatDate>-
-                                <fmt:formatDate value="${insRepDto.inspectionEndTime}"
-                                                pattern="dd/MM/yyyy"></fmt:formatDate>
+                                <c:out value="${insRepDto.inspectionStartTime}"></c:out>-<c:out value="${insRepDto.inspectionEndTime}"></c:out>
                             </td>
                             <td class="col-xs-4"/>
                         </tr>
@@ -190,7 +189,8 @@
             </div>
         </div>
         <div class="alert alert-info" role="alert">
-            <p><span><strong>Section C (Inspection Findings)</strong></span></p>
+            <strong>
+                <h4>Section C (Inspection Findings)</h4></strong>
         </div>
         <div class="row">
             <div class="col-xs-12">

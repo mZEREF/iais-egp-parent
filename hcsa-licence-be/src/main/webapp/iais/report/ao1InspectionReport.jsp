@@ -1,10 +1,11 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
-            (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
+            (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -59,7 +60,7 @@
                                                     <tbody>
                                                     <tr>
                                                         <td align="right">Application Type</td>
-                                                        <td>${applicationViewDto.applicationType}</td>
+                                                        <td><iais:code code="${applicationViewDto.applicationType}"></iais:code></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-6" align="right">Application No. (Overall)
@@ -174,6 +175,13 @@
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
+                                                <c:if test="${appSupDocDtoListNull == 'Y'}">
+                                                    <tr>
+                                                        <td colspan="5" align="center">
+                                                            <p>No record found.</p>
+                                                        </td>
+                                                    </tr>
+                                                </c:if>
                                                 </tbody>
 
                                             </table>
@@ -216,7 +224,7 @@
                                     <div class="table-gp">
                                         <div class="alert alert-info" role="alert">
                                             <strong>
-                                                <h2 style="border-bottom: none">Processing Status Update</h2>
+                                                <h4 style="border-bottom: none">Processing Status Update</h4>
                                             </strong>
                                         </div>
                                         <div class="table-gp">
@@ -239,12 +247,12 @@
                                                     <iais:field value="Internal Remarks" required="true"/>
                                                     <iais:value width="6">
                                                         <iais:select name="processingDecision" id="processingDecision" options="processingDe" firstOption="Please select" value="${appPremisesRecommendationDto.processingDecision}"/>
-                                                        <span id="error_processingDecision" name="iaisErrorMsg" class="error-msg"/>
+                                                        <span id="error_submit" class="error-msg" hidden> The field is mandatory.</span>
                                                     </iais:value>
                                                 </iais:row>
                                             </iais:section>
                                             <iais:action style="text-align:right;">
-                                                <button id="submitButton" type="button" class="btn btn-primary" onclick="reportaosubmit()">SUBMIT</button>
+                                                <button id="submitButton" type="button" class="btn btn-primary" onclick="aoSubmit()">SUBMIT</button>
                                             </iais:action>
                                         </div>
                                         <br/>
@@ -317,6 +325,16 @@
             $('#report').addClass("active");
         }
     });
+
+    function aoSubmit() {
+        var s = $("#processingDecision").val();
+        if(s=="" || s==null){
+            $("#error_submit").show();
+        }else if("Approval"==s || "Reject"==s) {
+            $("#mainForm").submit();
+            $("#error_submit").hide();
+        }
+    }
 </script>
 
 

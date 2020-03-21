@@ -598,10 +598,6 @@
     <%@include file="/include/validation.jsp" %>
 <script type="text/javascript">
 
-        function insRepsubmit() {
-            $("#mainForm").submit();
-        }
-
         function changePeriod(obj) {
             if (obj == "Others") {
                 document.getElementById("selfPeriod").style.display = "";

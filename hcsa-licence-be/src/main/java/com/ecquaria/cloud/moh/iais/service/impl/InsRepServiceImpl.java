@@ -40,12 +40,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
-import com.ecquaria.cloud.moh.iais.service.InsRepService;
-import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
@@ -110,6 +105,9 @@ public class InsRepServiceImpl implements InsRepService {
     private FillupChklistService fillupChklistService;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
+    @Autowired
+    private ApplicationViewService applicationViewService;
+
 
     private final String APPROVAL="Approval";
     private final String REJECT="Reject";
@@ -243,8 +241,8 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setSubTypeCheckList(subType);
         inspectionReportDto.setRectifiedWithinKPI("Yes");
         Date inspectionDate = null;
-        Date inspectionStartTime = null;
-        Date inspectionEndTime = null;
+        String inspectionStartTime = null;
+        String inspectionEndTime = null;
         AppPremisesRecommendationDto appPreRecommentdationDtoStart = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSPCTION_START_TIME).getEntity();
         AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
         AppPremisesRecommendationDto appPreRecommentdationDtoEnd = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME).getEntity();
@@ -252,13 +250,10 @@ public class InsRepServiceImpl implements InsRepService {
             inspectionDate = appPreRecommentdationDtoDate.getRecomInDate();
         }
         if(appPreRecommentdationDtoStart!=null){
-            String recomDecision = appPreRecommentdationDtoStart.getRecomDecision();
-            inspectionStartTime = DateUtil.parseDate(recomDecision, "dd/MM/yyyy");
-
+            inspectionStartTime = appPreRecommentdationDtoStart.getRecomDecision();
         }
         if(appPreRecommentdationDtoEnd!=null){
-            String recomDecision = appPreRecommentdationDtoStart.getRecomDecision();
-            inspectionEndTime = DateUtil.parseDate(recomDecision, "dd/MM/yyyy");
+            inspectionEndTime = appPreRecommentdationDtoEnd.getRecomDecision();
         }
         String bestPractice = null;
         String remarks = null;
@@ -469,7 +464,7 @@ public class InsRepServiceImpl implements InsRepService {
 
     @Override
     public ApplicationViewDto getApplicationViewDto(String correlationId) {
-        ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(correlationId).getEntity();
+        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(correlationId);
         return applicationViewDto;
     }
 

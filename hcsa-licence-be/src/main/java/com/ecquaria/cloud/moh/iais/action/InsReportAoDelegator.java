@@ -74,7 +74,7 @@ public class InsReportAoDelegator {
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
-        ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(correlationId);
+        ApplicationViewDto  applicationViewDto = insRepService.getApplicationViewDto(correlationId);
         InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
         InspectionReportDto inspectorAo = insRepService.getInspectorAo(taskDto,applicationViewDto);
         insRepDto.setInspectors(inspectorAo.getInspectors());
@@ -172,7 +172,6 @@ public class InsReportAoDelegator {
         String processRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
         String enforcement = ParamUtil.getRequestString(bpc.request, "engageEnforcement");
         String enforcementRemarks = ParamUtil.getRequestString(bpc.request, "enforcementRemarks");
-
 
         appPremisesRecommendationDto.setEngageEnforcement(enforcement);
         appPremisesRecommendationDto.setEngageEnforcementRemarks(enforcementRemarks);

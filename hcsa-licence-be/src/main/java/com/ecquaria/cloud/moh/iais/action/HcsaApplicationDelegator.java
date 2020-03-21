@@ -205,16 +205,7 @@ public class HcsaApplicationDelegator {
         applicationViewDto.setRollBack(rollBackMap);
 
 
-        List<SelectOption> nextStageList = IaisCommonUtils.genNewArrayList();
-        nextStageList.add(new SelectOption("", "Please Select"));
-        nextStageList.add(new SelectOption("VERIFIED", "Verified"));
-        nextStageList.add(new SelectOption("ROLLBACK", "Internal Route Back"));
-        ParamUtil.setSessionAttr(bpc.request, "nextStages", (Serializable)nextStageList);
 
-        List<SelectOption> nextStageReplyList = IaisCommonUtils.genNewArrayList();
-        nextStageReplyList.add(new SelectOption("", "Please Select"));
-        nextStageReplyList.add(new SelectOption("PROCREP", "Give Clarification"));
-        ParamUtil.setSessionAttr(bpc.request, "nextStageReply", (Serializable)nextStageReplyList);
 
        Integer rfiCount =  applicationService.getAppBYGroupIdAndStatus(applicationViewDto.getApplicationDto().getAppGrpId(),
                ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
@@ -229,7 +220,7 @@ public class HcsaApplicationDelegator {
                 || ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())
                 || ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(applicationViewDto.getApplicationDto().getStatus())){
             if(rfiCount==0){
-                routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
+//                routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
             }
         }else if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_REPLY,"Broadcast Reply For Internal");
@@ -295,6 +286,26 @@ public class HcsaApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, "recomInDateOnlyShow",recomInDateOnlyShow);
             ParamUtil.setRequestAttr(bpc.request, "recommendationOnlyShow",recommendationOnlyShow);
         }
+
+        List<SelectOption> nextStageList = IaisCommonUtils.genNewArrayList();
+        nextStageList.add(new SelectOption("", "Please Select"));
+        nextStageList.add(new SelectOption("VERIFIED", "Verified"));
+        if((ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(applicationViewDto.getApplicationDto().getStatus())
+                || ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus()))
+                && "ASO".equals(taskDto.getRoleId())){
+
+        }else{
+            nextStageList.add(new SelectOption("ROLLBACK", "Internal Route Back"));
+        }
+        nextStageList.add(new SelectOption("PROCRFI", "Request For Information"));
+        ParamUtil.setSessionAttr(bpc.request, "nextStages", (Serializable)nextStageList);
+
+        List<SelectOption> nextStageReplyList = IaisCommonUtils.genNewArrayList();
+        nextStageReplyList.add(new SelectOption("", "Please Select"));
+        nextStageReplyList.add(new SelectOption("PROCREP", "Give Clarification"));
+        ParamUtil.setSessionAttr(bpc.request, "nextStageReply", (Serializable)nextStageReplyList);
+
+
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
@@ -661,13 +672,19 @@ public class HcsaApplicationDelegator {
     public void replay(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do replay start ...."));
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        String nextStatus = ApplicationConsts.APPLICATION_STATUS_REPLY;
+        String getHistoryStatus = applicationViewDto.getApplicationDto().getStatus();
+          if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(getHistoryStatus)){
+              getHistoryStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+              nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+          }
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(
-                applicationViewDto.getApplicationDto().getApplicationNo(),applicationViewDto.getApplicationDto().getStatus());
+                applicationViewDto.getApplicationDto().getApplicationNo(),getHistoryStatus);
         String wrkGrpId=appPremisesRoutingHistoryDto.getWrkGrpId();
         String roleId=appPremisesRoutingHistoryDto.getRoleId();
         String stageId=appPremisesRoutingHistoryDto.getStageId();
         String userId=appPremisesRoutingHistoryDto.getActionby();
-        rollBack(bpc,stageId,ApplicationConsts.APPLICATION_STATUS_REPLY,roleId,wrkGrpId,userId);
+        rollBack(bpc,stageId,nextStatus,roleId,wrkGrpId,userId);
         log.debug(StringUtil.changeForLog("the do replay end ...."));
     }
 

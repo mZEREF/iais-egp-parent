@@ -71,7 +71,7 @@
                                 ${MsgTemplateDto.messageContent}
                             </textarea>
                         </div>
-                        <div class="form-group" >
+                        <div class="form-group">
                             <div class="col-xs-2 col-sm-2 col-sm-offset-8">
                                 <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#"
                                                                               onclick="submit('back')">BACK</a></div>

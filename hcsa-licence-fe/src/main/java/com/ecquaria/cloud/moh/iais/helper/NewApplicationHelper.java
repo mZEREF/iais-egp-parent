@@ -159,6 +159,10 @@ public class NewApplicationHelper {
                 String name = appSvcCgoList.get(i).getName();
                 if(StringUtil.isEmpty(name)){
                     errMap.put("name"+i,"UC_CHKLMD001_ERR001");
+                }else {
+                    if(name.length()>66){
+
+                    }
                 }
 
                 String mobileNo = appSvcCgoList.get(i).getMobileNo();
@@ -175,6 +179,8 @@ public class NewApplicationHelper {
                 }else if (!StringUtil.isEmpty(emailAddr)) {
                     if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
                         errMap.put("emailAddr"+i, "CHKLMD001_ERR006");
+                    }else if(emailAddr.length()>66) {
+
                     }
                 }
 
@@ -277,6 +283,8 @@ public class NewApplicationHelper {
                     }
                     if(StringUtil.isEmpty(name)){
                         oneErrorMap.put("name"+poIndex,"UC_CHKLMD001_ERR001");
+                    }else if (name.length()>66){
+
                     }
                     if(StringUtil.isEmpty(salutation)){
                         oneErrorMap.put("salutation"+poIndex,"UC_CHKLMD001_ERR001");
@@ -316,6 +324,8 @@ public class NewApplicationHelper {
                     if(!StringUtil.isEmpty(emailAddr)) {
                         if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
                             oneErrorMap.put("emailAddr"+poIndex, "CHKLMD001_ERR006");
+                        }else if(emailAddr.length()>66){
+
                         }
                     }else {
                         oneErrorMap.put("emailAddr"+poIndex, "UC_CHKLMD001_ERR001");
@@ -366,6 +376,8 @@ public class NewApplicationHelper {
                 }
                 if(StringUtil.isEmpty(name)){
                     oneErrorMap.put("deputyName"+dpoIndex,"UC_CHKLMD001_ERR001");
+                }else if(name.length()>66){
+
                 }
                 if(StringUtil.isEmpty(idNo)){
                     oneErrorMap.put("deputyIdNo"+dpoIndex,"UC_CHKLMD001_ERR001");
@@ -400,13 +412,15 @@ public class NewApplicationHelper {
                 }else {
                     if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
                         oneErrorMap.put("deputyEmailAddr"+dpoIndex, "CHKLMD001_ERR006");
+                    }else if(emailAddr.length()>66){
+
                     }
                 }
                 dpoIndex++;
 
                 String s = stringBuilder.toString();
 
-                if(stringList.contains(s)) {
+                if(stringList.contains(s)&&!StringUtil.isEmpty(s)) {
 
                     oneErrorMap.put("NRICFIN", "UC_CHKLMD001_ERR002");
 
