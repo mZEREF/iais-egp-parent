@@ -84,17 +84,19 @@
                             <label id="recFileName"></label>
                           </iais:value>
                         </iais:row>
+                      </c:if>
+                      <div class="bg-title">
+                        <iais:row>
+                          <h3 style="border-bottom: 0px solid">Remarks</h3>
+                        </iais:row>
+                        <iais:row>
+                          <iais:value width="300" style="padding-left:0px">
+                            <textarea id="uploadRemarks" name="uploadRemarks" cols="70" rows="7" maxlength="300"><c:out value="${inspecUserRecUploadDto.uploadRemarks}"></c:out></textarea>
+                            <br><span class="error-msg" name="iaisErrorMsg" id="error_remarks"></span>
+                          </iais:value>
+                        </iais:row>
                       </div>
-                      <iais:row>
-                        <iais:field value="Remarks"/>
-                      </iais:row>
-                      <iais:row>
-                        <iais:value width="300">
-                          <textarea id="uploadRemarks" name="uploadRemarks" cols="70" rows="7" maxlength="300"><c:out value="${inspecUserRecUploadDto.uploadRemarks}"></c:out></textarea>
-                          <br><span class="error-msg" name="iaisErrorMsg" id="error_remarks"></span>
-                        </iais:value>
-                      </iais:row>
-                    </c:if>
+                    </div>
                     <iais:action >
                       <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doUserRecUploadConfirmSave()">Save</button>
                       <span style="float:right">&nbsp;</span>
