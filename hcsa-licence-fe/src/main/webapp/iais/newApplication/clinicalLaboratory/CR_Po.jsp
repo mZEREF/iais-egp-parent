@@ -93,9 +93,11 @@
                             </div>
                             <div class="col-sm-4" id="salutation${suffix}">
                               <iais:select cssClass="salutation"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${principalOfficer.salutation}" firstOption="Please Select"></iais:select>
+                              <span class="error-msg" id="error_salutation${suffix}" name="iaisErrorMsg"></span>
                             </div>
+
                             <div class="col-sm-4">
-                              <input name="name" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.name}" >
+                              <input name="name" maxlength="66" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.name}" >
                               <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
                             </div>
                           </div>
@@ -116,7 +118,7 @@
                               </div>
                             </div>
                             <div class="col-sm-4">
-                              <input id="idType-idNo" name="idNo" type="text"  class="idNoVal form-control control-input control-set-font control-font-normal" value="${principalOfficer.idNo}" >
+                              <input id="idType-idNo" name="idNo" type="text" maxlength="9"  class="idNoVal form-control control-input control-set-font control-font-normal" value="${principalOfficer.idNo}" >
                               <span class="error-msg" id="error_NRICFIN" name="iaisErrorMsg"></span>
                             </div>
                           </div>
@@ -176,7 +178,7 @@
                               <span class="mandatory">*</span>
                             </div>
                             <div class="col-sm-4 col-md-8">
-                              <input name="emailAddress" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.emailAddr}" >
+                              <input name="emailAddress" maxlength="66" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.emailAddr}" >
                               <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr${status.index}" ></span>
                             </div>
                           </div>
@@ -285,9 +287,10 @@
                           </div>
                           <div class="col-sm-4 " id="deputySalutation${suffix}">
                             <iais:select cssClass="deputySalutation"  name="deputySalutation" codeCategory="CATE_ID_SALUTATION" value="${deputy.salutation}" firstOption="Please Select"></iais:select>
+                            <span name="iaisErrorMsg" class="error-msg" id="error_deputySalutation${suffix}"></span>
                           </div>
                           <div class="col-sm-4">
-                            <input name="deputyName"  type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.name}"  size="30">
+                            <input name="deputyName" maxlength="66" type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.name}"  size="30">
                             <span class="error-msg" name="iaisErrorMsg" id="error_deputyName${status.index}"></span>
                           </div>
                         </div>
@@ -309,7 +312,7 @@
                             </div>
                           </div>
                           <div class="col-sm-4">
-                            <input  name="deputyIdNo" type="text"  class=" form-control control-input control-set-font control-font-normal" value="${deputy.idNo}" size="30">
+                            <input  name="deputyIdNo" maxlength="9" type="text"  class=" form-control control-input control-set-font control-font-normal" value="${deputy.idNo}" size="30">
                             <span class="error-msg"  name="iaisErrorMsg" id="error_deputyIdNo${status.index}"></span>
                           </div>
                         </div>
@@ -351,7 +354,7 @@
                             <span class="mandatory">*</span>
                           </div>
                           <div class="col-sm-4 col-md-8">
-                            <input name="deputyEmailAddr" type="text" class="form-control control-input control-set-font control-font-normal" value="${deputy.emailAddr}" size="30">
+                            <input name="deputyEmailAddr" maxlength="66" type="text" class="form-control control-input control-set-font control-font-normal" value="${deputy.emailAddr}" size="30">
                             <span class="error-msg" name="iaisErrorMsg"  id="error_deputyEmailAddr${status.index}" ></span>
                           </div>
                         </div>

@@ -1459,7 +1459,7 @@ public class ClinicalLaboratoryDelegator {
                     AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode) ||
                     AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)){
                 specialtySelectList = IaisCommonUtils.genNewArrayList();
-                SelectOption ssl1 = new SelectOption("-1", "Please select");
+                SelectOption ssl1 = new SelectOption("-1", "Please Select");
                 SelectOption ssl2 = new SelectOption("Pathology", "Pathology");
                 SelectOption ssl3 = new SelectOption("Haematology", "Haematology");
                 SelectOption ssl4 = new SelectOption("other", "Others");
@@ -1471,7 +1471,7 @@ public class ClinicalLaboratoryDelegator {
                     AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode) ||
                     AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)){
                 specialtySelectList = IaisCommonUtils.genNewArrayList();
-                SelectOption ssl1 = new SelectOption("-1", "Please select");
+                SelectOption ssl1 = new SelectOption("-1", "Please Select");
                 SelectOption ssl2 = new SelectOption("Diagnostic Radiology", "Diagnostic Radiology");
                 SelectOption ssl3 = new SelectOption("Nuclear Medicine", "Nuclear Medicine");
                 SelectOption ssl4 = new SelectOption("other", "Others");

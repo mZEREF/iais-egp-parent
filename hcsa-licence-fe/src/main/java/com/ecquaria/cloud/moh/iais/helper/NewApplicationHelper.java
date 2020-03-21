@@ -406,7 +406,7 @@ public class NewApplicationHelper {
 
                 String s = stringBuilder.toString();
 
-                if(stringList.contains(s)) {
+                if(stringList.contains(s)&&!StringUtil.isEmpty(s)) {
 
                     oneErrorMap.put("NRICFIN", "UC_CHKLMD001_ERR002");
 
