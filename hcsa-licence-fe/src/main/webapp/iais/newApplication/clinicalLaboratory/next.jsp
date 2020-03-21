@@ -33,7 +33,7 @@
           </c:if>
           <c:choose>
             <c:when test="${serviceStepDto.isStepEnd() && serviceStepDto.isServiceEnd()}">
-              <a class="btn btn-primary" id="Next" >Preview & Submit</a>
+              <a class="btn btn-primary" id="Next" >Proceed to Preview & Submit</a>
             </c:when>
             <c:otherwise>
               <a class="btn btn-primary" id="Next" >Next</a>
