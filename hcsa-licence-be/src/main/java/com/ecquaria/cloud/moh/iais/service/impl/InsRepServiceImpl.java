@@ -274,8 +274,8 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setHciAddress(appInsRepDto.getHciAddress());
         inspectionReportDto.setReasonForVisit(reasonForVisit);
         inspectionReportDto.setInspectionDate(inspectionDate);
-        inspectionReportDto.setInspectionStartTime(inspectionStartTime);
-        inspectionReportDto.setInspectionEndTime(inspectionEndTime);
+//        inspectionReportDto.setInspectionStartTime(inspectionStartTime);
+//        inspectionReportDto.setInspectionEndTime(inspectionEndTime);
         inspectionReportDto.setBestPractice(bestPractice);
         inspectionReportDto.setTaskRemarks(remarks);
         inspectionReportDto.setCurrentStatus(status);
