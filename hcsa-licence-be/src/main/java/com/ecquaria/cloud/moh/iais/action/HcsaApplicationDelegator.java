@@ -156,6 +156,13 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareData start ..."));
         //get the task
        String  taskId = ParamUtil.getString(bpc.request,"taskId");
+       if(taskId != null){
+           ParamUtil.setRequestAttr(bpc.request,"taskId",taskId);
+       }else{
+           taskId = (String)ParamUtil.getRequestAttr(bpc.request,"taskId");
+           ParamUtil.setRequestAttr(bpc.request,"taskId",taskId);
+       }
+
        TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = "";
        if(taskDto != null){
@@ -272,6 +279,21 @@ public class HcsaApplicationDelegator {
         List<AppSupDocDto> appSupDocDtoList = applicationViewDto.getAppSupDocDtoList();
         if(appSupDocDtoList == null || (appSupDocDtoList.size() == 0)){
             ParamUtil.setRequestAttr(bpc.request, "appSupDocDtoListNull","Y");
+        }
+        AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
+        if(appPremisesRecommendationDto != null){
+            Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
+            String recommendationOnlyShow = "";
+            if(recomInNumber == 0){
+                recommendationOnlyShow = "reject";
+            }else if(recomInNumber ==2){
+                recommendationOnlyShow = "2 Year";
+            }
+            Date recomInDate = appPremisesRecommendationDto.getRecomInDate();
+            String recomInDateOnlyShow = Formatter.formatDateTime(recomInDate,Formatter.DATE);
+
+            ParamUtil.setRequestAttr(bpc.request, "recomInDateOnlyShow",recomInDateOnlyShow);
+            ParamUtil.setRequestAttr(bpc.request, "recommendationOnlyShow",recommendationOnlyShow);
         }
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);

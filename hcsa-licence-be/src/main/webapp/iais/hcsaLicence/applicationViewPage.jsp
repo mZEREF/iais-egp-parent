@@ -455,6 +455,7 @@
                                     </strong>
                                 </div>
                                 <form method="post" action=<%=process.runtime.continueURL()%>>
+                                    <input type="hidden" name="taskId" value="${taskId}">
                                     <input type="hidden" name="sopEngineTabRef"
                                            value="<%=process.rtStatus.getTabRef()%>">
                                     <div class="row">
@@ -546,11 +547,17 @@
                                                     </div>
                                                     <div id="licenceStartDate">
                                                         <iais:row>
-                                                            <%--<span>Licence Start Date</span>--%>
                                                             <iais:field value="Licence Start Date" required="false"/>
                                                             <iais:value width="10">
-                                                                <iais:datePicker id="licenceStartDate" name="tuc"
-                                                                                 value="${date}"></iais:datePicker>
+                                                                <c:choose>
+                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012'}">
+                                                                    <iais:datePicker id="licenceStartDate" name="tuc"
+                                                                                     value="${date}"></iais:datePicker>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <p>${recomInDateOnlyShow}</p>
+                                                                    </c:otherwise>
+                                                                </c:choose>
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
@@ -558,17 +565,24 @@
                                                         <iais:row>
                                                             <iais:field value="Recommendation" required="false"/>
                                                             <iais:value width="10">
-                                                                <select name="recommendation"
-                                                                        class="nice-select input-large">
-                                                                    <option value="">Please Select</option>
-                                                                    <c:forEach items="${applicationViewDto.recomeDation}"
-                                                                               var="recommendation">
-                                                                        <option value="${recommendation}" <c:if test="${recommendationStr == recommendation}">selected</c:if>><c:out
-                                                                                value="${recommendation}"></c:out></option>
-                                                                    </c:forEach>
-                                                                    <option value="reject" <c:if test="${recommendationStr == 'reject'}">selected</c:if>>reject</option>
-                                                                </select>
-                                                                <span id="error_recommendation" name="iaisErrorMsg" class="error-msg"></span>
+                                                                <c:choose>
+                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012'}">
+                                                                        <select name="recommendation"
+                                                                                class="nice-select input-large">
+                                                                            <option value="">Please Select</option>
+                                                                            <c:forEach items="${applicationViewDto.recomeDation}"
+                                                                                       var="recommendation">
+                                                                                <option value="${recommendation}" <c:if test="${recommendationStr == recommendation}">selected</c:if>><c:out
+                                                                                        value="${recommendation}"></c:out></option>
+                                                                            </c:forEach>
+                                                                            <option value="reject" <c:if test="${recommendationStr == 'reject'}">selected</c:if>>reject</option>
+                                                                        </select>
+                                                                        <span id="error_recommendation" name="iaisErrorMsg" class="error-msg"></span>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <p>${recommendationOnlyShow}</p>
+                                                                    </c:otherwise>
+                                                                </c:choose>
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
