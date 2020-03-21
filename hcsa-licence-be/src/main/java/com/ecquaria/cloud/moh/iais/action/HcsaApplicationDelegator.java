@@ -232,21 +232,17 @@ public class HcsaApplicationDelegator {
 
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast Query For Internal");
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Route To DMS");
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_REPLY,"Broadcast Reply For Internal");
-        }
-
-        if(HcsaConsts.ROUTING_STAGE_AO3.equals(taskDto.getTaskKey())){
-//            routingStage.put(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
-//                    MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL));
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Route To DMS");
-        }else if(HcsaConsts.ROUTING_STAGE_AO2.equals(taskDto.getTaskKey())
-                ||HcsaConsts.ROUTING_STAGE_AO1.equals(taskDto.getTaskKey())){
-
-        }else if(HcsaConsts.ROUTING_STAGE_PSO.equals(taskDto.getTaskKey()) || HcsaConsts.ROUTING_STAGE_ASO.equals(taskDto.getTaskKey()) ){
+        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())
+                || ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())
+                || ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(applicationViewDto.getApplicationDto().getStatus())){
             if(rfiCount==0){
                 routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
             }
+        }else if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_REPLY,"Broadcast Reply For Internal");
         }
         applicationViewDto.setVerified(routingStage);
 
@@ -474,15 +470,28 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void routeToDMS(BaseProcessClass bpc) {
+    public void routeToDMS(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do routeToDMS start ...."));
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
-        ApplicationDto application=applicationViewDto.getApplicationDto();
-        application.setStatus(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS);
-        applicationViewDto.setApplicationDto(application);
-        //todo
-        //update to DB
-        applicationService.updateFEApplicaiton(application);
+        ApplicationDto application = applicationViewDto.getApplicationDto();
+        if(application != null){
+            String appNo =  application.getApplicationNo();
+            log.info(StringUtil.changeForLog("The appNo is -->:"+appNo));
+            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =  appPremisesRoutingHistoryService.
+                    getAppPremisesRoutingHistoryForCurrentStage(appNo,HcsaConsts.ROUTING_STAGE_INS);
+            if(appPremisesRoutingHistoryDto == null){
+                appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.
+                        getAppPremisesRoutingHistoryForCurrentStage(appNo,HcsaConsts.ROUTING_STAGE_ASO);
+            }
+            if(appPremisesRoutingHistoryDto != null){
+                rollBack(bpc,appPremisesRoutingHistoryDto.getStageId(),ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
+                        appPremisesRoutingHistoryDto.getRoleId(),appPremisesRoutingHistoryDto.getWrkGrpId(),appPremisesRoutingHistoryDto.getActionby());
+            }else{
+                log.error(StringUtil.changeForLog("can not get the appPremisesRoutingHistoryDto ..."));
+            }
+        }else{
+            log.error(StringUtil.changeForLog("do not have the applicaiton"));
+        }
         log.debug(StringUtil.changeForLog("the do routeToDMS end ...."));
     }
 
