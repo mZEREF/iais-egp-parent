@@ -30,8 +30,7 @@
                             <label class="col-xs-12 col-md-4 control-label">Role</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <iais:select name="roleIds" onchange="chooseCurRole()" options="roleIds"
-                                             cssClass="roleIds"
-                                             firstOption="${curRole}" value="${curRole}"></iais:select>
+                                             cssClass="roleIds" value="${curRole}"></iais:select>
                             </div>
                         </div>
                     </div>

@@ -93,12 +93,9 @@ public class BackendInboxDelegator {
         }
         log.debug(StringUtil.changeForLog("the BackendInboxDelegator start ...."));
         String curRole = "";
-        if(StringUtil.isEmpty(loginContext.getCurRoleId())){
-            curRole = "Please Select";
-        }else{
-            curRole = loginContext.getCurRoleId();
-        }
+        curRole = loginContext.getCurRoleId();
         initSearchParam();
+        ParamUtil.setSessionAttr(bpc.request, "curRole",curRole);
         ParamUtil.setSessionAttr(bpc.request, "searchParamAjax",null);
         ParamUtil.setSessionAttr(bpc.request, "taskList",null);
         ParamUtil.setSessionAttr(bpc.request, "hastaskList",null);
@@ -138,14 +135,12 @@ public class BackendInboxDelegator {
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption();
 
         ParamUtil.setRequestAttr(bpc.request,"hci_code",hci_code);
-        ParamUtil.setRequestAttr(bpc.request,"curRole",loginContext.getCurRoleId());
         ParamUtil.setRequestAttr(bpc.request,"hci_address",hci_address);
         ParamUtil.setRequestAttr(bpc.request,"application_no",application_no);
         ParamUtil.setRequestAttr(bpc.request, "supTaskSearchParam", searchParamGroup);
         ParamUtil.setRequestAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
         ParamUtil.setRequestAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
         ParamUtil.setRequestAttr(bpc.request, "workGroupIds", (Serializable) workGroupIds);
-        ParamUtil.setRequestAttr(bpc.request, "curRole", loginContext.getCurRoleId());
         String swithtype = (String)ParamUtil.getRequestAttr(bpc.request, "SearchSwitchType");
         if(swithtype == null || swithtype ==""){
             ParamUtil.setRequestAttr(bpc.request, "SearchSwitchType","search");
@@ -206,7 +201,7 @@ public class BackendInboxDelegator {
         String curRole = ParamUtil.getRequestString(bpc.request, "roleIds");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         loginContext.setCurRoleId(curRole);
-
+        ParamUtil.setSessionAttr(bpc.request,"curRole",curRole);
         CrudHelper.doPaging(searchParamGroup,bpc.request);
         ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
         commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
@@ -492,7 +487,6 @@ public class BackendInboxDelegator {
         }else{
             ParamUtil.setRequestAttr(bpc.request, "supTaskSearchResult", null);
         }
-        ParamUtil.setRequestAttr(bpc.request,"curRole",loginContext.getCurRoleId());
         Map<String,String> appNoUrl = IaisCommonUtils.genNewHashMap();
 
         Map<String,TaskDto> taskMap = IaisCommonUtils.genNewHashMap();
