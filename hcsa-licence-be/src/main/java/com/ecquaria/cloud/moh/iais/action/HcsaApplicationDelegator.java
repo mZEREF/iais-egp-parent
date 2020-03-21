@@ -804,8 +804,8 @@ public class HcsaApplicationDelegator {
         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
             AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
             if(appPremisesRecommendationDto!=null){
-               int recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
-               if(recomInNumber == 0){
+               Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
+               if(null != recomInNumber && recomInNumber == 0){
                    appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
                }
             }
