@@ -90,15 +90,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="application-tab-footer">
+                    <div class="row">
                         <div class="row">
-                            <div class="row">
-                                <div class="col-xs-2 col-sm-2">
-                                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('back')">BACK</a></div>
-                                </div>
-                                <div class="col-xs-10 col-sm-10">
-                                    <div class="text-right text-center-mobile"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">SAVE</button></div>
-                                </div>
+                            <div class="col-xs-2 col-sm-2">
+                                <div><a href="#" onclick="submit('back')"><em class="fa fa-angle-left"></em> BACK</a></div>
+                            </div>
+                            <div class="col-xs-10 col-sm-10">
+                                <div class="text-right text-center-mobile"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">SAVE</button></div>
                             </div>
                         </div>
                     </div>
