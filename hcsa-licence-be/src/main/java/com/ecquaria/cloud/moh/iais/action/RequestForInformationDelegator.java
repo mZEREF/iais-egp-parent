@@ -480,6 +480,11 @@ public class RequestForInformationDelegator {
         if(!StringUtil.isEmpty(toDate)){
             filters.put("expiry_date", toDate);
         }
+        if(!StringUtil.isEmpty(serviceLicenceType)){
+            List<String> svcNames= new ArrayList<>(0);
+            svcNames.add(serviceLicenceType);
+            filters.put("svc_names",svcNames);
+        }
         licenceParameter.setFilters(filters);
 
         SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
@@ -516,22 +521,8 @@ public class RequestForInformationDelegator {
                     reqForInfoSearchListDto.setLicPremId(rfiLicenceQueryDto.getLicPremId());
                     LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiLicenceQueryDto.getLicenseeId());
                     reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
-                    if(!StringUtil.isEmpty(serviceLicenceType)){
-                        boolean isAdd=false;
-                        List<String> svcNames=requestForInformationService.getSvcNamesByType(serviceLicenceType);
-                        for (String svcName:svcNames
-                        ) {
-                            if(svcName.equals(reqForInfoSearchListDto.getServiceName())){
-                                isAdd=true;
-                            }
-                        }
-                        if(isAdd){
-                            reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
-                        }
-                    }
-                    else {
-                        reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
-                    }
+                    reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
+
                 }
                 searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
                 ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
@@ -544,6 +535,9 @@ public class RequestForInformationDelegator {
         if(!StringUtil.isEmpty(toDate)){
             licParam.getFilters().put("expiry_date",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
                     AppConsts.DEFAULT_DATE_FORMAT));
+        }
+        if(!StringUtil.isEmpty(serviceLicenceType)){
+            licParam.getFilters().put("licSvcName",serviceLicenceType);
         }
         ParamUtil.setRequestAttr(request,"SearchParam", licParam);
         ParamUtil.setRequestAttr(request,"serviceLicenceType",serviceLicenceType);

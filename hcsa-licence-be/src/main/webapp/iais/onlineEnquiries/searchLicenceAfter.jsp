@@ -105,7 +105,7 @@
                                             <iais:field value="Service Licence:"/>
                                             <iais:value width="18">
                                                 <div id="service_licence_type">
-                                                    <iais:select name="service_licence_type" options="licSvcTypeOption" firstOption="Please Select" value="${serviceLicenceType}" ></iais:select>
+                                                    <iais:select name="service_licence_type" options="licSvcTypeOption" firstOption="Please Select" value="${SearchParam.filters['serviceName']}" ></iais:select>
                                                 </div>
                                             </iais:value>
                                         </iais:row>

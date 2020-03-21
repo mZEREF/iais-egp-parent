@@ -25,15 +25,16 @@ import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.RequestForInformationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -92,7 +93,8 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     private     String fileFormat=".text";
     private     String compressPath;
     private     String downZip;
-
+    @Autowired
+    private GenerateIdClient generateIdClient;
     @Autowired
     private SystemBeLicClient systemClient;
 
@@ -104,20 +106,56 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
             ApplicationConsts.APPLICATION_TYPE_APPEAL,
             ApplicationConsts.APPLICATION_TYPE_CESSATION,
-            ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL
+            ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL,
+            ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT,
+            ApplicationConsts.APPLICATION_TYPE_SUSPENSION,
+            ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION
     };
     private final String[] appStatus=new String[]{
-            ApplicationConsts.APPLICATION_STATUS_DRAFT,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION,
-            ApplicationConsts.APPLICATION_STATUS_RECALLED,
+            ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
             ApplicationConsts.APPLICATION_STATUS_APPROVED,
-            ApplicationConsts.APPLICATION_STATUS_REJECTED
-//            ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED,
-//            ApplicationConsts.APPLICATION_STATUS_WITHDRAWN
-    };
-    private final String[] licServiceType=new String[]{
-            ApplicationConsts.SERVICE_CONFIG_TYPE_BASE,
-            ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED
+            ApplicationConsts.APPLICATION_STATUS_REJECTED,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,
+            ApplicationConsts.APPLICATION_STATUS_DRAFT,
+            ApplicationConsts.APPLICATION_STATUS_DELETED,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
+            ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
+            ApplicationConsts.APPLICATION_STATUS_SUPPORT,
+            ApplicationConsts.APPLICATION_STATUS_VERIFIED,
+            ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_INFORMATION,
+            ApplicationConsts.APPLICATION_STATUS_LICENCE_START_DATE,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
+            ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,
+            ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION,
+            ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY,
+            ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT,
+            ApplicationConsts.APPLICATION_STATUS_RENEWAL,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT,
+            ApplicationConsts.APPLICATION_STATUS_REPLY,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_CREATE_MESG,
+            ApplicationConsts.APPLICATION_STATUS_CESSATION_APPROVE,
+            ApplicationConsts.APPLICATION_STATUS_CESSATION_PENDING_APPROVE,
+            ApplicationConsts.APPLICATION_STATUS_CESSATION_PENDING_RE_INFO,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_BE_CREATE_TASK,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION_RFI
     };
     private final String[] licStatus=new String[]{
             ApplicationConsts.LICENCE_STATUS_ACTIVE,
@@ -141,7 +179,24 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     @Override
     public List<SelectOption> getLicSvcTypeOption() {
-        return MasterCodeUtil.retrieveOptionsByCodes(licServiceType);
+        List<String> svcNames=getSvcNamesByType(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE);
+        List<String> svcNames1=getSvcNamesByType(ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED);
+        List<SelectOption> selectOptions= IaisCommonUtils.genNewArrayList();
+        for (String svcName:svcNames
+        ) {
+            SelectOption selectOption=new SelectOption();
+            selectOption.setText(svcName);
+            selectOption.setValue(svcName);
+            selectOptions.add(selectOption);
+        }
+        for (String svcName:svcNames1
+        ) {
+            SelectOption selectOption=new SelectOption();
+            selectOption.setText(svcName);
+            selectOption.setValue(svcName);
+            selectOptions.add(selectOption);
+        }
+        return selectOptions;
     }
 
     @Override
@@ -268,8 +323,9 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         }
 
                         try {
-
-                            this.download(processFileTrackDto,licPremisesReqForInfoDto,name);
+                            String refId = processFileTrackDto.getRefId();
+                            String submissionId = generateIdClient.getSeqId().getEntity();
+                            this.download(processFileTrackDto,licPremisesReqForInfoDto,name,refId,submissionId);
                             //save success
                         }catch (Exception e){
                             //save bad
@@ -344,7 +400,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     }
 
     @Override
-    public boolean download( ProcessFileTrackDto processFileTrackDto,LicPremisesReqForInfoDto licPremisesReqForInfoDto,String fileName) {
+    public boolean download( ProcessFileTrackDto processFileTrackDto,LicPremisesReqForInfoDto licPremisesReqForInfoDto,String fileName,String groupPath,String submissionId) {
 
         Boolean flag=false;
         File file =new File(downZip+File.separator+fileName+File.separator+"userRecFile");
@@ -380,8 +436,16 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         return flag;
     }
     private Boolean fileToDto(String str,LicPremisesReqForInfoDto licPremisesReqForInfoDto,ProcessFileTrackDto processFileTrackDto){
-        LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = JsonUtil.parseToObject(str, LicPremisesReqForInfoDto.class);
-        return requestForInformationClient.rfiFeUpdateToBe(licPremisesReqForInfoDto1).getStatusCode() == 200;
+        licPremisesReqForInfoDto = JsonUtil.parseToObject(str, LicPremisesReqForInfoDto.class);
+//        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
+//        licPremisesReqForInfoDto.setAuditTrailDto(intranet);
+//        //eventbus
+//        Long l = System.currentTimeMillis();
+//        licPremisesReqForInfoDto.setEventRefNo(l.toString());
+//        eventBusHelper.submitAsyncRequest(licPremisesReqForInfoDto,submissionId, EventBusConsts.SERVICE_NAME_LICENCESAVE,
+//                EventBusConsts.OPERATION_LIC_REQUEST_FOR_INFO,licPremisesReqForInfoDto.getEventRefNo(),null);
+//        return true;
+        return requestForInformationClient.rfiFeUpdateToBe(licPremisesReqForInfoDto).getStatusCode() == 200;
 
     }
 
@@ -428,12 +492,27 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                     }
                     MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
 
+//                    AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
+//                    FileRepoDto fileRepoDto = new FileRepoDto();
+//                    List<FileRepoDto> fileRepoDtos = IaisCommonUtils.genNewArrayList();
+//                    fileRepoDto.setId(fileName.toString());
+//                    fileRepoDto.setAuditTrailDto(intranet);
+//                    fileRepoDto.setFileName(f.getName());
+//                    fileRepoDto.setRelativePath("compress"+File.separator+fileNames+File.separator+"userRecFile"+File.separator+"files");
+//                    fileRepoDtos.add(fileRepoDto);
+//                    FileRepoEventDto eventDto = new FileRepoEventDto();
+//                    eventDto.setFileRepoList(fileRepoDtos);
+//                    eventDto.setEventRefNo(groupPath);
+//                    eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
+//                            EventBusConsts.OPERATION_BE_REC_DATA_COPY, groupPath, null);
+
                     AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
                     FileRepoDto fileRepoDto = new FileRepoDto();
                     fileRepoDto.setId(split[0]);
                     fileRepoDto.setAuditTrailDto(intranet);
                     fileRepoDto.setFileName(fileName.toString());
                     fileRepoDto.setRelativePath("compress"+File.separator+fileNames+File.separator+"userRecFile"+File.separator+"files");
+                    //eventBus
                     aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
 
                     if(aBoolean){

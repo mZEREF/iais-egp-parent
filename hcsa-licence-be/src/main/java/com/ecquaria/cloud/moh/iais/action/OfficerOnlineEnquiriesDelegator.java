@@ -487,6 +487,9 @@ public class OfficerOnlineEnquiriesDelegator {
             if(!StringUtil.isEmpty(licenceStatus)){
                 filters.put("licence_status", licenceStatus);
             }
+            if(!StringUtil.isEmpty(serviceLicenceType)){
+                svcNames.add(serviceLicenceType);
+            }
             if(!StringUtil.isEmpty(svcSubType)){
                 filters.put("serviceSubTypeName", svcSubType);
                 serviceParameter.setFilters(filters);
@@ -609,23 +612,8 @@ public class OfficerOnlineEnquiriesDelegator {
                                 reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                                 reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
                                 reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
-                                if(!StringUtil.isEmpty(serviceLicenceType)){
-                                    ParamUtil.setRequestAttr(request,"serviceLicenceType",serviceLicenceType);
-                                    boolean isAdd=false;
-                                    List<String> serviceNames=requestForInformationService.getSvcNamesByType(serviceLicenceType);
-                                    for (String svcName:serviceNames
-                                    ) {
-                                        if(svcName.equals(lic.getServiceName())){
-                                            isAdd=true;
-                                        }
-                                    }
-                                    if(isAdd){
-                                        reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
-                                    }
-                                }
-                                else {
-                                    reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
-                                }
+                                reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
+
                             }
                         }
                         else {
