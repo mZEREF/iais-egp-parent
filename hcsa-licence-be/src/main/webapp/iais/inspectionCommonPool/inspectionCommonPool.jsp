@@ -111,7 +111,7 @@
                                 </a>
                               </p>
                             </td>
-                            <td><c:out value="${pool.applicationType}"/></td>
+                            <td><iais:code code="${pool.applicationType}"/></td>
                             <td><c:out value="${pool.submissionType}"/></td>
                             <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>
                             <td><iais:code code="${pool.paymentStatus}"/></td>
