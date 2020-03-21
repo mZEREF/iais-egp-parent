@@ -638,9 +638,8 @@ public class HcsaApplicationDelegator {
     public void replay(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do replay start ...."));
         //TODO:replay
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
-        String appCorrId=taskDto.getRefNo();
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto=appPremisesRoutingHistoryService.getSecondRouteBackHistoryByCorrId(appCorrId);
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto=appPremisesRoutingHistoryService.getSecondRouteBackHistoryByCorrId(applicationViewDto.getAppPremisesCorrelationId());
         String wrkGrpId=appPremisesRoutingHistoryDto.getWrkGrpId();
         String roleId=appPremisesRoutingHistoryDto.getRoleId();
         String stageId=appPremisesRoutingHistoryDto.getStageId();
