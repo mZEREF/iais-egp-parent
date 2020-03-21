@@ -47,6 +47,18 @@
       <div class="new-premise-form-on-site hidden">
         <div class="form-horizontal">
           <div class="form-group">
+            <label class="col-xs-12 col-md-4 control-label" for="siteSafefyNo">Fire Safety Shelter Bureau Ref. No. <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true">i</a></label>
+            <div class="col-xs-9 col-sm-5 col-md-5">
+              <input id="scdfRefNo" maxlength="66" name="onSiteScdfRefNo" type="text" value="">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-xs-12 col-md-4 control-label">Fire Safety Certificate Issued Date</label>
+            <div class=" col-xs-7 col-sm-4 col-md-5">
+              <input type="text" autocomplete="off" class="date_picker form-control fireIssuedDate" name="onSiteFireSafetyCertIssuedDate" id="-67713756688199" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_fireSafetyCertIssuedDate" name="iaisErrorMsg" class="error-msg"></span>
+            </div>
+          <div class="clear"></div></div>
+          <div class="form-group">
             <label class="col-xs-11 col-md-4 control-label">Name of HCI <span class="mandatory">*</span></label>
             <div class="col-sm-7 col-md-5 col-xs-10">
               <input type="text" id="sitePremiseName" name="onSiteHciName" maxlength="100" autocomplete="off">
@@ -93,13 +105,6 @@
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
-            <label class="col-xs-12 col-md-4 control-label">Building Name</label>
-            <div class="col-sm-7 col-md-5 col-xs-10 ">
-              <input type="text" id="siteBuildingName" name="onSiteBuildingName" class="siteBuildingName" maxlength="45" autocomplete="off">
-              <span class="error-msg"></span>
-            </div>
-          <div class="clear"></div></div>
-          <div class="form-group">
             <label class="col-xs-10 col-md-4 control-label">Street Name <span class="mandatory">*</span></label>
             <div class="col-sm-7 col-md-5 col-xs-10">
               <input type="text" id="siteStreetName" name="onSiteStreetName" class="siteStreetName" maxlength="32" autocomplete="off">
@@ -107,15 +112,10 @@
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
-            <label class="col-xs-12 col-md-4 control-label" for="siteSafefyNo">Fire Safety Shelter Bureau Ref. No. <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true">i</a></label>
-            <div class="col-xs-9 col-sm-5 col-md-5">
-              <input id="scdfRefNo" maxlength="66" name="onSiteScdfRefNo" type="text" value="">
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-xs-12 col-md-4 control-label">Fire Safety Certificate Issued Date</label>
-            <div class=" col-xs-7 col-sm-4 col-md-5">
-              <input type="text" autocomplete="off" class="date_picker form-control fireIssuedDate" name="onSiteFireSafetyCertIssuedDate" id="-67713756688199" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_fireSafetyCertIssuedDate" name="iaisErrorMsg" class="error-msg"></span>
+            <label class="col-xs-12 col-md-4 control-label">Building Name</label>
+            <div class="col-sm-7 col-md-5 col-xs-10 ">
+              <input type="text" id="siteBuildingName" name="onSiteBuildingName" class="siteBuildingName" maxlength="45" autocomplete="off">
+              <span class="error-msg"></span>
             </div>
           <div class="clear"></div></div>
           <div class="form-group">

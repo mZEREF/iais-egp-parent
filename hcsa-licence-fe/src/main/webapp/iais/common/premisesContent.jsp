@@ -111,6 +111,19 @@
             <div class="new-premise-form-on-site hidden  ">
                 <div class="form-horizontal">
                     <iais:row>
+                        <iais:field value="Fire Safety Certificate Issued Date" width="12"/>
+                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
+                            <iais:datePicker cssClass="fireIssuedDate " name="onSiteFireSafetyCertIssuedDate" value="${appGrpPremisesDto.certIssuedDtStr}" />
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="Office Telephone No " mandatory="true" width="12"/>
+                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
+                            <iais:input type="text" name="onSiteOffTelNo" maxLength="8" value="${appGrpPremisesDto.offTelNo}" id="onsitOffice" cssClass="onsitOffice" />
+                            <span class="error-msg" name="iaisErrorMsg" id="error_offTelNo${status.index}"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
                         <iais:field value="Name of HCI " mandatory="true" width="11"/>
                         <iais:value width="11" cssClass="col-md-5 disabled">
                             <iais:input cssClass="" maxLength="100" type="text" name="onSiteHciName" id="sitePremiseName" value="${appGrpPremisesDto.hciName}"></iais:input>
@@ -157,17 +170,17 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Building Name" width="12"/>
-                        <iais:value width="11" cssClass="col-md-5">
-                            <iais:input cssClass="siteBuildingName" maxLength="45" type="text" name="onSiteBuildingName" id="siteBuildingName" value="${appGrpPremisesDto.buildingName}"></iais:input>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_buildingName"></span>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row>
                         <iais:field value="Street Name " mandatory="true" width="10"/>
                         <iais:value width="10" cssClass="col-md-5">
                             <iais:input cssClass="siteStreetName" maxLength="32" type="text" name="onSiteStreetName" id="siteStreetName" value="${appGrpPremisesDto.streetName}"></iais:input>
                             <span class="error-msg" name="iaisErrorMsg" id="error_streetName${status.index}"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="Building Name" width="12"/>
+                        <iais:value width="11" cssClass="col-md-5">
+                            <iais:input cssClass="siteBuildingName" maxLength="45" type="text" name="onSiteBuildingName" id="siteBuildingName" value="${appGrpPremisesDto.buildingName}"></iais:input>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_buildingName"></span>
                         </iais:value>
                     </iais:row>
                     <div class="form-group">
@@ -176,19 +189,6 @@
                             <input id="siteSafefyNo" maxlength="66" name="onSiteScdfRefNo" type="text" value="${appGrpPremisesDto.scdfRefNo}">
                         </div>
                     </div>
-                    <iais:row>
-                        <iais:field value="Fire Safety Certificate Issued Date" width="12"/>
-                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
-                            <iais:datePicker cssClass="fireIssuedDate " name="onSiteFireSafetyCertIssuedDate" value="${appGrpPremisesDto.certIssuedDtStr}" />
-                        </iais:value>
-                    </iais:row>
-                    <iais:row>
-                        <iais:field value="Office Telephone No " mandatory="true" width="12"/>
-                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
-                            <iais:input type="text" name="onSiteOffTelNo" maxLength="8" value="${appGrpPremisesDto.offTelNo}" id="onsitOffice" cssClass="onsitOffice" />
-                            <span class="error-msg" name="iaisErrorMsg" id="error_offTelNo${status.index}"></span>
-                        </iais:value>
-                    </iais:row>
                     <iais:row cssClass="other-lic-content">
                         <iais:field value="Are you co-locating with another licensee?" mandatory="true" width="12"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-6">

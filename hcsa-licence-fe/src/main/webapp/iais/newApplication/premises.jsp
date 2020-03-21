@@ -211,9 +211,11 @@
             submit(null,'back',null);
         });
         $('#Next').click(function(){
+            $('input[type="radio"]').prop('disabled',false);
             submit('documents',null,null);
         });
         $('#SaveDraft').click(function(){
+            $('input[type="radio"]').prop('disabled',false);
             submit('premises','saveDraft',null);
         });
 

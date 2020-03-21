@@ -141,7 +141,7 @@
     }
 
     function readonlyPartPage($Ele) {
-        $Ele.find('input[type="radio"]').prop('readonly',true);
+        $Ele.find('input[type="radio"]').prop('disabled',true);
         $Ele.find('input[type="text"]').prop('readonly',true);
         $Ele.find('input[type="file"]').prop('readonly',true);
         $Ele.find('input[type="checkbox"]').prop('readonly',true);
@@ -153,7 +153,7 @@
     }
 
     function unreadonlyPartPage($Ele) {
-        $Ele.find('input[type="radio"]').prop('readonly',false);
+        $Ele.find('input[type="radio"]').prop('disabled',false);
         $Ele.find('input[type="text"]').prop('readonly',false);
         $Ele.find('input[type="file"]').prop('readonly',false);
         $Ele.find('input[type="checkbox"]').prop('readonly',false);
