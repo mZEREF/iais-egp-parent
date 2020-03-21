@@ -817,4 +817,24 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         serListDto.setGeneralDo(doNum);
         serListDto.setGeneralNc(ncNum);
     }
+
+    // only for show check list
+    @Override
+    public  void  getInspectionFillCheckListDtoForShow(InspectionFillCheckListDto inspectionFillCheckListDto){
+        if(inspectionFillCheckListDto != null){
+            inspectionFillCheckListDto.setSvcNameShow( StringUtil.getFilterSpecialCharacter( inspectionFillCheckListDto.getSubName()));
+            List<SectionDto> sectionDtos = inspectionFillCheckListDto.getSectionDtoList();
+            if(sectionDtos != null && sectionDtos.size() > 0){
+                for(SectionDto sectionDto : sectionDtos){
+                    if(sectionDto != null && sectionDto.getItemDtoList() != null && sectionDto.getItemDtoList().size() > 0){
+                        List<ItemDto> itemDtoList = sectionDto.getItemDtoList();
+                        for(ItemDto itemDto : itemDtoList){
+                            if(itemDto.getIncqDto() != null)
+                                itemDto.getIncqDto().setSectionNameShow(StringUtil.getFilterSpecialCharacter(itemDto.getIncqDto().getSectionNameSub()));
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
