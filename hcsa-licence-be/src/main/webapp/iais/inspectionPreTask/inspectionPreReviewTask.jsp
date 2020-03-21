@@ -353,7 +353,12 @@
                           </iais:value>
                         </iais:row>
                         <iais:action style="text-align:center;">
-                          <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionPreTaskSubmit()">Submit</button>
+                          <%--<c:if test="${!empty commonDto.sectionDtoList && !empty serListDto}">--%>
+                            <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionPreTaskSubmit()">Submit</button>
+                          <%--</c:if>--%>
+                          <%--<c:if test="${empty commonDto.sectionDtoList && empty serListDto}">
+                            <button class="btn btn-primary disabled" style="float:right" type="button" disabled>Submit</button>
+                          </c:if>--%>
                         </iais:action>
                         <br><br><br>
                         <div class="alert alert-info" role="alert">
