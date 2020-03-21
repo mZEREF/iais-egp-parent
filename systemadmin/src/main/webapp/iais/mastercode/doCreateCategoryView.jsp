@@ -20,7 +20,7 @@
                             <h2>Create Master Code Category</h2>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-4 control-label" for="codeKey">Code Category: <span class="glyphicon glyphicon-star" aria-hidden="true" style="color: rgb(221, 0, 7);"></span></label>
+                            <iais:field value="Code Category." required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="codeKey" type="text" name="codeKey">
@@ -29,7 +29,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-4 control-label">Is Editable: <span class="glyphicon glyphicon-star" aria-hidden="true" style="color: rgb(221, 0, 7);"></span></label>
+                            <iais:field value="Is Editable." required="true"/>
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <iais:value>
                                     <div class="col-md-3">
@@ -49,9 +49,7 @@
                         </div>
                             <div class="row">
                                 <div class="col-xs-2 col-sm-2">
-                                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#"
-                                                                                  onclick="submitAction('back')">BACK</a>
-                                    </div>
+                                    <div><a href="#" onclick="submitAction('back')"><em class="fa fa-angle-left"></em> BACK</a></div>
                                 </div>
                                 <div class="col-xs-10 col-sm-10">
                                     <div class="text-right text-center-mobile">

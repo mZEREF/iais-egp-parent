@@ -20,7 +20,7 @@
                             <h2>Create Master Code</h2>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="codeKey">Master Code Key <span class="glyphicon glyphicon-star" aria-hidden="true" style="color: rgb(221, 0, 7);"></span></label>
+                            <iais:field value="Master Code Key." required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="codeKey" type="text" name="codeKey">
@@ -62,7 +62,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="codeSequence">Sequence <span class="glyphicon glyphicon-star" aria-hidden="true" style="color: rgb(221, 0, 7);"></span></label>
+                            <iais:field value="Sequence." required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="codeSequence" type="text" name="codeSequence">
@@ -87,7 +87,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="codeStatus">Status.<span class="glyphicon glyphicon-star" aria-hidden="true" style="color: rgb(221, 0, 7);"></span></label>
+                            <iais:field value="Status." required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <iais:select name="codeStatus" id="codeStatus" options="codeStatus"
@@ -97,7 +97,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="esd">Effective Start Date. <span class="glyphicon glyphicon-star" aria-hidden="true" style="color: rgb(221, 0, 7);"></span></label>
+                            <iais:field value="Effective Start Date." required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <iais:datePicker id="esd" name="esd"/>
