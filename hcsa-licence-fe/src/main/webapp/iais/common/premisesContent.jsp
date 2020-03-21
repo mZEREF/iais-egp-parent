@@ -66,7 +66,7 @@
                 <div class="row">
                     <div class="col-xs-12 col-md-4"></div>
                     <div class="col-xs-6 col-md-5">
-                        <span class="error-msg" name="iaisErrorMsg" id="error_premisesType${status.index}" style="margin-left: 35%"></span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_premisesType${status.index}" ></span>
                     </div>
                 </div>
 
@@ -265,6 +265,10 @@
                                             :
                                             <input class="PbHolDayStartMM" type="text" name="${premValue}onSitePbHolDayStartMM${phStat.index}" value="${ph.onsiteStartFromMM}" maxlength="2" style="width: 60px;;margin-right: 2%;margin-left: 2%"/>(MM)
                                         </div>
+                                        <div class="col-xs-12 col-md-4"></div>
+                                        <div class="col-xs-9 col-sm-5 col-md-6">
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_onsiteStartToMM${status.index}"></span>
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-12 col-md-4 control-label">
@@ -449,10 +453,14 @@
                                         <label class="col-xs-12 col-md-4 control-label">
                                             Public Holidays Operating Hours (Start)
                                         </label>
-                                        <div class="col-xs-9 col-sm-5 col-md-4">
+                                        <div class="col-xs-9 col-sm-5 col-md-6">
                                             <input class="PbHolDayStartHH" type="text" name="${premValue}conveyancePbHolDayStartHH${phStat.index}" value="${ph.convStartFromHH}" maxlength="2" style="width: 60px;margin-right: 2%"/>(HH)
                                             :
                                             <input class="PbHolDayStartMM" type="text" name="${premValue}conveyancePbHolDayStartMM${phStat.index}" value="${ph.convStartFromMM}" maxlength="2" style="width: 60px;margin-left: 2%;margin-right: 2%"/>(MM)
+                                        </div>
+                                        <div  class="col-xs-12 col-md-4 "></div>
+                                        <div class="col-xs-9 col-sm-5 col-md-6">
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_convStartToHH${status.index}"></span>
                                         </div>
                                     </div>
                                     <div class="form-group">

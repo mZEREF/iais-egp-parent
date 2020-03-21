@@ -132,6 +132,10 @@
                             <div class="col-sm-5 col-md-8" id="designation${suffix}">
                               <iais:select cssClass="designation" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${principalOfficer.designation}" firstOption="Please Select"></iais:select>
                             </div>
+                            <div  class="col-sm-3  col-md-4"></div>
+                            <div class="col-sm-5 col-md-8">
+                              <span class="error-msg" name="iaisErrorMsg" id="error_designation${suffix}"></span>
+                            </div>
 
                           </div>
                         </div>

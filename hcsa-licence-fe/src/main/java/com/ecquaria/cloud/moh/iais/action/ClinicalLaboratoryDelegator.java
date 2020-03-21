@@ -669,15 +669,14 @@ public class ClinicalLaboratoryDelegator {
                 }
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
             }
+            currentSvcRelatedDto.setAppSvcDisciplineAllocationDtoList(daList);
+            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
             if (!errorMap.isEmpty()) {
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.DISCIPLINEALLOCATION);
                 return;
             }
-
             //save into sub-svc dto
-            currentSvcRelatedDto.setAppSvcDisciplineAllocationDtoList(daList);
-            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
         }
 
         log.debug(StringUtil.changeForLog("the do doDisciplineAllocation end ...."));
