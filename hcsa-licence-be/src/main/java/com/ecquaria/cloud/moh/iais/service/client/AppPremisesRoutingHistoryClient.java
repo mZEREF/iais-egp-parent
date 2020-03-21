@@ -39,6 +39,6 @@ public interface AppPremisesRoutingHistoryClient {
     @GetMapping(value = "/iais-application-history/sub-stage-history/{corrId}/{stageId}")
     FeignResponseEntity<AppPremisesRoutingHistoryDto> getAppPremisesRoutingHistorySubStage(@PathVariable("corrId") String corrId, @PathVariable("stageId") String stageId);
 
-    @GetMapping(value = "/iais-application-history/secondRouteBack-history/{appCorrId}")
-    FeignResponseEntity<AppPremisesRoutingHistoryDto> getSecondRouteBackHistoryByCorrId(@PathVariable("appCorrId") String appCorrId);
+    @GetMapping(value = "/iais-application-history/secondRouteBack-history/{appNo}")
+    FeignResponseEntity<AppPremisesRoutingHistoryDto> getSecondRouteBackHistoryByAppNo(@PathVariable("appNo") String appNo,@PathVariable("status") String status);
 }

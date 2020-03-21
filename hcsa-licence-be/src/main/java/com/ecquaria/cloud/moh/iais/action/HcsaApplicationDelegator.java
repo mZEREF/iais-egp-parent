@@ -639,8 +639,8 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do replay start ...."));
         //TODO:replay
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByCorrId(
-                applicationViewDto.getApplicationDto().getApplicationNo());
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(
+                applicationViewDto.getApplicationDto().getApplicationNo(),applicationViewDto.getApplicationDto().getStatus());
         String wrkGrpId=appPremisesRoutingHistoryDto.getWrkGrpId();
         String roleId=appPremisesRoutingHistoryDto.getRoleId();
         String stageId=appPremisesRoutingHistoryDto.getStageId();
@@ -926,7 +926,6 @@ public class HcsaApplicationDelegator {
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
         //update application status
         broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
-        String oldStatus = applicationDto.getStatus();
         applicationDto.setStatus(appStatus);
         broadcastApplicationDto.setApplicationDto(applicationDto);
 

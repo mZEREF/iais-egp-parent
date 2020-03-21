@@ -2,9 +2,8 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
-
 import java.util.List;
+import org.springframework.http.HttpHeaders;
 
 /**
  * AppPremisesRoutingHistoryClientFallback
@@ -63,7 +62,7 @@ public class AppPremisesRoutingHistoryClientFallback implements AppPremisesRouti
 
 
     @Override
-    public FeignResponseEntity<AppPremisesRoutingHistoryDto> getSecondRouteBackHistoryByCorrId(String appCorrId) {
+    public FeignResponseEntity<AppPremisesRoutingHistoryDto> getSecondRouteBackHistoryByAppNo(String appNo,String status){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
