@@ -672,13 +672,19 @@ public class HcsaApplicationDelegator {
     public void replay(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do replay start ...."));
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        String nextStatus = ApplicationConsts.APPLICATION_STATUS_REPLY;
+        String getHistoryStatus = applicationViewDto.getApplicationDto().getStatus();
+          if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(getHistoryStatus)){
+              getHistoryStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+              nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+          }
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(
-                applicationViewDto.getApplicationDto().getApplicationNo(),applicationViewDto.getApplicationDto().getStatus());
+                applicationViewDto.getApplicationDto().getApplicationNo(),getHistoryStatus);
         String wrkGrpId=appPremisesRoutingHistoryDto.getWrkGrpId();
         String roleId=appPremisesRoutingHistoryDto.getRoleId();
         String stageId=appPremisesRoutingHistoryDto.getStageId();
         String userId=appPremisesRoutingHistoryDto.getActionby();
-        rollBack(bpc,stageId,ApplicationConsts.APPLICATION_STATUS_REPLY,roleId,wrkGrpId,userId);
+        rollBack(bpc,stageId,nextStatus,roleId,wrkGrpId,userId);
         log.debug(StringUtil.changeForLog("the do replay end ...."));
     }
 
