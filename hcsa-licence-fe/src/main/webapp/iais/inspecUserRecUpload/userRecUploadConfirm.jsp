@@ -96,9 +96,9 @@
                       </iais:row>
                     </c:if>
                     <iais:action >
-                      <button class="btn btn-secondary" style="float:right" type="button" onclick="javascript:doUserRecUploadConfirmCancel()">Cancel</button>
-                      <span style="float:right">&nbsp;</span>
                       <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doUserRecUploadConfirmSave()">Save</button>
+                      <span style="float:right">&nbsp;</span>
+                      <button class="btn btn-secondary" style="float:right" type="button" onclick="javascript:doUserRecUploadConfirmCancel()">Cancel</button>
                     </iais:action>
                   </iais:section>
                 </iais:body>
