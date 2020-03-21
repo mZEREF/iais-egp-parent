@@ -474,7 +474,7 @@
                                                                     <div class="ax_default text_area">
                                                                         <textarea id="internalRemarksId"
                                                                                   name="internalRemarks" cols="70"
-                                                                                  rows="7" maxlength="4000">${internalRemarks}</textarea>
+                                                                                  rows="7" maxlength="300">${internalRemarks}</textarea>
                                                                         <span id="error_internalRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
