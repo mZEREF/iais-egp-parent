@@ -76,7 +76,7 @@ public class InsReportDelegator {
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
-        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(correlationId);
+        ApplicationViewDto  applicationViewDto = insRepService.getApplicationViewDto(correlationId);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");
@@ -88,7 +88,10 @@ public class InsReportDelegator {
             insRepDto.setReportNoteBy(inspectorUser.getReportNoteBy());
             insRepDto.setInspectors(inspectorUser.getInspectors());
         }
-        initRecommendation(correlationId,applicationViewDto,bpc);
+        String appStatus = applicationViewDto.getApplicationDto().getStatus();
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION.equals(appStatus)){
+            initRecommendation(correlationId,applicationViewDto,bpc);
+        }
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
         List<SelectOption> chronoOption = getChronoOption();
         List<SelectOption> recommendationOption = getRecommendationOption();
@@ -157,7 +160,6 @@ public class InsReportDelegator {
             }catch (NumberFormatException e){
                 appPremisesRecommendationDto.setRecomInNumber(null);
             }
-
         }
         appPremisesRecommendationDto.setChronoUnit(chrono);
         appPremisesRecommendationDto.setEngageEnforcement(enforcement);

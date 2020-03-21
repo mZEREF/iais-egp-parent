@@ -14,8 +14,10 @@
 <input type="hidden" name="confirmAction" value="">
 <div class="tab-pane" id="tabInspection" role="tabpanel">
     <%--        <div class="row">--%>
-    <div class="alert alert-info" role="alert">
-        <p><span><strong>Section A (HCI Details)</strong></span></p>
+        <div class="alert alert-info" role="alert">
+            <strong>
+                <h4 style="border-bottom: none">Section A (HCI Details)</h4>
+            </strong>
     </div>
     <div class="row">
         <div class="col-xs-12">
@@ -25,41 +27,46 @@
                         <td class="col-xs-4">
                             <p>Licence No.</p>
                         </td>
-                        <td class="col-xs-8">
-                            <p></p>
+                        <td class="col-xs-4">
+                            <p><c:out value="${insRepDto.licenceNo}"/></p>
                         </td>
+                        <td class="col-xs-4"></td>
                     </tr>
                     <tr>
                         <td class="col-xs-4">
                             <p>Service Name</p>
                         </td>
-                        <td class="col-xs-8">
-                            <p><c:out value="${insRepDto.licenceNo}"/></p>
+                        <td class="col-xs-4">
+                            <p><c:out value="${insRepDto.serviceName}"/></p>
                         </td>
+                        <td class="col-xs-4"></td>
                     </tr>
                     <tr>
                         <td class="col-xs-4">
                             <p>HCI Code</p>
                         </td>
-                        <td class="col-xs-8">
+                        <td class="col-xs-4">
                             <p><c:out value="${insRepDto.hciCode}"/></p>
                         </td>
+                        <td class="col-xs-4"></td>
                     </tr>
                     <tr>
                         <td class="col-xs-4">
                             <p>HCI Name</p>
                         </td>
-                        <td class="col-xs-8">
+                        <td class="col-xs-4">
                             <p><c:out value="${insRepDto.hciName}"/></p>
                         </td>
+                        <td class="col-xs-4"></td>
                     </tr>
                     <tr>
                         <td class="col-xs-4">
                             <p>HCI Address</p>
                         </td>
-                        <td class="col-xs-8">
+                        <td class="col-xs-4">
                             <p><c:out value="${insRepDto.hciAddress}"/></p>
                         </td>
+                        <td class="col-xs-4"></td>
                     </tr>
                     <tr>
                         <td class="col-xs-4">
@@ -100,8 +107,10 @@
             </div>
         </div>
     </div>
-    <div class="alert alert-info" role="alert">
-        <p><span><strong>Section B (Type of Inspection)</strong></span></p>
+        <div class="alert alert-info" role="alert">
+            <strong>
+                <h4 style="border-bottom: none">Section B (Type of Inspection)</h4>
+            </strong>
     </div>
     <div class="row">
         <div class="col-xs-12">
@@ -121,67 +130,71 @@
                             <p>Time of Inspection</p>
                         </td>
                         <td class="col-xs-8">
-                            <fmt:formatDate value="${insRepDto.inspectionStartTime}"
-                                            pattern="dd/MM/yyyy"></fmt:formatDate>-
-                            <fmt:formatDate value="${insRepDto.inspectionEndTime}"
-                                            pattern="dd/MM/yyyy"></fmt:formatDate>
+                            <c:out value="${insRepDto.inspectionStartTime}"></c:out>-<c:out value="${insRepDto.inspectionEndTime}"></c:out>
                         </td>
                     </tr>
                     <tr>
                         <td class="col-xs-4">
                             <p>Reason for Visit</p>
                         </td>
-                        <td class="col-xs-8">
+                        <td class="col-xs-4">
                             <p>${insRepDto.reasonForVisit}</p>
                         </td>
+                        <td class="col-xs-4"></td>
                     </tr>
                     <tr>
                         <td class="col-xs-4">
                             <p>Inspected By</p>
                         </td>
-                        <td class="col-xs-8">
+                        <td class="col-xs-4">
                             <c:if test="${insRepDto.inspectors != null && not empty insRepDto.inspectors}">
                                 <p><c:forEach items="${insRepDto.inspectors}" var="inspector" varStatus="status">
                                 <p><c:out value="${inspector}"></c:out></p>
                             </c:forEach></p>
                             </c:if>
                         </td>
+                        <td class="col-xs-4"></td>
                     </tr>
                     <tr>
                         <td class="col-xs-4">
                             <p>Other Inspection Officer</p>
                         </td>
-                        <td class="col-xs-8">
+                        <td class="col-xs-4">
                             <c:if test="${insRepDto.inspectOffices != null && not empty insRepDto.inspectOffices}">
                                 <p><c:forEach items="${insRepDto.inspectOffices}" var="ioName">
                                     <c:out value="${ioName}"/><br>
                                 </c:forEach></p>
                             </c:if>
                         </td>
+                        <td class="col-xs-4"></td>
                     </tr>
                     <tr>
                         <td class="col-xs-4">
                             <p>Reported By</p>
                         </td>
-                        <td class="col-xs-8">
+                        <td class="col-xs-4">
                             <p>${insRepDto.reportedBy}</p>
                         </td>
+                        <td class="col-xs-4"></td>
                     </tr>
                     <tr>
                         <td class="col-xs-4">
                             <p>Report Noted By</p>
                         </td>
-                        <td class="col-xs-8">
+                        <td class="col-xs-4">
                             <p>${insRepDto.reportNoteBy}</p>
                         </td>
+                        <td class="col-xs-4"></td>
                     </tr>
                 </table>
             </div>
         </div>
     </div>
-    <div class="alert alert-info" role="alert">
-        <p><span><strong>Section C (Inspection Findings)</strong></span></p>
-    </div>
+        <div class="alert alert-info" role="alert">
+            <strong>
+                <h4 style="border-bottom: none">Section C (Inspection Findings)</h4>
+            </strong>
+        </div>
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
@@ -332,11 +345,11 @@
             </div>
         </div>
     </div>
-    <div class="alert alert-info" role="alert">
-        <strong>
-            <h4>Section D (Rectification)</h4>
-        </strong>
-    </div>
+        <div class="alert alert-info" role="alert">
+            <strong>
+                <h4 style="border-bottom: none">Section D (Rectification)</h4>
+            </strong>
+        </div>
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
@@ -405,11 +418,11 @@
             </div>
         </div>
     </div>
-    <div class="alert alert-info" role="alert">
-        <strong>
-            <h4>Section E (Recommendations) </h4>
-        </strong>
-    </div>
+        <div class="alert alert-info" role="alert">
+            <strong>
+                <h4 style="border-bottom: none">Section E (Recommendations)</h4>
+            </strong>
+        </div>
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
@@ -440,8 +453,8 @@
                         <td class="col-xs-4">
                             <input id=recomInNumber type="text" name="number" maxlength="2" value="${appPremisesRecommendationDto.recomInNumber}">
                             <iais:select id="chronoUnit" name="chrono" options="chronoOption" firstOption="Please select" value="${appPremisesRecommendationDto.chronoUnit}"/>
-                            <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"/>
-                            <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"/>
+                            <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
+                            <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
                         </td>
                         <td class="col-xs-4"></td>
                     </tr>
