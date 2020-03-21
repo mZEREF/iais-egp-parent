@@ -34,7 +34,7 @@
                     <iais:field value="Application Number"/>
                     <iais:value width="7">
                       <p>
-                        <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?appId=${inspecTaskCreAndAssDto.applicationId}" target="_blank">
+                        <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService" target="_blank">
                           <u><c:out value="${inspecTaskCreAndAssDto.applicationNo}"/></u>
                         </a>
                       </p>
