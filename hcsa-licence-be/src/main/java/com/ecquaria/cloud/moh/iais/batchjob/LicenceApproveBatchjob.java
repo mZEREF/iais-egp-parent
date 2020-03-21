@@ -191,16 +191,18 @@ public class LicenceApproveBatchjob {
         return  result;
     }
     private void deleteRejectApplication(List<ApplicationListDto> applicationListDtoList){
+        List<ApplicationListDto> removeList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(applicationListDtoList)){
             for (ApplicationListDto applicationListDto : applicationListDtoList){
                 if(applicationListDto!=null){
                     AppPremisesRecommendationDto appPremisesRecommendationDto = applicationListDto.getAppPremisesRecommendationDto();
                     boolean isReject =  isApplicaitonReject(appPremisesRecommendationDto);
                     if(isReject){
-                        applicationListDtoList.remove(applicationListDto);
+                        removeList.add(applicationListDto);
                     }
                 }
             }
+            applicationListDtoList.removeAll(removeList);
         }
     }
 
