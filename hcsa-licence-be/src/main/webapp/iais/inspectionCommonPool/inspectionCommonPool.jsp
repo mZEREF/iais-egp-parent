@@ -71,8 +71,8 @@
                     </iais:value>
                   </iais:row>
                   <iais:action style="text-align:right;">
-                    <button class="btn btn-primary" type="button" onclick="javascript:doInspectionCommonPoolSearch()">Search</button>
                     <button class="btn btn-secondary" type="button" onclick="javascript:doInspectionCommonPoolClear()">Clear</button>
+                    <button class="btn btn-primary" type="button" onclick="javascript:doInspectionCommonPoolSearch()">Search</button>
                   </iais:action>
                 </iais:section>
               <iais:pagination  param="cPoolSearchParam" result="cPoolSearchResult"/>
