@@ -15,7 +15,7 @@
                         <h2>The Nc Email has been submitted.</h2>
                     </div>
                 </div>
-                <div align="left"><span><a class="btn btn-secondary"  href="/main-web/eservice/INTRANET/MohBackendInbox">Back</a></span></div>
+                <div align="left"><span><a  href="/main-web/eservice/INTRANET/MohBackendInbox">< Back</a></span></div>
             </div>
         </div>
     </div>

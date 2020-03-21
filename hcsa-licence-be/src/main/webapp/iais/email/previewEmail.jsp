@@ -47,5 +47,5 @@
         ${messageContent}
     </div>
 
-    <input type="submit" class="btn btn-secondary" value="Back">
+    <a onclick="javascript:SOP.Crud.cfxSubmit('mainForm');" >< Back</a>
 </form>

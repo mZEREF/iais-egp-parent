@@ -559,6 +559,13 @@ public class RequestForInformationDelegator {
         ParamUtil.setSessionAttr(request,"id",id);
         // 		doSearchLicenceAfter->OnStepProcess
     }
+    public void preRfi(BaseProcessClass bpc) {
+        log.info("=======>>>>>preRfi>>>>>>>>>>>>>>>>requestForInformation");
+        HttpServletRequest request=bpc.request;
+        String id = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        ParamUtil.setSessionAttr(request,"id",id);
+        // 		doSearchLicenceAfter->OnStepProcess
+    }
 
     public void doSearchApplicationAfter(BaseProcessClass bpc) {
         log.info("=======>>>>>doSearchApplicationAfter>>>>>>>>>>>>>>>>requestForInformation");
@@ -766,11 +773,7 @@ public class RequestForInformationDelegator {
     public void preReqForInfo(BaseProcessClass bpc) {
         log.info("=======>>>>>preReqForInfo>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String  licPremId = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        if(licPremId==null|| "undefined".equals(licPremId)){
-            licPremId=(String) ParamUtil.getSessionAttr(request, "id");
-        }
-        ParamUtil.setSessionAttr(request,"id",licPremId);
+        String  licPremId = (String) ParamUtil.getSessionAttr(request,"id");
         List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licPremId);
         for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
              ) {
@@ -819,9 +822,7 @@ public class RequestForInformationDelegator {
     public void doReqForInfo(BaseProcessClass bpc) {
         log.info("=======>>>>>doReqForInfo>>>>>>>>>>>>>>>>requestForInformation");
         String reqInfoId = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        if(!StringUtil.isEmpty(reqInfoId)) {
-            ParamUtil.setSessionAttr(bpc.request, "reqInfoId", reqInfoId);
-        }
+        ParamUtil.setSessionAttr(bpc.request, "reqInfoId", reqInfoId);
         // 		doReqForInfo->OnStepProcess
     }
 
@@ -906,8 +907,8 @@ public class RequestForInformationDelegator {
         interMessageDto.setService_id(svcDto.getId());
         interMessageDto.setMsgContent(mesContext);
         interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-        //interMessageDto.setUserId(licenseeId);
-        interMessageDto.setUserId("B4C95F9B-5D30-EA11-BE78-000C29D29DB0");
+        interMessageDto.setUserId(licenseeId);
+        //interMessageDto.setUserId("B4C95F9B-5D30-EA11-BE78-000C29D29DB0");
         interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         inboxMsgService.saveInterMessage(interMessageDto);
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
@@ -937,7 +938,6 @@ public class RequestForInformationDelegator {
         licPremisesReqForInfoDto.setAction("delete");
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,licPremisesReqForInfoDto.getLicPremId());
         gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto,
                 signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
         // 		doCancel->OnStepProcess
@@ -951,7 +951,6 @@ public class RequestForInformationDelegator {
         licPremisesReqForInfoDto.setAction("delete");
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,licPremisesReqForInfoDto.getLicPremId());
         gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto,
                 signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
         // 		doAccept->OnStepProcess
@@ -980,7 +979,6 @@ public class RequestForInformationDelegator {
             dueDate =calendar.getTime();
         }
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(reqInfoId);
-        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,licPremisesReqForInfoDto.getLicPremId());
         licPremisesReqForInfoDto.setDueDateSubmission(dueDate);
         requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);

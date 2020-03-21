@@ -58,7 +58,7 @@
     <JavaCode defClass="" executor="" methodName="preAppInfo_OnStepProcess_0" name="preAppInfo_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preReqForInfo" x="1430" y="410">
+  <AutomaticStep defClass="" executor="" icon="" name="preReqForInfo" x="1430" y="420">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -79,18 +79,11 @@
     <JavaCode defClass="" executor="" methodName="doCreateRequest_OnStepProcess_0" name="doCreateRequest_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doCancel" x="1440" y="620">
+  <AutomaticStep defClass="" executor="" icon="" name="doCancel" x="1660" y="660">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doCancel_OnStepProcess_0" name="doCancel_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doAccept" x="1680" y="620">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doAccept_OnStepProcess_0" name="doAccept_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="preNewRfi" x="1790" y="240">
@@ -140,6 +133,13 @@
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="preInspReport_OnStepProcess_0" name="preInspReport_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preRfi" x="410" y="430">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preRfi_OnStepProcess_0" name="preRfi_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -226,7 +226,7 @@
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preReqForInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(1320,450)(1450,430)}</position>
+   <position>{(1320,450)(1450,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preSearchLicence" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(280,450)(420,380)}</position>
@@ -307,16 +307,10 @@
    <position>{(1700,480)(1560,520)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doCancel" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
-   <position>{(1930,750)(1460,640)}</position>
+   <position>{(1930,750)(1680,680)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preReqForInfo" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge2" style="oblique">
-   <position>{(1560,520)(1450,430)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doAccept" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
-   <position>{(1930,750)(1700,640)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doAccept" style="oblique">
-   <position>{(1700,640)(1560,520)}</position>
+   <position>{(1560,520)(1450,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch6" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doReqForInfo" style="oblique">
    <position>{(1570,190)(1930,130)}</position>
@@ -337,7 +331,7 @@
    <position>{(1920,480)(1930,630)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doCancel" style="oblique">
-   <position>{(1460,640)(1560,520)}</position>
+   <position>{(1680,680)(1560,520)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch5" style="rectanular">
    <position>{(1930,750)(1560,520)}</position>
@@ -373,7 +367,7 @@
    <position>{(1150,610)(910,610)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preSearchLic" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch8" style="oblique">
-   <position>{(785,640)(280,540)}</position>
+   <position>{(760,610)(280,540)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(280,450)(270,130)}</position>
@@ -402,26 +396,29 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSearchLicenceAfter" style="oblique">
    <position>{(1050,380)(1220,440)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preReqForInfo" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(280,450)(1450,430)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preReqForInfo" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preRfi" style="rectanular">
+   <position>{(455,480)(1450,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preReqForInfo" style="oblique">
-   <position>{(1450,430)(1470,300)}</position>
+   <position>{(1450,440)(1470,300)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicence" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
    <position>{(1470,300)(720,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch8" linkstyle="Direct" name="" sourceName="/Pages/WebPage/licInfoPage" style="oblique">
-   <position>{(910,610)(785,640)}</position>
+   <position>{(910,610)(760,610)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preInspReport" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch8" style="oblique">
-   <position>{(785,640)(945,750)}</position>
+   <position>{(760,610)(920,720)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/InspReportPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preInspReport" style="oblique">
-   <position>{(945,750)(1095,750)}</position>
+   <position>{(920,720)(1070,720)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preLicInfo" linkstyle="Direct" name="" sourceName="/Pages/WebPage/InspReportPage" style="oblique">
-   <position>{(1095,750)(1150,610)}</position>
+   <position>{(1070,720)(1150,610)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preRfi" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(280,450)(455,480)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -438,7 +435,7 @@
    <SwitchCase component="/Steps/AutomaticStep/preSearchLic" value="&quot;searchLic&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSearchLicenceAfter" value="&quot;licInfo&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSearchApplicationAfter" value="&quot;appInfo&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/preReqForInfo" value="&quot;reqForInfo&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preRfi" value="&quot;reqForInfo&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Merges/Merge/Merge3" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="1300" y="430">
    <Description/>
@@ -461,7 +458,6 @@
   </Switch>
   <Switch defClass="" defaultComponent="/Merges/Merge/Merge2" executor="" icon="" leftOperand="crud_action_type" name="Switch5" x="1910" y="730">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/doAccept" value="&quot;accept&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge2" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doCancel" value="&quot;cancel&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doUpdate" value="&quot;update&quot;"/>
