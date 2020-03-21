@@ -1,13 +1,13 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 public class HcsaApplicationViewValidate implements CustomizeValidator {
     private final String STATUS = "APST000";
@@ -40,7 +40,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
 
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
         String status = applicationViewDto.getApplicationDto().getStatus();
-        if(STATUS.equals(status)){
+        if(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(status) || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
             String nextStageReply = ParamUtil.getRequestString(request, "nextStageReply");
             if(StringUtil.isEmpty(nextStageReply)){
                 errMap.put("nextStageReply","The field is mandatory.");

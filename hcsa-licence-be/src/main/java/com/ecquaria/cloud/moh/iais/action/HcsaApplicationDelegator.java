@@ -639,7 +639,8 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do replay start ...."));
         //TODO:replay
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto=appPremisesRoutingHistoryService.getSecondRouteBackHistoryByCorrId(applicationViewDto.getAppPremisesCorrelationId());
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByCorrId(
+                applicationViewDto.getApplicationDto().getApplicationNo());
         String wrkGrpId=appPremisesRoutingHistoryDto.getWrkGrpId();
         String roleId=appPremisesRoutingHistoryDto.getRoleId();
         String stageId=appPremisesRoutingHistoryDto.getStageId();
