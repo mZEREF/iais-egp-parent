@@ -122,7 +122,7 @@
                         <c:when test="${empty licResult.rows}">
                             <tr>
                                 <td colspan="6">
-                                    <p class="table-row-title" style="text-align:center">No Record !</p>
+                                    <iais:message key="ACK018" escape="true"></iais:message>
                                 </td>
                             </tr>
                         </c:when>

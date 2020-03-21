@@ -71,11 +71,12 @@
                                 ${MsgTemplateDto.messageContent}
                             </textarea>
                         </div>
-                        <div class="form-group" style="position:relative">
-                            <div class="col-xs-2 col-sm-2" style="position:absolute;bottom: 0;">
-                                <a href="#" onclick="submit('back')">BACK</a>
+                        <div class="form-group">
+                            <div class="col-xs-2 col-sm-2 col-sm-offset-8">
+                                <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#"
+                                                                              onclick="submit('back')">BACK</a></div>
                             </div>
-                            <div class="col-xs-10 col-sm-10 text-right">
+                            <div class="col-xs-2 col-sm-2">
                                 <button type="button" class="btn btn-primary" onclick="doEdit('${MsgTemplateDto.id}')">
                                     SUBMIT
                                 </button>
