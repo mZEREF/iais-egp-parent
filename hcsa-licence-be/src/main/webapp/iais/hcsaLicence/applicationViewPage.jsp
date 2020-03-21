@@ -677,7 +677,7 @@
             $('#ApplicationViewInspection').css('display', 'none');
             $('#recommendationDropdown').removeClass('hidden');
         }
-        if ('${applicationViewDto.applicationDto.status}' == 'APST000') {
+        if ('${applicationViewDto.applicationDto.status}' == 'APST000' || '${applicationViewDto.applicationDto.status}' == 'APST014') {
             $('#processingDecision').addClass('hidden');
             $('#recommendationDropdown').addClass('hidden');
             $('#replytr').removeClass('hidden');

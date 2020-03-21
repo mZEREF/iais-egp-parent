@@ -204,7 +204,6 @@ public class HcsaApplicationDelegator {
         nextStageList.add(new SelectOption("ROLLBACK", "Internal Route Back"));
         ParamUtil.setSessionAttr(bpc.request, "nextStages", (Serializable)nextStageList);
 
-
         List<SelectOption> nextStageReplyList = IaisCommonUtils.genNewArrayList();
         nextStageReplyList.add(new SelectOption("", "Please Select"));
         nextStageReplyList.add(new SelectOption("PROCREP", "Give Clarification"));
