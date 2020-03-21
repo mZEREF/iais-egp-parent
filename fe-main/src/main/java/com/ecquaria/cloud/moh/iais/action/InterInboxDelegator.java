@@ -143,8 +143,10 @@ public class InterInboxDelegator {
         log.debug(StringUtil.changeForLog("Step ---> msgDoArchive"));
         HttpServletRequest request = bpc.request;
         String[] msgIdList = ParamUtil.getStrings(request,"msgIdList");
-        boolean archiveResult = inboxService.updateMsgStatus(msgIdList);
-        ParamUtil.setRequestAttr(request,InboxConst.MESSAGE_ARCHIVE_RESULT, archiveResult);
+        if (msgIdList != null){
+            boolean archiveResult = inboxService.updateMsgStatus(msgIdList);
+            ParamUtil.setRequestAttr(request,InboxConst.MESSAGE_ARCHIVE_RESULT, archiveResult);
+        }
     }
 
     public void msgToView(BaseProcessClass bpc){
