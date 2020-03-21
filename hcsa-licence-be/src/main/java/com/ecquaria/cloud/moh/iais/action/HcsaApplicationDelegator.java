@@ -35,7 +35,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
@@ -124,20 +129,6 @@ public class HcsaApplicationDelegator {
     @Autowired
     private EmailClient emailClient;
 
-//    public void routingTask(BaseProcessClass bpc) throws FeignException {
-//        log.debug(StringUtil.changeForLog("the do routingTask start ...."));
-//        AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence");
-//        List<ApplicationDto> applicationDtos = new ArrayList();
-//        ApplicationDto applicationDto0 = new ApplicationDto();
-//        applicationDto0.setApplicationNo("test applicaitonNo");
-//        applicationDto0.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
-//        applicationDto0.setApplicationType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-//        applicationDtos.add(applicationDto0);
-//       // taskService.routingAdminScranTask(applicationDtos);
-//        //taskService.routingTask(applicationDto0,HcsaConsts.ROUTING_STAGE_PSO);
-//        log.debug(StringUtil.changeForLog("the do routingTask end ...."));
-//    }
-
     /**
      * StartStep: doStart
      *
@@ -150,19 +141,9 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,"taskDto",null);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto",null);
         ParamUtil.setSessionAttr(bpc.request,"isSaveRfiSelect",null);
+        ParamUtil.setSessionAttr(bpc.request, "nextStages", null);
+        ParamUtil.setSessionAttr(bpc.request, "nextStageReply", null);
         log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
-
-        List<SelectOption> nextStageList = IaisCommonUtils.genNewArrayList();
-        nextStageList.add(new SelectOption("", "Please Select"));
-        nextStageList.add(new SelectOption("VERIFIED", "Verified"));
-        nextStageList.add(new SelectOption("ROLLBACK", "Internal Route Back"));
-        ParamUtil.setSessionAttr(bpc.request, "nextStages", (Serializable)nextStageList);
-
-
-        List<SelectOption> nextStageReplyList = IaisCommonUtils.genNewArrayList();
-        nextStageReplyList.add(new SelectOption("", "Please Select"));
-        nextStageReplyList.add(new SelectOption("PROCREP", "Give Clarification"));
-        ParamUtil.setSessionAttr(bpc.request, "nextStageReply", (Serializable)nextStageReplyList);
     }
 
     /**
@@ -175,11 +156,6 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareData start ..."));
         //get the task
        String  taskId = ParamUtil.getString(bpc.request,"taskId");
-//       if(StringUtil.isEmpty(taskId)){
-//           taskId = (String)ParamUtil.getSessionAttr(bpc.request,"taskId");
-//       }else{
-//           ParamUtil.setSessionAttr(bpc.request,"taskId",taskId);
-//       }
        TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = "";
        if(taskDto != null){
@@ -222,9 +198,17 @@ public class HcsaApplicationDelegator {
         applicationViewDto.setRollBack(rollBackMap);
 
 
-        //add special stages
+        List<SelectOption> nextStageList = IaisCommonUtils.genNewArrayList();
+        nextStageList.add(new SelectOption("", "Please Select"));
+        nextStageList.add(new SelectOption("VERIFIED", "Verified"));
+        nextStageList.add(new SelectOption("ROLLBACK", "Internal Route Back"));
+        ParamUtil.setSessionAttr(bpc.request, "nextStages", (Serializable)nextStageList);
 
-     //   routingStage.put(ApplicationConsts.PROCESSING_DECISION_LICENCE_START_DATE, "Licence Start Date");
+
+        List<SelectOption> nextStageReplyList = IaisCommonUtils.genNewArrayList();
+        nextStageReplyList.add(new SelectOption("", "Please Select"));
+        nextStageReplyList.add(new SelectOption("PROCREP", "Give Clarification"));
+        ParamUtil.setSessionAttr(bpc.request, "nextStageReply", (Serializable)nextStageReplyList);
 
        Integer rfiCount =  applicationService.getAppBYGroupIdAndStatus(applicationViewDto.getApplicationDto().getAppGrpId(),
                ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
