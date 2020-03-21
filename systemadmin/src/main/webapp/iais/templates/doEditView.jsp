@@ -72,12 +72,8 @@
                             </textarea>
                         </div>
                         <div class="form-group">
-                            <div class="col-xs-2 col-sm-2 col-sm-offset-8">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#"
-                                                                              onclick="submit('back')">BACK</a></div>
-                            </div>
-                            <div class="col-xs-2 col-sm-2">
-                                <button type="button" class="btn btn-primary" onclick="doEdit('${MsgTemplateDto.id}')">
+                            <div class="col-xs-12 col-sm-12 text-right">
+                                <button type="button" class="btn btn-primary " onclick="doEdit('${MsgTemplateDto.id}')">
                                     SUBMIT
                                 </button>
                             </div>

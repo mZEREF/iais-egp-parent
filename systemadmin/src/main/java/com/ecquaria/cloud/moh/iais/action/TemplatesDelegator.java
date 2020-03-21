@@ -135,7 +135,6 @@ public class TemplatesDelegator {
             return;
         }
         MsgTemplateDto msgTemplateDto = (MsgTemplateDto) ParamUtil.getSessionAttr(request, MsgTemplateConstants.MSG_TEMPLATE_DTO);
-
         ValidationResult validationResult =WebValidationHelper.validateProperty(msgTemplateDto, "edit");
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();

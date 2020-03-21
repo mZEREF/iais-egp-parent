@@ -1,5 +1,6 @@
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohAlertNotificationTemplate___1 extends BaseProcessClass {
@@ -35,10 +36,12 @@ public class INTRANET___MohAlertNotificationTemplate___1 extends BaseProcessClas
 	}
 
 	public void doPage_OnStepProcess_0() throws Exception {
+	// 		doPage->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doPage", this);
 	}
 
 	public void doSort_OnStepProcess_0() throws Exception {
+	// 		doSort->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doSort", this);
 	}
 
