@@ -196,5 +196,6 @@ public interface ApplicationClient {
     @PostMapping(value = "/iais-application-be/application-rfc-licences",  consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppSubmissionDto>> saveAppsByPostInspection(@RequestBody List<AppSubmissionDto> appSubmissionDtos);
 
-
+    @GetMapping(value = "/iais-application-be/prem-corr-list/{appGroupId}")
+    FeignResponseEntity<List<AppPremisesCorrelationDto>> getPremCorrDtoByAppGroupId(@PathVariable(name = "appGroupId") String appGroupId);
 }
