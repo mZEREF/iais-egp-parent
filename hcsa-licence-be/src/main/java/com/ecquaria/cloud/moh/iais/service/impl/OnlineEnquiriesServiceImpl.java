@@ -31,12 +31,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComplianceHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRectifiedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.SectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.EnquiryInspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -177,7 +177,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 
             }catch (Exception e){
                 log.info(e.getMessage());
-                //complianceHistoryDtos.add(complianceHistoryDto);
+               // complianceHistoryDtos.add(complianceHistoryDto);
             }
         }
 
@@ -187,8 +187,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     }
 
     @Override
-    public InspectionReportDto getInsRepDto(ApplicationViewDto applicationViewDto) {
-        InspectionReportDto inspectionReportDto = new InspectionReportDto();
+    public EnquiryInspectionReportDto getInsRepDto(ApplicationViewDto applicationViewDto) {
+        EnquiryInspectionReportDto inspectionReportDto = new EnquiryInspectionReportDto();
         //inspection report application dto
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -347,10 +347,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         inspectionReportDto.setHciAddress(appInsRepDto.getHciAddress());
         inspectionReportDto.setReasonForVisit(reasonForVisit);
         inspectionReportDto.setInspectionDate(inspectionDate);
-        assert inspectionStartTime != null;
-        inspectionReportDto.setInspectionStartTime(inspectionStartTime.toString());
-        assert inspectionEndTime != null;
-        inspectionReportDto.setInspectionEndTime(inspectionEndTime.toString());
+//        inspectionReportDto.setInspectionStartTime(inspectionStartTime.toString());
+//        inspectionReportDto.setInspectionEndTime(inspectionEndTime.toString());
         inspectionReportDto.setBestPractice(bestPractice);
         inspectionReportDto.setTaskRemarks(remarks);
         inspectionReportDto.setCurrentStatus(status);
@@ -533,7 +531,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         String appPremCorrId = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
 
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appPremCorrId);
-        InspectionReportDto insRepDto = getInsRepDto(applicationViewDto);
+        EnquiryInspectionReportDto insRepDto = getInsRepDto(applicationViewDto);
         ParamUtil.setSessionAttr(request, "insRepDto", insRepDto);
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
         ParamUtil.setSessionAttr(request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
