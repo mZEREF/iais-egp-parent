@@ -64,14 +64,15 @@
                             </c:choose>
 
                             </tbody>
-                            <iais:action style="text-align:left;">
-                                <a  onclick="javascript:doBack()">< Back</a>
-                            </iais:action>
+
                         </table>
                     </div>
                 </div>
             </div>
         </div>
+        <iais:action style="text-align:left;">
+            <a  onclick="javascript:doBack()">< Back</a>
+        </iais:action>
     </div>
 </form>
 <script type="text/javascript">
