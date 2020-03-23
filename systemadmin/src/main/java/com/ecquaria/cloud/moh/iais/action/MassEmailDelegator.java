@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -101,7 +102,7 @@ public class MassEmailDelegator {
                 dismode = mode[0];
             }
         }
-        DistributionListDto distributionListDto = new DistributionListDto();
+        DistributionListWebDto distributionListDto = new DistributionListWebDto();
         distributionListDto.setService(service);
         distributionListDto.setDisname(name);
         distributionListDto.setMode(dismode);

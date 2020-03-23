@@ -9,10 +9,10 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
-
 import java.util.List;
+import org.springframework.http.HttpHeaders;
 
 public class DistributionListClientFallback implements DistributionListClient{
 
@@ -33,7 +33,7 @@ public class DistributionListClientFallback implements DistributionListClient{
     }
 
     @Override
-    public FeignResponseEntity<DistributionListDto> saveDistributionList(DistributionListDto distributionListDto) {
+    public FeignResponseEntity<DistributionListWebDto> saveDistributionList(DistributionListWebDto distributionListDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

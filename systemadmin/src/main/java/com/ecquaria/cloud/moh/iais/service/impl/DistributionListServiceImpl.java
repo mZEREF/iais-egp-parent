@@ -5,13 +5,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import com.ecquaria.cloud.moh.iais.service.client.DistributionListClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -68,7 +68,7 @@ public class DistributionListServiceImpl implements DistributionListService {
     }
 
     @Override
-    public DistributionListDto saveDistributionList(DistributionListDto distributionListDto){
+    public DistributionListWebDto saveDistributionList(DistributionListWebDto distributionListDto){
         return distributionListClient.saveDistributionList(distributionListDto).getEntity();
     }
 
