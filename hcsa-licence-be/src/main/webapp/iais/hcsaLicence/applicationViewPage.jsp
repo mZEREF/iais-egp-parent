@@ -553,7 +553,9 @@
                                                     </div>
                                                     <div id="recommendationDropdown" class="hidden">
                                                         <iais:row>
-                                                            <iais:field value="Recommendation" required="false"/>
+
+                                                            <div id="recommendationFieldTrue" class="hidden"><iais:field value="Recommendation" required="true"/></div>
+                                                            <div id="recommendationFieldFalse"><iais:field value="Recommendation" required="false"/></div>
                                                             <iais:value width="10">
                                                                 <c:choose>
                                                                     <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012'}">
@@ -690,6 +692,7 @@
         $('#rfiSelect').hide();
         check();
         validate();
+        checkVerifiedField();
     });
 
 
@@ -775,8 +778,24 @@
 
         }
     });
+
+    function checkVerifiedField(){
+        var selectValue = $("[name='verified']").val();
+        //pso aso
+        if('${applicationViewDto.applicationDto.status}' == 'APST012' || '${applicationViewDto.applicationDto.status}' == 'APST007'){
+            if('AO1' == selectValue|| 'AO2'==selectValue || 'AO3'==selectValue){
+                $('#recommendationFieldTrue').removeClass('hidden');
+                $('#recommendationFieldFalse').addClass('hidden');
+            }else{
+                $('#recommendationFieldTrue').addClass('hidden');
+                $('#recommendationFieldFalse').removeClass('hidden');
+            }
+        }
+    }
+
     $("[name='verified']").change(function selectChange() {
         var selectValue = $("[name='verified']").val();
+        checkVerifiedField();
         if (selectValue == "PROCRFI") {
             showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
         } else {

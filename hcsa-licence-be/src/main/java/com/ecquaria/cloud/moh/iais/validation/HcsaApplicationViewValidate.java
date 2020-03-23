@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -56,6 +57,20 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                     if(StringUtil.isEmpty(verified)){
                         errMap.put("verified","The field is mandatory.");
                     }
+                    // if role is AOS or PSO ,check verified's value
+                    TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
+                    String roleId = "";
+                    if(taskDto !=null){
+                        roleId = taskDto.getRoleId();
+                    }
+                    if("ASO".equals(roleId) || "PSO".equals(roleId)){
+                        if("AO1".equals(verified) || "AO2".equals(verified) || "AO3".equals(verified)){
+                            if(StringUtil.isEmpty(recommendationStr)){
+                                errMap.put("recommendation","Please key in recommendation");
+                            }
+                        }
+                    }
+
                 }else if(ROLLBACK.equals(nextStage)){
                     String rollBack = ParamUtil.getRequestString(request, "rollBack");
                     ParamUtil.setRequestAttr(request,"selectRollBack",rollBack);
