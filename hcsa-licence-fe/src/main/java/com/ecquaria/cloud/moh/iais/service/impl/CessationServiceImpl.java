@@ -11,9 +11,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -161,18 +163,23 @@ public class CessationServiceImpl implements CessationService {
     @Override
     public void saveCessations(List<AppCessationDto> appCessationDtos) {
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
-        for (AppCessationDto appCessationDto : appCessationDtos) {
+        for (int i = 0; i <appCessationDtos.size() ; i++) {
+            AppCessationDto appCessationDto = appCessationDtos.get(i);
             AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
             String licId = appCessationDto.getWhichTodo();
-            String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT).getEntity();
-            ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(appNo, licId, ApplicationConsts.APPLICATION_TYPE_APPEAL);
+            LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
+            String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT).getEntity();
+            String appNo = grpNo + "-0"+ i ;
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
+            String serviceId = hcsaServiceDto.getId();
+            ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(grpNo, licId, ApplicationConsts.APPLICATION_TYPE_CESSATION);
             List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
             appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);
             ApplicationDto applicationDto = new ApplicationDto();
             applicationDto.setApplicationType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
             applicationDto.setApplicationNo(appNo);
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-            applicationDto.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
+            applicationDto.setServiceId(serviceId);
             applicationDto.setOriginLicenceId(licId);
             applicationDto.setVersion(1);
             List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();

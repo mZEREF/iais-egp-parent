@@ -26,6 +26,8 @@ public interface ApplicationService {
 
     public List<AppEditSelectDto> getAppEditSelectDtos(String appId, String changeType);
 
+    void postInspectionBack();
+
 
     void alertSelfDeclNotification();
 }

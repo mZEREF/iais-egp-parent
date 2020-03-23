@@ -57,8 +57,8 @@ public class ReCessationApplicationDelegator {
         List<String> licIds = (List<String>)ParamUtil.getSessionAttr(bpc.request, "licIds");
         if(licIds==null){
             licIds = IaisCommonUtils.genNewArrayList();
-            licIds.add("3F0C254C-0764-EA11-BE7F-000C29F371DC");
-            //licIds.add("CFCAC193-6F4D-EA11-BE7F-000C29F371DC");
+            licIds.add("ACB51822-A656-EA11-BE7F-000C29F371DC");
+            licIds.add("4083B3AD-B04D-EA11-BE7F-000C29F371DC");
         }
         List<AppCessLicDto> appCessDtosByLicIds = cessationService.getOldCessationByIds(licIds);
 
@@ -153,7 +153,7 @@ public class ReCessationApplicationDelegator {
 
     public void saveData(BaseProcessClass bpc){
         List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
-        //cessationService.saveCessations(appCessationDtos);
+        cessationService.saveCessations(appCessationDtos);
         List<AppCessatonConfirmDto> appCessationDtosConfirms = IaisCommonUtils.genNewArrayList();
         for (AppCessationDto appCessationDto : appCessationDtos) {
             String licId = appCessationDto.getWhichTodo();

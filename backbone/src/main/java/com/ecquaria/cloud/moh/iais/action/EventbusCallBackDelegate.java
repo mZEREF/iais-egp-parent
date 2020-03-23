@@ -86,7 +86,7 @@ public class EventbusCallBackDelegate {
                     if(EventBusConsts.OPERATION_APPLICATION_UPDATE_APPEAL.equals(operation)){
                          invokeMethod(submissionId, eventRefNum,
                                  "com.ecquaria.cloud.moh.iais.service.impl.AppealApplicaionServiceImpl",
-                                 "updateFEAppealApplicationDto");
+                                "updateFEAppealApplicationDto");
                     } else if(EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION.equals(operation)){
                         log.info("eventRefNum ****"+eventRefNum);
                             log.info("send task callback *****");

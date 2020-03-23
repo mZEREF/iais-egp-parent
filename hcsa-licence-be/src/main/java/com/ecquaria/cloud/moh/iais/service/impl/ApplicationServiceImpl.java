@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -47,6 +48,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Autowired
     private EmailClient emailClient;
+    @Autowired
+    private TaskService taskService;
 
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
@@ -144,6 +147,22 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public List<AppEditSelectDto> getAppEditSelectDtos(String appId, String changeType) {
         return applicationClient.getAppEditSelectDto(appId, changeType).getEntity();
+    }
+
+    @Override
+    public void postInspectionBack() {
+        String appType = ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION;
+        String appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING;
+        List<ApplicationDto> postApps = applicationClient.getPostApplication(appType, appStatus).getEntity();
+        //ApplicationDto applicationDto, String statgId,String roleId,String correlationId
+            if(!postApps.isEmpty()&&postApps!=null){
+                for(ApplicationDto applicationDto : postApps){
+
+                    //taskService.getRoutingTask(applicationDto,)
+                }
+
+            }
+
     }
 
     @Override
