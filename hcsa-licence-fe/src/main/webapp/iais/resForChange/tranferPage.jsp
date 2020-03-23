@@ -46,7 +46,7 @@
                  <div class="row">
                      <div class="container">
                          <div class="col-xs-12 col-md-6 text-left">
-                             <a class="back" href="https://egp.sit.inter.iais.com/hcsa-licence-web/eservice/INTERNET/MohRequestForChange?licenceId=${prepareTranfer.licenceId}"><em class="fa fa-angle-left"></em> Back</a>
+                             <a class="back" href="/hcsa-licence-web/eservice/INTERNET/MohRequestForChange?licenceId=${prepareTranfer.licenceId}"><em class="fa fa-angle-left"></em> Back</a>
                          </div>
                          <div class="col-xs-12 col-md-6 text-right">
                              <a class="btn btn-primary next premiseId" id="Next">Next</a>
