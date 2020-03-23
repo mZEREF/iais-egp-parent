@@ -70,6 +70,20 @@ public final class HcsaServiceCacheHelper {
 		return null;
 	}
 
+	public static HcsaServiceDto getServiceByServiceName(String svcName) {
+		List<HcsaServiceDto> serviceDtos = receiveAllHcsaService();
+		if (!IaisCommonUtils.isEmpty(serviceDtos)) {
+			for (HcsaServiceDto s : serviceDtos) {
+				if (s.getSvcName().equals(svcName)) {
+					return s;
+				}
+			}
+		}
+
+		return null;
+	}
+
+
 	public static void receiveServiceMapping(){
 		HcsaServiceClient serviceClient = SpringContextHelper.getContext().getBean(HcsaServiceClient.class);
 		if (serviceClient == null){
