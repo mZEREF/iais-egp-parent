@@ -27,7 +27,7 @@ public class RfcConst {
     public static final String RFCAPPSUBMISSIONDTO = "RfcAppSubmissionDto";
     public static final String APPSUBMISSIONDTORFCATTR = "AppSubmissionDtoRfcAttr";
     public static final String APPSUBMISSIONDTO =  "AppSubmissionDto";
-    public static final String OLDAPPSUBMISSIONDTO =  "OldAppSubmissionDto";
+    public static final String OLDAPPSUBMISSIONDTO =  "oldAppSubmissionDto";
 
 
     public static final String PERSONNELLISTMAP = "PersonnelListMap";

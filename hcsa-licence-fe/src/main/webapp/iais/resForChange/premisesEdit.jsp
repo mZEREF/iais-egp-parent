@@ -39,7 +39,14 @@
                   <div class="application-tab-footer">
                     <div class="row">
                       <div class="col-xs-12 col-sm-6 ">
-                        <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
+                        <c:choose>
+                          <c:when test="${requestInformationConfig != null}">
+                            <a class="back" id="back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
+                          </c:when>
+                          <c:otherwise>
+                            <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
+                          </c:otherwise>
+                        </c:choose>
                       </div>
                       <div class="col-xs-12 col-sm-6">
                         <div class="button-group">

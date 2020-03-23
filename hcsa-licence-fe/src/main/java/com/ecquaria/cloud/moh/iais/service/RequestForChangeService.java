@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
@@ -41,4 +43,6 @@ public interface RequestForChangeService {
     LicenceDto getLicenceDtoByLicenceId(String licenceId);
 
     LicenseeIndividualDto getLicIndByNRIC(String nric);
+
+    SearchResult<PersonnelListQueryDto> psnDoQuery(SearchParam searchParam);
 }

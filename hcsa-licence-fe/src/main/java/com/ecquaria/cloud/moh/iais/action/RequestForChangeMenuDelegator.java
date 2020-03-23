@@ -6,10 +6,13 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -28,10 +31,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
@@ -187,7 +193,7 @@ public class RequestForChangeMenuDelegator {
     /**
      *
      * @param bpc
-     * @Decription preparePremisesEdit
+         * @Decription preparePremisesEdit
      */
     public void preparePremisesEdit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePremisesEdit start ...."));
@@ -224,7 +230,7 @@ public class RequestForChangeMenuDelegator {
             }
 
         }
-        if(appGrpPremisesDto != null){
+        if(appGrpPremisesDto != null || rfi!=null){
             log.info(StringUtil.changeForLog("The preparePremises licenseeId is -->:"+licenseeId));
             List premisesSelect = new ArrayList<SelectOption>();
             List conveyancePremSel = new ArrayList<SelectOption>();
@@ -260,11 +266,20 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setSessionAttr(bpc.request, "premisesSelect", (Serializable) premisesSelect);
             ParamUtil.setSessionAttr(bpc.request, "conveyancePremSel", (Serializable) conveyancePremSel);
 
-            //when rfc/renew check is select existing premises
-            String oldPremSel = IaisCommonUtils.genPremisesKey(premisesListQueryDto.getPostalCode(),premisesListQueryDto.getBlkNo(),premisesListQueryDto.getFloorNo(),premisesListQueryDto.getUnitNo());
-            if(oldPremSel.equals(appGrpPremisesDto.getPremisesSelect()) || "-1".equals(appGrpPremisesDto.getPremisesSelect())){
-                ParamUtil.setRequestAttr(bpc.request,"PageCanEdit",AppConsts.TRUE);
+            //
+            if(rfi == null){
+                //when rfc/renew check is select existing premises
+                String oldPremSel = IaisCommonUtils.genPremisesKey(premisesListQueryDto.getPostalCode(),premisesListQueryDto.getBlkNo(),premisesListQueryDto.getFloorNo(),premisesListQueryDto.getUnitNo());
+                if(oldPremSel.equals(appGrpPremisesDto.getPremisesSelect()) || "-1".equals(appGrpPremisesDto.getPremisesSelect())){
+                    ParamUtil.setRequestAttr(bpc.request,"PageCanEdit",AppConsts.TRUE);
+                }
+
+                for(AppGrpPremisesDto appGrpPremisesDto1:appSubmissionDto.getAppGrpPremisesDtoList()){
+                    NewApplicationHelper.setWrkTime(appGrpPremisesDto1);
+                }
             }
+
+
         }
         appSubmissionDto.setAppGrpPremisesDtoList(reloadPremisesDtoList);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
@@ -785,13 +800,13 @@ public class RequestForChangeMenuDelegator {
 
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        /*AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
+        AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
         appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
-        // ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","Y");
-        ParamUtil.setRequestAttr(bpc.request,ACKMESSAGE,"The request for information save success");*/
+        ParamUtil.setRequestAttr(bpc.request,ACKMESSAGE,"The request for information save success");
 
         log.debug(StringUtil.changeForLog("the do doRequestForInformationSubmit end ...."));
     }
@@ -938,13 +953,19 @@ public class RequestForChangeMenuDelegator {
         String appNo = ParamUtil.getString(bpc.request,"appNo");
         if(!StringUtil.isEmpty(appNo)){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
+            if(appSubmissionDto != null){
+                appSubmissionDto.setNeedEditController(true);
+                for(AppGrpPremisesDto appGrpPremisesDto1:appSubmissionDto.getAppGrpPremisesDtoList()){
+                    NewApplicationHelper.setWrkTime(appGrpPremisesDto1);
+                }
+
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
+                ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
+                ParamUtil.setSessionAttr(bpc.request,RfcConst.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
+                ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG,"test");
+            }
 
 
-            appSubmissionDto.setNeedEditController(true);
-            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
-            ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
-            ParamUtil.setSessionAttr(bpc.request,RfcConst.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
-            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG,"test");
         }
         log.debug(StringUtil.changeForLog("the do requestForInformationLoading end ...."));
     }

@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -131,5 +133,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     public LicenseeIndividualDto getLicIndByNRIC(String nric) {
         return organizationLienceseeClient.getlicIndByNric(nric).getEntity();
+    }
+
+    @Override
+    public SearchResult<PersonnelListQueryDto> psnDoQuery(SearchParam searchParam) {
+        return null;
     }
 }

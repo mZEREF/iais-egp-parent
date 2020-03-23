@@ -116,13 +116,12 @@
                             <iais:datePicker cssClass="fireIssuedDate " name="onSiteFireSafetyCertIssuedDate" value="${appGrpPremisesDto.certIssuedDtStr}" />
                         </iais:value>
                     </iais:row>
-                    <iais:row>
-                        <iais:field value="Office Telephone No " mandatory="true" width="12"/>
-                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
-                            <iais:input type="text" name="onSiteOffTelNo" maxLength="8" value="${appGrpPremisesDto.offTelNo}" id="onsitOffice" cssClass="onsitOffice" />
-                            <span class="error-msg" name="iaisErrorMsg" id="error_offTelNo${status.index}"></span>
-                        </iais:value>
-                    </iais:row>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label" for="siteSafefyNo">Fire Safety Shelter Bureau Ref. No. <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" title="&lt;p&gt;This is a xxx digit No. that you can access from the Life Saving Force Portral.&lt;/p&gt;">i</a></label>
+                        <div class="col-xs-9 col-sm-5 col-md-5">
+                            <input id="siteSafefyNo" maxlength="66" name="onSiteScdfRefNo" type="text" value="${appGrpPremisesDto.scdfRefNo}">
+                        </div>
+                    </div>
                     <iais:row>
                         <iais:field value="Name of HCI " mandatory="true" width="11"/>
                         <iais:value width="11" cssClass="col-md-5 disabled">
@@ -183,12 +182,13 @@
                             <span class="error-msg" name="iaisErrorMsg" id="error_buildingName"></span>
                         </iais:value>
                     </iais:row>
-                    <div class="form-group">
-                        <label class="col-xs-12 col-md-4 control-label" for="siteSafefyNo">Fire Safety Shelter Bureau Ref. No. <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" title="&lt;p&gt;This is a xxx digit No. that you can access from the Life Saving Force Portral.&lt;/p&gt;">i</a></label>
-                        <div class="col-xs-9 col-sm-5 col-md-5">
-                            <input id="siteSafefyNo" maxlength="66" name="onSiteScdfRefNo" type="text" value="${appGrpPremisesDto.scdfRefNo}">
-                        </div>
-                    </div>
+                    <iais:row>
+                        <iais:field value="Office Telephone No " mandatory="true" width="12"/>
+                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
+                            <iais:input type="text" name="onSiteOffTelNo" maxLength="8" value="${appGrpPremisesDto.offTelNo}" id="onsitOffice" cssClass="onsitOffice" />
+                            <span class="error-msg" name="iaisErrorMsg" id="error_offTelNo${status.index}"></span>
+                        </iais:value>
+                    </iais:row>
                     <iais:row cssClass="other-lic-content">
                         <iais:field value="Are you co-locating with another licensee?" mandatory="true" width="12"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-6">
@@ -387,17 +387,17 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Building Name " width="12"/>
-                        <iais:value cssClass="col-xs-11 col-sm-7 col-md-5 ">
-                            <iais:input maxLength="45" cssClass="conveyanceBuildingName" type="text" name="conveyanceBuildingName" id="conveyanceBuildingName" value="${appGrpPremisesDto.conveyanceBuildingName}"></iais:input>
-                            <span  class="error-msg"></span>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row>
                         <iais:field value="Street Name " mandatory="true" width="10"/>
                         <iais:value width="10" cssClass="col-md-5">
                             <iais:input maxLength="32" cssClass="conveyanceStreetName" type="text" name="conveyanceStreetName"  value="${appGrpPremisesDto.conveyanceStreetName}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceStreetName${status.index}"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="Building Name " width="12"/>
+                        <iais:value cssClass="col-xs-11 col-sm-7 col-md-5 ">
+                            <iais:input maxLength="45" cssClass="conveyanceBuildingName" type="text" name="conveyanceBuildingName" id="conveyanceBuildingName" value="${appGrpPremisesDto.conveyanceBuildingName}"></iais:input>
+                            <span  class="error-msg"></span>
                         </iais:value>
                     </iais:row>
                     <div class="form-group">

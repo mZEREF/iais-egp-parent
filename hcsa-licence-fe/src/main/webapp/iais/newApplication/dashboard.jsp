@@ -22,7 +22,7 @@
                                 <h1>New Licence Application</h1>
                             </c:otherwise>
                         </c:choose>
-                        <c:if test="${'APTY005' != AppSubmissionDto.appType}">
+                        <c:if test="${'APTY005' != AppSubmissionDto.appType && 'APTY004'!= AppSubmissionDto.appType}">
                             <h3>
                                 You are applying for
                                 <c:forEach var="hcsaServiceDto" items="${hcsaServiceDtoList}" varStatus="status">
