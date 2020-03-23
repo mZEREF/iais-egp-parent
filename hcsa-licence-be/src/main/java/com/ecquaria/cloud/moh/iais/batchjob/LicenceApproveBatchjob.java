@@ -133,6 +133,7 @@ public class LicenceApproveBatchjob {
                         }
                     }catch (Exception exception){
                         log.error(StringUtil.changeForLog("This  applicaiton group  have error -- >"+applicationGroupDto.getGroupNo()));
+                        log.error(exception.getMessage(), exception);
                     }
 
                     toDoResult(licenceGroupDtos,generateResult,success,fail,applicationGroupDto);
