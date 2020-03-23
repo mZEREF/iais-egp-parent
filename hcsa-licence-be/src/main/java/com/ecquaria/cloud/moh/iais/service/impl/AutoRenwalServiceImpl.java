@@ -189,7 +189,6 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 List<String> receipts=IaisCommonUtils.genNewArrayList();
                 for(OrgUserRoleDto orgUserRoleDto :sendMailUser){
                     String emailAddress = orgUserRoleDto.getEmailAddress();
-
                     receipts.add(emailAddress);
                 }
                 if(!receipts.isEmpty()){

@@ -1658,7 +1658,11 @@ public class NewApplicationDelegator {
             List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.get(i).getAppSvcDisciplineAllocationDtoList();
             doSvcDis(errorMap,appSvcDisciplineAllocationDtoList,serviceId,sB);
             List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.get(i).getAppSvcPrincipalOfficersDtoList();
-            doPO(hcsaSvcPersonnelDtos,errorMap,appSvcPrincipalOfficersDtoList,serviceId,sB);
+
+            Map<String, String> map = NewApplicationHelper.doValidatePo(appSvcPrincipalOfficersDtoList);
+            if(!map.isEmpty()){
+                sB.append(serviceId);
+            }
             List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.get(i).getAppSvcPersonnelDtoList();
             doAppSvcPersonnelDtoList(hcsaSvcPersonnelDtos,errorMap,appSvcPersonnelDtoList,serviceId,sB);
             List<AppSvcDocDto> appSvcDocDtoLit = dto.get(i).getAppSvcDocDtoLit();
@@ -1886,14 +1890,10 @@ public class NewApplicationDelegator {
             StringBuilder stringBuilder1=new StringBuilder();
             String mobileNo = list.get(i).getMobileNo();
             String emailAddr = list.get(i).getEmailAddr();
-            String modeOfMedAlert = list.get(i).getModeOfMedAlert();
             String psnType = list.get(i).getPsnType();
             String assignSelect = list.get(i).getAssignSelect();
             if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)){
-                if(StringUtil.isEmpty(modeOfMedAlert)){
-                    map.put("modeOfMedAlert"+i,"UC_CHKLMD001_ERR001");
-                    flag=true;
-                }
+
             }
             if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)){
                 if(StringUtil.isEmpty(assignSelect)){
