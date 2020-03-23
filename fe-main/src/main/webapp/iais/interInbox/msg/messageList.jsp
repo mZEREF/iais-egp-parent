@@ -121,7 +121,7 @@
                                 <button type="button" class="btn btn-primary pull-right" onclick="toArchiveView()">View
                                     Archive
                                 </button>
-                                <button type="button" class="btn btn-primary pull-right" onclick="doArchive()">Archive
+                                <button type="button" class="btn btn-primary pull-right" onclick="doArchive()" style="margin-right: 10px;">Archive
                                 </button>
                             </div>
                         </C:if>
