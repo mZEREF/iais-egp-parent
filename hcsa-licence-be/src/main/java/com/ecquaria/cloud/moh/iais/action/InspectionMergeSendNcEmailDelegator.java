@@ -24,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
-import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
@@ -384,11 +383,9 @@ public class InspectionMergeSendNcEmailDelegator {
                 emailDto.setContent(inspectionEmailTemplateDto.getMessageContent());
                 emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
                 emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-                List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
                 String licenseeId=inspEmailService.getAppInsRepDto(appPremCorrIds.get(0)).getLicenseeId();
-                licenseeIds.add(licenseeId);
-                List<String> emailAddress = EmailHelper.getEmailAddressListByLicenseeId(licenseeIds);
-                emailDto.setReceipts(emailAddress);
+                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+                emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
                 String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
             }catch (Exception e){
                 log.info(e.getMessage());

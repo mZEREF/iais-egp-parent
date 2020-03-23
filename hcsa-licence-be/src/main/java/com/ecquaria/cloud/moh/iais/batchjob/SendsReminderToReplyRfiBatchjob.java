@@ -9,23 +9,24 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
+
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * SendsReminderToReplyRfiDelegator
@@ -89,10 +90,8 @@ public class SendsReminderToReplyRfiBatchjob {
             emailDto.setContent(mesContext);
             emailDto.setSubject(rfiEmailTemplateDto.getSubject());
             emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-            List<String> licenseeIds= IaisCommonUtils.genNewArrayList();
-            licenseeIds.add(licenseeId);
-            List<String> emailAddress = EmailHelper.getEmailAddressListByLicenseeId(licenseeIds);
-            emailDto.setReceipts(emailAddress);
+            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+            emailDto.setClientQueryCode(licPremisesReqForInfoDto.getLicPremId());
             String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
         }catch (Exception e){
             log.info(e.getMessage());

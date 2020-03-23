@@ -40,7 +40,6 @@ import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -912,10 +911,8 @@ public class RequestForInformationDelegator {
             emailDto.setContent(mesContext);
             emailDto.setSubject(rfiEmailTemplateDto.getSubject());
             emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-            List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
-            licenseeIds.add(licenseeId);
-            List<String> emailAddress = EmailHelper.getEmailAddressListByLicenseeId(licenseeIds);
-            emailDto.setReceipts(emailAddress);
+            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+            emailDto.setClientQueryCode(licPremId);
             String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
         }catch (Exception e){
             log.info(e.getMessage());
