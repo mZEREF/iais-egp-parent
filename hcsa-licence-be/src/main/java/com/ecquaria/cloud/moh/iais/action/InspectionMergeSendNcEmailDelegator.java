@@ -246,7 +246,6 @@ public class InspectionMergeSendNcEmailDelegator {
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
             completedTask(taskDto);
-            createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,taskDto,HcsaConsts.ROUTING_STAGE_POT,userId);
 
             for(int i=0;i<appPremCorrIds.size();i++){
                 if(appPremCorrIds.get(i).equals(appPremisesCorrelationDtos.get(i).getId())){
@@ -289,6 +288,8 @@ public class InspectionMergeSendNcEmailDelegator {
 
                 }
             }
+
+            createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,taskDto,HcsaConsts.ROUTING_STAGE_POT,userId);
         }
         else {
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
