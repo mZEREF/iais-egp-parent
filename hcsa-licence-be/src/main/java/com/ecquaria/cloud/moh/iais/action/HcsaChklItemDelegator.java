@@ -271,11 +271,11 @@ public class HcsaChklItemDelegator {
         }
 
         String json = hcsaChklService.submitCloneItem(chklItemDtos);
-        List<MessageContent> messageContentList = JsonUtil.parseToList(json, MessageContent.class);
+        List<ErrorMsgContent> messageContentList = JsonUtil.parseToList(json, ErrorMsgContent.class);
         if (messageContentList != null && ! messageContentList.isEmpty()){
-            for (MessageContent messageContent : messageContentList){
-                String msg = MessageUtil.getMessageDesc(messageContent.getResult());
-                messageContent.setResult(msg);
+            for (ErrorMsgContent errorMsgContent : messageContentList){
+                String msg = MessageUtil.getMessageDesc(errorMsgContent.getErrorMsg());
+                errorMsgContent.setErrorMsg(msg);
             }
 
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
