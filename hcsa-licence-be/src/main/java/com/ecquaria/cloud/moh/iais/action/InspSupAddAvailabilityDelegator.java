@@ -144,9 +144,9 @@ public class InspSupAddAvailabilityDelegator {
         List<String> roleList = new ArrayList<>(loginContext.getRoleIds());
         if(roleList.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)){
             List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
-            List<SelectOption> inspectorOption = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds);
+            //List<SelectOption> inspectorOption = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds);
             ParamUtil.setSessionAttr(bpc.request, "curRole", RoleConsts.USER_ROLE_INSPECTION_LEAD);
-            ParamUtil.setSessionAttr(bpc.request, "nonAvaUserName", (Serializable) inspectorOption);
+            //ParamUtil.setSessionAttr(bpc.request, "nonAvaUserName", (Serializable) inspectorOption);
         } else {
             ParamUtil.setSessionAttr(bpc.request, "curRole", RoleConsts.USER_ROLE_INSPECTIOR);
             OrgUserDto oDto = inspSupAddAvailabilityService.getOrgUserDtoById(loginContext.getUserId());
@@ -286,9 +286,9 @@ public class InspSupAddAvailabilityDelegator {
         List<String> roleList = new ArrayList<>(loginContext.getRoleIds());
         if(roleList.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)){
             List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
-            List<SelectOption> inspectorOption = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds);
+            //List<SelectOption> inspectorOption = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds);
             ParamUtil.setSessionAttr(bpc.request, "curRole", RoleConsts.USER_ROLE_INSPECTION_LEAD);
-            ParamUtil.setSessionAttr(bpc.request, "nonAvaUserName", (Serializable) inspectorOption);
+            //ParamUtil.setSessionAttr(bpc.request, "nonAvaUserName", (Serializable) inspectorOption);
         } else {
             ParamUtil.setSessionAttr(bpc.request, "curRole", RoleConsts.USER_ROLE_INSPECTIOR);
             OrgUserDto oDto = inspSupAddAvailabilityService.getOrgUserDtoById(loginContext.getUserId());

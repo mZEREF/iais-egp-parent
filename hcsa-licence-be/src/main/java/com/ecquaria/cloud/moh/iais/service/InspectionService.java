@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
@@ -114,10 +115,10 @@ public interface InspectionService {
      * @author: shicheng
      * @Date 2019/12/11
      * @Param: loginContext
-     * @return: List<SelectOption>
+     * @return: GroupRoleFieldDto
      * @Descripation: get Inspector Option By Login
      */
-    List<SelectOption> getInspectorOptionByLogin(LoginContext loginContext, List<String> workGroupIds);
+    GroupRoleFieldDto getInspectorOptionByLogin(LoginContext loginContext, List<String> workGroupIds, GroupRoleFieldDto groupRoleFieldDto);
 
     /**
      * @author: shicheng
@@ -154,4 +155,13 @@ public interface InspectionService {
      * @Descripation: get reassign task option
      */
     InspectionTaskPoolListDto reassignInspectorOption(InspectionTaskPoolListDto inspectionTaskPoolListDto, String taskId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/3/23
+      * @Param: userId
+      * @return: String
+      * @Descripation: get Members's task ref_No From Work Group By UserId
+      */
+    String getMemberValueByWorkGroupUserId(String userId);
 }

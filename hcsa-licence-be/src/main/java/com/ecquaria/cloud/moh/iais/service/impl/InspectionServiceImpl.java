@@ -10,14 +10,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -42,8 +41,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -185,8 +184,21 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     @Override
-    public List<SelectOption> getInspectorOptionByLogin(LoginContext loginContext, List<String> workGroupIds) {
+    public String getMemberValueByWorkGroupUserId(String userId) {
+        String memberValue = "";
+        if(!StringUtil.isEmpty(userId)) {
+            List<TaskDto> taskDtoList = organizationClient.getTasksByUserId(userId).getEntity();
+            if (!IaisCommonUtils.isEmpty(taskDtoList)) {
+                memberValue = getOptionValue(taskDtoList);
+            }
+        }
+        return memberValue;
+    }
+
+    @Override
+    public GroupRoleFieldDto getInspectorOptionByLogin(LoginContext loginContext, List<String> workGroupIds, GroupRoleFieldDto groupRoleFieldDto) {
         List<SelectOption> inspectorOption = IaisCommonUtils.genNewArrayList();
+        Map<String, String> userIdMap = IaisCommonUtils.genNewHashMap();
         if(IaisCommonUtils.isEmpty(workGroupIds)){
             return null;
         }
@@ -200,18 +212,15 @@ public class InspectionServiceImpl implements InspectionService {
             orgUserDtos = organizationClient.retrieveOrgUserAccount(userIdList).getEntity();
         }
         if(orgUserDtos != null && !(orgUserDtos.isEmpty())){
-            for(OrgUserDto oDto:orgUserDtos){
-                List<TaskDto> taskDtoList = organizationClient.getTasksByUserId(oDto.getId()).getEntity();
-                String value = AppConsts.NO;
-                if(!IaisCommonUtils.isEmpty(taskDtoList)){
-                    value = getOptionValue(taskDtoList);
-                }
-                SelectOption so = new SelectOption(value, oDto.getDisplayName());
+            for(int i = 0; i < orgUserDtos.size(); i++){
+                userIdMap.put(i + "", orgUserDtos.get(i).getId());
+                SelectOption so = new SelectOption(i + "", orgUserDtos.get(i).getDisplayName());
                 inspectorOption.add(so);
             }
         }
-
-        return inspectorOption;
+        groupRoleFieldDto.setUserIdMap(userIdMap);
+        groupRoleFieldDto.setMemberOption(inspectorOption);
+        return groupRoleFieldDto;
     }
 
     private String getOptionValue(List<TaskDto> taskDtoList) {
@@ -335,7 +344,7 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     @Override
-    @SearchTrack(catalog = "inspectionQuery",key = "assignInspectorSupper")
+    @SearchTrack(catalog = "inspectionQuery",key = "supervisorPoolSearch")
     public SearchResult<InspectionSubPoolQueryDto> getSupPoolByParam(SearchParam searchParam) {
         return inspectionTaskClient.searchInspectionSupPool(searchParam).getEntity();
     }
@@ -361,11 +370,7 @@ public class InspectionServiceImpl implements InspectionService {
                         List<OrgUserDto> orgUserDtos = organizationClient.retrieveOrgUserAccount(ids).getEntity();
                         inspectionTaskPoolListDto.setInspectorName(orgUserDtos.get(0).getDisplayName());
                     }
-                    if(StringUtil.isEmpty(iDto.getHciName())){
-                        iDto.setHciName(HcsaConsts.HCSA_PREMISES_HCI_NULL);
-                    }if(StringUtil.isEmpty(iDto.getHciCode())){
-                        iDto.setHciCode(HcsaConsts.HCSA_PREMISES_HCI_NULL);
-                    }
+
                     inspectionTaskPoolListDto.setWorkGroupId(tDto.getWkGrpId());
                     List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(tDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
                     List<String> leadName = getWorkGroupLeadsByGroupId(inspectionTaskPoolListDto.getWorkGroupId(), orgUserDtos);
@@ -387,7 +392,7 @@ public class InspectionServiceImpl implements InspectionService {
         for(InspectionSubPoolQueryDto iDto: rows){
             for(InspectionTaskPoolListDto itplDto:inspectionTaskPoolListDtoList){
                 if((iDto.getId()).equals(itplDto.getAppCorrelationId())){
-                    itplDto.setServiceId(iDto.getServiceId());
+                    /*itplDto.setServiceId(iDto.getServiceId());
                     HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(iDto.getServiceId());
                     itplDto.setServiceName(hcsaServiceDto.getSvcName());
                     itplDto.setApplicationStatus(iDto.getApplicationStatus());
@@ -405,7 +410,7 @@ public class InspectionServiceImpl implements InspectionService {
                         itplDto.setInspectionDate(appPremisesRecommendationDto.getRecomInDate());
                     } else {
                         itplDto.setInspectionDate(null);
-                    }
+                    }*/
                 }
             }
         }

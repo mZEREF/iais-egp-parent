@@ -16,11 +16,6 @@
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <form method="post" id="mainSupForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
     <input type="hidden" name="InspectionSupSearchSwitchType" value="">
     <input type="hidden" id="taskId" name="taskId" value="">
     <input type="hidden" id="inspector_name" name="inspector_name" value="">
@@ -74,18 +69,9 @@
                         </iais:value>
                       </iais:row>
                       <iais:row>
-                        <iais:field value="Inspector Name"/>
-                        <iais:value >
-                          <div onload="inspectorSearchTask_optionNameAuto(${inspectorValue})">
-                            <select name = "inspectorSearchTask_inspectorName" id="inspectorSearchTask_inspectorName" onclick="javascript:doInspectorSearchTaskSelect()">
-                              <option value="-">Please select</option>
-                              <c:if test="${inspectorOption != null}">
-                                <c:forEach var="inspector" items="${inspectorOption}">
-                                  <option value="<iais:mask name="inspectorName" value="${inspector.value}"/>"><c:out value="${inspector.text}"/></option>
-                                </c:forEach>
-                              </c:if>
-                            </select>
-                          </div>
+                        <iais:field value="${groupRoleFieldDto.groupMemBerName} Name"/>
+                        <iais:value width="18">
+                          <iais:select name="memberName" options="${groupRoleFieldDto.memberOption}" firstOption="Please select" value="${groupRoleFieldDto.checkUser}" ></iais:select>
                         </iais:value>
                       </iais:row>
                       <iais:action style="text-align:center;">
@@ -111,18 +97,11 @@
               <table class="table">
                 <thead>
                 <tr align="center">
-                  <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"  field="APPLICATION_NO" value="Application No."></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"  field="APP_TYPE" value="Application Type"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name / Address"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"  field="SERVICE_ID" value="Service Name"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true" field="END_DATE" value="Licence Expiry Date (dd/mm/yyyy)"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true" field="" value="Inspection Date (dd/mm/yyyy)"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true" field="Status" value="Application Status"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true" field="" value="Inspector"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="false" field="" value="Inspection Lead"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false" field = "" value="S/N"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false" field = "GROUP_NO" value="Application No."></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false" field = "APP_TYPE" value="Application Type"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false" field = "Status" value="Application Status"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false" field = "" value="Inspection Lead"></iais:sortableHeader>
                 </tr>
                 </thead>
                 <tbody>
@@ -136,24 +115,17 @@
                     </tr>
                   </c:when>
                   <c:otherwise>
-                    <c:forEach var="pool" items="${supTaskSearchResult.rows}" varStatus="status">
+                    <c:forEach var="superPool" items="${supTaskSearchResult.rows}" varStatus="status">
                       <tr>
                         <td class="row_no"><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
-                        <td><c:out value="${pool.applicationNo}"/></td>
-                        <td><iais:code code="${pool.applicationType}"/></td>
-                        <td><c:out value="${pool.hciCode}"/></td>
-                        <td><c:out value="${pool.hciName}"/></td>
-                        <td><c:out value="${pool.serviceName}"/></td>
-                        <td><fmt:formatDate value='${pool.serviceEndDate}' pattern='dd/MM/yyyy' /></td>
-                        <td><fmt:formatDate value='${pool.inspectionDate}' pattern='dd/MM/yyyy' /></td>
-                        <td><iais:code code="${pool.applicationStatus}"/></td>
-                        <td><c:out value="${pool.inspectorName}"/></td>
+                        <td><c:out value="${superPool.appGroupNo}"/></td>
+                        <td><iais:code code="${superPool.applicationType}"/></td>
+                        <td><iais:code code="${superPool.applicationStatus}"/></td>
                         <td>
-                          <c:forEach var="lead" items="${pool.inspectorLeads}">
-                            <c:out value="${lead}"/>&nbsp;
+                          <c:forEach var="lead" items="${superPool.groupLead}">
+                            <c:out value="${lead}"/><br>
                           </c:forEach>
                         </td>
-                        <td><button type="button"  class="btn btn-default" onclick="javascript:doInspectorSearchTaskAssign('<iais:mask name="taskId" value="${pool.taskId}"/>');">Assign</button></td>
                       </tr>
                     </c:forEach>
                   </c:otherwise>
@@ -170,7 +142,7 @@
 <script type="text/javascript">
     function inspectorSearchTask_optionNameAuto(value){
       if(value != null && value != null){
-          $("#inspectorSearchTask_inspectorName").val(value);
+          $("#memberName").val(value);
       }
         doInspectorSearchTaskSelect();
     }
