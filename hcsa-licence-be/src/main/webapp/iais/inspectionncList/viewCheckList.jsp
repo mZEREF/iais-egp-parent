@@ -181,7 +181,6 @@
                                                 <thead>
                                                 <tr>
                                                     <th>No.</th>
-                                                    <th>Regulation Clause Number</th>
                                                     <th>Item</th>
                                                     <th>Yes</th>
                                                     <th>No</th>
@@ -196,7 +195,6 @@
                                                 <c:forEach var = "item" items = "${adchklDto.adItemList}" varStatus="status">
                                                     <tr>
                                                         <td class="row_no">${(status.index + 1) }</td>
-                                                        <td>No Regulation Clause Number</td>
                                                         <td><c:out value="${item.question}"/></td>
                                                         <c:set value = "${item.id}" var = "ckkId"/>
                                                         <td><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'Yes'}">checked</c:if> value="Yes"/></td>

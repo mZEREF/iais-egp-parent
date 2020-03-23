@@ -102,8 +102,8 @@
         </iais:section>
 
         <iais:action style="text-align:right;">
-            <button class="btn btn-lg" id="clearbtn" type="button"
-                    style="background:#2199E8; color: white" onclick="javascript:doClear();">
+            <button class="btn btn-secondary" id="clearbtn" type="button"
+                   onclick="javascript:doClear();">
             Clear
             </button>
             <button class="btn btn-primary next" type="button" onclick="javascript:doNext();">Search
