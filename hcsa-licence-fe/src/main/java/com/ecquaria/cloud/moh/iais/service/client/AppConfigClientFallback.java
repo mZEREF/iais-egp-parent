@@ -241,6 +241,14 @@ public class AppConfigClientFallback implements AppConfigClient{
     }
 
     @Override
+    public FeignResponseEntity<List<HcsaServicePrefInspPeriodDto>> getPrefInspPeriodList() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<Integer> getMaxAfterAppBySvcCodeList(List<String> svcCodeList) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

@@ -310,7 +310,7 @@ public class HcsaChklItemDelegator {
         if(itemDtoIaisApiResult.isHasError()){
             int errorCode = itemDtoIaisApiResult.getErrorCode();
             if (IaisApiStatusCode.DUPLICATION_RECORD.getStatusCode() == errorCode){
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("messageContent", IaisApiStatusCode.DUPLICATION_RECORD.getMessage()));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("messageContent", "CHKL_ERR016"));
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             }
         }else {

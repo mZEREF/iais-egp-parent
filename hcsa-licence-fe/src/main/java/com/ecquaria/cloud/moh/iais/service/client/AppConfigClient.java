@@ -143,6 +143,9 @@ public interface AppConfigClient {
             produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaServicePrefInspPeriodDto> getHcsaServicePrefInspPeriod(@PathVariable(name = "svcCode") String svcCode);
 
+    @GetMapping(value = "/iais-hcsa-service/pref-period/", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaServicePrefInspPeriodDto>> getPrefInspPeriodList();
+
     @PostMapping(value = "/iais-hcsa-service/pref-period/after-app/max-period",
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Integer> getMaxAfterAppBySvcCodeList(@RequestBody List<String> svcCodeList);
