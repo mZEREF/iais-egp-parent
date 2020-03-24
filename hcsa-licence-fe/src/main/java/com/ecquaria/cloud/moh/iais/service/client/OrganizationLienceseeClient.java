@@ -34,7 +34,7 @@ public interface OrganizationLienceseeClient {
     @GetMapping(path = "/iais-licensee/licensee-by-id/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenseeDto> getLicenseeById(@PathVariable(name = "id") String id);
 
-    @GetMapping(path = "/iais-licensee/licensee/{uenNo}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/iais-licensee/licenseeDto/{uenNo}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenseeDto> getLicenseeByUenNo(@PathVariable(name = "uenNo") String uenNo);
 
 }
