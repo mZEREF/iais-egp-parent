@@ -320,7 +320,7 @@
                                 </div>
                               </div>
                             </c:if>
-                            <button class="btn btn-lg btn-login-edit" style="float:right" type="button" onclick="javascript:doInspectionPreTaskEdit();">Edit</button>
+                            <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionPreTaskEdit()">Update</button>
                           </div>
                         </div>
                       </div>
