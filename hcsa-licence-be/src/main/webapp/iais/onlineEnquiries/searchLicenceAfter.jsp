@@ -302,7 +302,7 @@
                                                 <iais:field value="Service Personnal ID:"/>
                                                 <iais:value width="18">
                                                     <label>
-                                                        <input type="text" style="width:180%; font-weight:normal;" name="service_id" value="${SearchParam.filters['serviceId']}" />
+                                                        <input type="text" style="width:180%; font-weight:normal;" name="personnelId" value="${SearchParam.filters['personnelId']}" />
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
@@ -310,7 +310,7 @@
                                                 <iais:field value="Service Personnel Name:"/>
                                                 <iais:value width="18">
                                                     <label>
-                                                        <input type="text" style="width:180%; font-weight:normal;" name="service_name" value="${SearchParam.filters['serviceName']}" />
+                                                        <input type="text" style="width:180%; font-weight:normal;" name="personnelName" value="${SearchParam.filters['personnelName']}" />
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
@@ -318,17 +318,16 @@
                                                 <iais:field value="Service Professional Regn No."/>
                                                 <iais:value width="18">
                                                     <label>
-                                                        <input type="text" style="width:180%; font-weight:normal;" name="service_regn_no" value="${SearchParam.filters['serviceRegnNo']}" />
+                                                        <input type="text" style="width:180%; font-weight:normal;" name="personnelRegnNo" value="${SearchParam.filters['personnelRegnNo']}" />
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
                                                 <iais:field value="Service Professional Role:"/>
                                                 <iais:value width="18">
-                                                    <label>
-                                                        <input type="text" style="width:180%; font-weight:normal;" name="service_role" value="${SearchParam.filters['serviceRole']}" />
-                                                    </label>
-                                                </iais:value>
+                                                    <div id="personnelRoleOption">
+                                                        <iais:select name="personnelRole" options="servicePersonnelRoleOption" firstOption="Please Select" value="${SearchParam.filters['personnelRole']}" ></iais:select>
+                                                    </div>                                                </iais:value>
                                             </iais:row>
                                         </iais:section>
                                     </div>
@@ -468,11 +467,13 @@
         $("#licence_status option:first").prop("selected", 'selected');
         $("#application_type option:first").prop("selected", 'selected');
         $("#application_status option:first").prop("selected", 'selected');
+        $("#personnelRoleOption option:first").prop("selected", 'selected');
         $("#service_licence_type .current").text("Please Select");
         $("#service_sub_type .current").text("Please Select");
         $("#licence_status .current").text("Please Select");
         $("#application_type .current").text("Please Select");
         $("#application_status .current").text("Please Select");
+        $("#personnelRoleOption .current").text("Please Select");
         $('input[name="to_date"]').val("");
         $('input[name="sub_date"]').val("");
         $('input[name="start_date"]').val("");
