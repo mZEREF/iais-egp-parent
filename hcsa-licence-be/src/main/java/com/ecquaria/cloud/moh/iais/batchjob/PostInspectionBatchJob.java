@@ -97,41 +97,15 @@ public class PostInspectionBatchJob {
                 entity.setStatus(appStatus);
                 setRiskToDto(entity);
             }
-            //applicationClient.saveAppsForPostInspection(appSubmissionDtoList);
             log.info("========================>>>>>success!!!!");
-            //List<ApplicationDto> postApps = applicationClient.getPostApplication(appType, appStatus).getEntity();
             try {
-                insRepService.sendPostInsTaskFeData();
-            } catch (FeignException e) {
+                Long l = System.currentTimeMillis();
+                String submissionId = generateIdClient.getSeqId().getEntity();
+                eventBusHelper.submitAsyncRequest(appSubmissionDtoList,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts.OPERATION_POST_INSPECTION_TASK,l.toString(),null);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-
-
-            /*  applicationClient.saveAppsByPostInspection(appSubmissionDtoList).getEntity();*/
-            //ApplicationDto applicationDto, String statgId,String roleId,String correlationId
-//            if(!postApps.isEmpty()&&postApps!=null){
-//                for(ApplicationDto applicationDto : postApps){
-//                    taskService.getRoutingTask(applicationDto,)
-//                }
-//
-//            }
-//            Long l = System.currentTimeMillis();
-//            String submissionId = generateIdClient.getSeqId().getEntity();
-//            eventBusHelper.submitAsyncRequest(appSubmissionDtoList,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
-//                    EventBusConsts.OPERATION_POST_INSPECTION_TASK,l.toString(),null);
         });
-        // List<ApplicationDto> postApps = applicationClient.getPostApplication(appType, appStatus).getEntity();
-//        List<String> appGrpIds = new ArrayList<>();
-//        if(postApps!=null&&!postApps.isEmpty()){
-//            for(ApplicationDto applicationDto :postApps){
-//                String appGrpId = applicationDto.getAppGrpId();
-//                appGrpIds.add(appGrpId);
-//            }
-//        }
-        //String data = applicationClient.getBeData(appGrpIds).getEntity();
-       // ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(data, ApplicationListFileDto.class);
-
-        //log.info("========================>>>>>success!!!!"+postApps);
     }
 
 

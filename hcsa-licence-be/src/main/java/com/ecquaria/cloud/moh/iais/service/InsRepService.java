@@ -36,6 +36,6 @@ public interface InsRepService {
     InspectionReportDto getInspectorAo(TaskDto taskDto,ApplicationViewDto applicationViewDto);
 
 
-    void sendPostInsTaskFeData() throws FeignException;
+    void sendPostInsTaskFeData(String submissionId,String eventRefNum) throws FeignException;
 
 }

@@ -202,11 +202,12 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-application-be/application-post",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getPostApplication(@RequestParam(name = "appType") String appType,@RequestParam(name = "appStatus") String appStatus);
 
-    @PostMapping(value = "/all-app-data",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-application-be/all-app-data",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> getBeData(@RequestBody List<String> grpids);
 
     @PutMapping(value = "/iais-application-be/application-be-withdrawal")
     FeignResponseEntity<Void> saveWithdrawn();
+
     @PostMapping(value = "/iais-application-be/data-to-fe",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> saveFeData(@RequestBody ApplicationListFileDto applicationListFileDto);
 

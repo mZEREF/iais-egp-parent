@@ -182,6 +182,7 @@ public class CessationServiceImpl implements CessationService {
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
             applicationDto.setServiceId(serviceId);
             applicationDto.setOriginLicenceId(licId);
+            applicationDto.setLicenceId(licId);
             applicationDto.setVersion(1);
             List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
             applicationDtos.add(applicationDto);
