@@ -54,7 +54,7 @@ public class SubmitInspectionDateDelegator {
     public void preLoad(BaseProcessClass bpc){
         HttpServletRequest servletRequest = bpc.request;
 
-        String groupId = ParamUtil.getMaskedString(servletRequest, "appGroupId");
+        String groupId = (String) ParamUtil.getSessionAttr(servletRequest, "appGroupId");
         if(StringUtils.isEmpty(groupId)){
             log.info("submit inspection date can not find app group id" + groupId);
             return;
