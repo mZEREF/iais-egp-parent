@@ -44,5 +44,8 @@ public interface RequestForChangeService {
 
     LicenseeIndividualDto getLicIndByNRIC(String nric);
 
+    LicenseeDto getLicenseeByUenNo(String uenNo);
+
+
     SearchResult<PersonnelListQueryDto> psnDoQuery(SearchParam searchParam);
 }

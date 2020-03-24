@@ -45,4 +45,12 @@ public class OrganizationLienceseeClientFallback implements OrganizationLiencese
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<LicenseeDto> getLicenseeByUenNo(String uenNo) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

@@ -31,15 +31,16 @@
                                                     var="premises">
                                              <input type="checkbox" name="premisesInput" value="${premises.premisesIndexNo}">${premises.tranferSelect}&nbsp;
                                          </c:forEach>
+                                           <span  class="error-msg" name="iaisErrorMsg" id="error_premisesError"></span>
                                          </p>
                                      </iais:value>
                                  </iais:row>
                                  <iais:row>
                                      <iais:field value="UEN of Licence to transfer licence to"></iais:field>
-                                     <iais:value width="10"><input type="text" name="UNID"></iais:value>
+                                     <iais:value width="10"><input type="text" name="UEN"></iais:value>
+                                     <span  class="error-msg" name="iaisErrorMsg" id="error_uenError"></span>
                                  </iais:row>
                          </iais:section>
-                     <p><span class="error-msg">${ErrorMsg}</span></p>
                   </div>
                 </div>
                  </div>
@@ -53,6 +54,7 @@
                          </div>
                      </div>
                  </div>
+               <%@ include file="/include/validation.jsp" %>
                 </form>
 
 
