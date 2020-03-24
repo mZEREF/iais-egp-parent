@@ -88,7 +88,6 @@
                       <iais:sortableHeader needSort="false" field = "" value="S/N"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field = "GROUP_NO" value="Application No."></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field = "APP_TYPE" value="Application Type"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field = "Status" value="Application Status"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field = "" value="Inspection Lead"></iais:sortableHeader>
                     </tr>
                     </thead>
@@ -106,9 +105,17 @@
                         <c:forEach var="superPool" items="${supTaskSearchResult.rows}" varStatus="status">
                           <tr>
                             <td class="row_no"><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
-                            <td><c:out value="${superPool.appGroupNo}"/></td>
+                            <td>
+                              <p>
+                                <c:out value="${superPool.appGroupNo}"/>
+                                <a class="accordion-toggle  collapsed"
+                                   data-toggle="collapse" aria-expanded="false"
+                                   data-target="#advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"
+                                   onclick="javascript:supervisorByGroupId('<iais:mask name="appGroupId" value="${superPool.id}"/>','${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}')">
+                                </a>
+                              </p>
+                            </td>
                             <td><iais:code code="${superPool.applicationType}"/></td>
-                            <td><iais:code code="${superPool.applicationStatus}"/></td>
                             <td>
                               <c:forEach var="lead" items="${superPool.groupLead}">
                                 <c:out value="${lead}"/><br>
@@ -165,5 +172,61 @@
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
         inspectorSearchTaskSubmit('sort');
+    }
+
+    var dividajaxlist = [];
+    function supervisorByGroupId(appGroupId, divid) {
+        if (!isInArray(dividajaxlist,divid)) {
+            dividajaxlist.push(divid);
+            $.post(
+                '/hcsa-licence-web/common-pool/supervisor.do',
+                {groupId: appGroupId},
+                function (data) {
+                    var result = data.result;
+                    var memberName = data.memberName;
+                    if('Success' == result){
+                        var res = data.ajaxResult;
+                        var html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
+                            '<td colspan="6" style="padding: 0px 8px !important;">' +
+                            '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
+                            '<table class="table" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                            '<thead>' +
+                            '<tr>';
+
+                        html += '<th>Application No</th>' +
+                            '<th>Application Status</th>' +
+                            '<th>HCI Code</th>' +
+                            '<th>HCI Name / Address</th>' +
+                            '<th>Licence Expiry Date</th>' +
+                            '<th>Inspection Date</th>' +
+                            '<th>' + memberName + '</th>' +
+                            '</tr>' +
+                            '</thead>' +
+                            '<tbody>';
+                        for (var i = 0; i < res.rowCount; i++) {
+                            html += '<tr>';
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No</p><p><a onclick="javascript:doInspectorSearchTaskAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].appNo + '</a></p></td>' +
+                                '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].appStatus + '<p></td>' +
+                                '<td><p class="visible-xs visible-sm table-row-title">HCI Code</p><p>' + res.rows[i].hciCode + '</p></td>' +
+                                '<td><p class="visible-xs visible-sm table-row-title">HCI Name / Address</p><p>' + res.rows[i].hciAddress + '</p></td>' +
+                                '<td><p class="visible-xs visible-sm table-row-title">Licence Expiry Date</p><p>' + res.rows[i].licenceExpiryDateStr + '</p></td>' +
+                                '<td><p class="visible-xs visible-sm table-row-title">Inspection Date</p><p>' + res.rows[i].inspectionDateStr + '</p></td>' +
+                                '<td><p class="visible-xs visible-sm table-row-title">' + memberName + '</p><p>' + res.rows[i].memberName + '</p></td>' +
+                                '</tr>';
+                        }
+                        html += '</tbody></table></div></td></tr>';
+                        $("#advfilter" + divid).after(html);
+                        dividlist.push(divid);
+                    }
+                }
+            )
+        } else {
+            var display = $('#advfilterson' + divid).css('display');
+            if (display == 'none') {
+                $('#advfilterson' + divid).show();
+            } else {
+                $('#advfilterson' + divid).hide();
+            }
+        }
     }
 </script>

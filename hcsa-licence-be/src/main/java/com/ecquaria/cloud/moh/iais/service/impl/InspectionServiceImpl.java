@@ -10,17 +10,22 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -35,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClien
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +49,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -83,6 +91,9 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Autowired
     private ApplicationClient applicationClient;
+
+    @Autowired
+    private HcsaLicenceClient hcsaLicenceClient;
 
     @Override
     public List<SelectOption> getAppTypeOption() {
@@ -207,16 +218,87 @@ public class InspectionServiceImpl implements InspectionService {
                 List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getPremCorrDtoByAppGroupId(iDto.getId()).getEntity();
                 if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos) && !IaisCommonUtils.isEmpty(superPool)) {
                     for (TaskDto taskDto : superPool) {
-                        if(taskDto.getRefNo().equals(appPremisesCorrelationDtos.get(0).getId())){
-                            List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-                            List<String> leadName = getWorkGroupLeadsByGroupId(taskDto.getWkGrpId(), orgUserDtos);
-                            iDto.setGroupLead(leadName);
-                        }
+                        iDto = getLeadByAppPremCorrId(taskDto, appPremisesCorrelationDtos, iDto);
                     }
                 }
             }
         }
-        return null;
+        return searchResult;
+    }
+
+    @Override
+    public SearchResult<SuperPoolTaskQueryDto> getSupPoolSecondByParam(SearchParam searchParam) {
+        return organizationClient.supervisorSecondSearch(searchParam).getEntity();
+    }
+
+    @Override
+    public SearchResult<SuperPoolTaskQueryDto> getSecondSearchOtherData(SearchResult<SuperPoolTaskQueryDto> searchResult) {
+        List<SuperPoolTaskQueryDto> superPoolTaskQueryDtos = searchResult.getRows();
+        if(!IaisCommonUtils.isEmpty(superPoolTaskQueryDtos)) {
+            for (SuperPoolTaskQueryDto superPoolTaskQueryDto : superPoolTaskQueryDtos) {
+                //get memberName
+                String userId = superPoolTaskQueryDto.getUserId();
+                String memberName = getMemberNameByUserId(userId);
+                superPoolTaskQueryDto.setMemberName(memberName);
+                //get Application data
+                ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(superPoolTaskQueryDto.getTaskRefNo()).getEntity();
+                superPoolTaskQueryDto.setAppNo(applicationDto.getApplicationNo());
+                superPoolTaskQueryDto.setAppStatus(applicationDto.getStatus());
+                //get HCI data
+                AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(superPoolTaskQueryDto.getTaskRefNo());
+                String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
+                if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
+                    superPoolTaskQueryDto.setHciAddress(appGrpPremisesDto.getHciName() + " / " + address);
+                } else {
+                    superPoolTaskQueryDto.setHciAddress(address);
+                }
+                //get inspection date
+                AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(superPoolTaskQueryDto.getTaskRefNo(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                if(appPremisesRecommendationDto != null){
+                    superPoolTaskQueryDto.setInspectionDate(appPremisesRecommendationDto.getRecomInDate());
+                    String inspDateStr = Formatter.formatDateTime(appPremisesRecommendationDto.getRecomInDate(), "dd/MM/yyyy");
+                    superPoolTaskQueryDto.setInspectionDateStr(inspDateStr);
+                } else {
+                    superPoolTaskQueryDto.setInspectionDate(null);
+                    superPoolTaskQueryDto.setInspectionDateStr(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+                }
+                //get license date
+                LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(applicationDto.getLicenceId()).getEntity();
+                Date licExpiryDate = licenceDto.getExpiryDate();
+                if(licExpiryDate == null){
+                    superPoolTaskQueryDto.setLicenceExpiryDateStr(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+                } else {
+                    superPoolTaskQueryDto.setLicenceExpiryDate(licExpiryDate);
+                    String licExpiryDateStr = Formatter.formatDateTime(appPremisesRecommendationDto.getRecomInDate(), "dd/MM/yyyy");
+                    superPoolTaskQueryDto.setLicenceExpiryDateStr(licExpiryDateStr);
+                }
+            }
+        }
+        return searchResult;
+    }
+
+    private String getMemberNameByUserId(String userId) {
+        String memberName = HcsaConsts.HCSA_PREMISES_HCI_NULL;
+        if(!StringUtil.isEmpty(userId)) {
+            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
+            memberName = orgUserDto.getDisplayName();
+        }
+        return memberName;
+    }
+
+    private InspectionSubPoolQueryDto getLeadByAppPremCorrId(TaskDto taskDto, List<AppPremisesCorrelationDto> appPremisesCorrelationDtos, InspectionSubPoolQueryDto iDto) {
+        if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)) {
+            for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos) {
+                if (appPremisesCorrelationDto.getId().equals(taskDto.getRefNo())) {
+                    List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                    List<String> leadName = getWorkGroupLeadsByGroupId(taskDto.getWkGrpId(), orgUserDtos);
+                    Set<String> leadNameSet = new HashSet<>(leadName);
+                    leadName = new ArrayList<>(leadNameSet);
+                    iDto.setGroupLead(leadName);
+                }
+            }
+        }
+        return iDto;
     }
 
     @Override

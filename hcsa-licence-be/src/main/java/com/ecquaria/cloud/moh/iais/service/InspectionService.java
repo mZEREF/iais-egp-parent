@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
@@ -173,4 +174,22 @@ public interface InspectionService {
       * @Descripation: getGroupLeadName
       */
     SearchResult<InspectionSubPoolQueryDto> getGroupLeadName(SearchResult<InspectionSubPoolQueryDto> searchResult, LoginContext loginContext, List<TaskDto> superPool);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/3/24
+      * @Param: searchParam
+      * @return: SearchResult<SuperPoolTaskQueryDto>
+      * @Descripation: getSupPoolSecondByParam
+      */
+    SearchResult<SuperPoolTaskQueryDto> getSupPoolSecondByParam(SearchParam searchParam);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/3/24
+      * @Param: 
+      * @return: 
+      * @Descripation: 
+      */
+    SearchResult<SuperPoolTaskQueryDto> getSecondSearchOtherData(SearchResult<SuperPoolTaskQueryDto> searchResult);
 }

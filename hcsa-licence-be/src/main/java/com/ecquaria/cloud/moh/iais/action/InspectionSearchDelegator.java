@@ -66,7 +66,10 @@ public class InspectionSearchDelegator {
      */
     public void inspectionSupSearchStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchStart start ...."));
-        AccessUtil.initLoginUserInfo(bpc.request);
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        if (loginContext == null) {
+            AccessUtil.initLoginUserInfo(bpc.request);
+        }
         AuditTrailHelper.auditFunction("Inspection Sup Assign", "Sup Assign Task");
     }
 
@@ -107,7 +110,7 @@ public class InspectionSearchDelegator {
         //get Members Option
         groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
         //First search
-        if(searchResult == null) {
+        if(searchResult == null || IaisCommonUtils.isEmpty(searchResult.getRows())) {
             List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds);
             List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(superPool);
             StringBuilder sb = new StringBuilder("(");
@@ -279,7 +282,7 @@ public class InspectionSearchDelegator {
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         QueryHelp.setMainSql("inspectionQuery", "supervisorPoolSearch",searchParam);
         SearchResult<InspectionSubPoolQueryDto> searchResult = inspectionService.getSupPoolByParam(searchParam);
-        SearchResult<InspectionTaskPoolListDto> searchResult2 = inspectionService.getOtherDataForSr(searchResult, superPool, loginContext);
+        searchResult = inspectionService.getGroupLeadName(searchResult, loginContext, superPool);
 
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", searchResult);
