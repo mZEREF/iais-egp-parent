@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -31,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
@@ -78,6 +80,9 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Autowired
     private ApplicationService applicationService;
+
+    @Autowired
+    private ApplicationClient applicationClient;
 
     @Override
     public List<SelectOption> getAppTypeOption() {
@@ -193,6 +198,25 @@ public class InspectionServiceImpl implements InspectionService {
             }
         }
         return memberValue;
+    }
+
+    @Override
+    public SearchResult<InspectionSubPoolQueryDto> getGroupLeadName(SearchResult<InspectionSubPoolQueryDto> searchResult, LoginContext loginContext, List<TaskDto> superPool) {
+        if(!IaisCommonUtils.isEmpty(searchResult.getRows())){
+            for(InspectionSubPoolQueryDto iDto : searchResult.getRows()){
+                List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getPremCorrDtoByAppGroupId(iDto.getId()).getEntity();
+                if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos) && !IaisCommonUtils.isEmpty(superPool)) {
+                    for (TaskDto taskDto : superPool) {
+                        if(taskDto.getRefNo().equals(appPremisesCorrelationDtos.get(0).getId())){
+                            List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                            List<String> leadName = getWorkGroupLeadsByGroupId(taskDto.getWkGrpId(), orgUserDtos);
+                            iDto.setGroupLead(leadName);
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -346,7 +370,8 @@ public class InspectionServiceImpl implements InspectionService {
     @Override
     @SearchTrack(catalog = "inspectionQuery",key = "supervisorPoolSearch")
     public SearchResult<InspectionSubPoolQueryDto> getSupPoolByParam(SearchParam searchParam) {
-        return inspectionTaskClient.searchInspectionSupPool(searchParam).getEntity();
+        SearchResult<InspectionSubPoolQueryDto> searchResult = inspectionTaskClient.searchInspectionSupPool(searchParam).getEntity();
+        return searchResult;
     }
 
     @Override

@@ -164,4 +164,13 @@ public interface InspectionService {
       * @Descripation: get Members's task ref_No From Work Group By UserId
       */
     String getMemberValueByWorkGroupUserId(String userId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/3/23
+      * @Param: searchResult, loginContext, superPool
+      * @return: SearchResult<InspectionSubPoolQueryDto>
+      * @Descripation: getGroupLeadName
+      */
+    SearchResult<InspectionSubPoolQueryDto> getGroupLeadName(SearchResult<InspectionSubPoolQueryDto> searchResult, LoginContext loginContext, List<TaskDto> superPool);
 }
