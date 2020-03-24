@@ -37,7 +37,7 @@
     <JavaCode defClass="" executor="" methodName="cancelTask_OnStepProcess_0" name="cancelTask_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Step7" x="680" y="710">
+  <AutomaticStep defClass="" executor="" icon="" name="cancalTaskSave" x="660" y="460">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -113,9 +113,6 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/confirm" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
    <position>{(560,620)(560,730)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
-   <position>{(690,390)(690,522)(690,540)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/pre" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
    <position>{(560,620)(414,622)(430,10)}</position>
   </SynchronousLink>
@@ -134,18 +131,24 @@
   <SynchronousLink destinationName="/Pages/WebPage/Page2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/cancelTask" style="rectanular">
    <position>{(690,220)(700,310)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Step7" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
-   <position>{(690,540)(700,730)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/cancelTask" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
-   <position>{(690,540)(947,546)(690,220)}</position>
+   <position>{(700,570)(947,546)(690,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/cancalTaskSave" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(690,390)(680,480)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/cancalTaskSave" style="rectanular">
+   <position>{(680,480)(700,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page4" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(700,570)(487,762)(450,730)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/pre" componentIfTrue="/Pages/WebPage/Page3" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond1" operator="!=" rightOperand="isValid" x="550" y="340">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Steps/AutomaticStep/cancelTask" componentIfTrue="/Steps/AutomaticStep/Step7" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond2" operator="!=" rightOperand="isValid" x="670" y="520">
+  <Condition componentIfFalse="/Pages/WebPage/Page4" componentIfTrue="/Steps/AutomaticStep/cancalTaskSave" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond2" operator="!=" rightOperand="isValid" x="680" y="550">
    <Description/>
   </Condition>
  </Conditions>
@@ -164,7 +167,7 @@
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="670" y="370">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/pre" value="&quot;back&quot;"/>
-   <SwitchCase component="/Conditions/Condition/Cond2" value="&quot;cancel&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/cancalTaskSave" value="&quot;cancel&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

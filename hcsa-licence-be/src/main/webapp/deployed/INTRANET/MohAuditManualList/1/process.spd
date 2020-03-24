@@ -51,7 +51,7 @@
     <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Step2" x="960" y="470">
+  <AutomaticStep defClass="" executor="" icon="" name="Step2" x="1030" y="600">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -106,12 +106,6 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="cancelPage" stageIndicator="" x="1020" y="370">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
-  </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page2" stageIndicator="" x="950" y="590">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -184,10 +178,7 @@
    <position>{(1040,390)(1050,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Step2" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
-   <position>{(1050,500)(980,490)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Page2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step2" style="rectanular">
-   <position>{(980,490)(970,610)}</position>
+   <position>{(1050,500)(1050,620)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/vad" style="rectanular">
    <position>{(430,120)(500,120)}</position>
@@ -222,6 +213,15 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/Step3" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
    <position>{(1050,500)(1135,496)(784,12)(790,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond4" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step2" style="rectanular">
+   <position>{(1050,620)(960,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/success" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond4" style="rectanular">
+   <position>{(960,640)(800,660)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/cancelPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond4" style="rectanular">
+   <position>{(960,640)(1040,390)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/next" componentIfTrue="/Steps/AutomaticStep/pre" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond1" operator="!=" rightOperand="isValid" x="480" y="100">
@@ -231,6 +231,9 @@
    <Description/>
   </Condition>
   <Condition componentIfFalse="/Steps/AutomaticStep/Step3" componentIfTrue="/Pages/WebPage/cancelPage" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond3" operator="!=" rightOperand="isValid" x="980" y="280">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Pages/WebPage/success" componentIfTrue="/Pages/WebPage/cancelPage" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond4" operator="!=" rightOperand="isValid" x="940" y="620">
    <Description/>
   </Condition>
  </Conditions>

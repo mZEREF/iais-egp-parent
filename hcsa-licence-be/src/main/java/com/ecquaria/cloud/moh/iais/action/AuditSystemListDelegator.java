@@ -42,7 +42,8 @@ public class AuditSystemListDelegator {
 
 
     private String SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME = "auditSystemPotentialDtoForSearch";
-
+    private String  SUBMIT_MESSAGE_SUCCESS = "submit_message_success";
+    private String  MAIN_URL              ="mainUrl";
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
@@ -144,9 +145,9 @@ public class AuditSystemListDelegator {
         AuditAssginListValidate auditAssginListValidate = new AuditAssginListValidate();
         Map<String, String> errMap = auditAssginListValidate.validate(request);
         if (errMap.isEmpty()) {
-            ParamUtil.setRequestAttr(request, "isValid", "N");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         } else {
-            ParamUtil.setRequestAttr(request, "isValid", "Y");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
         }
     }
@@ -209,9 +210,9 @@ public class AuditSystemListDelegator {
         AuditAssginListValidate auditAssginListValidate = new AuditAssginListValidate();
         Map<String, String> errMap = auditAssginListValidate.validate(request);
         if (errMap.isEmpty()) {
-            ParamUtil.setRequestAttr(request, "isValid", "N");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         } else {
-            ParamUtil.setRequestAttr(request, "isValid", "Y");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
         }
     }
@@ -221,7 +222,10 @@ public class AuditSystemListDelegator {
         HttpServletRequest request = bpc.request;
         List<AuditTaskDataFillterDto> auditTaskDataDtos = (List<AuditTaskDataFillterDto>) ParamUtil.getSessionAttr(request, "auditTaskDataDtos");
         auditSystemListService.doSubmit(auditTaskDataDtos);
+        ParamUtil.setRequestAttr(request,SUBMIT_MESSAGE_SUCCESS,HcsaLicenceBeConstant .AUDIT_INSPECTION_CONFIRM_SUCCESS_MESSAGE);
+        ParamUtil.setRequestAttr(request,MAIN_URL,"MohAduitSystemList");
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
+
     }
 
     public void createhcl(BaseProcessClass bpc) {
@@ -233,7 +237,10 @@ public class AuditSystemListDelegator {
     public void canceltask(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request,SUBMIT_MESSAGE_SUCCESS,HcsaLicenceBeConstant .AUDIT_INSPECTION_CANCEL_TASKS_SUCCESS_MESSAGE);
+        ParamUtil.setRequestAttr(request,MAIN_URL,"MohAduitSystemList");
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
     }
 
 }

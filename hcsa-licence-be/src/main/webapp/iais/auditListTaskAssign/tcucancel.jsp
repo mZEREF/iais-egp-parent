@@ -56,6 +56,7 @@
                                             <td><c:out value="${item.hclName}"/></td>
                                             <td><c:out value="${item.address}"/></td>
                                             <td><c:out value="${item.svcName}"/></td>
+                                            <td><iais:code code= "${item.auditType}"/></td>
                                             <td><c:out value="${item.inspector}"/></td>
                                             <td>
                                                 <c:choose>
@@ -64,7 +65,6 @@
                                                     </c:when>
                                                 </c:choose>
                                             </td>
-                                            <td></td>
                                             <td>
                                                 <input name="selectForAd" id="<c:out value="${(status.index) }"/>" type="checkbox">
                                             </td>

@@ -200,7 +200,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
 
     private List<AuditTaskDataFillterDto> getNumberList(AuditSystemPotentialDto dto, List<AuditTaskDataFillterDto> dtoList) {
         List<AuditTaskDataFillterDto> reuturnList = IaisCommonUtils.genNewArrayList();
-        if (dto.getGenerateNum() > 0) {
+        if (dto.getGenerateNum() !=  null && dto.getGenerateNum() > 0) {
             int num = dto.getGenerateNum();
             if (!IaisCommonUtils.isEmpty(dtoList)) {
                 if (num < dtoList.size()) {
@@ -328,7 +328,8 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             } catch (Exception e) {
                 Log.debug(e.toString());
             }
-        } else if (!StringUtil.isEmpty(dto.getLastInspectionEnd())) {
+        }
+        if (!StringUtil.isEmpty(dto.getLastInspectionEnd())) {
             try {
                 dtostartDate = Formatter.parseDate(dto.getLastInspectionEnd());
             } catch (Exception e) {
@@ -336,15 +337,15 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             }
         }
         if (dtostartDate != null && dtoEndDate == null) {
-            if (dtostartDate.getTime() > startDate.getTime()) {
+            if (startDate != null && dtostartDate.getTime() > startDate.getTime()) {
                 auditTaskDtos.add(temp);
             }
         } else if (dtostartDate == null && dtoEndDate != null) {
-            if (dtoEndDate.getTime() < endDate.getTime()) {
+            if (endDate != null && dtoEndDate.getTime() < endDate.getTime()) {
                 auditTaskDtos.add(temp);
             }
         } else if (dtostartDate != null && dtoEndDate != null) {
-            if (dtoEndDate.getTime() < endDate.getTime() && dtostartDate.getTime() > startDate.getTime()) {
+            if (startDate != null && endDate != null && dtoEndDate.getTime() < endDate.getTime() && dtostartDate.getTime() > startDate.getTime()) {
                 auditTaskDtos.add(temp);
             }
         }

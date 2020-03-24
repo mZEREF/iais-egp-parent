@@ -230,6 +230,15 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/next" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
    <position>{(1260,360)(1383,356)(754,41)(740,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond4" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/canceltask" style="rectanular">
+   <position>{(1340,520)(1480,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/confirmsuccesspage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond4" style="rectanular">
+   <position>{(1480,550)(945,638)(840,580)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/canceltaskpage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond4" style="rectanular">
+   <position>{(1480,550)(1230,460)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/pre" componentIfTrue="/Steps/AutomaticStep/next" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond1" operator="!=" rightOperand="isValid" x="600" y="100">
@@ -239,6 +248,9 @@
    <Description/>
   </Condition>
   <Condition componentIfFalse="/Steps/AutomaticStep/next" componentIfTrue="/Pages/WebPage/canceltaskpage" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond3" operator="!=" rightOperand="isValid" x="1240" y="340">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Pages/WebPage/canceltaskpage" componentIfTrue="/Pages/WebPage/confirmsuccesspage" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond4" operator="=" rightOperand="isValid" x="1460" y="530">
    <Description/>
   </Condition>
  </Conditions>

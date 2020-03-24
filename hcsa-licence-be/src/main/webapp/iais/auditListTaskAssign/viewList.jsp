@@ -47,6 +47,11 @@
                                     </thead>
                                     <tbody>
                                     <span class="error-msg" id="error_selectedOne" name="iaisErrorMsg"></span>
+                                    <c:if test="${empty auditTaskDataDtos}">
+                                    <td colspan="7">
+                                    <iais:message key="ACK018" escape="true"/>
+                                    </td>
+                                    </c:if>
                                     <c:forEach var="item" items="${auditTaskDataDtos}" varStatus="status">
                                         <tr>
                                             <c:set var="id" value="${status.index}"></c:set>
@@ -89,10 +94,10 @@
                     </div>
 
                     <iais:action style="text-align:right;">
+                        <button type="button" class="btn btn-secondary" onclick="javascript:cancel();">Cancel
+                        </button>
                         <button type="button" class="btn btn-primary next" onclick="javascript:confirm();">Confirm
                             to Audit
-                        </button>
-                        <button type="button" class="btn btn-primary next" onclick="javascript:cancel();">Cancel
                         </button>
                         <button type="button" class="btn btn-primary next" onclick="javascript:cancelAudit();">Cancel
                             Audit Task

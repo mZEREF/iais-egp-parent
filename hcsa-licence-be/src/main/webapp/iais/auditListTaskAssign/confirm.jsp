@@ -44,13 +44,14 @@
                                     <tbody>
 
                                     <c:forEach var = "item" items = "${auditTaskDataDtos}" varStatus="status">
+                                        <c:if test="${item.selectedForAudit}">
                                         <tr>
                                             <c:set var="id" value="${status.index}"></c:set>
                                             <td><c:out value="${item.hclCode}"/></td>
                                             <td><c:out value="${item.hclName}"/></td>
                                             <td><c:out value="${item.address}"/></td>
                                             <td><c:out value="${item.svcName}"/></td>
-                                            <td><c:out value="${item.auditType}"/></td>
+                                            <td><iais:code code="${item.auditType}"/></td>
                                             <td>
                                                 <c:out value="${item.inspector}"/>
                                             </td>
@@ -65,6 +66,7 @@
                                                 </c:choose>
                                             </td>
                                         </tr>
+                                        </c:if>
                                     </c:forEach>
 
                                     </tbody>
@@ -74,22 +76,20 @@
                             </div>
                         </div>
                     </div>
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: confirm();">Confirm to Audit</a></div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: cancel();">Cancel</a></div>
-                            </div>
+
+         <iais:action style="text-align:right;">
+             <button type="button" class="btn btn-secondary" onclick="javascript:cancel();">Cancel
+             </button>
+             <button type="button" class="btn btn-primary next" onclick="javascript:confirm();">Confirm
+                 to Audit
+             </button>
+                        <!--
                             <div class="col-xs-12 col-sm-6">
                                 <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: remove();">Remove Audit Task</a></div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: cancelAudit();">Cancel Audit Task</a></div>
-                            </div>
-                        </div>
-                    </div>
+                            </div> -->
+
+         </iais:action>
+
                 </div>
             </div>
         </div>
