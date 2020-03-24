@@ -698,8 +698,8 @@ public class AppealServiceImpl implements AppealService {
                 appPremisCorreIds.add(appPremisesCorrelationDtoId);
             }
         }
-
-        AppPremiseMiscDto appPremiseMiscDto = applicationClient.getAppPremisesMisc("37FB683E-2368-EA11-BE79-000C29D29DB0").getEntity();
+        String entity = applicationClient.getRequestForInfo(id).getEntity();
+        AppPremiseMiscDto appPremiseMiscDto = applicationClient.getAppPremisesMisc(entity).getEntity();
         String reason = appPremiseMiscDto.getReason();
         String appPremCorreId = appPremiseMiscDto.getAppPremCorreId();
         AppPremisesSpecialDocDto appPremisesSpecialDocDto = applicationClient.getAppPremisesSpecialDocDtoByCorreId(appPremCorreId).getEntity();

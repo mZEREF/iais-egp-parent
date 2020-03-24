@@ -43,7 +43,7 @@ public interface SystemBeLicClient {
     @RequestMapping(path = "/licence-number",method = RequestMethod.GET)
     FeignResponseEntity<String> licence(@RequestParam("hciCode") String hciCode, @RequestParam("serviceCode") String serviceCode,
                                         @RequestParam("yearLength") Integer yearLength, @RequestParam("licenceSeq") Integer licenceSeq) ;
-    @RequestMapping
+    @RequestMapping(value = "/group-licence")
     FeignResponseEntity<String> groupLicence(@RequestParam("hscaCode") String hscaCode,
                                              @RequestParam("yearLength") String yearLength,@RequestParam("licence") String licence);
 

@@ -223,4 +223,7 @@ public interface ApplicationClient  {
     FeignResponseEntity<ProcessFileTrackDto> isFileExistence(@RequestBody Map<String,String> map);
     @GetMapping(value = "/appeal/reason-used")
     FeignResponseEntity<Boolean> isUseReason(@RequestParam("id") String id,@RequestParam("reason") String reason);
+    @GetMapping(value = "/")
+    FeignResponseEntity<String> getRequestForInfo(@RequestParam(value = "applicationId") String applicationId);
+
 }

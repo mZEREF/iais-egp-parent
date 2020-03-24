@@ -11,6 +11,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisServiceRegistryHelper;
 import com.ecquaria.cloud.moh.iais.service.AutoRenwalService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -155,16 +157,13 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
         String svcName = licenceDto.getSvcName();
 
-        OrganizationDto organizationBy = getOrganizationBy(licenceDto.getOriginLicenceId());
-        String id1 = organizationBy.getId();
-        List<OrgUserRoleDto> sendMailUser = getSendMailUser(id1);
+        List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId());
 
         Date expiryDate = licenceDto.getExpiryDate();
 
         String id = licenceDto.getId();
 
         List<String> list = useLicenceIdFindHciNameAndAddress(id);
-
 
             for(String every:list){
             String address = every.substring(every.indexOf("/")+1);
@@ -184,15 +183,10 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 emailDto.setContent(templateMessageByContent);
                 emailDto.setSubject(EMAIL_SUBJECT);
                 emailDto.setSender("MOH");
-                emailDto.setClientQueryCode("sss");
+                emailDto.setClientQueryCode("isNotAuto");
 
-                List<String> receipts=IaisCommonUtils.genNewArrayList();
-                for(OrgUserRoleDto orgUserRoleDto :sendMailUser){
-                    String emailAddress = orgUserRoleDto.getEmailAddress();
-                    receipts.add(emailAddress);
-                }
-                if(!receipts.isEmpty()){
-                    emailDto.setReceipts(receipts);
+                if(!licenseeEmailAddrs.isEmpty()){
+                    emailDto.setReceipts(licenseeEmailAddrs);
                     String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
                 }
 
@@ -207,10 +201,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     * */
     private void isAuto(LicenceDto licenceDto ,HttpServletRequest request ) throws IOException, TemplateException {
         /*Name of Service*/
-
-        OrganizationDto organizationBy = getOrganizationBy(licenceDto.getOriginLicenceId());
-        String id1 = organizationBy.getId();
-        List<OrgUserRoleDto> sendMailUser = getSendMailUser(id1);
+        List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId());
 
         String svcName = licenceDto.getSvcName();
         Date expiryDate = licenceDto.getExpiryDate();
@@ -285,16 +276,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 emailDto.setSender("MOH");
                 emailDto.setClientQueryCode("");
 
-                List<String> receipts=IaisCommonUtils.genNewArrayList();
-                for( OrgUserRoleDto orgUserRoleDto :sendMailUser){
-                    String emailAddress = orgUserRoleDto.getEmailAddress();
-                    if(!emailAddress.isEmpty()){
-                        receipts.add(emailAddress);
-                    }
-
-                }
-                if(!receipts.isEmpty()){
-                    emailDto.setReceipts(receipts);
+                if(!licenseeEmailAddrs.isEmpty()){
+                    emailDto.setReceipts(licenseeEmailAddrs);
                     String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
 
                 }

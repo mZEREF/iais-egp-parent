@@ -308,19 +308,11 @@
       </div>
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8 marg-1">
-          <label class="col-xs-12 col-md-8 control-label" >Service Workload Manhours<span class="mandatory">*</span></label>
-          <div class="col-xs-10 col-md-4">
-            <div class="components">
-              <a class="btn btn-secondary "><span class="view">Configure</span></a>
-            </div>
-          </div>
-        </div>
         <div class="col-xs-12 col-md-8  marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service-Related Checklists<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <a class="btn btn-secondary " onclick="checklists()"><span class="view">Configure</span></a>
+              <a class="btn btn-secondary " data-toggle="modal" data-target= "#checklists" ><span class="view">Configure</span></a>
             </div>
           </div>
         </div>
@@ -345,7 +337,7 @@
           <label class="col-xs-12 col-md-8 control-label" >Service KPI<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <a class="btn btn-secondary " onclick="kpi()" ><span class="view">Configure</span></a>
+              <a class="btn btn-secondary " data-toggle="modal" data-target= "#kpi" ><span class="view">Configure</span></a>
             </div>
           </div>
         </div>
@@ -436,6 +428,7 @@
           <th style="width: 10% ;height: 40px;text-align: center">application type<span class="mandatory" >*</span></th>
           <th  style="width: 20% ;height: 40px;text-align: center">Service Workflow Routing Stages<span class="mandatory" >*</span></th>
           <th  style="width:30% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
+          <th  style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours<span class="mandatory">*</span></th>
           <th  style="width: 25% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
         </tr>
         <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
@@ -480,6 +473,13 @@
               <option value="optional">Optional</option>
             </select>
           </div>
+        </td>
+        <td>
+          <div class="col-xs-12 col-md-12">
+            <input style="margin: 8px 0px 8px" type="text" maxlength="2" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
+            <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${status.index}"></span>
+          </div>
+
         </td>
         <td>
           <div class="col-xs-12 col-md-12">
@@ -611,7 +611,7 @@
           <div class="col-xs-10 col-md-3">
             <div class="components">
 
-              <a class="btn  btn-secondary " onclick="save()">Save</a>
+              <a class="btn btn-primary" onclick="save()">Save</a>
 
             </div>
           </div>
@@ -631,7 +631,55 @@
   </form>
 </div>
 
-<iais:confirm msg="sda" callBack="config" popupOrder="confirm" title="ssss"/>
+
+<div class="modal fade" id="kpi" tabindex="-1" role="dialog" aria-labelledby="kpi"
+     style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <h5 class="modal-title" >Confirmation Box</h5>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the modification ?</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="kpi()">Confirm</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="checklists" tabindex="-1" role="dialog" aria-labelledby="checklists"
+     style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <h5 class="modal-title" >Confirmation Box</h5>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the modification ?</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="kpi()">Confirm</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 <script type="text/javascript">
 
     function cancel() {
@@ -640,22 +688,10 @@
     }
 
     function kpi() {
-        var b = confirm("Are you sure you want to leave this page");
-        if(b==true){
-            config();
-        }else {
 
-        }
+        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohKPIAndReminder";
     }
-    function config() {
-        var b = confirm("Are you sure you want to leave this page");
-        if(b==true){
-            location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohKPIAndReminder";
-        }else {
 
-        }
-
-    }
 
     function  checklists(){
         var b = confirm("Are you sure you want to leave this page");

@@ -699,6 +699,10 @@ public class ConfigServiceImpl implements ConfigService {
                     hcsaSvcSpeRoutingSchemeDto.setSchemeType(routingScheme);
                     hcsaSvcSpeRoutingSchemeDto.setAppType(every);
                     hcsaSvcSpeRoutingSchemeDto.setStatus("CMSTAT001");
+                    hcsaSvcSpecificStageWorkloadDto.setStageId(id);
+                    hcsaSvcSpecificStageWorkloadDto.setAppType(every);
+                    hcsaSvcSpecificStageWorkloadDto.setStatus("CMSTAT001");
+                    hcsaSvcSpecificStageWorkloadDtoList.add(hcsaSvcSpecificStageWorkloadDto);
                     hcsaSvcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto);
                 }
                 hcsaConfigPageDto.setWorkStageId(workstageId);
@@ -813,7 +817,10 @@ public class ConfigServiceImpl implements ConfigService {
 
         }
 
-
+        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = hcsaServiceConfigDto.getHcsaServiceStepSchemeDtos();
+        if (hcsaServiceStepSchemeDtos == null || hcsaServiceStepSchemeDtos.isEmpty()) {
+            errorMap.put("serviceStep", "UC_CHKLMD001_ERR001");
+        }
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = hcsaServiceConfigDto.getHcsaSvcDocConfigDtos();
         if(hcsaSvcDocConfigDtos.isEmpty()){
 
