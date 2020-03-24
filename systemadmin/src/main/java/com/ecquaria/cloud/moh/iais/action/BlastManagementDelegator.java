@@ -67,6 +67,7 @@ public class BlastManagementDelegator {
     private static final String EMAIL = "email";
     private static final String SMS = "sms";
     private static final String BOTH = "both";
+    private static final String BACK = "back";
     private static final String FILE_UPLOAD_ERROR = "fileUploadError";
     @Autowired
     BlastManagementListService blastManagementListService;
@@ -81,7 +82,6 @@ public class BlastManagementDelegator {
         searchParam.setPageNo(1);
         searchParam.setSort("ID", SearchParam.ASCENDING);
         AuditTrailHelper.auditFunction("blastManagement", "BlastManagementDelegator");
-
         ParamUtil.setRequestAttr(bpc.request, "firstOption", "Please Select");
         ParamUtil.setRequestAttr(bpc.request, "firstValue", " ");
     }
@@ -96,7 +96,6 @@ public class BlastManagementDelegator {
         SearchResult<BlastManagementListDto> searchResult = blastManagementListService.blastList(searchParam);
         ParamUtil.setRequestAttr(bpc.request,"blastSearchResult",searchResult);
         ParamUtil.setRequestAttr(bpc.request,"blastSearchParam",searchParam);
-        ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDto);
 
     }
 
@@ -105,51 +104,43 @@ public class BlastManagementDelegator {
      * @param bpc
      */
     public void create(BaseProcessClass bpc){
-        ParamUtil.setSessionAttr(bpc.request,"emailAddress",null);
-        ParamUtil.setSessionAttr(bpc.request,"schedule",null);
-        ParamUtil.setSessionAttr(bpc.request,"hour",null);
-        ParamUtil.setSessionAttr(bpc.request,"minutes",null);
-        ParamUtil.setSessionAttr(bpc.request,"edit",null);
-        ParamUtil.setSessionAttr(bpc.request,"editBlastId",null);
-        setStatusSelection(bpc,null);
-        setModeSelection(bpc,null);
-    }
-    private void setModeSelection(BaseProcessClass bpc,String selected){
-        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
-        if(selected != null){
-            if(selected.equals(EMAIL)){
-                selectOptions.add(new SelectOption(EMAIL,EMAIL));
-                selectOptions.add(new SelectOption(SMS,SMS));
-            }else{
-                selectOptions.add(new SelectOption(SMS,SMS));
-                selectOptions.add(new SelectOption(EMAIL,EMAIL));
-            }
-        }else{
-            selectOptions.add(new SelectOption("","Please Select"));
-            selectOptions.add(new SelectOption(EMAIL,EMAIL));
-            selectOptions.add(new SelectOption(SMS,SMS));
-        }
-        ParamUtil.setSessionAttr(bpc.request, "mode",  (Serializable) selectOptions);
+        blastManagementDto = new BlastManagementDto();
     }
 
-    private void setStatusSelection(BaseProcessClass bpc,String selected){
-        List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
-        if(selected != null){
-            if(selected.equals(AppConsts.COMMON_STATUS_ACTIVE)){
-                selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_ACTIVE,"active"));
-                selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_IACTIVE,"inactive"));
-            }else{
-                selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_IACTIVE,"inactive"));
-                selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_ACTIVE,"active"));
-            }
-        }else{
-            selectOptionArrayList.add(new SelectOption("","Please Select"));
-            selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_ACTIVE,"active"));
-            selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_IACTIVE,"inactive"));
+    /**
+     * edit
+     * @param bpc
+     */
+    public void edit(BaseProcessClass bpc){
+        String id =  ParamUtil.getRequestString(bpc.request, "editBlast");
+        if(id == null ){
+            id = (String) ParamUtil.getSessionAttr(bpc.request,"editBlastId");
         }
-        ParamUtil.setRequestAttr(bpc.request, "status",  selectOptionArrayList);
+        ParamUtil.setSessionAttr(bpc.request,"editBlastId",id);
+        blastManagementDto = blastManagementListService.getBlastById(id);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(blastManagementDto.getSchedule());
+        int hour = cal.get(Calendar.HOUR);
+        int minute = cal.get(Calendar.MINUTE);
+        blastManagementDto.setMM(String.valueOf(minute));
+        blastManagementDto.setHH(String.valueOf(hour));
     }
 
+    public void createBeforeFill(BaseProcessClass bpc){
+        String schedule = Formatter.formatDate(blastManagementDto.getSchedule());
+        ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDto);
+        ParamUtil.setRequestAttr(bpc.request,"schedule",schedule);
+        setStatusSelection(bpc,blastManagementDto.getStatus());
+        setModeSelection(bpc,blastManagementDto.getMode());
+    }
+
+    public void editBeforeFill(BaseProcessClass bpc){
+        String schedule = Formatter.formatDate(blastManagementDto.getSchedule());
+        ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDto);
+        ParamUtil.setRequestAttr(bpc.request,"schedule",schedule);
+        setStatusSelection(bpc,blastManagementDto.getStatus());
+        setModeSelection(bpc,blastManagementDto.getMode());
+    }
 
     /**
      * delete
@@ -198,38 +189,18 @@ public class BlastManagementDelegator {
         HttpServletRequest request = bpc.request;
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
 
-        String currentAction = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
-    }
+        String currentAction = mulReq.getParameter("action");
 
-    /**
-     * edit
-     * @param bpc
-     */
-    public void edit(BaseProcessClass bpc){
-
-        String id =  ParamUtil.getRequestString(bpc.request, "editBlast");
-        if(id == null ){
-            id = (String) ParamUtil.getSessionAttr(bpc.request,"editBlastId");
+        if(!currentAction.equals(BACK)){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
+        }else{
+            if(blastManagementDto.getId() == null){
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "createBack");
+            }else{
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "editBack");
+            }
         }
-        BlastManagementDto blastManagementDtoById = blastManagementListService.getBlastById(id);
-        setStatusSelection(bpc,blastManagementDtoById.getStatus());
-        setModeSelection(bpc,blastManagementDtoById.getMode());
-        String schedule = Formatter.formatDate(blastManagementDtoById.getSchedule());
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(blastManagementDtoById.getSchedule());
-        int hour = cal.get(Calendar.HOUR);
-        int minute = cal.get(Calendar.MINUTE);
-        blastManagementDto.setId(blastManagementDtoById.getId());
-        blastManagementDto.setDistributionId(blastManagementDtoById.getDistributionId());
-        blastManagementDto.setDistributionName(blastManagementDtoById.getDistributionName());
-        String emailAddress = StringUtils.join(blastManagementDtoById.getEmailAddress(),"\n");
-        ParamUtil.setSessionAttr(bpc.request,"editBlastId",id);
-        ParamUtil.setSessionAttr(bpc.request,"hour",hour);
-        ParamUtil.setSessionAttr(bpc.request,"minutes",minute);
-        ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDtoById);
-        ParamUtil.setSessionAttr(bpc.request,"emailAddress",emailAddress);
-        ParamUtil.setSessionAttr(bpc.request,"schedule",schedule);
+
     }
 
     /**
@@ -256,21 +227,31 @@ public class BlastManagementDelegator {
         blastManagementDto.setMsgName(name);
         blastManagementDto.setMode(mode);
         blastManagementDto.setStatus(status);
-        if(!(HH != null && StringUtils.isNumeric(HH) &&  Integer.valueOf(HH) < 24)){
-            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-            errorMap.put("date","Field format is wrong");
+        blastManagementDto.setHH(HH);
+        blastManagementDto.setMM(MM);
+        SimpleDateFormat newformat =  new SimpleDateFormat("dd/MM/yyyy");
+        Date schedule = new Date();
+        if(!StringUtil.isEmpty(date)){
+            try {
+                schedule = newformat.parse(date);
+                long time = schedule.getTime();
+                schedule.setTime(time);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        blastManagementDto.setSchedule(schedule);
+        ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDto);
+        ValidationResult validationResult =WebValidationHelper.validateProperty(blastManagementDto, "page1");
+        if(validationResult != null && validationResult.isHasErrors()) {
+            Map<String, String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
-            ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
-        }else if(!(MM != null && StringUtils.isNumeric(MM) &&  Integer.valueOf(MM) < 60)){
-            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-            errorMap.put("date","Field format is wrong");
-            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
-            ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
+            if(blastManagementDto.getId() == null){
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "createBack");
+            }else{
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "editBack");
+            }
         }else{
-            SimpleDateFormat newformat =  new SimpleDateFormat("dd/MM/yyyy");
-            Date schedule = new Date();
             if(!StringUtil.isEmpty(date)){
                 try {
                     schedule = newformat.parse(date);
@@ -281,19 +262,12 @@ public class BlastManagementDelegator {
                 }
             }
             blastManagementDto.setSchedule(schedule);
-            ParamUtil.setSessionAttr(bpc.request, "blastManagementDto", blastManagementDto);
-            ValidationResult validationResult =WebValidationHelper.validateProperty(blastManagementDto, "page1");
-            if(validationResult != null && validationResult.isHasErrors()) {
-                Map<String, String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
-                ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
+            if(mode.equals(SMS)){
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, SMS);
             }else{
-                ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL);
             }
-
         }
-
     }
 
     public void fillMessageSuccess(BaseProcessClass bpc){
@@ -312,11 +286,9 @@ public class BlastManagementDelegator {
         String messageContent = mulReq.getParameter( "messageContent");
         blastManagementDto.setSubject(subject);
         blastManagementDto.setMsgContent(messageContent);
-        ParamUtil.setSessionAttr(bpc.request, "blastManagementDto", blastManagementDto);
 
         Map<String, String> errorMap = validationFile(request, file);
-        if (errorMap != null && !errorMap.isEmpty()){
-        }else{
+        if (!(errorMap != null && !errorMap.isEmpty())){
             String json = "";
             File toFile = FileUtils.multipartFileToFile(file);
             errorMap = new HashMap<>(1);
@@ -331,26 +303,16 @@ public class BlastManagementDelegator {
                 log.info(e.getMessage());
             }
         }
+        ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDto);
         ValidationResult validationResult =WebValidationHelper.validateProperty(blastManagementDto, "page2");
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> err = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(err));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
         }else{
-            List<DistributionListDto> distributionListDtos = distributionListService.getDistributionList();
-            List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
-            if(blastManagementDto.getDistributionId() != null){
-                selectOptions.add(new SelectOption(blastManagementDto.getDistributionId(),blastManagementDto.getDistributionName()));
-            }else{
-                selectOptions.add(new SelectOption("","Please Select"));
-            }
-
-            for (DistributionListDto item :distributionListDtos
-            ) {
-                selectOptions.add(new SelectOption(item.getId(),item.getDisname()));
-            }
-            ParamUtil.setSessionAttr(bpc.request, "distribution",  (Serializable) selectOptions);
+            getDistribution(bpc);
+            String emailAddress = StringUtils.join(blastManagementDto.getEmailAddress(),"\n");
+            ParamUtil.setRequestAttr(bpc.request, "emailAddress", emailAddress);
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
         }
 
@@ -358,10 +320,10 @@ public class BlastManagementDelegator {
     }
 
     public void writeMessageSuccess(BaseProcessClass bpc){
-
+        ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDto);
     }
     /**
-     * fillMessage
+     * selectRecipients
      * @param bpc
      */
     public void selectRecipients(BaseProcessClass bpc){
@@ -374,13 +336,13 @@ public class BlastManagementDelegator {
         if(emaillist != null){
             blastManagementDto.setEmailAddress(emaillist);
         }
-        ParamUtil.setSessionAttr(bpc.request, "blastManagementDto", blastManagementDto);
+        ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDto);
         ValidationResult validationResult =WebValidationHelper.validateProperty(blastManagementDto, "page3");
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
-            ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
+
         }else{
             blastManagementListService.saveBlast(blastManagementDto);
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
@@ -445,4 +407,94 @@ public class BlastManagementDelegator {
 
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
     }
+
+    private void getDistribution(BaseProcessClass bpc){
+        List<DistributionListDto> distributionListDtos = distributionListService.getDistributionList(blastManagementDto.getMode());
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+        if(blastManagementDto.getDistributionId() != null){
+            selectOptions.add(new SelectOption(blastManagementDto.getDistributionId(),blastManagementDto.getDistributionName()));
+        }else{
+            selectOptions.add(new SelectOption("","Please Select"));
+        }
+
+        for (DistributionListDto item :distributionListDtos
+        ) {
+            selectOptions.add(new SelectOption(item.getId(),item.getDisname()));
+        }
+        ParamUtil.setRequestAttr(bpc.request, "distribution",  (Serializable) selectOptions);
+    }
+
+    public void writeSms(BaseProcessClass bpc){
+        getDistribution(bpc);
+        ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDto);
+    }
+
+    public void saveSms(BaseProcessClass bpc){
+        String action = ParamUtil.getString(bpc.request, "action");
+        String subject = ParamUtil.getString(bpc.request, "subject");
+        String messageContent = ParamUtil.getString(bpc.request, "messageContent");
+        blastManagementDto.setSubject(subject);
+        blastManagementDto.setMsgContent(messageContent);
+        String distribution = ParamUtil.getString(bpc.request, "distribution");
+        if(distribution != null){
+            blastManagementDto.setDistributionId(distribution);
+        }
+        if(!action.equals(BACK)){
+            ParamUtil.setRequestAttr(bpc.request, "edit", blastManagementDto);
+            ValidationResult validationResult =WebValidationHelper.validateProperty(blastManagementDto, "page2");
+            if(validationResult != null && validationResult.isHasErrors()) {
+                Map<String, String> errorMap = validationResult.retrieveAll();
+                ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "invalid");
+            }else{
+                blastManagementListService.saveBlast(blastManagementDto);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "save");
+            }
+        }else{
+            if(blastManagementDto.getId() == null){
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "createBack");
+            }else{
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "editBack");
+            }
+        }
+
+
+    }
+
+    private void setModeSelection(BaseProcessClass bpc,String selected){
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+        if(selected != null){
+            if(selected.equals(EMAIL)){
+                selectOptions.add(new SelectOption(EMAIL,EMAIL));
+                selectOptions.add(new SelectOption(SMS,SMS));
+            }else{
+                selectOptions.add(new SelectOption(SMS,SMS));
+                selectOptions.add(new SelectOption(EMAIL,EMAIL));
+            }
+        }else{
+            selectOptions.add(new SelectOption("","Please Select"));
+            selectOptions.add(new SelectOption(EMAIL,EMAIL));
+            selectOptions.add(new SelectOption(SMS,SMS));
+        }
+        ParamUtil.setSessionAttr(bpc.request, "mode",  (Serializable) selectOptions);
+    }
+
+    private void setStatusSelection(BaseProcessClass bpc,String selected){
+        List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
+        if(selected != null){
+            if(selected.equals(AppConsts.COMMON_STATUS_ACTIVE)){
+                selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_ACTIVE,"active"));
+                selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_IACTIVE,"inactive"));
+            }else{
+                selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_IACTIVE,"inactive"));
+                selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_ACTIVE,"active"));
+            }
+        }else{
+            selectOptionArrayList.add(new SelectOption("","Please Select"));
+            selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_ACTIVE,"active"));
+            selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_IACTIVE,"inactive"));
+        }
+        ParamUtil.setRequestAttr(bpc.request, "status",  selectOptionArrayList);
+    }
+
 }

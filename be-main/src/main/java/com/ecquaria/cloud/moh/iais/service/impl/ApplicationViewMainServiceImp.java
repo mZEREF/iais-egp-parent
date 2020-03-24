@@ -6,16 +6,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayMainClient;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -103,14 +103,6 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
     public ApplicationViewDto searchByCorrelationIdo(String correlationId) {
         //return applicationClient.getAppViewByNo(appNo).getEntity();
         return applicationClient.getAppViewByCorrelationId(correlationId).getEntity();
-    }
-
-    @Override
-    public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        return beEicGatewayClient.updateApplication(applicationDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
     }
 
     @Override

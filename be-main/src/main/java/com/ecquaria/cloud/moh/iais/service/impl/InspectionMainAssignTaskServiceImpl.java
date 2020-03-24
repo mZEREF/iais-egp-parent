@@ -22,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.BelicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -94,26 +93,6 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
         return null;
     }
 
-    private void setInspectorByOrgUserDto(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos, LoginContext loginContext) {
-        if(orgUserDtos == null || orgUserDtos.size() <= 0){
-            inspecTaskCreAndAssDto.setInspector(null);
-            return;
-        }
-        List<SelectOption> inspectorList = IaisCommonUtils.genNewArrayList();
-        Set<String> roles = loginContext.getRoleIds();
-        List<String> roleList = new ArrayList<>(roles);
-        if(roleList.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)){
-            addInspector(inspectorList, orgUserDtos, loginContext, roleList);
-        } else {
-            for(OrgUserDto oDto:orgUserDtos){
-                if(oDto.getId().equals(loginContext.getUserId())){
-                    SelectOption so = new SelectOption(oDto.getId(), oDto.getDisplayName());
-                    inspectorList.add(so);
-                }
-            }
-        }
-        inspecTaskCreAndAssDto.setInspector(inspectorList);
-    }
 
     private void addInspector(List<SelectOption> inspectorList, List<OrgUserDto> orgUserDtos, LoginContext loginContext, List<String> roleList) {
         String flag = AppConsts.FALSE;
@@ -139,40 +118,6 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
         return inspectionTaskClient.searchInspectionPool(searchParam).getEntity();
     }
 
-    @Override
-    public String[] getApplicationNoListByPool(List<TaskDto> commPools) {
-        if(commPools == null || commPools.size() <= 0){
-            return null;
-        }
-        Set<String> applicationNoSet = IaisCommonUtils.genNewHashSet();
-        for(TaskDto tDto:commPools){
-            applicationNoSet.add(tDto.getRefNo());
-        }
-        List<String> applicationNoList = new ArrayList<>(applicationNoSet);
-        String[] applicationStrs = new String[applicationNoList.size()];
-        for(int i = 0; i < applicationStrs.length; i++){
-            applicationStrs[i] = applicationNoList.get(i);
-        }
-
-        return applicationStrs;
-    }
-
-    @Override
-    public List<SelectOption> getAppTypeOption() {
-        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, ApplicationConsts.APPLICATION_TYPE_RENEWAL, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE});
-        return appTypeOption;
-    }
-
-    @Override
-    public List<SelectOption> getCheckInspector(String[] nameValue, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
-        List<SelectOption> inspectorCheckList = IaisCommonUtils.genNewArrayList();
-        for (int i = 0; i < nameValue.length; i++) {
-            for (SelectOption so : inspecTaskCreAndAssDto.getInspector()) {
-                getInNameBySelectOption(inspectorCheckList, nameValue[i], so);
-            }
-        }
-        return inspectorCheckList;
-    }
 
     @Override
     public void assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto,
@@ -203,15 +148,6 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
             log.error(StringUtil.changeForLog("Error when Submit Assign Task Project: "), e);
             throw e;
         }
-    }
-
-    @Override
-    public SearchResult<InspectionCommonPoolQueryDto> getAddressByResult(SearchResult<InspectionCommonPoolQueryDto> searchResult) {
-        for(InspectionCommonPoolQueryDto icpqDto: searchResult.getRows()){
-            AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(icpqDto.getId());
-            //icpqDto.setHciName(icpqDto.getHciName() + " / " + appGrpPremisesDto.getAddress());
-        }
-        return searchResult;
     }
 
     @Override

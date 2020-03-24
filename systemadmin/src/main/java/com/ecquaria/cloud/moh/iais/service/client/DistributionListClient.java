@@ -25,7 +25,7 @@ public interface DistributionListClient {
     FeignResponseEntity<SearchResult<DistributionListDto>> getDistributionList(@RequestBody SearchParam searchParam);
 
     @PostMapping(value = "/iais-emails/getDistributionListNoParam",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<DistributionListDto>> getDistributionListNoParam();
+    FeignResponseEntity<List<DistributionListDto>> getDistributionListNoParam(@RequestParam("mode") String mode);
 
     @PostMapping(value = "/iais-emails/saveDistributionList", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<DistributionListWebDto> saveDistributionList(@RequestBody DistributionListWebDto distributionListDto);

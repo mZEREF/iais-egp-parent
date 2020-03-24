@@ -2,6 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%
+    String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT;
+%>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
@@ -9,7 +13,6 @@
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
     <form class="form-horizontal" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/include/formHidden.jsp" %>
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -20,20 +23,31 @@
                         <ul class="progress-tracker">
                             <li class="tracker-item active">Fill in Message Details</li>
                             <li class="tracker-item active">Write Message</li>
-                            <li class="tracker-item active">Select Recipients to send</li>
                         </ul>
+                        <h3>New Mass Email</h3>
                         <div class="form-group">
-                            <label class="col-xs-4 col-md-4 control-label" >Add Email Addresses</label>
+                            <label class="col-xs-4 col-md-4 control-label" >Subject</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <textarea cols="50" rows="10" name="email" class="textarea" id="email" title="content">${emailAddress}</textarea>
-                                    <span id="error_addr" name="iaisErrorMsg" class="error-msg"></span>
+                                    <input id="subject" type="text" name="subject" value="${edit.getSubject()}">
+                                    <span id="error_subject" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
 
                         <div class="form-group">
-                            <label class="col-xs-4 col-md-4 control-label">Or use a distribution list</label>
+                            <label class="col-xs-4 col-md-4 control-label">Content</label>
+                            <iais:value>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <textarea cols="50" rows="10" name="messageContent" class="textarea" id="messageContent" title="content">${edit.msgContent}</textarea>
+                                    <span id="error_addr" name="iaisErrorMsg" class="error-msg"></span>
+                                </div>
+                            </iais:value>
+                            <span id="error_msgContent" name="iaisErrorMsg" class="error-msg"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-4 col-md-4 control-label">Select Recipients</label>
                             <iais:value width="10">
                                 <iais:select name="distribution" options="distribution" value=""></iais:select>
                             </iais:value>
@@ -44,7 +58,7 @@
                             <div class="col-xs-11 col-sm-11">
                                 <div class="text-right">
                                     <a class="btn btn-primary" id="back" >Back</a>
-                                    <a class="btn btn-primary" id="saveDis" >Send</a>
+                                    <a class="btn btn-primary" id="saveDis" >Save</a>
                                 </div>
                             </div>
                         </div>
@@ -52,18 +66,22 @@
                 </div>
             </div>
         </div>
+        <input hidden value="${id}" id="blastId" >
+        <input hidden value="" id="action" name="action">
     </form>
     <%@include file="/include/validation.jsp"%>
 </div>
 
-
+<%@include file="/include/utils.jsp"%>
 
 <script type="text/javascript">
     $('#saveDis').click(function(){
-        SOP.Crud.cfxSubmit("mainForm","");
-
+        $("#action").val("save")
+        $("#mainForm").submit();
     });
     $('#back').click(function(){
-        SOP.Crud.cfxSubmit("mainForm","back");
+        $("#action").val("back")
+        $("#mainForm").submit();
     });
+
 </script>

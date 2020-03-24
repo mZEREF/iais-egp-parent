@@ -25,12 +25,13 @@ public class DistributionListClientFallback implements DistributionListClient{
     }
 
     @Override
-    public FeignResponseEntity<List<DistributionListDto>> getDistributionListNoParam() {
+    public FeignResponseEntity<List<DistributionListDto>> getDistributionListNoParam(String mode) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
+
 
     @Override
     public FeignResponseEntity<DistributionListWebDto> saveDistributionList(DistributionListWebDto distributionListDto) {

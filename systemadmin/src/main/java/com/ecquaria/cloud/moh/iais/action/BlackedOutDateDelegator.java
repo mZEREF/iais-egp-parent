@@ -267,7 +267,7 @@ public class BlackedOutDateDelegator {
         ApptBlackoutDateDto blackoutDateDto = new ApptBlackoutDateDto();
         if (ans == CREATE_ACTION) {
             propertName = "insert";
-            blackoutDateDto.setSrcSystemId(AppointmentConstants.APPT_SRC_SYSTEM_PK_ID);
+//            blackoutDateDto.setSrcSystemId(AppointmentConstants.APPT_SRC_SYSTEM_PK_ID);
             blackoutDateDto.setShortName(groupName);
             blackoutDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 

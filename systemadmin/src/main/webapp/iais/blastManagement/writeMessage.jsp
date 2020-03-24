@@ -15,7 +15,6 @@
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
     <form class="form-horizontal" method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/include/formHidden.jsp" %>
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -30,7 +29,7 @@
                         </ul>
                         <h3>New Mass Email</h3>
                         <div class="form-group">
-                            <label class="col-xs-4 col-md-4 control-label" >Subject:</label>
+                            <iais:field value="Subject" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="subject" type="text" name="subject" value="${edit.getSubject()}">
@@ -40,16 +39,16 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="col-xs-4 col-md-4 control-label">Content:</label>
+                            <iais:field value="Content" required="true"/>
                             <div class="form-group">
-                            <textarea name="messageContent" class="textarea" id="htmlEditor" title="content">${edit.msgContent}</textarea>
+                            <textarea name="messageContent" class="textarea" id="htmlEditor" title="content">${edit.getMsgContent()}</textarea>
                                 <label class="col-xs-4 col-md-4 control-label"></label>
                                 <span id="error_msgContent" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="col-xs-4 col-md-4 control-label">Attachments:</label>
+                            <label class="col-xs-4 col-md-4 control-label">Attachments</label>
                             <div class="document-upload-gp">
                                 <div class="document-upload-list">
                                     <div class="file-upload-gp">
@@ -74,6 +73,7 @@
             </div>
         </div>
         <input hidden value="${id}" id="blastId" >
+        <input hidden value="" id="action" name="action">
     </form>
     <%@include file="/include/validation.jsp"%>
 </div>
@@ -82,18 +82,17 @@
 
 <script type="text/javascript">
     $('#saveDis').click(function(){
-        SOP.Crud.cfxSubmit("mainForm","");
+        $("#action").val("save")
+        $("#mainForm").submit();
     });
     $('#back').click(function(){
-        if($("#blastId").val() ==null){
-            SOP.Crud.cfxSubmit("mainForm","create");
-        }else{
-            SOP.Crud.cfxSubmit("mainForm", "edit");
-        }
+        $("#action").val("back");
+        $("#mainForm").submit();
 
     });
     $(function () {
         tinymce.init({
+            mode : "textareas",
             branding: false,
             selector: "#htmlEditor",  // change this value according to your HTML
             toolbar: 'code undo redo restoredraft | cut copy paste pastetext | forecolor backcolor bold italic underline strikethrough link anchor | alignleft aligncenter alignright alignjustify outdent indent | \

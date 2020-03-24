@@ -32,17 +32,6 @@ public class BroadcastMainServiceImpl implements BroadcastMainService {
     private EventBusHelper eventBusHelper;
     @Autowired
     private SystemParamConfig systemParamConfig;
-    @Override
-    public BroadcastOrganizationDto svaeBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto,Process process) {
-
-        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(broadcastOrganizationDto, generateIdClient.getSeqId().getEntity(),
-                EventBusConsts.SERVICE_NAME_ROUNTINGTASK,
-                EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
-                broadcastOrganizationDto.getEventRefNo(),
-                process);
-        //
-        return broadcastOrganizationDto;
-    }
 
     @Override
     public BroadcastOrganizationDto svaeBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto,Process process,boolean wait) {
@@ -55,16 +44,6 @@ public class BroadcastMainServiceImpl implements BroadcastMainService {
     }
 
     @Override
-    public BroadcastApplicationDto svaeBroadcastApplicationDto(BroadcastApplicationDto broadcastApplicationDto,Process process) {
-        SubmitResp submitResp =eventBusHelper.submitAsyncRequest(broadcastApplicationDto, generateIdClient.getSeqId().getEntity(),
-                EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
-                broadcastApplicationDto.getEventRefNo(), process);
-        //
-        return broadcastApplicationDto;
-    }
-
-    @Override
     public BroadcastApplicationDto svaeBroadcastApplicationDto(BroadcastApplicationDto broadcastApplicationDto,Process process,boolean wait) {
         SubmitResp submitResp = eventBusHelper.submitAsyncRequest(broadcastApplicationDto, generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT,
@@ -72,10 +51,5 @@ public class BroadcastMainServiceImpl implements BroadcastMainService {
                 broadcastApplicationDto.getEventRefNo(), process);
         //
         return broadcastApplicationDto;
-    }
-
-    @Override
-    public BroadcastOrganizationDto getBroadcastOrganizationDto(String groupName, String groupDomain) {
-        return organizationClient.getBroadcastOrganizationDto(groupName,groupDomain).getEntity();
     }
 }

@@ -86,4 +86,24 @@ public class INTRANET___MohMassEmailBlast___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "switchBackFill", this); 
 	}
 
+	public void sms_OnStepProcess_0() throws Exception {
+	// 		Sms->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "writeSms", this); 
+	}
+
+	public void step4_OnStepProcess_0() throws Exception {
+	// 		Step4->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "saveSms", this); 
+	}
+
+	public void createBeforeFill_OnStepProcess_0() throws Exception {
+	// 		CreateBeforeFill->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "createBeforeFill", this); 
+	}
+
+	public void editBeforeFill_OnStepProcess_0() throws Exception {
+	// 		EditBeforeFill->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "editBeforeFill", this); 
+	}
+
 }

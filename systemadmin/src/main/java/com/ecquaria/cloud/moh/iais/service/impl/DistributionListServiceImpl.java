@@ -12,11 +12,12 @@ import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import com.ecquaria.cloud.moh.iais.service.client.DistributionListClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author guyin
@@ -58,8 +59,8 @@ public class DistributionListServiceImpl implements DistributionListService {
         return distributionListDtoSearchResult;
     }
     @Override
-    public List<DistributionListDto> getDistributionList() {
-        return distributionListClient.getDistributionListNoParam().getEntity();
+    public List<DistributionListDto> getDistributionList(String mode) {
+        return distributionListClient.getDistributionListNoParam(mode).getEntity();
     }
 
     @Override

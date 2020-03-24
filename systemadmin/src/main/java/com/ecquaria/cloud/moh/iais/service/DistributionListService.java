@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface DistributionListService {
     SearchResult<DistributionListDto> distributionList(SearchParam searchParam);
-    List<DistributionListDto> getDistributionList();
+    List<DistributionListDto> getDistributionList(String mode);
     List<HcsaServiceDto> getServicesInActive();
     DistributionListWebDto saveDistributionList(DistributionListWebDto distributionListDto);
     void deleteDistributionList(List<String> list);

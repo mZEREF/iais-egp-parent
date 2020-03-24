@@ -93,26 +93,3 @@
     </form>
 </div>
 <%@ include file="/include/validation.jsp" %>
-<script type="text/javascript">
-function addList() {
-    showWaiting();
-    SOP.Crud.cfxSubmit("mainForm","create");
-}
-function deleteList() {
-    SOP.Crud.cfxSubmit("mainForm","delete");
-}
-function edit(id) {
-    $("#editBlast").val(id);
-    SOP.Crud.cfxSubmit("mainForm","edit");
-}
-function jumpToPagechangePage() {
-    SOP.Crud.cfxSubmit("mainForm","search");
-}
-function search() {
-    SOP.Crud.cfxSubmit("mainForm","search");
-}
-function clearSearch(){
-    $('input[name="descriptionSwitch"]').val("");
-    $('input[name="msgName"]').val("");
-}
-</script>

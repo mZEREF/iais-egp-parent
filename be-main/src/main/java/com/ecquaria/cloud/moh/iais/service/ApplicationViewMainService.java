@@ -15,7 +15,6 @@ public interface ApplicationViewMainService {
 
     public AppPremisesCorrelationDto getLastAppPremisesCorrelationDtoById(String id);
 
-    public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto);
     public ApplicationGroupDto getApplicationGroupDtoById(String appGroupId);
 
 }

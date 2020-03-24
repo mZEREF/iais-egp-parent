@@ -12,10 +12,7 @@ import sop.webflow.rt.api.Process;
  */
 
 public interface BroadcastMainService {
-    public BroadcastOrganizationDto svaeBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto, Process process);
     public BroadcastOrganizationDto svaeBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto, Process processm,boolean wait);
-    public BroadcastApplicationDto svaeBroadcastApplicationDto(BroadcastApplicationDto broadcastApplicationDto, Process process);
     public BroadcastApplicationDto svaeBroadcastApplicationDto(BroadcastApplicationDto broadcastApplicationDto, Process process,boolean wait);
-    public BroadcastOrganizationDto getBroadcastOrganizationDto(String groupName, String groupDomain);
 
 }

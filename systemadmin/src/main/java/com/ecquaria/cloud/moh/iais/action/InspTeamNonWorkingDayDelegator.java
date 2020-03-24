@@ -157,7 +157,7 @@ public class InspTeamNonWorkingDayDelegator {
 		for (int i = 0; i < wkrDays.size(); i++){
 			ApptNonWorkingDateDto nonWorkingDateDto = new ApptNonWorkingDateDto();
 			nonWorkingDateDto.setId(UUID.randomUUID().toString());
-			nonWorkingDateDto.setSrcSystemId(AppointmentConstants.APPT_SRC_SYSTEM_PK_ID);
+//			nonWorkingDateDto.setSrcSystemId(AppointmentConstants.APPT_SRC_SYSTEM_PK_ID);
 			nonWorkingDateDto.setRecursivceDate(wkrDays.get(i));
 			nonWorkingDateDto.setNonWkrDay(false);
 			nonWorkingDateDto.setDesc("");
