@@ -213,7 +213,7 @@ public class InspectorCalendarDelegator {
 
 		ParamUtil.setRequestAttr(request, AppointmentConstants.SHORT_NAME_ATTR, groupName);
 		ParamUtil.setRequestAttr(request, AppointmentConstants.USER_NAME_ATTR, userName);
-//		ParamUtil.setRequestAttr(request, AppointmentConstants.APPOINTMENT_DROP_YEAR_ATTR, yearVal);
+		ParamUtil.setRequestAttr(request, AppointmentConstants.APPOINTMENT_DROP_YEAR_ATTR, yearVal);
 		ParamUtil.setRequestAttr(request, AppointmentConstants.USER_BLOCK_DATE_START_ATTR, userBlockDateStart);
 		ParamUtil.setRequestAttr(request, AppointmentConstants.USER_BLOCK_DATE_END_ATTR, userBlockDateEnd);
 		ParamUtil.setRequestAttr(request, AppointmentConstants.USER_BLOCK_DATE_DESCRIPTION_ATTR, userBlockDateDescription);

@@ -11,8 +11,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.http.HttpHeaders;
+
+import java.util.List;
 
 public class DistributionListClientFallback implements DistributionListClient{
 
@@ -25,7 +26,7 @@ public class DistributionListClientFallback implements DistributionListClient{
     }
 
     @Override
-    public FeignResponseEntity<List<DistributionListDto>> getDistributionListNoParam(String mode) {
+    public FeignResponseEntity<List<DistributionListWebDto>> getDistributionListNoParam(String mode) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -50,7 +51,7 @@ public class DistributionListClientFallback implements DistributionListClient{
     }
 
     @Override
-    public FeignResponseEntity<DistributionListDto> getDistributionListById(String id) {
+    public FeignResponseEntity<DistributionListWebDto> getDistributionListById(String id) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

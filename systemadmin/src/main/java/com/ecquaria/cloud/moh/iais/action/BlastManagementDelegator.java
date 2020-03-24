@@ -9,7 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.EmailAuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -409,7 +409,7 @@ public class BlastManagementDelegator {
     }
 
     private void getDistribution(BaseProcessClass bpc){
-        List<DistributionListDto> distributionListDtos = distributionListService.getDistributionList(blastManagementDto.getMode());
+        List<DistributionListWebDto> distributionListDtos = distributionListService.getDistributionList(blastManagementDto.getMode());
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         if(blastManagementDto.getDistributionId() != null){
             selectOptions.add(new SelectOption(blastManagementDto.getDistributionId(),blastManagementDto.getDistributionName()));
@@ -417,7 +417,7 @@ public class BlastManagementDelegator {
             selectOptions.add(new SelectOption("","Please Select"));
         }
 
-        for (DistributionListDto item :distributionListDtos
+        for (DistributionListWebDto item :distributionListDtos
         ) {
             selectOptions.add(new SelectOption(item.getId(),item.getDisname()));
         }

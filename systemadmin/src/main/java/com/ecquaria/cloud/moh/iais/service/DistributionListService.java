@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
+
 import java.util.List;
 
 /**
@@ -13,9 +14,9 @@ import java.util.List;
  */
 public interface DistributionListService {
     SearchResult<DistributionListDto> distributionList(SearchParam searchParam);
-    List<DistributionListDto> getDistributionList(String mode);
+    List<DistributionListWebDto> getDistributionList(String mode);
     List<HcsaServiceDto> getServicesInActive();
     DistributionListWebDto saveDistributionList(DistributionListWebDto distributionListDto);
     void deleteDistributionList(List<String> list);
-    DistributionListDto getDistributionListById(String id);
+    DistributionListWebDto getDistributionListById(String id);
 }

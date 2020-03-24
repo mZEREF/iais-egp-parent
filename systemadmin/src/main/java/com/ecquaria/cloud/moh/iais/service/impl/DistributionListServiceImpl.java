@@ -59,7 +59,7 @@ public class DistributionListServiceImpl implements DistributionListService {
         return distributionListDtoSearchResult;
     }
     @Override
-    public List<DistributionListDto> getDistributionList(String mode) {
+    public List<DistributionListWebDto> getDistributionList(String mode) {
         return distributionListClient.getDistributionListNoParam(mode).getEntity();
     }
 
@@ -79,7 +79,7 @@ public class DistributionListServiceImpl implements DistributionListService {
     }
 
     @Override
-    public DistributionListDto getDistributionListById(String id){
+    public DistributionListWebDto getDistributionListById(String id){
         return distributionListClient.getDistributionListById(id).getEntity();
     }
 }

@@ -18,14 +18,15 @@ import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 
 /*
@@ -49,7 +50,7 @@ public class MassEmailDelegator {
     DistributionListService distributionListService;
 
     public void start(BaseProcessClass bpc){
-        searchParam = new SearchParam(DistributionListDto.class.getName());
+        searchParam = new SearchParam(DistributionListWebDto.class.getName());
         searchParam.setPageSize(10);
         searchParam.setPageNo(1);
         searchParam.setSort("ID", SearchParam.ASCENDING);
@@ -178,7 +179,7 @@ public class MassEmailDelegator {
      */
     public void edit(BaseProcessClass bpc){
         String id =  ParamUtil.getString(bpc.request, "editDistribution");
-        DistributionListDto distributionListDto = distributionListService.getDistributionListById(id);
+        DistributionListWebDto distributionListDto = distributionListService.getDistributionListById(id);
         setServiceSelect(bpc);
         ParamUtil.setRequestAttr(bpc.request,"distribution",distributionListDto);
         ParamUtil.setRequestAttr(bpc.request, "firstOption", distributionListDto.getService());
