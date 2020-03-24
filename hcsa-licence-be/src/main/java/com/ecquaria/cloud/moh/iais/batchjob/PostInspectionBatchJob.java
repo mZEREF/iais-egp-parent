@@ -99,9 +99,9 @@ public class PostInspectionBatchJob {
             }
             //applicationClient.saveAppsForPostInspection(appSubmissionDtoList);
             log.info("========================>>>>>success!!!!");
-            List<ApplicationDto> postApps = applicationClient.getPostApplication(appType, appStatus).getEntity();
+            //List<ApplicationDto> postApps = applicationClient.getPostApplication(appType, appStatus).getEntity();
             try {
-                insRepService.sendPostInsTaskFeData(postApps);
+                insRepService.sendPostInsTaskFeData();
             } catch (FeignException e) {
                 e.printStackTrace();
             }

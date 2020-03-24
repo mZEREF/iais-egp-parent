@@ -202,8 +202,8 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-application-be/application-post",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getPostApplication(@RequestParam(name = "appType") String appType,@RequestParam(name = "appStatus") String appStatus);
 
-    @GetMapping(value = "/iais-application-be/all-app-data")
-    FeignResponseEntity<String> getBeData(@RequestParam List<java.lang.String> grpids);
+    @PostMapping(value = "/all-app-data",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> getBeData(@RequestBody List<String> grpids);
 
     @PutMapping(value = "/iais-application-be/application-be-withdrawal")
     FeignResponseEntity<Void> saveWithdrawn();

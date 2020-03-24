@@ -623,7 +623,10 @@ public class InsRepServiceImpl implements InsRepService {
             for(ApplicationDto applicationDto : postApps){
                 //ApplicationDto applicationDto, String statgId,String roleId,String correlationId
                 String corrId = applicationClient.getCorrIdByAppId(applicationDto.getId()).getEntity();
-                taskService.getRoutingTask(applicationDto,HcsaConsts.ROUTING_STAGE_INS,RoleConsts.USER_ROLE_INSPECTIOR,corrId);
+//                taskService.getRoutingTask(applicationDto,HcsaConsts.ROUTING_STAGE_INS,RoleConsts.USER_ROLE_INSPECTIOR,corrId);
+//                getHcsaSvcStageWorkingGroupDto();
+                TaskDto taskDto = new TaskDto();
+
             }
         }
     }
