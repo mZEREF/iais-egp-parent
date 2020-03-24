@@ -52,7 +52,10 @@ public class ConfirmDialogTag extends TagSupport {
         StringBuilder html = new StringBuilder();
         //html
         String divId = "popupMessageDiv" + popupOrder;
-        html.append("<div id=\"").append(divId).append("\" style=\"display: none;\">");
+        html.append("<div id=\"").append(divId).append("\" class=\"modal fade\"");
+        html.append(" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"").append(divId);
+        html.append("\" style=\"left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; ");
+        html.append("overflow: visible;bottom: inherit;right: inherit;\"");
         if (needFungDuoJi) {
             html.append("<input type=\"hidden\" name=\"fangDuoJi").append(divId).append("\" id=\"fangDuoJi").append(divId).append("\"/>");
         }
