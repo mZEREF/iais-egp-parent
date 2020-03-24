@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -135,4 +136,7 @@ public interface OrganizationClient {
     @PostMapping(value = "/iais-task/rec-event-task", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<EventInspRecItemNcDto> getEventInspRecItemNcTaskByCorrIds(@RequestBody EventInspRecItemNcDto eventInspRecItemNcDto);
+
+    @PostMapping(value = "/iais-task/super-second/results", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<SearchResult<SuperPoolTaskQueryDto>> supervisorSecondSearch(@RequestBody SearchParam searchParam);
 }
