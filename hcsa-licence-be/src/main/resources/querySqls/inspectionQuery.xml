@@ -49,7 +49,7 @@
 
     <sql key = "supervisorPoolDropdown" remarks = "Leader Assign Task For Members Dropdown">
         <![CDATA[
-            SELECT DISTINCT T1.ID, T1.REF_NO, T1.USER_ID, T1.TASK_TYPE
+            SELECT DISTINCT T1.ID, T1.REF_NO, T1.USER_ID, T1.TASK_TYPE, T1.WRK_GRP_ID
             FROM TASK T1
             WHERE 1 = 1
             <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T1.ID) IN ${appCorrId_list} </#if>
