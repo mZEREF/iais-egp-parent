@@ -46,15 +46,6 @@ public class CessationClientFallback implements CessationClient {
         return entity;
     }
 
-
-    @Override
-    public FeignResponseEntity<Void> saveWithdrawn(WithdrawnDto withdrawnDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
     @Override
     public FeignResponseEntity<AppCessMiscDto> getCessationByLicId(String type, String status, String licId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();

@@ -28,8 +28,6 @@ public interface CessationService {
 
     void updateCesation(List<AppCessationDto> appCessationDtos);
 
-    void saveWithdrawn(WithdrawnDto withdrawnDto);
-
     AppPremisesCorrelationDto getAppPreCorDto(String appId);
 
 }

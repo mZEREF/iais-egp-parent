@@ -19,7 +19,7 @@ import java.util.List;
 
 @FeignClient(name = "hcsa-application", configuration = {FeignConfiguration.class},
         fallback =CessationClientFallback.class)
-        public interface CessationClient {
+public interface CessationClient {
     @RequestMapping(path = "/application-number-grp-premiese/{appPremCorreId}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppInsRepDto> getAppCessationDto(@PathVariable("appNo") String appNo);
 

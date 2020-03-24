@@ -36,9 +36,6 @@ import java.util.List;
     @PostMapping(value = "/iais-cessation/application-cessation-update",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> updateCessation(@RequestBody List<AppCessMiscDto> appCessMiscDtos);
 
-    @PostMapping(value = "/application-fe-withdrawal",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> saveWithdrawn(@RequestBody WithdrawnDto withdrawnDto);
-
     @GetMapping(value = "iais-cessation/application-cessation-list/{type}/{status}/{licId}")
     FeignResponseEntity<AppCessMiscDto> getCessationByLicId(@PathVariable(name = "type") String type, @PathVariable(name = "status") String status, @PathVariable(name = "licId") String licId);
 

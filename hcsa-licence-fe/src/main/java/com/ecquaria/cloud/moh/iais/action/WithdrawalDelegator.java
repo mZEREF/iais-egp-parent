@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -16,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
 import com.ecquaria.sz.commons.util.FileUtil;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +39,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class WithdrawalDelegator {
 
     @Autowired
-    private CessationService cessationService;
+    private WithdrawalService withdrawalService;
 
     @Autowired
     private ServiceConfigService serviceConfigService;
@@ -82,16 +84,22 @@ public class WithdrawalDelegator {
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }else{
-            String fileRepoId = serviceConfigService.saveFileToRepo(commonsMultipartFile);
-            AppPremisesSpecialDocDto appPremisesSpecialDocDto = new AppPremisesSpecialDocDto();
-            appPremisesSpecialDocDto.setSubmitDt(new Date());
-            appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
-            appPremisesSpecialDocDto.setDocName(commonsMultipartFile.getOriginalFilename());
-            appPremisesSpecialDocDto.setDocSize((int)commonsMultipartFile.getSize() / 1024);
-            appPremisesSpecialDocDto.setMd5Code(FileUtil.genMd5FileChecksum(commonsMultipartFile.getBytes()));
-            withdrawnDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
-            withdrawnDto.setFileRepoId(fileRepoId);
-            cessationService.saveWithdrawn(withdrawnDto);
+            if (!commonsMultipartFile.isEmpty()){
+                String fileRepoId = serviceConfigService.saveFileToRepo(commonsMultipartFile);
+                AppPremisesSpecialDocDto appPremisesSpecialDocDto = new AppPremisesSpecialDocDto();
+                appPremisesSpecialDocDto.setSubmitDt(new Date());
+                appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
+                appPremisesSpecialDocDto.setDocName(commonsMultipartFile.getOriginalFilename());
+                appPremisesSpecialDocDto.setDocSize((int)commonsMultipartFile.getSize() / 1024);
+                appPremisesSpecialDocDto.setMd5Code(FileUtil.genMd5FileChecksum(commonsMultipartFile.getBytes()));
+                withdrawnDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
+                withdrawnDto.setFileRepoId(fileRepoId);
+            }
+            ApplicationGroupDto applicationGroupDto = new ApplicationGroupDto();
+            applicationGroupDto.setLicenseeId(loginContext.getLicenseeId());
+            applicationGroupDto.setSubmitBy(loginContext.getUserId());
+            withdrawnDto.setApplicationGroupDto(applicationGroupDto);
+            withdrawalService.saveWithdrawn(withdrawnDto);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         }
     }
@@ -100,7 +108,7 @@ public class WithdrawalDelegator {
         log.debug(StringUtil.changeForLog("****The saveDateStep Step****"));
     }
 
-    private void sendTaskToASO(){
+    private void sendTaskToASO(BaseProcessClass bpc){
 
     }
 }

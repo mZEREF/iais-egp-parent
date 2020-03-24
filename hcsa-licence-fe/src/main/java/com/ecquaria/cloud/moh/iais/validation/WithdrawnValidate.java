@@ -23,27 +23,25 @@ public class WithdrawnValidate implements CustomizeValidator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) httpServletRequest.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
         String withdrawnReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
-        if (commonsMultipartFile.isEmpty()){
-            errorMap.put("withdrawalFile", "ERR0009");
-        }else{
-            if (commonsMultipartFile.getSize() > 5*1024*1024){
+        if (!commonsMultipartFile.isEmpty()) {
+            if (commonsMultipartFile.getSize() > 5 * 1024 * 1024) {
                 errorMap.put("withdrawalFile", "The file has exceeded the maximum upload size of 5MB.");
-            }else{
-                String fileType  = commonsMultipartFile.getOriginalFilename().split("\\.")[1];
-                if (!fileType.toLowerCase().equals("pdf")
-                        && !fileType.toLowerCase().equals("jpg")
-                        && !fileType.toLowerCase().equals("jpeg")
-                        && !fileType.toLowerCase().equals("png")) {
-                    errorMap.put("withdrawalFile", "The file type is incorrect.");
-                }
+            }
+            String[] fileSplit = commonsMultipartFile.getOriginalFilename().split("\\.");
+            String fileType = fileSplit[fileSplit.length - 1];
+            if (!fileType.toLowerCase().equals("pdf")
+                    && !fileType.toLowerCase().equals("jpg")
+                    && !fileType.toLowerCase().equals("jpeg")
+                    && !fileType.toLowerCase().equals("png")) {
+                errorMap.put("withdrawalFile", "The file type is incorrect.");
             }
         }
-        if(StringUtil.isEmpty(withdrawnReason)){
+        if (StringUtil.isEmpty(withdrawnReason)) {
             errorMap.put("withdrawnReason", "ERR0009");
         }
-        if("Others".equals(withdrawnReason)){
+        if ("Others".equals(withdrawnReason)) {
             String withdrawnRemarks = ParamUtil.getRequestString(mulReq, "withdrawnRemarks");
-            if(StringUtil.isEmpty(withdrawnRemarks)){
+            if (StringUtil.isEmpty(withdrawnRemarks)) {
                 errorMap.put("withdrawnRemarks", "ERR0009");
             }
         }

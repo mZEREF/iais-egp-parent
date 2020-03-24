@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.Application;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -192,22 +193,6 @@ public class CessationServiceImpl implements CessationService {
         cessationClient.saveCessation(appCessMiscDtos).getEntity();
     }
 
-    @Override
-    public void saveWithdrawn(WithdrawnDto withdrawnDto) {
-        ApplicationDto applicationDto = applicationClient.getApplicationById(withdrawnDto.getApplicationId()).getEntity();
-        applicationDto.setId(null);
-        applicationDto.setApplicationNo(systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity());
-        withdrawnDto.setApplicationDto(applicationDto);
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
-        AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-        appGrpPremisesDto.setPremisesType(ApplicationConsts.PREMISES_TYPE_ON_SITE);
-        appGrpPremisesDto.setPostalCode("78979");
-        appGrpPremisesDto.setAddrType(ApplicationConsts.ADDRESS_TYPE_APT_BLK);
-        appGrpPremisesDto.setStreetName("Lor 27 Gey");
-        appGrpPremisesDtoList.add(appGrpPremisesDto);
-        withdrawnDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-        cessationClient.saveWithdrawn(withdrawnDto);
-    }
 
     @Override
     public AppPremisesCorrelationDto getAppPreCorDto(String appId) {
