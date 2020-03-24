@@ -92,7 +92,7 @@
                     <p class="print"><a href="#"> <em class="fa fa-print"></em>Print</a></p>
                 </div>
                 <div class="col-xs-12 col-md-10 text-right">
-                    <a class="btn btn-secondary" href="#">Indicate preferred Inspection Date</a>
+                    <a class="btn btn-secondary" id="doPrefInsDate">Indicate preferred Inspection Date</a>
                 </div>
             </div>
             <c:if test="${requestInformationConfig == null}">
@@ -123,6 +123,14 @@
         var mainForm = document.getElementById("mainForm");
         mainForm.submit();
     });
+
+    $('#doPrefInsDate').click(function () {
+        $("[name='crud_action_type']").val('MohSubmitInspectionDate');
+        var mainForm = document.getElementById("mainForm");
+        mainForm.submit();
+    });
+
+
 </script>
 
 
