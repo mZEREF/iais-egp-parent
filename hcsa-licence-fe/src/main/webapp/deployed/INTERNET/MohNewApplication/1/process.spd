@@ -162,7 +162,7 @@
     <JavaCode defClass="" executor="" methodName="preInvoke_OnStepProcess_0" name="preInvoke_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <InvokeStep defClass="" executor="" icon="" name="MohAppPremSelfDecl" processname="MohAppPremSelfDecl" project="INTERNET" version="-1" x="1380" y="160">
+  <InvokeStep defClass="" executor="" icon="" name="MohAppPremSelfDecl" processname="MohAppPremSelfDecl" project="INTERNET" version="-1" x="1400" y="140">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
@@ -180,6 +180,12 @@
     <JavaCode defClass="" executor="" methodName="prepareJump_OnStepProcess_0" name="prepareJump_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="MohSubmitInspectionDate" processname="MohSubmitInspectionDate" project="INTERNET" version="-1" x="1300" y="200">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Premises" stageIndicator="" x="600" y="20">
@@ -348,19 +354,22 @@
    <position>{(1340,-40)(1340,70)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/MohAppPremSelfDecl" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(1340,70)(1400,180)}</position>
+   <position>{(1340,70)(1420,160)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/MohAppPremSelfDecl" style="oblique">
-   <position>{(1400,180)(1500,280)}</position>
+   <position>{(1420,160)(1570,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/AckPage" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge2" style="rectanular">
-   <position>{(1500,280)(1169,-86)(1170,-40)}</position>
+   <position>{(1570,270)(1169,-86)(1170,-40)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareJump" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(430,160)(520,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/doJump" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareJump" style="rectanular">
    <position>{(520,570)(640,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/MohSubmitInspectionDate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(1340,70)(1320,220)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -392,6 +401,7 @@
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_value" name="Switch3" x="1320" y="50">
    <Description/>
    <SwitchCase component="/Steps/InvokeStep/MohAppPremSelfDecl" value="&quot;MohAppPremSelfDecl&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/MohSubmitInspectionDate" value="&quot;MohSubmitInspectionDate&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
@@ -399,7 +409,7 @@
   <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="860" y="590">
    <Description/>
   </Merge>
-  <Merge defClass="" executor="" icon="" name="Merge2" type="Or" x="1480" y="260">
+  <Merge defClass="" executor="" icon="" name="Merge2" type="Or" x="1550" y="250">
    <Description/>
   </Merge>
  </Merges>
