@@ -17,6 +17,9 @@
         <c:set var="premValue" value="${status.index}"/>
         <div class="col-xs-12">
             <div class="form-horizontal">
+                <p><strong class="ack-font-20 premHeader">Premises ${status.index+1}</strong></p>
+            </div>
+            <div class="form-horizontal">
                 <div class="form-group premisesTypeDiv" id="premisesType" <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType}">hidden</c:if> >
                     <label class="col-xs-12 col-md-4 control-label error-msg-type" for="premisesType">What is your premises type ? <span class="mandatory">*</span></label><br>
                     <span class="error-msg"></span>
@@ -143,7 +146,7 @@
                     <iais:row>
                         <iais:field value="Address Type " mandatory="true" width="12"/>
                         <iais:value id="onSiteAddressType${premValue}" cssClass="col-xs-7 col-sm-4 col-md-5 addressType">
-                            <iais:select cssClass="siteAddressType" name="onSiteAddressType" id="siteAddressType" options="addressType" value="${appGrpPremisesDto.addrType}" ></iais:select>
+                            <iais:select cssClass="onSiteAddressType" name="onSiteAddressType" id="onSiteAddressType" options="addressType" value="${appGrpPremisesDto.addrType}" ></iais:select>
                             <span class="error-msg" name="iaisErrorMsg" id="error_addrType${status.index}"></span>
                         </iais:value>
                     </iais:row>

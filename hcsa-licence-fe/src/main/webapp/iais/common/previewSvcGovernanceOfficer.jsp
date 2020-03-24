@@ -93,7 +93,7 @@
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Subspeciality or relevant qualification:</p>
                             </td>
                             <td>
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> </p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.qualification}</p>
                             </td>
                         </tr>
 

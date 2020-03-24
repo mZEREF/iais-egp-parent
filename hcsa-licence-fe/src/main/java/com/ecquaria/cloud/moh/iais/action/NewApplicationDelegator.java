@@ -106,6 +106,7 @@ public class NewApplicationDelegator {
     public static final String FIRESTOPTION = "Please Select";
     public static final String LICAPPGRPPREMISESDTOMAP = "LicAppGrpPremisesDtoMap";
     private static final String DRAFTCONFIG = "DraftConfig";
+    private static final String GROUPLICENCECONFIG = "GroupLicenceConfig";
 
     //page name
     public static final String APPLICATION_PAGE_NAME_PREMISES                       = "APPPN01";
@@ -360,6 +361,17 @@ public class NewApplicationDelegator {
      */
     public void preparePreview(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do preparePreview start ...."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        List<AppGrpPremisesDto> appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList();
+        List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
+        if(!IaisCommonUtils.isEmpty(appGrpPremisesDto) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+            int premCount = appGrpPremisesDto.size();
+            int svcCount = appGrpPremisesDto.size();
+            if(premCount >1 && svcCount == 1){
+                //multi prem one svc
+                ParamUtil.setRequestAttr(bpc.request,GROUPLICENCECONFIG,"test");
+            }
+        }
 
         log.info(StringUtil.changeForLog("the do preparePreview end ...."));
     }

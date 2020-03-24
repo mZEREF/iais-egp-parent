@@ -16,7 +16,6 @@
         </c:if>  " id="collapsePrincipal" role="tabpanel" aria-labelledby="headingPremise">
 
           <div class="panel-body">
-            <%--<p class="text-right"><a href="application-premises.html"><i class="fa fa-pencil-square-o"></i>Edit</a></p>--%>
             <div class="panel-main-content">
               <div class="" style="height: auto">
                 <h2>Principal Officer</h2>
@@ -160,7 +159,7 @@
                         <div class="control control-caption-horizontal">
                           <div class=" form-group form-horizontal formgap">
                             <div class="col-sm-3 control-label formtext col-md-4">
-                              <label  class="control-label control-set-font control-font-label">Office Telephone.</label>
+                              <label  class="control-label control-set-font control-font-label">Office Telephone No.</label>
                               <span class="mandatory">*</span>
                             </div>
                             <div class="col-sm-4 col-md-8">
@@ -281,103 +280,114 @@
                     <div class="row">
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-3 control-label formtext col-md-4">
-                            <label  class="control-label control-set-font control-font-label">Name</label>
-                            <span class="mandatory">*</span>
+                          <div class="col-sm-6 control-label formtext col-md-4">
+                            <label id="" class="control-label control-set-font control-font-label">Assign a Principal Officer</label>
+                            <span class="upload_controls"></span>
                           </div>
-                          <div class="col-sm-4 " id="deputySalutation${suffix}">
-                            <iais:select cssClass="deputySalutation"  name="deputySalutation" codeCategory="CATE_ID_SALUTATION" value="${deputy.salutation}" firstOption="Please Select"></iais:select>
-                            <span name="iaisErrorMsg" class="error-msg" id="error_deputySalutation${suffix}"></span>
-                          </div>
-                          <div class="col-sm-4">
-                            <input name="deputyName" maxlength="66" type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.name}"  size="30">
-                            <span class="error-msg" name="iaisErrorMsg" id="error_deputyName${status.index}"></span>
+                          <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
+                              <iais:select cssClass="deputyPoSelect"  name="deputyAssignSelect" options="DeputyPrincipalOfficersAssignSelect"  value="${deputy.assignSelect}" ></iais:select>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div class="row">
-                      <div class="control control-caption-horizontal">
-                        <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-3 control-label formtext col-md-4">
-                            <label  class="control-label control-set-font control-font-label">ID No.
+                    <div class="">
+                      <div class="row">
+                        <div class="control control-caption-horizontal">
+                          <div class=" form-group form-horizontal formgap">
+                            <div class="col-sm-3 control-label formtext col-md-4">
+                              <label  class="control-label control-set-font control-font-label">Name</label>
                               <span class="mandatory">*</span>
-                            </label>
-
-                          </div>
-                          <div class="col-sm-4" id="deputyIdType${suffix}">
-                            <div class="">
-                              <iais:select cssClass="deputyIdType"  name="deputyIdType" value="${deputy.idType}" options="IdTypeSelect"></iais:select>
-                              <span name="iaisErrorMsg" class="error-msg" id="error_deputyIdType${status.index}"></span>
+                            </div>
+                            <div class="col-sm-4 " id="deputySalutation${suffix}">
+                              <iais:select cssClass="deputySalutation"  name="deputySalutation" codeCategory="CATE_ID_SALUTATION" value="${deputy.salutation}" firstOption="Please Select"></iais:select>
+                              <span name="iaisErrorMsg" class="error-msg" id="error_deputySalutation${suffix}"></span>
+                            </div>
+                            <div class="col-sm-4">
+                              <input name="deputyName" maxlength="66" type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.name}"  size="30">
+                              <span class="error-msg" name="iaisErrorMsg" id="error_deputyName${status.index}"></span>
                             </div>
                           </div>
-                          <div class="col-sm-4">
-                            <input  name="deputyIdNo" maxlength="9" type="text"  class=" form-control control-input control-set-font control-font-normal" value="${deputy.idNo}" size="30">
-                            <span class="error-msg"  name="iaisErrorMsg" id="error_deputyIdNo${status.index}"></span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="control control-caption-horizontal">
+                          <div class=" form-group form-horizontal formgap">
+                            <div class="col-sm-3 control-label formtext col-md-4">
+                              <label  class="control-label control-set-font control-font-label">ID No.
+                                <span class="mandatory">*</span>
+                              </label>
+
+                            </div>
+                            <div class="col-sm-4" id="deputyIdType${suffix}">
+                              <div class="">
+                                <iais:select cssClass="deputyIdType"  name="deputyIdType" value="${deputy.idType}" options="IdTypeSelect"></iais:select>
+                                <span name="iaisErrorMsg" class="error-msg" id="error_deputyIdType${status.index}"></span>
+                              </div>
+                            </div>
+                            <div class="col-sm-4">
+                              <input  name="deputyIdNo" maxlength="9" type="text"  class=" form-control control-input control-set-font control-font-normal" value="${deputy.idNo}" size="30">
+                              <span class="error-msg"  name="iaisErrorMsg" id="error_deputyIdNo${status.index}"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="control control-caption-horizontal">
+                          <div class=" form-group form-horizontal formgap">
+                            <div class="col-sm-3 control-label formtext col-md-4">
+                              <label  class="control-label control-set-font control-font-label">Designation</label>
+                              <span class="mandatory">*</span>
+                            </div>
+                            <div class="col-sm-5 col-md-8" id="deputyDesignation${suffix}">
+                              <iais:select cssClass="deputyDesignation" name="deputyDesignation" codeCategory="CATE_ID_DESIGNATION" value="${deputy.designation}" firstOption="Please Select"></iais:select>
+                              <span class="error-msg" id="error_deputyDesignation${status.index}" name="iaisErrorMsg"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="control control-caption-horizontal">
+                          <div class=" form-group form-horizontal formgap">
+                            <div class="col-sm-3 control-label formtext col-md-4">
+                              <label  class="control-label control-set-font control-font-label">Mobile No.</label>
+                              <span class="mandatory">*</span>
+                            </div>
+                            <div class="col-sm-4 col-md-8">
+                              <input name="deputyMobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${deputy.mobileNo}" size="30">
+                              <span class="error-msg"  name="iaisErrorMsg"  id="error_deputyMobileNo${status.index}"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="control control-caption-horizontal">
+                          <div class=" form-group form-horizontal formgap">
+                            <div class="col-sm-3 control-label formtext col-md-4">
+                              <label  class="control-label control-set-font control-font-label">Office Telephone No.</label>
+                              <span class="mandatory">*</span>
+                            </div>
+                            <div class="col-sm-4 col-md-8">
+                              <input name="deputyOfficeTelNo" type="text"  id="deputyOfficeTelNo" maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${deputy.officeTelNo}" >
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="control control-caption-horizontal">
+                          <div class=" form-group form-horizontal formgap">
+                            <div class="col-sm-3 control-label formtext col-md-4">
+                              <label  class="control-label control-set-font control-font-label">Email Address</label>
+                              <span class="mandatory">*</span>
+                            </div>
+                            <div class="col-sm-4 col-md-8">
+                              <input name="deputyEmailAddr" maxlength="66" type="text" class="form-control control-input control-set-font control-font-normal" value="${deputy.emailAddr}" size="30">
+                              <span class="error-msg" name="iaisErrorMsg"  id="error_deputyEmailAddr${status.index}" ></span>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div class="row">
-                      <div class="control control-caption-horizontal">
-                        <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-3 control-label formtext col-md-4">
-                            <label  class="control-label control-set-font control-font-label">Designation</label>
-                            <span class="mandatory">*</span>
-                          </div>
-                          <div class="col-sm-5 col-md-8" id="deputyDesignation${suffix}">
-                            <iais:select cssClass="deputyDesignation" name="deputyDesignation" codeCategory="CATE_ID_DESIGNATION" value="${deputy.designation}" firstOption="Please Select"></iais:select>
-                            <span class="error-msg" id="error_deputyDesignation${status.index}" name="iaisErrorMsg"></span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="control control-caption-horizontal">
-                        <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-3 control-label formtext col-md-4">
-                            <label  class="control-label control-set-font control-font-label">Mobile No.</label>
-                            <span class="mandatory">*</span>
-                          </div>
-                          <div class="col-sm-4 col-md-8">
-                            <input name="deputyMobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${deputy.mobileNo}" size="30">
-                            <span class="error-msg"  name="iaisErrorMsg"  id="error_deputyMobileNo${status.index}"></span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="control control-caption-horizontal">
-                        <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-3 control-label formtext col-md-4">
-                            <label  class="control-label control-set-font control-font-label">Email Address</label>
-                            <span class="mandatory">*</span>
-                          </div>
-                          <div class="col-sm-4 col-md-8">
-                            <input name="deputyEmailAddr" maxlength="66" type="text" class="form-control control-input control-set-font control-font-normal" value="${deputy.emailAddr}" size="30">
-                            <span class="error-msg" name="iaisErrorMsg"  id="error_deputyEmailAddr${status.index}" ></span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <%--<div class="row ">
-                      <div class="control control-caption-horizontal">
-                        <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-3 control-label formtext col-md-4">
-                            <label  class="control-label control-set-font control-font-label">Preferred Mode of Receiving MedAlert</label>
-                            <span class="mandatory">*</span>
-                          </div>
-                          <div class="col-sm-4 col-md-8">
-                            <iais:select cssClass="modeOfMedAlert"  name="modeOfMedAlert" value="${deputy.modeOfMedAlert}" options="MedAlertSelect"></iais:select>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_modeOfMedAlert${status.index}" ></span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>--%>
-                    <div class="row"></div>
-                    <div class="row"></div>
-                    <div class="row"></div>
-                    <div class="row"></div>
+
                   </div>
                 </div>
               </c:forEach>

@@ -14,15 +14,6 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,6 +21,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Wenkang
@@ -133,8 +134,8 @@ public class NewApplicationAjaxController {
         List<SelectOption> addrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
         //Address Type on-site
         Map<String,String> addrTypesAttr = IaisCommonUtils.genNewHashMap();
-        addrTypesAttr.put("class", "siteAddressType");
-        addrTypesAttr.put("id", "siteAddressType");
+        addrTypesAttr.put("class", "onSiteAddressType");
+        addrTypesAttr.put("id", "onSiteAddressType");
         addrTypesAttr.put("name", "onSiteAddressType");
         addrTypesAttr.put("style", "display: none;");
         String addrTypeSelectStr = NewApplicationHelper.generateDropDownHtml(addrTypesAttr, addrTypes,NewApplicationDelegator.FIRESTOPTION);
@@ -142,7 +143,7 @@ public class NewApplicationAjaxController {
         //Address Type conveyance
         Map<String,String> conAddrTypesAttr = IaisCommonUtils.genNewHashMap();
         conAddrTypesAttr.put("class", "conveyanceAddressType");
-        conAddrTypesAttr.put("id", "siteAddressType");
+        conAddrTypesAttr.put("id", "conveyanceAddressType");
         conAddrTypesAttr.put("name", "conveyanceAddrType");
         conAddrTypesAttr.put("style", "display: none;");
         String conAddrTypeSelectStr = NewApplicationHelper.generateDropDownHtml(conAddrTypesAttr, addrTypes, NewApplicationDelegator.FIRESTOPTION);
@@ -153,6 +154,9 @@ public class NewApplicationAjaxController {
         sql = sql.replace("(3)", premConvSelectStr);
         sql = sql.replace("(4)", addrTypeSelectStr);
         sql = sql.replace("(5)", conAddrTypeSelectStr);
+        //premises header val
+        Integer premHeaderVal = Integer.parseInt(currentLength)+1;
+        sql = sql.replace("(6)",String.valueOf(premHeaderVal));
 
         log.debug(StringUtil.changeForLog("the add premises html end ...."));
         return sql;

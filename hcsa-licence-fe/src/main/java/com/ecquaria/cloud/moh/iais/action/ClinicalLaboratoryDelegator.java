@@ -345,8 +345,11 @@ public class ClinicalLaboratoryDelegator {
         List<SelectOption> assignSelectList = getAssignPrincipalOfficerSel(currentSvcId, true);
         ParamUtil.setRequestAttr(bpc.request, "PrincipalOfficersAssignSelect", assignSelectList);
 
-        List<SelectOption> MedAlertSelectList = getMedAlertSelectList(true);
-        ParamUtil.setRequestAttr(bpc.request, "MedAlertSelect", MedAlertSelectList);
+        List<SelectOption> deputyAssignSelectList = getAssignPrincipalOfficerSel(currentSvcId, true);
+        ParamUtil.setRequestAttr(bpc.request, "DeputyPrincipalOfficersAssignSelect", deputyAssignSelectList);
+
+        /*List<SelectOption> MedAlertSelectList = getMedAlertSelectList(true);
+        ParamUtil.setRequestAttr(bpc.request, "MedAlertSelect", MedAlertSelectList);*/
 
         List<SelectOption> deputyFlagSelect = IaisCommonUtils.genNewArrayList();
         SelectOption deputyFlagOp1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
@@ -1323,6 +1326,7 @@ public class ClinicalLaboratoryDelegator {
             String [] deputyIdType = ParamUtil.getStrings(request, "deputyIdType");
             String [] deputyIdNo = ParamUtil.getStrings(request, "deputyIdNo");
             String [] deputyMobileNo = ParamUtil.getStrings(request, "deputyMobileNo");
+            String [] deputyOfficeTelNo = ParamUtil.getStrings(request, "deputyOfficeTelNo");
             String [] deputyEmailAddr = ParamUtil.getStrings(request, "deputyEmailAddr");
             if(deputyDesignation != null && deputyDesignation.length>0){
                 for(int i=0 ;i <deputyDesignation.length;i++){
@@ -1334,6 +1338,7 @@ public class ClinicalLaboratoryDelegator {
                     dpoDto.setName(deputyName[i]);
                     dpoDto.setIdType(deputyIdType[i]);
                     dpoDto.setIdNo(deputyIdNo[i]);
+                    dpoDto.setOfficeTelNo(deputyOfficeTelNo[i]);
                     dpoDto.setMobileNo(deputyMobileNo[i]);
                     appSvcPrincipalOfficersDtos.add(dpoDto);
                 }

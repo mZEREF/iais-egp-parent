@@ -49,7 +49,7 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-8">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Office Telephone:</p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Office Telephone No.:</p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.officeTelNo}</p>

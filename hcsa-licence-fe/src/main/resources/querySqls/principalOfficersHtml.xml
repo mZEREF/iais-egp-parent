@@ -91,7 +91,7 @@
                   <div class="control control-caption-horizontal">
                     <div class=" form-group form-horizontal formgap">
                       <div class="col-sm-3 control-label formtext col-md-4">
-                        <label class="control-label control-set-font control-font-label">Office Telephone.</label>
+                        <label class="control-label control-set-font control-font-label">Office Telephone No.</label>
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4 col-md-8">
@@ -186,6 +186,19 @@
                       <div class="col-sm-4 col-md-8">
                         <input name="deputyMobileNo" type="text" maxlength="8" class="form-control control-input control-set-font control-font-normal" value="" size="30">
                         <span class="error-msg" name="iaisErrorMsg" id="error_deputyMobileNo"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="control control-caption-horizontal">
+                    <div class=" form-group form-horizontal formgap">
+                      <div class="col-sm-3 control-label formtext col-md-4">
+                        <label  class="control-label control-set-font control-font-label">Office Telephone No.</label>
+                        <span class="mandatory">*</span>
+                      </div>
+                      <div class="col-sm-4 col-md-8">
+                        <input name="deputyOfficeTelNo" type="text"  id="deputyOfficeTelNo" maxlength="8" class="form-control control-input control-set-font control-font-normal" value="" >
                       </div>
                     </div>
                   </div>
