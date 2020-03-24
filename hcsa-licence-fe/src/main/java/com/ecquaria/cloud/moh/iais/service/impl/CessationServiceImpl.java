@@ -230,7 +230,6 @@ public class CessationServiceImpl implements CessationService {
             appCessMiscDtos.add(appCessMiscDto);
         }
         cessationClient.updateCessation(appCessMiscDtos).getEntity();
-
     }
 
 

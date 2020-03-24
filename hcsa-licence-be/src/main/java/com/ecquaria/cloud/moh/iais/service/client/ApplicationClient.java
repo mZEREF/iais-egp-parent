@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenc
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
@@ -199,10 +198,18 @@ public interface ApplicationClient {
 
     @GetMapping(value = "/iais-application-be/prem-corr-list/{appGroupId}")
     FeignResponseEntity<List<AppPremisesCorrelationDto>> getPremCorrDtoByAppGroupId(@PathVariable(name = "appGroupId") String appGroupId);
+
     @GetMapping(value = "/iais-application-be/application-post",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getPostApplication(@RequestParam(name = "appType") String appType,@RequestParam(name = "appStatus") String appStatus);
 
+    @GetMapping(value = "/iais-application-be/all-app-data")
+    FeignResponseEntity<String> getBeData(@RequestParam List<java.lang.String> grpids);
 
     @PutMapping(value = "/iais-application-be/application-be-withdrawal")
     FeignResponseEntity<Void> saveWithdrawn();
+    @PostMapping(value = "/iais-application-be/data-to-fe",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> saveFeData(@RequestBody ApplicationListFileDto applicationListFileDto);
+
+    @GetMapping(value = "/iais-application-be/corrId-appId/{appId}")
+    FeignResponseEntity<String> getCorrIdByAppId(@PathVariable(name = "appId") String appId);
 }

@@ -7,16 +7,21 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +53,8 @@ public class PostInspectionBatchJob {
     private EventBusHelper eventBusHelper;
     @Autowired
     private GenerateIdClient generateIdClient;
+    @Autowired
+    private InsRepService insRepService;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -69,7 +76,7 @@ public class PostInspectionBatchJob {
         String appType = ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION;
         String appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING;
         map.forEach((insGrpId, licPremisIds) -> {
-            String appNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT,signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
+            String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT,signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
             Double amount = 0.0;
             AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
             List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licPremisIds).getEntity();
@@ -81,7 +88,7 @@ public class PostInspectionBatchJob {
                 String svcCode = hcsaServiceDto.getSvcCode();
                 appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
                 appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
-                entity.setAppGrpNo(appNo);
+                entity.setAppGrpNo(grpNo);
                 entity.setAppType(appType);
                 entity.setAmount(amount);
                 entity.setAuditTrailDto(intranet);
@@ -90,8 +97,17 @@ public class PostInspectionBatchJob {
                 entity.setStatus(appStatus);
                 setRiskToDto(entity);
             }
-            applicationClient.saveAppsByPostInspection(appSubmissionDtoList);
-          /*  applicationClient.saveAppsByPostInspection(appSubmissionDtoList).getEntity();*/
+            //applicationClient.saveAppsForPostInspection(appSubmissionDtoList);
+            log.info("========================>>>>>success!!!!");
+            List<ApplicationDto> postApps = applicationClient.getPostApplication(appType, appStatus).getEntity();
+            try {
+                insRepService.sendPostInsTaskFeData(postApps);
+            } catch (FeignException e) {
+                e.printStackTrace();
+            }
+
+
+            /*  applicationClient.saveAppsByPostInspection(appSubmissionDtoList).getEntity();*/
             //ApplicationDto applicationDto, String statgId,String roleId,String correlationId
 //            if(!postApps.isEmpty()&&postApps!=null){
 //                for(ApplicationDto applicationDto : postApps){
@@ -102,9 +118,20 @@ public class PostInspectionBatchJob {
 //            Long l = System.currentTimeMillis();
 //            String submissionId = generateIdClient.getSeqId().getEntity();
 //            eventBusHelper.submitAsyncRequest(appSubmissionDtoList,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
-//                    EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION,l.toString(),null);
+//                    EventBusConsts.OPERATION_POST_INSPECTION_TASK,l.toString(),null);
         });
-        //List<ApplicationDto> postApps = applicationClient.getPostApplication(appType, appStatus).getEntity();
+        // List<ApplicationDto> postApps = applicationClient.getPostApplication(appType, appStatus).getEntity();
+//        List<String> appGrpIds = new ArrayList<>();
+//        if(postApps!=null&&!postApps.isEmpty()){
+//            for(ApplicationDto applicationDto :postApps){
+//                String appGrpId = applicationDto.getAppGrpId();
+//                appGrpIds.add(appGrpId);
+//            }
+//        }
+        //String data = applicationClient.getBeData(appGrpIds).getEntity();
+       // ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(data, ApplicationListFileDto.class);
+
+        //log.info("========================>>>>>success!!!!"+postApps);
     }
 
 

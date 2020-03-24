@@ -46,7 +46,7 @@ import java.util.Map;
         fallback = ApplicationClientFallback.class)
 public interface ApplicationClient  {
     @GetMapping(path = "/iais-application/all-file")
-    FeignResponseEntity<String> fileAll();
+    FeignResponseEntity<String> fileAll(List<String> grpids);
 
     @GetMapping(value = "/iais-application/rec-datas")
     FeignResponseEntity<String> recDatesToString();

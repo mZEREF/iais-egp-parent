@@ -614,6 +614,20 @@ public class InsRepServiceImpl implements InsRepService {
         return reportDtoForAo;
     }
 
+    @Override
+    public void sendPostInsTaskFeData() throws FeignException {
+        String appType = ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION;
+        String appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING;
+        List<ApplicationDto> postApps = applicationClient.getPostApplication(appType, appStatus).getEntity();
+        if(!postApps.isEmpty()&&postApps!=null){
+            for(ApplicationDto applicationDto : postApps){
+                //ApplicationDto applicationDto, String statgId,String roleId,String correlationId
+                String corrId = applicationClient.getCorrIdByAppId(applicationDto.getId()).getEntity();
+                taskService.getRoutingTask(applicationDto,HcsaConsts.ROUTING_STAGE_INS,RoleConsts.USER_ROLE_INSPECTIOR,corrId);
+            }
+        }
+    }
+
     private void updateInspectionStatus(String appPremisesCorrelationId, String status) {
         AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremisesCorrelationId).getEntity();
         if(appInspectionStatusDto!=null){

@@ -35,4 +35,7 @@ public interface InsRepService {
     InspectionReportDto getInspectorUser(TaskDto taskDto,LoginContext loginContext);
     InspectionReportDto getInspectorAo(TaskDto taskDto,ApplicationViewDto applicationViewDto);
 
+
+    void sendPostInsTaskFeData() throws FeignException;
+
 }

@@ -157,7 +157,7 @@
                         </div>
                             <iais:action>
                                 <a style="margin-left: 0%" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em>Back</a>
-                                <a style="margin-left: 90%" class="btn btn-primary" href="#" data-target="#editUser">SUBMIT</a>
+                                <a style="margin-left: 90%" class="btn btn-primary" data-toggle="modal" data-target= "#editUser">SUBMIT</a>
                             </iais:action>
                     </div>
                 </div>

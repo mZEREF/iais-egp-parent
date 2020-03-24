@@ -115,7 +115,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     @Override
     public String getData() {
-        String entity = applicationClient.fileAll().getEntity();
+        String entity = applicationClient.fileAll(null).getEntity();
         return entity;
     }
 

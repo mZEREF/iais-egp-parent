@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public class ApplicationClientFallback implements ApplicationClient {
     @Override
-    public FeignResponseEntity<String> fileAll(){
+    public FeignResponseEntity<String> fileAll(List<String> grpIds){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
