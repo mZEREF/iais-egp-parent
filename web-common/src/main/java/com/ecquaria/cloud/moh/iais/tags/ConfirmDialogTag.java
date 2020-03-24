@@ -51,32 +51,33 @@ public class ConfirmDialogTag extends TagSupport {
     public int doStartTag() throws JspException {
         StringBuilder html = new StringBuilder();
         //html
-        String divId = "popupMessageDiv" + popupOrder;
-        html.append("<div id=\"").append(divId).append("\" style=\"display: none;\">");
+        String divId = popupOrder;
+        html.append("<div id=\"").append(divId).append("\"");
+        html.append(" class=\"modal fade\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"").append(divId);
+        html.append("\" style=\"left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%;");
+        html.append("overflow: visible;bottom: inherit;right: inherit;\">");
+        html.append("<div class=\"modal-dialog\" role=\"document\"><div class=\"modal-content\">");
+        html.append("<div class=\"modal-header\">");
+        html.append("<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span");
+        html.append(" aria-hidden=\"true\">&times;</span></button>");
+        html.append(" <h5 class=\"modal-title\" id=\"gridSystemModalLabel\">Confirmation Box</h5></div>");
+        html.append("<div class=\"modal-body\"><div class=\"row\">");
         if (needFungDuoJi) {
             html.append("<input type=\"hidden\" name=\"fangDuoJi").append(divId).append("\" id=\"fangDuoJi").append(divId).append("\"/>");
         }
-        html.append("<p>").append(MessageUtil.getMessageDesc(msg)).append("</p>");
-        html.append("</div>");
-        //css
-        html.append("<style>");
-        html.append("#").append(divId).append(" p {padding-left:30px;}");
-        html.append("#").append(divId).append("{padding-top: 25px;}");
-        html.append("</style>");
+        html.append("<div class=\"col-md-8 col-md-offset-2\"><span style=\"font-size: 2rem\">");
+        html.append(MessageUtil.getMessageDesc(msg));
+        html.append("</span></div></div></div>");
+        html.append("<div class=\"modal-footer\">");
+        html.append("<button type=\"button\" class=\"btn btn-primary\" onclick=\"javascript:");
+        html.append("tagConfirmCallback").append(popupOrder).append("();\">OK</button>");
+        if (needCancel) {
+            html.append("<button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Cancel</button>");
+        }
+        html.append("</div></div></div></div>");
         //javascript
         html.append("<script type=\"text/javascript\">");
-        html.append("$(document).ready(function(){");
-        html.append("$('#").append(divId).append("').dialog({");
-        html.append("autoOpen:false,width:550,height:240,resizable: false, modal : true,");
-        html.append("dialogClass: 'no-close success-dialog',title:'");
-        html.append(StringUtil.isEmpty(title) ? "Confirmation" : title);
-        html.append("',");
-        html.append("open: function(event, ui) {jQuery('.ui-dialog-titlebar-close').hide();");
-        html.append("jQuery('.ui-dialog-titlebar').show();");
-        html.append("$('.ui-dialog').css('z-index',2103).css('position','fixed').css('top','50px');");
-        html.append("$(\".ui-dialog-titlebar\").css({\"height\":\"auto\",\"padding-top\":\"20px\",\"padding-bottom\":\"5px\"});");
-        html.append("$('.ui-widget-overlay').css('z-index',2102);},");
-        html.append("buttons: {\"OK\":{text:'OK',class:'btn btn-primary',click:function() {");
+        html.append("function tagConfirmCallback").append(popupOrder).append("() {");
         if (needFungDuoJi) {
             html.append("var fangDuoJi = $('#fangDuoJi").append(divId).append("').val();");
             html.append("if(fangDuoJi != 'fangDuoJi'){");
@@ -86,26 +87,8 @@ public class ConfirmDialogTag extends TagSupport {
         if (needFungDuoJi) {
             html.append("}");
         }
-        html.append(";}}");
-        if (needCancel) {
-            html.append(",\"Cancel\":{text:'Cancel',class:'btn',click:function() {closePop");
-            html.append(popupOrder).append("();}}");
-        }
-        html.append("}");
-        html.append("}).parent().appendTo($('form:first'));").append("});");
-        html.append("function ").append(popupOrder).append("(){");
-        html.append("$('#").append(divId).append("').dialog(\"open\");");
-        html.append("$('#").append(divId).append("').scrollTop(0);").append("}");
-        html.append("function closePop").append(popupOrder).append("(){");
-        if (needFungDuoJi) {
-            html.append("var fangDuoJi = $('#fangDuoJi").append(divId).append("').val();");
-            html.append("if(fangDuoJi != 'fangDuoJi'){");
-        }
-        html.append("$('#").append(divId).append("').dialog(\"close\");}");
-        if (needFungDuoJi) {
-            html.append("}");
-        }
-        html.append("</script>");
+        html.append("}</script>");
+
         try {
             pageContext.getOut().print(html.toString());
         } catch (Exception ex) {
