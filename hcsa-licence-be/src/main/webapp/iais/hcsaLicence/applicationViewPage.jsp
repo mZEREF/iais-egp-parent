@@ -468,7 +468,7 @@
                                                         </iais:row>
                                                     <%--<div>--%>
                                                         <iais:row>
-                                                            <iais:field value="Internal Remarks" required="true"  width="12"/>
+                                                            <iais:field value="Internal Remarks" required="false"  width="12"/>
                                                             <iais:value width="10">
                                                                 <div class="input-group">
                                                                     <div class="ax_default text_area">

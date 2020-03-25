@@ -20,7 +20,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         String internalRemarks = ParamUtil.getRequestString(request, "internalRemarks");
         if(StringUtil.isEmpty(internalRemarks)){
-            errMap.put("internalRemarks","The field is mandatory.");
+            //errMap.put("internalRemarks","The field is mandatory.");
         }else{
             ParamUtil.setRequestAttr(request,"internalRemarks",internalRemarks);
         }
