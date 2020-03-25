@@ -115,7 +115,7 @@ public class CommonPoolAjaxController {
         String appGroupId = MaskUtil.unMaskValue("appGroupId", request.getParameter("groupId"));
         GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto) ParamUtil.getSessionAttr(request, "groupRoleFieldDto");
         List<String> workGroupIds = (List<String>) ParamUtil.getSessionAttr(request, "workGroupIds");
-
+        Map<String, SuperPoolTaskQueryDto> assignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(request, "assignMap");
         if(!IaisCommonUtils.isEmpty(workGroupIds) && !StringUtil.isEmpty(appGroupId)) {
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getPremCorrDtoByAppGroupId(appGroupId).getEntity();
             //filter list
@@ -165,10 +165,25 @@ public class CommonPoolAjaxController {
             SearchResult<SuperPoolTaskQueryDto> searchResult = inspectionService.getSupPoolSecondByParam(searchParam);
             searchResult = inspectionService.getSecondSearchOtherData(searchResult);
             jsonMap.put("ajaxResult", searchResult);
+            assignMap = setTaskIdAndDataMap(assignMap, searchResult);
         }
+        ParamUtil.setSessionAttr(request, "assignMap", (Serializable) assignMap);
         jsonMap.put("memberName", groupRoleFieldDto.getGroupMemBerName());
         //get other data
         return jsonMap;
+    }
+
+    private Map<String, SuperPoolTaskQueryDto> setTaskIdAndDataMap(Map<String, SuperPoolTaskQueryDto> assignMap, SearchResult<SuperPoolTaskQueryDto> searchResult) {
+        if(assignMap == null) {
+            assignMap = IaisCommonUtils.genNewHashMap();
+        }
+        if(searchResult != null && !IaisCommonUtils.isEmpty(searchResult.getRows())){
+            List<SuperPoolTaskQueryDto> superPoolTaskQueryDtos = searchResult.getRows();
+            for(SuperPoolTaskQueryDto superPoolTaskQueryDto : superPoolTaskQueryDtos){
+                assignMap.put(superPoolTaskQueryDto.getId(), superPoolTaskQueryDto);
+            }
+        }
+        return assignMap;
     }
 
     private List<String> getRefNoList(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos) {

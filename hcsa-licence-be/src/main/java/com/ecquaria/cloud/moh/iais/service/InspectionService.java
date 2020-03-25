@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -65,15 +66,6 @@ public interface InspectionService {
      * @Descripation: get Sup Pool By Param
      */
     SearchResult<InspectionSubPoolQueryDto> getSupPoolByParam(SearchParam searchParam);
-
-    /**
-     * @author: shicheng
-     * @Date 2019/12/3
-     * @Param: searchResult, commPools, loginContext
-     * @return: SearchResult<InspectionSubPoolQueryDto>
-     * @Descripation: get Other Data For SearchResult
-     */
-    SearchResult<InspectionTaskPoolListDto> getOtherDataForSr(SearchResult<InspectionSubPoolQueryDto> searchResult, List<TaskDto> commPools, LoginContext loginContext);
 
     /**
      * @author: shicheng
@@ -192,4 +184,13 @@ public interface InspectionService {
       * @Descripation: 
       */
     SearchResult<SuperPoolTaskQueryDto> getSecondSearchOtherData(SearchResult<SuperPoolTaskQueryDto> searchResult);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/3/25
+      * @Param: 
+      * @return: 
+      * @Descripation: 
+      */
+    InspectionTaskPoolListDto getDataForAssignTask(Map<String, SuperPoolTaskQueryDto> assignMap, InspectionTaskPoolListDto inspectionTaskPoolListDto, String taskId);
 }

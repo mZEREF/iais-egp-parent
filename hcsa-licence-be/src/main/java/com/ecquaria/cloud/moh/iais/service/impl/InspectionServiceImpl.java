@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
@@ -168,6 +169,7 @@ public class InspectionServiceImpl implements InspectionService {
     public InspectionTaskPoolListDto inputInspectorOption(InspectionTaskPoolListDto inspectionTaskPoolListDto, LoginContext loginContext) {
         Set<String> roles = loginContext.getRoleIds();
         List<String> roleList = new ArrayList<>(roles);
+        inspectionTaskPoolListDto.setCurRole(loginContext.getCurRoleId());
         inspectionTaskPoolListDto.setRoles(roleList);
         inspectionTaskPoolListDto.setLoginContextId(loginContext.getUserId());
         inspectionTaskPoolListDto = organizationClient.filterInspectorOption(inspectionTaskPoolListDto).getEntity();
@@ -275,6 +277,28 @@ public class InspectionServiceImpl implements InspectionService {
             }
         }
         return searchResult;
+    }
+
+    @Override
+    public InspectionTaskPoolListDto getDataForAssignTask(Map<String, SuperPoolTaskQueryDto> assignMap, InspectionTaskPoolListDto inspectionTaskPoolListDto, String taskId) {
+        SuperPoolTaskQueryDto superPoolTaskQueryDto = assignMap.get(taskId);
+        ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(superPoolTaskQueryDto.getTaskRefNo()).getEntity();
+        HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
+        ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+
+        inspectionTaskPoolListDto.setTaskId(taskId);
+        inspectionTaskPoolListDto.setWorkGroupId(superPoolTaskQueryDto.getWorkGroupId());
+        inspectionTaskPoolListDto.setApplicationStatus(applicationDto.getStatus());
+        inspectionTaskPoolListDto.setApplicationNo(applicationDto.getApplicationNo());
+        inspectionTaskPoolListDto.setApplicationType(applicationDto.getApplicationType());
+        inspectionTaskPoolListDto.setSubmitDt(applicationGroupDto.getSubmitDt());
+        inspectionTaskPoolListDto.setServiceName(hcsaServiceDto.getSvcName());
+        inspectionTaskPoolListDto.setHciCode(superPoolTaskQueryDto.getHciCode());
+        inspectionTaskPoolListDto.setHciName(superPoolTaskQueryDto.getHciAddress());
+        //todo: get authentic Inspection Type
+        inspectionTaskPoolListDto.setInspectionTypeName(InspectionConstants.INSPECTION_TYPE_ONSITE);
+
+        return inspectionTaskPoolListDto;
     }
 
     private String getMemberNameByUserId(String userId) {
@@ -426,7 +450,7 @@ public class InspectionServiceImpl implements InspectionService {
         return taskDto;
     }
 
-    private ApplicationDto  updateApplication(ApplicationDto applicationDto, String appStatus) {
+    private ApplicationDto updateApplication(ApplicationDto applicationDto, String appStatus) {
         applicationDto.setStatus(appStatus);
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return applicationViewService.updateApplicaiton(applicationDto);
@@ -456,7 +480,6 @@ public class InspectionServiceImpl implements InspectionService {
         return searchResult;
     }
 
-    @Override
     public SearchResult<InspectionTaskPoolListDto> getOtherDataForSr(SearchResult<InspectionSubPoolQueryDto> searchResult, List<TaskDto> commPools, LoginContext loginContext) {
         List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isEmpty(commPools) || IaisCommonUtils.isEmpty(searchResult.getRows())){

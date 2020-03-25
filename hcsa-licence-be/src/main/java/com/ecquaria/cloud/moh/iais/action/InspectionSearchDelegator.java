@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -301,12 +302,9 @@ public class InspectionSearchDelegator {
         String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
         InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto)ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
         if(!(StringUtil.isEmpty(taskId))){
+            Map<String, SuperPoolTaskQueryDto> assignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(bpc.request, "assignMap");
             inspectionTaskPoolListDto = new InspectionTaskPoolListDto();
-            /*for(InspectionTaskPoolListDto iDto:searchResult.getRows()){
-                if(taskId.equals(iDto.getTaskId())){
-                    inspectionTaskPoolListDto = iDto;
-                }
-            }*/
+            inspectionTaskPoolListDto = inspectionService.getDataForAssignTask(assignMap, inspectionTaskPoolListDto, taskId);
             //get inspector Option
             inspectionTaskPoolListDto = inspectionService.inputInspectorOption(inspectionTaskPoolListDto, loginContext);
             if(!(IaisCommonUtils.isEmpty(inspectionTaskPoolListDto.getInspectorOption()))){
