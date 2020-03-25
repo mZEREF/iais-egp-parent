@@ -1,12 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
@@ -32,14 +34,11 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.RequestForInformationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -166,7 +165,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.LICENCE_STATUS_SUSPENDED,
             ApplicationConsts.LICENCE_STATUS_REVOKED
     };
-
     @Override
     public List<SelectOption> getAppTypeOption() {
         return MasterCodeUtil.retrieveOptionsByCodes(appType);
@@ -400,7 +398,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     }
 
     @Override
-    public boolean download( ProcessFileTrackDto processFileTrackDto,LicPremisesReqForInfoDto licPremisesReqForInfoDto,String fileName,String groupPath,String submissionId) {
+    public boolean download( ProcessFileTrackDto processFileTrackDto,LicPremisesReqForInfoDto licPremisesReqForInfoDto,String fileName,String refId,String submissionId) {
 
         Boolean flag=false;
         File file =new File(downZip+File.separator+fileName+File.separator+"userRecFile");
@@ -421,11 +419,11 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         by.write(size,0,count);
                         count= fileInputStream.read(size);
                     }
-                    Boolean aBoolean = fileToDto(by.toString(),licPremisesReqForInfoDto,processFileTrackDto);
+                    Boolean aBoolean = fileToDto(by.toString(),licPremisesReqForInfoDto,processFileTrackDto,submissionId);
                     flag=aBoolean;
                     if(aBoolean&&processFileTrackDto!=null){
                         changeStatus(processFileTrackDto);
-                        saveFileRepo( fileName);
+                        saveFileRepo( fileName, submissionId,refId);
                     }
                 }catch (Exception e){
                     log.error(e.getMessage(),e);
@@ -435,23 +433,22 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
         return flag;
     }
-    private Boolean fileToDto(String str,LicPremisesReqForInfoDto licPremisesReqForInfoDto,ProcessFileTrackDto processFileTrackDto){
+    private Boolean fileToDto(String str,LicPremisesReqForInfoDto licPremisesReqForInfoDto,ProcessFileTrackDto processFileTrackDto,String submissionId){
         licPremisesReqForInfoDto = JsonUtil.parseToObject(str, LicPremisesReqForInfoDto.class);
-//        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
-//        licPremisesReqForInfoDto.setAuditTrailDto(intranet);
-//        //eventbus
-//        Long l = System.currentTimeMillis();
-//        licPremisesReqForInfoDto.setEventRefNo(l.toString());
-//        eventBusHelper.submitAsyncRequest(licPremisesReqForInfoDto,submissionId, EventBusConsts.SERVICE_NAME_LICENCESAVE,
-//                EventBusConsts.OPERATION_LIC_REQUEST_FOR_INFO,licPremisesReqForInfoDto.getEventRefNo(),null);
-//        return true;
-        return requestForInformationClient.rfiFeUpdateToBe(licPremisesReqForInfoDto).getStatusCode() == 200;
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
+        licPremisesReqForInfoDto.setAuditTrailDto(intranet);
+        //eventbus
+        licPremisesReqForInfoDto.setEventRefNo(processFileTrackDto.getRefId());
+        eventBusHelper.submitAsyncRequest(licPremisesReqForInfoDto,submissionId, EventBusConsts.SERVICE_NAME_LICENCESAVE,
+                EventBusConsts.OPERATION_LIC_REQUEST_FOR_INFO,licPremisesReqForInfoDto.getEventRefNo(),null);
+        return true;
+        // return requestForInformationClient.rfiFeUpdateToBe(licPremisesReqForInfoDto).getStatusCode() == 200;
 
     }
 
     private void changeStatus( ProcessFileTrackDto processFileTrackDto){
         /*  applicationClient.updateStatus().getEntity();*/
-        processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
         AuditTrailDto batchJobDto = AuditTrailHelper.getBatchJobDto("INTRANET");
         processFileTrackDto.setAuditTrailDto(batchJobDto);
         processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_COMPLETE);
@@ -459,7 +456,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     }
 
-    private void saveFileRepo(String fileNames){
+    private void saveFileRepo(String fileNames,String submissionId,String eventRefNo){
         boolean aBoolean=false;
         File file =new File(downZip+File.separator+fileNames+File.separator+"userRecFile"+File.separator+"files");
         if(!file.exists()){
@@ -482,38 +479,38 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         e.printStackTrace();
                         log.error(e.getMessage(),e);
                     }
-                    try ( InputStream input = new FileInputStream(f);){
-                        if(fileItem!=null){
-                            OutputStream os = fileItem.getOutputStream();
-                            IOUtils.copy(input, os);
-                        }
-                    } catch (IOException ex) {
-                        log.error(ex.getMessage(),ex);
-                    }
-                    MultipartFile multipartFile =  new CommonsMultipartFile(fileItem);
-
-//                    AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
-//                    FileRepoDto fileRepoDto = new FileRepoDto();
-//                    List<FileRepoDto> fileRepoDtos = IaisCommonUtils.genNewArrayList();
-//                    fileRepoDto.setId(fileName.toString());
-//                    fileRepoDto.setAuditTrailDto(intranet);
-//                    fileRepoDto.setFileName(f.getName());
-//                    fileRepoDto.setRelativePath("compress"+File.separator+fileNames+File.separator+"userRecFile"+File.separator+"files");
-//                    fileRepoDtos.add(fileRepoDto);
-//                    FileRepoEventDto eventDto = new FileRepoEventDto();
-//                    eventDto.setFileRepoList(fileRepoDtos);
-//                    eventDto.setEventRefNo(groupPath);
-//                    eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
-//                            EventBusConsts.OPERATION_BE_REC_DATA_COPY, groupPath, null);
+//                    try ( InputStream input = new FileInputStream(f);){
+//                        if(fileItem!=null){
+//                            OutputStream os = fileItem.getOutputStream();
+//                            IOUtils.copy(input, os);
+//                        }
+//                    } catch (IOException ex) {
+//                        log.error(ex.getMessage(),ex);
+//                    }
+//                    MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
 
                     AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
                     FileRepoDto fileRepoDto = new FileRepoDto();
+                    List<FileRepoDto> fileRepoDtos = IaisCommonUtils.genNewArrayList();
                     fileRepoDto.setId(split[0]);
                     fileRepoDto.setAuditTrailDto(intranet);
                     fileRepoDto.setFileName(fileName.toString());
                     fileRepoDto.setRelativePath("compress"+File.separator+fileNames+File.separator+"userRecFile"+File.separator+"files");
-                    //eventBus
-                    aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
+                    fileRepoDtos.add(fileRepoDto);
+                    FileRepoEventDto eventDto = new FileRepoEventDto();
+                    eventDto.setFileRepoList(fileRepoDtos);
+                    eventDto.setEventRefNo(eventRefNo);
+                    eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
+                            EventBusConsts.OPERATION_BE_REC_DATA_COPY, eventRefNo, null);
+
+//                    AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
+//                    FileRepoDto fileRepoDto = new FileRepoDto();
+//                    fileRepoDto.setId(split[0]);
+//                    fileRepoDto.setAuditTrailDto(intranet);
+//                    fileRepoDto.setFileName(fileName.toString());
+//                    fileRepoDto.setRelativePath("compress"+File.separator+fileNames+File.separator+"userRecFile"+File.separator+"files");
+//                    //eventBus
+//                    aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
 
                     if(aBoolean){
                         /*   removeFilePath(f);*/

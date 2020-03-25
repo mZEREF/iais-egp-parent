@@ -90,6 +90,7 @@ public class MasterCodeDelegator {
     public void prepareData(BaseProcessClass bpc){
         logAboutStart("prepareData");
         HttpServletRequest request = bpc.request;
+        prepareSelect(request);
         SearchParam searchParam = SearchResultHelper.getSearchParam(request,filterParameter,true);
         QueryHelp.setMainSql(MasterCodeConstants.MSG_TEMPLATE_FILE, MasterCodeConstants.MSG_TEMPLATE_SQL,searchParam);
         SearchResult searchResult = masterCodeService.doQuery(searchParam);
