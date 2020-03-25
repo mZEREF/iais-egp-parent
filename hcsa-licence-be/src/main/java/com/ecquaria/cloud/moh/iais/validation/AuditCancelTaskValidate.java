@@ -33,9 +33,8 @@ public class AuditCancelTaskValidate implements CustomizeValidator {
                     }
                     String remark = ParamUtil.getString(request, String.valueOf(index) +"reason");
                     auditTaskDataFillterDto.setCancelReason(remark);
-                    index++;
                 }
-
+                index++;
             }
         }
         return  errMap;

@@ -149,8 +149,8 @@ public class AuditSystemListDelegator {
         Map<String, String> errMap = auditAssginListValidate.validate(request);
         if (errMap.isEmpty()) {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-            ParamUtil.setRequestAttr(request,"actionCancel","back");
-            ParamUtil.setRequestAttr(request,"actionConfirm","submit");
+            ParamUtil.setSessionAttr(request,"actionCancel","back");
+            ParamUtil.setSessionAttr(request,"actionConfirm","submit");
         } else {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
@@ -216,8 +216,8 @@ public class AuditSystemListDelegator {
         Map<String, String> errMap = auditAssginListValidate.validate(request);
         if (errMap.isEmpty()) {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-            ParamUtil.setRequestAttr(request,"actionCancel","back");
-            ParamUtil.setRequestAttr(request,"actionCancelAudit","cancel");
+            ParamUtil.setSessionAttr(request,"actionCancel","back");
+            ParamUtil.setSessionAttr(request,"actionCancelAudit","cancel");
         } else {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));

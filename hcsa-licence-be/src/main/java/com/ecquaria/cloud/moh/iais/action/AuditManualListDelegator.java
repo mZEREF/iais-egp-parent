@@ -77,8 +77,8 @@ public class AuditManualListDelegator {
         Map<String, String> errMap = auditAssginListValidate.validate(request);
         if(errMap.isEmpty()){
             ParamUtil.setRequestAttr(request, "isValid", "N");
-            ParamUtil.setRequestAttr(request,"actionCancel","back");
-            ParamUtil.setRequestAttr(request,"actionConfirm","confirm");
+            ParamUtil.setSessionAttr(request,"actionCancel","back");
+            ParamUtil.setSessionAttr(request,"actionConfirm","confirm");
         }else{
             ParamUtil.setRequestAttr(request, "isValid", "Y");
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
@@ -100,8 +100,8 @@ public class AuditManualListDelegator {
         Map<String, String> errMap = auditAssginListValidate.validate(request);
         if(errMap.isEmpty()){
             ParamUtil.setRequestAttr(request, "isValid", "N");
-            ParamUtil.setRequestAttr(request,"actionCancel","doback");
-            ParamUtil.setRequestAttr(request,"actionCancelAudit","docancel");
+            ParamUtil.setSessionAttr(request,"actionCancel","doback");
+            ParamUtil.setSessionAttr(request,"actionCancelAudit","docancel");
         }else{
             ParamUtil.setRequestAttr(request, "isValid", "Y");
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));

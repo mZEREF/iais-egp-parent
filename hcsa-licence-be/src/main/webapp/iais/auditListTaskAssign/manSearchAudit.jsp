@@ -19,9 +19,6 @@
         <input type="hidden" name="valEntity" id="valEntity"
                value="com.ecquaria.cloud.moh.iais.dto.AduitSystemGenerateValidateDto"/>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-        <input type="hidden" name="crud_action_type" value="">
-        <input type="hidden" name="crud_action_value" value="">
-        <input type="hidden" name="crud_action_additional" value="">
         <div class="bg-title"><h2>Search HCI and Services</h2></div>
         <iais:section title="" id="potentialAuditableHCIs">
             <iais:row>
