@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -58,8 +59,6 @@ public class MasterCodeDelegator {
 
 
     private final MasterCodeService masterCodeService;
-
-    private static boolean flage = false;
 
     @Autowired
     private MasterCodeDelegator(MasterCodeService masterCodeService){
@@ -91,29 +90,22 @@ public class MasterCodeDelegator {
     public void prepareData(BaseProcessClass bpc){
         logAboutStart("prepareData");
         HttpServletRequest request = bpc.request;
-        if (flage){
-            SearchParam searchParam = SearchResultHelper.getSearchParam(request,filterParameter,true);
-            QueryHelp.setMainSql(MasterCodeConstants.MSG_TEMPLATE_FILE, MasterCodeConstants.MSG_TEMPLATE_SQL,searchParam);
-            SearchResult searchResult = masterCodeService.doQuery(searchParam);
-            List<MasterCodeQueryDto> masterCodeQueryDtoList = searchResult.getRows();
-            for (MasterCodeQueryDto masterCodeQueryDto:masterCodeQueryDtoList
-                    ) {
-                if (StringUtil.isEmpty(masterCodeQueryDto.getCodeValue())){
-                    masterCodeQueryDto.setCodeValue("N.A");
-                }
-                masterCodeQueryDto.setStatus(MasterCodeUtil.getCodeDesc(masterCodeQueryDto.getStatus()));
+        SearchParam searchParam = SearchResultHelper.getSearchParam(request,filterParameter,true);
+        QueryHelp.setMainSql(MasterCodeConstants.MSG_TEMPLATE_FILE, MasterCodeConstants.MSG_TEMPLATE_SQL,searchParam);
+        SearchResult searchResult = masterCodeService.doQuery(searchParam);
+        List<MasterCodeQueryDto> masterCodeQueryDtoList = searchResult.getRows();
+        for (MasterCodeQueryDto masterCodeQueryDto:masterCodeQueryDtoList
+                ) {
+            if (StringUtil.isEmpty(masterCodeQueryDto.getCodeValue())){
+                masterCodeQueryDto.setCodeValue("N.A");
             }
-
-            if(!StringUtil.isEmpty(searchResult)){
-                ParamUtil.setSessionAttr(request,MasterCodeConstants.SEARCH_PARAM, searchParam);
-                ParamUtil.setRequestAttr(request,MasterCodeConstants.SEARCH_RESULT, searchResult);
-            }
-        }else{
-            ParamUtil.setSessionAttr(request,MasterCodeConstants.SEARCH_PARAM, null);
-            ParamUtil.setRequestAttr(request,MasterCodeConstants.SEARCH_RESULT, null);
+            masterCodeQueryDto.setStatus(MasterCodeUtil.getCodeDesc(masterCodeQueryDto.getStatus()));
         }
 
-
+        if(!StringUtil.isEmpty(searchResult)){
+            ParamUtil.setSessionAttr(request,MasterCodeConstants.SEARCH_PARAM, searchParam);
+            ParamUtil.setRequestAttr(request,MasterCodeConstants.SEARCH_RESULT, searchResult);
+        }
     }
 
     /**
@@ -161,22 +153,29 @@ public class MasterCodeDelegator {
             String codeCategory = masterCodeService.findCodeCategoryByDescription(categoryDescription);
             if (!StringUtil.isEmpty(codeCategory)){
                 masterCodeMap.put(MasterCodeConstants.MASTER_CODE_CATEGORY,codeCategory);
-                flage = true;
             }
         }else{
-            flage = true;
+            masterCodeMap.remove(MasterCodeConstants.MASTER_CODE_CATEGORY);
         }
         if(!StringUtil.isEmpty(codeStatus)){
             masterCodeMap.put(MasterCodeConstants.MASTER_CODE_STATUS,codeStatus);
+        }else{
+            masterCodeMap.remove(MasterCodeConstants.MASTER_CODE_STATUS);
         }
         if(!StringUtil.isEmpty(codeDescription)){
             masterCodeMap.put(MasterCodeConstants.MASTER_CODE_DESCRIPTION,codeDescription);
+        }else{
+            masterCodeMap.remove(MasterCodeConstants.MASTER_CODE_DESCRIPTION);
         }
         if (!StringUtil.isEmpty(codeStartDate)){
-            masterCodeMap.put( SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,codeStartDate);
+            masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,codeStartDate);
+        }else{
+            masterCodeMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
         }
         if (!StringUtil.isEmpty(codeEndDate)){
-            masterCodeMap.put( SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO,codeEndDate);
+            masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO,codeEndDate);
+        }else{
+            masterCodeMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
         }
         filterParameter.setFilters(masterCodeMap);
     }
@@ -378,6 +377,7 @@ public class MasterCodeDelegator {
         masterCodeDto.setCodeCategory(codeCategory);
         masterCodeService.updateMasterCode(masterCodeDto);
         ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ISVALID,SystemAdminBaseConstants.YES);
+        ParamUtil.setRequestAttr(request,"UPDATED_DATE",new Date());
 
     }
 
