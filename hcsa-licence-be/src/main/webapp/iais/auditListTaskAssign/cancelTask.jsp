@@ -16,19 +16,13 @@
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.HcsaRiskLeadershipConfigDelegator"/>
-    <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.HcsaRiskLeaderShipVadlidateDto"/>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
-
+    <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.AuditCancelTaskValidateDto"/>
     <div class="main-content">
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
-                        <h2>System Audit List</h2>
+                        <h2>${modulename}</h2>
                         <div class="gray-content-box">
                             <div class="table-gp">
                                 <table class="table">
@@ -66,15 +60,17 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <input name="selectForAd" id="<c:out value="${(status.index) }"/>" type="checkbox">
+                                                <input name="selectForAd${(status.index)}" id="selectForAd${(status.index)}" type="checkbox" value="1" <c:if test="${item.selected}">checked</c:if>>
+                                                <c:set value = "error_selectForAd${(status.index)}" var = "errname"/>
+                                                <br/>
+                                                <span class="error-msg"   id="${errname}" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
-                                                <textarea cols="30" rows="5" name="${id}reason"  maxlength="500"><c:out value="${item.cancelReason}"></c:out></textarea>
+                                                <textarea cols="30" rows="5" name="${id}reason"  maxlength="2000"><c:out value="${item.cancelReason}"></c:out></textarea>
                                             </td>
                                         </tr>
                                         </c:if>
                                     </c:forEach>
-
                                     </tbody>
                                 </table>
                                 <div class="table-footnote">
@@ -100,9 +96,9 @@
                     </div>
                 </div>
             <iais:action style="text-align:right;">
-                <button type="button" class="btn btn-secondary" onclick="javascript:cancel();">Cancel
+                <button type="button" class="btn btn-secondary" onclick="javascript:cancel('${actionCancel}');">Cancel
                 </button>
-                <button type="button" class="btn btn-primary next" onclick="javascript:cancelAudit();">Cancel
+                <button type="button" class="btn btn-primary next" onclick="javascript:cancelAudit('${actionCancelAudit}');">Cancel
                     Audit Task
                 </button>
             </iais:action>
@@ -112,10 +108,10 @@
 </form>
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
-    function cancel() {
-        SOP.Crud.cfxSubmit("mainForm","back");
+    function cancel(act) {
+        SOP.Crud.cfxSubmit("mainForm",act);
     }
-    function cancelAudit() {
-        SOP.Crud.cfxSubmit("mainForm","cancel");
+    function cancelAudit(act) {
+        SOP.Crud.cfxSubmit("mainForm",act);
     }
 </script>

@@ -103,7 +103,7 @@
     }
 
     function cancelAudit() {
-        SOP.Crud.cfxSubmit("mainForm","cancel");
+        SOP.Crud.cfxSubmit("mainForm","precancel");
     }
 
 </script>

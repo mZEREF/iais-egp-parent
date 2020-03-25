@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AuditAssginListValidateDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -21,6 +22,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+
+import com.ecquaria.cloud.moh.iais.validation.AuditCancelTaskValidate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -38,6 +41,8 @@ public class AuditManualListDelegator {
     @Autowired
     AuditSystemListService auditSystemListService;
     private String SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME = "auditSystemPotentialDtoForSearch";
+    private String  SUBMIT_MESSAGE_SUCCESS = "submit_message_success";
+    private String  MAIN_URL              ="mainUrl";
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
@@ -47,6 +52,7 @@ public class AuditManualListDelegator {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, null);
+        ParamUtil.setSessionAttr(request,"modulename","Manual Audit List");
     }
     public void pre(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
@@ -71,6 +77,8 @@ public class AuditManualListDelegator {
         Map<String, String> errMap = auditAssginListValidate.validate(request);
         if(errMap.isEmpty()){
             ParamUtil.setRequestAttr(request, "isValid", "N");
+            ParamUtil.setRequestAttr(request,"actionCancel","back");
+            ParamUtil.setRequestAttr(request,"actionConfirm","confirm");
         }else{
             ParamUtil.setRequestAttr(request, "isValid", "Y");
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
@@ -80,7 +88,9 @@ public class AuditManualListDelegator {
         log.debug(StringUtil.changeForLog("the confirm start ...."));
         HttpServletRequest request = bpc.request;
         List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,"auditTaskDataDtos");
-        auditSystemListService.doSubmit(auditTaskDataDtos);
+        //auditSystemListService.doSubmit(auditTaskDataDtos);
+        ParamUtil.setRequestAttr(request,SUBMIT_MESSAGE_SUCCESS,HcsaLicenceBeConstant .AUDIT_INSPECTION_CONFIRM_SUCCESS_MESSAGE);
+        ParamUtil.setRequestAttr(request,MAIN_URL,"MohAuditManualList");
     }
     public void precancel(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
@@ -90,6 +100,8 @@ public class AuditManualListDelegator {
         Map<String, String> errMap = auditAssginListValidate.validate(request);
         if(errMap.isEmpty()){
             ParamUtil.setRequestAttr(request, "isValid", "N");
+            ParamUtil.setRequestAttr(request,"actionCancel","doback");
+            ParamUtil.setRequestAttr(request,"actionCancelAudit","docancel");
         }else{
             ParamUtil.setRequestAttr(request, "isValid", "Y");
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
@@ -99,6 +111,21 @@ public class AuditManualListDelegator {
     public void cancel(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
+        List<AuditTaskDataFillterDto> auditTaskDataDtos = (List<AuditTaskDataFillterDto>) ParamUtil.getSessionAttr(request, "auditTaskDataDtos");
+        AuditCancelTaskValidate auditCancelTaskValidate = new AuditCancelTaskValidate();
+        Map<String, String> errorMap = auditCancelTaskValidate.validate(request);
+        if(errorMap != null && errorMap.size()>0){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+        }else {
+            ParamUtil.setRequestAttr(request,SUBMIT_MESSAGE_SUCCESS,HcsaLicenceBeConstant .AUDIT_INSPECTION_CANCEL_TASKS_SUCCESS_MESSAGE);
+            ParamUtil.setRequestAttr(request,MAIN_URL,"MohAuditManualList");
+            AuditTrailHelper.auditFunction("MohAuditManualList", "cancel tasks");
+            // save cancel task
+            //auditSystemListService.doCancel(auditTaskDataDtos);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+        }
+
     }
 
     public void vad(BaseProcessClass bpc) {

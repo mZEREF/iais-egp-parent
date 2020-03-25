@@ -30,7 +30,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
-                        <h2>System Audit List</h2>
+                        <h2>${modulename}</h2>
                         <div class="gray-content-box">
                             <div class="table-gp">
                                 <table class="table">

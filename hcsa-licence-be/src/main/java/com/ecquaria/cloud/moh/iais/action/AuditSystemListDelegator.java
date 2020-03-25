@@ -23,6 +23,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+
+import com.ecquaria.cloud.moh.iais.validation.AuditCancelTaskValidate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -54,6 +56,7 @@ public class AuditSystemListDelegator {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, null);
+        ParamUtil.setSessionAttr(request,"modulename","System Audit List");
     }
 
     public void pre(BaseProcessClass bpc) {
@@ -146,9 +149,11 @@ public class AuditSystemListDelegator {
         Map<String, String> errMap = auditAssginListValidate.validate(request);
         if (errMap.isEmpty()) {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            ParamUtil.setRequestAttr(request,"actionCancel","back");
+            ParamUtil.setRequestAttr(request,"actionConfirm","submit");
         } else {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
         }
     }
 
@@ -211,9 +216,11 @@ public class AuditSystemListDelegator {
         Map<String, String> errMap = auditAssginListValidate.validate(request);
         if (errMap.isEmpty()) {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            ParamUtil.setRequestAttr(request,"actionCancel","back");
+            ParamUtil.setRequestAttr(request,"actionCancelAudit","cancel");
         } else {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
         }
     }
 
@@ -221,7 +228,7 @@ public class AuditSystemListDelegator {
         log.debug(StringUtil.changeForLog("the submit start ...."));
         HttpServletRequest request = bpc.request;
         List<AuditTaskDataFillterDto> auditTaskDataDtos = (List<AuditTaskDataFillterDto>) ParamUtil.getSessionAttr(request, "auditTaskDataDtos");
-        auditSystemListService.doSubmit(auditTaskDataDtos);
+     //   auditSystemListService.doSubmit(auditTaskDataDtos);
         ParamUtil.setRequestAttr(request,SUBMIT_MESSAGE_SUCCESS,HcsaLicenceBeConstant .AUDIT_INSPECTION_CONFIRM_SUCCESS_MESSAGE);
         ParamUtil.setRequestAttr(request,MAIN_URL,"MohAduitSystemList");
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
@@ -237,10 +244,20 @@ public class AuditSystemListDelegator {
     public void canceltask(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
-        ParamUtil.setRequestAttr(request,SUBMIT_MESSAGE_SUCCESS,HcsaLicenceBeConstant .AUDIT_INSPECTION_CANCEL_TASKS_SUCCESS_MESSAGE);
-        ParamUtil.setRequestAttr(request,MAIN_URL,"MohAduitSystemList");
-        AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+        List<AuditTaskDataFillterDto> auditTaskDataDtos = (List<AuditTaskDataFillterDto>) ParamUtil.getSessionAttr(request, "auditTaskDataDtos");
+        AuditCancelTaskValidate auditCancelTaskValidate = new AuditCancelTaskValidate();
+        Map<String, String> errorMap = auditCancelTaskValidate.validate(request);
+        if(errorMap != null && errorMap.size() >0){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+        }else {
+            ParamUtil.setRequestAttr(request,SUBMIT_MESSAGE_SUCCESS,HcsaLicenceBeConstant .AUDIT_INSPECTION_CANCEL_TASKS_SUCCESS_MESSAGE);
+            ParamUtil.setRequestAttr(request,MAIN_URL,"MohAduitSystemList");
+            AuditTrailHelper.auditFunction("MohAduitSystemList", "cancel tasks");
+            // save cancel task
+            //auditSystemListService.doCancel(auditTaskDataDtos);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+        }
     }
 
 }

@@ -26,7 +26,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
-                        <h2>System Audit List</h2>
+                        <h2>${modulename}</h2>
                         <div class="gray-content-box">
                             <div class="table-gp">
                                 <table class="table">
@@ -78,9 +78,9 @@
                     </div>
 
          <iais:action style="text-align:right;">
-             <button type="button" class="btn btn-secondary" onclick="javascript:cancel();">Cancel
+             <button type="button" class="btn btn-secondary" onclick="javascript:cancel('${actionCancel}');">Cancel
              </button>
-             <button type="button" class="btn btn-primary next" onclick="javascript:confirm();">Confirm
+             <button type="button" class="btn btn-primary next" onclick="javascript:confirm('${actionConfirm}');">Confirm
                  to Audit
              </button>
                         <!--
@@ -96,13 +96,13 @@
     </div>
 </form>
 <script type="text/javascript">
-    function confirm() {
-        SOP.Crud.cfxSubmit("mainForm","submit");
+    function confirm(act) {
+        SOP.Crud.cfxSubmit("mainForm",act);
     }
-    function cancel() {
-        SOP.Crud.cfxSubmit("mainForm","back");
+    function cancel(act) {
+        SOP.Crud.cfxSubmit("mainForm",act);
     }
-    function remove() {
+    /*function remove() {
         SOP.Crud.cfxSubmit("mainForm","next");
     }
     function cancelAudit() {
@@ -110,5 +110,5 @@
     }
     function createHcl() {
         SOP.Crud.cfxSubmit("mainForm","next");
-    }
+    }*/
 </script>

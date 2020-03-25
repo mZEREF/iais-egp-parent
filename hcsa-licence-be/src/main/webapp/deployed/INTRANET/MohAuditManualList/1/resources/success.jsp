@@ -1,1 +1,1 @@
-<%@include file="/iais/auditListTaskAssign/mansuccess.jsp"%>
+<%@include file="/iais/auditListTaskAssign/confirmSuccess.jsp"%>
