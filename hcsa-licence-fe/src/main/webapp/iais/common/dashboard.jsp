@@ -19,6 +19,9 @@
                             <c:when test="${'APTY005' == AppSubmissionDto.appType}">
                                 <%@include file="../resForChange/amendHeader.jsp"%>
                             </c:when>
+                            <c:when test="${'APTY004' == AppSubmissionDto.appType}">
+                                <%@include file="../resForChange/renewalHeader.jsp"%>
+                            </c:when>
                         </c:choose>
                     </c:otherwise>
                 </c:choose>
