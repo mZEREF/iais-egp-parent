@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.Application;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -13,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -91,7 +89,7 @@ public class CessationServiceImpl implements CessationService {
                         String floorNo = premisesDto.getFloorNo();
                         String unitNo = premisesDto.getUnitNo();
                         String postalCode = premisesDto.getPostalCode();
-                        String hciAddress = appendPremisesAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
+                        String hciAddress = IaisCommonUtils.appendPremisesAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
                         AppCessHciDto appCessHciDto = new AppCessHciDto();
                         String hciName = premisesDto.getHciName();
                         appCessHciDto.setHciName(hciName);
@@ -134,7 +132,7 @@ public class CessationServiceImpl implements CessationService {
                         String floorNo = premisesDto.getFloorNo();
                         String unitNo = premisesDto.getUnitNo();
                         String postalCode = premisesDto.getPostalCode();
-                        hciAddress = appendPremisesAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
+                        hciAddress = IaisCommonUtils.appendPremisesAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
                         hciName = premisesDto.getHciName();
                         AppCessHciDto appCessHciDto = appCessHciDtos.get(i);
                         appCessHciDto.setHciName(hciName);
@@ -164,28 +162,18 @@ public class CessationServiceImpl implements CessationService {
     @Override
     public void saveCessations(List<AppCessationDto> appCessationDtos) {
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
-        for (int i = 0; i <appCessationDtos.size() ; i++) {
-            AppCessationDto appCessationDto = appCessationDtos.get(i);
+        for(AppCessationDto appCessationDto : appCessationDtos){
             AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
             String licId = appCessationDto.getWhichTodo();
+            Date effectiveDate = appCessationDto.getEffectiveDate();
             LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
             String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT).getEntity();
-            String appNo = grpNo + "-0"+ i ;
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
             String serviceId = hcsaServiceDto.getId();
-            ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(grpNo, licId, ApplicationConsts.APPLICATION_TYPE_CESSATION);
+            ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(grpNo,ApplicationConsts.APPLICATION_TYPE_CESSATION);
             List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
             appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);
-            ApplicationDto applicationDto = new ApplicationDto();
-            applicationDto.setApplicationType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
-            applicationDto.setApplicationNo(appNo);
-            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-            applicationDto.setServiceId(serviceId);
-            applicationDto.setOriginLicenceId(licId);
-            applicationDto.setLicenceId(licId);
-            applicationDto.setVersion(1);
-            List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
-            applicationDtos.add(applicationDto);
+            List<ApplicationDto> applicationDtos = getApplicationDtos(grpNo, serviceId, licId,effectiveDate);
             appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
             appCessMiscDto.setApplicationDto(applicationDtos);
             setMiscData(appCessationDto, appCessMiscDto);
@@ -234,7 +222,7 @@ public class CessationServiceImpl implements CessationService {
     }
 
 
-    private ApplicationGroupDto getApplicationGroupDto(String appNo, String licId, String appType) {
+    private ApplicationGroupDto getApplicationGroupDto(String appNo, String appType) {
         ApplicationGroupDto applicationGroupDto = new ApplicationGroupDto();
         applicationGroupDto.setSubmitDt(new Date());
         applicationGroupDto.setGroupNo(appNo);
@@ -264,6 +252,25 @@ public class CessationServiceImpl implements CessationService {
         appGrpPremisesDto.setStreetName("Lor 27 Geylang");
         appGrpPremisesDtos.add(appGrpPremisesDto);
         return appGrpPremisesDtos;
+    }
+
+    private List<ApplicationDto> getApplicationDtos(String grpNo,String serviceId,String licId,Date effectiveDate){
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+        String appNo = grpNo + "-01";
+        ApplicationDto applicationDto = new ApplicationDto();
+        applicationDto.setApplicationType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
+        applicationDto.setApplicationNo(appNo);
+        if(effectiveDate.after(new Date())){
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+        }else {
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+        }
+        applicationDto.setServiceId(serviceId);
+        applicationDto.setOriginLicenceId(licId);
+        applicationDto.setLicenceId(licId);
+        applicationDto.setVersion(1);
+        applicationDtos.add(applicationDto);
+        return applicationDtos;
     }
 
     private AppCessMiscDto setMiscData(AppCessationDto appCessationDto, AppCessMiscDto appCessMiscDto) {
@@ -296,21 +303,4 @@ public class CessationServiceImpl implements CessationService {
         return appCessMiscDto;
     }
 
-    public static String appendPremisesAddress(String... args) {
-        if (args == null || args.length > 6) {
-            return "";
-        }
-        String[] sign = {" ", " ", "#", "-", ","};
-        StringBuilder stb = new StringBuilder();
-        int i = 0;
-        for (String s : args) {
-            if (i >= args.length - 1) {
-                stb.append(s);
-            } else {
-                stb.append(s).append(sign[i]);
-            }
-            i++;
-        }
-        return stb.toString();
-    }
 }

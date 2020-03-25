@@ -155,6 +155,9 @@ public interface HcsaLicenceClient {
     @GetMapping(value = "/hcsa-licence/postInspection-map",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String,List<String>>> getPostInspectionMap();
 
-    @PostMapping(value = "/hcsa-licence/licence-submission-licences", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/hcsa-licence/submission-app-licIds", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppSubmissionDto>> getAppSubmissionDtos(@RequestBody List<String> licenceIds);
+
+    @PostMapping(value = "/hcsa-licence/licId-premises",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicPremisesDto>> getPremisesByLicIds(@RequestBody List<String> licenceIds);
 }

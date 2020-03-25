@@ -455,7 +455,7 @@ public class ApplicationClientFallback implements ApplicationClient{
 
 
     @Override
-    public FeignResponseEntity<Void> saveFeData(ApplicationListFileDto applicationListFileDto) {
+    public FeignResponseEntity<String> getCorrIdByAppId(String appId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -463,12 +463,13 @@ public class ApplicationClientFallback implements ApplicationClient{
     }
 
     @Override
-    public FeignResponseEntity<String> getCorrIdByAppId(String appId) {
+    public FeignResponseEntity<List<ApplicationDto>> getAppsByGrpNo(String grpNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
+
 
     @Override
     public FeignResponseEntity<Void> saveWithdrawn() {

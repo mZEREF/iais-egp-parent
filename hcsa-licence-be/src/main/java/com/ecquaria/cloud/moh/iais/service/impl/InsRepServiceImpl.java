@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -34,26 +35,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.*;
-import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -103,6 +93,10 @@ public class InsRepServiceImpl implements InsRepService {
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
     private ApplicationViewService applicationViewService;
+    @Autowired
+    private EventBusHelper eventBusHelper;
+    @Autowired
+    private GenerateIdClient generateIdClient;
 
 
     private final String APPROVAL="Approval";
@@ -613,13 +607,19 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public void sendPostInsTaskFeData(String submissionId,String eventRefNum) throws FeignException {
         log.info("call back ===================>>>>>");
-        String appType = ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION;
-        String appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING;
-        List<ApplicationDto> postApps = applicationClient.getPostApplication(appType, appStatus).getEntity();
+        List<ApplicationDto> postApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
+        //appGrp --------app -------task    submissionId   operation yiyang    update licPremise
         List<TaskDto> taskDtos = new ArrayList<>();
         List<String> appGrpIds = new ArrayList<>();
         if(!postApps.isEmpty()&&postApps!=null){
             for(ApplicationDto applicationDto : postApps){
+                String licenceId = applicationDto.getLicenceId();
+                List<String> licIds = IaisCommonUtils.genNewArrayList();
+                licIds.clear();
+                licIds.add(licenceId);
+                List<ApplicationDto> applicationDtos = applicationClient.getApplicationDtosByIds(licIds).getEntity();
+                String applicationType = applicationDtos.get(0).getApplicationType();
+                applicationDto.setApplicationType(applicationType);
                 String corrId = applicationClient.getCorrIdByAppId(applicationDto.getId()).getEntity();
                 TaskDto taskDto = taskService.getRoutingTask(applicationDto, HcsaConsts.ROUTING_STAGE_INS, RoleConsts.USER_ROLE_INSPECTIOR, corrId);
                 taskDtos.add(taskDto);
@@ -627,13 +627,26 @@ public class InsRepServiceImpl implements InsRepService {
                 appGrpIds.add(appGrpId);
             }
         }
+        try {
+            eventBusHelper.submitAsyncRequest(taskDtos,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts.OPERATION_POST_INSPECTION_TASK,eventRefNum,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
         log.info("taskDtos ===================>>>>>"+taskDtos.size());
         taskService.createTasks(taskDtos);
         log.info("taskDtos ===================>>>>>Success"+taskDtos.size());
         String data = applicationClient.getBeData(appGrpIds).getEntity();
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(data, ApplicationListFileDto.class);
         log.info("applicationGroupId ===================>>>>>Success"+applicationListDto.getApplicationGroup().get(0).getId());
-        applicationClient.saveFeData(applicationListDto);
+
+
+        //eic save fe data
+        //applicationClient.saveFeData(applicationListDto);
     }
 
     private void updateInspectionStatus(String appPremisesCorrelationId, String status) {

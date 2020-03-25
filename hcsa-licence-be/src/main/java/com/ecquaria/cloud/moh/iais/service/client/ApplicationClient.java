@@ -208,9 +208,9 @@ public interface ApplicationClient {
     @PutMapping(value = "/iais-application-be/application-be-withdrawal")
     FeignResponseEntity<Void> saveWithdrawn();
 
-    @PostMapping(value = "/iais-application-be/data-to-fe",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> saveFeData(@RequestBody ApplicationListFileDto applicationListFileDto);
-
     @GetMapping(value = "/iais-application-be/corrId-appId/{appId}")
     FeignResponseEntity<String> getCorrIdByAppId(@PathVariable(name = "appId") String appId);
+
+    @GetMapping(value = "/grpNo-apps/{grpNo}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getAppsByGrpNo(@PathVariable(name = "grpNo") String grpNo);
 }
