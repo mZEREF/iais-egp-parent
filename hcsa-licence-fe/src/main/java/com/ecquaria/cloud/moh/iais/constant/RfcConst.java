@@ -43,6 +43,8 @@ public class RfcConst {
 
     public static final String ACKMESSAGE ="AckMessage";
     public static final String DODRAFTCONFIG = "DoDraftConfig";
+    public static final String FIRSTVIEW = "FirstView";
+
 
     //error_msg
     public static final String ERRORMAP_PREMISES = "errorMap_premises";

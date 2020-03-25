@@ -946,7 +946,7 @@ public class ClinicalLaboratoryDelegator {
     public void prepareServicePersonnel(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareServicePersonnel start ...."));
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
-        String currentSvcCod = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
+        String currentSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList  =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
         int mandatory = 0;
         if(hcsaSvcPersonnelList != null && !hcsaSvcPersonnelList.isEmpty()){
@@ -969,17 +969,11 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setRequestAttr(bpc.request, "ServicePersonnelMandatory", mandatory);
 
 
-        List<SelectOption> personnelTypeSel = genPersonnelTypeSel(currentSvcCod);
+        List<SelectOption> personnelTypeSel = genPersonnelTypeSel(currentSvcCode);
         ParamUtil.setRequestAttr(bpc.request, SERVICEPERSONNELTYPE, personnelTypeSel);
 
 
-        List<SelectOption> designation = IaisCommonUtils.genNewArrayList();
-        SelectOption designationOp1 = new SelectOption("Diagnostic radiographer", "Diagnostic radiographer");
-        SelectOption designationOp2 = new SelectOption("Radiation therapist", "Radiation therapist");
-        SelectOption designationOp3 = new SelectOption("Nuclear Medicine Technologist", "Nuclear Medicine Technologist");
-        designation.add(designationOp1);
-        designation.add(designationOp2);
-        designation.add(designationOp3);
+        List<SelectOption> designation = genPersonnelDesignSel(currentSvcCode);
         ParamUtil.setSessionAttr(bpc.request, "NuclearMedicineImagingDesignation", (Serializable) designation);
 
 
@@ -1553,17 +1547,17 @@ public class ClinicalLaboratoryDelegator {
     public static List<SelectOption> genPersonnelTypeSel(String currentSvcCod){
         List<SelectOption> personnelTypeSel = IaisCommonUtils.genNewArrayList();
         if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)){
-            SelectOption personnelTypeOp1 = new SelectOption("SPPT001", "Radiology Professional");
-            SelectOption personnelTypeOp2 = new SelectOption("SPPT002", "Medical Physicist");
-            SelectOption personnelTypeOp3 = new SelectOption("SPPT003", "Radiation Safety Officer");
-            SelectOption personnelTypeOp4 = new SelectOption("SPPT004", "Registered Nurse");
+            SelectOption personnelTypeOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL, ApplicationConsts.SERVICE_PERSONNEL_RADIOLOGY_PROFESSIONAL_STR);
+            SelectOption personnelTypeOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST, ApplicationConsts.SERVICE_PERSONNEL_MEDICAL_PHYSICIST_STR);
+            SelectOption personnelTypeOp3 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER, ApplicationConsts.SERVICE_PERSONNEL_RADIATION_SAFETY_OFFICER_STR);
+            SelectOption personnelTypeOp4 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE, ApplicationConsts.SERVICE_PERSONNEL_REGISTERED_NURSE_STR);
             personnelTypeSel.add(personnelTypeOp1);
             personnelTypeSel.add(personnelTypeOp2);
             personnelTypeSel.add(personnelTypeOp3);
             personnelTypeSel.add(personnelTypeOp4);
         }else if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(currentSvcCod)){
-            SelectOption personnelTypeOp2 = new SelectOption("SPPT002", "Medical Physicist");
-            SelectOption personnelTypeOp3 = new SelectOption("SPPT003", "Radiation Safety Officer");
+            SelectOption personnelTypeOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST, ApplicationConsts.SERVICE_PERSONNEL_MEDICAL_PHYSICIST_STR);
+            SelectOption personnelTypeOp3 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER, ApplicationConsts.SERVICE_PERSONNEL_RADIATION_SAFETY_OFFICER_STR);
             personnelTypeSel.add(personnelTypeOp2);
             personnelTypeSel.add(personnelTypeOp3);
         }else if(AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(currentSvcCod)){
@@ -1573,6 +1567,29 @@ public class ClinicalLaboratoryDelegator {
         }
         return personnelTypeSel;
     }
+
+    public static List<SelectOption> genPersonnelDesignSel(String currentSvcCod){
+        List<SelectOption> designation = IaisCommonUtils.genNewArrayList();
+        if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)){
+            SelectOption designationOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_DIAGNOSTIC_RADIOGRAPHER, ApplicationConsts.SERVICE_PERSONNEL_DIAGNOSTIC_RADIOGRAPHER);
+            SelectOption designationOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_RADIATION_THERAPIST , ApplicationConsts.SERVICE_PERSONNEL_RADIATION_THERAPIST );
+            SelectOption designationOp3 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_NUCLEAR_MEDICINE_TECHNOLOGIST , ApplicationConsts.SERVICE_PERSONNEL_NUCLEAR_MEDICINE_TECHNOLOGIST );
+            designation.add(designationOp1);
+            designation.add(designationOp2);
+            designation.add(designationOp3);
+        }else if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(currentSvcCod)){
+
+        }else if(AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(currentSvcCod)){
+            SelectOption designationOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_MEDICAL_PRACTITIONER, ApplicationConsts.SERVICE_PERSONNEL_MEDICAL_PRACTITIONER);
+            SelectOption designationOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_CLINICAL_NURSE_LEADER , ApplicationConsts.SERVICE_PERSONNEL_CLINICAL_NURSE_LEADER );
+            designation.add(designationOp1);
+            designation.add(designationOp2);
+        }else if(AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(currentSvcCod)){
+
+        }
+        return designation;
+    }
+
     public static List<SelectOption> getAssignPrincipalOfficerSel(String svcId, boolean needFirstOpt){
         List<SelectOption> assignSelectList = IaisCommonUtils.genNewArrayList();
         if(needFirstOpt){
