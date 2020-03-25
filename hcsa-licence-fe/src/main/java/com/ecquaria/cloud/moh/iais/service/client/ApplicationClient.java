@@ -45,7 +45,7 @@ import java.util.Map;
 @FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
         fallback = ApplicationClientFallback.class)
 public interface ApplicationClient  {
-    @PostMapping(path = "/iais-application/all-file")
+    @PostMapping(path = "/iais-application/all-file",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> fileAll(@RequestBody List<String> grpids);
 
     @GetMapping(value = "/iais-application/rec-datas")

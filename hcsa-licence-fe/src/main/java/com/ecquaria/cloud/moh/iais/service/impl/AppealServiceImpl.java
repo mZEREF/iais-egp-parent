@@ -160,6 +160,8 @@ public class AppealServiceImpl implements AppealService {
         appSubmissionDto.setAmountStr(s);
         appSubmissionDto.setDraftStatus("CMSTAT001");
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_APPEAL);
+        //todo
+        appSubmissionDto.setLicenseeId("9ED45E34-B4E9-E911-BE76-000C29C8FBE4");
         AppSubmissionDto entity = applicationClient.saveDraft(appSubmissionDto).getEntity();
         String draftNo = entity.getDraftNo();
         appPremiseMiscDto.setRemarks(remarks);

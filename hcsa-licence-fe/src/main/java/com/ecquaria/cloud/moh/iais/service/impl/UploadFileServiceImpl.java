@@ -40,6 +40,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -115,7 +116,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     @Override
     public String getData() {
-        String entity = applicationClient.fileAll(null).getEntity();
+        List<String> list=new ArrayList<>();
+        String entity = applicationClient.fileAll(list).getEntity();
         return entity;
     }
 

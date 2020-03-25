@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.RedirectUtil;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCategoryDto;
@@ -26,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.HcsaConfigPageDto;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
@@ -68,6 +68,8 @@ public class ConfigServiceImpl implements ConfigService {
     private MsgTemplateClient msgTemplateClient;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
+    @Autowired
+    private EmailClient emailClient;
     @Override
     public List<HcsaServiceDto> getAllHcsaServices(HttpServletRequest request) {
         List<HcsaServiceDto> entity = hcsaConfigClient.allHcsaService().getEntity();
@@ -1373,7 +1375,7 @@ public class ConfigServiceImpl implements ConfigService {
         map.put("option",option);
         map.put("SystemAdministratorID",userId);
         //todo
-        MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("").getEntity();
+        MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("978FD1F4-616E-EA11-BE82-000C29F371DC").getEntity();
         String messageContent = entity.getMessageContent();
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
         EmailDto emailDto=new EmailDto();
@@ -1442,13 +1444,17 @@ public class ConfigServiceImpl implements ConfigService {
         map.put("serviceName",serviceName);
         map.put("SystemAdministratorID",userId);
         //todo
-        MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("").getEntity();
+        MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("2E06165B-626E-EA11-BE82-000C29F371DC").getEntity();
         String messageContent = entity.getMessageContent();
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
         EmailDto emailDto=new EmailDto();
         emailDto.setContent(templateMessageByContent);
         emailDto.setSubject("The Effective Start/End Date of the following HCSA Service Template: "+serviceName+"  has been amended");
         emailDto.setSender("MOH");
+        emailDto.setClientQueryCode("isNotAuto");
+        //address
+       /* emailDto.setReceipts();*/
+        emailClient.sendNotification(emailDto).getEntity();
     }
 
     private void sendURL(HttpServletRequest request,HttpServletResponse response){

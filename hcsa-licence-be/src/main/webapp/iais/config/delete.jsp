@@ -307,8 +307,8 @@
         <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service Fee Bundles<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
-            <div class="components">
-              <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
+            <div class="components width-center">
+              <a class="btn btn-secondary width-70" style="padding: 12px 60px"><span class="view">view</span></a>
             </div>
           </div>
         </div>
@@ -317,23 +317,23 @@
       <div class="form-group">
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
           <div class="col-xs-10 col-md-3">
-            <div class="components">
-              <a class="btn btn-secondary " onclick="showNEW()"><span class="view">NEW APPLICATION</span></a>
+            <div class="components width-center">
+              <a class="btn btn-secondary width-70" onclick="showNEW()"><span class="view">NEW APPLICATION</span></a>
             </div>
           </div>
           <div class="col-xs-10 col-md-3">
-            <div class="components">
-              <a class="btn btn-secondary " onclick="showRENEW()"><span class="view">RENEW</span></a>
+            <div class="components width-center">
+              <a class="btn btn-secondary width-70" onclick="showRENEW()"><span class="view">RENEW</span></a>
             </div>
           </div>
           <div class="col-xs-10 col-md-3">
-            <div class="components">
-              <a class="btn btn-secondary " onclick="showAPPEAL()"><span class="view">APPEAL</span></a>
+            <div class="components width-center">
+              <a class="btn btn-secondary width-70" onclick="showAPPEAL()"><span class="view">APPEAL</span></a>
             </div>
           </div>
           <div class="col-xs-10 col-md-3">
-            <div class="components">
-              <a class="btn btn-secondary " onclick="showRFC()"><span class="view">REQUEST FOR CHANGE</span></a>
+            <div class="components width-center">
+              <a class="btn btn-secondary width-70" onclick="showRFC()"><span class="view">REQUEST FOR CHANGE</span></a>
             </div>
           </div>
         </div>
@@ -343,24 +343,24 @@
       <div  class="form-group">
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
           <div class="col-xs-10 col-md-3">
-            <div class="components">
-              <a class="btn btn-secondary " onclick="showCESSATION()"><span class="view">CESSATION</span></a>
+            <div class="components width-center">
+              <a class="btn btn-secondary width-70" onclick="showCESSATION()"><span class="view">CESSATION</span></a>
             </div>
           </div>
           <div class="col-xs-10 col-md-3">
-            <div class="components">
-              <a class="btn btn-secondary " onclick="showSUSPENSION()"><span class="view">SUSPENSION</span></a>
+            <div class="components width-center">
+              <a class="btn btn-secondary width-70" onclick="showSUSPENSION()"><span class="view">SUSPENSION</span></a>
             </div>
           </div>
 
           <div class="col-xs-10 col-md-3">
-            <div class="components">
-              <a class="btn btn-secondary " onclick="showWITHDRAWAL()"><span class="view">WITHDRAWAL</span></a>
+            <div class="components width-center">
+              <a class="btn btn-secondary width-70" onclick="showWITHDRAWAL()"><span class="view">WITHDRAWAL</span></a>
             </div>
           </div>
           <div class="col-xs-10 col-md-3">
-            <div class="components">
-              <a class="btn btn-secondary " onclick="showREVOCATION()"><span class="view">REVOCATION</span></a>
+            <div class="components width-center">
+              <a class="btn btn-secondary width-70" onclick="showREVOCATION()"><span class="view">REVOCATION</span></a>
             </div>
           </div>
 
@@ -546,8 +546,12 @@
       </div>
 
     </div>
+
+
   </form>
 </div>
+<iais:confirm msg="Are you sure you want to leave this page!" callBack="" popupOrder=""></iais:confirm>
+
 <style>
   .mandatory{
     color: #ff0000;
@@ -558,6 +562,13 @@
 
   .marg-1{
     margin-top: 1%;
+  }
+
+  .width-center{
+    text-align: center;width: 100%
+  }
+  .width-70{
+    width: 70%;
   }
 
 </style>
