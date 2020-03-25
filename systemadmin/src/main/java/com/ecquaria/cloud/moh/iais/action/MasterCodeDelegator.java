@@ -324,6 +324,7 @@ public class MasterCodeDelegator {
         masterCodeDto.setCodeCategory(masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory()));
         masterCodeService.saveMasterCode(masterCodeDto);
         ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
+        ParamUtil.setRequestAttr(request,"CREATED_DATE",new Date());
 
     }
 
