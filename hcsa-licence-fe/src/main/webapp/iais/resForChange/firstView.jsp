@@ -7,7 +7,6 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
-<br/>
 <style>
     .font-size-14{
         font-size: 14px;

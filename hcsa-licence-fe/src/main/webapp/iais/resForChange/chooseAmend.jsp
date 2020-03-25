@@ -7,8 +7,6 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
-<br/>
-
 <%@include file="../common/dashboard.jsp" %>
 <form class="form-inline" method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
     <div class="row">
@@ -60,7 +58,6 @@
 
     </div>
 
-    <div class="application-tab-footer"></div>
 </form>
 <script>
     $(document).ready(function () {

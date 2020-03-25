@@ -15,7 +15,7 @@
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
-<%@include file="../inspecUserRecUpload/dashboard.jsp"%>
+<%@include file="../common/dashboard.jsp"%>
 
 <div class="container">
   <div class="component-gp">
