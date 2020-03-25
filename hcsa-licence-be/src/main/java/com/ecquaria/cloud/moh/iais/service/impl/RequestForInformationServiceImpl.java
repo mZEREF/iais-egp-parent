@@ -204,7 +204,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         List<String> subTypeNames= hcsaChklClient.listSubTypeName().getEntity();
         List<SelectOption> selectOptions= IaisCommonUtils.genNewArrayList();
         for (String subTypeName:subTypeNames
-             ) {
+        ) {
             SelectOption selectOption=new SelectOption();
             selectOption.setText(subTypeName);
             selectOption.setValue(subTypeName);
@@ -224,7 +224,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
         List<String> actionBys=IaisCommonUtils.genNewArrayList();
         for (LicAppCorrelationDto licApp:licAppCorrelationDtos
-             ) {
+        ) {
             ApplicationDto applicationDto=applicationClient.getApplicationById(licApp.getApplicationId()).getEntity();
             List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNo(applicationDto.getApplicationNo());
             for(AppPremisesRoutingHistoryDto appHis:appPremisesRoutingHistoryDtos){

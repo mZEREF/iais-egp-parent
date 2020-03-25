@@ -300,19 +300,21 @@ public class OfficerOnlineEnquiriesDelegator {
                     reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
 
 
-                    filter.put("id", lic.getAppId());
-                    filter.remove("svc_names");
-                    filter.remove("licenseeIds");
-                    applicationParameter.setFilters(filter);
+                    if(!StringUtil.isEmpty(lic.getAppId())){
+                        filter.put("id", lic.getAppId());
+                        filter.remove("svc_names");
+                        filter.remove("licenseeIds");
+                        applicationParameter.setFilters(filter);
 
-                    SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
-                    appParam.setPageNo(0);
-                    QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
-                    SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
-                    if(!StringUtil.isEmpty(appResult)){
-                        for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
-                        ) {
-                            rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
+                        SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
+                        appParam.setPageNo(0);
+                        QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
+                        SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
+                        if(!StringUtil.isEmpty(appResult)){
+                            for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
+                            ) {
+                                rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
+                            }
                         }
                     }
 
@@ -661,19 +663,21 @@ public class OfficerOnlineEnquiriesDelegator {
                     reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
 
 
-                    filters.put("id", lic.getAppId());
-                    filters.remove("svc_names");
-                    filters.remove("licenseeIds");
-                    applicationParameter.setFilters(filters);
+                    if(!StringUtil.isEmpty(lic.getAppId())){
+                        filters.put("id", lic.getAppId());
+                        filters.remove("svc_names");
+                        filters.remove("licenseeIds");
+                        applicationParameter.setFilters(filters);
 
-                    SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
-                    appParam.setPageNo(0);
-                    QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
-                    SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
-                    if(!StringUtil.isEmpty(appResult)){
-                        for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
-                        ) {
-                            rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
+                        SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
+                        appParam.setPageNo(0);
+                        QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
+                        SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
+                        if(!StringUtil.isEmpty(appResult)){
+                            for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
+                            ) {
+                                rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
+                            }
                         }
                     }
 
