@@ -5,12 +5,16 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 
 import java.io.Serializable;
@@ -48,6 +52,9 @@ public class WithOutRenewalDelegator {
     @Autowired
     AppSubmissionService appSubmissionService;
 
+    @Autowired
+    ServiceConfigService serviceConfigService;
+
     public void start(BaseProcessClass bpc){
         log.info("**** the non auto renwal  start ******");
         //init session
@@ -79,13 +86,17 @@ public class WithOutRenewalDelegator {
         for (AppSubmissionDto appSubmissionDto: appSubmissionDtoList) {
             if(!appSubmissionDto.getAppSvcRelatedInfoDtoList().isEmpty()) {
                 String serviceName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
-                String svcId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceId();
-
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+                String svcId = hcsaServiceDto.getId();
                 Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap= NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto,svcId);
                 reloadDisciplineAllocationMapList.add(reloadDisciplineAllocationMap);
 
+                //set AppSvcRelatedInfoDtoList chkName
+                List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(svcId);
+                NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto,hcsaSvcSubtypeOrSubsumedDtos);
                 AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
                 appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
+
                 List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
                 List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
                 List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
