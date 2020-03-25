@@ -20,7 +20,7 @@
                                 <%@include file="../resForChange/amendHeader.jsp"%>
                             </c:when>
                             <c:when test="${'APTY004' == AppSubmissionDto.appType}">
-                                <%@include file="../resForChange/renewalHeader.jsp"%>
+                                <%@include file="../withoutrenewal/renewalHeader.jsp"%>
                             </c:when>
                         </c:choose>
                     </c:otherwise>
