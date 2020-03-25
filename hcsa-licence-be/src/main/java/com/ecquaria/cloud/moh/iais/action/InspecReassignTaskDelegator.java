@@ -109,7 +109,7 @@ public class InspecReassignTaskDelegator {
         }
         QueryHelp.setMainSql("inspectionQuery", "assignInspectorSupper", searchParam);
         SearchResult<InspectionSubPoolQueryDto> searchResult = inspectionService.getSupPoolByParam(searchParam);
-        SearchResult<InspectionTaskPoolListDto> searchResult2 = inspectionService.getOtherDataForSr(searchResult, ReassignPools, loginContext);
+        SearchResult<InspectionTaskPoolListDto> searchResult2 = null;
         ParamUtil.setRequestAttr(bpc.request, "supTaskSearchResult", searchResult2);
     }
 
@@ -300,7 +300,7 @@ public class InspecReassignTaskDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         QueryHelp.setMainSql("inspectionQuery", "assignInspectorSupper", searchParam);
         SearchResult<InspectionSubPoolQueryDto> searchResult = inspectionService.getSupPoolByParam(searchParam);
-        SearchResult<InspectionTaskPoolListDto> searchResult2 = inspectionService.getOtherDataForSr(searchResult, ReassignPools, loginContext);
+        SearchResult<InspectionTaskPoolListDto> searchResult2 = null;
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", searchResult2);
     }
