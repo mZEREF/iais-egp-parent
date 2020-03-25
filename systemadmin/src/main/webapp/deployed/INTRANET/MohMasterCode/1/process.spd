@@ -87,7 +87,7 @@
     <JavaCode defClass="" executor="" methodName="doUpload_OnStepProcess_0" name="doUpload_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doCreateCode" x="760" y="480">
+  <AutomaticStep defClass="" executor="" icon="" name="doCreateCode" x="710" y="480">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -121,13 +121,19 @@
    <OnPageLoad/>
    <OnPageSubmit/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="doCreateCodePage" stageIndicator="" x="650" y="480">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="doCreateCodePage" stageIndicator="" x="590" y="480">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ackPage" stageIndicator="" x="1000" y="480">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ackPage" stageIndicator="" x="940" y="470">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="editAckPage" stageIndicator="" x="790" y="350">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -136,10 +142,10 @@
  </Pages>
  <Forms/>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/prepareCode" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="codeCond" operator="=" rightOperand="&quot;Y&quot;" x="880" y="480">
+  <Condition componentIfFalse="/Steps/AutomaticStep/prepareCode" componentIfTrue="/Pages/WebPage/ackPage" defClass="" executor="" icon="" leftOperand="isValid" name="codeCond" operator="=" rightOperand="&quot;Y&quot;" x="820" y="480">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Steps/AutomaticStep/PrepareEdit" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="590" y="320">
+  <Condition componentIfFalse="/Steps/AutomaticStep/PrepareEdit" componentIfTrue="/Pages/WebPage/editAckPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="590" y="320">
    <Description/>
   </Condition>
   <Condition componentIfFalse="/Steps/AutomaticStep/prepareCreate" componentIfTrue="/Steps/AutomaticStep/prepareCode" defClass="" executor="" icon="" leftOperand="isValid" name="categoryCond" operator="=" rightOperand="&quot;Y&quot;" x="300" y="480">
@@ -163,7 +169,7 @@
  </Switches>
  <Branches/>
  <Merges>
-  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1060" y="420">
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1030" y="420">
    <Description/>
   </Merge>
  </Merges>
@@ -197,16 +203,16 @@
    <position>{(660,20)(830,180)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSearch" style="oblique">
-   <position>{(550,180)(1080,440)}</position>
+   <position>{(550,180)(1050,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSorting" style="oblique">
-   <position>{(650,180)(1080,440)}</position>
+   <position>{(650,180)(1050,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPaging" style="oblique">
-   <position>{(720,180)(1080,440)}</position>
+   <position>{(720,180)(1050,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doDelete" style="oblique">
-   <position>{(830,180)(1080,440)}</position>
+   <position>{(830,180)(1050,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareCreate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(660,20)(320,180)}</position>
@@ -236,22 +242,22 @@
    <position>{(610,340)(440,180)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
-   <position>{(1080,440)(190,674)(200,20)}</position>
+   <position>{(1050,440)(190,674)(200,20)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doUpload" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(660,20)(960,190)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doUpload" style="oblique">
-   <position>{(960,190)(1080,440)}</position>
+   <position>{(960,190)(1050,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doCreateCode" linkstyle="Direct" name="" sourceName="/Pages/WebPage/doCreateCodePage" style="oblique">
-   <position>{(670,500)(780,500)}</position>
+   <position>{(610,500)(730,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/codeCond" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doCreateCode" style="rectanular">
-   <position>{(780,500)(900,500)}</position>
+   <position>{(730,500)(840,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ackPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/codeCond" style="oblique">
-   <position>{(900,500)(1020,500)}</position>
+   <position>{(840,500)(960,490)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareCode" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/categoryCond" style="rectanular">
    <position>{(320,500)(450,500)}</position>
@@ -260,19 +266,25 @@
    <position>{(320,500)(247,499)(247,180)(320,180)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareCode" linkstyle="Direct" name="" sourceName="/Conditions/Condition/codeCond" style="oblique">
-   <position>{(900,500)(910,592)(468,592)(450,500)}</position>
+   <position>{(840,500)(852,590)(468,592)(450,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/backCond" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareCode" style="oblique">
    <position>{(450,500)(550,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/doCreateCodePage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/backCond" style="rectanular">
-   <position>{(550,500)(670,500)}</position>
+   <position>{(550,500)(610,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/backCond" style="oblique">
-   <position>{(550,500)(557,439)(1080,440)}</position>
+   <position>{(550,500)(561,439)(1050,440)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
-   <position>{(610,340)(1080,440)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/editAckPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(610,340)(810,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ackPage" style="oblique">
+   <position>{(960,490)(1050,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/editAckPage" style="oblique">
+   <position>{(810,370)(1050,440)}</position>
   </SynchronousLink>
  </Links>
 </Application>
