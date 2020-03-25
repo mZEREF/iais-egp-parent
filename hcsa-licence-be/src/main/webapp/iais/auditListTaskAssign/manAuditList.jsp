@@ -17,9 +17,7 @@
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
+    <input type="hidden" name="actionTodo" id="actionTodo" />
 
     <div class="main-content">
         <div class="container">
@@ -73,6 +71,10 @@
                                             </td>
                                             <td>
                                                 <input name="<c:out value="${id}"/>selectForAd" id="<c:out value="${id}"/>selectForAd" type="checkbox" value="ad" <c:if test="${item.selectedForAudit}">checked</c:if>/>
+                                                <br/>
+                                                <c:set value="error_${id}select" var="errselect"/>
+                                                <span class="error-msg" id="<c:out value="${errselect}"/>"
+                                                      name="iaisErrorMsg"></span>
                                             </td>
                                         </tr>
                                        </c:if>
@@ -101,8 +103,10 @@
         </div>
     </div>
 </form>
+<%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
     function confirm() {
+        $('#actionTodo').val("confirm");
         SOP.Crud.cfxSubmit("mainForm","confirm");
     }
     function cancel() {
@@ -110,6 +114,7 @@
     }
 
     function cancelAudit() {
+        $('#actionTodo').val("cancel");
         SOP.Crud.cfxSubmit("mainForm","precancel");
     }
 

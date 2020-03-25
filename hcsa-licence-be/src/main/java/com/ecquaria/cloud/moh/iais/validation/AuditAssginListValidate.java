@@ -18,6 +18,7 @@ public class AuditAssginListValidate implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>) ParamUtil.getSessionAttr(request,"auditTaskDataDtos");
+        String actionTodo = ParamUtil.getString(request,"actionTodo");
         int selectedFlagNum = 0;
         if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){
             for(int i=0;i<auditTaskDataDtos.size();i++){
@@ -29,6 +30,10 @@ public class AuditAssginListValidate implements CustomizeValidator {
                     if(StringUtil.isEmpty(auditTaskDataDtos.get(i).getAuditType())){
                         errMap.put(i+"adtype","AUDIT_UC_ERR0003");
                     }
+                    if(auditTaskDataDtos.get(i).isAudited() && "confirm".equalsIgnoreCase(actionTodo))
+                        errMap.put(i+"select","This audit has been confirmed.");
+                    else if(!auditTaskDataDtos.get(i).isAudited() && "cancel".equalsIgnoreCase(actionTodo))
+                        errMap.put(i+"select","This audit hasn't confirmed.");
                 }
             }
         }

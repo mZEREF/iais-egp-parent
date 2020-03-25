@@ -22,9 +22,7 @@
     <input type="hidden" name="valEntity" id="valEntity"
            value="com.ecquaria.cloud.moh.iais.dto.AuditAssginListValidateDto"/>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
+    <input type="hidden" name="actionTodo" id="actionTodo" />
 
     <div class="main-content">
         <div class="container">
@@ -96,6 +94,10 @@
                                                        id="<c:out value="${id}"/>selectForAd"
                                                        <c:if test="${item.selectedForAudit}">checked</c:if>
                                                        type="checkbox" value="ad">
+                                                <br/>
+                                                <c:set value="error_${id}select" var="errselect"/>
+                                                <span class="error-msg" id="<c:out value="${errselect}"/>"
+                                                      name="iaisErrorMsg"></span>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -109,8 +111,10 @@
                     </div>
 
                     <iais:action style="text-align:right;">
+                        <c:if test="${!ISTUC}">
                         <button type="button" class="btn btn-secondary" onclick="javascript:cancel();">Cancel
                         </button>
+                        </c:if>
                         <button type="button" class="btn btn-primary next" onclick="javascript:confirm();">Confirm
                             to Audit
                         </button>
@@ -127,6 +131,7 @@
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
     function confirm() {
+        $('#actionTodo').val("confirm");
         SOP.Crud.cfxSubmit("mainForm", "confirm");
     }
 
@@ -139,6 +144,7 @@
     }
 
     function cancelAudit() {
+        $('#actionTodo').val("cancel");
         SOP.Crud.cfxSubmit("mainForm", "cancel");
     }
 

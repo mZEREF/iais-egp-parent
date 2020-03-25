@@ -98,8 +98,14 @@ public class AuditTcuListDelegator {
         getListData(request);
         AuditAssginListValidate auditAssginListValidate = new AuditAssginListValidate();
         Map<String, String> errMap = auditAssginListValidate.validate(request);
-        ParamUtil.setSessionAttr(request, "actionCancel", "back");
-        ParamUtil.setSessionAttr(request, "actionCancelAudit", "cancel");
+        if (errMap.isEmpty()) {
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            ParamUtil.setSessionAttr(request, "actionCancel", "back");
+            ParamUtil.setSessionAttr(request, "actionCancelAudit", "cancel");
+        } else {
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+        }
     }
 
     public void cancel(BaseProcessClass bpc) {

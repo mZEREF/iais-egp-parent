@@ -78,7 +78,7 @@ public class AuditManualListDelegator {
         Map<String, String> errMap = auditAssginListValidate.validate(request);
         if(errMap.isEmpty()){
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-            ParamUtil.setSessionAttr(request,"actionCancel","back");
+            ParamUtil.setSessionAttr(request,"actionCancel","doback");
             ParamUtil.setSessionAttr(request,"actionConfirm","confirm");
         }else{
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
