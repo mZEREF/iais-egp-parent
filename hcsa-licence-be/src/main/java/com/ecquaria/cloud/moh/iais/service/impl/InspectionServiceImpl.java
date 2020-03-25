@@ -285,8 +285,10 @@ public class InspectionServiceImpl implements InspectionService {
         ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(superPoolTaskQueryDto.getTaskRefNo()).getEntity();
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+        TaskDto taskDto = taskService.getTaskById(taskId);
 
         inspectionTaskPoolListDto.setTaskId(taskId);
+        inspectionTaskPoolListDto.setTaskDto(taskDto);
         inspectionTaskPoolListDto.setWorkGroupId(superPoolTaskQueryDto.getWorkGroupId());
         inspectionTaskPoolListDto.setApplicationStatus(applicationDto.getStatus());
         inspectionTaskPoolListDto.setApplicationNo(applicationDto.getApplicationNo());
