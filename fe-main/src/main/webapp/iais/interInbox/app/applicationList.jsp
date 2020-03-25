@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
 <div class="tab-search">
     <form class="" method="post" id="appForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -12,10 +13,10 @@
             <div class="row">
                 <div class="col-md-6">
                     <iais:value>
-                        <label class="col-xs-7 col-md-7" for="appNoPath" style="margin-top:1%;">Search by Application No
+                        <label class="col-xs-5 col-md-5" for="appNoPath" style="margin-top:1%;">Search by Application No
                             or Part of:</label>
-                        <div class="col-xs-5 col-md-5">
-                            <input id="appNoPath" name="appNoPath" type="text" maxlength="15"
+                        <div class="col-xs-7 col-md-7">
+                            <input id="appNoPath" name="appNoPath" type="text" maxlength="20"
                                    value="<%=request.getParameter("appNoPath")==null?"":request.getParameter("appNoPath")%>">
                         </div>
                     </iais:value>
@@ -35,9 +36,9 @@
             <div class="row" style="margin-bottom: 14px">
                 <div class="col-md-6">
                     <iais:value>
-                        <label class="col-xs-7 col-md-7" for="appTypeSelect" style="margin-top:3%;">Application
+                        <label class="col-xs-5 col-md-5" for="appTypeSelect" style="margin-top:3%;">Application
                             Type:</label>
-                        <div class="col-xs-5 col-md-5">
+                        <div class="col-xs-7 col-md-7">
                             <%String appTypeSelect = request.getParameter("appTypeSelect");%>
                             <iais:select name="appTypeSelect" id="appTypeSelect" cssClass="appTypeSelect"
                                          options="appTypeSelect" value="<%=appTypeSelect%>"></iais:select>
@@ -59,10 +60,12 @@
             <div class="row">
                 <div class="col-md-6">
                     <iais:value>
-                        <label class="col-xs-7 col-md-7" for="esd" style="margin-top:3%;">Date Submitted:</label>
-                        <div class="col-xs-5 col-md-5">
-                            <%Date esd = Formatter.parseDate(request.getParameter("esd"));%>
-                            <iais:datePicker id="esd" name="esd" dateVal="<%=esd%>"/>
+                        <label class="col-xs-5 col-md-5" for="esd" style="margin-top:3%;">Date Submitted:</label>
+                        <div class="col-xs-7 col-md-7">
+                            <%
+                                Date esd = Formatter.parseDate(request.getParameter("esd"));
+                            %>
+                            <iais:datePicker id="esd" name="esd" dateVal="<%=esd%>" onchange="LimitDeadline(this.value)"/>
                         </div>
                     </iais:value>
                 </div>
@@ -70,8 +73,10 @@
                     <iais:value>
                         <label class="col-xs-4 col-md-4" for="appStatusSelect" style="margin-top:3%;">To</label>
                         <div class="col-xs-8 col-md-8">
-                            <%Date eed = Formatter.parseDate(request.getParameter("eed"));%>
-                            <iais:datePicker id="eed" name="eed" dateVal="<%=eed%>"/>
+                            <%
+                                Date eed = Formatter.parseDate(request.getParameter("eed"));
+                            %>
+                            <iais:datePicker id="eed" name="eed" dateVal="<%=eed%>" />
                         </div>
                     </iais:value>
                 </div>

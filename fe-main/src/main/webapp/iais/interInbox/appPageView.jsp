@@ -122,6 +122,11 @@
         }
     }
 
+    function LimitDeadline(startDate) {
+        $("#eed").attr("startDate",startDate);
+        $("#eed").attr("data-date-start-date",startDate);
+    }
+
     function appAjax(){
         $.ajax({
             data:{

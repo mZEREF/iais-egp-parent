@@ -11,7 +11,7 @@
                         <label class="col-xs-4 col-md-4" for="licNoPath" style="text-align:left;margin-top: 1.5%">Search
                             by Licence No or Part of:</label>
                         <div class="col-xs-8 col-md-8">
-                            <input id="licNoPath" name="licNoPath" type="text" maxlength="15"
+                            <input id="licNoPath" name="licNoPath" type="text" maxlength="20"
                                    value="<%=request.getParameter("licNoPath")==null?"":request.getParameter("licNoPath")%>">
                         </div>
                     </iais:value>
@@ -160,12 +160,12 @@
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Start Date</p>
                                         <p><fmt:formatDate value="${licenceQuery.startDate}"
-                                                           pattern="dd/MM/yyyy HH:mm:ss"/></p>
+                                                           pattern="dd/MM/yyyy"/></p>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
                                         <p><fmt:formatDate value="${licenceQuery.expiryDate}"
-                                                           pattern="dd/MM/yyyy HH:mm:ss"/></p>
+                                                           pattern="dd/MM/yyyy"/></p>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Actions</p>
