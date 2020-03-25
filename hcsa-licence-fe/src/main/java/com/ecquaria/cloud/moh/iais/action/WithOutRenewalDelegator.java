@@ -3,14 +3,9 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -20,6 +15,8 @@ import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -74,10 +71,36 @@ public class WithOutRenewalDelegator {
         List<String> serviceNameTitleList = IaisCommonUtils.genNewArrayList();
         List<String> serviceNameList = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList);
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = IaisCommonUtils.genNewArrayList();
+        List<Map<String,List<AppSvcDisciplineAllocationDto>>> reloadDisciplineAllocationMapList = IaisCommonUtils.genNewArrayList();
+        List<List<AppSvcPrincipalOfficersDto>> principalOfficersDtosList = IaisCommonUtils.genNewArrayList();
+        List<List<AppSvcPrincipalOfficersDto>> deputyPrincipalOfficersDtosList = IaisCommonUtils.genNewArrayList();
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         for (AppSubmissionDto appSubmissionDto: appSubmissionDtoList) {
             if(!appSubmissionDto.getAppSvcRelatedInfoDtoList().isEmpty()) {
                 String serviceName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
+                String svcId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceId();
+
+                Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap= NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto,svcId);
+                reloadDisciplineAllocationMapList.add(reloadDisciplineAllocationMap);
+
+                AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+                appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
+                List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+                List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
+                List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
+                if(appSvcPrincipalOfficersDtos != null && ! appSvcPrincipalOfficersDtos.isEmpty()){
+                    for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto:appSvcPrincipalOfficersDtos){
+                        if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(appSvcPrincipalOfficersDto.getPsnType())){
+                            principalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                        }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(appSvcPrincipalOfficersDto.getPsnType())){
+                            deputyPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                        }
+                    }
+                }
+                principalOfficersDtosList.add(principalOfficersDtos);
+                deputyPrincipalOfficersDtosList.add(deputyPrincipalOfficersDtos);
+
                 if(!StringUtil.isEmpty(serviceName)){
                     if(index ==0){
                         firstSvcName = serviceName;
@@ -124,6 +147,13 @@ public class WithOutRenewalDelegator {
         //serviceNameList
         ParamUtil.setSessionAttr(bpc.request,"serviceNames", (Serializable)serviceNameList);
         ParamUtil.setSessionAttr(bpc.request,"firstSvcName", firstSvcName);
+        ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfoList", (Serializable)appSvcRelatedInfoDtoList);
+        ParamUtil.setSessionAttr(bpc.request, "reloadDisciplineAllocationMapList", (Serializable)reloadDisciplineAllocationMapList);
+        ParamUtil.setSessionAttr(bpc.request, "ReloadPrincipalOfficersList", (Serializable)principalOfficersDtosList);
+        ParamUtil.setSessionAttr(bpc.request, "deputyPrincipalOfficersDtosList", (Serializable)deputyPrincipalOfficersDtosList);
+
+
+
         log.info("**** the non auto renwal  end ******");
     }
 
@@ -150,6 +180,17 @@ public class WithOutRenewalDelegator {
 
     //preparePayment
     public void preparePayment(BaseProcessClass bpc)throws Exception{
+        RenewDto renewDto = (RenewDto)ParamUtil.getSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
+        if(renewDto == null){
+            return;
+        }
+        List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
+        for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
+            if(!StringUtil.isEmpty(appSubmissionDto.getAmount())){
+                String amountStr = Formatter.formatterMoney(appSubmissionDto.getAmount());
+                appSubmissionDto.setAmountStr(amountStr);
+            }
+        }
 
     }
 
@@ -166,7 +207,7 @@ public class WithOutRenewalDelegator {
 
     //doLicenceReview
     public void doLicenceReview(BaseProcessClass bpc)throws Exception{
-
+        ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE3);
     }
 
     //doPayment

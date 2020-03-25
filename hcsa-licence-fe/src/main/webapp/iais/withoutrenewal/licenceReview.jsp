@@ -43,22 +43,41 @@
                                         </div>
                                         <%--main content--%>
                                         <div class="tab-content">
-                                            <%--<div class="tab-pane active" id="previewTab" role="tabpanel">--%>
-                                                <%--<div class="preview-gp">--%>
+                                            <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}" varStatus="status">
+                                                <c:set var="AppSubmissionDto" value="${AppSubmissionDto}" scope="request"/>
+                                                <c:set var="documentIndex" value="${status.index}" scope="request"/>
+                                                <div class="tab-pane ${status.index == '0' ? 'active' : ''}" id="serviceName${status.index}" role="tabpanel">
+                                                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                                        <%@include file="../common/previewPremises.jsp"%>
+                                                        <%@include file="../common/previewPrimary.jsp"%>
+                                                        <div class="panel panel-default svc-content">
+                                                            <div class="panel-heading"  id="headingServiceInfo${status.index}" role="tab">
+                                                                <h4 class="panel-title"><a class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${documentIndex}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information </a></h4>
+                                                            </div>
 
-                                                    <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}" varStatus="status">
-                                                        <c:set var="AppSubmissionDto" value="${AppSubmissionDto}" scope="request"/>
-                                                        <c:set var="documentIndex" value="${status.index}" scope="request"/>
-                                                        <div class="tab-pane ${status.index == '0' ? 'active' : ''}" id="serviceName${status.index}" role="tabpanel">
-                                                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                                                                <%@include file="../common/previewPremises.jsp"%>
-                                                                <%@include file="../common/previewPrimary.jsp"%>
+                                                            <div class=" panel-collapse collapse" id="collapseServiceInfo${documentIndex}" role="tabpanel" aria-labelledby="headingServiceInfo">
+                                                                <div class="panel-body">
+                                                                        <%--<p class="text-right mb-0">--%>
+                                                                        <%--<a href="#" id="doSvcEdit"><em class="fa fa-pencil-square-o"></em>Edit</a>--%>
+                                                                        <%--</p>--%>
+                                                                    <div class="panel-main-content">
+                                                                        <c:set var="appGrpPremisesDtoList" value="${AppSubmissionDto.appGrpPremisesDtoList}"></c:set>
+                                                                        <c:set var="currentPreviewSvcInfo" value="${currentPreviewSvcInfoList.get(documentIndex)}"></c:set>
+                                                                        <c:set var="reloadDisciplineAllocationMap" value="${reloadDisciplineAllocationMapList.get(documentIndex)}"></c:set>
+                                                                        <c:set var="ReloadPrincipalOfficers" value="${ReloadPrincipalOfficersList.get(documentIndex)}"></c:set>
+                                                                        <c:set var="ReloadDeputyPrincipalOfficers" value="${deputyPrincipalOfficersDtosList.get(documentIndex)}"></c:set>
+                                                                        <%@include file="../common/previewSvcDisciplines.jsp"%>
+                                                                        <%@include file="../common/firstPreviewSvcGovernanceOfficer.jsp"%>
+                                                                        <%@include file="../common/previewSvcAllocation.jsp"%>
+                                                                        <%@include file="../common/firstPreviewSvcPrincipalOfficers.jsp"%>
+                                                                        <%@include file="../common/previewSvcDocument.jsp"%>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </c:forEach>
-
-                                                <%--</div>--%>
-                                            <%--</div>--%>
+                                                    </div>
+                                                </div>
+                                            </c:forEach>
                                         </div>
                                         <%--main content--%>
                                     </div>
@@ -74,7 +93,7 @@
                                     <p><a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a></p>
                                 </div>
                                 <div class="col-xs-12 col-sm-6">
-                                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#">Preview the Next Service</a></div>
+                                    <div class="text-right text-center-mobile"><a id="Next" class="btn btn-primary">Preview the Next Service</a></div>
                                 </div>
                             </div>
                         </div>
@@ -89,4 +108,9 @@
         $('[name="switch_value"]').val('instructions');
         $('#LicenceReviewForm').submit();
     });
+    // $('#Next').click(function () {
+    //     $('[name="switch_value"]').val('doLicenceReview');
+    //     $('#LicenceReviewForm').submit();
+    // });
+
 </script>
