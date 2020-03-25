@@ -103,7 +103,7 @@
                       </c:when>
                       <c:otherwise>
                         <c:forEach var="superPool" items="${supTaskSearchResult.rows}" varStatus="status">
-                          <tr>
+                          <tr style = "display: table-row;" id = "advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}">
                             <td class="row_no"><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
                             <td>
                               <p>
@@ -174,14 +174,18 @@
         inspectorSearchTaskSubmit('sort');
     }
 
-    var dividajaxlist = [];
+    var divIdAjaxList = [];
     function supervisorByGroupId(appGroupId, divid) {
-        if (!isInArray(dividajaxlist,divid)) {
-            dividajaxlist.push(divid);
+        alert(divid);
+        alert(divIdAjaxList[1]);
+        if (!isInArray(divIdAjaxList,divid)) {
+            alert(3);
+            divIdAjaxList.push(divid);
             $.post(
                 '/hcsa-licence-web/common-pool/supervisor.do',
                 {groupId: appGroupId},
                 function (data) {
+                    alert(4);
                     var result = data.result;
                     var memberName = data.memberName;
                     if('Success' == result){
