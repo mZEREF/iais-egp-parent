@@ -152,7 +152,13 @@
 
 </form>
 <script type="text/javascript">
+
     function doLicSearch(){
+        $('input[name="pageJumpNoTextchangePage"]').val(1);
+        licSearch()
+
+    }
+    function licSearch(){
         showWaiting();
         var to=$('#to_date').val();
         var sub=$('#sub_date').val();
@@ -186,6 +192,6 @@
         SOP.Crud.cfxSubmit("mainForm", "licInfo",licenceId);
     }
     function jumpToPagechangePage(){
-        doLicSearch()
+        licSearch()
     }
 </script>

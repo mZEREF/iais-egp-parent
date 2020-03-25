@@ -427,9 +427,13 @@
 </form>
 <script type="text/javascript">
     function jumpToPagechangePage(){
-        doLicSearch()
+        licSearch()
     }
     function doLicSearch(){
+        $('input[name="pageJumpNoTextchangePage"]').val(1);
+        licSearch()
+    }
+    function licSearch(){
         showWaiting();
         var startTo=$('#start_to_date').val();
         var startSub=$('#start_date').val();

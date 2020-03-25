@@ -191,9 +191,13 @@
         SOP.Crud.cfxSubmit("mainForm", "advSearch");
     }
     function jumpToPagechangePage(){
-        doSearch()
+        search();
     }
     function doSearch(){
+        $('input[name="pageJumpNoTextchangePage"]').val(1);
+        search();
+    }
+    function search(){
         var chkNum = 0;
         var checkBox = $('input[type = checkbox]');
         for (var i = 0; i < checkBox.length; i++) {

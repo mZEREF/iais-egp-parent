@@ -51,6 +51,10 @@
                                                 <table class="table table-bordered">
                                                     <tbody>
                                                     <tr>
+                                                        <td align="right">Application Type</td>
+                                                        <td>${applicationViewDto.applicationType}</td>
+                                                    </tr>
+                                                    <tr>
                                                         <td class="col-xs-6" align="right">Application No. (Overall)
                                                         </td>
                                                         <td class="col-xs-6">${applicationViewDto.applicationNoOverAll}</td>
@@ -58,10 +62,6 @@
                                                     <tr>
                                                         <td align="right">Application No.</td>
                                                         <td>${applicationViewDto.applicationDto.applicationNo}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="right">Application Type</td>
-                                                        <td>${applicationViewDto.applicationType}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Service Type</td>

@@ -151,7 +151,7 @@
 
 </form>
 <script type="text/javascript">
-    function doAppSearch(){
+    function appSearch(){
         showWaiting();
         var to=$('#to_date').val();
         var sub=$('#sub_date').val();
@@ -163,6 +163,11 @@
             SOP.Crud.cfxSubmit("mainForm", "searchApp");
         }
 
+    }
+
+    function doAppSearch(){
+        $('input[name="pageJumpNoTextchangePage"]').val(1);
+        appSearch()
     }
     function doAppBack(){
         showWaiting();
@@ -187,7 +192,7 @@
         SOP.Crud.cfxSubmit("mainForm", "licInfo",licenceId);
     }
     function jumpToPagechangePage(){
-        doAppSearch()
+        appSearch()
     }
 
 </script>
