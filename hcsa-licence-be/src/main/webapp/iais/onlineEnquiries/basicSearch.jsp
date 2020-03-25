@@ -141,12 +141,7 @@
                                                         <a onclick="javascript:doCessation('${pool.licenceId}');" >Cessation</a>
                                                     </iais:action>
                                                 </c:if>
-                                                <c:if test="${pool.isCessation==0}">
-                                                    <iais:action style="text-align:center;">
-<%--                                                        <a  data-toggle="modal" data-target="#editUser"  >Cessation</a>--%>
-                                                        Cessation
-                                                    </iais:action>
-                                                </c:if>
+
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -158,25 +153,6 @@
                 </div>
             </div>
         </div>
-<%--        <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="editUser"--%>
-<%--             style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">--%>
-<%--            <div class="modal-dialog" role="document">--%>
-<%--                <div class="modal-content">--%>
-<%--                    <div class="modal-header">--%>
-<%--                        <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close"><span--%>
-<%--                                aria-hidden="true">&times;</span></button>--%>
-<%--                            <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>--%>
-<%--                    </div>--%>
-<%--                    <div class="modal-body">--%>
-<%--                        <div class="row">--%>
-<%--                            <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">There is a pending application for this licence, please withdraw the application before proceeding with cessation</span>--%>
-<%--                            </div>--%>
-<%--                        </div>--%>
-<%--                    </div>--%>
-
-<%--                </div>--%>
-<%--            </div>--%>
-<%--        </div>--%>
     </iais:body>
 </form>
 <script type="text/javascript">
