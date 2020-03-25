@@ -114,13 +114,11 @@ public class RequestForChangeDelegator {
         String UNID=ParamUtil.getString(bpc.request, "UNID");
         if(StringUtil.isEmpty(amendType)){
             flag = false;
-            //todo:ERRRFC005
-            ParamUtil.setRequestAttr(bpc.request, "ErrorMsg", "Please select at least a premises to transfer");
+            ParamUtil.setRequestAttr(bpc.request, "ErrorMsg", "Please select a type of amendment");
         }
         if(licenceDto != null && UNID==null) {
             String status = licenceDto.getStatus();
             if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)) {
-                //todo:ERRRFC001
                 ParamUtil.setRequestAttr(bpc.request, "ErrorMsg", "licence status is not active");
                 flag = false;
             }

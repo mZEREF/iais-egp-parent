@@ -1064,6 +1064,9 @@ public class ClinicalLaboratoryDelegator {
                 }
             }
         }
+        if(serviceStepDto == null){
+            log.info(StringUtil.changeForLog("serviceStepDto is null"));
+        }
         serviceStepDto.setServiceNumber(serviceNum);
         boolean serviceFirst = false;
         boolean serviceEnd =  false;

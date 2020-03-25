@@ -8,6 +8,11 @@
 
 <webui:setLayout name="iais-internet"/>
 <%@ include file="./dashboard.jsp" %>
+<style>
+  .app-font-size-22{
+    font-size: 22px;
+  }
+</style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <%@ include file="/include/formHidden.jsp" %>
 

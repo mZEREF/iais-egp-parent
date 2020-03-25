@@ -9,6 +9,11 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@ include file="../dashboard.jsp" %>
+<style>
+    .app-font-size-22{
+        font-size: 22px;
+    }
+</style>
 <form method="post" id="mainForm" class="__egovform" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
 
@@ -31,7 +36,9 @@
                                                 <%@ include file="step.jsp" %>
                                                 <div class="application-service-steps">
                                                     <div class="laboratory-disciplines">
-                                                        <h2>Laboratory Disciplines</h2>
+                                                        <p><strong class="app-font-size-22">Laboratory Disciplines</strong></p>
+                                                        <p>Please select the service disciplines you would like to apply at your premises.</p>
+                                                        <hr id="disciplineHr"/>
                                                         <%@include file="CR_Discipline.jsp"%>
                                                     </div>
                                                 </div>
@@ -73,6 +80,8 @@
             var controlFormLi = $('#controlFormLi').val();
             submitForms('governanceOfficers',null,'next',controlFormLi);
         });
+
+        $('#disciplineHr').css('margin-bottom','5px');
 
     });
 

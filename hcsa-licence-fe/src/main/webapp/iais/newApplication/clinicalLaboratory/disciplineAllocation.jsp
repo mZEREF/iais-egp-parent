@@ -84,7 +84,7 @@
                                     <c:set value="${premisesIndexNo}${status.index}" var="cgoName"/>
                                     <tr>
                                       <c:if test="${status.first}">
-                                        <td rowspan="${premisesAndChkLst.appSvcChckListDtoList.size()}" style="width:38%">
+                                        <td rowspan="${premisesAndChkLst.appSvcChckListDtoList.size()}" style="width:38%" class="premAddress">
                                           <p class="visible-xs visible-sm table-row-title">Premises</p>
                                           <input type="hidden" name="${premisesIndexNo}" value="${premisesIndexNo}" />
                                           <p>${premisesAndChkLst.premiseGetAddress} </p>
@@ -153,6 +153,8 @@
         });
 
         doEdit();
+
+        $('.premAddress').css('vertical-align','top');
 
     });
 

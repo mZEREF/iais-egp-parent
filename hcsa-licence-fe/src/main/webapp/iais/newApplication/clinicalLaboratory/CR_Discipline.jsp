@@ -44,7 +44,6 @@
     </c:when>
   </c:choose>
   <fieldset id="fieldset-content" <c:if test="${AppSubmissionDto.needEditController && !isClickEdit}">disabled</c:if> >
-    <p class="underline" >Please select the service disciplines you would like to apply at your premises.</p>
     <p><strong class="cgo-header">Premises ${status.index+1}</strong></p>
     <p>
       <strong class="cgo-header">

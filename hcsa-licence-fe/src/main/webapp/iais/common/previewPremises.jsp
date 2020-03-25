@@ -14,7 +14,16 @@
                 <div class="panel-main-content">
                     <div class="preview-info">
                         <p><strong>Premises ${status.index+1}</strong></p>
-                        <p>${appGrpPremDto.premisesType}: ${appGrpPremDto.address}</p>
+                        <p>
+                            <c:choose>
+                                <c:when test="${'ONSITE' == appGrpPremDto.premisesType}">
+                                    <c:set var="premType" value="On-site"/>
+                                </c:when>
+                                <c:when test="${'CONVEYANCE' == appGrpPremDto.premisesType}">
+                                    <c:set var="premType" value="Conveyance" />
+                                </c:when>
+                            </c:choose>
+                            ${premType}: ${appGrpPremDto.address}</p>
                         <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
                             <p>Vehicle No: ${appGrpPremDto.conveyanceVehicleNo}</p>
                         </c:if>

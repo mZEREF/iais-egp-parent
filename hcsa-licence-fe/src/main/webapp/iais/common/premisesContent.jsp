@@ -17,7 +17,7 @@
         <c:set var="premValue" value="${status.index}"/>
         <div class="col-xs-12">
             <div class="form-horizontal">
-                <p><strong class="ack-font-20 premHeader">Premises ${status.index+1}</strong></p>
+                <p><strong class="app-font-size-22 premHeader">Premises ${status.index+1}</strong></p>
             </div>
             <div class="form-horizontal">
                 <div class="form-group premisesTypeDiv" id="premisesType" <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType}">hidden</c:if> >
@@ -181,7 +181,7 @@
                     <iais:row>
                         <iais:field value="Building Name" width="12"/>
                         <iais:value width="11" cssClass="col-md-5">
-                            <iais:input cssClass="siteBuildingName" maxLength="45" type="text" name="onSiteBuildingName" id="siteBuildingName" value="${appGrpPremisesDto.buildingName}"></iais:input>
+                            <iais:input cssClass="siteBuildingName" maxLength="66" type="text" name="onSiteBuildingName" id="siteBuildingName" value="${appGrpPremisesDto.buildingName}"></iais:input>
                             <span class="error-msg" name="iaisErrorMsg" id="error_buildingName"></span>
                         </iais:value>
                     </iais:row>
@@ -399,7 +399,7 @@
                     <iais:row>
                         <iais:field value="Building Name " width="12"/>
                         <iais:value cssClass="col-xs-11 col-sm-7 col-md-5 ">
-                            <iais:input maxLength="45" cssClass="conveyanceBuildingName" type="text" name="conveyanceBuildingName" id="conveyanceBuildingName" value="${appGrpPremisesDto.conveyanceBuildingName}"></iais:input>
+                            <iais:input maxLength="66" cssClass="conveyanceBuildingName" type="text" name="conveyanceBuildingName" id="conveyanceBuildingName" value="${appGrpPremisesDto.conveyanceBuildingName}"></iais:input>
                             <span  class="error-msg"></span>
                         </iais:value>
                     </iais:row>
