@@ -408,7 +408,8 @@
                                                 </c:if>
                                                 <c:if test="${pool.isCessation==0}">
                                                     <iais:action style="text-align:center;">
-                                                        <a data-toggle="modal" data-target="#editUser"  >Cessation</a>
+                                                        <%--                                                        <a  data-toggle="modal" data-target="#editUser"  >Cessation</a>--%>
+                                                        Cessation
                                                     </iais:action>
                                                 </c:if>
                                             </td>
