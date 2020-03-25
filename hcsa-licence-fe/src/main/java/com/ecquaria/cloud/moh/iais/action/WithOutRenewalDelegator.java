@@ -17,6 +17,8 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
+
+import java.io.Serializable;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,17 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator("withOutRenewalDelegator")
 @Slf4j
 public class WithOutRenewalDelegator {
+    private static final String PAGE1 = "instructions";
+    private static final String PAGE2 = "licenceReview";
+    private static final String PAGE3 = "payment";
+    private static final String PAGE4 = "acknowledgement";
+    private static final String INSTRUCTIONS = "doInstructions";
+    private static final String REVIEW = "doLicenceReview";
+    private static final String PAYMENT = "doPayment";
+    private static final String BACK = "back";
+    private static final String ACKNOWLEDGEMENT = "doAcknowledgement";
+    private static final String PAGE_SWITCH = "page_value";
+    private static final String CONTROL_SWITCH = "controlSwitch";
     @Autowired
     WithOutRenewalService outRenewalService;
 
@@ -44,6 +57,9 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, null);
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,null);
 
+        //init page value
+        //instructions
+        ParamUtil.setRequestAttr(bpc.request,"page_value",PAGE1);
 
         //init data
         List<String> licenceIDList = (List<String>) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR);
@@ -53,12 +69,27 @@ public class WithOutRenewalDelegator {
             log.info("can not find licence id for without renewal");
             return;
         }
-
+        int index = 0;
+        String firstSvcName = "";
+        List<String> serviceNameTitleList = IaisCommonUtils.genNewArrayList();
+        List<String> serviceNameList = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList);
+        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         for (AppSubmissionDto appSubmissionDto: appSubmissionDtoList) {
             if(!appSubmissionDto.getAppSvcRelatedInfoDtoList().isEmpty()) {
                 String serviceName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
+                if(!StringUtil.isEmpty(serviceName)){
+                    if(index ==0){
+                        firstSvcName = serviceName;
+                        index ++;
+                        ParamUtil.setSessionAttr(bpc.request,"AppSubmissionDto", appSubmissionDto);
+                    }else{
+                        serviceNameTitleList.add(serviceName);
+                    }
+                    serviceNameList.add(serviceName);
+                }
                 appSubmissionDto.setServiceName(serviceName);
+                appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             }
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
             appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_RENEWAL);
@@ -89,6 +120,10 @@ public class WithOutRenewalDelegator {
 
         renewDto.setAppSubmissionDtos(appSubmissionDtoList);
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
+        ParamUtil.setSessionAttr(bpc.request,"serviceNameTitleList", (Serializable)serviceNameTitleList);
+        //serviceNameList
+        ParamUtil.setSessionAttr(bpc.request,"serviceNames", (Serializable)serviceNameList);
+        ParamUtil.setSessionAttr(bpc.request,"firstSvcName", firstSvcName);
         log.info("**** the non auto renwal  end ******");
     }
 
@@ -102,6 +137,64 @@ public class WithOutRenewalDelegator {
         log.info("**** the  auto renwal  prepare start  ******");
 
         log.info("**** the  renwal  prepare  end ******");
+    }
+
+    public void prepareInstructions(BaseProcessClass bpc)throws Exception{
+
+    }
+
+    //prepareLicenceReview
+    public void prepareLicenceReview(BaseProcessClass bpc)throws Exception{
+
+    }
+
+    //preparePayment
+    public void preparePayment(BaseProcessClass bpc)throws Exception{
+
+    }
+
+    //prepareAcknowledgement
+    public void prepareAcknowledgement(BaseProcessClass bpc)throws Exception{
+
+    }
+
+    //doInstructions
+    public void doInstructions(BaseProcessClass bpc)throws Exception{
+        //go page2
+        ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE2);
+    }
+
+    //doLicenceReview
+    public void doLicenceReview(BaseProcessClass bpc)throws Exception{
+
+    }
+
+    //doPayment
+    public void doPayment(BaseProcessClass bpc)throws Exception{
+
+    }
+
+    //doAcknowledgement
+    public void doAcknowledgement(BaseProcessClass bpc)throws Exception{
+
+    }
+
+    //controlSwitch
+    public void controlSwitch(BaseProcessClass bpc)throws Exception{
+        String switch_value = ParamUtil.getString(bpc.request,"switch_value");
+        if(INSTRUCTIONS.equals(switch_value)){
+            //controlSwitch
+            ParamUtil.setRequestAttr(bpc.request,CONTROL_SWITCH,switch_value);
+        }else if(REVIEW.equals(switch_value)){
+            ParamUtil.setRequestAttr(bpc.request,CONTROL_SWITCH,switch_value);
+        }else if(PAYMENT.equals(switch_value)){
+            ParamUtil.setRequestAttr(bpc.request,CONTROL_SWITCH,switch_value);
+        }else if(ACKNOWLEDGEMENT.equals(switch_value)){
+            ParamUtil.setRequestAttr(bpc.request,CONTROL_SWITCH,switch_value);
+        }else if(PAGE1.equals(switch_value)){
+            ParamUtil.setRequestAttr(bpc.request,CONTROL_SWITCH,BACK);
+            ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,switch_value);
+        }
     }
 
 

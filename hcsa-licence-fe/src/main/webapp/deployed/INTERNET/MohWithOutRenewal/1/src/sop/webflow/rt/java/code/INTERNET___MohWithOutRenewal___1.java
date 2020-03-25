@@ -11,6 +11,7 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohWithOutRenewal___1 extends BaseProcessClass {
@@ -23,17 +24,47 @@ public class INTERNET___MohWithOutRenewal___1 extends BaseProcessClass {
 	// 		Start->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
-	public void selectLience_OnStepProcess_0() throws Exception {
-	// 		SelectLience->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "determineAutoRenewalEligibility", this);
+	public void prepareInstructions_OnStepProcess_0() throws Exception {
+	// 		prepareInstructions
+		EngineHelper.delegate(DELEGATOR, "prepareInstructions", this);
 	}
-	public void prepareJump_OnStepProcess_0() throws Exception {
-	// 		prepareJump->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareJump", this);
+	public void prepareLicenceReview_OnStepProcess_0() throws Exception {
+	// 		prepareLicenceReview
+		EngineHelper.delegate(DELEGATOR, "prepareLicenceReview", this);
+	}
+	public void preparePayment_OnStepProcess_0() throws Exception {
+	// 		preparePayment
+		EngineHelper.delegate(DELEGATOR, "preparePayment", this);
+	}
+	public void prepareAcknowledgement_OnStepProcess_0() throws Exception {
+	// 		prepareAcknowledgement
+		EngineHelper.delegate(DELEGATOR, "prepareAcknowledgement", this);
+	}
+	public void doInstructions_OnStepProcess_0() throws Exception {
+	// 		doInstructions
+		EngineHelper.delegate(DELEGATOR, "doInstructions", this);
+	}
+	public void doLicenceReview_OnStepProcess_0() throws Exception {
+	// 		doLicenceReview
+		EngineHelper.delegate(DELEGATOR, "doLicenceReview", this);
+	}
+	public void doPayment_OnStepProcess_0() throws Exception {
+	// 		doPayment
+		EngineHelper.delegate(DELEGATOR, "doPayment", this);
+	}
+	public void doAcknowledgement_OnStepProcess_0() throws Exception {
+	// 		doAcknowledgement
+		EngineHelper.delegate(DELEGATOR, "doAcknowledgement", this);
 	}
 	public void toPrepareData_OnStepProcess_0() throws Exception {
 	// 		toPrepareData->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "toPrepareData", this);
+	}
+	public void prepareJump_OnStepProcess_0() throws Exception {
+	// 		prepareJump->OnStepProcess
+	}
+	public void step2_OnStepProcess_0() throws Exception {
+	// 		controlSwitch->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "controlSwitch", this);
 	}
 
 }
