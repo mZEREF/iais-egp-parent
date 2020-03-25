@@ -64,8 +64,8 @@ public class BlastManagementDelegator {
     private SearchParam searchParam;
     private static final String BASE_SERVICE = "SVTP001";
     private static final String SPECIFIED_SERVICE = "SVTP003";
-    private static final String EMAIL = "email";
-    private static final String SMS = "sms";
+    private static final String EMAIL = "Email";
+    private static final String SMS = "SMS";
     private static final String BOTH = "both";
     private static final String BACK = "back";
     private static final String FILE_UPLOAD_ERROR = "fileUploadError";

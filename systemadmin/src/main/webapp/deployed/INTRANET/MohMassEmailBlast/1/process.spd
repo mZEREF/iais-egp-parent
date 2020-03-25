@@ -338,8 +338,8 @@
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch4" x="410" y="560">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/Step1" value="&quot;email&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Sms" value="&quot;sms&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Step1" value="&quot;Email&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Sms" value="&quot;SMS&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/CreateBeforeFill" value="&quot;createBack&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/EditBeforeFill" value="&quot;editBack&quot;"/>
   </Switch>

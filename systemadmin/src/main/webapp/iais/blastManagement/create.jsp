@@ -72,7 +72,7 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <iais:datePicker id="date" name="date"  value="${schedule}" ></iais:datePicker>
-                                    <input type="text" value="${edit.getHH()}" maxlength="2" style="width: 60px" name="HH"/>&nbsp;AppConsts.FALSE
+                                    <input type="text" value="${edit.getHH()}" maxlength="2" style="width: 60px" name="HH"/>&nbsp;(HH)
                                     :
                                     <input type="text" value="${edit.getMM()}" maxlength="2" style="width: 60px"  name="MM"/>&nbsp;(MM)
                                 </div>
@@ -110,7 +110,7 @@
     });
 
     function changeFlow(mode) {
-        if(mode == "sms"){
+        if(mode == "SMS"){
             $("#smsFlow").addClass("flowDisplay");
             $("#smsFlow").removeClass("flowHidden");
             $("#emailFlow").addClass("flowHidden");

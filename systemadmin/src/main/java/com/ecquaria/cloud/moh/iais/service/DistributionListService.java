@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
 
@@ -19,4 +20,5 @@ public interface DistributionListService {
     DistributionListWebDto saveDistributionList(DistributionListWebDto distributionListDto);
     void deleteDistributionList(List<String> list);
     DistributionListWebDto getDistributionListById(String id);
+    List<HcsaSvcPersonnelDto> roleByServiceId(String serviceId,String status);
 }

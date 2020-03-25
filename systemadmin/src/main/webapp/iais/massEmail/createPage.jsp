@@ -34,7 +34,7 @@
                             <iais:field value="Recipients Roles" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="role" type="text" name="role" value="${distribution.getRole()}">
+                                    <iais:select name="role" id="role" options="" value=""></iais:select>
                                     <span id="error_role" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -116,7 +116,11 @@
             '/system-admin-web/emailAjax/recipientsRoles.do',
             {serviceId: value},
             function (data, status) {
-
+                var role = data.roles;
+                $("#role").remove();
+                $.each(role, function(i, item){
+                    $("#select_id").append("<li data-value=\""+item.psnType+"\" class=\"option\">"+item.psnType+"</li>");
+                });
             })
     }
 </script>

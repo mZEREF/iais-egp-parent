@@ -50,12 +50,11 @@ public class MassEmailDelegator {
     DistributionListService distributionListService;
 
     public void start(BaseProcessClass bpc){
-        searchParam = new SearchParam(DistributionListWebDto.class.getName());
+        searchParam = new SearchParam(DistributionListDto.class.getName());
         searchParam.setPageSize(10);
         searchParam.setPageNo(1);
         searchParam.setSort("ID", SearchParam.ASCENDING);
         AuditTrailHelper.auditFunction("distrribution", "distrribution");
-
         ParamUtil.setRequestAttr(bpc.request, "firstOption", "Please select");
         ParamUtil.setRequestAttr(bpc.request, "firstValue", " ");
     }
@@ -201,7 +200,7 @@ public class MassEmailDelegator {
         baseService.addAll(specifiedService);
         List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
         for (HcsaServiceDto item : baseService) {
-            selectOptionArrayList.add(new SelectOption(item.getSvcCode(),item.getSvcName()));
+            selectOptionArrayList.add(new SelectOption(item.getId(),item.getSvcName()));
         }
         ParamUtil.setSessionAttr(bpc.request, "service", (Serializable) selectOptionArrayList);
     }
