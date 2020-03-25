@@ -114,11 +114,11 @@
                                             </td>
                                             <td>
                                                 <p><fmt:formatDate value="${item.schedule}"
-                                                                   pattern="MM/dd/yyyy HH:mm"/></p>
+                                                                   pattern="dd/MM/yyyy HH:mm"/></p>
                                             </td>
                                             <td>
                                                 <p><fmt:formatDate value="${item.actual}"
-                                                                   pattern="MM/dd/yyyy HH:mm"/></p>
+                                                                   pattern="dd/MM/yyyy HH:mm"/></p>
                                             </td>
                                             <td>
                                                 <p><c:out value="${item.docName}"/></p>
