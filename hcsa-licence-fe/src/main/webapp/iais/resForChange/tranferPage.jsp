@@ -29,7 +29,7 @@
                                          <p>
                                          <c:forEach items="${prepareTranfer.appGrpPremisesDtoList}" var="premises">
                                            <div class="form-check">
-                                             <input class="form-check-input" id="premisesInput" type="checkbox" name="premisesInput" aria-invalid="false" value="${premises.premisesIndexNo}">
+                                             <input class="form-check-input" id="premisesInput" type="checkbox" name="premisesInput" aria-invalid="false" value="${premises.tranferSelect}">
                                              <label class="form-check-label" for="premisesInput"><span class="check-square"></span>${premises.tranferSelect} </label>
                                            </div>
                                          </c:forEach>
@@ -68,7 +68,11 @@
 
         <script>
             $(document).ready(function(){
-
+                $("input[name='premisesInput']").each(function(){
+                    if('${selectCheakboxs}'.indexOf($(this).val()) != -1){
+                        $(this).prop("checked",true);
+                    }
+                });
             });
             $("#Next").click(function () {
                 showWaiting();
@@ -79,4 +83,7 @@
                     css: {width: '25%', border: '1px solid #aaa'},
                     overlayCSS: {opacity: 0.2}});
             }
+
+
+
         </script>

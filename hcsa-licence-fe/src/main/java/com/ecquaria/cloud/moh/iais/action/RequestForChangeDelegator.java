@@ -33,6 +33,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -319,6 +320,40 @@ public class RequestForChangeDelegator {
        }
        return isSelect;
     }
+
+    private Map<String,String> doValidateEmpty(String uen,String[] selectCheakboxs){
+        Map<String,String> error = IaisCommonUtils.genNewHashMap();
+        if(selectCheakboxs == null || selectCheakboxs.length == 0){
+            error.put("premisesError","UC_CHKLMD001_ERR001");
+        }
+        if(StringUtil.isEmpty(uen)){
+            error.put("uenError","UC_CHKLMD001_ERR001");
+        }
+        return error;
+    }
+    private Map<String,String> doValidateLojic(String uen,Map<String,String> error,LicenceDto licenceDto,LicenseeDto licenseeDto){
+        if(licenceDto==null){
+            error.put("uenError","Licence Error!!!");
+        }else{
+            if(licenseeDto == null){
+                error.put("uenError","uen error !!!");
+            }else{
+                List<LicenseeKeyApptPersonDto> oldLicenseeKeyApptPersonDtos = requestForChangeService.
+                        getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
+                List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoList = requestForChangeService.getLicenseeKeyApptPersonDtoListByUen(uen);
+                boolean canTransfer = canTransfer(oldLicenseeKeyApptPersonDtos,licenseeKeyApptPersonDtoList);
+                if(canTransfer){
+                    if(licenceDto.getLicenseeId().equals(licenseeDto.getId())){
+                        log.error(StringUtil.changeForLog("This Uen can not get the licensee -->:"+uen));
+                        error.put("uenError","can not transfer to self");
+                    }
+                }else{
+                    error.put("uenError","can not transfer");
+                }
+            }
+        }
+        return error;
+    }
     /**
      * @param bpc
      * @Decription compareChangePercentage
@@ -330,90 +365,71 @@ public class RequestForChangeDelegator {
         String[] selectCheakboxs = ParamUtil.getStrings(bpc.request, "premisesInput");
         log.info(StringUtil.changeForLog("The compareChangePercentage licenceId is -->:"+licenceId));
         log.info(StringUtil.changeForLog("The compareChangePercentage uen is -->:"+uen));
-        Map<String,String> error = IaisCommonUtils.genNewHashMap();
-        if(selectCheakboxs == null || selectCheakboxs.length == 0){
-            error.put("premisesError","UC_CHKLMD001_ERR001");
-        }
-        if(StringUtil.isEmpty(uen)){
-            error.put("uenError","UC_CHKLMD001_ERR001");
-        }else if(error.isEmpty()){
+        Map<String,String> error = doValidateEmpty(uen,selectCheakboxs);
+        if(error.isEmpty()){
             LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
-            if(licenceDto!=null){
-                List<LicenseeKeyApptPersonDto> oldLicenseeKeyApptPersonDtos = requestForChangeService.
-                        getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
-                List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoList = requestForChangeService.getLicenseeKeyApptPersonDtoListByUen(uen);
-                boolean canTransfer = canTransfer(oldLicenseeKeyApptPersonDtos,licenseeKeyApptPersonDtoList);
-                if(canTransfer){
-                    LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
-                    if(licenseeDto == null){
-                        log.error(StringUtil.changeForLog("This Uen can not get the licensee -->:"+uen));
-                        error.put("uenError","uen error !!!");
-                    }else {
-                        String newLicenseeId = licenseeDto.getId();
-                        if(licenceDto.getLicenseeId().equals(newLicenseeId)){
-                            log.error(StringUtil.changeForLog("This Uen can not get the licensee -->:"+uen));
-                            error.put("uenError","can not transfer to self");
-                        }else{
-                            log.info(StringUtil.changeForLog("The newLicenseeId is -->:"+newLicenseeId));
-                            AppSubmissionDto appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
-                            appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-                            appSubmissionDto.setLicenseeId(newLicenseeId);
-                            appSubmissionDto.setAutoRfc(true);
-                            FeeDto feeDto = getTransferFee();
-                            if(feeDto != null){
-                                Double amount = feeDto.getTotal();
-                                appSubmissionDto.setAmount(amount);
-                                if (selectCheakboxs.length == appSubmissionDto.getAppGrpPremisesDtoList().size()) {
-                                    // appSubmissionDto.setIsNeedNewLicNo("0");
-                                    for (AppGrpPremisesDto appGrpPremisesDto: appSubmissionDto.getAppGrpPremisesDtoList()) {
-                                        appGrpPremisesDto.setNeedNewLicNo(false);
-                                        appGrpPremisesDto.setGroupLicenceFlag("1");
-                                    }
-                                } else {
-                                    // appSubmissionDto.setIsNeedNewLicNo("1");
-                                    for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
-                                        String premise = appGrpPremisesDto.getPremisesIndexNo();
-                                        boolean isSelect  = isSelect(selectCheakboxs,premise);
-                                        if(isSelect){
-                                            appGrpPremisesDto.setNeedNewLicNo(true);
-                                            appGrpPremisesDto.setGroupLicenceFlag("1");
-                                        }else {
-                                            appGrpPremisesDto.setNeedNewLicNo(false);
-                                            appGrpPremisesDto.setGroupLicenceFlag("2");
-                                        }
-                                    }
-                                }
-                                String grpNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-                                appSubmissionDto.setAppGrpNo(grpNo);
-                                List<String> serviceNames = IaisCommonUtils.genNewArrayList();
-                                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
-                                    serviceNames.add(appSvcRelatedInfoDto.getServiceName());
-                                }
-                                List<HcsaServiceDto> hcsaServiceDtos = serviceConfigService.getHcsaServiceByNames(serviceNames);
-                                ParamUtil.setRequestAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, hcsaServiceDtos);
-                                NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
-                                appSubmissionService.setRiskToDto(appSubmissionDto);
-                                AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
-                                ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
-                                StringBuffer url = new StringBuffer();
-                                url.append("https://").append(bpc.request.getServerName())
-                                        .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication/PreparePayment");
-                                String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-                                bpc.response.sendRedirect(tokenUrl);
+            LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
+            doValidateLojic(uen,error,licenceDto,licenseeDto);
+            if(error.isEmpty()){
+                String newLicenseeId = licenseeDto.getId();
+                log.info(StringUtil.changeForLog("The newLicenseeId is -->:"+newLicenseeId));
+                AppSubmissionDto appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
+                appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                appSubmissionDto.setLicenseeId(newLicenseeId);
+                appSubmissionDto.setAutoRfc(true);
+                FeeDto feeDto = getTransferFee();
+                if(feeDto != null){
+                    Double amount = feeDto.getTotal();
+                    appSubmissionDto.setAmount(amount);
+                    log.info(StringUtil.changeForLog("The selectCheakboxs.length is -->:"+selectCheakboxs.length));
+                    log.info(StringUtil.changeForLog("The appSubmissionDto.getAppGrpPremisesDtoList().size() is -->:"
+                            +appSubmissionDto.getAppGrpPremisesDtoList().size()));
+                    if (selectCheakboxs.length == appSubmissionDto.getAppGrpPremisesDtoList().size()) {
+                        // appSubmissionDto.setIsNeedNewLicNo("0");
+                        for (AppGrpPremisesDto appGrpPremisesDto: appSubmissionDto.getAppGrpPremisesDtoList()) {
+                            appGrpPremisesDto.setNeedNewLicNo(false);
+                            appGrpPremisesDto.setGroupLicenceFlag("1");
+                        }
+                    } else {
+                        // appSubmissionDto.setIsNeedNewLicNo("1");
+                        for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
+                            String premise = appGrpPremisesDto.getTranferSelect();
+                            boolean isSelect  = isSelect(selectCheakboxs,premise);
+                            if(isSelect){
+                                appGrpPremisesDto.setNeedNewLicNo(true);
+                                appGrpPremisesDto.setGroupLicenceFlag("1");
+                            }else {
+                                appGrpPremisesDto.setNeedNewLicNo(false);
+                                appGrpPremisesDto.setGroupLicenceFlag("2");
                             }
                         }
                     }
-                }else{
-                    error.put("uenError","can not transfer");
+                    String grpNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                    log.info(StringUtil.changeForLog("The grpNo is -->:"+grpNo));
+                    appSubmissionDto.setAppGrpNo(grpNo);
+                    List<String> serviceNames = IaisCommonUtils.genNewArrayList();
+                    for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
+                        serviceNames.add(appSvcRelatedInfoDto.getServiceName());
+                    }
+                    List<HcsaServiceDto> hcsaServiceDtos = serviceConfigService.getHcsaServiceByNames(serviceNames);
+                    ParamUtil.setRequestAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, hcsaServiceDtos);
+                    NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
+                    appSubmissionService.setRiskToDto(appSubmissionDto);
+                    AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
+                    ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
+                    StringBuffer url = new StringBuffer();
+                    url.append("https://").append(bpc.request.getServerName())
+                            .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication/PreparePayment");
+                    String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+                    bpc.response.sendRedirect(tokenUrl);
                 }
-            }else{
-                error.put("uenError","uen error !!");
-             log.error(StringUtil.changeForLog("This licenceId can not get the Licence -->:"+licenceId));
             }
         }
         if(!error.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"errorMsg" , WebValidationHelper.generateJsonStr(error));
             ParamUtil.setRequestAttr(bpc.request,"UEN",uen);
+            log.info(StringUtil.changeForLog("The selectCheakboxs.toString() is -->:"+ArrayUtils.toString(selectCheakboxs)));
+            ParamUtil.setRequestAttr(bpc.request,"selectCheakboxs",ArrayUtils.toString(selectCheakboxs));
         }
         log.info(StringUtil.changeForLog("The compareChangePercentage end ..."));
     }
