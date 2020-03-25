@@ -33,7 +33,11 @@
                   <iais:row>
                     <iais:field value="Application Number"/>
                     <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.applicationNo}"/></label></p>
+                      <p>
+                        <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService" target="_blank">
+                          <u><c:out value="${inspectionTaskPoolListDto.applicationNo}"/></u>
+                        </a>
+                      </p>
                     </iais:value>
                   </iais:row>
                   <iais:row>
