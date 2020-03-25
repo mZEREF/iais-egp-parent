@@ -26,7 +26,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
-                        <h2>System Audit List</h2>
+                        <h2>${modulename}</h2>
                         <div class="gray-content-box">
                             <div class="table-gp">
                                 <table class="table">
@@ -42,8 +42,16 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-
+                                    <span class="error-msg" id="error_selectedOne" name="iaisErrorMsg"></span>
+                                  <c:if test="${isSelectedAudit}">
+                                      <tr>
+                                   <td colspan="7">
+                                   <iais:message key="ACK018" escape="true"/>
+                                   </td>
+                                      </tr>
+                                  </c:if>
                                     <c:forEach var = "item" items = "${auditTaskDataDtos}" varStatus="status">
+                                       <c:if test="${item.addAuditList}">
                                         <tr>
                                             <c:set var="id" value="${status.index}"></c:set>
                                             <td><c:out value="${item.hclCode}"/></td>
@@ -67,6 +75,7 @@
                                                 <input name="<c:out value="${id}"/>selectForAd" id="<c:out value="${id}"/>selectForAd" type="checkbox" value="ad" <c:if test="${item.selectedForAudit}">checked</c:if>/>
                                             </td>
                                         </tr>
+                                       </c:if>
                                     </c:forEach>
 
                                     </tbody>
@@ -76,19 +85,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: confirm();">Confirm to Audit</a></div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: cancel();">Cancel</a></div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: cancelAudit();">Cancel Audit Task</a></div>
-                            </div>
-                        </div>
-                    </div>
+
+                    <iais:action style="text-align:right;">
+                        <button type="button" class="btn btn-secondary" onclick="javascript:cancel();">Cancel
+                        </button>
+                        <button type="button" class="btn btn-primary next" onclick="javascript:confirm();">Confirm
+                            to Audit
+                        </button>
+                        <button type="button" class="btn btn-primary next" onclick="javascript:cancelAudit();">Cancel
+                            Audit Task
+                        </button>
+                    </iais:action>
                 </div>
             </div>
         </div>

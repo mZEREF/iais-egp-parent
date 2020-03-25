@@ -47,6 +47,7 @@ public class AuditTcuListDelegator {
     public void init(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,"ISTUC",true);
         List<AuditTaskDataFillterDto> auditTaskDataDtos = auditTcuListService.getAuditTcuList();
         ParamUtil.setSessionAttr(request, "auditTaskDataDtos", (Serializable) auditTaskDataDtos);
         List<SelectOption> aduitTypeOp = auditSystemListService.getAuditOp();
@@ -67,12 +68,12 @@ public class AuditTcuListDelegator {
         AuditAssginListValidate auditAssginListValidate = new AuditAssginListValidate();
         Map<String, String> errMap = auditAssginListValidate.validate(request);
         if (errMap.isEmpty()) {
-            ParamUtil.setRequestAttr(request, "isValid", "N");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             ParamUtil.setSessionAttr(request, "actionCancel", "back");
             ParamUtil.setSessionAttr(request, "actionConfirm", "confirm");
         } else {
-            ParamUtil.setRequestAttr(request, "isValid", "Y");
-            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
         }
     }
 

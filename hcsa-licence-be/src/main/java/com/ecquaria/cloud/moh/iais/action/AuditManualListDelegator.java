@@ -51,6 +51,7 @@ public class AuditManualListDelegator {
     public void init(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,"ISTUC",false);
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, null);
         ParamUtil.setSessionAttr(request,"modulename","Manual Audit List");
     }
@@ -76,12 +77,13 @@ public class AuditManualListDelegator {
         AuditAssginListValidate auditAssginListValidate = new AuditAssginListValidate();
         Map<String, String> errMap = auditAssginListValidate.validate(request);
         if(errMap.isEmpty()){
-            ParamUtil.setRequestAttr(request, "isValid", "N");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             ParamUtil.setSessionAttr(request,"actionCancel","back");
             ParamUtil.setSessionAttr(request,"actionConfirm","confirm");
         }else{
-            ParamUtil.setRequestAttr(request, "isValid", "Y");
-            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+            ParamUtil.setSessionAttr(request,"dochange","Y");
         }
     }
     public void confirm(BaseProcessClass bpc) {
@@ -99,12 +101,13 @@ public class AuditManualListDelegator {
         AuditAssginListValidate auditAssginListValidate = new AuditAssginListValidate();
         Map<String, String> errMap = auditAssginListValidate.validate(request);
         if(errMap.isEmpty()){
-            ParamUtil.setRequestAttr(request, "isValid", "N");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             ParamUtil.setSessionAttr(request,"actionCancel","doback");
             ParamUtil.setSessionAttr(request,"actionCancelAudit","docancel");
         }else{
-            ParamUtil.setRequestAttr(request, "isValid", "Y");
-            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+            ParamUtil.setSessionAttr(request,"dochange","Y");
         }
     }
 
@@ -162,33 +165,40 @@ public class AuditManualListDelegator {
         List<AuditTaskDataFillterDto> auditTaskDataDtos =  auditSystemPotitalListService.getSystemPotentailAdultList(dto);
         auditSystemListService.getInspectors(auditTaskDataDtos);
         ParamUtil.setSessionAttr(request,"auditTaskDataDtos",(Serializable) auditTaskDataDtos);
-        ParamUtil.setRequestAttr(request, "isValid", "Y");
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
 
     }
 
     public void next(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         log.debug(StringUtil.changeForLog("the next start ...."));
+        ParamUtil.setSessionAttr(request,"dochange",null);
 
     }
     public void nextToViewTaskList(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
         List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,"auditTaskDataDtos");
+        String dochange =  (String)  ParamUtil.getSessionAttr(request,"dochange");
+        if(StringUtil.isEmpty(dochange))
         getSelectedList(request,auditTaskDataDtos);
-        ParamUtil.setRequestAttr(request, "isValid", "Y");
-
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
     }
 
     private void getSelectedList(HttpServletRequest request, List<AuditTaskDataFillterDto> auditTaskDataDtos) {
         if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){
+            boolean noSelectedAudit = true;
             for(int i=0; i<auditTaskDataDtos.size();i++){
-                String selected = ParamUtil.getString(request,i+"selectForAd");
+                String selected = ParamUtil.getString(request,i+"selectForAuditList");
                 if(!StringUtil.isEmpty(selected)){
-                    auditTaskDataDtos.get(i).setSelectedForAudit(true);
+                    auditTaskDataDtos.get(i).setAddAuditList(true);
+                    noSelectedAudit = false;
+                }else {
+                    auditTaskDataDtos.get(i).setAddAuditList(false);
                 }
             }
             ParamUtil.setSessionAttr(request,"auditTaskDataDtos",(Serializable) auditTaskDataDtos);
+            ParamUtil.setSessionAttr(request,"isSelectedAudit",noSelectedAudit);
         }
     }
     public AuditAssginListValidateDto getValueFromPage(HttpServletRequest request) {
@@ -200,23 +210,25 @@ public class AuditManualListDelegator {
         List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,"auditTaskDataDtos");
         if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){
             for(int i = 0;i<auditTaskDataDtos.size();i++){
-                String auditType = ParamUtil.getString(request,i+"auditType");
-                String inspectorId = ParamUtil.getString(request,i+"insOp");
-                String inspectorName = getNameById(auditTaskDataDtos.get(i).getInspectors(),inspectorId);
-                String forad = ParamUtil.getString(request,i+"selectForAd");
-                String number = ParamUtil.getString(request,i+"number");
-                auditTaskDataDtos.get(i).setAuditType(auditType);
-                auditTaskDataDtos.get(i).setInspectorId(inspectorId);
-                auditTaskDataDtos.get(i).setInspector(inspectorName);
-                if(!StringUtil.isEmpty(forad)){
-                    auditTaskDataDtos.get(i).setSelectedForAudit(true);
-                }else{
-                    auditTaskDataDtos.get(i).setSelectedForAudit(false);
-                }
-                if(!StringUtil.isEmpty(number)){
-                    auditTaskDataDtos.get(i).setSelected(true);
-                }else{
-                    auditTaskDataDtos.get(i).setSelected(false);
+                if(auditTaskDataDtos.get(i).isAddAuditList()){
+                    String auditType = ParamUtil.getString(request,i+"auditType");
+                    String inspectorId = ParamUtil.getString(request,i+"insOp");
+                    String inspectorName = getNameById(auditTaskDataDtos.get(i).getInspectors(),inspectorId);
+                    String forad = ParamUtil.getString(request,i+"selectForAd");
+                    String number = ParamUtil.getString(request,i+"number");
+                    auditTaskDataDtos.get(i).setAuditType(auditType);
+                    auditTaskDataDtos.get(i).setInspectorId(inspectorId);
+                    auditTaskDataDtos.get(i).setInspector(inspectorName);
+                    if(!StringUtil.isEmpty(forad)){
+                        auditTaskDataDtos.get(i).setSelectedForAudit(true);
+                    }else{
+                        auditTaskDataDtos.get(i).setSelectedForAudit(false);
+                    }
+                    if(!StringUtil.isEmpty(number)){
+                        auditTaskDataDtos.get(i).setSelected(true);
+                    }else{
+                        auditTaskDataDtos.get(i).setSelected(false);
+                    }
                 }
             }
         }
@@ -227,7 +239,7 @@ public class AuditManualListDelegator {
     private String getNameById(List<SelectOption> inspectors,String inspectorId) {
         if(!IaisCommonUtils.isEmpty(inspectors)){
             for(SelectOption temp:inspectors){
-                if(inspectorId.equals(temp.getValue())){
+                if(temp.getValue().equalsIgnoreCase(inspectorId)){
                     return temp.getText();
                 }
             }

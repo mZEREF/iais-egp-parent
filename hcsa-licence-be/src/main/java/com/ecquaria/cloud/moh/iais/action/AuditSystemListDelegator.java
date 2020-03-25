@@ -55,6 +55,7 @@ public class AuditSystemListDelegator {
     public void init(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,"ISTUC",false);
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, null);
         ParamUtil.setSessionAttr(request,"modulename","System Audit List");
     }
@@ -228,7 +229,7 @@ public class AuditSystemListDelegator {
         log.debug(StringUtil.changeForLog("the submit start ...."));
         HttpServletRequest request = bpc.request;
         List<AuditTaskDataFillterDto> auditTaskDataDtos = (List<AuditTaskDataFillterDto>) ParamUtil.getSessionAttr(request, "auditTaskDataDtos");
-     //   auditSystemListService.doSubmit(auditTaskDataDtos);
+        auditSystemListService.doSubmit(auditTaskDataDtos);
         ParamUtil.setRequestAttr(request,SUBMIT_MESSAGE_SUCCESS,HcsaLicenceBeConstant .AUDIT_INSPECTION_CONFIRM_SUCCESS_MESSAGE);
         ParamUtil.setRequestAttr(request,MAIN_URL,"MohAduitSystemList");
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");

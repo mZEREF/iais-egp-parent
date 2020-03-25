@@ -29,6 +29,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @Author: jiahao
@@ -72,7 +73,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             for (OrgUserDto ou : orgDtos) {
                 SelectOption op = new SelectOption();
                 op.setText(ou.getDisplayName());
-                op.setValue(ou.getUserId());
+                op.setValue(ou.getId());
                 ops.add(op);
             }
             temp.setInspectors(ops);
@@ -87,6 +88,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void doSubmit(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
         if (!IaisCommonUtils.isEmpty(auditTaskDataDtos)) {
             for (AuditTaskDataFillterDto temp : auditTaskDataDtos) {
@@ -117,7 +119,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         taskDto.setPriority(0);
         List<TaskDto> createTaskDtoList = IaisCommonUtils.genNewArrayList();
         createTaskDtoList.add(taskDto);
-        taskService.createTasks(createTaskDtoList);
+       // taskService.createTasks(createTaskDtoList);
         //createauditTypedata
         createAudit(temp);
 
@@ -137,7 +139,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         String subStage = HcsaConsts.ROUTING_STAGE_PRE;
         String status = ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING;
         //create grop info
-        createInspectionGroupInfo(temp);
+      //  createInspectionGroupInfo(temp);
     }
 
     private void createAudit(AuditTaskDataFillterDto temp) {

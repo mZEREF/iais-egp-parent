@@ -8,6 +8,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <webui:setLayout name="iais-intranet"/>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -41,6 +42,10 @@
                                         <th>Address</th>
                                         <th>Service Name</th>
                                         <th>Audit Type</th>
+                                       <c:if test="${ISTUC}">
+                                        <th>TCU Audit Due Date
+                                        </th>
+                                        </c:if>
                                         <th>Inspector</th>
                                         <th>Select for Audit</th>
                                     </tr>
@@ -48,9 +53,11 @@
                                     <tbody>
                                     <span class="error-msg" id="error_selectedOne" name="iaisErrorMsg"></span>
                                     <c:if test="${empty auditTaskDataDtos}">
-                                    <td colspan="7">
+                                    <tr>
+                                        <td colspan="7">
                                     <iais:message key="ACK018" escape="true"/>
                                     </td>
+                                    </tr>
                                     </c:if>
                                     <c:forEach var="item" items="${auditTaskDataDtos}" varStatus="status">
                                         <tr>
@@ -59,12 +66,20 @@
                                             <td><c:out value="${item.hclName}"/></td>
                                             <td><c:out value="${item.address}"/></td>
                                             <td><c:out value="${item.svcName}"/></td>
-                                            <td><iais:select name="${id}auditType" options="aduitTypeOp"
+                                            <td><c:if test="${ !item.audited}">
+                                                <iais:select name="${id}auditType" options="aduitTypeOp"
                                                              firstOption="Please Select" value=""></iais:select>
                                                 <c:set value="error_${id}adtype" var="erradtype"/>
                                                 <span class="error-msg" id="<c:out value="${erradtype}"/>"
                                                       name="iaisErrorMsg"></span>
+                                            </c:if>
+                                                <c:if test="${item.audited}">
+                                                    <iais:code code= "${item.auditType}"/>
+                                                </c:if>
                                             </td>
+                                            <c:if test="${ISTUC}">
+                                                <td><fmt:formatDate value="${item.tcuDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                            </c:if>
                                             <td>
                                                 <select name="<c:out value="${id}insOp"/>">
                                                     <c:forEach var="inspOp" items="${item.inspectors}">

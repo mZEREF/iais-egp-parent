@@ -53,11 +53,7 @@
                                             <td><iais:code code= "${item.auditType}"/></td>
                                             <td><c:out value="${item.inspector}"/></td>
                                             <td>
-                                                <c:choose>
-                                                    <c:when test="${item.selectedForAudit}">
-                                                        <p>Audit Confirmed</p>
-                                                    </c:when>
-                                                </c:choose>
+                                                <p>Audit Confirmed</p>
                                             </td>
                                             <td>
                                                 <input name="selectForAd${(status.index)}" id="selectForAd${(status.index)}" type="checkbox" value="1" <c:if test="${item.selected}">checked</c:if>>

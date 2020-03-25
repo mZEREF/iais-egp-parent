@@ -8,6 +8,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <webui:setLayout name="iais-intranet"/>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -37,6 +38,9 @@
                                         <th>Address</th>
                                         <th>Service Name</th>
                                         <th>Audit Type</th>
+                                        <c:if test="${ISTUC}"> <th>
+                                            TCU Audit Due Date
+                                        </th></c:if>
                                         <th>Inspector</th>
                                         <th>Select for Audit</th>
                                     </tr>
@@ -52,6 +56,11 @@
                                             <td><c:out value="${item.address}"/></td>
                                             <td><c:out value="${item.svcName}"/></td>
                                             <td><iais:code code="${item.auditType}"/></td>
+                                            <c:if test="${ISTUC}">
+                                            <td>
+                                                <fmt:formatDate value="${item.tcuDate}" pattern="dd/MM/yyyy"/>
+                                            </td>
+                                            </c:if>
                                             <td>
                                                 <c:out value="${item.inspector}"/>
                                             </td>

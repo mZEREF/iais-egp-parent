@@ -49,7 +49,7 @@
                                     <c:forEach var = "item" items = "${auditTaskDataDtos}" varStatus="status">
                                         <tr>
                                             <c:set var="id" value="${status.index}"></c:set>
-                                            <td> <input name="<c:out value="${id}"/>selectForAd" id="<c:out value="${id}"/>selectForAd" type="checkbox" value="ad" <c:if test="${item.selectedForAudit}">checked</c:if>/></td>
+                                            <td> <input name="<c:out value="${id}"/>selectForAuditList" id="<c:out value="${id}"/>selectForAuditList" type="checkbox" value="ad" <c:if test="${item.addAuditList}">checked</c:if>/></td>
                                             <td><c:out value="${item.svcName}"/></td>
                                             <td><c:out value="${item.postalCode}"/></td>
                                             <td><c:out value="${item.lastInspStart}"/></td>
@@ -67,16 +67,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: addToAudit();">Add to Audit List</a></div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: cancel();">Cancel</a></div>
-                            </div>
-                        </div>
-                    </div>
+
+                    <iais:action style="text-align:right;">
+                        <button class="btn btn-secondary" id="clearbtn" type="button"
+                                onclick="javascript:cancel();">
+                            Cancel
+                        </button>
+                        <button class="btn btn-primary next" type="button" onclick="javascript:addToAudit();;">
+                            Add to Audit List
+                        </button>
+                    </iais:action>
                 </div>
             </div>
         </div>
