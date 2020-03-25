@@ -24,7 +24,7 @@
             <div class="intranet-content">
               <div class="bg-title">
                 <h2>
-                  <span>Confirm Task</span>
+                  <span>Task Details</span>
                 </h2>
               </div>
               <iais:body >
@@ -39,6 +39,12 @@
                     <iais:field value="Application Type"/>
                     <iais:value width="7">
                       <p><label><iais:code code="${inspecTaskCreAndAssDto.applicationType}"/></label></p>
+                    </iais:value>
+                  </iais:row>
+                  <iais:row>
+                    <iais:field value="Application Status"/>
+                    <iais:value width="7">
+                      <p><label><iais:code code="${inspecTaskCreAndAssDto.applicationStatus}"/></label></p>
                     </iais:value>
                   </iais:row>
                   <iais:row>
