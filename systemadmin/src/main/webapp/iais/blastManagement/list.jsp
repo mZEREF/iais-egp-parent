@@ -27,26 +27,19 @@
                     <div class="row">
                         <div class="form-horizontal">
                             <div class="form-group">
-                                <label class="col-xs-12 col-md-4 control-label">DescriptionName</label>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input type="text" name="descriptionSwitch" id="descriptionSwitch"
-                                           value="${descriptionSwitch}"/>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-xs-12 col-md-4 control-label">MsgName</label>
+                                <label class="col-xs-12 col-md-4 control-label">Message Name</label>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input type="text" name="msgName" maxlength="500" id="msgName" value="${msgName}"/>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-xs-12 col-md-4 control-label">SendDate Start</label>
+                                <label class="col-xs-12 col-md-4 control-label">Scheduled Send Date From</label>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <iais:datePicker id="start" name="start" value="${start}"/>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-xs-12 col-md-4 control-label">SendDate End</label>
+                                <label class="col-xs-12 col-md-4 control-label">Scheduled Send Date To</label>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <iais:datePicker id="end" name="end" value="${end}"/>
                                 </div>
@@ -72,7 +65,7 @@
                             <tr align="center">
                                 <th></th>
                                 <th>Message ID</th>
-                                <th>Message</th>
+                                <th>Message Name</th>
                                 <th>Distribution Name</th>
                                 <th>Mode of Delivery</th>
                                 <th>Scheduled Send date</th>
@@ -161,7 +154,13 @@
     }
 
     function deleteList() {
-        SOP.Crud.cfxSubmit("mainForm", "delete");
+        if ($("input:checkbox:checked").length > 0) {
+            if(confirm('Are you sure you want to delete this item?')){
+                SOP.Crud.cfxSubmit("mainForm", "delete")
+            }
+        } else {
+            alert('Please select record for deletion.');
+        }
     }
 
     function edit(id) {

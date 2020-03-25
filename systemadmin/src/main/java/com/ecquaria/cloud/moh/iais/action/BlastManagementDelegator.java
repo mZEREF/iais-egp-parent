@@ -329,12 +329,13 @@ public class BlastManagementDelegator {
     public void selectRecipients(BaseProcessClass bpc){
         String email = ParamUtil.getString(bpc.request, "email");
         String distribution = ParamUtil.getString(bpc.request, "distribution");
-        List<String> emaillist = Arrays.asList(email.split("\\n"));
+        if(email != null){
+            List<String> emaillist = Arrays.asList(email.split("\\n"));
+            blastManagementDto.setEmailAddress(emaillist);
+        }
+
         if(distribution != null){
             blastManagementDto.setDistributionId(distribution);
-        }
-        if(emaillist != null){
-            blastManagementDto.setEmailAddress(emaillist);
         }
         ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDto);
         ValidationResult validationResult =WebValidationHelper.validateProperty(blastManagementDto, "page3");

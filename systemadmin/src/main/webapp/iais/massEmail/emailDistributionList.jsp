@@ -145,7 +145,14 @@ function addList() {
     SOP.Crud.cfxSubmit("mainForm","create");
 }
 function deleteList() {
-    SOP.Crud.cfxSubmit("mainForm","delete");
+    if ($("input:checkbox:checked").length > 0) {
+        if(confirm('Are you sure you want to delete this item?')){
+            SOP.Crud.cfxSubmit("mainForm", "delete")
+        }
+    } else {
+        alert('Please select record for deletion.');
+    }
+
 }
 function edit(id) {
     $("#editDistribution").val(id);
