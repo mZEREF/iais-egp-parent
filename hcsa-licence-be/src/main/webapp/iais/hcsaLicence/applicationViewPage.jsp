@@ -581,15 +581,22 @@
 
                                                     <%--<div>--%>
                                                         <iais:row>
-                                                            <iais:field value="Fast Tracking" required="false"/>
+                                                            <iais:field value="Fast Tracking?" required="false"/>
                                                             <iais:value width="10">
                                                                 <c:choose>
                                                                     <c:when test="${applicationViewDto.applicationDto.status=='APST007'}">
-                                                                        <input type="checkbox" name="fastTracking"
-                                                                               value="Y"/>
+                                                                        <input class="form-check-input" id="fastTracking" type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
+                                                                        <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <p>${applicationViewDto.applicationDto.fastTracking}</p>
+                                                                        <c:choose>
+                                                                            <c:when test="${applicationViewDto.applicationDto.fastTracking}">
+                                                                                <p>Yes</p>
+                                                                            </c:when>
+                                                                            <c:otherwise>
+                                                                                <p>No</p>
+                                                                            </c:otherwise>
+                                                                        </c:choose>
                                                                     </c:otherwise>
                                                                 </c:choose>
                                                             </iais:value>
@@ -679,6 +686,11 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+            $("input[name='fastTracking']").each(function(){
+                if('${applicationViewDto.applicationDto.fastTracking}'){
+                    $(this).prop("checked",true);
+                }
+            });
         if ('${taskDto.taskKey}' == '12848A70-820B-EA11-BE7D-000C29F371DC' || '${taskDto.taskKey}' == '13848A70-820B-EA11-BE7D-000C29F371DC') {
             $('#ApplicationViewInspection').css('display', 'none');
             $('#recommendationDropdown').removeClass('hidden');
