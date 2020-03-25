@@ -1,6 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -56,12 +57,24 @@
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Service Name</td>
-                                                        <td>${hcsaServiceDto.svcName}</td>
+                                                        <td><iais:service value="${applicationViewDto.applicationDto.serviceId}"></iais:service></td>
                                                     </tr>
-                                                    <tr>
-                                                        <td align="right">Service Discipline/Modality</td>
-                                                        <td>${hcsaServiceDto.serviceSubTypeDtos[0].type}</td>
-                                                    </tr>
+                                                    <c:choose>
+                                                        <c:when test="${empty serviceStep}">
+                                                            <tr>
+                                                                <td align="right">Service Discipline/Modality</td>
+                                                                <td>-</td>
+                                                            </tr>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:forEach var="pool" items="${serviceStep}" >
+                                                                <tr>
+                                                                    <td align="right">Service Discipline/Modality</td>
+                                                                    <td class="row_no"><c:out value="${pool.stepCode}"/></td>
+                                                                </tr>
+                                                            </c:forEach>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                     <tr>
                                                         <td align="right">Submission Date</td>
                                                         <td>${applicationViewDto.submissionDate}</td>
@@ -139,7 +152,6 @@
 
                                                     </c:forEach>
 
-
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -159,12 +171,24 @@
                                                     <tbody>
                                                     <tr>
                                                         <td class="col-xs-6" align="right">Service Name</td>
-                                                        <td>${hcsaServiceDto.svcName}</td>
+                                                        <td><iais:service value="${applicationViewDto.applicationDto.serviceId}"></iais:service></td>
                                                     </tr>
-                                                    <tr>
-                                                        <td align="right">Service (Lab Discipline, Modality, Subsumed and etc) </td>
-                                                        <td>${hcsaServiceDto.serviceSubTypeDtos[0].type}</td>
-                                                    </tr>
+                                                    <c:choose>
+                                                        <c:when test="${empty serviceStep}">
+                                                            <tr>
+                                                                <td align="right">Service (Lab Discipline, Modality, Subsumed and etc)</td>
+                                                                <td>-</td>
+                                                            </tr>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:forEach var="pool" items="${serviceStep}" >
+                                                                <tr>
+                                                                    <td align="right">Service (Lab Discipline, Modality, Subsumed and etc)</td>
+                                                                    <td class="row_no"><c:out value="${pool.stepCode}"/></td>
+                                                                </tr>
+                                                            </c:forEach>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                     </tbody>
                                                 </table>
                                             </div>

@@ -306,4 +306,7 @@ public interface HcsaConfigClient {
 
     @GetMapping(value = "/hcsa-config/hcsa-service-versions-by-service-code",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceDto>> getServiceVersions(@RequestParam("serviceCode") String serviceCode);
+
+    @PostMapping(value = {"/iais-service-step/steps/serviceIds"}, produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaServiceStepSchemeDto>> getServiceStepsByServiceIds(@RequestBody List<String> serviceIds);
 }

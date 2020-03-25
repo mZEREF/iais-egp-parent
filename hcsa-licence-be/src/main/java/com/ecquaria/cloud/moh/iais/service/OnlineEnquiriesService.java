@@ -25,5 +25,6 @@ public interface OnlineEnquiriesService {
     SearchResult<ProfessionalInformationQueryDto> searchProfessionalInformation(SearchParam searchParam);
     void setLicInfo(HttpServletRequest request);
     void preInspReport(HttpServletRequest request);
+    void setAppInfo(HttpServletRequest request);
     List<SelectOption> getServicePersonnelRoleOption();
 }
