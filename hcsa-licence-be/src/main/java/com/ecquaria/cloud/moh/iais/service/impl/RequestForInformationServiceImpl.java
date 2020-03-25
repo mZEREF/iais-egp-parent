@@ -490,7 +490,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                     } catch (IOException ex) {
                         log.error(ex.getMessage(),ex);
                     }
-                    MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+                    MultipartFile multipartFile =  new CommonsMultipartFile(fileItem);
 
 //                    AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
 //                    FileRepoDto fileRepoDto = new FileRepoDto();
