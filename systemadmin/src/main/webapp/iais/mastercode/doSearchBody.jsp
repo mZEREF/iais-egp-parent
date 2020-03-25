@@ -54,9 +54,9 @@
             </div>
             <div class="form-group">
                 <iais:value>
-                    <label class="col-xs-12 col-md-4 control-label" for="status">Status.</label>
+                    <label class="col-xs-12 col-md-4 control-label" for="codeStatus">Status.</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                        <input id="status" type="text" name="codeStatus">
+                        <iais:select name="codeStatus" id="codeStatus" options="codeStatus"></iais:select>
                     </div>
                 </iais:value>
             </div>
