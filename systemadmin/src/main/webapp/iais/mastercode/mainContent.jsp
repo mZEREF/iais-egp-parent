@@ -87,7 +87,6 @@
                                                 <p class="visible-xs visible-sm table-row-title">Action</p>
                                                 <button type="button" class="btn btn-default btn-sm" onclick="doEdit('${masterCodeResult.masterCodeId}')">Edit</button>
                                                 <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal">Delete</button>
-                                                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deactivateModal">Deactivate</button>
                                             </td>
                                         </tr>
 
@@ -107,28 +106,6 @@
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                                         <button type="button" class="btn btn-primary" onclick="doDelete('${masterCodeResult.masterCodeId}')">Confirm</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--Modal End-->
-
-                                        <!-- Modal -->
-                                        <div class="modal fade" id="deactivateModal" tabindex="-1" role="dialog" aria-labelledby="deactivateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                        <h5 class="modal-title" id="deactivateModalLabel">Confirmation Box</h5>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="row">
-                                                            <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the Deactivate ?</span></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                        <button type="button" class="btn btn-primary" onclick="doDeactivate('${masterCodeResult.masterCodeId}')">Confirm</button>
                                                     </div>
                                                 </div>
                                             </div>

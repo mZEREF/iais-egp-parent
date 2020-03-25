@@ -90,7 +90,12 @@ public class MasterCodeDelegator {
     public void prepareData(BaseProcessClass bpc){
         logAboutStart("prepareData");
         HttpServletRequest request = bpc.request;
-        prepareSelect(request);
+        List<SelectOption> selectCodeStatusList = IaisCommonUtils.genNewArrayList();
+        selectCodeStatusList.add(new SelectOption("", "Please Select"));
+        selectCodeStatusList.add(new SelectOption("CMSTAT001", "Active"));
+        selectCodeStatusList.add(new SelectOption("CMSTAT002", "Deleted"));
+        selectCodeStatusList.add(new SelectOption("CMSTAT003", "Inactive"));
+        ParamUtil.setRequestAttr(bpc.request, "codeStatus", selectCodeStatusList);
         SearchParam searchParam = SearchResultHelper.getSearchParam(request,filterParameter,true);
         QueryHelp.setMainSql(MasterCodeConstants.MSG_TEMPLATE_FILE, MasterCodeConstants.MSG_TEMPLATE_SQL,searchParam);
         SearchResult searchResult = masterCodeService.doQuery(searchParam);
@@ -239,12 +244,10 @@ public class MasterCodeDelegator {
         logAboutStart("doDelete");
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_TYPE);
-        String action = ParamUtil.getString(request, "crud_action_deactivate");
-
         if ("doDelete".equals(type)){
             String masterCodeId = ParamUtil.getString(bpc.request,SystemAdminBaseConstants.CRUD_ACTION_VALUE);
-            if("doDeactivate".equals(action)){
-                MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
+            MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
+            if(masterCodeDto.getEffectiveFrom().before(new Date())){
                 String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
                 masterCodeDto.setCodeCategory(codeCategory);
                 masterCodeDto.setStatus("CMSTAT003");
@@ -252,7 +255,6 @@ public class MasterCodeDelegator {
             }else{
                 masterCodeService.deleteMasterCodeById(masterCodeId);
             }
-
         }
     }
 
@@ -314,12 +316,13 @@ public class MasterCodeDelegator {
             return;
         }
         MasterCodeDto masterCodeDto = new MasterCodeDto();
-        getValueFromPage(masterCodeDto,request);
         ValidationResult validationResult = WebValidationHelper.validateProperty(masterCodeDto,SystemAdminBaseConstants.SAVE_ACTION);
+        getValueFromPage(masterCodeDto,request);
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
+            ParamUtil.setRequestAttr(request, "codeCategory",ParamUtil.getString(request,MasterCodeConstants.MASTER_CODE_CATEGORY));
             return;
         }
         masterCodeDto.setCodeCategory(masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory()));
@@ -366,8 +369,8 @@ public class MasterCodeDelegator {
             return;
         }
         MasterCodeDto masterCodeDto = (MasterCodeDto) ParamUtil.getSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR);
-        getValueFromPage(masterCodeDto, request);
         ValidationResult validationEditResult =WebValidationHelper.validateProperty(masterCodeDto, "edit");
+        getValueFromPage(masterCodeDto, request);
         if(validationEditResult != null && validationEditResult.isHasErrors()) {
             logAboutStart("Edit validation");
             Map<String, String> errorMap = validationEditResult.retrieveAll();
@@ -405,6 +408,7 @@ public class MasterCodeDelegator {
 
     private void prepareSelect(HttpServletRequest request){
         List<SelectOption> selectCodeStatusList = IaisCommonUtils.genNewArrayList();
+        selectCodeStatusList.add(new SelectOption("", "Please Select"));
         selectCodeStatusList.add(new SelectOption("CMSTAT001", "Active"));
         selectCodeStatusList.add(new SelectOption("CMSTAT003", "Inactive"));
         ParamUtil.setRequestAttr(request, "codeStatus", selectCodeStatusList);

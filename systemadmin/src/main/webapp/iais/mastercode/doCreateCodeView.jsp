@@ -23,7 +23,8 @@
                             <iais:field value="Master Code Key." required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeKey" type="text" name="codeKey">
+                                    <%String codeKey = request.getParameter("codeKey")==null?"":request.getParameter("codeKey");%>
+                                    <input id="codeKey" type="text" name="codeKey" value="<%=codeKey%>">
                                     <span id="error_masterCodeKey" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -32,7 +33,8 @@
                             <label class="col-xs-12 col-md-4 control-label" for="codeValue">Code Value</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeValue" type="text" name="codeValue">
+                                    <%String codeValue = request.getParameter("codeValue")==null?"":request.getParameter("codeValue");%>
+                                    <input id="codeValue" type="text" name="codeValue" value="<%=codeValue%>">
                                     <span id="error_codeValue" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -49,7 +51,8 @@
                             <label class="col-xs-12 col-md-4 control-label" for="codeDescription">Code Description.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeDescription" type="text" name="codeDescription">
+                                    <%String codeDescription = request.getParameter("codeDescription")==null?"":request.getParameter("codeDescription");%>
+                                    <input id="codeDescription" type="text" name="codeDescription" value="<%=codeDescription%>">
                                 </div>
                             </iais:value>
                         </div>
@@ -57,7 +60,8 @@
                             <label class="col-xs-12 col-md-4 control-label" for="filterValue">Filter Value.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="filterValue" type="text" name="filterValue">
+                                    <%String filterValue = request.getParameter("filterValue")==null?"":request.getParameter("filterValue");%>
+                                    <input id="filterValue" type="text" name="filterValue" value="<%=filterValue%>"/>
                                 </div>
                             </iais:value>
                         </div>
@@ -65,7 +69,8 @@
                             <iais:field value="Sequence." required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeSequence" type="text" name="codeSequence">
+                                    <%String codeSequence = request.getParameter("codeSequence")==null?"":request.getParameter("codeSequence");%>
+                                    <input id="codeSequence" type="text" name="codeSequence" value="<%=codeSequence%>" oninput= "this.value=this.value.replace(/[^\d]/g,'')"/>
                                     <span id="error_sequence" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -74,7 +79,8 @@
                             <label class="col-xs-12 col-md-4 control-label" for="codeRemarks">Remark.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeRemarks" type="text" name="codeRemarks">
+                                    <%String codeRemarks = request.getParameter("codeRemarks")==null?"":request.getParameter("codeRemarks");%>
+                                    <input id="codeRemarks" type="text" name="codeRemarks" value="<%=codeRemarks%>"/>
                                 </div>
                             </iais:value>
                         </div>
@@ -82,7 +88,8 @@
                             <label class="col-xs-12 col-md-4 control-label" for="codeVersion">Version.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeVersion" type="text" name="codeVersion">
+                                    <%String codeVersion = request.getParameter("codeVersion")==null?"":request.getParameter("codeVersion");%>
+                                    <input id="codeVersion" type="text" name="codeVersion" value="<%=codeVersion%>" oninput= "this.value=this.value.replace(/[^\d]/g,'')"/>
                                 </div>
                             </iais:value>
                         </div>
@@ -90,8 +97,8 @@
                             <iais:field value="Status." required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:select name="codeStatus" id="codeStatus" options="codeStatus"
-                                                 firstOption="Select a status"></iais:select>
+                                    <%String codeStatus = request.getParameter("codeStatus")==null?"":request.getParameter("codeStatus");%>
+                                    <iais:select name="codeStatus" id="codeStatus" options="codeStatus" value="<%=codeStatus%>"></iais:select>
                                     <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -100,7 +107,8 @@
                             <iais:field value="Effective Start Date." required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:datePicker id="esd" name="esd"/>
+                                    <%String esd = request.getParameter("esd")==null?"":request.getParameter("esd");%>
+                                    <iais:datePicker id="esd" name="esd" value="<%=esd%>"/>
                                     <span id="error_effectiveFrom" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -109,7 +117,8 @@
                             <label class="col-xs-12 col-md-4 control-label" for="eed">Effective End Date.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:datePicker id="eed" name="esd"/>
+                                    <%String eed = request.getParameter("eed")==null?"":request.getParameter("eed");%>
+                                    <iais:datePicker id="eed" name="eed" value="<%=eed%>"/>
                                 </div>
                             </iais:value>
                         </div>
