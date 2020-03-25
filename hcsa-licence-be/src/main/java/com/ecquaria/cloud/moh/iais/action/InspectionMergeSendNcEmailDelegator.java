@@ -300,13 +300,18 @@ public class InspectionMergeSendNcEmailDelegator {
             for (String appPremCorrId:appPremCorrIds
             ) {
                 boolean isNoNc=true;
-                List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = insepctionNcCheckListService.getNcItemDtoByAppCorrId(appPremCorrId);
-                for (AppPremisesPreInspectionNcItemDto nc:appPremisesPreInspectionNcItemDtos
-                ) {
-                    if(nc.getIsRecitfied()==0){
-                        isNoNc=false;
+                try{
+                    List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = insepctionNcCheckListService.getNcItemDtoByAppCorrId(appPremCorrId);
+                    for (AppPremisesPreInspectionNcItemDto nc:appPremisesPreInspectionNcItemDtos
+                    ) {
+                        if(nc.getIsRecitfied()==0){
+                            isNoNc=false;
+                        }
                     }
+                }catch (Exception e){
+                    log.info(e.getMessage());
                 }
+
                 if(isNoNc){
                     appPremCorrIdsNoNc.add(appPremCorrId);
                 }
