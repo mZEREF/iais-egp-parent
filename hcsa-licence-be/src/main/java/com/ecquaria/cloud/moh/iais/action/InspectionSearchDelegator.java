@@ -105,8 +105,14 @@ public class InspectionSearchDelegator {
         SearchParam searchParam = getSearchParam(bpc);
         SearchResult<InspectionSubPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "supTaskSearchResult");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
-        GroupRoleFieldDto groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
+        List<String> workGroupIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "workGroupIds");
+        if(IaisCommonUtils.isEmpty(workGroupIds)) {
+            workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
+        }
+        GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto)ParamUtil.getSessionAttr(bpc.request, "groupRoleFieldDto");
+        if(groupRoleFieldDto == null){
+            groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
+        }
         List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption();
         //get Members Option
@@ -237,6 +243,7 @@ public class InspectionSearchDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
     }
 
     private List<TaskDto> getSupervisorPoolByGroupWordId(List<String> workGroupIds) {
