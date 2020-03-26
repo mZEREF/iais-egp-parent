@@ -101,6 +101,8 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
                     ChecklistConfigDto common = appConfigClient.getMaxVersionCommonConfig().getEntity();
                     if (common != null){
                         SelfDeclaration commonSelfDecl = new SelfDeclaration();
+                        commonSelfDecl.setHasSubtype(false);
+                        commonSelfDecl.setConfigId(common.getId());
                         LinkedHashMap<String, List<PremCheckItem>> eachPremQuestion = new LinkedHashMap<>();
                         List<PremCheckItem> premCheckItemList = getQuestionItemList(common, address);
                         commonSelfDecl.setCommon(true);

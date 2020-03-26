@@ -22,7 +22,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,7 +98,7 @@ public class AppPremSelfDeclDelegator {
         List<SelfDeclaration> selfDeclByGroupId = (List<SelfDeclaration>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
 
         for (SelfDeclaration selfDecl : selfDeclByGroupId){
-            if (currentPage == null && selfDecl.getCommon()){
+            if (currentPage == null && selfDecl.isCommon()){
                 LinkedHashMap<String, List<PremCheckItem>> eachPremQuestion = selfDecl.getEachPremQuestion();
                 setAnswer(request, eachPremQuestion);
             }else if (currentPage != null && currentPage.equals(selfDecl.getSvcId())){
@@ -162,21 +161,17 @@ public class AppPremSelfDeclDelegator {
         List<SelfDeclaration> selfDeclList = (List<SelfDeclaration>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
 
         //Once transaction
-        Map<String, String> errorMap = new HashMap<>(4);
         boolean hasWriteAnswer = hasWtriteAnswer(selfDeclList).booleanValue();
         if (!hasWriteAnswer){
-            errorMap.put("premItemAnswer", "Please fill in the necessary answers.");
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("premItemAnswer", "Please fill in the necessary answers."));
             return;
         }
 
-        if (errorMap != null && errorMap.isEmpty()){
-            String json = JsonUtil.parseToJson(selfDeclList);
-            //appPremSelfDesc.saveSelfDecl(selfDeclList);
-            ParamUtil.setRequestAttr(request,"ackMsg", "You have successfully submitted self-assessment");
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-        }
+        String json = JsonUtil.parseToJson(selfDeclList);
+        appPremSelfDesc.saveSelfDecl(selfDeclList);
+        ParamUtil.setRequestAttr(request,"ackMsg", "You have successfully submitted self-assessment");
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
     }
 
     // Lamda is not recommended
