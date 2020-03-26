@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclaration;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
@@ -229,7 +230,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     */
     public void saveSelfDecl(List<SelfDeclaration> selfDeclList) {
         //save fe after return data
-        List<String> contentJsonList = applicationClient.saveAllSelfDecl(selfDeclList).getEntity();
+        List<AppPremisesSelfDeclChklDto> contentJsonList = applicationClient.saveAllSelfDecl(selfDeclList).getEntity();
 
         try {
             //route to be

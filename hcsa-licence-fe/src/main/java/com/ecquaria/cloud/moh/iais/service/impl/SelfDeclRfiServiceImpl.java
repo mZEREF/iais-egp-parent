@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclaration;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.SelfDeclRfiService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
@@ -28,7 +29,7 @@ public class SelfDeclRfiServiceImpl implements SelfDeclRfiService {
     private ApplicationClient applicationClient;
 
     @Override
-    public List<SelfDecl> getSelfDeclRfiData(String groupId) {
+    public List<SelfDeclaration> getSelfDeclRfiData(String groupId) {
         List<SelfDecl> selfDeclList = applicationClient.getSelfDeclRfiData(groupId).getEntity();
         for (SelfDecl selfDecl : selfDeclList){
             String svcId = selfDecl.getSvcId();

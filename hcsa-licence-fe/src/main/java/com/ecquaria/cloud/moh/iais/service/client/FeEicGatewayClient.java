@@ -53,7 +53,7 @@ public interface FeEicGatewayClient {
                                          @RequestHeader("date-Secondary") String dateSec,
                                          @RequestHeader("authorization-Secondary") String authorizationSec);
     @PostMapping(value = "/v1/self-decl-bridge/",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<IaisApiResult<AppPremisesSelfDeclChklDto>> routeSelfDeclData(@RequestBody List<String> contentJsonList,
+    FeignResponseEntity<IaisApiResult<AppPremisesSelfDeclChklDto>> routeSelfDeclData(@RequestBody List<AppPremisesSelfDeclChklDto> contentJsonList,
                                                                                      @RequestHeader("date") String date,
                                                                                      @RequestHeader("authorization") String authorization,
                                                                                      @RequestHeader("date-Secondary") String dateSec,
