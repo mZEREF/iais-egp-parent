@@ -86,7 +86,7 @@
                                                         <td>${applicationViewDto.applicationType}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">Clinical Laboratory</td>
+                                                        <td align="right">Service Type</td>
                                                         <td>${applicationViewDto.serviceType}</td>
                                                     </tr>
                                                     <tr>
