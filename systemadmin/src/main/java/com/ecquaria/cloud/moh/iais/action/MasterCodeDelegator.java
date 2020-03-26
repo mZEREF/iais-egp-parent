@@ -316,8 +316,8 @@ public class MasterCodeDelegator {
             return;
         }
         MasterCodeDto masterCodeDto = new MasterCodeDto();
-        ValidationResult validationResult = WebValidationHelper.validateProperty(masterCodeDto,SystemAdminBaseConstants.SAVE_ACTION);
         getValueFromPage(masterCodeDto,request);
+        ValidationResult validationResult = WebValidationHelper.validateProperty(masterCodeDto,SystemAdminBaseConstants.SAVE_ACTION);
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -369,8 +369,8 @@ public class MasterCodeDelegator {
             return;
         }
         MasterCodeDto masterCodeDto = (MasterCodeDto) ParamUtil.getSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR);
-        ValidationResult validationEditResult =WebValidationHelper.validateProperty(masterCodeDto, "edit");
         getValueFromPage(masterCodeDto, request);
+        ValidationResult validationEditResult =WebValidationHelper.validateProperty(masterCodeDto, "edit");
         if(validationEditResult != null && validationEditResult.isHasErrors()) {
             logAboutStart("Edit validation");
             Map<String, String> errorMap = validationEditResult.retrieveAll();

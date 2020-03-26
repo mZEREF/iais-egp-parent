@@ -25,8 +25,9 @@
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="msgType">Message Type:</label>
+
                             <div class="col-xs-8 col-sm-6 col-md-4">
-                                <iais:select name="msgType" id="msgType" options="messageTypeSelect" disabled="true"></iais:select>
+                                <iais:select name="msgType" id="msgType" options="messageTypeSelect"></iais:select>
                                 <span id="error_msgTypeErr" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
@@ -42,7 +43,7 @@
                             <label class="col-xs-12 col-md-4 control-label">Delivery Mode:</label>
                             <div class="col-xs-8 col-sm-6 col-md-4">
                                 <iais:select name="deliveryMode" id="deliveryMode"
-                                             options="deliveryModeSelect" disabled="true"></iais:select>
+                                             options="deliveryModeSelect"></iais:select>
                                 <span id="error_deliveryModeErr" name="iaisErrorMsg"
                                       class="error-msg"></span>
                             </div>
@@ -51,6 +52,7 @@
                             <label class="col-xs-12 col-md-4 control-label" for="esd">Effective Start Date.</label>
                             <div class="col-xs-8 col-sm-6 col-md-6">
                                 <iais:datePicker id="esd" name="esd" dateVal="${MsgTemplateDto.effectiveFrom}"/>
+                                <span id="error_effectiveFrom" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -58,7 +60,7 @@
                             <div class="col-xs-8 col-sm-6 col-md-6">
                                 <iais:datePicker id="eed" name="eed"
                                                  dateVal="${MsgTemplateDto.effectiveTo}"></iais:datePicker>
-                                <span id="error_effectiveFrom" name="iaisErrorMsg" class="error-msg"></span>
+                                <span id="error_effectiveTo" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">

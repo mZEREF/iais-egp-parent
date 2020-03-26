@@ -30,7 +30,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="codeValue">Code Value</label>
+                            <iais:field value="Code Value." required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeValue = request.getParameter("codeValue")==null?"":request.getParameter("codeValue");%>
@@ -40,7 +40,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="codeCategory">Code Category.</label>
+                            <iais:field value="Code Category." required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="codeCategory" type="text" name="codeCategory" value="${codeCategory}" readonly="readonly">
@@ -48,11 +48,12 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="codeDescription">Code Description.</label>
+                            <iais:field value="Code Description." required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeDescription = request.getParameter("codeDescription")==null?"":request.getParameter("codeDescription");%>
-                                    <input id="codeDescription" type="text" name="codeDescription" value="<%=codeDescription%>">
+                                    <input id="codeDescription" type="text" name="codeDescription" value="<%=codeDescription%>" maxlength="255">
+                                    <span id="error_codeDescription" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
@@ -70,7 +71,7 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeSequence = request.getParameter("codeSequence")==null?"":request.getParameter("codeSequence");%>
-                                    <input id="codeSequence" type="text" name="codeSequence" value="<%=codeSequence%>" oninput= "this.value=this.value.replace(/[^\d]/g,'')"/>
+                                    <input id="codeSequence" type="text" name="codeSequence" value="<%=codeSequence%>" oninput= "this.value=this.value.replace(/[^\d]/g,'')" maxlength="3"/>
                                     <span id="error_sequence" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -80,16 +81,17 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeRemarks = request.getParameter("codeRemarks")==null?"":request.getParameter("codeRemarks");%>
-                                    <input id="codeRemarks" type="text" name="codeRemarks" value="<%=codeRemarks%>"/>
+                                    <input id="codeRemarks" type="text" name="codeRemarks" value="<%=codeRemarks%>" maxlength="255"/>
                                 </div>
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="codeVersion">Version.</label>
+                            <iais:field value="Version." required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeVersion = request.getParameter("codeVersion")==null?"":request.getParameter("codeVersion");%>
                                     <input id="codeVersion" type="text" name="codeVersion" value="<%=codeVersion%>" oninput= "this.value=this.value.replace(/[^\d]/g,'')"/>
+                                    <span id="error_version" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
@@ -114,11 +116,12 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="eed">Effective End Date.</label>
+                            <iais:field value="Effective End Date." required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String eed = request.getParameter("eed")==null?"":request.getParameter("eed");%>
                                     <iais:datePicker id="eed" name="eed" value="<%=eed%>"/>
+                                    <span id="error_effectiveTo" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>

@@ -23,7 +23,7 @@
                             <iais:field value="Code Category." required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeKey" type="text" name="codeKey">
+                                    <input id="codeKey" type="text" name="codeKey" maxlength="50">
                                     <span id="error_categoryDescription" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
