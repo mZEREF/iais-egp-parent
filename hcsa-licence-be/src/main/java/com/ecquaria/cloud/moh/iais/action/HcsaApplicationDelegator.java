@@ -212,8 +212,8 @@ public class HcsaApplicationDelegator {
        log.info(StringUtil.changeForLog("The rfiCount is -->:"+rfiCount));
 
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast Query For Internal");
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Route To DMS");
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast");
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Trigger to DMS");
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_REPLY,"Broadcast Reply For Internal");
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())
