@@ -53,7 +53,13 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">HCI Name / HCI Address</label>
+                            <label class="col-xs-12 col-md-4 control-label">HCI Name</label>
+                            <div class="col-xs-8 col-sm-6 col-md-5">
+                                <input type="text" name="hci_name" value="${hci_name}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label">HCI Address</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <input type="text" name="hci_address" value="${hci_address}"/>
                             </div>

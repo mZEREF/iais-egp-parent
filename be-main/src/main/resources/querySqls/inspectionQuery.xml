@@ -108,7 +108,8 @@
                 <#if application_type??> and T5.APP_TYPE = :application_type</#if>
                 <#if application_status??> and T5.STATUS = :application_status</#if>
                 <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
-                <#if address??> and (address like :address or hci_name like :address)</#if>
+                <#if address??> and (T5.address like :address)</#if>
+                <#if hci_name??> and (T5.HCI_NAME like :hci_name)</#if>
             ]]>
     </sql>
 
@@ -152,7 +153,8 @@
                 <#if application_status??> and T5.STATUS = :application_status</#if>
                 <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
                 <#if sub_date??> and T5.SUBMIT_DT >= :sub_date</#if>
-                <#if address??> and (address like :address or hci_name like :address)</#if>
+                 <#if address??> and (T5.address like :address)</#if>
+                <#if hci_name??> and (T5.HCI_NAME like :hci_name)</#if>
             ]]>
     </sql>
 </sqls>

@@ -78,6 +78,7 @@ public class BackendInboxDelegator {
     private String application_status;
     private String hci_code;
     private String hci_address;
+    private String hci_name;
     private List<String> applicationDtoIds;
     private SearchParam searchParamGroup;
     private List<TaskDto> commPools;
@@ -113,6 +114,7 @@ public class BackendInboxDelegator {
         application_status = "";
         hci_code = "";
         hci_address = "";
+        hci_name = "";
         ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
     }
 
@@ -133,6 +135,7 @@ public class BackendInboxDelegator {
 
         ParamUtil.setRequestAttr(bpc.request,"hci_code",hci_code);
         ParamUtil.setRequestAttr(bpc.request,"hci_address",hci_address);
+        ParamUtil.setRequestAttr(bpc.request,"hci_name",hci_name);
         ParamUtil.setRequestAttr(bpc.request,"application_no",application_no);
         ParamUtil.setRequestAttr(bpc.request, "supTaskSearchParam", searchParamGroup);
         ParamUtil.setRequestAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
@@ -178,6 +181,7 @@ public class BackendInboxDelegator {
         application_status = ParamUtil.getString(bpc.request, "application_status");
         hci_code = ParamUtil.getString(bpc.request, "hci_code");
         hci_address = ParamUtil.getString(bpc.request, "hci_address");
+        hci_name = ParamUtil.getString(bpc.request, "hci_name");
 
         String inspectorValue = loginContext.getLoginId();
 
@@ -463,6 +467,15 @@ public class BackendInboxDelegator {
                 searchParamGroup.removeFilter("address");
                 searchParamAjax.removeFilter("address");
             }
+
+            if(!StringUtil.isEmpty(hci_name)){
+                searchParamGroup.addFilter("hci_name", "%" +hci_name +"%",true);
+                searchParamAjax.addFilter("hci_name", "%" +hci_name +"%",true);
+            }else{
+                searchParamGroup.removeFilter("hci_name");
+                searchParamAjax.removeFilter("hci_name");
+            }
+
 
             QueryHelp.setMainSql("inspectionQuery", "AppGroup",searchParamGroup);
             log.debug(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
