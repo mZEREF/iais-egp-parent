@@ -425,7 +425,7 @@
 
         $('.poSelect').trigger('change');
         $('.deputySelect').trigger('change');
-
+        $('.deputyPoSelect').trigger('change');
         //disabled
         if(${AppSubmissionDto.needEditController && (AppSubmissionDto.appEditSelectDto.serviceEdit || AppSubmissionDto.appEditSelectDto.poEdit) && !isClickEdit}){
             $('.po-content input[type="text"]').prop('disabled',true);
