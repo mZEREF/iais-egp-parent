@@ -123,6 +123,11 @@ public class INTRANET___ApplicationView___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "lienceStartDate", this);
 	}
 
+	public void chooseAckValue_OnStepProcess_0() throws Exception {
+	// 		chooseAckValue->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "chooseAckValue", this);
+	}
+
 
 
 

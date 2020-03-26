@@ -399,6 +399,71 @@ public class HcsaApplicationDelegator {
         }
     }
 
+
+    /**
+     * StartStep: chooseAckValue
+     */
+
+    public void chooseAckValue(BaseProcessClass bpc) throws Exception{
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+        String roleId = taskDto.getRoleId();
+        String successInfo = "You have successfully completed your task.";
+        String verified = ParamUtil.getString(bpc.request,"verified");
+        String rollBack = ParamUtil.getString(bpc.request,"rollBack");
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String status = applicationDto.getStatus();
+        String crud_action_type = (String) ParamUtil.getRequestAttr(bpc.request, "crud_action_type");
+        //replay "PROCREP"
+        if("PROCREP".equals(crud_action_type)){
+            successInfo = "You have successfully given clarification.";
+        }else{
+            //ASO PSO
+            if(RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)){
+                successInfo = "You have successfully completed your task.";
+            }
+            //verified
+            if(!StringUtil.isEmpty(verified)){
+                //AO1 -> AO2
+                if(RoleConsts.USER_ROLE_AO1.equals(roleId) && RoleConsts.USER_ROLE_AO2.equals(verified)){
+                    successInfo = "You have successfully recommended to next Approval Officer.";
+                }else if(RoleConsts.USER_ROLE_AO2.equals(roleId) && RoleConsts.USER_ROLE_AO3.equals(verified)){
+                    //AO2 -> AO3
+                    successInfo = "You have successfully recommended to next Approval Officer.";
+                }else if(RoleConsts.USER_ROLE_AO3.equals(roleId) && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(status)){
+                    //AO3 APPROVAL
+                    successInfo = "You have successfully approved the application.";
+                }else if(RoleConsts.USER_ROLE_AO3.equals(roleId) && ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(status)){
+                    //AO3 REJECT
+                    successInfo = "You have successfully rejected the application.";
+                }else if(RoleConsts.USER_ROLE_AO3.equals(roleId) && ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS.equals(verified)){
+                    //AO3 DMS
+                    successInfo = "You have successfully alert the case to DMS.";
+                }
+
+
+            }else if(!StringUtil.isEmpty(rollBack)){
+                //roll back
+                if(RoleConsts.USER_ROLE_AO1.equals(roleId)){
+                    //AO1
+                    successInfo = "You have successfully routed back your application.";
+                }else if(RoleConsts.USER_ROLE_AO2.equals(roleId)){
+                    //AO2
+                    successInfo = "You have successfully routed back your application.";
+                }else if((RoleConsts.USER_ROLE_AO3.equals(roleId))){
+                    //AO3
+                    successInfo = "You have successfully routed back your application.";
+                }
+            }
+        }
+
+        ParamUtil.setRequestAttr(bpc.request,"successInfo",successInfo);
+
+
+
+
+    }
+
     /**
      * StartStep: rontingTaskToPSO
      *
