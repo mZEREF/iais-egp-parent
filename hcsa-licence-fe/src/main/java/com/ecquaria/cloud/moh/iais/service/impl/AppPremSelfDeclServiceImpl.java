@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
-import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclaration;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -210,7 +209,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     * @param:
     * @return:
     */
-    private void ascendOrderByCommon(List<SelfDecl> selfDeclList){
+    private void ascendOrderByCommon(List<SelfDeclaration> selfDeclList){
         selfDeclList.sort((s1, s2) -> {
             if (s1.isCommon() ^ s2.isCommon()) {
                 return s1.isCommon() ? -1 : 1;
