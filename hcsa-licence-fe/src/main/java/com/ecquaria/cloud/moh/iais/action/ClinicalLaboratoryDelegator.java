@@ -1011,7 +1011,7 @@ public class ClinicalLaboratoryDelegator {
                 personnelTypeList.add(sp.getValue());
             }
 
-            appSvcPersonnelDtos = genAppSvcPersonnelDtoList(bpc.request, personnelTypeList);
+            appSvcPersonnelDtos = genAppSvcPersonnelDtoList(bpc.request, personnelTypeList,currentSvcCod);
             appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(appSvcPersonnelDtos);
 
        /* if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)){
@@ -1498,7 +1498,7 @@ public class ClinicalLaboratoryDelegator {
     }
 
 
-    private List<AppSvcPersonnelDto> genAppSvcPersonnelDtoList(HttpServletRequest request, List<String> personnelTypeList){
+    private List<AppSvcPersonnelDto> genAppSvcPersonnelDtoList(HttpServletRequest request, List<String> personnelTypeList, String svcCode){
         List<AppSvcPersonnelDto> appSvcPersonnelDtos = IaisCommonUtils.genNewArrayList();
         String [] personnelSels =  ParamUtil.getStrings(request, "personnelSel");
         String [] designations = ParamUtil.getStrings(request, "designation");
@@ -1511,32 +1511,59 @@ public class ClinicalLaboratoryDelegator {
                 AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
                 String personnelSel = personnelSels[i];
                 appSvcPersonnelDto.setPersonnelType(personnelSel);
-                if(StringUtil.isEmpty(personnelSel) || !personnelTypeList.contains(personnelSel)){
-                    appSvcPersonnelDtos.add(appSvcPersonnelDto);
-                    continue;
+                if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode) ||
+                        AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode) ){
+                    if(StringUtil.isEmpty(personnelSel) || !personnelTypeList.contains(personnelSel)){
+                        appSvcPersonnelDtos.add(appSvcPersonnelDto);
+                        continue;
+                    }
                 }
+
                 String designation = "";
                 String name = "";
                 String qualification = "";
                 String wrkExpYear = "";
                 String professionalRegnNo = "";
 
+                if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)){
+                    if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)){
+                        name = names[i];
+                        qualification = qualifications[i];
+                        wrkExpYear = wrkExpYears[i];
+                    }else if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)){
+                        name = names[i];
+                    }
 
-                if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)){
+
+                }else if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode)){
+                    if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)){
+                        designation = designations[i];
+                        name = names[i];
+                        qualification = qualifications[i];
+                        wrkExpYear = wrkExpYears[i];
+                    }else if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)){
+                        name = names[i];
+                        qualification = qualifications[i];
+                        wrkExpYear = wrkExpYears[i];
+                    }else if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)){
+                        name = names[i];
+                    }else if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)){
+                        name = names[i];
+                        professionalRegnNo = professionalRegnNos[i];
+                    }
+                }else if(AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)){
                     designation = designations[i];
                     name = names[i];
-                    qualification = qualifications[i];
-                    wrkExpYear = wrkExpYears[i];
-                }else if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)){
-                    name = names[i];
-                    qualification = qualifications[i];
-                    wrkExpYear = wrkExpYears[i];
-                }else if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)){
-                    name = names[i];
-                }else if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)){
-                    name = names[i];
                     professionalRegnNo = professionalRegnNos[i];
+                    wrkExpYear = wrkExpYears[i];
+                }else if(AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)){
+                    name = names[i];
+                    qualification = qualifications[i];
+                    wrkExpYear = wrkExpYears[i];
                 }
+
+
+
                 appSvcPersonnelDto.setDesignation(designation);
                 appSvcPersonnelDto.setName(name);
                 appSvcPersonnelDto.setQuaification(qualification);
@@ -1550,17 +1577,17 @@ public class ClinicalLaboratoryDelegator {
     public static List<SelectOption> genPersonnelTypeSel(String currentSvcCod){
         List<SelectOption> personnelTypeSel = IaisCommonUtils.genNewArrayList();
         if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)){
-            SelectOption personnelTypeOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL, ApplicationConsts.SERVICE_PERSONNEL_RADIOLOGY_PROFESSIONAL_STR);
-            SelectOption personnelTypeOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST, ApplicationConsts.SERVICE_PERSONNEL_MEDICAL_PHYSICIST_STR);
-            SelectOption personnelTypeOp3 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER, ApplicationConsts.SERVICE_PERSONNEL_RADIATION_SAFETY_OFFICER_STR);
-            SelectOption personnelTypeOp4 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE, ApplicationConsts.SERVICE_PERSONNEL_REGISTERED_NURSE_STR);
+            SelectOption personnelTypeOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL, ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_RADIOLOGY_PROFESSIONAL);
+            SelectOption personnelTypeOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST, ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_MEDICAL_PHYSICIST);
+            SelectOption personnelTypeOp3 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER, ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_RADIATION_SAFETY_OFFICER );
+            SelectOption personnelTypeOp4 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE, ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_REGISTERED_NURSE);
             personnelTypeSel.add(personnelTypeOp1);
             personnelTypeSel.add(personnelTypeOp2);
             personnelTypeSel.add(personnelTypeOp3);
             personnelTypeSel.add(personnelTypeOp4);
         }else if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(currentSvcCod)){
-            SelectOption personnelTypeOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST, ApplicationConsts.SERVICE_PERSONNEL_MEDICAL_PHYSICIST_STR);
-            SelectOption personnelTypeOp3 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER, ApplicationConsts.SERVICE_PERSONNEL_RADIATION_SAFETY_OFFICER_STR);
+            SelectOption personnelTypeOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST, ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_MEDICAL_PHYSICIST);
+            SelectOption personnelTypeOp3 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER, ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_RADIATION_SAFETY_OFFICER);
             personnelTypeSel.add(personnelTypeOp2);
             personnelTypeSel.add(personnelTypeOp3);
         }else if(AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(currentSvcCod)){
@@ -1574,17 +1601,17 @@ public class ClinicalLaboratoryDelegator {
     public static List<SelectOption> genPersonnelDesignSel(String currentSvcCod){
         List<SelectOption> designation = IaisCommonUtils.genNewArrayList();
         if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)){
-            SelectOption designationOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_DIAGNOSTIC_RADIOGRAPHER, ApplicationConsts.SERVICE_PERSONNEL_DIAGNOSTIC_RADIOGRAPHER);
-            SelectOption designationOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_RADIATION_THERAPIST , ApplicationConsts.SERVICE_PERSONNEL_RADIATION_THERAPIST );
-            SelectOption designationOp3 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_NUCLEAR_MEDICINE_TECHNOLOGIST , ApplicationConsts.SERVICE_PERSONNEL_NUCLEAR_MEDICINE_TECHNOLOGIST );
+            SelectOption designationOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_DIAGNOSTIC_RADIOGRAPHER, ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_DIAGNOSTIC_RADIOGRAPHER);
+            SelectOption designationOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_RADIATION_THERAPIST , ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_RADIATION_THERAPIST );
+            SelectOption designationOp3 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_NUCLEAR_MEDICINE_TECHNOLOGIST , ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_NUCLEAR_MEDICINE_TECHNOLOGIST );
             designation.add(designationOp1);
             designation.add(designationOp2);
             designation.add(designationOp3);
         }else if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(currentSvcCod)){
 
         }else if(AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(currentSvcCod)){
-            SelectOption designationOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_MEDICAL_PRACTITIONER, ApplicationConsts.SERVICE_PERSONNEL_MEDICAL_PRACTITIONER);
-            SelectOption designationOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_CLINICAL_NURSE_LEADER , ApplicationConsts.SERVICE_PERSONNEL_CLINICAL_NURSE_LEADER );
+            SelectOption designationOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_MEDICAL_PRACTITIONER, ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_MEDICAL_PRACTITIONER);
+            SelectOption designationOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_CLINICAL_NURSE_LEADER , ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_CLINICAL_NURSE_LEADER );
             designation.add(designationOp1);
             designation.add(designationOp2);
         }else if(AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(currentSvcCod)){
