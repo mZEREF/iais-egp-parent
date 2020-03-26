@@ -139,7 +139,7 @@
 
     function doInspectionCommonPoolClear() {
         $('input[name="application_no"]').val("");
-        $("#application_type option[text = 'Please Select']").val("selected", "selected");
+        $('#application_type option:first').prop('selected', 'selected');
         $("#appComPoolSelect .current").text("Please Select");
         $('input[name="hci_code"]').val("");
         $('input[name="hci_name"]').val("");

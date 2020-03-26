@@ -145,9 +145,9 @@
 
     function doInspectorSearchTaskClear() {
         $('input[name="application_no"]').val("");
-        $("#application_type option[text = 'Please Select']").val("selected", "selected");
-        $("#application_status option[text = 'Please Select']").val("selected", "selected");
-        $("#memberName option[text = 'Please Select']").val("selected", "selected");
+        $('#application_type option:first').prop('selected', 'selected');
+        $('#application_status option:first').prop('selected', 'selected');
+        $('#memberName option:first').prop('selected', 'selected');
         $("#superPoolSearch .current").text("Please Select");
         $('input[name="hci_code"]').val("");
         $('input[name="hci_name"]').val("");
