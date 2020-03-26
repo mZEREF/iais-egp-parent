@@ -1288,7 +1288,7 @@ public class ClinicalLaboratoryDelegator {
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
         String deputySelect = ParamUtil.getString(request, "deputyPrincipalOfficer");
         if(isGetDataFromPagePo){
-            String [] assignSelect = ParamUtil.getStrings(request, "assignSelect");
+            String [] assignSelect = ParamUtil.getStrings(request, "poSelect");
             String [] salutation = ParamUtil.getStrings(request, "salutation");
             String [] name = ParamUtil.getStrings(request, "name");
             String [] idType = ParamUtil.getStrings(request, "idType");
@@ -1317,6 +1317,7 @@ public class ClinicalLaboratoryDelegator {
 
         //depo
         if("1".equals(deputySelect) && isGetDataFromPageDpo){
+            String [] assignSelect = ParamUtil.getStrings(request, "deputyAssignSelect");
             String [] deputySalutation = ParamUtil.getStrings(request, "deputySalutation");
             String [] deputyDesignation = ParamUtil.getStrings(request, "deputyDesignation");
             String [] deputyName = ParamUtil.getStrings(request, "deputyName");
@@ -1325,10 +1326,11 @@ public class ClinicalLaboratoryDelegator {
             String [] deputyMobileNo = ParamUtil.getStrings(request, "deputyMobileNo");
             String [] deputyOfficeTelNo = ParamUtil.getStrings(request, "deputyOfficeTelNo");
             String [] deputyEmailAddr = ParamUtil.getStrings(request, "deputyEmailAddr");
-            if(deputyDesignation != null && deputyDesignation.length>0){
+            if(assignSelect != null && assignSelect.length>0){
                 for(int i=0 ;i <deputyDesignation.length;i++){
                     AppSvcPrincipalOfficersDto dpoDto = new AppSvcPrincipalOfficersDto();
                     dpoDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+                    dpoDto.setAssignSelect(assignSelect[i]);
                     dpoDto.setDesignation(deputyDesignation[i]);
                     dpoDto.setEmailAddr(deputyEmailAddr[i]);
                     dpoDto.setSalutation(deputySalutation[i]);
