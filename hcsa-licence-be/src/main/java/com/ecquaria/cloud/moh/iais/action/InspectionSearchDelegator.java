@@ -411,5 +411,6 @@ public class InspectionSearchDelegator {
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
         inspectionService.routingTaskByPool(inspectionTaskPoolListDto, superPool, internalRemarks);
         ParamUtil.setSessionAttr(bpc.request,"inspectionTaskPoolListDto", inspectionTaskPoolListDto);
+        ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
     }
 }
