@@ -120,7 +120,7 @@
                                 <c:otherwise>
                                     <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
                                         <tr>
-                                            <td class="row_no"><c:out value="${status.index + 1+ (SearchParam.pageNo - 1) * SearchParam.pageSize}"/></td>
+                                            <td class="row_no"><c:out value="${status.index + 1}"/></td>
                                             <td>
                                                 <c:if test="${pool.appCorrId==null}">${pool.applicationNo}</c:if>
                                                 <c:if test="${pool.appCorrId!=null}"><a onclick="javascript:doAppInfo('${pool.appCorrId}')">${pool.applicationNo}</a></c:if>
