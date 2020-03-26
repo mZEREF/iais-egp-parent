@@ -287,12 +287,17 @@ public class HcsaApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, "recommendationOnlyShow",recommendationOnlyShow);
         }
 
+        String roleId = taskDto.getRoleId();
         List<SelectOption> nextStageList = IaisCommonUtils.genNewArrayList();
         nextStageList.add(new SelectOption("", "Please Select"));
-        nextStageList.add(new SelectOption("VERIFIED", "Verified"));
+        if(RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId)){
+            nextStageList.add(new SelectOption("VERIFIED", "Verified"));
+        }else{
+            nextStageList.add(new SelectOption("VERIFIED", "Support"));
+        }
         if((ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(applicationViewDto.getApplicationDto().getStatus())
                 || ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus()))
-                && "ASO".equals(taskDto.getRoleId())){
+                && RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId())){
 
         }else{
             nextStageList.add(new SelectOption("ROLLBACK", "Internal Route Back"));
