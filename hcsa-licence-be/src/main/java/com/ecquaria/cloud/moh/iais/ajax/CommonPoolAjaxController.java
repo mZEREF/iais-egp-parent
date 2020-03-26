@@ -116,6 +116,7 @@ public class CommonPoolAjaxController {
         GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto) ParamUtil.getSessionAttr(request, "groupRoleFieldDto");
         List<String> workGroupIds = (List<String>) ParamUtil.getSessionAttr(request, "workGroupIds");
         Map<String, SuperPoolTaskQueryDto> assignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(request, "assignMap");
+        String userId = (String) ParamUtil.getSessionAttr(request, "memberId");
         if(!IaisCommonUtils.isEmpty(workGroupIds) && !StringUtil.isEmpty(appGroupId)) {
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getPremCorrDtoByAppGroupId(appGroupId).getEntity();
             //filter list
@@ -159,6 +160,9 @@ public class CommonPoolAjaxController {
             searchParam.addParam("workGroupId", inSq3);
             for (int i = 0; i < workGroupIds.size(); i++) {
                 searchParam.addFilter("workId" + i, workGroupIds.get(i));
+            }
+            if(!StringUtil.isEmpty(userId)){
+                searchParam.addFilter("userId", userId,true);
             }
             //do search
             QueryHelp.setMainSql("inspectionQuery", "supervisorPoolDropdown", searchParam);
