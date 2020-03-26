@@ -44,9 +44,6 @@ public class TemplatesDelegator {
     private final TemplatesService templatesService;
 
     @Autowired
-    private MasterCodeService masterCodeService;
-
-    @Autowired
     private TemplatesDelegator(TemplatesService templatesService){
         this.templatesService = templatesService;
     }
