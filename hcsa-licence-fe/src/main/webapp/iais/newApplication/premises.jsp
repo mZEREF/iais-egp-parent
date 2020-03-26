@@ -223,7 +223,8 @@
             $('input[type="radio"]').prop('disabled',false);
             submit('premises','saveDraft',null);
         });
-        
+
+
 
         <c:if test="${AppSubmissionDto.appEditSelectDto!=null && !AppSubmissionDto.appEditSelectDto.premisesEdit}">
         disabledPage();

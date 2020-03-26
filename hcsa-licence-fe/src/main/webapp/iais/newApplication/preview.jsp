@@ -24,7 +24,7 @@
                                             <p>Please note that you will not be able to pay for this application if you have not provided the mandatory information and documents.</p>
                                         </div>
                                         <div class="col-xs-12 col-md-2 text-right">
-                                            <p class="print"><a href="#"> <em class="fa fa-print"></em>Print</a></p>
+                                            <p class="print"><a href="" onclick="preview()"> <em class="fa fa-print"></em>Print</a></p>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -147,7 +147,9 @@
     });
 
 
-
+    function preview(){
+        window.print();
+    };
 
 
 </script>

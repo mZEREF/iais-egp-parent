@@ -41,6 +41,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
@@ -154,6 +155,13 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO, null);
         ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, null);
         ParamUtil.setSessionAttr(bpc.request,DRAFTCONFIG,null);
+
+        Map<String,String> coMap=new HashMap<>();
+        coMap.put("premises","");
+        coMap.put("document","");
+        coMap.put("information","");
+        coMap.put("previewli","");
+        bpc.request.getSession().setAttribute("coMap",coMap);
 
         //request For Information Loading
         ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,null);
@@ -452,6 +460,13 @@ public class NewApplicationDelegator {
                 if(errorMap.size()>0){
                     ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
+                    Map<String,String> coMap=(Map<String, String>) bpc.request.getSession().getAttribute("coMap");
+                    coMap.put("premises","");
+                    bpc.request.getSession().setAttribute("coMap",coMap);
+                }else {
+                    Map<String,String> coMap=(Map<String, String>) bpc.request.getSession().getAttribute("coMap");
+                    coMap.put("premises","premises");
+                    bpc.request.getSession().setAttribute("coMap",coMap);
                 }
             }
 
@@ -548,7 +563,7 @@ public class NewApplicationDelegator {
                     }
                 } else{
                     if(comm.getIsMandatory()){
-                        errorMap.put(name, "can not is empty");
+                        errorMap.put(name, "UC_CHKLMD001_ERR001");
                     }
                 }
             }
@@ -601,6 +616,15 @@ public class NewApplicationDelegator {
             String crud_action_values = ParamUtil.getRequestString(bpc.request, "crud_action_value");
             if("next".equals(crud_action_values)){
                 documentValid(bpc.request, errorMap);
+                doIsCommom(bpc.request, errorMap);
+                Map<String,String> coMap=(Map<String, String>)bpc.request.getSession().getAttribute("coMap");
+                if(errorMap.isEmpty()){
+                    coMap.put("document","document");
+                }else {
+                    coMap.put("document","");
+                }
+
+                bpc.request.getSession().setAttribute("coMap",coMap);
             }
             if(errorMap.size()>0){
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
@@ -626,6 +650,23 @@ public class NewApplicationDelegator {
 
 
         log.info(StringUtil.changeForLog("the do doDocument end ...."));
+    }
+
+    private void doIsCommom(HttpServletRequest request, Map<String, String> errorMap) {
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+
+        CommonsMultipartFile file ;
+        List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>)   request.getSession().getAttribute(COMMONHCSASVCDOCCONFIGDTO);
+        for(HcsaSvcDocConfigDto comm : commonHcsaSvcDocConfigList){
+            String name = "common"+comm.getId();
+            file = (CommonsMultipartFile) mulReq.getFile(name);
+            Boolean isMandatory = comm.getIsMandatory();
+            if(isMandatory&&file.getSize()==0){
+                errorMap.put(name, "UC_CHKLMD001_ERR001");
+            }
+
+        }
+
     }
 
 
@@ -948,7 +989,14 @@ public class NewApplicationDelegator {
         if(!map.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"Msg",map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
+            Map<String,String> coMap=(Map<String, String>)bpc.request.getSession().getAttribute("coMap");
+            coMap.put("previewli","");
+            bpc.request.getSession().setAttribute("coMap",coMap);
             return;
+        }else {
+            Map<String,String> coMap=(Map<String, String>)bpc.request.getSession().getAttribute("coMap");
+            coMap.put("previewli","previewli");
+            bpc.request.getSession().setAttribute("coMap",coMap);
         }
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
 
@@ -1639,6 +1687,7 @@ public class NewApplicationDelegator {
 
         Map<String,String> documentMap=IaisCommonUtils.genNewHashMap();
         documentValid(bpc.request,documentMap);
+        doCommomDocument(bpc.request,documentMap);
         if(!documentMap.isEmpty()){
             previewAndSubmitMap.put("document","UC_CHKLMD001_ERR001");
             String documentMapStr = JsonUtil.parseToJson(documentMap);
@@ -1650,6 +1699,35 @@ public class NewApplicationDelegator {
         }
 
         return previewAndSubmitMap;
+    }
+
+    private void doCommomDocument(HttpServletRequest request, Map<String, String> documentMap) {
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList  = appSubmissionDto.getAppGrpPrimaryDocDtos();
+        List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>)   request.getSession().getAttribute(COMMONHCSASVCDOCCONFIGDTO);
+        Boolean flag =false;
+        for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto : commonHcsaSvcDocConfigList) {
+            Boolean isMandatory = hcsaSvcDocConfigDto.getIsMandatory();
+            String id = hcsaSvcDocConfigDto.getId();
+            if(isMandatory&&appGrpPrimaryDocDtoList.size()==0){
+                documentMap.put("common","UC_CHKLMD001_ERR001");
+            }else {
+                for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
+                    String svcDocId = appGrpPrimaryDocDto.getSvcDocId();
+                    if(id.equals(svcDocId)){
+                        flag=true;
+                    }
+
+                }
+
+            }
+
+        }
+
+        if(flag){
+            documentMap.put("common","UC_CHKLMD001_ERR001");
+        }
+
     }
 
     //todo
@@ -1859,7 +1937,7 @@ public class NewApplicationDelegator {
                 map.put("cgoemailAddr"+i,"UC_CHKLMD001_ERR001");
                 flag =true;
             }else {
-                if(!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")){
+                if(!ValidationUtils.isEmail(emailAddr)){
                     map.put("cgoemailAddr"+i,"CHKLMD001_ERR006");
                     flag =true;
                 }
@@ -2190,7 +2268,7 @@ public class NewApplicationDelegator {
         list.sort((h1, h2) -> h1.getSvcName().compareTo(h2.getSvcName()));
     }
 
-    private static void validateTime(Map<String, String> errorMap, String onsiteHH, String onsiteMM, int date, String key, int i, String error){
+    private static int validateTime(Map<String, String> errorMap, String onsiteHH, String onsiteMM, int date, String key, int i, String error){
         try {
             int i1 = Integer.parseInt(onsiteHH);
             int i2= Integer.parseInt(onsiteMM);
@@ -2201,6 +2279,7 @@ public class NewApplicationDelegator {
         }catch (Exception e){
             errorMap.put(key+i,error);
         }
+        return date;
     }
 
     //todo:move to NewApplicationHelper
@@ -2237,7 +2316,7 @@ public class NewApplicationDelegator {
                         if(StringUtil.isEmpty(onsiteStartHH)||StringUtil.isEmpty(onsiteStartMM)){
                             errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR001");
                         }else {
-                            validateTime(errorMap,onsiteStartHH,onsiteStartMM,startDate,"onsiteStartMM",i,"UC_CHKLMD001_ERR003");
+                            startDate = validateTime(errorMap, onsiteStartHH, onsiteStartMM, startDate, "onsiteStartMM", i, "UC_CHKLMD001_ERR003");
                         }
 
                         String onsiteEndHH = appGrpPremisesDtoList.get(i).getOnsiteEndHH();
@@ -2245,7 +2324,7 @@ public class NewApplicationDelegator {
                         if(StringUtil.isEmpty(onsiteEndHH)||StringUtil.isEmpty(onsiteEndMM)){
                             errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR001");
                         }else {
-                            validateTime(errorMap,onsiteEndHH,onsiteEndMM,endDate,"onsiteEndMM",i,"UC_CHKLMD001_ERR003");
+                             endDate = validateTime(errorMap, onsiteEndHH, onsiteEndMM, endDate, "onsiteEndMM", i, "UC_CHKLMD001_ERR003");
                         }
                         if(endDate<startDate){
                             errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR003");

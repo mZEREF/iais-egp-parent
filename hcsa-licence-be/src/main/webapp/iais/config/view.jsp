@@ -399,6 +399,14 @@
                       >Round Robin</option>
                     </select>
                   </div>
+                  <div class="col-xs-12 col-md-6"  style="margin-top: 1%;margin-bottom: 1%">
+                    <select disabled name="isMandatory${routingStage.stageCode}${routingStages.key}">
+                      <option value="">Select one</option>
+                      <option value="mandatory" selected="selected">Mandatory</option>
+                      <option value="optional">Optional</option>
+                    </select>
+
+                  </div>
                 </td>
 
                 <td>

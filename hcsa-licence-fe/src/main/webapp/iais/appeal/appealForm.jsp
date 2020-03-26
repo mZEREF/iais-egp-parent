@@ -131,8 +131,8 @@
       <div class="row">
         <div class="col-xs-12 col-sm-10" style="margin-bottom: 1%">
           <div class="text-right text-center-mobile">
-            <a class="btn btn-primary" href="#" id="cancel">Cancel</a>
-            <a class="btn btn-primary" href="#" id="save">Save</a>
+            <a class="btn btn-secondary" href="#" id="cancel">Cancel</a>
+            <a class="btn btn-secondary" href="#" id="save">Save</a>
             <a class="btn btn-primary" href="#" id="submit">Submit</a>
           </div>
         </div>

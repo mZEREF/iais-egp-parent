@@ -3,6 +3,7 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <webui:setLayout name="iais-intranet"/>
 
 <%
@@ -86,19 +87,19 @@
             <div class="col-xs-12 col-md-3">
               <div class="form-check " style="left: 10%;">
                 <c:set var="type" value="${PremisesType}"></c:set>
-                <input class="form-check-input" readonly name="PremisesType"<c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> id="icon3checkboxSample" type="checkbox" name="Onsite" value="ONSITE"  aria-invalid="false">
+                <input class="form-check-input" disabled="disabled" name="PremisesType"<c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> id="icon3checkboxSample" type="checkbox" name="Onsite" value="ONSITE"  aria-invalid="false">
                 <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>Onsite</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-3">
               <div class="form-check ">
-                <input class="form-check-input" readonly name="PremisesType"<c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> id="icon4checkboxSample" type="checkbox" name="Offsite"  value="OFFSITE" aria-invalid="false">
+                <input class="form-check-input" disabled="disabled" name="PremisesType"<c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> id="icon4checkboxSample" type="checkbox" name="Offsite"  value="OFFSITE" aria-invalid="false">
                 <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>Offsite</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-3">
               <div class="form-check ">
-                <input class="form-check-input" readonly name="PremisesType"<c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> id="icon5checkboxSample" type="checkbox" value="CONVEYANCE" name="Conveyance" aria-invalid="false">
+                <input class="form-check-input" disabled="disabled" name="PremisesType"<c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> id="icon5checkboxSample" type="checkbox" value="CONVEYANCE" name="Conveyance" aria-invalid="false">
                 <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
               </div>
             </div>
@@ -214,7 +215,7 @@
           <div class="col-xs-12 col-md-4">
             <input  readonly id="NumberDocument" type="text">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
+          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" disabled="disabled" aria-invalid="false">
             <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
@@ -307,8 +308,8 @@
         <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service Fee Bundles<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
-            <div class="components width-center">
-              <a class="btn btn-secondary width-70" style="padding: 12px 60px"><span class="view">view</span></a>
+            <div class="components">
+              <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
             </div>
           </div>
         </div>
@@ -376,6 +377,7 @@
                 <th style="width: 10% ;height: 40px;text-align: center"> application type<span class="mandatory" >*</span></th>
                 <th  style="width: 20% ;height: 40px;text-align: center"> Service Workflow Routing Stages<span class="mandatory" >*</span></th>
                 <th  style="width: 30% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
+                <th  style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours<span class="mandatory">*</span></th>
                 <th  style="width: 25% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
               </tr>
               <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
@@ -410,8 +412,15 @@
                   </td>
                   <td>
                     <div class="col-xs-12 col-md-12">
+                      <input style="margin: 8px 0px 8px" disabled="disabled" type="text" maxlength="2" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
+                      <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${status.index}"></span>
+                    </div>
+
+                  </td>
+                  <td>
+                    <div class="col-xs-12 col-md-12">
                       <input name="workstageId${routingStage.stageCode}${routingStages.key}" type="text" style="display: none" value="${routingStage.workStageId}">
-                      <select name="workingGroup${routingStage.stageCode}${routingStages.key}">
+                      <select disabled="disabled" name="workingGroup${routingStage.stageCode}${routingStages.key}">
                         <option value="">Select one</option>
                         <c:forEach items="${routingStage.workingGroup}" var="workingGroup">
                           <option <c:if test="${routingStage.workingGroupId==workingGroup.id}">selected="selected"</c:if> value="${workingGroup.id}">${workingGroup.groupName}</option>
@@ -515,7 +524,7 @@
         <div class="form-group">
           <label class="col-xs-12 col-md-8 control-label">Effective End Date</label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
-            <input type="text" disabled autocomplete="off" class="date_picker form-control form_datetime" name="EndDate" id="-20247433206800" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_EndDate" name="iaisErrorMsg" class="error-msg"></span>
+            <input type="text" disabled autocomplete="off" value="<fmt:formatDate value="${hcsaServiceDto.endDate}" pattern="dd/MM/yyyy"/>" class="date_picker form-control form_datetime" name="EndDate" id="-20247433206800" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_EndDate" name="iaisErrorMsg" class="error-msg"></span>
           </div>
           <div class="clear"></div></div>
       </div>
@@ -523,14 +532,14 @@
 
       <div class="col-xs-12 col-md-12" style="text-align: center">
         <div class="row">
-          <div class="col-xs-10 col-md-3">
-            <div class="components">
-              <button class="btn  btn-secondary"  value="${hcsaServiceDto.id}"  onclick="confirmDelete(this)" ><span class="mandatory">CONFIRM DELETE</span></button>
-            </div>
-          </div>
-          <div class="col-xs-10 col-md-3">
+          <div class="col-xs-10 col-md-5">
             <div class="components">
               <a class="btn  btn-secondary"  onclick="cancel()">Cancel</a>
+            </div>
+          </div>
+          <div class="col-xs-10 col-md-5">
+            <div class="components">
+              <button class="btn  btn-secondary" id="deleteConfirm" value="${hcsaServiceDto.id}"  onclick="confirmDelete(this)" ><span class="mandatory">CONFIRM DELETE</span></button>
             </div>
           </div>
         </div>
@@ -583,11 +592,16 @@
             SOP.Crud.cfxSubmit("mainForm","delete","","");
         }
 
-
     }
 
+    function deleteConfirm() {
+
+        SOP.Crud.cfxSubmit("mainForm","delete",$('#deleteConfirm').val(),"");
+
+
+    }
     function cancel() {
-        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohServiceConfig";
+        SOP.Crud.cfxSubmit("mainForm","cancel","cancel","");
     }
 
     function showNEW() {

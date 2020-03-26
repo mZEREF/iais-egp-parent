@@ -21,6 +21,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import sop.commons.util.CommonFieldsUtil;
 import sop.util.CopyUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -174,10 +176,11 @@ public class NewApplicationHelper {
                     }
                 }
                 String emailAddr = appSvcCgoList.get(i).getEmailAddr();
+
                 if(StringUtil.isEmpty(emailAddr)){
                     errMap.put("emailAddr"+i, "UC_CHKLMD001_ERR001");
                 }else if (!StringUtil.isEmpty(emailAddr)) {
-                    if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
+                    if (! ValidationUtils.isEmail(emailAddr)) {
                         errMap.put("emailAddr"+i, "CHKLMD001_ERR006");
                     }else if(emailAddr.length()>66) {
 
@@ -315,6 +318,7 @@ public class NewApplicationHelper {
                         oneErrorMap.put("NRICFIN","UC_CHKLMD001_ERR001");
                     }
                     if(!StringUtil.isEmpty(mobileNo)){
+
                         if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                             oneErrorMap.put("mobileNo"+poIndex, "CHKLMD001_ERR004");
                         }
@@ -322,7 +326,7 @@ public class NewApplicationHelper {
                         oneErrorMap.put("mobileNo"+poIndex, "UC_CHKLMD001_ERR001");
                     }
                     if(!StringUtil.isEmpty(emailAddr)) {
-                        if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
+                        if (!  ValidationUtils.isEmail(emailAddr)) {
                             oneErrorMap.put("emailAddr"+poIndex, "CHKLMD001_ERR006");
                         }else if(emailAddr.length()>66){
 
@@ -358,8 +362,8 @@ public class NewApplicationHelper {
                 String mobileNo = poDto.get(i).getMobileNo();
                 String emailAddr = poDto.get(i).getEmailAddr();
                 String idNo = poDto.get(i).getIdNo();
-                String modeOfMedAlert = poDto.get(i).getModeOfMedAlert();
                 String designation = poDto.get(i).getDesignation();
+                String officeTelNo = poDto.get(i).getOfficeTelNo();
                 /*if(StringUtil.isEmpty(modeOfMedAlert)||"-1".equals(modeOfMedAlert)){
                     oneErrorMap.put("modeOfMedAlert"+dpoIndex,"UC_CHKLMD001_ERR001");
                 }*/
@@ -367,7 +371,7 @@ public class NewApplicationHelper {
                 if(StringUtil.isEmpty(designation)||"-1".equals(designation)){
                     oneErrorMap.put("deputyDesignation"+dpoIndex,"UC_CHKLMD001_ERR001");
                 }
-                if(StringUtil.isEmpty(salutation)){
+                if(StringUtil.isEmpty(salutation)||"-1".equals(salutation)){
                     oneErrorMap.put("deputySalutation"+dpoIndex,"UC_CHKLMD001_ERR001");
                 }
 
@@ -378,6 +382,13 @@ public class NewApplicationHelper {
                     oneErrorMap.put("deputyName"+dpoIndex,"UC_CHKLMD001_ERR001");
                 }else if(name.length()>66){
 
+                }
+                if(StringUtil.isEmpty(officeTelNo)){
+                    oneErrorMap.put("deputyofficeTelNo"+dpoIndex,"UC_CHKLMD001_ERR001");
+                }else {
+                    if(!officeTelNo.matches("^[6][0-9]{7}$")){
+                        oneErrorMap.put("deputyofficeTelNo"+dpoIndex,"CHKLMD001_ERR007");
+                    }
                 }
                 if(StringUtil.isEmpty(idNo)){
                     oneErrorMap.put("deputyIdNo"+dpoIndex,"UC_CHKLMD001_ERR001");
@@ -410,7 +421,7 @@ public class NewApplicationHelper {
                 if(StringUtil.isEmpty(emailAddr)){
                     oneErrorMap.put("deputyEmailAddr"+dpoIndex,"UC_CHKLMD001_ERR001");
                 }else {
-                    if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
+                    if (!ValidationUtils.isEmail(emailAddr)) {
                         oneErrorMap.put("deputyEmailAddr"+dpoIndex, "CHKLMD001_ERR006");
                     }else if(emailAddr.length()>66){
 

@@ -158,7 +158,7 @@ public class ConfigServiceImpl implements ConfigService {
 
         hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto);
         // todo send email
-      /*  request.setAttribute("option","added");
+        request.setAttribute("option","added");
         request.setAttribute("serviceName",hcsaServiceDto.getSvcName());
         try {
             sendEmail(request);
@@ -166,7 +166,7 @@ public class ConfigServiceImpl implements ConfigService {
             e.printStackTrace();
         } catch (TemplateException e) {
             e.printStackTrace();
-        }*/
+        }
         request.setAttribute("crud_action_type", "save");
     }
 
@@ -286,9 +286,14 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    public void deleteOrCancel(HttpServletRequest request) {
+    public void deleteOrCancel(HttpServletRequest request,HttpServletResponse response) {
         String serviceId = request.getParameter("crud_action_value");
         if(!StringUtil.isEmpty(serviceId)){
+            if("cancel".equals(serviceId)){
+                sendURL(request,response);
+                return;
+            }
+
             Boolean flag = hcsaConfigClient.serviceIdIsUsed(serviceId).getEntity();
             HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
             List<LicenceDto> entity = hcsaLicenceClient.getLicenceDtosBySvcName(hcsaServiceDto.getSvcName()).getEntity();
@@ -298,10 +303,11 @@ public class ConfigServiceImpl implements ConfigService {
             if(flag){
 
                 return;
+
             }
             //todo delete send email
 
-         /*   request.setAttribute("option","deleted ");
+            request.setAttribute("option","deleted");
             request.setAttribute("serviceName",hcsaServiceDto.getSvcName());
             try {
                 sendEmail(request);
@@ -310,7 +316,7 @@ public class ConfigServiceImpl implements ConfigService {
             } catch (TemplateException e) {
                 e.printStackTrace();
             }
-            hcsaConfigClient.updateService(serviceId);*/
+            hcsaConfigClient.updateService(serviceId);
         }
 
     }
@@ -1382,6 +1388,10 @@ public class ConfigServiceImpl implements ConfigService {
         emailDto.setContent(templateMessageByContent);
         emailDto.setSubject("The following HCSA Service Template:"+serviceName+" has been "+option);
         emailDto.setSender("MOH");
+        List<String> address=new ArrayList<>();
+        address.add(orgUserDto.getEmail());
+        emailDto.setReceipts(address);
+        emailClient.sendNotification(emailDto).getEntity();
     }
 
     private void setAttribute(HttpServletRequest request, HcsaServiceDto hcsaServiceDto){
@@ -1453,7 +1463,9 @@ public class ConfigServiceImpl implements ConfigService {
         emailDto.setSender("MOH");
         emailDto.setClientQueryCode("isNotAuto");
         //address
-       /* emailDto.setReceipts();*/
+        List<String> address=new ArrayList<>();
+        address.add(orgUserDto.getEmail());
+        emailDto.setReceipts(address);
         emailClient.sendNotification(emailDto).getEntity();
     }
 
@@ -1464,7 +1476,7 @@ public class ConfigServiceImpl implements ConfigService {
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(),request);
         try {
             response.sendRedirect(tokenUrl);
-
+            request.getSession().removeAttribute("orgUserDto");
         } catch (IOException e) {
             e.printStackTrace();
         }

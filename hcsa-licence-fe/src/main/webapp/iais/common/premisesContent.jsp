@@ -302,7 +302,7 @@
                                     <label class="col-xs-12 col-md-4 control-label">
                                         Public Holidays Operating Hours (Start)
                                     </label>
-                                    <div class="col-xs-9 col-sm-5 col-md-4">
+                                    <div class="col-xs-9 col-sm-5 col-md-6">
                                         <input class="PbHolDayStartHH" type="text" name="${premValue}onSitePbHolDayStartHH0" value="" maxlength="2" style="width: 60px;margin-right: 2%"/>(HH)
                                         :
                                         <input class="PbHolDayStartMM" type="text" name="${premValue}onSitePbHolDayStartMM0" value="" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%"/>(MM)
@@ -313,7 +313,7 @@
                                     <label class="col-xs-12 col-md-4 control-label">
                                         Public Holidays Operating Hours (End)
                                     </label>
-                                    <div class="col-xs-9 col-sm-5 col-md-4">
+                                    <div class="col-xs-9 col-sm-5 col-md-6">
                                         <input class="PbHolDayEndHH" type="text" name="${premValue}onSitePbHolDayEndHH0" value="" maxlength="2" style="width: 60px;margin-right: 2%"/>(HH)
                                         :
                                         <input class="PbHolDayEndMM" type="text" name="${premValue}onSitePbHolDayEndMM0" value="" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%"/>(MM)
@@ -498,7 +498,7 @@
                                     <label class="col-xs-12 col-md-4 control-label">
                                         Public Holidays Operating Hours (Start)
                                     </label>
-                                    <div class="col-xs-9 col-sm-5 col-md-4">
+                                    <div class="col-xs-9 col-sm-5 col-md-6">
                                         <input class="PbHolDayStartHH" type="text" name="${premValue}conveyancePbHolDayStartHH0" value="" maxlength="2" style="width: 60px;margin-right: 2%"/>(HH)
                                         :
                                         <input class="PbHolDayStartMM" type="text" name="${premValue}conveyancePbHolDayStartMM0" value="" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%"/>(MM)
@@ -508,7 +508,7 @@
                                     <label class="col-xs-12 col-md-4 control-label">
                                         Public Holidays Operating Hours (End)
                                     </label>
-                                    <div class="col-xs-9 col-sm-5 col-md-4">
+                                    <div class="col-xs-9 col-sm-5 col-md-6">
                                         <input class="PbHolDayEndHH" type="text" name="${premValue}conveyancePbHolDayEndHH0" value="" maxlength="2" style="width: 60px;margin-right: 2%"/>(HH)
                                         :
                                         <input class="PbHolDayEndMM" type="text" name="${premValue}conveyancePbHolDayEndMM0" value="" maxlength="2" style="width: 60px;margin-left: 2%;margin-right: 2%"/>(MM)

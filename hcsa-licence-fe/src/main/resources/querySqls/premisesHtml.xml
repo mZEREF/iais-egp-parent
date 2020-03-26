@@ -146,20 +146,20 @@
             <label class="col-xs-12 col-md-4 control-label">
               Operating Hours (Start) <span class="mandatory">*</span>
             </label>
-            <div class="col-xs-9 col-sm-5 col-md-4">
-              <input type="text" value="" maxlength="2" name="onSiteStartHH" style="width: 60px">(HH)
+            <div class="col-xs-9 col-sm-5 col-md-6">
+              <input type="text" value="" maxlength="2" name="onSiteStartHH" style="width: 60px;margin-right: 2%">(HH)
               :
-              <input type="text" value="" maxlength="2" name="onSiteStartMM" style="width: 60px">(MM)
+              <input type="text" value="" maxlength="2" name="onSiteStartMM" style="width: 60px;margin-right: 2%;margin-left: 2%">(MM)
             </div>
           </div>
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">
               Operating Hours (End) <span class="mandatory">*</span>
             </label>
-            <div class="col-xs-9 col-sm-5 col-md-4">
-              <input type="text" value="" maxlength="2" name="onSiteEndHH" style="width: 60px">(HH)
+            <div class="col-xs-9 col-sm-5 col-md-6">
+              <input type="text" value="" maxlength="2" name="onSiteEndHH" style="width: 60px;margin-right: 2%">(HH)
               :
-              <input type="text" value="" maxlength="2" name="onSiteEndMM" style="width: 60px">(MM)
+              <input type="text" value="" maxlength="2" name="onSiteEndMM" style="width: 60px;margin-right: 2%;margin-left: 2%">(MM)
             </div>
           </div>
           <div class="phFormMarkPoint">
@@ -175,20 +175,20 @@
               <label class="col-xs-12 col-md-4 control-label">
                 Public Holidays Operating Hours (Start)
               </label>
-              <div class="col-xs-9 col-sm-5 col-md-4">
-                <input class="PbHolDayStartHH" type="text" name="0onSitePbHolDayStartHH0" value="" maxlength="2" style="width: 60px">(HH)
+              <div class="col-xs-9 col-sm-5 col-md-6">
+                <input class="PbHolDayStartHH" type="text" name="0onSitePbHolDayStartHH0" value="" maxlength="2" style="width: 60px;margin-right: 2%">(HH)
                 :
-                <input class="PbHolDayStartMM" type="text" name="0onSitePbHolDayStartMM0" value="" maxlength="2" style="width: 60px">(MM)
+                <input class="PbHolDayStartMM" type="text" name="0onSitePbHolDayStartMM0" value="" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%">(MM)
               </div>
             </div>
             <div class="form-group">
               <label class="col-xs-12 col-md-4 control-label">
                 Public Holidays Operating Hours (End)
               </label>
-              <div class="col-xs-9 col-sm-5 col-md-4">
-                <input class="PbHolDayEndHH" type="text" name="0onSitePbHolDayEndHH0" value="" maxlength="2" style="width: 60px">(HH)
+              <div class="col-xs-9 col-sm-5 col-md-6">
+                <input class="PbHolDayEndHH" type="text" name="0onSitePbHolDayEndHH0" value="" maxlength="2" style="width: 60px;margin-right: 2%">(HH)
                 :
-                <input class="PbHolDayEndMM" type="text" name="0onSitePbHolDayEndMM0" value="" maxlength="2" style="width: 60px">(MM)
+                <input class="PbHolDayEndMM" type="text" name="0onSitePbHolDayEndMM0" value="" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%">(MM)
               </div>
             </div>
           </div>
@@ -264,20 +264,20 @@
             <label class="col-xs-12 col-md-4 control-label">
               Operating Hours (Start) <span class="mandatory">*</span>
             </label>
-            <div class="col-xs-9 col-sm-5 col-md-4">
-              <input type="text" value="" maxlength="2" name="conveyanceStartHH" style="width: 60px">(HH)
+            <div class="col-xs-9 col-sm-5 col-md-6">
+              <input type="text" value="" maxlength="2" name="conveyanceStartHH" style="width: 60px;margin-right: 2%">(HH)
               :
-              <input type="text" value="" maxlength="2" name="conveyanceStartMM" style="width: 60px">(MM)
+              <input type="text" value="" maxlength="2" name="conveyanceStartMM" style="width: 60px;margin-right: 2%;margin-left: 2%">(MM)
             </div>
           </div>
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">
               Operating Hours (End) <span class="mandatory">*</span>
             </label>
-            <div class="col-xs-9 col-sm-5 col-md-4">
-              <input type="text" value="" maxlength="2" name="conveyanceEndHH" style="width: 60px">(HH)
+            <div class="col-xs-9 col-sm-5 col-md-6">
+              <input type="text" value="" maxlength="2" name="conveyanceEndHH" style="width: 60px;margin-right: 2%;">(HH)
               :
-              <input type="text" value="" maxlength="2" name="conveyanceEndMM" style="width: 60px">(MM)
+              <input type="text" value="" maxlength="2" name="conveyanceEndMM" style="width: 60px;margin-right: 2%;margin-left: 2%">(MM)
             </div>
           </div>
           <div class="phFormMarkPoint">
@@ -293,20 +293,20 @@
               <label class="col-xs-12 col-md-4 control-label">
                 Public Holidays Operating Hours (Start)
               </label>
-              <div class="col-xs-9 col-sm-5 col-md-4">
-                <input class="PbHolDayStartHH" type="text" name="0conveyancePbHolDayStartHH0" value="" maxlength="2" style="width: 60px">(HH)
+              <div class="col-xs-9 col-sm-5 col-md-6">
+                <input class="PbHolDayStartHH" type="text" name="0conveyancePbHolDayStartHH0" value="" maxlength="2" style="width: 60px;margin-right: 2%">(HH)
                 :
-                <input class="PbHolDayStartMM" type="text" name="0conveyancePbHolDayStartMM0" value="" maxlength="2" style="width: 60px">(MM)
+                <input class="PbHolDayStartMM" type="text" name="0conveyancePbHolDayStartMM0" value="" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%">(MM)
               </div>
             </div>
             <div class="form-group">
               <label class="col-xs-12 col-md-4 control-label">
                 Public Holidays Operating Hours (End)
               </label>
-              <div class="col-xs-9 col-sm-5 col-md-4">
-                <input class="PbHolDayEndHH" type="text" name="0conveyancePbHolDayEndHH0" value="" maxlength="2" style="width: 60px">(HH)
+              <div class="col-xs-9 col-sm-5 col-md-6">
+                <input class="PbHolDayEndHH" type="text" name="0conveyancePbHolDayEndHH0" value="" maxlength="2" style="width: 60px;margin-right: 2%">(HH)
                 :
-                <input class="PbHolDayEndMM" type="text" name="0conveyancePbHolDayEndMM0" value="" maxlength="2" style="width: 60px">(MM)
+                <input class="PbHolDayEndMM" type="text" name="0conveyancePbHolDayEndMM0" value="" maxlength="2" style="width: 60px;margin-right: 2%;margin-left: 2%">(MM)
               </div>
             </div>
           </div>
@@ -341,14 +341,14 @@
               </div>
             <div class="form-group">
               <label class="col-xs-12 col-md-4 control-label"> Public Holidays Operating Hours (Start)</label>
-              <div class="col-xs-9 col-sm-5 col-md-4">
+              <div class="col-xs-9 col-sm-5 col-md-6">
                 <input type="text" name="" value="" maxlength="2" style="width: 60px">(HH) :
                 <input type="text" name="" value="" maxlength="2" style="width: 60px">(MM)
               </div>
             </div>
             <div class="form-group">
               <label class="col-xs-12 col-md-4 control-label">Public Holidays Operating Hours (End)</label>
-              <div class="col-xs-9 col-sm-5 col-md-4">
+              <div class="col-xs-9 col-sm-5 col-md-6">
               <input type="text" name="" value="" maxlength="2" style="width: 60px">(HH) :
               <input type="text" name="" value="" maxlength="2" style="width: 60px">(MM)
             </div>

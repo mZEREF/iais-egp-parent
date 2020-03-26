@@ -24,13 +24,13 @@ public class ConfigServiceDelegator {
     private ConfigService configService;
     @Autowired
     private OrganizationClient organizationClient;
-    private OrgUserDto entity;
+
     public void start(BaseProcessClass bpc){
         log.info("*********startt***********");
-      /*  LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
-        this.entity = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
-        bpc.request.getSession().setAttribute("orgUserDto",entity);*/
+        OrgUserDto entity;entity = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
+        bpc.request.getSession().setAttribute("orgUserDto",entity);
 
     }
     private Stack stack=new Stack();
@@ -111,7 +111,7 @@ public class ConfigServiceDelegator {
     public void deleteOrCancel(BaseProcessClass bpc){
 
         log.info("*********deleteOrCancel  start***********");
-        configService.deleteOrCancel(bpc.request);
+        configService.deleteOrCancel(bpc.request,bpc.response);
 
     }
 

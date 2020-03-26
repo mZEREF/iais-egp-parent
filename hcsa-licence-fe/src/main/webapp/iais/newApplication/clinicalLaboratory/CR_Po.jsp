@@ -368,6 +368,7 @@
                             </div>
                             <div class="col-sm-4 col-md-8">
                               <input name="deputyOfficeTelNo" type="text"  id="deputyOfficeTelNo" maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${deputy.officeTelNo}" >
+                              <span name="iaisErrorMsg" id="error_deputyofficeTelNo${status.index}" class="error-msg"></span>
                             </div>
                           </div>
                         </div>
