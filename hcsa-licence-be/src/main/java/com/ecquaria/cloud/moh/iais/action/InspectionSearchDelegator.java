@@ -127,6 +127,7 @@ public class InspectionSearchDelegator {
             QueryHelp.setMainSql("inspectionQuery", "supervisorPoolSearch",searchParam);
             searchResult = inspectionService.getSupPoolByParam(searchParam);
             searchResult = inspectionService.getGroupLeadName(searchResult, loginContext, superPool);
+            ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
         }
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", searchResult);
@@ -183,10 +184,15 @@ public class InspectionSearchDelegator {
         String hci_address = ParamUtil.getRequestString(bpc.request, "hci_address");
         String userIdKey = ParamUtil.getMaskedString(bpc.request, "memberName");
         //get userId
-        Map<String, String> userIdMap = groupRoleFieldDto.getUserIdMap();
-        String userId = userIdMap.get(userIdKey);
-        //get task ref_no by uerId
-        String memberValue = inspectionService.getMemberValueByWorkGroupUserId(userId);
+        String memberValue = "";
+        if(!StringUtil.isEmpty(userIdKey)) {
+            Map<String, String> userIdMap = groupRoleFieldDto.getUserIdMap();
+            String userId = userIdMap.get(userIdKey);
+            groupRoleFieldDto.setCheckUser(userIdKey);
+            //get task ref_no by uerId
+            memberValue = inspectionService.getMemberValueByWorkGroupUserId(userId);
+            ParamUtil.setSessionAttr(bpc.request, "memberId", userId);
+        }
         List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds);
         List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(superPool);
         StringBuilder sb = new StringBuilder("(");
@@ -231,7 +237,6 @@ public class InspectionSearchDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
-        ParamUtil.setSessionAttr(bpc.request, "memberId", userId);
     }
 
     private List<TaskDto> getSupervisorPoolByGroupWordId(List<String> workGroupIds) {
