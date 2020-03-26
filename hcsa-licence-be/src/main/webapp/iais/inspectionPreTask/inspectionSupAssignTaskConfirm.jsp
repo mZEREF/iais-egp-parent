@@ -24,7 +24,7 @@
             <div class="intranet-content">
               <div class="bg-title">
                 <h2>
-                  <span>Supervisor Confirm Task</span>
+                  <span>Task Details</span>
                 </h2>
               </div>
               <iais:body >
