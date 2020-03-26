@@ -27,4 +27,5 @@ public interface OnlineEnquiriesService {
     void preInspReport(HttpServletRequest request);
     void setAppInfo(HttpServletRequest request);
     List<SelectOption> getServicePersonnelRoleOption();
+    List<String> getLicIdsByappIds(List<String> appIds);
 }

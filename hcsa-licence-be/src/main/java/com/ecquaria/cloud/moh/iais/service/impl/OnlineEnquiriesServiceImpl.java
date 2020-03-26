@@ -84,6 +84,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -751,5 +752,26 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     public List<SelectOption> getServicePersonnelRoleOption() {
         String[] personnelRoles={"DES001","DES002","DES003","DES004"};
         return MasterCodeUtil.retrieveOptionsByCodes(personnelRoles);
+    }
+
+    @Override
+    public List<String> getLicIdsByappIds(List<String> appIds) {
+        List<String> licIds =IaisCommonUtils.genNewArrayList();
+        List<LicAppCorrelationDto> appCorrelationDtoList=IaisCommonUtils.genNewArrayList();
+        for (String appId:appIds
+             ) {
+            List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrByappId(appId).getEntity();
+            if(licAppCorrelationDtos.size()>0){
+                appCorrelationDtoList.addAll(licAppCorrelationDtos);
+            }
+        }
+        for (LicAppCorrelationDto licAppCorrelationDto:appCorrelationDtoList
+             ) {
+            licIds.add(licAppCorrelationDto.getLicenceId());
+        }
+        HashSet<String> set = new HashSet<>(licIds);
+        licIds.clear();
+        licIds.addAll(set);
+        return licIds;
     }
 }

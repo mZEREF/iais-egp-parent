@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,19 +131,19 @@ public class OfficerOnlineEnquiriesDelegator {
         String searchNo=ParamUtil.getString(request,SEARCH_NO);
         ParamUtil.setRequestAttr(request,SEARCH_NO,searchNo);
         int count=0;
-        if(ParamUtil.getString(request,"hci")!=null){
+        if(ParamUtil.getString(request,"hciChk")!=null){
             count=1;
         }
-        if(ParamUtil.getString(request,"application")!=null){
+        if(ParamUtil.getString(request,"applicationChk")!=null){
             count=2;
         }
-        if(ParamUtil.getString(request,"licence")!=null){
+        if(ParamUtil.getString(request,"licenceChk")!=null){
             count=3;
         }
-        if(ParamUtil.getString(request,"licensee")!=null){
+        if(ParamUtil.getString(request,"licenseeChk")!=null){
             count=4;
         }
-        if(ParamUtil.getString(request,"servicePersonnel")!=null){
+        if(ParamUtil.getString(request,"servicePersonnelChk")!=null){
             count=5;
         }
         Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
@@ -333,19 +334,19 @@ public class OfficerOnlineEnquiriesDelegator {
 
 
         int[] count={0,0,0,0,0};
-        if(ParamUtil.getString(request,"hci")!=null){
+        if(ParamUtil.getString(request,"hciChk")!=null){
             count[0]=1;
         }
-        if(ParamUtil.getString(request,"application")!=null){
+        if(ParamUtil.getString(request,"applicationChk")!=null){
             count[1]=2;
         }
-        if(ParamUtil.getString(request,"licence")!=null){
+        if(ParamUtil.getString(request,"licenceChk")!=null){
             count[2]=3;
         }
-        if(ParamUtil.getString(request,"licensee")!=null){
+        if(ParamUtil.getString(request,"licenseeChk")!=null){
             count[3]=4;
         }
-        if(ParamUtil.getString(request,"servicePersonnel")!=null){
+        if(ParamUtil.getString(request,"servicePersonnelChk")!=null){
             count[4]=5;
         }
         if (Arrays.equals(count, new int[]{0, 0, 0, 0, 0})) {
@@ -425,7 +426,7 @@ public class OfficerOnlineEnquiriesDelegator {
         List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
         int[] count={0,0,0,0,0};
-        if(ParamUtil.getString(request,"hci")!=null){
+        if(ParamUtil.getString(request,"hciChk")!=null){
             count[0]=1;
             if(!StringUtil.isEmpty(hciCode)){
                 filters.put("hciCode", hciCode);
@@ -440,7 +441,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 filters.put("hciStreetName", hciStreetName);
             }
         }
-        if(ParamUtil.getString(request,"application")!=null||ParamUtil.getString(request,"licence")!=null){
+        if(ParamUtil.getString(request,"applicationChk")!=null||ParamUtil.getString(request,"licenceChk")!=null){
             count[2]=3;
             if(!StringUtil.isEmpty(applicationNo)){
                 filters.put("appNo", applicationNo);count[1]=2;
@@ -502,7 +503,7 @@ public class OfficerOnlineEnquiriesDelegator {
             }
         }
 
-        if(ParamUtil.getString(request,"licensee")!=null){
+        if(ParamUtil.getString(request,"licenseeChk")!=null){
             count[3]=4;
             if(!StringUtil.isEmpty(licenseeId)){
                 filters.put("licenseeId",licenseeId);
@@ -526,7 +527,7 @@ public class OfficerOnlineEnquiriesDelegator {
 
             }
         }
-        if(ParamUtil.getString(request,"servicePersonnel")!=null){
+        if(ParamUtil.getString(request,"servicePersonnelChk")!=null){
             count[4]=5;
             if(!StringUtil.isEmpty(personnelId)){
                 filters.put("personnelId", personnelId);
@@ -767,16 +768,28 @@ public class OfficerOnlineEnquiriesDelegator {
         HttpServletRequest request=bpc.request;
         String id = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
         ParamUtil.setSessionAttr(request,"id",id);
+        String [] appIds=ParamUtil.getStrings(request,"appIds");
+        List<String> applIds=IaisCommonUtils.genNewArrayList();
+        try{
+            Collections.addAll(applIds, appIds);
+        }catch (Exception e){
+            log.info(e.getMessage());
+        }
+        List<String> licIds=onlineEnquiriesService.getLicIdsByappIds(applIds);
+        List<String> licenceIds=cessationClient.getlicIdToCessation(licIds).getEntity();
+        ParamUtil.setSessionAttr(request,"licIds", (Serializable) licenceIds);
+        if(licenceIds.size()==0){
+            request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE,"back");
+        }
+
         // 		doSearchLicenceAfter->OnStepProcess
     }
 
     public void callCessation(BaseProcessClass bpc) {
         log.info("=======>>>>>callCessation>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String licId = (String) ParamUtil.getSessionAttr(request, "id");
-        List<String> licIds=IaisCommonUtils.genNewArrayList();
-        licIds.add(licId);
-        ParamUtil.setSessionAttr(request,"licIds", (Serializable) licIds);
+        List<String> licenceIds = (List<String>) ParamUtil.getSessionAttr(request, "licIds");
+        ParamUtil.setSessionAttr(request,"licIds", (Serializable) licenceIds);
 
         // 		callCessation->OnStepProcess
     }

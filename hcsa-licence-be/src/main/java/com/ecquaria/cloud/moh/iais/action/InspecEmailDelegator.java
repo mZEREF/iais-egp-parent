@@ -206,6 +206,10 @@ public class InspecEmailDelegator {
         HttpServletRequest request = bpc.request;
         String content=ParamUtil.getString(request,MSG_CON);
         String subject=ParamUtil.getString(request,SUBJECT);
+        InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
+        inspectionEmailTemplateDto.setMessageContent(content);
+        inspectionEmailTemplateDto.setSubject(subject);
+        ParamUtil.setSessionAttr(request,INS_EMAIL_DTO,inspectionEmailTemplateDto);
         ParamUtil.setSessionAttr(request,SUBJECT, subject);
         ParamUtil.setSessionAttr(request,MSG_CON, content);
 

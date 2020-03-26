@@ -28,12 +28,12 @@
                                 <c:choose >
                                     <c:when test="${choose[2]==3||choose[1]==2}">
                                     <label>
-                                        <input type="checkbox" checked name="application" />
+                                        <input type="checkbox" checked name="applicationChk" />
                                     </label>
                                     </c:when>
                                     <c:otherwise>
                                     <label>
-                                        <input type="checkbox" name="application" />
+                                        <input type="checkbox" name="applicationChk" />
                                     </label>
                                     </c:otherwise>
                                 </c:choose>
@@ -166,12 +166,12 @@
                             <c:choose >
                                 <c:when test="${choose[0]==1}">
                                     <label>
-                                        <input type="checkbox" checked name="hci" />
+                                        <input type="checkbox" checked name="hciChk" />
                                     </label>
                                 </c:when>
                                 <c:otherwise>
                                     <label>
-                                        <input type="checkbox" name="hci" />
+                                        <input type="checkbox" name="hciChk" />
                                     </label>
                                 </c:otherwise>
                             </c:choose>
@@ -227,12 +227,12 @@
                             <c:choose >
                                 <c:when test="${choose[3]==4}">
                                     <label>
-                                        <input type="checkbox" checked name="licensee" />
+                                        <input type="checkbox" checked name="licenseeChk" />
                                     </label>
                                 </c:when>
                                 <c:otherwise>
                                     <label>
-                                        <input type="checkbox" name="licensee" />
+                                        <input type="checkbox" name="licenseeChk" />
                                     </label>
                                 </c:otherwise>
                             </c:choose>
@@ -279,12 +279,12 @@
                             <c:choose >
                                 <c:when test="${choose[4]==5}">
                                     <label>
-                                        <input type="checkbox" checked name="servicePersonnel" />
+                                        <input type="checkbox" checked name="servicePersonnelChk" />
                                     </label>
                                 </c:when>
                                 <c:otherwise>
                                     <label>
-                                        <input type="checkbox" name="servicePersonnel" />
+                                        <input type="checkbox" name="servicePersonnelChk" />
                                     </label>
                                 </c:otherwise>
                             </c:choose>

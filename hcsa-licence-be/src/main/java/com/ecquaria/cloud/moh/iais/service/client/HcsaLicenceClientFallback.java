@@ -22,9 +22,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditInspectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import org.springframework.http.HttpHeaders;
+
 import java.util.List;
 import java.util.Map;
-import org.springframework.http.HttpHeaders;
 
 /**
  * @author Wenkang
@@ -123,6 +124,14 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
 
     @Override
     public FeignResponseEntity<List<LicAppCorrelationDto>> getLicCorrBylicId(String licenceId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<LicAppCorrelationDto>> getLicCorrByappId(String appId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

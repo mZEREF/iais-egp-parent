@@ -36,32 +36,32 @@
                                         <iais:row>
                                             <iais:value width="18">
                                                 <c:choose>
-                                                    <c:when test="${count==1}"><input type="checkbox" name="hci" checked /> HCI Name</c:when>
-                                                    <c:otherwise><input type="checkbox" name="hci"  /> HCI Name</c:otherwise>
+                                                    <c:when test="${count==1}"><input type="checkbox" name="hciChk" checked /> HCI Name</c:when>
+                                                    <c:otherwise><input type="checkbox" name="hciChk"  /> HCI Name</c:otherwise>
                                                 </c:choose>
                                             </iais:value>
                                             <iais:value width="18">
                                                 <c:choose>
-                                                    <c:when test="${count==2}"><input type="checkbox" name="application" checked /> Application No</c:when>
-                                                    <c:otherwise><input type="checkbox" name="application"  /> Application No</c:otherwise>
+                                                    <c:when test="${count==2}"><input type="checkbox" name="applicationChk" checked /> Application No</c:when>
+                                                    <c:otherwise><input type="checkbox" name="applicationChk"  /> Application No</c:otherwise>
                                                 </c:choose>
                                             </iais:value>
                                             <iais:value width="18">
                                                 <c:choose>
-                                                    <c:when test="${count==3}"><input type="checkbox" name="licence" checked /> Licence No</c:when>
-                                                    <c:otherwise><input type="checkbox" name="licence"  /> Licence No</c:otherwise>
+                                                    <c:when test="${count==3}"><input type="checkbox" name="licenceChk" checked /> Licence No</c:when>
+                                                    <c:otherwise><input type="checkbox" name="licenceChk"  /> Licence No</c:otherwise>
                                                 </c:choose>
                                             </iais:value>
                                             <iais:value width="18">
                                                 <c:choose>
-                                                    <c:when test="${count==4}"><input type="checkbox" name="licensee" checked /> Licensee Name</c:when>
-                                                    <c:otherwise><input type="checkbox" name="licensee"  /> Licensee Name</c:otherwise>
+                                                    <c:when test="${count==4}"><input type="checkbox" name="licenseeChk" checked /> Licensee Name</c:when>
+                                                    <c:otherwise><input type="checkbox" name="licenseeChk"  /> Licensee Name</c:otherwise>
                                                 </c:choose>
                                             </iais:value>
                                             <iais:value width="18">
                                                 <c:choose>
-                                                    <c:when test="${count==5}"><input type="checkbox" name="servicePersonnel" checked /> Service Personnel Name</c:when>
-                                                    <c:otherwise><input type="checkbox" name="servicePersonnel"  /> Service Personnel Name</c:otherwise>
+                                                    <c:when test="${count==5}"><input type="checkbox" name="servicePersonnelChk" checked /> Service Personnel Name</c:when>
+                                                    <c:otherwise><input type="checkbox" name="servicePersonnelChk"  /> Service Personnel Name</c:otherwise>
                                                 </c:choose>
                                             </iais:value>
                                         </iais:row>
@@ -89,6 +89,7 @@
                         <table class="table">
                             <thead>
                             <tr align="center">
+                                <iais:sortableHeader needSort="false" field="" value=""></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="APPLICATION_NO" value="Application No."></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="APP_TYPE" value="Application Type"></iais:sortableHeader>
@@ -103,7 +104,6 @@
                                 <iais:sortableHeader needSort="false"  field="2nd_last_compliance_history" value="2nd Last Compliance History"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="last_compliance_history" value="Last Compliance History"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="current_risk_tagging" value="Current Risk Tagging"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
                             </tr>
                             </thead>
                             <tbody>
@@ -118,7 +118,16 @@
                                 <c:otherwise>
                                     <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
                                         <tr>
-                                            <td class="row_no"><c:out value="${status.index + 1}"/></td>
+                                            <td class="form-check">
+                                                <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
+                                                       name="appIds" value="${pool.appId}"   >
+                                                <label class="form-check-label" for="licence${status.index + 1}"><span
+                                                        class="check-square"></span>
+                                                </label>
+                                            </td>
+                                            <td class="row_no">
+                                                <c:out value="${status.index + 1}"/>
+                                            </td>
                                             <td>
                                                 <c:if test="${pool.appCorrId==null}">${pool.applicationNo}</c:if>
                                                 <c:if test="${pool.appCorrId!=null}"><a onclick="javascript:doAppInfo('${pool.appCorrId}')">${pool.applicationNo}</a></c:if>
@@ -135,14 +144,7 @@
                                             <td><c:out value="${pool.twoLastComplianceHistory}"/></td>
                                             <td><c:out value="${pool.lastComplianceHistory}"/></td>
                                             <td><c:out value="${pool.currentRiskTagging}"/></td>
-                                            <td>
-                                                <c:if test="${pool.isCessation==1}">
-                                                    <iais:action style="text-align:center;">
-                                                        <a onclick="javascript:doCessation('${pool.licenceId}');" >Cessation</a>
-                                                    </iais:action>
-                                                </c:if>
 
-                                            </td>
                                         </tr>
                                     </c:forEach>
                                 </c:otherwise>
@@ -154,6 +156,10 @@
             </div>
         </div>
     </iais:body>
+    <iais:action style="text-align:right;">
+        <button type="button" class="btn btn-secondary"
+                onclick="javascript:doCessation();">Cessation</button>
+    </iais:action>
 </form>
 <script type="text/javascript">
 
@@ -176,7 +182,7 @@
     }
     function search(){
         var chkNum = 0;
-        var checkBox = $('input[type = checkbox]');
+        var checkBox = $('input[type = checkbox][name$="Chk"]');
         for (var i = 0; i < checkBox.length; i++) {
             if (checkBox[i].checked) {
                 chkNum++;
@@ -206,8 +212,9 @@
 
         SOP.Crud.cfxSubmit("mainForm", "appDetails",appCorrId);
     }
-    function doCessation(licId) {
+    function doCessation() {
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "cessation",licId);
+        SOP.Crud.cfxSubmit("mainForm", "cessation");
     }
+
 </script>
