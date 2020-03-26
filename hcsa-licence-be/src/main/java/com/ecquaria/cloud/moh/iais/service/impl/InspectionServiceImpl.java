@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationD
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -238,6 +239,8 @@ public class InspectionServiceImpl implements InspectionService {
         List<SuperPoolTaskQueryDto> superPoolTaskQueryDtos = searchResult.getRows();
         if(!IaisCommonUtils.isEmpty(superPoolTaskQueryDtos)) {
             for (SuperPoolTaskQueryDto superPoolTaskQueryDto : superPoolTaskQueryDtos) {
+                //set maskId
+                superPoolTaskQueryDto.setMaskId(MaskUtil.maskValue("taskId", superPoolTaskQueryDto.getId()));
                 //get memberName
                 String userId = superPoolTaskQueryDto.getUserId();
                 String memberName = getMemberNameByUserId(userId);
@@ -266,7 +269,6 @@ public class InspectionServiceImpl implements InspectionService {
                     superPoolTaskQueryDto.setInspectionDateStr(HcsaConsts.HCSA_PREMISES_HCI_NULL);
                 }
                 //get license date
-
                 if(StringUtil.isEmpty(applicationDto.getOriginLicenceId())){
                     superPoolTaskQueryDto.setLicenceExpiryDateStr(HcsaConsts.HCSA_PREMISES_HCI_NULL);
                 } else {
@@ -288,10 +290,15 @@ public class InspectionServiceImpl implements InspectionService {
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
         TaskDto taskDto = taskService.getTaskById(taskId);
+        List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+        List<String> leadName = getWorkGroupLeadsByGroupId(taskDto.getWkGrpId(), orgUserDtos);
+        Set<String> leadNameSet = new HashSet<>(leadName);
+        leadName = new ArrayList<>(leadNameSet);
 
         inspectionTaskPoolListDto.setTaskId(taskId);
         inspectionTaskPoolListDto.setTaskDto(taskDto);
         inspectionTaskPoolListDto.setWorkGroupId(superPoolTaskQueryDto.getWorkGroupId());
+        inspectionTaskPoolListDto.setInspectorLeads(leadName);
         inspectionTaskPoolListDto.setApplicationStatus(applicationDto.getStatus());
         inspectionTaskPoolListDto.setApplicationNo(applicationDto.getApplicationNo());
         inspectionTaskPoolListDto.setApplicationType(applicationDto.getApplicationType());
