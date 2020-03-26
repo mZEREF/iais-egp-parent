@@ -83,10 +83,7 @@
                         </div>
                         <div class="row" style="padding-bottom: 40px;">
                             <div class="col-xs-12 col-sm-12 col-md-12">
-                                <textarea class="textarea" id="htmlEditor" title="content"
-                                          readonly>
-                                    ${MsgTemplateDto.messageContent}
-                                </textarea>
+                                <textarea class="textarea" id="htmlEditor" title="content">${MsgTemplateDto.messageContent}</textarea>
                             </div>
                         </div>
                         <div class="row" style="padding-bottom: 40px;">
@@ -114,6 +111,7 @@
         tinymce.init({
             height:600,
             branding: false,
+            readonly: 1,
             elementpath: false,
             selector: "#htmlEditor",  // change this value according to your HTML
             menubar: 'file edit view insert format tools',
