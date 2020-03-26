@@ -77,7 +77,7 @@ public class CessationEffectiveDateBatchjob {
         List<ApplicationDto> applicationDtos = applicationClient.getApplicationDtosByIds(appIds).getEntity();
         if(applicationDtos!=null&&!applicationDtos.isEmpty()){
             for(ApplicationDto applicationDto :applicationDtos){
-                String licenceId = applicationDto.getLicenceId();
+                String licenceId = applicationDto.getOriginLicenceId();
                 licIds.add(licenceId);
             }
         }

@@ -41,7 +41,6 @@ import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -540,7 +539,6 @@ public class AppealServiceImpl implements AppealService {
             List<String> svcNames=IaisCommonUtils.genNewArrayList();
             svcNames.add(licenceDto.getSvcName());
             List<HcsaServiceDto> hcsaServiceDtos = appConfigClient.getHcsaServiceByNames(svcNames).getEntity();
-            applicationDto.setLicenceId(licenceDto.getId());
             applicationDto.setServiceId(hcsaServiceDtos.get(0).getId());
             applicationDto.setApplicationNo(s);
             applicationDto.setOriginLicenceId(licenceDto.getOriginLicenceId());
@@ -652,7 +650,6 @@ public class AppealServiceImpl implements AppealService {
         String status = applicationDto.getStatus();
         applicationDto1.setVersion(1);
 
-        applicationDto1.setLicenceId(applicationDto.getLicenceId());
         List<ApplicationDto> list=IaisCommonUtils.genNewArrayList();
         list.add(applicationDto1);
         appealDto.setApplicationGroupDto(applicationGroupDto);

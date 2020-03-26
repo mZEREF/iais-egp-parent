@@ -210,7 +210,7 @@ public class CessationServiceImpl implements CessationService {
             applicationDto1.setAppGrpId(appGrpId);
             applicationDto1.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
             applicationDto1.setVersion(1);
-            applicationDto1.setLicenceId(licId);
+            applicationDto1.setOriginLicenceId(licId);
             applicationDtoList.add(applicationDto1);
             appCessMiscDto.setApplicationDto(applicationDtoList);
             List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
@@ -267,7 +267,6 @@ public class CessationServiceImpl implements CessationService {
         }
         applicationDto.setServiceId(serviceId);
         applicationDto.setOriginLicenceId(licId);
-        applicationDto.setLicenceId(licId);
         applicationDto.setVersion(1);
         applicationDtos.add(applicationDto);
         return applicationDtos;

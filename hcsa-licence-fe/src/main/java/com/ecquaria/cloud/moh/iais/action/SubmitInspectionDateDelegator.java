@@ -72,7 +72,7 @@ public class SubmitInspectionDateDelegator {
         List<HcsaServicePrefInspPeriodDto> afterAppPeriodList = submitInspectionDate.getPrefInspPeriodList(applicationList);
         Date afterApp = submitInspectionDate.getBlockPeriodByAfterApp(submitDate, afterAppPeriodList);
 
-        applicationList = applicationList.stream().filter(i -> !StringUtils.isEmpty(i.getLicenceId())).collect(Collectors.toList());
+        applicationList = applicationList.stream().filter(i -> !StringUtils.isEmpty(i.getOriginLicenceId())).collect(Collectors.toList());
         List<HcsaServicePrefInspPeriodDto> beforeLicencePeriodList = submitInspectionDate.getPrefInspPeriodList(applicationList);
 
         Date licenceExpire = submitInspectionDate.getBlockPeriodByBeforeLicenceExpire(submitDate, beforeLicencePeriodList);
