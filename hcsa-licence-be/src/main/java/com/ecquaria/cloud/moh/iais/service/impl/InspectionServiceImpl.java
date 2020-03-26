@@ -245,10 +245,11 @@ public class InspectionServiceImpl implements InspectionService {
                 //get Application data
                 ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(superPoolTaskQueryDto.getTaskRefNo()).getEntity();
                 superPoolTaskQueryDto.setAppNo(applicationDto.getApplicationNo());
-                superPoolTaskQueryDto.setAppStatus(applicationDto.getStatus());
+                superPoolTaskQueryDto.setAppStatus(MasterCodeUtil.getCodeDesc(applicationDto.getStatus()));
                 //get HCI data
                 AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(superPoolTaskQueryDto.getTaskRefNo());
                 String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
+                superPoolTaskQueryDto.setHciCode(appGrpPremisesDto.getHciCode());
                 if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
                     superPoolTaskQueryDto.setHciAddress(appGrpPremisesDto.getHciName() + " / " + address);
                 } else {
@@ -481,73 +482,6 @@ public class InspectionServiceImpl implements InspectionService {
     public SearchResult<InspectionSubPoolQueryDto> getSupPoolByParam(SearchParam searchParam) {
         SearchResult<InspectionSubPoolQueryDto> searchResult = inspectionTaskClient.searchInspectionSupPool(searchParam).getEntity();
         return searchResult;
-    }
-
-    public SearchResult<InspectionTaskPoolListDto> getOtherDataForSr(SearchResult<InspectionSubPoolQueryDto> searchResult, List<TaskDto> commPools, LoginContext loginContext) {
-        List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList = IaisCommonUtils.genNewArrayList();
-        if(IaisCommonUtils.isEmpty(commPools) || IaisCommonUtils.isEmpty(searchResult.getRows())){
-            return null;
-        }
-        for(TaskDto tDto:commPools) {
-            for (InspectionSubPoolQueryDto iDto: searchResult.getRows()) {
-                if ((iDto.getId()).equals(tDto.getRefNo())) {
-                    InspectionTaskPoolListDto inspectionTaskPoolListDto = new InspectionTaskPoolListDto();
-                    inspectionTaskPoolListDto.setAppCorrelationId(tDto.getRefNo());
-                    inspectionTaskPoolListDto.setTaskId(tDto.getId());
-                    if (StringUtil.isEmpty(tDto.getUserId())) {
-                        inspectionTaskPoolListDto.setInspectorName(HcsaConsts.HCSA_PREMISES_HCI_NULL);
-                    } else {
-                        inspectionTaskPoolListDto.setInspector(tDto.getUserId());
-                        List<String> ids = IaisCommonUtils.genNewArrayList();
-                        ids.add(tDto.getUserId());
-                        List<OrgUserDto> orgUserDtos = organizationClient.retrieveOrgUserAccount(ids).getEntity();
-                        inspectionTaskPoolListDto.setInspectorName(orgUserDtos.get(0).getDisplayName());
-                    }
-
-                    inspectionTaskPoolListDto.setWorkGroupId(tDto.getWkGrpId());
-                    List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(tDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-                    List<String> leadName = getWorkGroupLeadsByGroupId(inspectionTaskPoolListDto.getWorkGroupId(), orgUserDtos);
-                    inspectionTaskPoolListDto.setInspectorLeads(leadName);
-                    inspectionTaskPoolListDtoList.add(inspectionTaskPoolListDto);
-                }
-            }
-        }
-
-        inspectionTaskPoolListDtoList = inputOtherData(searchResult.getRows(), inspectionTaskPoolListDtoList);
-
-        SearchResult<InspectionTaskPoolListDto> searchResult2 = new SearchResult<>();
-        searchResult2.setRows(inspectionTaskPoolListDtoList);
-        searchResult2.setRowCount(inspectionTaskPoolListDtoList.size());
-        return searchResult2;
-    }
-
-    private List<InspectionTaskPoolListDto> inputOtherData(List<InspectionSubPoolQueryDto> rows, List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList) {
-        for(InspectionSubPoolQueryDto iDto: rows){
-            for(InspectionTaskPoolListDto itplDto:inspectionTaskPoolListDtoList){
-                if((iDto.getId()).equals(itplDto.getAppCorrelationId())){
-                    /*itplDto.setServiceId(iDto.getServiceId());
-                    HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(iDto.getServiceId());
-                    itplDto.setServiceName(hcsaServiceDto.getSvcName());
-                    itplDto.setApplicationStatus(iDto.getApplicationStatus());
-                    itplDto.setApplicationNo(iDto.getApplicationNo());
-                    itplDto.setApplicationType(iDto.getApplicationType());
-                    itplDto.setHciCode(iDto.getHciCode());
-                    AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(iDto.getId());
-                    itplDto.setHciName(iDto.getHciName() + " / " + appGrpPremisesDto.getAddress());
-                    itplDto.setSubmitDt(iDto.getSubmitDt());
-                    itplDto.setApplicationType(iDto.getApplicationType());
-                    itplDto.setInspectionTypeName(iDto.getInspectionType() == 0? "Post":"Pre");
-                    itplDto.setServiceEndDate(hcsaServiceDto.getEndDate());
-                    AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(itplDto.getAppCorrelationId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-                    if(appPremisesRecommendationDto != null){
-                        itplDto.setInspectionDate(appPremisesRecommendationDto.getRecomInDate());
-                    } else {
-                        itplDto.setInspectionDate(null);
-                    }*/
-                }
-            }
-        }
-        return inspectionTaskPoolListDtoList;
     }
 
     private List<String> getWorkGroupLeadsByGroupId(String workGroupId, List<OrgUserDto> orgUserDtos) {

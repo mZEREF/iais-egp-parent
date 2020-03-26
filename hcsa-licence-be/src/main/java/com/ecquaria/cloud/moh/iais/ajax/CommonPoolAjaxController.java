@@ -165,7 +165,10 @@ public class CommonPoolAjaxController {
             SearchResult<SuperPoolTaskQueryDto> searchResult = inspectionService.getSupPoolSecondByParam(searchParam);
             searchResult = inspectionService.getSecondSearchOtherData(searchResult);
             jsonMap.put("ajaxResult", searchResult);
+            jsonMap.put("result", "Success");
             assignMap = setTaskIdAndDataMap(assignMap, searchResult);
+        } else {
+            jsonMap.put("result", "Fail");
         }
         ParamUtil.setSessionAttr(request, "assignMap", (Serializable) assignMap);
         jsonMap.put("memberName", groupRoleFieldDto.getGroupMemBerName());
