@@ -56,6 +56,7 @@ public class TemplatesDelegator {
         ParamUtil.setSessionAttr(request, MsgTemplateConstants.MSG_SEARCH_RESULT, null);
         ParamUtil.setSessionAttr(request, MsgTemplateConstants.MSG_TEMPLATE_DTO, null);
     }
+
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter,true);
@@ -145,7 +146,6 @@ public class TemplatesDelegator {
         }
     }
 
-
     public void searchTemplate(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
         String msgType = ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE);
@@ -158,18 +158,28 @@ public class TemplatesDelegator {
         Map<String,Object> templateMap = IaisCommonUtils.genNewHashMap();
         if (!StringUtil.isEmpty(msgType)){
             templateMap.put(MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE,msgType);
+        }else{
+            templateMap.remove(MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE);
         }
         if(!StringUtil.isEmpty(deliveryMode)){
             templateMap.put(MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE,deliveryMode);
+        }else{
+            templateMap.remove(MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE);
         }
         if(!StringUtil.isEmpty(templateName)){
-            templateMap.put(MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME,templateName);
+            templateMap.put(MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME,'%'+templateName+'%');
+        }else{
+            templateMap.remove(MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME);
         }
         if (!StringUtil.isEmpty(templateStartDate)){
-            templateMap.put( SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,templateStartDate);
+            templateMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,templateStartDate);
+        }else{
+            templateMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
         }
         if (!StringUtil.isEmpty(templateEndDate)){
-            templateMap.put( SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO,templateEndDate);
+            templateMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO,templateEndDate);
+        }else{
+            templateMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
         }
         filterParameter.setFilters(templateMap);
     }

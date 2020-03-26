@@ -237,7 +237,7 @@
             WHERE 1=1
             <#if id??> and charindex(:id, id) >0</#if>
             <#if msgType??> AND message_type = :msgType</#if>
-            <#if templateName??> AND template_name = :templateName</#if>
+            <#if templateName??> AND template_name like :templateName</#if>
             <#if deliveryMode??> AND delivery_mode = :deliveryMode</#if>
             <#if esd??> AND effective_from > :esd</#if>
             <#if eed??> AND effective_to < :eed</#if>
