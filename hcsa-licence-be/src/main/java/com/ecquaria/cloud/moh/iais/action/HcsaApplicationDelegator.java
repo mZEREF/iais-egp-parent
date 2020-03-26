@@ -271,6 +271,7 @@ public class HcsaApplicationDelegator {
         if(appSupDocDtoList == null || (appSupDocDtoList.size() == 0)){
             ParamUtil.setRequestAttr(bpc.request, "appSupDocDtoListNull","Y");
         }
+        String roleId = taskDto.getRoleId();
         AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
         if(appPremisesRecommendationDto != null){
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
@@ -280,20 +281,23 @@ public class HcsaApplicationDelegator {
             }else if(recomInNumber ==2){
                 recommendationOnlyShow = "2 Year";
             }
+            //PSO 0062307
+            if(RoleConsts.USER_ROLE_PSO.equals(roleId)){
+                ParamUtil.setRequestAttr(bpc.request, "recommendationStr",recommendationOnlyShow);
+            }
+
             Date recomInDate = appPremisesRecommendationDto.getRecomInDate();
             String recomInDateOnlyShow = Formatter.formatDateTime(recomInDate,Formatter.DATE);
-
             ParamUtil.setRequestAttr(bpc.request, "recomInDateOnlyShow",recomInDateOnlyShow);
             ParamUtil.setRequestAttr(bpc.request, "recommendationOnlyShow",recommendationOnlyShow);
         }
 
-        String roleId = taskDto.getRoleId();
         List<SelectOption> nextStageList = IaisCommonUtils.genNewArrayList();
         nextStageList.add(new SelectOption("", "Please Select"));
         if(RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId)){
-            nextStageList.add(new SelectOption("VERIFIED", "Verified"));
-        }else{
             nextStageList.add(new SelectOption("VERIFIED", "Support"));
+        }else{
+            nextStageList.add(new SelectOption("VERIFIED", "Verified"));
         }
         if((ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(applicationViewDto.getApplicationDto().getStatus())
                 || ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus()))
@@ -309,7 +313,6 @@ public class HcsaApplicationDelegator {
         nextStageReplyList.add(new SelectOption("", "Please Select"));
         nextStageReplyList.add(new SelectOption("PROCREP", "Give Clarification"));
         ParamUtil.setSessionAttr(bpc.request, "nextStageReply", (Serializable)nextStageReplyList);
-
 
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
