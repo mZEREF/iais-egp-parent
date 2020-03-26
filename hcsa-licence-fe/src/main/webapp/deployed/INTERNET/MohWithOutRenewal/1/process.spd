@@ -256,9 +256,9 @@
    <Description/>
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doInstructions" value="&quot;doInstructions&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doPayment" value="&quot;doLicenceReview&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doAcknowledgement" value="&quot;doPayment&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doLicenceReview" value="&quot;doAcknowledgement&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doPayment" value="&quot;doPayment&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doAcknowledgement" value="&quot;doAcknowledgement&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doLicenceReview" value="&quot;doLicenceReview&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

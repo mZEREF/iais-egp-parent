@@ -120,9 +120,9 @@
         $('[name="switch_value"]').val('instructions');
         $('#LicenceReviewForm').submit();
     });
-    // $('#Next').click(function () {
-    //     $('[name="switch_value"]').val('doLicenceReview');
-    //     $('#LicenceReviewForm').submit();
-    // });
+    $('#Next').click(function () {
+        $('[name="switch_value"]').val('doLicenceReview');
+        $('#LicenceReviewForm').submit();
+    });
 
 </script>

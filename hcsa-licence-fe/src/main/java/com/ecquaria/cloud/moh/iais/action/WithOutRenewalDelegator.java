@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
@@ -195,14 +196,19 @@ public class WithOutRenewalDelegator {
         if(renewDto == null){
             return;
         }
+        Double total = 0d;
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
-            if(!StringUtil.isEmpty(appSubmissionDto.getAmount())){
-                String amountStr = Formatter.formatterMoney(appSubmissionDto.getAmount());
+            FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto);
+            Double amount = feeDto.getTotal();
+            if(!StringUtil.isEmpty(amount)){
+                total +=amount;
+                String amountStr = Formatter.formatterMoney(amount);
                 appSubmissionDto.setAmountStr(amountStr);
             }
         }
-
+        String totalStr = Formatter.formatterMoney(total);
+        ParamUtil.setRequestAttr(bpc.request,"totalStr",totalStr);
     }
 
     //prepareAcknowledgement
@@ -218,6 +224,7 @@ public class WithOutRenewalDelegator {
 
     //doLicenceReview
     public void doLicenceReview(BaseProcessClass bpc)throws Exception{
+        //go page3
         ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE3);
     }
 
@@ -244,6 +251,9 @@ public class WithOutRenewalDelegator {
         }else if(ACKNOWLEDGEMENT.equals(switch_value)){
             ParamUtil.setRequestAttr(bpc.request,CONTROL_SWITCH,switch_value);
         }else if(PAGE1.equals(switch_value)){
+            ParamUtil.setRequestAttr(bpc.request,CONTROL_SWITCH,BACK);
+            ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,switch_value);
+        }else if(PAGE2.equals(switch_value)){
             ParamUtil.setRequestAttr(bpc.request,CONTROL_SWITCH,BACK);
             ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,switch_value);
         }
