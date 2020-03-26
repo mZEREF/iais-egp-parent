@@ -184,9 +184,27 @@ public final class IaisEGPHelper extends EGPHelper {
     * @return: 
     * @author: yichen 
     */
+    public static Date parseToDate(String val) {
+        if(StringUtils.isEmpty(val)){
+           throw new IaisRuntimeException("No has input for String to Date!");
+        }
+
+        try {
+            return FastDateFormat.getInstance("dd/MM/yyyy").parse(val);
+        } catch (ParseException e) {
+            throw new IaisRuntimeException(e.getMessage());
+        }
+    }
+
+    /**
+     * @description: format date
+     * @param:
+     * @return:
+     * @author: yichen
+     */
     public static Date parseToDate(String val, String pattern) {
         if(StringUtils.isEmpty(val) || StringUtils.isEmpty(pattern)){
-           throw new IaisRuntimeException("No has input for String to Date!");
+            throw new IaisRuntimeException("No has input for String to Date!");
         }
 
         try {
