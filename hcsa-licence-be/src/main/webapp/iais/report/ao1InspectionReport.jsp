@@ -10,7 +10,7 @@
 <webui:setLayout name="iais-intranet"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <input type="hidden" name="crud_action_type" value="">
+    <input type="hidden" name="action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <div class="main-content">
@@ -244,7 +244,7 @@
                                                 </iais:row>
 
                                                 <iais:row>
-                                                    <iais:field value="Internal Remarks" required="true"/>
+                                                    <iais:field value="Processing Decision" required="true"/>
                                                     <iais:value width="6">
                                                         <iais:select name="processingDecision" id="processingDecision" options="processingDe" firstOption="Please select" value="${appPremisesRecommendationDto.processingDecision}"/>
                                                         <span id="error_submit" class="error-msg" hidden> The field is mandatory.</span>
@@ -330,7 +330,12 @@
         var s = $("#processingDecision").val();
         if(s=="" || s==null){
             $("#error_submit").show();
-        }else if("Approval"==s || "Reject"==s) {
+        }else if("Approval"== s) {
+            $("[name='action_type']").val('approval');
+            $("#mainForm").submit();
+            $("#error_submit").hide();
+        }else if("Reject"==s) {
+            $("[name='action_type']").val('back');
             $("#mainForm").submit();
             $("#error_submit").hide();
         }

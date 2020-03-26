@@ -236,7 +236,7 @@
                                                 </iais:row>
 
                                                     <iais:row>
-                                                        <iais:field value="Internal Remarks" required="true"/>
+                                                        <iais:field value="Processing Decision" required="true"/>
                                                         <iais:value width="6">
                                                             <iais:select id="processSubmit" name="processingDecision" options="processingDe" firstOption="Please select" value="${appPremisesRecommendationDto.processingDecision}"/>
                                                             <span id="error_submit" class="error-msg" hidden> The field is mandatory.</span>

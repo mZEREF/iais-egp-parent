@@ -69,7 +69,7 @@
                                     <label class="col-xs-12 col-md-4 control-label">Salutation:</label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <iais:select name="salutation" options="salutation" firstOption="Please select" value="${orgUserDto.salutation}"></iais:select>
+                                            <iais:select name="salutation" options="salutation" firstOption="Please Select" value="${orgUserDto.salutation}"></iais:select>
                                         </div>
                                     </iais:value>
                                 </div>
@@ -156,7 +156,7 @@
                             </div>
                         </div>
                             <iais:action>
-                                <a style="margin-left: 0%" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em>Back</a>
+                                <a style="margin-left: 0%" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em> Back</a>
                                 <a style="margin-left: 90%" class="btn btn-primary" data-toggle="modal" data-target= "#editUser">SUBMIT</a>
                             </iais:action>
                     </div>

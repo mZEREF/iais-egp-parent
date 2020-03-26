@@ -21,7 +21,7 @@
                             </iais:value>
                         </iais:row>
                         <iais:action>
-                            <a style="margin-left: 0%" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em>Back</a>
+                            <a style="margin-left: 0%" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em> Back</a>
                             <a style="margin-left: 51%" class="btn btn-primary" href="#" onclick="submit('doDeactivate')">Deactivate</a>
                             <a style="margin-left: 1%" class="btn btn-primary" href="#" onclick="submit('doReactivate')">Reactivate</a>
                             <a style="margin-left: 1%" class="btn btn-primary" href="#" onclick="submit('doTerminate')">Terminate</a>

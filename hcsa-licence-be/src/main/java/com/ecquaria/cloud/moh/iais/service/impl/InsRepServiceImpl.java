@@ -154,12 +154,10 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setPrincipalOfficers(poNames);
 
 
-        List<String> inspectors = taskOrganizationClient.getInspectorByAppCorrId(appPremisesCorrelationId).getEntity();
-        List<OrgUserDto> inspectorsNames = organizationClient.retrieveOrgUserAccount(inspectors).getEntity();
         List<String> nameList = IaisCommonUtils.genNewArrayList();
-        for(OrgUserDto orgUserDto :inspectorsNames){
-            nameList.add(orgUserDto.getDisplayName());
-        }
+        AppPremisesRecommendationDto otherOfficesDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_OTHER_INSPECTIORS).getEntity();
+        String otherOffices = otherOfficesDto.getRemarks();
+        nameList.add(otherOffices);
         inspectionReportDto.setInspectOffices(nameList);
 
 
@@ -237,7 +235,7 @@ public class InsRepServiceImpl implements InsRepService {
         AppPremisesRecommendationDto NcRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_TCU).getEntity();
         if(NcRecommendationDto==null){
             inspectionReportDto.setMarkedForAudit("No");
-        }else if(NcRecommendationDto!=null&&NcRecommendationDto.getRecomInDate()!=null) {
+        }else if(NcRecommendationDto!=null) {
             inspectionReportDto.setMarkedForAudit("Yes");
             Date recomInDate = NcRecommendationDto.getRecomInDate();
             inspectionReportDto.setTcuDate(recomInDate);
@@ -288,8 +286,8 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setHciAddress(appInsRepDto.getHciAddress());
         inspectionReportDto.setReasonForVisit(reasonForVisit);
         inspectionReportDto.setInspectionDate(inspectionDate);
-//        inspectionReportDto.setInspectionStartTime(inspectionStartTime);
-//        inspectionReportDto.setInspectionEndTime(inspectionEndTime);
+        inspectionReportDto.setInspectionStartTime(inspectionStartTime);
+        inspectionReportDto.setInspectionEndTime(inspectionEndTime);
         inspectionReportDto.setBestPractice(bestPractice);
         inspectionReportDto.setTaskRemarks(remarks);
         inspectionReportDto.setCurrentStatus(status);
@@ -508,10 +506,10 @@ public class InsRepServiceImpl implements InsRepService {
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
         List<TaskDto> taskDtos = prepareTaskToAo1(taskDto, applicationDto, hcsaSvcStageWorkingGroupDto2);
-        taskService.createTasks(taskDtos);
-        String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
-        createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
-        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, appPremisesRecommendationDto.getProcessRemarks(), InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId2, subStage);
+        //taskService.createTasks(taskDtos);
+        //String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
+        //createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
+        //createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, appPremisesRecommendationDto.getProcessRemarks(), InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId2, subStage);
     }
 
     @Override
@@ -725,7 +723,6 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     private List<TaskDto> prepareTaskToAo1(TaskDto taskDto, ApplicationDto applicationDto, HcsaSvcStageWorkingGroupDto dto) throws FeignException {
-
         String applicationNo = applicationDto.getApplicationNo();
         String taskKey = taskDto.getTaskKey();
         String userId = null;
@@ -737,9 +734,6 @@ public class InsRepServiceImpl implements InsRepService {
                 userId = actionby;
             }
         }
-
-
-
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         applicationDtos.add(applicationDto);
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
@@ -809,7 +803,6 @@ public class InsRepServiceImpl implements InsRepService {
         taskDto.setDateAssigned(new Date());
         taskDto.setSlaDateCompleted(null);
         taskDto.setSlaRemainInDays(null);
-        //taskDto.setScore(1);
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
         taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);

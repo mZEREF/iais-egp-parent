@@ -187,7 +187,12 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     @Override
-    public InspectionTaskPoolListDto reassignInspectorOption(InspectionTaskPoolListDto inspectionTaskPoolListDto, String taskId){
+    public InspectionTaskPoolListDto reassignInspectorOption(InspectionTaskPoolListDto inspectionTaskPoolListDto, LoginContext loginContext,String taskId){
+        Set<String> roles = loginContext.getRoleIds();
+        List<String> roleList = new ArrayList<>(roles);
+        inspectionTaskPoolListDto.setCurRole(loginContext.getCurRoleId());
+        inspectionTaskPoolListDto.setRoles(roleList);
+        inspectionTaskPoolListDto.setLoginContextId(loginContext.getUserId());
         List<SelectOption> inspectorOption = IaisCommonUtils.genNewArrayList();
         List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(inspectionTaskPoolListDto.getWorkGroupId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
         TaskDto taskDto = organizationClient.getTaskById(taskId).getEntity();

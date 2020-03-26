@@ -147,7 +147,7 @@ public interface InspectionService {
      * @return: List<TaskDto>
      * @Descripation: get reassign task option
      */
-    InspectionTaskPoolListDto reassignInspectorOption(InspectionTaskPoolListDto inspectionTaskPoolListDto, String taskId);
+    InspectionTaskPoolListDto reassignInspectorOption(InspectionTaskPoolListDto inspectionTaskPoolListDto, LoginContext loginContext,String taskId);
 
     /**
       * @author: shicheng

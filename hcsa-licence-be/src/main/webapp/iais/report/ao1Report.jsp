@@ -195,7 +195,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="table-gp">
-                    <div class="text ">
+                    <div class="text">
                         <p><span>Part I: Inspection Checklist</span></p>
                     </div>
                     <table class="table">
@@ -203,53 +203,12 @@
                             <td class="col-xs-4">
                                 <p>Checklist Used</p>
                             </td>
-
                             <td colspan="2" class="col-xs-8">
                                 <p><c:out value="${insRepDto.serviceName}"/></p>
-                                <c:if test="${insRepDto.commonCheckList != null}">
-                                    <div class="tab-pane" id="ServiceInfo" role="tabpanel">
-                                        <c:forEach var ="cdto" items ="${insRepDto.subTypeCheckList.fdtoList}" varStatus="status">
-                                            <h3>${cdto.subType}</h3>
-                                            <div class="table-gp">
-                                                <c:forEach var ="section" items ="${cdto.sectionDtoList}">
-                                                    <br/>
-                                                    <h4><c:out value="${section.sectionName}"></c:out></h4>
-                                                    <table class="table">
-                                                        <thead>
-                                                        <tr>
-                                                            <th>No.</th>
-                                                            <th>Regulation Clause Number</th>
-                                                            <th>Item</th>
-                                                            <th>Rectified</th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
-                                                            <tr>
-                                                                <td class="row_no">${(status.index + 1) }</td>
-                                                                <td>${item.incqDto.regClauseNo}</td>
-                                                                <td>${item.incqDto.checklistItem}</td>
-                                                                <c:set value = "${cdto.subName}${item.incqDto.sectionName}${item.incqDto.itemId}" var = "ckkId"/>
-                                                                <td>
-                                                                    <div id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>ck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
-                                                                        <input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${cdto.subName}${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameSub}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec" disabled/>
-                                                                    </div>
-                                                                    <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameSub}${item.incqDto.itemId}" var = "err"/>
-                                                                    <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
-                                                                </td>
-                                                            </tr>
-                                                        </c:forEach>
-                                                        </tbody>
-                                                    </table>
-                                                </c:forEach>
-                                            </div>
-                                        </c:forEach>
-                                    </div>
-                                </c:if>
                             </td>
                         </tr>
                     </table>
-                    <div class="text ">
+                    <div class="text">
                         <p><span>Part II: Findings</span></p>
                     </div>
                     <table class="table">
@@ -263,9 +222,14 @@
                             <td class="col-xs-4">
                         </tr>
                         <tr>
+                            <td class="col-xs-4">
                                 <p>Marked for Audit</p>
                             </td>
+                            <td class="col-xs-4">
                             <p><c:out value="${insRepDto.markedForAudit}"/> <fmt:formatDate value="${insRepDto.tcuDate}" pattern="dd/MM/yyyy"/></p>
+                            </td>
+                            <td class="col-xs-4">
+                            </td>
                         </tr>
                         <tr>
                             <td class="col-xs-4">
