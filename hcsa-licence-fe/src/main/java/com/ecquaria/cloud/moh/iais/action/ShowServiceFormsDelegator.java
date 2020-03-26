@@ -11,12 +11,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ShowServiceFormsDelegator
@@ -62,7 +63,6 @@ public class ShowServiceFormsDelegator {
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB,getFirstTab(bpc));
         }
 
-        //why call api?  , can get from  AppServicesConsts.HCSASERVICEDTOLIST
         String svcId = serviceConfigService.getSvcIdBySvcCode(actionTab);
 
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcId);

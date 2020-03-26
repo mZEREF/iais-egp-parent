@@ -347,7 +347,7 @@ public class NewApplicationAjaxController {
         //assign select
         List<SelectOption> assignPrincipalOfficerSel = ClinicalLaboratoryDelegator.getAssignPrincipalOfficerSel(svcId, false);
         Map<String,String> assignPrincipalOfficerAttr = IaisCommonUtils.genNewHashMap();
-        assignPrincipalOfficerAttr.put("name", "assignSelect");
+        assignPrincipalOfficerAttr.put("name", "poSelect");
         assignPrincipalOfficerAttr.put("class", "poSelect");
         assignPrincipalOfficerAttr.put("style", "display: none;");
         String principalOfficerSelStr = NewApplicationHelper.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, NewApplicationDelegator.FIRESTOPTION);
@@ -390,6 +390,15 @@ public class NewApplicationAjaxController {
     public @ResponseBody String addDeputyPrincipalOfficeHtml(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the add addDeputyPrincipalOfficeHtml html start ...."));
         String sql = SqlMap.INSTANCE.getSql("principalOfficers", "generateDeputyPrincipalOfficersHtml").getSqlStr();
+        String svcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
+
+        //assign select
+        List<SelectOption> assignPrincipalOfficerSel = ClinicalLaboratoryDelegator.getAssignPrincipalOfficerSel(svcId, false);
+        Map<String,String> assignPrincipalOfficerAttr = IaisCommonUtils.genNewHashMap();
+        assignPrincipalOfficerAttr.put("name", "deputyAssignSelect");
+        assignPrincipalOfficerAttr.put("class", "deputyAssignSelect");
+        assignPrincipalOfficerAttr.put("style", "display: none;");
+        String principalOfficerSelStr = NewApplicationHelper.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, NewApplicationDelegator.FIRESTOPTION);
 
         //salutation
         List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
@@ -415,18 +424,12 @@ public class NewApplicationAjaxController {
         designationAttr.put("style", "display: none;");
         String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
 
-        //MedAlert
-        List<SelectOption> medAlertSelectList = ClinicalLaboratoryDelegator.getMedAlertSelectList(false);
-        Map<String,String> medAlertSelectAttr = IaisCommonUtils.genNewHashMap();
-        medAlertSelectAttr.put("class", "modeOfMedAlert");
-        medAlertSelectAttr.put("name", "modeOfMedAlert");
-        medAlertSelectAttr.put("style", "display: none;");
-        String medAlertSelectStr = NewApplicationHelper.generateDropDownHtml(medAlertSelectAttr, medAlertSelectList, NewApplicationDelegator.FIRESTOPTION);
+
 
         sql = sql.replace("(1)", salutationSelectStr);
         sql = sql.replace("(2)", idTypeSelectStr);
         sql = sql.replace("(3)", designationSelectStr);
-        sql = sql.replace("(4)", medAlertSelectStr);
+        sql = sql.replace("(4)", principalOfficerSelStr);
 
         log.debug(StringUtil.changeForLog("the add addDeputyPrincipalOfficeHtml html end ...."));
         return sql;
