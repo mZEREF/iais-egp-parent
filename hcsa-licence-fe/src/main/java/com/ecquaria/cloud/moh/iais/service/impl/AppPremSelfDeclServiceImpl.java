@@ -191,7 +191,6 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
                         premCheckItem.setAnswerKey(UUID.randomUUID().toString());
                         premCheckItem.setChecklistItem(checklistItemDto.getChecklistItem());
                         premCheckItem.setChecklistItemId(checklistItemDto.getItemId());
-                        premCheckItem.setAnswer(address);
                         premCheckItemList.add(premCheckItem);
                     }
                 }
