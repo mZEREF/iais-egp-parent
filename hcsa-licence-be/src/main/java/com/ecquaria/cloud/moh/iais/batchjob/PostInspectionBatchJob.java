@@ -101,7 +101,7 @@ public class PostInspectionBatchJob {
             try {
                 String submissionId = generateIdClient.getSeqId().getEntity();
                 eventBusHelper.submitAsyncRequest(appSubmissionDtoList,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts.OPERATION_POST_INSPECTION_TASK,grpNo,null);
-                eventBusHelper.submitAsyncRequest(licPremisesDtos,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts.OPERATION_POST_INSPECTION_TASK,null,null);
+                eventBusHelper.submitAsyncRequest(licPremisesDtos,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts.OPERATION_POST_INSPECTION_TASK,grpNo,null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
