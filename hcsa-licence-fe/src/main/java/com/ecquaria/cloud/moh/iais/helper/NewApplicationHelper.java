@@ -613,21 +613,21 @@ public class NewApplicationHelper {
         if(!StringUtil.isEmpty(wrkTimeFrom)){
             LocalTime localTimeFrom = wrkTimeFrom.toLocalTime();
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                appGrpPremisesDto.setOnsiteStartHH(String.valueOf(localTimeFrom.getHour()));
-                appGrpPremisesDto.setOnsiteStartMM(String.valueOf(localTimeFrom.getMinute()));
+                appGrpPremisesDto.setOnsiteStartHH(formatToStr(localTimeFrom.getHour()));
+                appGrpPremisesDto.setOnsiteStartMM(formatToStr(localTimeFrom.getMinute()));
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                appGrpPremisesDto.setConStartHH(String.valueOf(localTimeFrom.getHour()));
-                appGrpPremisesDto.setConStartMM(String.valueOf(localTimeFrom.getMinute()));
+                appGrpPremisesDto.setConStartHH(formatToStr(localTimeFrom.getHour()));
+                appGrpPremisesDto.setConStartMM(formatToStr(localTimeFrom.getHour()));
             }
         }
         if(!StringUtil.isEmpty(wrkTimeTo)){
             LocalTime localTimeTo = wrkTimeTo.toLocalTime();
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                appGrpPremisesDto.setOnsiteEndHH(String.valueOf(localTimeTo.getHour()));
-                appGrpPremisesDto.setOnsiteEndMM(String.valueOf(localTimeTo.getMinute()));
+                appGrpPremisesDto.setOnsiteEndHH(formatToStr(localTimeTo.getHour()));
+                appGrpPremisesDto.setOnsiteEndMM(formatToStr(localTimeTo.getMinute()));
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                appGrpPremisesDto.setConEndHH(String.valueOf(localTimeTo.getHour()));
-                appGrpPremisesDto.setConEndMM(String.valueOf(localTimeTo.getMinute()));
+                appGrpPremisesDto.setConEndHH(formatToStr(localTimeTo.getHour()));
+                appGrpPremisesDto.setConEndMM(formatToStr(localTimeTo.getMinute()));
             }
 
         }
@@ -643,21 +643,21 @@ public class NewApplicationHelper {
                 if(!StringUtil.isEmpty(start)){
                     LocalTime localTimeStart = start.toLocalTime();
                     if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                        appPremPhOpenPeriod.setOnsiteStartFromHH(String.valueOf(localTimeStart.getHour()));
-                        appPremPhOpenPeriod.setOnsiteStartFromMM(String.valueOf(localTimeStart.getMinute()));
+                        appPremPhOpenPeriod.setOnsiteStartFromHH(formatToStr(localTimeStart.getHour()));
+                        appPremPhOpenPeriod.setOnsiteStartFromMM(formatToStr(localTimeStart.getMinute()));
                     }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                        appPremPhOpenPeriod.setConvStartFromHH(String.valueOf(localTimeStart.getHour()));
-                        appPremPhOpenPeriod.setConvStartFromMM(String.valueOf(localTimeStart.getMinute()));
+                        appPremPhOpenPeriod.setConvStartFromHH(formatToStr(localTimeStart.getHour()));
+                        appPremPhOpenPeriod.setConvStartFromMM(formatToStr(localTimeStart.getMinute()));
                     }
                 }
                 if(!StringUtil.isEmpty(end)){
                     LocalTime localTimeEnd = end.toLocalTime();
                     if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                        appPremPhOpenPeriod.setOnsiteEndToHH(String.valueOf(localTimeEnd.getHour()));
-                        appPremPhOpenPeriod.setOnsiteEndToMM(String.valueOf(localTimeEnd.getMinute()));
+                        appPremPhOpenPeriod.setOnsiteEndToHH(formatToStr(localTimeEnd.getHour()));
+                        appPremPhOpenPeriod.setOnsiteEndToMM(formatToStr(localTimeEnd.getMinute()));
                     }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                        appPremPhOpenPeriod.setConvEndToHH(String.valueOf(localTimeEnd.getHour()));
-                        appPremPhOpenPeriod.setConvEndToMM(String.valueOf(localTimeEnd.getMinute()));
+                        appPremPhOpenPeriod.setConvEndToHH(formatToStr(localTimeEnd.getHour()));
+                        appPremPhOpenPeriod.setConvEndToMM(formatToStr(localTimeEnd.getMinute()));
                     }
                 }
             }
@@ -699,8 +699,6 @@ public class NewApplicationHelper {
 
 
     }
-
-
 
     //=============================================================================
     //private method
@@ -755,5 +753,15 @@ public class NewApplicationHelper {
                 }
             }
         }
+    }
+
+    private static String formatToStr(int i){
+        String result = "";
+        if (i <= 9) {
+            result = result + "0" + i;
+        } else {
+            result = result + i;
+        }
+        return result;
     }
 }
