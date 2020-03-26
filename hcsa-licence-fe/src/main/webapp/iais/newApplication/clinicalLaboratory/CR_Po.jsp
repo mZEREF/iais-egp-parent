@@ -11,7 +11,7 @@
         <div class="panel-heading " id="headingPrincipal" role="tab">
           <h4 class="panel-title"><a role="button" class="collapsed" data-toggle="collapse" href="#collapsePrincipal" aria-expanded="true" aria-controls="collapsePrincipal">Principal Officer</a></h4>
         </div>
-        <div class="panel-collapse collapse <c:if test="${ReloadPrincipalOfficers != null && ReloadPrincipalOfficers.size()>0}" >
+        <div class="panel-collapse collapse <c:if test="${(ReloadPrincipalOfficers != null && ReloadPrincipalOfficers.size()>0) || (ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0)}" >
           in
         </c:if>  " id="collapsePrincipal" role="tabpanel" aria-labelledby="headingPremise">
 
@@ -73,7 +73,7 @@
                             </div>
                             <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
                               <div class="">
-                                <iais:select cssClass="poSelect"  name="assignSelect" options="PrincipalOfficersAssignSelect"  value="${principalOfficer.assignSelect}" ></iais:select>
+                                <iais:select cssClass="poSelect"  name="poSelect" options="PrincipalOfficersAssignSelect"  value="${principalOfficer.assignSelect}" ></iais:select>
                                 <div id="control--runtime--2--errorMsg_right" style="display: none;" class="error_placements"></div>
                                 <span id="error_assignSelect${suffix}" name="iaisErrorMsg" class="error-msg"></span>
                               </div>
@@ -276,7 +276,7 @@
                   <c:if test="${status.first}">
                     <h2>Deputy Principal Officer</h2>
                   </c:if>
-                  <div class="deputyPrincipalOfficers">
+                  <div class="dpo-content">
                     <div class="row">
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
@@ -290,7 +290,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="">
+                    <div class="deputyPrincipalOfficers hidden">
                       <div class="row">
                         <div class="control control-caption-horizontal">
                           <div class=" form-group form-horizontal formgap">
@@ -397,7 +397,9 @@
                 <span id="addDpoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Deputy Principal Officer</span>
               </div>
             </div>
-
+            <br/>
+            <br/>
+            <br/>
           </div>
         </div>
       </div>
@@ -409,6 +411,7 @@
 <script>
     $(document).ready(function () {
         poSelect();
+        dpoSelect();
 
         retrieveData();
 
@@ -446,6 +449,18 @@
                 $poContentEle.find('div.principalOfficers').removeClass('hidden');
             }else if('-1' == selectVal){
                 $poContentEle.find('div.principalOfficers').addClass('hidden');
+            }
+        });
+    };
+
+    var dpoSelect = function(){
+        $('.deputyPoSelect').change(function () {
+            $poContentEle = $(this).closest('div.dpo-content');
+            var selectVal = $(this).val();
+            if("newOfficer" == selectVal){
+                $poContentEle.find('div.deputyPrincipalOfficers').removeClass('hidden');
+            }else if('-1' == selectVal){
+                $poContentEle.find('div.deputyPrincipalOfficers').addClass('hidden');
             }
         });
     };
@@ -494,9 +509,9 @@
                 'type':'GET',
                 'success':function (data) {
                     console.log("suc");
-                    $('.deputyPrincipalOfficers:last').after(data);
+                    $('.dpo-content:last').after(data);
 
-                    poSelect();
+                    dpoSelect();
 
                 },
                 'error':function (data) {

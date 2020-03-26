@@ -223,12 +223,7 @@
             $('input[type="radio"]').prop('disabled',false);
             submit('premises','saveDraft',null);
         });
-
-        if(<c:out value="${errorMap_premises eq null}"/>){
-            $('#premisesli').removeClass('incomplete');
-        }else{
-            $('#premisesli').addClass('incomplete');
-        }
+        
 
         <c:if test="${AppSubmissionDto.appEditSelectDto!=null && !AppSubmissionDto.appEditSelectDto.premisesEdit}">
         disabledPage();
