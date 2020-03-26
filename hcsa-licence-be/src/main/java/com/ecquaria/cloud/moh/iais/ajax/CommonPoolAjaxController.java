@@ -143,12 +143,12 @@ public class CommonPoolAjaxController {
 
             StringBuilder sb2 = new StringBuilder("(");
             for (int i = 0; i < status.size(); i++) {
-                sb2.append(":status" + i).append(",");
+                sb2.append(":tStatus" + i).append(",");
             }
             String inSq2 = sb2.substring(0, sb2.length() - 1) + ")";
             searchParam.addParam("taskStatus", inSq2);
             for (int i = 0; i < status.size(); i++) {
-                searchParam.addFilter("status" + i, status.get(i));
+                searchParam.addFilter("tStatus" + i, status.get(i));
             }
 
             StringBuilder sb3 = new StringBuilder("(");
@@ -158,7 +158,7 @@ public class CommonPoolAjaxController {
             String inSq3 = sb3.substring(0, sb3.length() - 1) + ")";
             searchParam.addParam("workGroupId", inSq3);
             for (int i = 0; i < workGroupIds.size(); i++) {
-                searchParam.addFilter("workId" + i, status.get(i));
+                searchParam.addFilter("workId" + i, workGroupIds.get(i));
             }
             //do search
             QueryHelp.setMainSql("inspectionQuery", "supervisorPoolDropdown", searchParam);

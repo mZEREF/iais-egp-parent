@@ -174,18 +174,20 @@
         inspectorSearchTaskSubmit('sort');
     }
 
-    var divIdAjaxList = [];
+    var superPool = new Array();
     function supervisorByGroupId(appGroupId, divid) {
-        alert(divid);
-        alert(divIdAjaxList[1]);
-        if (!isInArray(divIdAjaxList,divid)) {
-            alert(3);
-            divIdAjaxList.push(divid);
+        var superFlag = true;
+        for(var i = 0; i < superPool.length; i++){
+            if(superPool[i] == divid){
+                superFlag = false;
+            }
+        }
+        if (superFlag) {
+            superPool.push(divid);
             $.post(
                 '/hcsa-licence-web/common-pool/supervisor.do',
                 {groupId: appGroupId},
                 function (data) {
-                    alert(4);
                     var result = data.result;
                     var memberName = data.memberName;
                     if('Success' == result){

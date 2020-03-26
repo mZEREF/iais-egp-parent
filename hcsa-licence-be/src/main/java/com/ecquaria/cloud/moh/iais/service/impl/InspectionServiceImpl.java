@@ -265,11 +265,12 @@ public class InspectionServiceImpl implements InspectionService {
                     superPoolTaskQueryDto.setInspectionDateStr(HcsaConsts.HCSA_PREMISES_HCI_NULL);
                 }
                 //get license date
-                LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(applicationDto.getLicenceId()).getEntity();
-                Date licExpiryDate = licenceDto.getExpiryDate();
-                if(licExpiryDate == null){
+
+                if(StringUtil.isEmpty(applicationDto.getOriginLicenceId())){
                     superPoolTaskQueryDto.setLicenceExpiryDateStr(HcsaConsts.HCSA_PREMISES_HCI_NULL);
                 } else {
+                    LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(applicationDto.getLicenceId()).getEntity();
+                    Date licExpiryDate = licenceDto.getExpiryDate();
                     superPoolTaskQueryDto.setLicenceExpiryDate(licExpiryDate);
                     String licExpiryDateStr = Formatter.formatDateTime(appPremisesRecommendationDto.getRecomInDate(), "dd/MM/yyyy");
                     superPoolTaskQueryDto.setLicenceExpiryDateStr(licExpiryDateStr);

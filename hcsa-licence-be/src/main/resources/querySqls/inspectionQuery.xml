@@ -52,8 +52,8 @@
             SELECT DISTINCT T1.ID, T1.REF_NO, T1.USER_ID, T1.TASK_TYPE, T1.WRK_GRP_ID
             FROM TASK T1
             WHERE 1 = 1
-            <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T1.ID) IN ${appCorrId_list} </#if>
-            <#if taskStatus??> and T1.TASK_STATUS = :taskStatus </#if>
+            <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T1.REF_NO) IN ${appCorrId_list} </#if>
+            <#if taskStatus??> and T1.TASK_STATUS IN ${taskStatus} </#if>
             <#if workGroupId??> and CONVERT(NVARCHAR(36), T1.WRK_GRP_ID) IN ${workGroupId} </#if>
         ]]>
     </sql>
