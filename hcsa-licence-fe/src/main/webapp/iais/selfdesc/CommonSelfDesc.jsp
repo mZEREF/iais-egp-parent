@@ -16,52 +16,64 @@
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 
+<div class="main-content">
+<div class = "container">
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
   <%@ include file="/include/formHidden.jsp" %>
   <input type="hidden" name="crud_action_type" value="">
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
   <input type="hidden" name="tabIndex" value="">
+
 <c:choose>
   <c:when test="${empty selfDeclQueryAttr}">
     <tr>
       <td colspan="6">
-        <iais:message key="ACK018" escape="true"></iais:message>
+        <c:out value="${isSubmitted}"></c:out>
       </td>
     </tr>
   </c:when>
   <c:otherwise>
 
-    <br><br><br><br><br><br>
-    <div class = "container">
+    <br><br><br>
+
       <div class="row">
         <div class="col-xs-12">
 
           &nbsp;<span id="error_premItemAnswer" name="iaisErrorMsg" class="error-msg"></span>
           &nbsp;<span id="error_inspectionDateErr" name="iaisErrorMsg" class="error-msg"></span>
+
+          <br><br>
           <div class="dashboard-gp">
-            <c:forEach var="declItem" items="${selfDeclQueryAttr}"  varStatus="status">
-                  <c:choose>
-                    <c:when test="${declItem.common eq true}">
-                      <div class="dashboard-tile-item">
-                        <div class="dashboard-tile" id="myBody">
-                          <a data-tab="#tabInbox" href="javascript:switchNextStep('');">
-                            <p class="dashboard-txt">General Regulation</p>
-                          </a>
-                        </div>
+
+            <%
+              boolean display = false;
+            %>
+              <c:forEach  var="declItem" items="${selfDeclQueryAttr}" varStatus="status">
+                <c:choose>
+                  <c:when test="${declItem.common eq true}">
+                    <div class="dashboard-tile-item">
+                      <div class="dashboard-tile" id="myBody">
+                        <a data-tab="#tabInbox" href="javascript:switchNextStep('');">
+                          <p class="dashboard-txt">General Regulation</p>
+                        </a>
                       </div>
-                    </c:when>
-                    <c:otherwise>
-                      <div class="dashboard-tile-item">
-                        <div class="dashboard-tile">
-                          <a data-tab="#tabInbox" href="javascript:switchNextStep('${declItem.svcId}');">
-                            <p class="dashboard-txt">${declItem.svcName}</p>
-                          </a>
-                        </div>
+                    </div>
+                  </c:when>
+                  <c:otherwise>
+                    <div class="dashboard-tile-item">
+                      <div class="dashboard-tile">
+                        <a data-tab="#tabInbox" href="javascript:switchNextStep('${declItem.svcId}');">
+                          <p class="dashboard-txt">${declItem.svcName}</p>
+                        </a>
                       </div>
-                    </c:otherwise>
-                  </c:choose>
-            </c:forEach>
+                    </div>
+                  </c:otherwise>
+                </c:choose>
+
+
+
+              </c:forEach>
 
           </div>
         </div>
@@ -85,7 +97,7 @@
                   </tr>
                   </thead>
                     <tbody id="general">
-                      <%@include file="/iais/selfdesc/Answer.jsp"%>
+                     <%@include file="/iais/selfdesc/Answer.jsp"%>
                     </tbody>
                 </table>
 
@@ -105,48 +117,44 @@
               <a class="btn btn-secondary"  onclick="javascript: doSave('${tabIndex}');" href="#">Draft</a>
               <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSubmit();">Submit</a>
             </div>
-
           </td>
         </div>
-
-
       </div>
-
-
-    </div>
-
+    <br>
   </c:otherwise>
 </c:choose>
-
-  <%@include file="/include/validation.jsp"%>
-  <%@include file="/include/utils.jsp"%>
-  <script>
-      function doCancel(){
-          SOP.Crud.cfxSubmit("mainForm", "doCancel");
-      }
-
-
-      function switchNextStep(index){
-          $("[name='tabIndex']").val(index);
-          $("[name='crud_action_type']").val("switchNextStep");
-          var mainForm = document.getElementById('mainForm');
-          mainForm.submit();;
-      }
-
-      function doSubmit(){
-          SOP.Crud.cfxSubmit("mainForm", "submitSelfDesc");
-      }
-
-      function doSave(id){
-          $("[name='tabIndex']").val(id);
-          SOP.Crud.cfxSubmit("mainForm", "doSave", id);
-      }
-
-      function doClear() {
-        $("input[type='radio']").removeAttr('checked');
-      }
-
-  </script>
-
 </>
+</div>
 
+</div>
+
+<%@include file="/include/validation.jsp"%>
+<%@include file="/include/utils.jsp"%>
+
+<script>
+  function doCancel(){
+    SOP.Crud.cfxSubmit("mainForm", "doCancel");
+  }
+
+
+  function switchNextStep(index){
+    $("[name='tabIndex']").val(index);
+    $("[name='crud_action_type']").val("switchNextStep");
+    var mainForm = document.getElementById('mainForm');
+    mainForm.submit();;
+  }
+
+  function doSubmit(){
+    SOP.Crud.cfxSubmit("mainForm", "submitSelfDesc");
+  }
+
+  function doSave(id){
+    $("[name='tabIndex']").val(id);
+    SOP.Crud.cfxSubmit("mainForm", "doSave", id);
+  }
+
+  function doClear() {
+    $("input[type='radio']").removeAttr('checked');
+  }
+
+</script>

@@ -59,7 +59,7 @@
                 <iais:field value="Status:"  />
                 <div class="col-md-3">
                     <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
-                                 firstOption="Select Status" filterValue="CMSTAT002,CMSTAT004" value="${status}"></iais:select>
+                                 firstOption="Please Select" filterValue="CMSTAT002,CMSTAT004" value="${status}"></iais:select>
                 </div>
                 <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
             </div>

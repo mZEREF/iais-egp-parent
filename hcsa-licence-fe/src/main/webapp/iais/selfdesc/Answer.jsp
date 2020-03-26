@@ -7,7 +7,7 @@
 --%>
 <c:forEach var="selfDesc" items="${selfDeclQueryAttr}" varStatus="status">
     <c:if test="${tabIndex == null && selfDesc.common == true}">
-      <c:forEach var="answerMap" items="${selfDesc.premAnswerMap}">
+      <c:forEach var="answerMap" items="${selfDesc.eachPremQuestion}">
         <c:forEach items="${answerMap.value}" var="list" varStatus="status">
           <td><input type="hidden" name="${list.answerKey}" value=""/></td>
           <tr>
@@ -49,7 +49,7 @@
     </c:if>
 
   <c:if test="${tabIndex != null && selfDesc.common == false && tabIndex eq selfDesc.svcId}">
-    <c:forEach var="answerMap" items="${selfDesc.premAnswerMap}">
+    <c:forEach var="answerMap" items="${selfDesc.eachPremQuestion}">
       <c:forEach items="${answerMap.value}" var="list" varStatus="status"><br>
         <td><input type="hidden" name="${list.answerKey}" value=""/></td>
         <tr>

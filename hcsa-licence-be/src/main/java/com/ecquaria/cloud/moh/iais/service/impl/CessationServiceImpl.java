@@ -78,7 +78,7 @@ public class CessationServiceImpl implements CessationService {
                         String floorNo = premisesDto.getFloorNo();
                         String unitNo = premisesDto.getUnitNo();
                         String postalCode = premisesDto.getPostalCode();
-                        String hciAddress = appendPremisesAddress(blkNo,streetName,buildingName,floorNo,unitNo,postalCode);
+                        String hciAddress = IaisCommonUtils.appendPremisesAddress(blkNo,streetName,buildingName,floorNo,unitNo,postalCode);
                         AppCessHciDto appCessHciDto = new AppCessHciDto();
                         String hciName = premisesDto.getHciName();
                         appCessHciDto.setHciName(hciName);
@@ -243,23 +243,5 @@ public class CessationServiceImpl implements CessationService {
             appCessMiscDto.setPatTransTo(patOthers);
         }
         return appCessMiscDto;
-    }
-
-    public static String appendPremisesAddress(String... args){
-        if (args == null ||args.length > 6) {
-            return "";
-        }
-        String[] sign = {" ", " ", "#", "-", ","};
-        StringBuilder stb = new StringBuilder();
-        int i = 0;
-        for (String s : args){
-            if (i >= args.length - 1){
-                stb.append(s);
-            }else {
-                stb.append(s).append(sign[i]);
-            }
-            i++;
-        }
-        return stb.toString();
     }
 }

@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
@@ -98,6 +99,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         //asynchronous save the other data.
         premisesListInformationEventBus(appSubmissionRequestInformationDto, process);
         return appSubmissionDto;
+    }
+
+    @Override
+    public List<ApplicationDto> listApplicationByGroupId(String groupId) {
+        return applicationClient.listApplicationByGroupId(groupId).getEntity();
     }
 
     @Override

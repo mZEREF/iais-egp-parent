@@ -35,7 +35,7 @@
     <p><c:out value="${ackMsg}"></c:out></p>
 
     <div class="text-right text-center-mobile">
-      <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doCancel();">Cancel</a>
+      <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doCancel();">Done</a>
     </div>
   </form>
 </div>

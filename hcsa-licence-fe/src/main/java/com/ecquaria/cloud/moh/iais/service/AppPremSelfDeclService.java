@@ -6,17 +6,16 @@ package com.ecquaria.cloud.moh.iais.service;
  *description:
  */
 
-import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclaration;
 
-import java.util.Date;
 import java.util.List;
 
 
 public interface AppPremSelfDeclService {
 
-    List<SelfDecl> getSelfDeclByGroupId(String groupId);
+    List<SelfDeclaration> getSelfDeclByGroupId(String groupId);
 
-    void saveSelfDecl(List<SelfDecl> selfDeclList, String groupId);
+    void saveSelfDecl(List<SelfDeclaration> selfDeclList);
 
-    Date getBlockPeriodByAfterApp(String groupId, List<SelfDecl> selfDeclList);
+    Boolean hasSelfDeclRecord(String groupId);
 }

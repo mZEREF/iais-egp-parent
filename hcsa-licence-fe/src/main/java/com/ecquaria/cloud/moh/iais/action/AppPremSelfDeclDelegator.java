@@ -8,8 +8,8 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
-import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclaration;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -23,16 +23,13 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 @Delegator(value = "appPremSelfDeclDelegator")
 @Slf4j
 public class AppPremSelfDeclDelegator {
-
-    /*private static final String INSPECTION_START_PERIOD = "inspStartDate";
-    private static final String INSPECTION_END_PERIOD = "inspEndDate";*/
-
     private final AppPremSelfDeclService appPremSelfDesc;
 
     @Autowired
@@ -52,10 +49,6 @@ public class AppPremSelfDeclDelegator {
 
         ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", null);
 
-        /*
-        ParamUtil.setSessionAttr(request, INSPECTION_START_PERIOD, null);
-        ParamUtil.setSessionAttr(request, INSPECTION_END_PERIOD, null);*/
-
     }
 
     /**
@@ -66,21 +59,27 @@ public class AppPremSelfDeclDelegator {
      */
     public void initData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator .APPSUBMISSIONDTO);
+/*        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
         if (appSubmissionDto == null || StringUtils.isEmpty(appSubmissionDto.getAppGrpId())){
             return;
-        }
+        }*/
 
-        String groupId = appSubmissionDto.getAppGrpId();
+        String groupId = "F289FCDD-746E-EA11-BE7A-000C29D29DB0";
+
+       /* boolean isSubmitted = appPremSelfDesc.hasSelfDeclRecord(groupId);
+        if (isSubmitted){
+            ParamUtil.setRequestAttr(request, "isSubmitted", "You have submitted self decl. Please do not submit again.");
+            ParamUtil.setRequestAttr(request, "selfDeclQueryAttr", null);
+            return;
+        }*/
 
         ParamUtil.setSessionAttr(request, "currentSelfDeclGroupId", groupId);
 
         log.info("assign to self decl group id ==>>>>> " + groupId);
 
-        List<SelfDecl> selfDeclList = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
+        List<SelfDeclaration> selfDeclList = (List<SelfDeclaration>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
         if (selfDeclList == null){
-            List<SelfDecl> selfDeclByGroupId = appPremSelfDesc.getSelfDeclByGroupId(groupId);
+            List<SelfDeclaration> selfDeclByGroupId = appPremSelfDesc.getSelfDeclByGroupId(groupId);
             ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", (Serializable) selfDeclByGroupId);
         }
 
@@ -97,29 +96,23 @@ public class AppPremSelfDeclDelegator {
 
         String currentPage = ParamUtil.getString(request, "tabIndex");
 
-       /* String inspStartDate = ParamUtil.getString(request, "inspStartDate");
-        String inspEndDate = ParamUtil.getString(request, "inspEndDate");
+        List<SelfDeclaration> selfDeclByGroupId = (List<SelfDeclaration>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
 
-        ParamUtil.setSessionAttr(request, INSPECTION_START_PERIOD, inspStartDate);
-        ParamUtil.setSessionAttr(request, INSPECTION_END_PERIOD, inspEndDate);*/
-
-        List<SelfDecl> selfDeclByGroupId = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
-
-        for (SelfDecl selfDecl : selfDeclByGroupId){
-            if (currentPage == null && selfDecl.isCommon()){
-                Map<String, List<PremCheckItem>> premAnswerMap = selfDecl.getPremAnswerMap();
-                setAnswer(request, premAnswerMap);
+        for (SelfDeclaration selfDecl : selfDeclByGroupId){
+            if (currentPage == null && selfDecl.getCommon()){
+                LinkedHashMap<String, List<PremCheckItem>> eachPremQuestion = selfDecl.getEachPremQuestion();
+                setAnswer(request, eachPremQuestion);
             }else if (currentPage != null && currentPage.equals(selfDecl.getSvcId())){
-                Map<String, List<PremCheckItem>> premAnswerMap = selfDecl.getPremAnswerMap();
-                setAnswer(request, premAnswerMap);
+                LinkedHashMap<String, List<PremCheckItem>> eachPremQuestion = selfDecl.getEachPremQuestion();
+                setAnswer(request, eachPremQuestion);
             }
 
         }
         ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", (Serializable) selfDeclByGroupId);
     }
 
-    private void setAnswer(HttpServletRequest request, Map<String, List<PremCheckItem>> premAnswerMap){
-        for (Map.Entry<String,  List<PremCheckItem>> entry : premAnswerMap.entrySet()){
+    private void setAnswer(HttpServletRequest request, LinkedHashMap<String, List<PremCheckItem>> eachPremQuestion){
+        for (Map.Entry<String,  List<PremCheckItem>> entry : eachPremQuestion.entrySet()){
             List<PremCheckItem> premCheckItemList = entry.getValue();
             for (PremCheckItem item : premCheckItemList){
                 String answer = ParamUtil.getString(request, item.getAnswerKey());
@@ -166,7 +159,7 @@ public class AppPremSelfDeclDelegator {
      */
     public void submitSelfDesc(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        List<SelfDecl> selfDeclList = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
+        List<SelfDeclaration> selfDeclList = (List<SelfDeclaration>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
 
         //Once transaction
         Map<String, String> errorMap = new HashMap<>(4);
@@ -179,19 +172,19 @@ public class AppPremSelfDeclDelegator {
         }
 
         if (errorMap != null && errorMap.isEmpty()){
-            String groupId = (String) ParamUtil.getSessionAttr(request, "currentSelfDeclGroupId");
-            appPremSelfDesc.saveSelfDecl(selfDeclList, groupId);
+            String json = JsonUtil.parseToJson(selfDeclList);
+            //appPremSelfDesc.saveSelfDecl(selfDeclList);
             ParamUtil.setRequestAttr(request,"ackMsg", "You have successfully submitted self-assessment");
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         }
     }
 
     // Lamda is not recommended
-    private Boolean hasWtriteAnswer(List<SelfDecl> selfDeclList){
+    private Boolean hasWtriteAnswer(List<SelfDeclaration> selfDeclList){
         boolean fullPower = true;
         if (selfDeclList != null){
-            for (SelfDecl selfDecl : selfDeclList){
-                Map<String, List<PremCheckItem>> listMap = selfDecl.getPremAnswerMap();
+            for (SelfDeclaration selfDecl : selfDeclList){
+                LinkedHashMap<String, List<PremCheckItem>> listMap = selfDecl.getEachPremQuestion();
                 for(Map.Entry<String, List<PremCheckItem>> entry : listMap.entrySet()){
                     List<PremCheckItem> premCheckItemList = entry.getValue();
                     for (PremCheckItem item : premCheckItemList){

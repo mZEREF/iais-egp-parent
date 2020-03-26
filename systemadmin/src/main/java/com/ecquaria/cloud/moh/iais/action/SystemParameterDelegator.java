@@ -239,7 +239,7 @@ public class SystemParameterDelegator {
                         systemParameterDto.setStatus(query.getStatus());
                         systemParameterDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                         systemParameterDto.setModifiedAt(query.getModifiedAt());
-
+                        systemParameterDto.setPropertiesKey(query.getPropertiesKey());
 
                         Optional<OrgUserDto> user =  Optional.ofNullable(parameterService.retrieveOrgUserAccountById(query.getModifiedBy()));
                         if (user.isPresent()){
@@ -248,7 +248,6 @@ public class SystemParameterDelegator {
                             systemParameterDto.setModifiedBy("system");
                         }
 
-//                        systemParameterDto.setPropertiesKey(query.getPropertiesKey());
                         ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO, systemParameterDto);
                     }
                 }
