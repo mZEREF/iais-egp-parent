@@ -1763,7 +1763,7 @@ footer.footerlogin .footer-link ul li:not(:first-child) a:before {
   margin-bottom: 30px;
   border: 0;
   border-radius: 14px;
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 .panel-group .panel.panel-default > .panel-heading {
   background-color: #F6F6F6;
