@@ -66,7 +66,13 @@
                         <div class="form-check-gp">
                             <c:forEach var="specified" items="${specifiedService}">
                                 <div class="form-check">
-                                    <input class="form-check-input" name="sepcifiedchk"  type="checkbox"
+                                    <input class="form-check-input"
+                                    <c:if test="${specifiedServiceChecked != null}">
+                                    <c:forEach var="specifiedchecked" items="${specifiedServiceChecked}">
+                                           <c:if test="${specified.getId().equals(specifiedchecked)}">checked="checked"</c:if>
+                                    </c:forEach>
+                                    </c:if>
+                                           name="sepcifiedchk"  type="checkbox"
                                            aria-invalid="false" value="${specified.getId()}">
                                     <label class="form-check-label" ><span
                                             class="check-square"></span>${specified.getSvcName()}</label>

@@ -26,10 +26,13 @@
                 </div>
             </div>
         </div>
-        <button class="btn btn-lg btn-login-submit" type="button"
-                style="background:#2199E8; color: white"
-                onclick="javascript:back()">Back
-        </button>
+        <div class="row">
+            <div class="col-xs-12">
+                <div align="left">
+                    <a class="back" href="#" onclick="back()"><em class="fa fa-angle-left"></em> Back</a>
+                </div>
+            </div>
+        </div>
     </div>
 
 </form>
