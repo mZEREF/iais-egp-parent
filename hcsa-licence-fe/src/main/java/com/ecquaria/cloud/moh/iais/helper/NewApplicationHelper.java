@@ -299,7 +299,7 @@ public class NewApplicationHelper {
                         if("FIN".equals(idType)){
                             boolean b = SgNoValidator.validateFin(idNo);
                             if(!b){
-                                oneErrorMap.put("NRICFIN","CHKLMD001_ERR005");
+                                oneErrorMap.put("poNRICFIN"+poIndex,"CHKLMD001_ERR005");
                             }else {
                                 stringBuilder.append(idType).append(idNo);
 
@@ -308,14 +308,14 @@ public class NewApplicationHelper {
                         if("NRIC".equals(idType)){
                             boolean b1 = SgNoValidator.validateNric(idNo);
                             if(!b1){
-                                oneErrorMap.put("NRICFIN","CHKLMD001_ERR005");
+                                oneErrorMap.put("poNRICFIN"+poIndex,"CHKLMD001_ERR005");
                             }else {
                                 stringBuilder.append(idType).append(idNo);
 
                             }
                         }
                     }else {
-                        oneErrorMap.put("NRICFIN","UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("poNRICFIN"+poIndex,"UC_CHKLMD001_ERR001");
                     }
                     if(!StringUtil.isEmpty(mobileNo)){
 

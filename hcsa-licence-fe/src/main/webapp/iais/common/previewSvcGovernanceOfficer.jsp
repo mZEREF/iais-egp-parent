@@ -9,7 +9,7 @@
                     <table class="col-xs-8">
                         <tr>
                             <td class="col-xs-8">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation:</p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation :</p>
                             </td>
                             <td>
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <iais:code code="${cgo.salutation}" /></p>
@@ -18,7 +18,7 @@
 
                         <tr>
                             <td class="col-xs-8">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name:</p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name :</p>
                             </td>
                             <td>
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.name }</p>
@@ -27,7 +27,7 @@
 
                         <tr>
                             <td class="col-xs-8">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type:</p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type :</p>
                             </td>
                             <td>
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.idType }</p>
@@ -36,7 +36,7 @@
 
                         <tr>
                             <td class="col-xs-8">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No. :</p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No :</p>
                             </td>
                             <td>
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${cgo.idNo }</p>
@@ -54,16 +54,23 @@
 
                         <tr>
                             <td class="col-xs-8">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Type:</p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Type :</p>
+
                             </td>
                             <td>
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.professionType  }</p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                                    <c:choose>
+                                        <c:when test="${cgo.professionType=='PROF001'  }">Dentist</c:when>
+                                        <c:when test="${cgo.professionType=='PROF002'  }">Doctor</c:when>
+                                        <c:when test="${cgo.professionType=='PROF003'  }">Nurse</c:when>
+                                    </c:choose> </p>
+                                </p>
                             </td>
                         </tr>
 
                         <tr>
                             <td class="col-xs-8">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn No.:</p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional No :</p>
                             </td>
                             <td>
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.professionRegoNo }</p>
@@ -72,7 +79,7 @@
 
                         <tr>
                             <td class="col-xs-8">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Specialty:</p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Specialty :</p>
                             </td>
                             <td>
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.speciality }</p>
@@ -99,7 +106,7 @@
 
                         <tr>
                             <td class="col-xs-8">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.:</p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No :</p>
                             </td>
                             <td>
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.mobileNo}</p>

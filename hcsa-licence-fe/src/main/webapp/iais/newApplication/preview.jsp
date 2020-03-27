@@ -37,7 +37,7 @@
                                                     <div class="panel panel-default svc-content">
 
                                                         <div class="panel-heading  <c:if test="${fn:contains(Msg.serviceId,hcsaServiceDto.id)}">incompleted</c:if> <c:if test="${fn:contains(Msg.serviceId,hcsaServiceDto.id)==false}">completed</c:if>  "  id="headingServiceInfo" role="tab">
-                                                            <h4 class="panel-title"><a  class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information -- ${hcsaServiceDto.svcName}</a></h4>
+                                                            <h4 class="panel-title"><a  class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information - ${hcsaServiceDto.svcName}</a></h4>
                                                         </div>
 
                                                         <div class=" panel-collapse collapse" id="collapseServiceInfo${status.index}" role="tabpanel" aria-labelledby="headingServiceInfo${status.index}">

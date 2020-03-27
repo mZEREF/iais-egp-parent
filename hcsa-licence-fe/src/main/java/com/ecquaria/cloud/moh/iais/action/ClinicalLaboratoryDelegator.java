@@ -514,6 +514,14 @@ public class ClinicalLaboratoryDelegator {
                         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
                     }
                     ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
+                    Map<String,String> coMap=(Map<String, String>) bpc.request.getSession().getAttribute("coMap");
+                    if(errorMap.isEmpty()){
+                        coMap.put("information","information");
+                    }else {
+                        coMap.put("information","");
+                    }
+                    bpc.request.getSession().setAttribute("coMap",coMap);
+
                 }
 
             }
@@ -582,6 +590,14 @@ public class ClinicalLaboratoryDelegator {
                     appSubmissionDto.setChangeSelectDto(appEditSelectDto);
                 }
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
+
+                Map<String,String> coMap=(Map<String, String>) bpc.request.getSession().getAttribute("coMap");
+                if(errList.isEmpty()){
+                    coMap.put("information","information");
+                }else {
+                    coMap.put("information","");
+                }
+                bpc.request.getSession().setAttribute("coMap",coMap);
             }
             if (!errList.isEmpty()) {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.GOVERNANCEOFFICERS);
@@ -672,6 +688,15 @@ public class ClinicalLaboratoryDelegator {
                     appSubmissionDto.setChangeSelectDto(appEditSelectDto);
                 }
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
+
+
+                Map<String,String> coMap=(Map<String, String>) bpc.request.getSession().getAttribute("coMap");
+                if(errorMap.isEmpty()){
+                    coMap.put("information","information");
+                }else {
+                    coMap.put("information","");
+                }
+                bpc.request.getSession().setAttribute("coMap",coMap);
             }
             currentSvcRelatedDto.setAppSvcDisciplineAllocationDtoList(daList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
@@ -744,6 +769,13 @@ public class ClinicalLaboratoryDelegator {
                     appSubmissionDto.setChangeSelectDto(appEditSelectDto);
                 }
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
+                Map<String,String> coMap=(Map<String, String>) bpc.request.getSession().getAttribute("coMap");
+                if(map.isEmpty()){
+                    coMap.put("information","information");
+                }else {
+                    coMap.put("information","");
+                }
+                bpc.request.getSession().setAttribute("coMap",coMap);
             }
             if (!map.isEmpty()) {
                 //ParamUtil.setSessionAttr(bpc.request, "", );

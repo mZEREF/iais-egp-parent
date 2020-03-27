@@ -372,7 +372,7 @@
                         <iais:field value="Block / House No." width="12"/>
                         <iais:value width="11" cssClass="col-md-5">
                             <iais:input maxLength="10" cssClass="conveyanceBlockNo" type="text" name="conveyanceBlockNo" id="conveyanceBlockNo" value="${appGrpPremisesDto.conveyanceBlockNo}"></iais:input>
-                            <span  class="postalCodeMsg error-msg"></span>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceBlockNos${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>

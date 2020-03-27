@@ -10,7 +10,7 @@
 <webui:setLayout name="iais-blank"/>
 <%--<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>--%>
 
-<div class="panel-main-content">
+<div class="panel-main-content" style="margin: 2%">
 
   <%@include file="../../common/previewSvcDisciplines.jsp"%>
   <%@include file="../../common/previewSvcGovernanceOfficer.jsp"%>

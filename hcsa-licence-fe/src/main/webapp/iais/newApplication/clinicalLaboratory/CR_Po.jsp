@@ -127,6 +127,7 @@
                             </div>
                             <div class="col-sm-4">
                               <input id="idType-idNo" name="idNo" type="text" maxlength="9"  class="idNoVal form-control control-input control-set-font control-font-normal" value="${principalOfficer.idNo}" >
+                              <span class="error-msg" id="error_poNRICFIN${status.index}" name="iaisErrorMsg"></span>
                               <span class="error-msg" id="error_NRICFIN" name="iaisErrorMsg"></span>
                             </div>
                           </div>
@@ -309,7 +310,7 @@
                             </div>
                             <div class="col-sm-4 " id="deputySalutation${suffix}">
                               <iais:select cssClass="deputySalutation"  name="deputySalutation" codeCategory="CATE_ID_SALUTATION" value="${deputy.salutation}" firstOption="Please Select"></iais:select>
-                              <span name="iaisErrorMsg" class="error-msg" id="error_deputySalutation${suffix}"></span>
+                              <span name="iaisErrorMsg" class="error-msg" id="error_deputySalutation${status.index}"></span>
                             </div>
                             <div class="col-sm-4">
                               <input name="deputyName" maxlength="66" type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.name}"  size="30">
