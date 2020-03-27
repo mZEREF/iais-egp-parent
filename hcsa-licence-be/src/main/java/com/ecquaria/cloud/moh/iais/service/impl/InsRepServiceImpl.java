@@ -156,11 +156,11 @@ public class InsRepServiceImpl implements InsRepService {
 
         List<String> nameList = IaisCommonUtils.genNewArrayList();
         AppPremisesRecommendationDto otherOfficesDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_OTHER_INSPECTIORS).getEntity();
-        String otherOffices = otherOfficesDto.getRemarks();
-        nameList.add(otherOffices);
-        inspectionReportDto.setInspectOffices(nameList);
-
-
+        if(otherOfficesDto!=null){
+            String otherOffices = otherOfficesDto.getRemarks();
+            nameList.add(otherOffices);
+            inspectionReportDto.setInspectOffices(nameList);
+        }
         //get application type (pre/post)
         Integer isPre = applicationGroupDto.getIsPreInspection();
         String appType = MasterCodeUtil.getCodeDesc(appTypeCode);
