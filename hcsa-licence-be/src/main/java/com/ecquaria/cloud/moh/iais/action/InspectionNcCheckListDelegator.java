@@ -271,10 +271,10 @@ public class InspectionNcCheckListDelegator {
     public CheckListVadlidateDto getValueFromPage(HttpServletRequest request) {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest)request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CheckListVadlidateDto dto = new CheckListVadlidateDto();
-        getDataFromPage(request);
-        getOtherInfo(mulReq);
-        getCommonDataFromPage(request);
-        getAdhocDtoFromPage(request);
+        getDataFromPage(request); // GET  check list base data
+        getOtherInfo(mulReq);      // Set tcu and hh mm
+        getCommonDataFromPage(request); // Set common data
+        getAdhocDtoFromPage(request);  // Set adh data
         return dto;
     }
 
@@ -419,10 +419,8 @@ public class InspectionNcCheckListDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
-
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
-        HttpServletRequest request = bpc.request;
         getOtherInfo(mulReq);
 
 
