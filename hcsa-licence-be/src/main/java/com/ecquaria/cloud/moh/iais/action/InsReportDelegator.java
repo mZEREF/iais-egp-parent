@@ -72,7 +72,7 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, null);
         String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
         if (StringUtil.isEmpty(taskId)) {
-            taskId = "AD08DA82-376F-EA11-BE82-000C29F371DC";
+            taskId = "1F119B2E-D16F-EA11-BE82-000C29F371DC";
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
@@ -97,6 +97,13 @@ public class InsReportDelegator {
         List<SelectOption> recommendationOption = getRecommendationOption();
         List<SelectOption> riskLevelOptions = getriskLevel();
         List<SelectOption> processingDe = getProcessingDecision();
+        String infoClassTop = "active";
+        String infoClassBelow = "tab-pane active";
+        String reportClassBelow = "tab-pane";
+        ParamUtil.setSessionAttr(bpc.request, "infoClassTop", infoClassTop);
+        ParamUtil.setSessionAttr(bpc.request, "reportClassTop", null);
+        ParamUtil.setSessionAttr(bpc.request, "infoClassBelow", infoClassBelow);
+        ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", reportClassBelow);
         ParamUtil.setSessionAttr(bpc.request, "processingDe", (Serializable) processingDe);
         ParamUtil.setSessionAttr(bpc.request, "riskLevelOptions", (Serializable) riskLevelOptions);
         ParamUtil.setSessionAttr(bpc.request, "recommendationOption", (Serializable) recommendationOption);
@@ -126,6 +133,13 @@ public class InsReportDelegator {
             errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+            String reportClassTop = "active";
+            String infoClassBelow = "tab-pane";
+            String reportClassBelow = "tab-pane active";
+            ParamUtil.setSessionAttr(bpc.request, "infoClassTop", null);
+            ParamUtil.setSessionAttr(bpc.request, "reportClassTop", reportClassTop);
+            ParamUtil.setSessionAttr(bpc.request, "infoClassBelow", infoClassBelow);
+            ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", reportClassBelow);
             return;
         }
         List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = prepareForSave(bpc, appPremisesCorrelationId);
