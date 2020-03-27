@@ -187,8 +187,10 @@ public class InsRepServiceImpl implements InsRepService {
 
         List<HcsaSvcSubtypeOrSubsumedDto> subsumedDtos = hcsaConfigClient.listSubCorrelationFooReport(serviceId).getEntity();
         List<String> subsumedServices = IaisCommonUtils.genNewArrayList();
-        for(HcsaSvcSubtypeOrSubsumedDto subsumedDto :subsumedDtos){
-            subsumedServices.add(subsumedDto.getName());
+        if (subsumedDtos != null && !subsumedDtos.isEmpty()) {
+            for(HcsaSvcSubtypeOrSubsumedDto subsumedDto :subsumedDtos){
+                subsumedServices.add(subsumedDto.getName());
+            }
         }
         inspectionReportDto.setSubsumedServices(subsumedServices);
         //Nc
