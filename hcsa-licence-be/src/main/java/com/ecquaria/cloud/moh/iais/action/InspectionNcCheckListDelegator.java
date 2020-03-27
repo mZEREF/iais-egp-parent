@@ -99,7 +99,6 @@ public class InspectionNcCheckListDelegator {
         String appPremCorrId = taskDto.getRefNo();
         //fillupChklistService.getDraftByTaskId(taskId,serviceType);
         //fillupChklistService.getAllAppChklDraftList(appPremCorrId);
-        CheckListDraftDto checkListDraftDto = null;
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         //draft start
         InspectionFillCheckListDto maxComChkDto = fillupChklistService.getMaxVersionComAppChklDraft(appPremCorrId);
@@ -115,33 +114,19 @@ public class InspectionNcCheckListDelegator {
         //draft end
         InspectionFillCheckListDto commonDto = null;
         List<InspectionFillCheckListDto> cDtoList = null;
-        InspectionFDtosDto serListDto = new InspectionFDtosDto();
         List<InspectionFillCheckListDto> commonList = null;
-        if(checkListDraftDto!=null){
-            commonDto = checkListDraftDto.getComDto();
-        }else{
             cDtoList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"service");
-            serListDto.setFdtoList(cDtoList);
-            fillupChklistService.getSvcName(serListDto);
-            serListDto.setBestPractice("");
-            serListDto.setTcuRemark("");
-            serListDto.setTuc("");
             commonList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"common");
             if(commonList!=null&&!commonList.isEmpty()){
                 commonDto = commonList.get(0);
             }
-        }
+        InspectionFDtosDto serListDto =  fillupChklistService.getInspectionFDtosDto(appPremCorrId,taskDto,cDtoList);
         AdCheckListShowDto adchklDto = null;
         adchklDto = fillupChklistService.getAdhocDraftByappCorrId(appPremCorrId);
         if(adchklDto==null){
             adchklDto = fillupChklistService.getAdhoc(appPremCorrId);
         }
-        String inspectionDate = fillupChklistService.getInspectionDate(appPremCorrId);
-        List<String> inspeciotnOfficers  = fillupChklistService.getInspectiors(taskDto);
-        String inspectionleader = fillupChklistService.getInspectionLeader(taskDto);
-        serListDto.setInspectionDate(inspectionDate);
-        serListDto.setInspectionofficer(inspeciotnOfficers);
-        serListDto.setInspectionLeader(inspectionleader);
+
         ParamUtil.setSessionAttr(request,TASKDTO,taskDto);
         ParamUtil.setSessionAttr(request,APPLICATIONVIEWDTO,appViewDto);
         ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
@@ -424,10 +409,6 @@ public class InspectionNcCheckListDelegator {
         AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
         serListDto.setCheckListTab("chkList");
         fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
-        if(serListDto!=null){
-            int totalNcNum = serListDto.getGeneralNc()+serListDto.getServiceNc()+serListDto.getAdhocNc();
-            serListDto.setTotalNcNum(totalNcNum);
-        }
         ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
         ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);

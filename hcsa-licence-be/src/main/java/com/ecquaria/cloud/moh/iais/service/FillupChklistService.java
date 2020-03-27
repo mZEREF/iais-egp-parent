@@ -70,4 +70,8 @@ public interface FillupChklistService {
     List<InspectionFDtosDto> getOtherVersionfdtos(List<InspectionFDtosDto> fdtosdraft);
 
     List<AdCheckListShowDto> getOtherAdhocList(String appPremCorrId);
+
+    String  getStringByRecomType(String appPremCorrId,String recomType);
+
+    InspectionFDtosDto  getInspectionFDtosDto(String appPremCorrId,TaskDto taskDto,List<InspectionFillCheckListDto> cDtoList);
 }

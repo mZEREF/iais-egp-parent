@@ -966,6 +966,16 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         return inspectionDate;
     }
 
+
+    @Override
+    public String getStringByRecomType(String appPremCorrId,String recomType) {
+        AppPremisesRecommendationDto dto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId,recomType).getEntity();
+        if(InspectionConstants.RECOM_TYPE_OTHER_INSPECTIORS.equalsIgnoreCase(recomType))
+        return  dto == null ? null : dto.getRemarks();
+        if(InspectionConstants.RECOM_TYPE_INSPCTION_START_TIME.equalsIgnoreCase(recomType) || InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME.equalsIgnoreCase(recomType))
+            return  dto == null ? null : dto.getRecomDecision();
+        return null;
+    }
     @Override
     public List<String> getInspectiors(TaskDto taskDto) {
         List<String> inspectiors = IaisCommonUtils.genNewArrayList();
@@ -997,6 +1007,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     @Override
     public void getRateOfCheckList(InspectionFDtosDto serListDto, AdCheckListShowDto adchklDto, InspectionFillCheckListDto commonDto) {
+        if(serListDto == null) return;
         if(serListDto.getFdtoList()!=null){
             getServiceTotalAndNc(serListDto);
         }
@@ -1006,6 +1017,9 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         if(adchklDto!=null&&!IaisCommonUtils.isEmpty(adchklDto.getAdItemList())){
             getAdhocTotalAndNc(adchklDto,serListDto);
         }
+        int totalNcNum = serListDto.getGeneralNc()+serListDto.getServiceNc()+serListDto.getAdhocNc();
+
+        serListDto.setTotalNcNum(totalNcNum);
     }
 
     private void getAdhocTotalAndNc(AdCheckListShowDto adchklDto, InspectionFDtosDto serListDto) {
@@ -1289,4 +1303,42 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     public List<AdCheckListShowDto> getOtherAdhocList(String appPremCorrId) {
         return applicationClient.getAllVersionAdhocList(appPremCorrId).getEntity();
     }
+
+    public  InspectionFDtosDto  getInspectionFDtosDto(String appPremCorrId,TaskDto taskDto,List<InspectionFillCheckListDto> cDtoList){
+        InspectionFDtosDto serListDto = new InspectionFDtosDto();
+        String inspectionDate = getInspectionDate(appPremCorrId);
+        List<String> inspeciotnOfficers  = getInspectiors(taskDto);
+        String inspectionleader =  getInspectionLeader(taskDto);
+        serListDto.setInspectionDate(inspectionDate);
+        serListDto.setInspectionofficer(inspeciotnOfficers);
+        serListDto.setInspectionLeader(inspectionleader);
+        serListDto.setFdtoList(cDtoList);
+        String startDate = getStringByRecomType(appPremCorrId,InspectionConstants.RECOM_TYPE_INSPCTION_START_TIME);
+        String endDate = getStringByRecomType(appPremCorrId,InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME);
+        String otherinspectionofficer = getStringByRecomType(appPremCorrId,InspectionConstants.RECOM_TYPE_OTHER_INSPECTIORS);
+        serListDto.setOtherinspectionofficer(otherinspectionofficer);
+        serListDto.setStartMin(startDate);
+        serListDto.setEndTime(endDate);
+       String [] startDateHHMM = getStringsByHHDD(startDate);
+       if(startDateHHMM != null && startDateHHMM.length == 2){
+           serListDto.setStartHour(startDateHHMM[0]);
+           serListDto.setStartMin(startDateHHMM[1]);
+       }
+        String [] endDateHHMM = getStringsByHHDD(endDate);
+        if(endDateHHMM != null && endDateHHMM.length == 2){
+            serListDto.setEndHour(endDateHHMM[0]);
+            serListDto.setEndMin(endDateHHMM[1]);
+        }
+        if( !StringUtil.isEmpty(appPremCorrId)){
+          getTcuInfo(serListDto,appPremCorrId);
+        }
+        getSvcName(serListDto);
+        return serListDto;
+    }
+
+    // only HH : DD
+    public  String[]  getStringsByHHDD(String dateString){
+        return StringUtil.isEmpty(dateString) ? null : dateString.split(" : ");
+    }
+
 }

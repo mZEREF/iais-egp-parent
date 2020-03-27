@@ -127,15 +127,23 @@ public class InspectEmailAo1Delegator {
         if(commonList!=null && !commonList.isEmpty()){
             commonDto = commonList.get(0);
         }
-        InspectionFDtosDto serListDto = new InspectionFDtosDto();
-        serListDto.setFdtoList(cDtoList);
-        if(serListDto.getBestPractice()!=null){
-            fillupChklistService.getTcuInfo(serListDto,appPremCorrId);
-        }
+        InspectionFDtosDto serListDto =  fillupChklistService.getInspectionFDtosDto(appPremCorrId,taskDto,cDtoList);
         AdCheckListShowDto adchklDto =insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         appViewDto.setCurrentStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appViewDto.getApplicationDto().getStatus()}).get(0).getText());
-        ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
+
+        // change common data;
+        insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(commonDto);
+        //  change service checklist data
+        if(serListDto != null){
+            List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
+            if(fdtoList != null && fdtoList.size() >0){
+                for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList)
+                    insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(inspectionFillCheckListDto);
+            }
+        }
+        //set num
+        fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
         ParamUtil.setSessionAttr(request,TASK_DTO,taskDto);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
         ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
@@ -392,9 +400,9 @@ public class InspectEmailAo1Delegator {
                 if(fdto!=null&&fdto.getCheckList()!=null&&!fdto.getCheckList().isEmpty()){
                     List<InspectionCheckQuestionDto> checkListDtoList = fdto.getCheckList();
                     for(InspectionCheckQuestionDto temp:checkListDtoList){
-                        String answer = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionName()+temp.getItemId()+"rad");
-                        String remark = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionName()+temp.getItemId()+"remark");
-                        String rectified = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionName()+temp.getItemId()+"rec");
+                        String answer = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionNameShow()+temp.getItemId()+"rad");
+                        String remark = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionNameShow()+temp.getItemId()+"remark");
+                        String rectified = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionNameShow()+temp.getItemId()+"rec");
                         temp.setRectified(!StringUtil.isEmpty(rectified)&&"No".equals(answer));
                         temp.setChkanswer(answer);
                         temp.setRemark(remark);
@@ -535,5 +543,48 @@ public class InspectEmailAo1Delegator {
         String resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(), System.currentTimeMillis(), "d");
         log.debug(StringUtil.changeForLog("The resultStr is -->:") + resultStr);
         return result;
+    }
+
+    public void doCheckList(BaseProcessClass bpc){
+        Log.info("=======>>>>>doCheckList>>>>>>>>>>>>>>>>doCheckList");
+        HttpServletRequest request = bpc.request;
+        InspectionFDtosDto serListDto = null;
+        serListDto = getServiceCheckListDataFormViewPage(request);
+        InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
+        AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
+        serListDto.setCheckListTab("chkList");
+        fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
+        ParamUtil.setSessionAttr(request,AC_DTO,adchklDto);
+        ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
+        ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
+    }
+
+    public InspectionFDtosDto getServiceCheckListDataFormViewPage(HttpServletRequest request){
+        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SER_LIST_DTO);
+        if(!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
+            for(InspectionFillCheckListDto fdto:serListDto.getFdtoList()){
+                if(fdto!=null&&!IaisCommonUtils.isEmpty(fdto.getCheckList())){
+                    List<InspectionCheckQuestionDto> checkListDtoList = fdto.getCheckList();
+                    for(InspectionCheckQuestionDto temp:checkListDtoList){
+                        getServiceData(temp,fdto,request);
+                    }
+                    fillupChklistService.fillInspectionFillCheckListDto(fdto);
+                }
+            }
+        }
+        return serListDto;
+    }
+
+    public void getServiceData(InspectionCheckQuestionDto temp,InspectionFillCheckListDto fdto,HttpServletRequest request){
+        String answer = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rad");
+        String remark = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"remark");
+        String rectified = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rec");
+        if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
+            temp.setRectified(true);
+        }else{
+            temp.setRectified(false);
+        }
+        temp.setChkanswer(answer);
+        temp.setRemark(remark);
     }
 }
