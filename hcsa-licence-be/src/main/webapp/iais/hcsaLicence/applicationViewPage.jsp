@@ -687,7 +687,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
             $("input[name='fastTracking']").each(function(){
-                if('${applicationViewDto.applicationDto.fastTracking}'){
+                if('${applicationViewDto.applicationDto.fastTracking}' == 'true'){
                     $(this).prop("checked",true);
                 }
             });
