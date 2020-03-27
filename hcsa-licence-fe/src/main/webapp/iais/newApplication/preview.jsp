@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
@@ -47,7 +48,7 @@
                                                                     <input type="hidden" value="${hcsaServiceDto.svcCode}" name="svcCode" />
                                                                 </p>
                                                                 </c:if>
-                                                                <iframe  class="svc-iframe" title="" src="${pageContext.request.contextPath}/eservice/INTERNET/MohServiceRelatedInformation?crud_action_type_form_value=prepareView&svcId=${hcsaServiceDto.id}" id="elemId-${status.index}"  width="100%" height="100%" ></iframe> <!--scrolling="no" scrollbar="no" -->
+                                                                <iframe class="svc-iframe" title="" src="${pageContext.request.contextPath}<%=RedirectUtil.changeUrlToCsrfGuardUrlUrl("/eservice/INTERNET/MohServiceRelatedInformation/1/PrepareView",request)%>&svcId=${hcsaServiceDto.id}" id="elemId-${status.index}" width="100%" height="100%" ></iframe> <!--scrolling="no" scrollbar="no" -->
                                                             </div>
                                                         </div>
                                                     </div>
