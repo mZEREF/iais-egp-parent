@@ -507,7 +507,7 @@
                                                     </c:if>
                                                     <div id="rollBackDropdown" class="hidden">
                                                         <iais:row>
-                                                            <iais:field value="Route Back To" required="false"/>
+                                                            <iais:field value="Route Back To" required="true"/>
                                                             <iais:value width="10">
                                                                 <select name="rollBack" class="nice-select input-large">
                                                                     <option value="">Please Select</option>
@@ -522,7 +522,7 @@
                                                     </div>
                                                     <div id="verifiedDropdown" class="hidden">
                                                         <iais:row>
-                                                            <iais:field value="Verified" required="false"/>
+                                                            <iais:field value="Verified" required="true"/>
                                                             <iais:value width="10">
                                                                 <select name="verified" class="nice-select input-large">
                                                                     <option value="">Please Select</option>
