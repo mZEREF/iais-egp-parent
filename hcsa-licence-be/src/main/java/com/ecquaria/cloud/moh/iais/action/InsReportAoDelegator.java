@@ -70,7 +70,7 @@ public class InsReportAoDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String taskId = ParamUtil.getString(bpc.request,"taskId");
         if(StringUtil.isEmpty(taskId)){
-            taskId = "AC08DA82-376F-EA11-BE82-000C29F371DC";
+            taskId = "0007F958-CF6F-EA11-BE82-000C29F371DC";
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
@@ -82,6 +82,13 @@ public class InsReportAoDelegator {
         insRepDto.setReportedBy(inspectorAo.getReportedBy());
         initAoRecommendation(correlationId,bpc);
 
+        String infoClassTop = "active";
+        String infoClassBelow = "tab-pane active";
+        String reportClassBelow = "tab-pane";
+        ParamUtil.setSessionAttr(bpc.request, "infoClassTop", infoClassTop);
+        ParamUtil.setSessionAttr(bpc.request, "reportClassTop", null);
+        ParamUtil.setSessionAttr(bpc.request, "infoClassBelow", infoClassBelow);
+        ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", reportClassBelow);
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
         List<SelectOption> recommendationOption = getRecommendationOption();
         List<SelectOption> chronoOption = getChronoOption();
@@ -115,9 +122,10 @@ public class InsReportAoDelegator {
         log.debug(StringUtil.changeForLog("the back start ...."));
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         TaskDto taskDto =  (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        String historyRemarks = ParamUtil.getRequestString(bpc.request, "processingDecision");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        insRepService.routBackTaskToInspector(taskDto,applicationDto,appPremisesCorrelationId);
+        insRepService.routBackTaskToInspector(taskDto,applicationDto,appPremisesCorrelationId,historyRemarks);
     }
 
     public void approve(BaseProcessClass bpc) throws FeignException {
@@ -132,11 +140,16 @@ public class InsReportAoDelegator {
         ParamUtil.setSessionAttr(bpc.request, "preapreRecommendationDto", preapreRecommendationDto);
         ValidationResult validationResult = WebValidationHelper.validateProperty(preapreRecommendationDto, "edit");
         if (validationResult.isHasErrors()) {
-            String report = "Y";
-            ParamUtil.setRequestAttr(bpc.request, "report",report);
             Map<String, String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.FALSE);
+            String reportClassTop = "active";
+            String infoClassBelow = "tab-pane";
+            String reportClassBelow = "tab-pane active";
+            ParamUtil.setSessionAttr(bpc.request, "infoClassTop", null);
+            ParamUtil.setSessionAttr(bpc.request, "reportClassTop", reportClassTop);
+            ParamUtil.setSessionAttr(bpc.request, "infoClassBelow", infoClassBelow);
+            ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", reportClassBelow);
             return;
         }
         saveAoRecommendation(appPremisesCorrelationId,bpc,preapreRecommendationDto);

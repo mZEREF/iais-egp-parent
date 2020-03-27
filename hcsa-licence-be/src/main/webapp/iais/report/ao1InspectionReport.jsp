@@ -20,14 +20,14 @@
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                            <li id="info" class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
-                                                                      data-toggle="tab">Info</a></li>
+                            <li id="info" class="${infoClassTop}" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
+                                                                                         data-toggle="tab">Info</a></li>
                             <li class="complete" role="presentation"><a href="#tabDocuments"
                                                                         aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
-                            <li id="report" class="complete" role="presentation"><a id="reportClink" href="#tabInspectionReport"
-                                                                        aria-controls="tabProcessing" role="tab"
-                                                                        data-toggle="tab">Inspection Report</a></li>
+                            <li id="report" class="${reportClassTop}" role="presentation"><a id="reportClink" href="#tabInspectionReport"
+                                                                                             aria-controls="tabProcessing" role="tab"
+                                                                                             data-toggle="tab">Inspection Report</a></li>
                             <li class="complete" role="presentation"><a href="#tabProcessing"
                                                                         aria-controls="tabProcessing" role="tab"
                                                                         data-toggle="tab">Processing</a></li>
@@ -48,7 +48,7 @@
                             <div class="swiper-button-next"></div>
                         </div>
                         <div class="tab-content">
-                            <div class="tab-pane active" id="tabInfo" role="tabpanel">
+                            <div class="${infoClassBelow}" id="tabInfo" role="tabpanel">
 
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->
@@ -216,7 +216,7 @@
                                 </div>
 
                             </div>
-                            <div class="tab-pane" id="tabInspectionReport" role="tabpanel">
+                            <div class="${reportClassBelow}" id="tabInspectionReport" role="tabpanel">
                                 <jsp:include page="/iais/report/ao1Report.jsp"></jsp:include>
                             </div>
                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
@@ -318,14 +318,6 @@
 </form>
 
 <script>
-    $(document).ready(function () {
-        if("Y"=='${report}'){
-            $('#reportClink').click();
-            $('#info').removeClass("active");
-            $('#report').addClass("active");
-        }
-    });
-
     function aoSubmit() {
         var s = $("#processingDecision").val();
         if(s=="" || s==null){
