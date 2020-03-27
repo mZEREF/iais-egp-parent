@@ -26,7 +26,7 @@
             <div class="intranet-content">
               <div class="bg-title">
                 <h2>
-                  <span>Supervisor Assignment Pool</span>
+                  <span>Supervisor Reassignment Pool</span>
                 </h2>
               </div>
               <iais:body >
