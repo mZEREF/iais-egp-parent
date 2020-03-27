@@ -15,26 +15,6 @@ import java.util.Map;
  * @date 2019/12/5 13:45
  */
 public class HtmlElementHelper {
-    public static String generateSelect(Map<String, String> attributes, List<SelectOption> selectOptions, String firstOption, String value, boolean handleOthers) {
-        return generateSelect(attributes, selectOptions, firstOption, value, -1, handleOthers);
-    }
-
-    public static String generateSelect(Map<String, String> attributes, List<SelectOption> selectOptions, String firstOption, String value, int size) {
-        return generateSelect(attributes, selectOptions, firstOption, value, -1, false);
-    }
-
-    public static String generateSelect(Map<String, String> attributes, List<SelectOption> selectOptions, String firstOption, String value, int size, boolean handleOthers) {
-        Map<String, String> options = new LinkedHashMap<String, String>();
-        if (selectOptions != null && selectOptions.size() > 0) {
-            for (SelectOption selectOption : selectOptions) {
-                if (selectOption != null) {
-                    options.put(selectOption.getValue(), selectOption.getText());
-                }
-            }
-        }
-        return generateSelect(attributes, options, firstOption, value, size, handleOthers);
-    }
-
     public static String generateSelect(Map<String, String> attributes, String codeCategoryId, String firstOption, String value, int size) throws Exception {
         return generateSelect(attributes, codeCategoryId, firstOption, value, size, false);
     }
@@ -44,14 +24,13 @@ public class HtmlElementHelper {
         return generateSelect(attributes, sos, firstOption, value, size, handleOthers);
     }
 
-    public static String generateSelect(Map<String, String> attributes, Map<String, String> options, String firstOption, String value, int size) {
+    public static String generateSelect(Map<String, String> attributes, List<SelectOption> options, String firstOption, String value, int size) {
         return generateSelect(attributes, options, firstOption, value, size, false);
     }
 
-    public static String generateSelect(Map<String, String> attributes, Map<String, String> options, String firstOption, String value, boolean handleOthers) {
+    public static String generateSelect(Map<String, String> attributes, List<SelectOption> options, String firstOption, String value, boolean handleOthers) {
         return generateSelect(attributes, options, firstOption, value, -1, handleOthers);
     }
-
 
     /**
      * generate select element
@@ -61,7 +40,7 @@ public class HtmlElementHelper {
      * @param value
      * @return
      */
-    public static String generateSelect(Map<String, String> attributes, Map<String, String> options, String firstOption, String value, int size, boolean handleOthers) {
+    public static String generateSelect(Map<String, String> attributes, List<SelectOption> options, String firstOption, String value, int size, boolean handleOthers) {
         StringBuffer html = new StringBuffer();
         html.append("<select");
         if (attributes != null) {
@@ -81,8 +60,8 @@ public class HtmlElementHelper {
             if (StringUtil.isEmpty(value)) {
                 otherSelected = false;
             }
-            for (Map.Entry<String, String> entry : options.entrySet()) {
-                String val = entry.getKey();
+            for (SelectOption entry : options) {
+                String val = entry.getValue();
                 if (val.equals(value)) {
                     otherSelected = false;
                     break;
@@ -90,8 +69,8 @@ public class HtmlElementHelper {
             }
         }
         if (options != null) {
-            for (Map.Entry<String, String> entry : options.entrySet()) {
-                String val = entry.getKey();
+            for (SelectOption entry : options) {
+                String val = entry.getValue();
                 String txt = entry.getValue();
                 String selected = val.equals(value) ? " selected" : "";
                 if (handleOthers) {
@@ -113,6 +92,47 @@ public class HtmlElementHelper {
             }
         }
         html.append("</select>");
+        // The Nice select css
+        String clsName = StringUtil.isEmpty(attributes.get("id")) ? attributes.get("name") : attributes.get("id");
+        String className = clsName + "Select";
+        html.append("<div class=\"nice-select "+className+"\" tabindex=\"0\">");
+        if (!StringUtil.isEmpty(firstOption)) {
+            html.append("<span class=\"current\">"+firstOption+"</span>");
+        } else {
+            html.append("<span class=\"current\">"+ options.get(0).getText() +"</span>");
+        }
+        html.append("<ul class=\"list mCustomScrollbar _mCS_2 mCS_no_scrollbar\">")
+                .append("<div id=\"mCSB_2\" class=\"mCustomScrollBox mCS-light mCSB_vertical mCSB_inside\" tabindex=\"0\" style=\"max-height: none;\">")
+                .append("<div id=\"mCSB_2_container\" class=\"mCSB_container mCS_y_hidden mCS_no_scrollbar_y\" style=\"position:relative; top:0; left:0;\" dir=\"ltr\">");
+        if (!StringUtil.isEmpty(firstOption)) {
+            html.append("<li data-value=\"\" class=\"option selected\">"+firstOption+"</li>");
+            for (SelectOption kv: options) {
+                html.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+            }
+        } else {
+            for(int i = 0;i < options.size();i++){
+                SelectOption kv = options.get(i);
+                if(i == 0){
+                    html.append(" <li data-value=\""+kv.getValue()+"\" class=\"option selected\">"+kv.getText()+"</li>");
+                }else{
+                    html.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+                }
+            }
+        }
+
+        html.append("</div>")
+                .append("<div id=\"mCSB_2_scrollbar_vertical\" class=\"mCSB_scrollTools mCSB_2_scrollbar mCS-light mCSB_scrollTools_vertical\" style=\"display: none;\">")
+                .append("<div class=\"mCSB_draggerContainer\">")
+                .append("<div id=\"mCSB_2_dragger_vertical\" class=\"mCSB_dragger\" style=\"position: absolute; min-height: 30px; top: 0px; height: 0px;\">")
+                .append("<div class=\"mCSB_dragger_bar\" style=\"line-height: 30px;\">")
+                .append("</div>")
+                .append("</div>")
+                .append("<div class=\"mCSB_draggerRail\"></div>")
+                .append("</div>")
+                .append("</div>")
+                .append("</div>")
+                .append("</ul>")
+                .append("</div>");
         if (localHaveOthers && handleOthers) {
             html.append("<div id=\"otherLabel\" style=\"display: none;\">Please specify:</div><input id=\"others").append(attributes.get("name")).append("\"");
             html.append(" style=\"height:25px;\" name=\"others").append(attributes.get("name")).append("\" maxLength=255\"");
@@ -132,8 +152,8 @@ public class HtmlElementHelper {
             String name = attributes.get("name");
             MaskUtil.maskValue(name, null);
             if (options != null) {
-                for (String key : options.keySet()) {
-                    MaskUtil.maskValue(name, key);
+                for (SelectOption opt : options) {
+                    MaskUtil.maskValue(name, opt.getValue());
                 }
             }
         }
