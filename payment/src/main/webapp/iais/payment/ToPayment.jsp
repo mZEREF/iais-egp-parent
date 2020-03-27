@@ -16,13 +16,13 @@
     <iais:row>
         <iais:field value="Card Holder Name"/>
         <iais:value width="3">
-            <input type="text">
+            <input type="text" id = "cardHolderName">
         </iais:value>
     </iais:row>
     <iais:row>
         <iais:field value="Card Number"/>
         <iais:value width="3">
-            <input type="text">
+            <input type="text" id = "cardNumber">
         </iais:value>
     </iais:row>
         <div class="form-group">
@@ -30,14 +30,14 @@
                 Expiry Date
             </label>
             <div class="col-xs-9 col-sm-5 col-md-6">
-                <input type="text" style="width: 60px;margin-right: 2%"/> / <input type="text" style="width: 60px;margin-right: 2%" />
+                <input type="text" id="startDate" style="width: 60px;margin-right: 2%"/> / <input type="text" id="endDate" style="width: 60px;margin-right: 2%" />
             </div>
             </div>
         </div>
     <iais:row>
         <iais:field value="CVV No."/>
         <iais:value width="1">
-            <input type="text">
+            <input type="text" id="cvvNo">
         </iais:value>
     </iais:row>
     </iais:section>

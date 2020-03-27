@@ -93,7 +93,7 @@
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <iais:select name="salutation" options="salutation"
-                                                         firstOption="Please select"
+                                                         firstOption="Please Select"
                                                          value="${orgUserDto.salutation}"></iais:select>
                                         </div>
                                     </iais:value>

@@ -215,6 +215,11 @@ public class MohIntranetUserDelegator {
         return;
     }
 
+    public void inportBack(BaseProcessClass bpc) {
+        return;
+    }
+
+
     public void doExport(BaseProcessClass bpc) throws IOException {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String[] ids = ParamUtil.getStrings(request, "userUid");
@@ -474,18 +479,6 @@ public class MohIntranetUserDelegator {
         clientUser.setEmail(email);
         clientUser.setMobileNo(mobileNo);
         clientUser.setSalutation(salutation);
-        /*
-        {
-              "userDomain": "intranet",
-              "accountStatus": "A",
-              "accountActivateDatetime": "2019-12-31T07:55:51.090Z",
-              "displayName": "test3",
-              "email": "35518@qq.com",
-              "id": "test3",
-              "passwordChallengeAnswer": "s",
-              "passwordChallengeQuestion": "s"
-         }
-         */
         intranetUserService.updateEgpUser(clientUser);
     }
 
@@ -579,11 +572,10 @@ public class MohIntranetUserDelegator {
         for(OrgUserDto orgUserDto :orgUserDtos){
             Map<String, String> errorMap = valiant(orgUserDto);
             if (!errorMap.isEmpty()) {
-                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 return;
             }
         }
-
         intranetUserService.createIntranetUsers(orgUserDtos);
     }
 

@@ -156,10 +156,11 @@ public class InsRepServiceImpl implements InsRepService {
 
         List<String> nameList = IaisCommonUtils.genNewArrayList();
         AppPremisesRecommendationDto otherOfficesDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_OTHER_INSPECTIORS).getEntity();
-        String otherOffices = otherOfficesDto.getRemarks();
-        nameList.add(otherOffices);
-        inspectionReportDto.setInspectOffices(nameList);
-
+        if(otherOfficesDto!=null){
+            String otherOffices = otherOfficesDto.getRemarks();
+            nameList.add(otherOffices);
+            inspectionReportDto.setInspectOffices(nameList);
+        }
 
         //get application type (pre/post)
         Integer isPre = applicationGroupDto.getIsPreInspection();
@@ -187,8 +188,10 @@ public class InsRepServiceImpl implements InsRepService {
 
         List<HcsaSvcSubtypeOrSubsumedDto> subsumedDtos = hcsaConfigClient.listSubCorrelationFooReport(serviceId).getEntity();
         List<String> subsumedServices = IaisCommonUtils.genNewArrayList();
-        for(HcsaSvcSubtypeOrSubsumedDto subsumedDto :subsumedDtos){
-            subsumedServices.add(subsumedDto.getName());
+        if (subsumedDtos != null && !subsumedDtos.isEmpty()) {
+            for(HcsaSvcSubtypeOrSubsumedDto subsumedDto :subsumedDtos){
+                subsumedServices.add(subsumedDto.getName());
+            }
         }
         inspectionReportDto.setSubsumedServices(subsumedServices);
         //Nc

@@ -1,1 +1,0 @@
-<%@include file = "/iais/intranetUser/download.jsp"%>
