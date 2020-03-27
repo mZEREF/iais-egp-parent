@@ -706,9 +706,14 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             if(adItemList!=null && !adItemList.isEmpty()){
                 for(AdhocNcCheckItemDto temp:adItemList){
                     String answerStr = temp.getAnswer();
-                    AdhocAnswerDto answerDto = JsonUtil.parseToObject(answerStr,AdhocAnswerDto.class);
-                    temp.setAdAnswer(answerDto.getAnswer());
-                    temp.setRemark(answerDto.getRemark());
+                    if(StringUtil.isEmpty(answerStr)){
+                        AdhocAnswerDto answerDto = JsonUtil.parseToObject(answerStr,AdhocAnswerDto.class);
+                        if(answerDto != null){
+                            temp.setAdAnswer(answerDto.getAnswer());
+                            temp.setRemark(answerDto.getRemark());
+                        }
+                    }
+
                 }
             }
         }
