@@ -187,8 +187,10 @@ public class InsRepServiceImpl implements InsRepService {
 
         List<HcsaSvcSubtypeOrSubsumedDto> subsumedDtos = hcsaConfigClient.listSubCorrelationFooReport(serviceId).getEntity();
         List<String> subsumedServices = IaisCommonUtils.genNewArrayList();
-        for(HcsaSvcSubtypeOrSubsumedDto subsumedDto :subsumedDtos){
-            subsumedServices.add(subsumedDto.getName());
+        if (subsumedDtos != null && !subsumedDtos.isEmpty()) {
+            for(HcsaSvcSubtypeOrSubsumedDto subsumedDto :subsumedDtos){
+                subsumedServices.add(subsumedDto.getName());
+            }
         }
         inspectionReportDto.setSubsumedServices(subsumedServices);
         //Nc
@@ -506,10 +508,10 @@ public class InsRepServiceImpl implements InsRepService {
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
         List<TaskDto> taskDtos = prepareTaskToAo1(taskDto, applicationDto, hcsaSvcStageWorkingGroupDto2);
-        //taskService.createTasks(taskDtos);
-        //String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
-        //createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
-        //createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, appPremisesRecommendationDto.getProcessRemarks(), InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId2, subStage);
+        taskService.createTasks(taskDtos);
+        String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
+        createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
+        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, appPremisesRecommendationDto.getProcessRemarks(), InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId2, subStage);
     }
 
     @Override
