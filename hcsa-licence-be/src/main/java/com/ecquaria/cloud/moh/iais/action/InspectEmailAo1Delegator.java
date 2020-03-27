@@ -54,6 +54,8 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -158,13 +160,14 @@ public class InspectEmailAo1Delegator {
     public void prepareData(BaseProcessClass bpc) {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL_VIEW);
-
+        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, StringUtil.isEmpty(ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_TYPE)) ? EMAIL_VIEW : ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_TYPE));
     }
 
     public CheckListVadlidateDto getValueFromPage(HttpServletRequest request) {
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest)request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CheckListVadlidateDto dto = new CheckListVadlidateDto();
         getDataFromPage(request);
+        getOtherInfo(mulReq);
         getCommonDataFromPage(request);
         getAdhocDtoFromPage(request);
         return dto;
@@ -289,13 +292,19 @@ public class InspectEmailAo1Delegator {
     public void checkListNext(BaseProcessClass bpc)  {
         log.info("=======>>>>>checkListNext>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        InspectionFDtosDto serListDto = getDataFromPage(request);
-        InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
-        AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE, ParamUtil.getSessionAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE+"Step2"));
+        String saveFlag = ParamUtil.getString(request,"saveflag");
+        if(StringUtil.isEmpty( saveFlag)){
+            ParamUtil.setRequestAttr(request, "isValid", "Y");
+            return;
+        }
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request,TASK_DTO);
-        ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
+        InspectionFillCheckListDto commonDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,COM_DTO);
+        AdCheckListShowDto adchklDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,ADCHK_DTO);
+        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SER_LIST_DTO);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
         ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
+        ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
         List<NcAnswerDto> ncDtoList = insepctionNcCheckListService.getNcAnswerDtoList(taskDto.getRefNo());
         InspectionCheckListValidation inspectionCheckListValidation = new InspectionCheckListValidation();
         Map<String, String> errMap = inspectionCheckListValidation.validate(request);
@@ -305,12 +314,9 @@ public class InspectEmailAo1Delegator {
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
         }else{
             ParamUtil.setRequestAttr(request, "isValid", "Y");
-            String saveFlag = ParamUtil.getString(request,"saveflag");
-            if(!StringUtil.isEmpty(saveFlag)){
-                insepctionNcCheckListService.submit(commonDto,adchklDto,serListDto,taskDto.getRefNo());
-            }
+            insepctionNcCheckListService.submit(commonDto,adchklDto,serListDto,taskDto.getRefNo());
         }
-        ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"checkList");
+
     }
     public void preEmailView(BaseProcessClass bpc)  {
         log.info("=======>>>>>preEmailView>>>>>>>>>>>>>>>>emailRequest");
@@ -382,9 +388,9 @@ public class InspectEmailAo1Delegator {
         InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,COM_DTO);
         List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
         for(InspectionCheckQuestionDto temp:checkListDtoList){
-            String answer = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comrad");
-            String remark = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comremark");
-            String rectified = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comrec");
+            String answer = ParamUtil.getString(request,temp.getSectionNameSub()+temp.getItemId()+"comrad");
+            String remark = ParamUtil.getString(request,temp.getSectionNameSub()+temp.getItemId()+"comremark");
+            String rectified = ParamUtil.getString(request,temp.getSectionNameSub()+temp.getItemId()+"comrec");
             temp.setRectified(!StringUtil.isEmpty(rectified)&&"No".equals(answer));
             temp.setChkanswer(answer);
             temp.setRemark(remark);
@@ -395,22 +401,6 @@ public class InspectEmailAo1Delegator {
 
     public InspectionFDtosDto getDataFromPage(HttpServletRequest request){
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SER_LIST_DTO);
-        if(serListDto.getFdtoList()!=null &&!serListDto.getFdtoList().isEmpty()){
-            for(InspectionFillCheckListDto fdto:serListDto.getFdtoList()){
-                if(fdto!=null&&fdto.getCheckList()!=null&&!fdto.getCheckList().isEmpty()){
-                    List<InspectionCheckQuestionDto> checkListDtoList = fdto.getCheckList();
-                    for(InspectionCheckQuestionDto temp:checkListDtoList){
-                        String answer = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionNameShow()+temp.getItemId()+"rad");
-                        String remark = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionNameShow()+temp.getItemId()+"remark");
-                        String rectified = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionNameShow()+temp.getItemId()+"rec");
-                        temp.setRectified(!StringUtil.isEmpty(rectified)&&"No".equals(answer));
-                        temp.setChkanswer(answer);
-                        temp.setRemark(remark);
-                    }
-                    fillupChklistService.fillInspectionFillCheckListDto(fdto);
-                }
-            }
-        }
         String tcu = ParamUtil.getString(request,"tuc");
         String bestpractice = ParamUtil.getString(request,"bestpractice");
         String tcuremark = ParamUtil.getString(request,"tcuRemark");
@@ -586,5 +576,53 @@ public class InspectEmailAo1Delegator {
         }
         temp.setChkanswer(answer);
         temp.setRemark(remark);
+    }
+
+    private InspectionFDtosDto getOtherInfo(MultipartHttpServletRequest request) {
+        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SER_LIST_DTO);
+        String tcuflag = ParamUtil.getString(request,"tcuType");
+        String tcu = null;
+        if(!StringUtil.isEmpty(tcuflag)){
+            tcu = ParamUtil.getString(request,"tuc");
+        }
+        String bestpractice = ParamUtil.getString(request,"bestpractice");
+        String tcuremark = ParamUtil.getString(request,"tcuRemark");
+        String otherOfficers = ParamUtil.getString(request,"otherinspector");
+
+        //startHour   startHourMin  endHour endHourMin
+        String inspectionDate = ParamUtil.getString(request,"inspectionDate");
+        String startHour = ParamUtil.getString(request,"startHour");
+        String startMin = ParamUtil.getString(request,"startHourMin");
+        String endHour = ParamUtil.getString(request,"endHour");
+        String endMin = ParamUtil.getString(request,"endHourMin");
+        String startTime = startHour+" : "+startMin;
+        String endTime =  endHour+" : "+endMin;
+        serListDto.setStartTime(startTime);
+        serListDto.setEndTime(endTime);
+        serListDto.setStartHour(startHour);
+        serListDto.setEndHour(endHour);
+        serListDto.setStartMin(startMin);
+        serListDto.setEndMin(endMin);
+        serListDto.setInspectionDate(inspectionDate);
+        serListDto.setOtherinspectionofficer(otherOfficers);
+        serListDto.setTcuRemark(tcuremark);
+        if(!StringUtil.isEmpty(tcuflag)){
+            serListDto.setTcuFlag(true);
+            serListDto.setTuc(tcu);
+        }else{
+            serListDto.setTcuFlag(false);
+        }
+        serListDto.setBestPractice(bestpractice);
+        ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
+        return serListDto;
+    }
+
+    public void preViewCheckList(BaseProcessClass bpc){
+        Log.info("=======>>>>>preViewCheckList>>>>>>>>>>>>>>>>preViewCheckList");
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
+        ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE+"Step2", crudActionType);
+        getOtherInfo(mulReq);
     }
 }

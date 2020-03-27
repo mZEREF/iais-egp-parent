@@ -9,7 +9,7 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 
-<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+<form method="post" id="mainForm" enctype="multipart/form-data"   action=<%=process.runtime.continueURL()%>  >
 
     <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.FillupChklistDelegator"/>
     <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto"/>
