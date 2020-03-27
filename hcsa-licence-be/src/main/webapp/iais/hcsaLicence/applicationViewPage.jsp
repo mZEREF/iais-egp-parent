@@ -540,7 +540,7 @@
                                                             <iais:field value="Licence Start Date" required="false"/>
                                                             <iais:value width="10">
                                                                 <c:choose>
-                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012'}">
+                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007'}">
                                                                     <iais:datePicker id="licenceStartDate" name="tuc"
                                                                                      value="${date}"></iais:datePicker>
                                                                     </c:when>
