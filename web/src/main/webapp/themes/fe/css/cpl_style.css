@@ -1517,7 +1517,7 @@ footer.footerlogin .footer-link ul li:not(:first-child) a:before {
   margin-bottom: 30px;
   border: 0;
   border-radius: 14px;
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 .panel-group .panel.panel-default > .panel-heading {
   background-color: #F6F6F6;
@@ -2335,7 +2335,6 @@ span.error-msg {
   -ms-transform: none;
   -o-transform: none;
   transform: none;
-  z-index: 99999;
 }
 .nice-select ul.list li {
   min-height: 50px;
