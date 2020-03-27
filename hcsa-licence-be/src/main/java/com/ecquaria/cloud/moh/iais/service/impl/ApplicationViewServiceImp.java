@@ -126,6 +126,8 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         applicationViewDto.setServiceType(serviceType);
         String status = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getStatus());
         applicationViewDto.setCurrentStatus(status);
+//        if(!StringUtil.isEmpty(applicationViewDto.getSubmissionDate()))
+//        applicationViewDto.setSubmissionDate(IaisEGPHelper.parseToString(IaisEGPHelper.parseToDate( applicationViewDto.getSubmissionDate(),"yyyy-MM-dd hh:mm"),"yyyy-MM-dd"));
         HcsaServiceDto hcsaServiceDto=applicationViewService.getHcsaServiceDtoById(applicationViewDto.getApplicationDto().getServiceId());
         applicationViewDto.setServiceType(hcsaServiceDto.getSvcName());
 

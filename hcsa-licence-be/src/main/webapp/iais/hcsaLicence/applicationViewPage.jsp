@@ -464,7 +464,7 @@
                                                 <iais:section title="">
                                                         <iais:row>
                                                             <iais:field value="Current Status" required="false"/>
-                                                            <iais:value width="10">${applicationViewDto.currentStatus}</iais:value>
+                                                            <iais:value width="10"><p>${applicationViewDto.currentStatus}</p></iais:value>
                                                         </iais:row>
                                                     <%--<div>--%>
                                                         <iais:row>
