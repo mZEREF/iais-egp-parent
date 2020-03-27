@@ -24,7 +24,7 @@
                             <h2>Edit Alert Notification Template</h2>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="msgType">Message Type:</label>
+                            <label class="col-xs-12 col-md-4 control-label" for="msgType">Message Type</label>
 
                             <div class="col-xs-8 col-sm-6 col-md-4">
                                 <iais:select name="msgType" id="msgType" options="messageTypeSelect"></iais:select>
@@ -40,7 +40,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">Delivery Mode:</label>
+                            <label class="col-xs-12 col-md-4 control-label">Delivery Mode</label>
                             <div class="col-xs-8 col-sm-6 col-md-4">
                                 <iais:select name="deliveryMode" id="deliveryMode"
                                              options="deliveryModeSelect"></iais:select>
@@ -49,14 +49,14 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="esd">Effective Start Date.</label>
+                            <label class="col-xs-12 col-md-4 control-label" for="esd">Effective Start Date</label>
                             <div class="col-xs-8 col-sm-6 col-md-6">
                                 <iais:datePicker id="esd" name="esd" dateVal="${MsgTemplateDto.effectiveFrom}"/>
                                 <span id="error_effectiveFrom" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="eed">Effective End Date.</label>
+                            <label class="col-xs-12 col-md-4 control-label" for="eed">Effective End Date</label>
                             <div class="col-xs-8 col-sm-6 col-md-6">
                                 <iais:datePicker id="eed" name="eed"
                                                  dateVal="${MsgTemplateDto.effectiveTo}"></iais:datePicker>
@@ -64,7 +64,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-12 control-label">Message Content:</label>
+                            <label class="col-xs-12 col-md-12 control-label">Message Content</label>
                         </div>
                         <div class="form-group">
                             <textarea cols="120" rows="40" name="messageContent" class="textarea" id="htmlEditor"
