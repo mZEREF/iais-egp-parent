@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%

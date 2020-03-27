@@ -710,7 +710,7 @@ public class NewApplicationDelegator {
         }
         if(!StringUtil.isEmpty(pmtMethod) && "GIRO".equals(pmtMethod)){
             switch2 = "ack";
-            String txnDt = Formatter.formatDateTime(new Date(), "yyyy-MM-dd HH:mm:ssa");
+            String txnDt = Formatter.formatDateTime(new Date(), "dd/MM/yyyy HH:mm:ss");
             ParamUtil.setRequestAttr(bpc.request,"txnDt",txnDt);
         }
         String result = bpc.request.getParameter("result");
