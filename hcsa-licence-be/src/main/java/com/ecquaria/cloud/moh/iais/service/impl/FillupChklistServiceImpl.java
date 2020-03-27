@@ -948,8 +948,11 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         }catch (Exception e){
             log.debug("date formatter error");
         }
-        serListDto.setBestPractice(dto.getBestPractice());
-        serListDto.setTcuRemark(dto.getRemarks());
+        if(dto !=  null){
+            serListDto.setBestPractice(dto.getBestPractice());
+            serListDto.setTcuRemark(dto.getRemarks());
+        }
+
     }
 
     @Override
