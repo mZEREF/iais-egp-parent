@@ -584,7 +584,7 @@
                                                             <iais:field value="Fast Tracking?" required="false"/>
                                                             <iais:value width="10">
                                                                 <c:choose>
-                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007'}">
+                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012'}">
                                                                         <input class="form-check-input" id="fastTracking" type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
                                                                         <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
                                                                     </c:when>
