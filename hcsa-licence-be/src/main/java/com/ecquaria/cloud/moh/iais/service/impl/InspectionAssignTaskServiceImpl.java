@@ -44,6 +44,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
+
+import static java.util.regex.Pattern.compile;
 
 /**
  * @author Shicheng
@@ -420,7 +423,20 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 result = result + appGrpPremisesDto.getBuildingName() + " ";
             }
             if(!StringUtil.isEmpty(appGrpPremisesDto.getFloorNo())){
-                result = result + " # "+ appGrpPremisesDto.getFloorNo();
+                String floorNo = appGrpPremisesDto.getFloorNo();
+                Pattern pattern = compile("[0-9]*");
+                boolean noFlag =  pattern.matcher(floorNo).matches();
+                if (noFlag) {
+                    int floorNum  = Integer.valueOf(floorNo);
+                    if(10 > floorNum){
+                        floorNo = AppConsts.NO + floorNo;
+                        result = result + " # " + floorNo;
+                    } else {
+                        result = result + " # " + floorNo;
+                    }
+                } else {
+                    result = result + " # " + floorNo;
+                }
             }
             if(!StringUtil.isEmpty(appGrpPremisesDto.getUnitNo())){
                 result = result + (StringUtil.isEmpty(appGrpPremisesDto.getFloorNo())?"":"-") + appGrpPremisesDto.getUnitNo();
@@ -482,7 +498,20 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             result = result + appGrpPremisesDto.getConveyanceBuildingName() + " ";
         }
         if(!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceFloorNo())){
-            result = result + " # "+ appGrpPremisesDto.getConveyanceFloorNo();
+            String floorNo = appGrpPremisesDto.getConveyanceFloorNo();
+            Pattern pattern = compile("[0-9]*");
+            boolean noFlag =  pattern.matcher(floorNo).matches();
+            if (noFlag) {
+                int floorNum  = Integer.valueOf(floorNo);
+                if(10 > floorNum){
+                    floorNo = AppConsts.NO + floorNo;
+                    result = result + " # " + floorNo;
+                } else {
+                    result = result + " # " + floorNo;
+                }
+            } else {
+                result = result + " # " + floorNo;
+            }
         }
         if(!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceUnitNo())){
             result = result + (StringUtil.isEmpty(appGrpPremisesDto.getConveyanceFloorNo())?"":"-") + appGrpPremisesDto.getConveyanceUnitNo();
