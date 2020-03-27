@@ -9,7 +9,7 @@
                         <table class="col-xs-8">
                             <tr>
                                 <td class="col-xs-8">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation:</p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation :</p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${po.salutation}"/></p>
@@ -17,7 +17,7 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-8">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name:</p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name :</p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.name}</p>
@@ -25,7 +25,7 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-8">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type:</p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type :</p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.idType}</p>
@@ -33,7 +33,7 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-8">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No:</p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No :</p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.idNo}</p>
@@ -49,7 +49,7 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-8">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Office Telephone No.:</p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Office Telephone No :</p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.officeTelNo}</p>
@@ -57,7 +57,7 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-8">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>MobileNo:</p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No :</p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.mobileNo}</p>
@@ -65,7 +65,7 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-8">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>EmailAddress:</p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Email Address :</p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.emailAddr}</p>
