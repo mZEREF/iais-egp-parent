@@ -9,6 +9,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclaration;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -58,19 +59,19 @@ public class AppPremSelfDeclDelegator {
      */
     public void initData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-/*        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
         if (appSubmissionDto == null || StringUtils.isEmpty(appSubmissionDto.getAppGrpId())){
             return;
-        }*/
+        }
 
-        String groupId = "F289FCDD-746E-EA11-BE7A-000C29D29DB0";
+        String groupId = appSubmissionDto.getId();
 
-       /* boolean isSubmitted = appPremSelfDesc.hasSelfDeclRecord(groupId);
+       boolean isSubmitted = appPremSelfDesc.hasSelfDeclRecord(groupId);
         if (isSubmitted){
             ParamUtil.setRequestAttr(request, "isSubmitted", "You have submitted self decl. Please do not submit again.");
             ParamUtil.setRequestAttr(request, "selfDeclQueryAttr", null);
             return;
-        }*/
+        }
 
         ParamUtil.setSessionAttr(request, "currentSelfDeclGroupId", groupId);
 
