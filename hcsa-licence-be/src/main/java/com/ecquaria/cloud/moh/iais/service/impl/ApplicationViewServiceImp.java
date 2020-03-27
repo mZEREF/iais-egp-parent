@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -127,8 +126,6 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         applicationViewDto.setServiceType(serviceType);
         String status = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getStatus());
         applicationViewDto.setCurrentStatus(status);
-        if(!StringUtil.isEmpty(applicationViewDto.getSubmissionDate()))
-        applicationViewDto.setSubmissionDate(IaisEGPHelper.parseToString(IaisEGPHelper.parseToDate( applicationViewDto.getSubmissionDate(),"yyyy-MM-dd hh:mm"),"yyyy-MM-dd"));
         HcsaServiceDto hcsaServiceDto=applicationViewService.getHcsaServiceDtoById(applicationViewDto.getApplicationDto().getServiceId());
         applicationViewDto.setServiceType(hcsaServiceDto.getSvcName());
 
