@@ -25,7 +25,7 @@
 
                         <c:forEach items="${hcsaServiceDtoList}" var="list">
                             <div class="col-xs-12">
-                                <p class="ack-font-20">-<strong><c:out value="${list.svcName}"/> </strong></p>
+                                <p class="ack-font-20">- <strong><c:out value="${list.svcName}"/> </strong></p>
                             </div>
                         </c:forEach>
                         <div class="ack-font-16">
@@ -35,10 +35,10 @@
                             <br/>
                         </div>
                         <div class="col-xs-12">
-                            We will review apllication and notify you if any change are required.
+                            We will review your application and notify you if any changes are required.
                         </div>
                         <div class="col-xs-12">
-                            An in inspection date will be arranged if necessary.
+                            An inspection date will be arranged if necessary.
                             <br/>
                             <br/>
                         </div>

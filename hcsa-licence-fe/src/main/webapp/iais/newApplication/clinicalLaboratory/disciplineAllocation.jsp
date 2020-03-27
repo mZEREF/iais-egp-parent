@@ -112,7 +112,7 @@
 
 
                               </table>
-                              <p>Click <a id="toLaboratory">here</a> to assign a laboratory discipline to multiple clinical governance officers.</p>
+
                             </div>
                           </div>
                         </div>
@@ -156,10 +156,6 @@
 
         $('.premAddress').css('vertical-align','top');
 
-        $('#toLaboratory').click(function () {
-            var controlFormLi = $('#controlFormLi').val();
-            submitFormTabs(controlFormLi);
-        });
 
     });
 

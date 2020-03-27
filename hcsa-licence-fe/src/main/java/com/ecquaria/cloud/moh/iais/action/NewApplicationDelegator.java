@@ -149,7 +149,6 @@ public class NewApplicationDelegator {
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
         //clear Session
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
-
         //Primary Documents
         ParamUtil.setSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO, null);
         ParamUtil.setSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO, null);
@@ -711,7 +710,7 @@ public class NewApplicationDelegator {
         }
         if(!StringUtil.isEmpty(pmtMethod) && "GIRO".equals(pmtMethod)){
             switch2 = "ack";
-            String txnDt = DateUtil.formatDate(new Date(), "yyyy-MM-dd");
+            String txnDt = Formatter.formatDateTime(new Date(), "yyyy-MM-dd HH:mm:ssa");
             ParamUtil.setRequestAttr(bpc.request,"txnDt",txnDt);
         }
         String result = bpc.request.getParameter("result");
