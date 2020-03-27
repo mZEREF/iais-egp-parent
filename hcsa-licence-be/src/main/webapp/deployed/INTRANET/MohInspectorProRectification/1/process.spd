@@ -65,6 +65,20 @@
     <JavaCode defClass="" executor="" methodName="inspectorProRectificationStep_OnStepProcess_0" name="inspectorProRectificationStep_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorProRectificationChList" x="600" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectorProRectificationChList_OnStepProcess_0" name="inspectorProRectificationChList_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorProRecCheckListStep" x="600" y="580">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectorProRecCheckListStep_OnStepProcess_0" name="inspectorProRecCheckListStep_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectorProRectificationDoPage" stageIndicator="" x="610" y="100">
@@ -80,6 +94,12 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectorProRectificationViewPage" stageIndicator="" x="790" y="400">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectorProRecCheckListPage" stageIndicator="" x="600" y="400">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -142,8 +162,23 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorProRectificationStep" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspectorProRectificationViewPage" style="rectanular">
    <position>{(810,420)(820,600)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/InspectorProRectificationSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectorProRectificationStep" style="oblique">
-   <position>{(820,600)(1691,600)(1691,119)(1270,120)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/InspectorProRectificationSwitch" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge2" style="oblique">
+   <position>{(1340,600)(1731,599)(1732,120)(1270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectorProRectificationStep" style="rectanular">
+   <position>{(820,600)(1340,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorProRectificationChList" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectorProRectificationSwitch" style="oblique">
+   <position>{(1270,120)(620,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspectorProRecCheckListPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectorProRectificationChList" style="rectanular">
+   <position>{(620,250)(620,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorProRecCheckListStep" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspectorProRecCheckListPage" style="rectanular">
+   <position>{(620,420)(620,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectorProRecCheckListStep" style="oblique">
+   <position>{(620,600)(688,668)(1343,668)(1340,600)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -159,11 +194,15 @@
    <SwitchCase component="/Steps/AutomaticStep/InspectorProRectificationAccCond" value="&quot;acccond&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspectorProRectificationPre" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspectorProRectificationView" value="&quot;view&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectorProRectificationChList" value="&quot;list&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
  <Merges>
   <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1320" y="400">
+   <Description/>
+  </Merge>
+  <Merge defClass="" executor="" icon="" name="Merge2" type="Or" x="1320" y="580">
    <Description/>
   </Merge>
  </Merges>
