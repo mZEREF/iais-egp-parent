@@ -157,7 +157,7 @@
 
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn Type:</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Type:</p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-4">${cgo.professionType  }</span>
