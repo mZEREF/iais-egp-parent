@@ -57,12 +57,12 @@ public class InsReportAoDelegator {
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
+        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("Inspection Report", "Assign Report");
     }
 
     public void AoInit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the inspectionReportInit start ...."));
-        AccessUtil.initLoginUserInfo(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", null);
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, null);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
