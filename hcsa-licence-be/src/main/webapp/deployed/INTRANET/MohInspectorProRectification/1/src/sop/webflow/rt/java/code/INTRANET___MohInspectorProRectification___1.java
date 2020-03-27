@@ -11,6 +11,7 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohInspectorProRectification___1 extends BaseProcessClass {
@@ -61,6 +62,16 @@ public class INTRANET___MohInspectorProRectification___1 extends BaseProcessClas
 	public void inspectorProRectificationStep_OnStepProcess_0() throws Exception {
 	// 		InspectorProRectificationStep->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "InspectorProRectificationStep", this);
+	}
+
+	public void inspectorProRectificationChList_OnStepProcess_0() throws Exception {
+	// 		InspectorProRectificationChList->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "InspectorProRectificationChList", this);
+	}
+
+	public void inspectorProRecCheckListStep_OnStepProcess_0() throws Exception {
+	// 		InspectorProRecCheckListStep->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "InspectorProRecCheckListStep", this);
 	}
 
 }
