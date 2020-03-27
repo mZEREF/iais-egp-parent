@@ -411,7 +411,8 @@ public class InspectionServiceImpl implements InspectionService {
                         if(inspectorCheckList != null && inspectorCheckList.size() > 0){
                             for(int i = 0; i < inspectorCheckList.size(); i++){
                                 if(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())){
-                                    ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
+                                    //todo:set authentic Application status
+                                    ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
                                     applicationService.updateFEApplicaiton(applicationDto1);
                                     inspectionTaskPoolListDto.setApplicationStatus(applicationDto1.getStatus());
                                     createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), null, td.getWkGrpId());
