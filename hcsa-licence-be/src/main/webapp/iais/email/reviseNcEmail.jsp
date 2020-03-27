@@ -52,7 +52,7 @@
                                         </td>
                                         <td>
                                             <div class="col-sm-9">
-                                                <p><textarea name="messageContent" cols="108" rows="50"  id="htmlEditroArea" title="content"  >${insEmailDto.messageContent}</textarea></p>
+                                                <textarea name="messageContent" cols="108" rows="50"  id="htmlEditroArea" title="content"  >${insEmailDto.messageContent}</textarea>
                                             </div>
                                         </td>
                                     </tr>

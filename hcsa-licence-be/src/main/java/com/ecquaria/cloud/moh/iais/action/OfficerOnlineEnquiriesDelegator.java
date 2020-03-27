@@ -779,12 +779,8 @@ public class OfficerOnlineEnquiriesDelegator {
         }
         List<String> licIds=onlineEnquiriesService.getLicIdsByappIds(applIds);
         List<String> licenceIds=cessationClient.getlicIdToCessation(licIds).getEntity();
-        if(licenceIds.size()==0){
-            request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE,"back");
-        }
-        ParamUtil.setSessionAttr(request,"licIds", (Serializable) licenceIds);
-
-
+        licIds.removeIf(licId -> !licenceIds.contains(licId));
+        ParamUtil.setSessionAttr(request,"licIds", (Serializable) licIds);
         // 		doSearchLicenceAfter->OnStepProcess
     }
 
@@ -829,7 +825,9 @@ public class OfficerOnlineEnquiriesDelegator {
             log.info(e.getMessage());
         }
         List<String> licIds=onlineEnquiriesService.getLicIdsByappIds(applIds);
-        return cessationClient.getlicIdToCessation(licIds).getEntity();
+        List<String> licenceIds=cessationClient.getlicIdToCessation(licIds).getEntity();
+        licIds.removeIf(licId -> !licenceIds.contains(licId));
+        return licIds;
     }
 
 
