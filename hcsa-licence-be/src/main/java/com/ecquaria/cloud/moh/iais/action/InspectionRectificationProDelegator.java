@@ -162,7 +162,7 @@ public class InspectionRectificationProDelegator {
                         if (checklistItemDtos != null && !(checklistItemDtos.isEmpty())) {
                             iDto = setNcDataByItemId(iDto, itemId, checklistItemDtos);
                         }
-                        if (appPremisesPreInspectionNcItemDto != null) {
+                        if (!StringUtil.isEmpty(appPremisesPreInspectionNcItemDto.getRemarks())) {
                             iDto.setUploadRemarks(appPremisesPreInspectionNcItemDto.getRemarks());
                         } else {
                             iDto.setUploadRemarks(HcsaConsts.HCSA_PREMISES_HCI_NULL);
