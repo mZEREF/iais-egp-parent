@@ -271,7 +271,28 @@
     }
     function doCessation() {
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "cessation");
+        var chk=$("[name='appIds']:checked");
+        var dropIds = new Array();
+        chk.each(function(){
+            dropIds.push($(this).val());
+        });
+
+        var flog=false;
+        for(var i=0;i<dropIds.length;i++){
+
+            var str=dropIds[i].split('|')[1];
+
+            if(str=='1'){
+                flog=true;
+            }
+        }
+        if(flog){
+            SOP.Crud.cfxSubmit("mainForm", "cessation");
+        }
+        else {
+            $("#selectDecisionMsg").show();
+            dismissWaiting();
+        }
 
     }
 </script>
