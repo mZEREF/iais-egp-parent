@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -158,6 +159,7 @@ public class KpiAndReminderDelegator {
                 map.put("remThr",format);
             }else {
                 String format = new SimpleDateFormat("dd/MM/yyyy hh:mm:ssa", Locale.ENGLISH).format(createDate);
+                Formatter.formatDateTime(createDate, "dd/MM/yyyy hh:mm:ssa");
                 map.put("remThr",format);
             }
 

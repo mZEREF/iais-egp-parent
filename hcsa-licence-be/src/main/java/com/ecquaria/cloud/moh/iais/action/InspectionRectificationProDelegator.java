@@ -28,20 +28,21 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import freemarker.template.TemplateException;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -296,5 +297,45 @@ public class InspectionRectificationProDelegator {
         inspectionRectificationProService.routingTaskToReport(taskDto, inspectionPreTaskDto, applicationViewDto, loginContext);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+    }
+
+    /**
+     * StartStep: InspectorProRectificationView
+     *
+     * @param bpc
+     * @throws
+     */
+    public void InspectorProRectificationView(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the InspectorProRectificationView start ...."));
+    }
+
+    /**
+     * StartStep: InspectorProRectificationStep
+     *
+     * @param bpc
+     * @throws
+     */
+    public void InspectorProRectificationStep(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the InspectorProRectificationStep start ...."));
+    }
+
+    /**
+     * StartStep: InspectorProRectificationChList
+     *
+     * @param bpc
+     * @throws
+     */
+    public void InspectorProRectificationChList(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the InspectorProRectificationChList start ...."));
+    }
+
+    /**
+     * StartStep: InspectorProRecCheckListStep
+     *
+     * @param bpc
+     * @throws
+     */
+    public void InspectorProRecCheckListStep(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the InspectorProRecCheckListStep start ...."));
     }
 }

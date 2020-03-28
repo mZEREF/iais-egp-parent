@@ -21,13 +21,13 @@
                     <div class="tab-gp dashboard-tab">
                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                             <li id="info" class="${infoClassTop}" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
-                                                                                         data-toggle="tab">Info</a></li>
+                                                                      data-toggle="tab">Info</a></li>
                             <li class="complete" role="presentation"><a href="#tabDocuments"
                                                                         aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
                             <li id="report" class="${reportClassTop}" role="presentation"><a id="reportClink" href="#tabInspectionReport"
-                                                                                             aria-controls="tabProcessing" role="tab"
-                                                                                             data-toggle="tab">Inspection Report</a></li>
+                                                                        aria-controls="tabProcessing" role="tab"
+                                                                        data-toggle="tab">Inspection Report</a></li>
                             <li class="complete" role="presentation"><a href="#tabProcessing"
                                                                         aria-controls="tabProcessing" role="tab"
                                                                         data-toggle="tab">Processing</a></li>

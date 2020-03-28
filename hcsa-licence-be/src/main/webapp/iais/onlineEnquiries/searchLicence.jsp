@@ -23,22 +23,25 @@
                     </h3>
                     <c:if test="${choose[2]==3||choose[1]==2}">
                         <h4>
-                            <span>
+                            <span >
                                 Search By Application
-                                <c:choose >
-                                    <c:when test="${choose[2]==3||choose[1]==2}">
-                                    <label>
-                                        <input type="checkbox" checked name="applicationChk" />
-                                    </label>
-                                    </c:when>
-                                    <c:otherwise>
-                                    <label>
-                                        <input type="checkbox" name="applicationChk" />
-                                    </label>
-                                    </c:otherwise>
-                                </c:choose>
+                                <b class="form-check">&nbsp;
+                                    <c:choose>
+                                        <c:when test="${choose[2]==3||choose[1]==2}">
+                                        <input class="form-check-input licenceCheck" id="applicationChk" type="checkbox"
+                                               checked      name="applicationChk"  >
+                                            <label class="form-check-label" for="applicationChk">
+                                            <span class="check-square"></span>
+                                        </label>
+                                        </c:when>
+                                        <c:otherwise><input class="form-check-input licenceCheck" id="applicationChk" type="checkbox" name="applicationChk"  >
+                                            <label class="form-check-label" for="applicationChk">
+                                            <span class="check-square"></span>
+                                        </label>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </b>
                             </span>
-
                         </h4>
                         
                             <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
@@ -100,7 +103,7 @@
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
-                                                <iais:field value="Service Type:"/>
+                                                <iais:field value="Service Type"/>
                                                 <iais:value width="18">
                                                     <div id="service_licence_type">
                                                         <iais:select name="service_licence_type" options="licSvcTypeOption" firstOption="Please Select" value="${SearchParam.filters['serviceName']}" ></iais:select>
@@ -108,7 +111,7 @@
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
-                                                <iais:field value="Service Sub-Type:"/>
+                                                <iais:field value="Service Sub-Type"/>
                                                 <iais:value width="18">
                                                     <div id="service_sub_type">
                                                         <iais:select name="service_sub_type" options="licSvcSubTypeOption" firstOption="Please Select" value="${SearchParam.filters['serviceSubTypeName']}" ></iais:select>
@@ -116,7 +119,7 @@
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
-                                                <iais:field value="Licence Status:"/>
+                                                <iais:field value="Licence Status"/>
                                                 <iais:value width="18">
                                                     <div id="licence_status">
                                                         <iais:select name="licence_status" options="licStatusOption" firstOption="Please Select" value="${SearchParam.filters['licence_status']}" ></iais:select>
@@ -162,19 +165,24 @@
                     </c:if>
                     <c:if test="${choose[0]==1}">
                         <h4>
-                        <span>Search By HCI
-                            <c:choose >
-                                <c:when test="${choose[0]==1}">
-                                    <label>
-                                        <input type="checkbox" checked name="hciChk" />
+                        <span >Search By HCI
+                            <b class="form-check">&nbsp;
+                                <c:choose>
+                                    <c:when test="${choose[0]==1}">
+                                    <input class="form-check-input licenceCheck" id="hciChk" type="checkbox"
+                                           name="hciChk" checked >
+                                        <label class="form-check-label" for="hciChk">
+                                        <span class="check-square"></span>
                                     </label>
-                                </c:when>
-                                <c:otherwise>
-                                    <label>
-                                        <input type="checkbox" name="hciChk" />
+                                    </c:when>
+                                    <c:otherwise>
+                                        <input class="form-check-input licenceCheck" id="hciChk" type="checkbox" name="hciChk"  >
+                                        <label class="form-check-label" for="hciChk">
+                                        <span class="check-square"></span>
                                     </label>
-                                </c:otherwise>
-                            </c:choose>
+                                    </c:otherwise>
+                                </c:choose>
+                            </b>
                         </span>
                         </h4>
                         
@@ -183,7 +191,7 @@
                                     <div class="panel-main-content">
                                         <iais:section title="" id = "supPoolList">
                                             <iais:row>
-                                                <iais:field value="HCI Code:"/>
+                                                <iais:field value="HCI Code"/>
                                                 <iais:value width="18">
                                                     <label>
                                                         <input type="text" maxlength="7" style="width:180%; font-weight:normal;" name="hci_code" value="${SearchParam.filters['hciCode']}" />
@@ -191,7 +199,7 @@
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
-                                                <iais:field value="HCI Name:"/>
+                                                <iais:field value="HCI Name"/>
                                                 <iais:value width="18">
                                                     <label>
                                                         <input type="text" maxlength="100" style="width:180%; font-weight:normal;" name="hci_name" value="${SearchParam.filters['hciName']}" />
@@ -199,7 +207,7 @@
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
-                                                <iais:field value="HCI Street Name:"/>
+                                                <iais:field value="HCI Street Name"/>
                                                 <iais:value width="18">
                                                     <label>
                                                         <input type="text" maxlength="32" style="width:180%; font-weight:normal;" name="hci_street_name" value="${SearchParam.filters['hciStreetName']}" />
@@ -207,7 +215,7 @@
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
-                                                <iais:field value="HCI Postal Code:"/>
+                                                <iais:field value="HCI Postal Code"/>
                                                 <iais:value width="18">
                                                     <label>
                                                         <input type="text" maxlength="6" style="width:180%; font-weight:normal;" name="hci_postal_code" value="${SearchParam.filters['hciPostalCode']}" />
@@ -223,19 +231,23 @@
                     </c:if>
                     <c:if test="${choose[3]==4}">
                         <h4>
-                        <span>Search By Licensee
-                            <c:choose >
-                                <c:when test="${choose[3]==4}">
-                                    <label>
-                                        <input type="checkbox" checked name="licenseeChk" />
-                                    </label>
-                                </c:when>
-                                <c:otherwise>
-                                    <label>
-                                        <input type="checkbox" name="licenseeChk" />
-                                    </label>
-                                </c:otherwise>
-                            </c:choose>
+                        <span >Search By Licensee
+                            <b class="form-check">&nbsp;
+                                <c:choose>
+                                    <c:when test="${choose[3]==4}">
+                                        <input class="form-check-input licenceCheck" id="licenseeChk" type="checkbox" checked  name="licenseeChk"  >
+                                        <label class="form-check-label" for="licenseeChk">
+                                            <span
+                                                    class="check-square"></span>
+                                        </label></c:when>
+                                    <c:otherwise>
+                                        <input class="form-check-input licenceCheck" id="licenseeChk" type="checkbox" name="licenseeChk"  >
+                                        <label class="form-check-label" for="licenseeChk">
+                                            <span class="check-square"></span>
+                                        </label>
+                                    </c:otherwise>
+                                </c:choose>
+                            </b>
                         </span>
                         </h4>
                         
@@ -244,7 +256,7 @@
                                     <div class="panel-main-content">
                                         <iais:section title="" id = "supPoolList">
                                             <iais:row>
-                                                <iais:field value="Licensee ID:"/>
+                                                <iais:field value="Licensee ID"/>
                                                 <iais:value width="18">
                                                     <label>
                                                         <input type="text" maxlength="10" style="width:180%; font-weight:normal;" name="licensee_id" value="${SearchParam.filters['licenseeId']}" />
@@ -252,7 +264,7 @@
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
-                                                <iais:field value="Licensee Name:"/>
+                                                <iais:field value="Licensee Name"/>
                                                 <iais:value width="18">
                                                     <label>
                                                         <input type="text" maxlength="50" style="width:180%; font-weight:normal;" name="licensee_name" value="${SearchParam.filters['licenseeName']}" />
@@ -276,19 +288,22 @@
                     <c:if test="${choose[4]==5}">
                         <h4>
                         <span>Search By Service Personnel Details (CGO, PO, DPO & MedAlert)
-                            <c:choose >
-                                <c:when test="${choose[4]==5}">
-                                    <label>
-                                        <input type="checkbox" checked name="servicePersonnelChk" />
+                            <b class="form-check">&nbsp;
+                                <c:choose>
+                                    <c:when test="${choose[4]==5}">
+                                        <input class="form-check-input licenceCheck" id="servicePersonnelChk" type="checkbox" checked  name="servicePersonnelChk"  >
+                                        <label class="form-check-label" for="servicePersonnelChk">
+                                        <span class="check-square"></span>
                                     </label>
-                                </c:when>
-                                <c:otherwise>
-                                    <label>
-                                        <input type="checkbox" name="servicePersonnelChk" />
+                                    </c:when>
+                                    <c:otherwise>
+                                        <input class="form-check-input licenceCheck" id="servicePersonnelChk" type="checkbox" name="servicePersonnelChk"  >
+                                        <label class="form-check-label" for="servicePersonnelChk">
+                                        <span class="check-square"></span>
                                     </label>
-                                </c:otherwise>
-                            </c:choose>
-
+                                    </c:otherwise>
+                                </c:choose>
+                            </b>
                         </span>
                         </h4>
                         
@@ -297,7 +312,7 @@
                                     <div class="panel-main-content">
                                         <iais:section title="" id = "supPoolList">
                                             <iais:row>
-                                                <iais:field value="Service Personnal ID:"/>
+                                                <iais:field value="Service Personnal ID"/>
                                                 <iais:value width="18">
                                                     <label>
                                                         <input type="text" maxlength="10" style="width:180%; font-weight:normal;" name="personnelId" value="${SearchParam.filters['personnelId']}" />
@@ -305,7 +320,7 @@
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
-                                                <iais:field value="Service Personnel Name:"/>
+                                                <iais:field value="Service Personnel Name"/>
                                                 <iais:value width="18">
                                                     <label>
                                                         <input type="text" maxlength="50" style="width:180%; font-weight:normal;" name="personnelName" value="${SearchParam.filters['personnelName']}" />
@@ -321,7 +336,7 @@
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
-                                                <iais:field value="Service Professional Role:"/>
+                                                <iais:field value="Service Professional Role"/>
                                                 <iais:value width="18">
                                                     <div id="personnelRoleOption">
                                                         <iais:select name="personnelRole" options="servicePersonnelRoleOption" firstOption="Please Select" value="${SearchParam.filters['personnelRole']}" ></iais:select>

@@ -2074,7 +2074,6 @@ public class NewApplicationDelegator {
                 } else {
                     stringList.add(stringBuilder.toString());
                 }
-            }
 
             if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)) {
                 StringBuilder stringBuilder = new StringBuilder();
@@ -2400,7 +2399,7 @@ public class NewApplicationDelegator {
                         if(StringUtil.isEmpty(onsiteStartHH)||StringUtil.isEmpty(onsiteStartMM)){
                             errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR001");
                         }else {
-                            startDate = validateTime(errorMap, onsiteStartHH, onsiteStartMM, startDate, "onsiteStartMM", i, "UC_CHKLMD001_ERR003");
+                            startDate = validateTime(errorMap, onsiteStartHH, onsiteStartMM, startDate, "onsiteStartMM", i, "CHKLMD001_ERR003");
                         }
 
                         String onsiteEndHH = appGrpPremisesDtoList.get(i).getOnsiteEndHH();
@@ -2408,10 +2407,10 @@ public class NewApplicationDelegator {
                         if(StringUtil.isEmpty(onsiteEndHH)||StringUtil.isEmpty(onsiteEndMM)){
                             errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR001");
                         }else {
-                             endDate = validateTime(errorMap, onsiteEndHH, onsiteEndMM, endDate, "onsiteEndMM", i, "UC_CHKLMD001_ERR003");
+                             endDate = validateTime(errorMap, onsiteEndHH, onsiteEndMM, endDate, "onsiteEndMM", i, "CHKLMD001_ERR003");
                         }
                         if(endDate<startDate){
-                            errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR003");
+                            errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR008");
                         }
                         /*Boolean isOtherLic = appGrpPremisesDtoList.get(i).isLocateWithOthers();
                         if(StringUtil.isEmpty(isOtherLic)){
@@ -2474,7 +2473,7 @@ public class NewApplicationDelegator {
                                         int i3 = Integer.parseInt(onsiteEndToHH);
                                         int i4 = Integer.parseInt(onsiteEndToMM);
                                         if((i1*60+i2)>(i3*60+i4)){
-                                            errorMap.put("onsiteEndToMM"+i,"UC_CHKLMD001_ERR003");
+                                            errorMap.put("onsiteEndToMM"+i,"UC_CHKLMD001_ERR008");
                                         }
                                     }catch (Exception e){
 
@@ -2605,17 +2604,17 @@ public class NewApplicationDelegator {
                         if(StringUtil.isEmpty(conStartHH)||StringUtil.isEmpty(conStartMM)){
                             errorMap.put("conStartMM"+i,"UC_CHKLMD001_ERR001");
                         }else {
-                            validateTime(errorMap,conStartHH,conStartMM,conStartDate,"conStartMM",i,"UC_CHKLMD001_ERR003");
+                            conStartDate = validateTime(errorMap, conStartHH, conStartMM, conStartDate, "conStartMM", i, "CHKLMD001_ERR003");
                         }
                         String conEndHH = appGrpPremisesDtoList.get(i).getConEndHH();
                         String conEndMM = appGrpPremisesDtoList.get(i).getConEndMM();
                         if(StringUtil.isEmpty(conEndHH)||StringUtil.isEmpty(conEndMM)){
                             errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR001");
                         }else {
-                            validateTime(errorMap,conEndHH,conEndMM,conStartDate,"conEndMM",i,"UC_CHKLMD001_ERR003");
+                            conEndDate = validateTime(errorMap, conEndHH, conEndMM, conEndDate, "conEndMM", i, "CHKLMD001_ERR003");
                         }
                         if(conEndDate<conStartDate){
-                            errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR003");
+                            errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR008");
                         }
 
                         //set  time
@@ -2666,7 +2665,7 @@ public class NewApplicationDelegator {
                                             int i3 = Integer.parseInt(convEndToHH);
                                             int i4 = Integer.parseInt(convEndToMM);
                                             if((i1*60+i2)>(i3*60+i4)){
-                                                errorMap.put("convEndToHH"+i,"CHKLMD001_ERR003");
+                                                errorMap.put("convEndToHH"+i,"UC_CHKLMD001_ERR008");
                                             }
                                         }catch (Exception e){
 

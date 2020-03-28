@@ -24,7 +24,7 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeKey = request.getParameter("codeKey")==null?"":request.getParameter("codeKey");%>
-                                    <input id="codeKey" type="text" name="codeKey" value="<%=codeKey%>">
+                                    <input id="codeKey" type="text" name="codeKey" value="<%=codeKey%>" maxlength="50">
                                     <span id="error_masterCodeKey" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -34,7 +34,7 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeValue = request.getParameter("codeValue")==null?"":request.getParameter("codeValue");%>
-                                    <input id="codeValue" type="text" name="codeValue" value="<%=codeValue%>">
+                                    <input id="codeValue" type="text" name="codeValue" value="<%=codeValue%>" maxlength="25">
                                     <span id="error_codeValue" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
