@@ -102,10 +102,6 @@
                         <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doSelfAssessment">Submit <br>Self-Assessment</a>
                 </c:if>
                 <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doPrefInsDate">Indicate preferred<br>Inspection Date</a>
-                <%--<div class="col-xs-12 col-md-10 text-right">--%>
-
-                    <%--<a class="btn btn-secondary" id="doPrefInsDate">Indicate preferred Inspection Date</a>--%>
-                <%--</div>--%>
             </div>
                 </div>
         </div>
