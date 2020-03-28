@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -45,6 +46,7 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
+import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import com.esotericsoftware.minlog.Log;
 import freemarker.template.TemplateException;
@@ -53,6 +55,7 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -161,7 +164,7 @@ public class InspectEmailAo1Delegator {
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, StringUtil.isEmpty(ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_TYPE)) ? EMAIL_VIEW : ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_TYPE));
     }
 
-    public CheckListVadlidateDto getValueFromPage(HttpServletRequest request) {
+    public CheckListVadlidateDto getValueFromPage(HttpServletRequest request) throws IOException{
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest)request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CheckListVadlidateDto dto = new CheckListVadlidateDto();
         getDataFromPage(request);
@@ -572,7 +575,7 @@ public class InspectEmailAo1Delegator {
         temp.setRemark(remark);
     }
 
-    private InspectionFDtosDto getOtherInfo(MultipartHttpServletRequest request) {
+    private InspectionFDtosDto getOtherInfo(MultipartHttpServletRequest request) throws IOException{
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SER_LIST_DTO);
         String tcuflag = ParamUtil.getString(request,"tcuType");
         String tcu = null;
@@ -607,11 +610,40 @@ public class InspectEmailAo1Delegator {
             serListDto.setTcuFlag(false);
         }
         serListDto.setBestPractice(bestpractice);
+
+        // set litter file
+        String litterFile =  ParamUtil.getString(request,"litterFile" );
+        if(!StringUtil.isEmpty(litterFile)){
+            String litterFileId =  ParamUtil.getString(request,"litterFileId" );
+            MultipartFile file= (MultipartFile) request.getFile("selectedFile");
+            if(StringUtil.isEmpty(litterFileId) && file != null && file.getSize() != 0){
+                if (!StringUtil.isEmpty(file.getOriginalFilename())) {
+                    TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, TASK_DTO);
+                    String correlationId = taskDto.getRefNo();
+                    AppPremisesSpecialDocDto appIntranetDocDto = new AppPremisesSpecialDocDto();
+                    appIntranetDocDto.setDocName(litterFile);
+                    appIntranetDocDto.setAppPremCorreId(correlationId);
+                    appIntranetDocDto.setMd5Code(FileUtil.genMd5FileChecksum(file.getBytes()));
+                    long size = file.getSize()/1024;
+                    if(size <= Integer.MAX_VALUE ){
+                        appIntranetDocDto.setDocSize((int)size);
+                    }else {
+                        appIntranetDocDto.setDocSize(0);
+                    }
+                    serListDto.setFile(file);
+                    serListDto.setAppPremisesSpecialDocDto(appIntranetDocDto);
+                }
+            }
+        }else {
+            serListDto.setAppPremisesSpecialDocDto(null);
+            serListDto.setFile(null);
+        }
+
         ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
         return serListDto;
     }
 
-    public void preViewCheckList(BaseProcessClass bpc){
+    public void preViewCheckList(BaseProcessClass bpc) throws IOException{
         Log.info("=======>>>>>preViewCheckList>>>>>>>>>>>>>>>>preViewCheckList");
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);

@@ -71,9 +71,14 @@
     <div class="input-group">
         <div class="ax_default text_area">
             <h4><strong>Letter Written to Licensee</strong></h4>
-            <span id="licFileName"></span>
             <div class="file-upload-gp">
-                <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                <span id="licFileName"> &nbsp; &nbsp; &nbsp; &nbsp;${serListDto.appPremisesSpecialDocDto.docName}</span>
+                <span id="licFileNameDe" <c:if test="${empty serListDto.appPremisesSpecialDocDto}">hidden</c:if> >
+                                &nbsp;&nbsp;<button type="button" onclick="javascript:doDeleteFile()">Delete</button>
+                </span>
+                <input id="litterFile" name="litterFile" type="hidden" value="<c:out value="${serListDto.appPremisesSpecialDocDto.docName}"></c:out>" />
+                <input id="litterFileId" name="litterFileId" type="hidden" value="<c:out value="${serListDto.appPremisesSpecialDocDto.id}"></c:out>"/>
             </div>
         </div>
     </div>
@@ -110,5 +115,28 @@
         }else{
             $("#tcuLabel").hide();
         }
+    }
+
+    function getFileName(o) {
+        var pos = o.lastIndexOf("\\");
+        return o.substring(pos + 1);
+    }
+
+    $('#selectedFile').change(function () {
+        var file = $(this).val();
+        var  fileName = getFileName(file);
+        if( fileName != null && fileName.trim() != ""){
+            $("#licFileNameDe").attr("hidden",false);
+            $("#licFileName").html( fileName);
+            $('#litterFile').val(fileName);
+            $('#litterFileId').val("");
+        }
+    });
+
+    function doDeleteFile() {
+        $("#licFileNameDe").attr("hidden",true);
+        $("#licFileName").html("");
+        $('#litterFile').val("");
+        $('#litterFileId').val("");
     }
 </script>
