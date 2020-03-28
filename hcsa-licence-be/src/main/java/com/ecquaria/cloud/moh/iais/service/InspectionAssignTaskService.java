@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
@@ -145,4 +146,13 @@ public interface InspectionAssignTaskService {
       * @Descripation: get Group Role Field
       */
     GroupRoleFieldDto getGroupRoleField(LoginContext loginContext);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/3/28
+      * @Param: workGroupId, inspecTaskCreAndAssDto, orgUserDtos
+      * @return: 
+      * @Descripation: 
+      */
+    void setInspectorLeadName(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos, String workGroupId);
 }

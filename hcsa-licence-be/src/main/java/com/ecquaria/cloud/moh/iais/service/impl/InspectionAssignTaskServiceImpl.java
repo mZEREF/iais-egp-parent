@@ -138,9 +138,8 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         return inspecTaskCreAndAssDto;
     }
 
-
-
-    private void setInspectorLeadName(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos, String workGroupId) {
+    @Override
+    public void setInspectorLeadName(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos, String workGroupId) {
         if(StringUtil.isEmpty(workGroupId)){
             return;
         }
