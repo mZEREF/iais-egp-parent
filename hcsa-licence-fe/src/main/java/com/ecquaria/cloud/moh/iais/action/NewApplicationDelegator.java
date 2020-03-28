@@ -34,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -56,6 +57,7 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -136,7 +138,8 @@ public class NewApplicationDelegator {
 
     @Autowired
     private WithOutRenewalService withOutRenewalService;
-
+    @Autowired
+    private SystemAdminClient systemAdminClient;
 
     /**
      * StartStep: Start
@@ -482,6 +485,8 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             String crud_action_value = ParamUtil.getString(bpc.request, "crud_action_value");
             if(!"saveDraft".equals(crud_action_value)){
+                MasterCodeDto masterCodeDto = systemAdminClient.getMasterCodeById("B5E4744C-F96F-EA11-BE79-000C298A32C2").getEntity();
+                bpc.request.setAttribute("masterCodeDto",masterCodeDto);
                 Map<String, String> errorMap= doValidatePremiss(bpc);
                 if(errorMap.size()>0){
                     ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
@@ -682,15 +687,28 @@ public class NewApplicationDelegator {
 
     private void doIsCommom(HttpServletRequest request, Map<String, String> errorMap) {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList  = appSubmissionDto.getAppGrpPrimaryDocDtos();
         CommonsMultipartFile file ;
         List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>)   request.getSession().getAttribute(COMMONHCSASVCDOCCONFIGDTO);
         for(HcsaSvcDocConfigDto comm : commonHcsaSvcDocConfigList){
             String name = "common"+comm.getId();
             file = (CommonsMultipartFile) mulReq.getFile(name);
             Boolean isMandatory = comm.getIsMandatory();
-            if(isMandatory&&file.getSize()==0){
+            if(isMandatory&&file.getSize()==0&&appGrpPrimaryDocDtoList.isEmpty()){
                 errorMap.put(name, "UC_CHKLMD001_ERR001");
+            }else {
+                Boolean flag=false;
+                for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
+                    String svcComDocId = appGrpPrimaryDocDto.getSvcComDocId();
+                    if(comm.getId().equals(svcComDocId)){
+                        flag=true;
+                        break;
+                    }
+                }
+                if(!flag){
+                    errorMap.put(name, "UC_CHKLMD001_ERR001");
+                }
             }
 
         }
@@ -2207,6 +2225,38 @@ public class NewApplicationDelegator {
         }
 
     }
+    private void loadingCoMap( AppSubmissionDto appSubmissionDto,HttpServletRequest request){
+        if(appSubmissionDto!=null){
+            List<String> stepColor = appSubmissionDto.getStepColor();
+            if(stepColor!=null){
+                Map<String,String> coMap=new HashMap<>(4);
+                coMap.put("premises","");
+                coMap.put("document","");
+                coMap.put("information","");
+                coMap.put("previewli","");
+                if(!stepColor.isEmpty()){
+                    for(String str : stepColor){
+                        if("premises".equals(str)){
+                            coMap.put("premises",str);
+                        }else if("document".equals(str)){
+                            coMap.put("document",str);
+                        }else if("information".equals(str)){
+                            coMap.put("information",str);
+                        }else if("previewli".equals(str)){
+                            coMap.put("previewli",str);
+                        }
+
+                    }
+
+                }
+
+                request.getSession().setAttribute("coMap",coMap);
+
+            }
+
+        }
+    }
+
     private void loadingDraft(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do loadingDraft start ...."));
         String draftNo = (String) ParamUtil.getString(bpc.request, "DraftNumber");
@@ -2604,6 +2654,24 @@ public class NewApplicationDelegator {
                         String hciName = appGrpPremisesDtoList.get(i).getHciName();
                         if(StringUtil.isEmpty(hciName)){
                             errorMap.put("hciName"+i,"UC_CHKLMD001_ERR001");
+                        } {
+                            Object masterCodeDto = bpc.request.getAttribute("masterCodeDto");
+                            if(masterCodeDto!=null){
+                                MasterCodeDto masterCode=(MasterCodeDto)masterCodeDto;
+                                String codeValue = masterCode.getCodeValue();
+                                String[] s = codeValue.split(" ");
+                                String[] s1 = hciName.split(" ");
+                                for(int index=0;index<s.length;index++){
+                                    for(int ind=0;ind<s1.length;ind++){
+                                        if(s[i].equalsIgnoreCase(s1[ind])){
+                                            errorMap.put("hciName"+i,"CHKLMD001_ERR002");
+                                        }
+                                    }
+
+                                }
+
+
+                            }
                         }
                         String offTelNo = appGrpPremisesDtoList.get(i).getOffTelNo();
                         if(StringUtil.isEmpty(offTelNo)){

@@ -9,7 +9,7 @@
                         <c:forEach var="svcDoc" items="${currentPreviewSvcInfo.appSvcDocDtoLit}" varStatus="status">
                             <tr>
                                 <td>
-                                    <div class="field col-sm-4 control-label formtext"><label>Docment1 for Premise1:</label></div>
+                                    <div class="field col-sm-4 control-label formtext"><label>${svcDoc.upFileName}:</label></div>
                                 </td>
                             </tr>
                             <tr>
