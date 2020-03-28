@@ -262,7 +262,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     organizationClient.assignCommonPool(inspecTaskCreAndAssDto);
                     AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(td.getRefNo(), td.getTaskKey()).getEntity();
                     createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), internalRemarks,
-                                                    InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
+                            InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
                     if(inspectorCheckList != null && inspectorCheckList.size() > 0){
                         for(int i = 0; i < inspectorCheckList.size(); i++){
                             if(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())){
@@ -357,12 +357,12 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     /**
-      * @author: shicheng
-      * @Date 2019/11/22
-      * @Param: serviceId
-      * @return: HcsaServiceDto
-      * @Descripation: get HcsaServiceDto By Service Id
-      */
+     * @author: shicheng
+     * @Date 2019/11/22
+     * @Param: serviceId
+     * @return: HcsaServiceDto
+     * @Descripation: get HcsaServiceDto By Service Id
+     */
     public HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId){
         return hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
     }
@@ -523,12 +523,12 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     /**
-      * @author: shicheng
-      * @Date 2019/11/23
-      * @Param: appGroupId
-      * @return: ApplicationGroupDto
-      * @Descripation: get ApplicationGroup By Application Group Id
-      */
+     * @author: shicheng
+     * @Date 2019/11/23
+     * @Param: appGroupId
+     * @return: ApplicationGroupDto
+     * @Descripation: get ApplicationGroup By Application Group Id
+     */
     public ApplicationGroupDto getApplicationGroupDtoByAppGroId(String appGroupId){
         return inspectionTaskClient.getApplicationGroupDtoByAppGroId(appGroupId).getEntity();
     }
