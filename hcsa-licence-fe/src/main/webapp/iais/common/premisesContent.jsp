@@ -270,7 +270,7 @@
                                         </div>
                                         <div class="col-xs-12 col-md-4"></div>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
-                                            <span class="error-msg" name="iaisErrorMsg" id="error_onsiteStartToMM${status.index}"></span>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_onsiteStartToMM${phStat.index}"></span>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -284,7 +284,7 @@
                                         </div>
                                         <div class="col-xs-12 col-md-4"></div>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
-                                            <span class="error-msg" name="iaisErrorMsg" id="error_onsiteEndToMM${status.index}"></span>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_onsiteEndToMM${phStat.index}"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -463,7 +463,7 @@
                                         </div>
                                         <div  class="col-xs-12 col-md-4 "></div>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
-                                            <span class="error-msg" name="iaisErrorMsg" id="error_convStartToHH${status.index}"></span>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_convStartToHH${phStat.index}"></span>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -479,7 +479,7 @@
 
                                         <div  class="col-xs-12 col-md-4 "></div>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
-                                            <span class="error-msg" name="iaisErrorMsg" id="error_convEndToHH${status.index}"></span>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_convEndToHH${phStat.index}"></span>
                                         </div>
 
                                     </div>
