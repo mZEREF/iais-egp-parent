@@ -732,6 +732,7 @@ public class InsRepServiceImpl implements InsRepService {
         Set<String> inspectiors = taskService.getInspectiors(refNo, TaskConsts.TASK_STATUS_COMPLETED, RoleConsts.USER_ROLE_AO1);
         if(!inspectiors.isEmpty()){
             userId = inspectiors.iterator().next();
+            taskDto.setUserId(userId);
         }
 
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
@@ -744,9 +745,7 @@ public class InsRepServiceImpl implements InsRepService {
             TaskDto taskDto1 = taskService.getUserIdForWorkGroup(groupId);
             taskDto.setUserId(taskDto1.getUserId());
         }
-
         taskDto.setId(null);
-        taskDto.setUserId(userId);
         taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
         taskDto.setWkGrpId(groupId);
         taskDto.setDateAssigned(new Date());

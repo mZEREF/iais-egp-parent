@@ -68,7 +68,7 @@ public class InsReportAoDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String taskId = ParamUtil.getString(bpc.request,"taskId");
         if(StringUtil.isEmpty(taskId)){
-            taskId = "992189EA-9570-EA11-BE82-000C29F371DC";
+            taskId = "F565FD1B-DB70-EA11-BE82-000C29F371DC";
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
