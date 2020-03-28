@@ -1,7 +1,3 @@
-
-
-
-
 <div class="row">
 </div>
 <div class="row">
@@ -198,6 +194,7 @@
                   <div class="col-sm-4">
                     <span id="addPoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Principal Officer</span>
                   </div>
+                  <div  class="col-sm-5 col-md-5"><span class="poErrorMsg" style="color: red;"></span></div>
                 </div>
               </c:if>
               <br/>
@@ -400,8 +397,11 @@
               </c:forEach>
             </c:if>
             <div class="row <c:if test="${'APTY005' ==AppSubmissionDto.appType  &&'1' == canEditDpo}">disabled</c:if>">
-              <div class="col-sm-6">
+              <div class="col-sm-5">
                 <span id="addDpoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Deputy Principal Officer</span>
+              </div>
+              <div  class="col-sm-5 col-md-5">
+                <span class="dpoErrorMsg" style="color: red;margin-left: -75px;"></span>
               </div>
             </div>
             <br/>
@@ -486,20 +486,26 @@
 
     var addPo = function(){
         $('#addPoBtn').click(function () {
+            var hasNumber = $('div.po-content').size() - 1;
+            console.log("hasNumber" + hasNumber);
             $.ajax({
-                'url':'${pageContext.request.contextPath}/principal-officer-html',
-                'dataType':'text',
-                'type':'GET',
-                'success':function (data) {
-                    console.log("suc");
-                    $('.po-content:last').after(data);
-
-                    poSelect();
-
-                    retrieveData();
-
+                url:'${pageContext.request.contextPath}/principal-officer-html',
+                dataType:'json',
+                type:'POST',
+                data:{
+                    'HasNumber':hasNumber
                 },
-                'error':function (data) {
+                success:function (data) {
+                    if ('success' == data.res) {
+                      console.log(data.res);
+                      $('.po-content:last').after(data.sucInfo);
+                      poSelect();
+                      retrieveData();
+                    }else{
+                        $('.poErrorMsg').html(data.errInfo);
+                    }
+                },
+                error:function (data) {
                     console.log("err");
                 }
             });
@@ -510,27 +516,30 @@
 
     var addDpo = function(){
         $('#addDpoBtn').click(function () {
+            var hasNumber = $('.dpo-content').size() - 1;
+            console.log("hasNumber" + hasNumber);
             $.ajax({
-                'url':'${pageContext.request.contextPath}/deputy-principal-officer-html',
-                'dataType':'text',
-                'type':'GET',
-                'success':function (data) {
-                    console.log("suc");
-                    $('.dpo-content:last').after(data);
-
-                    dpoSelect();
-
+                url:'${pageContext.request.contextPath}/deputy-principal-officer-html',
+                dataType:'json',
+                type:'POST',
+                data:{
+                    'HasNumber':hasNumber
                 },
-                'error':function (data) {
+                'success':function (data) {
+                    if ('success' == data.res) {
+                        console.log("suc");
+                        $('.dpo-content:last').after(data.sucInfo);
+                        dpoSelect();
+                    }else{
+                        $('.dpoErrorMsg').html(data.errInfo);
+                    }
+                },
+                error:function (data) {
                     console.log("err");
                 }
             });
-
         });
     }
-
-
-
 
     var retrieveData = function () {
         $('.idNoVal').blur(function () {
@@ -568,7 +577,6 @@
                     console.log("err");
                 }
             });
-
         });
     }
 
