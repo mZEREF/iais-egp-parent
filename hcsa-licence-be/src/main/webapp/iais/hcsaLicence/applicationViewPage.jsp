@@ -179,7 +179,7 @@
                                                 <c:if test="${appSupDocDtoListNull == 'Y'}">
                                                     <tr>
                                                         <td colspan="5" align="center">
-                                                            <p>No record found.</p>
+                                                            <iais:message key="ACK018" escape="true"></iais:message>
                                                         </td>
                                                     </tr>
                                                 </c:if>
@@ -206,8 +206,8 @@
                                                 </thead>
                                                 <tbody>
                                                 <tr>
-                                                    <td colspan="5" align="center">
-                                                        <p>No record found.</p>
+                                                    <td colspan="7" align="center">
+                                                        <iais:message key="ACK018" escape="true"></iais:message>
                                                     </td>
                                                 </tr>
                                                 </tbody>
@@ -631,7 +631,7 @@
                                                     </div>
                                                 <%--</table>--%>
                                                 </iais:section>
-                                                <div align="center">
+                                                <div align="right">
                                                         <button id="submitButton" type="button" class="btn btn-primary">
                                                             Submit
                                                         </button>

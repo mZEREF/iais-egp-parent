@@ -27,7 +27,6 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloudfeign.FeignException;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -54,11 +53,11 @@ public class InsReportDelegator {
     private ApplicationViewService applicationViewService;
 
 
-    private final String RECOMMENDATION_DTO = "appPremisesRecommendationDto";
-    private final String RECOMMENDATION = "recommendation";
-    private final String CHRONO = "chrono";
-    private final String NUMBER = "number";
-    private final String OTHERS = "Others";
+    private final static String RECOMMENDATION_DTO = "appPremisesRecommendationDto";
+    private final static String RECOMMENDATION = "recommendation";
+    private final static String CHRONO = "chrono";
+    private final static String NUMBER = "number";
+    private final static String OTHERS = "Others";
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
@@ -119,7 +118,6 @@ public class InsReportDelegator {
 
     public void inspectorReportSave(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the inspectorReportSave start ...."));
-        InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
@@ -145,7 +143,6 @@ public class InsReportDelegator {
         List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = prepareForSave(bpc, appPremisesCorrelationId);
         saveRecommendations(appPremisesRecommendationDtoList);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        AppPremisesRecommendationDto appPremisesRecDto = appPremisesRecommendationDtoList.get(0);
         insRepService.routingTaskToAo1(taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecommendationDto);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
 
@@ -205,10 +202,10 @@ public class InsReportDelegator {
             appPremisesRecommendationDto.setChronoUnit(chrono);
             appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
         } else if (!StringUtil.isEmpty(periods) && !OTHERS.equals(periods)) {
-            String[] split_number = periods.split("\\D");
-            String[] split_unit = periods.split("\\d");
-            String chronoRe = split_unit[1];
-            String numberRe = split_number[0];
+            String[] splitNumber = periods.split("\\D");
+            String[] splitUnit = periods.split("\\d");
+            String chronoRe = splitUnit[1];
+            String numberRe = splitNumber[0];
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
             appPremisesRecommendationDto.setChronoUnit(chronoRe);
             appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(numberRe));
