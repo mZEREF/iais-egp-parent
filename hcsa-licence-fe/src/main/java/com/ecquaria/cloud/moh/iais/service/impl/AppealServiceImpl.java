@@ -756,7 +756,7 @@ public class AppealServiceImpl implements AppealService {
             }
 
         }
-        else if(sessionFile!=null&&sessionFile.getSize()>0){
+        else if(sessionFile!=null&&sessionFile.getSize()>0&&selectedFile!=null){
             if("Y".equals(isDelete)){
                 try {
                     String fileToRepo = serviceConfigService.saveFileToRepo(selectedFile);

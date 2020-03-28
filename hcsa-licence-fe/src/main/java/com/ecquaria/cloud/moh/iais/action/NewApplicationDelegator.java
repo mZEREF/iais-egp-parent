@@ -159,7 +159,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, null);
         ParamUtil.setSessionAttr(bpc.request,DRAFTCONFIG,null);
 
-        Map<String,String> coMap=new HashMap<>(4);
+        HashMap<String,String> coMap=new HashMap<>(4);
         coMap.put("premises","");
         coMap.put("document","");
         coMap.put("information","");
@@ -491,11 +491,11 @@ public class NewApplicationDelegator {
                 if(errorMap.size()>0){
                     ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
-                    Map<String,String> coMap=(Map<String, String>) bpc.request.getSession().getAttribute("coMap");
+                    HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                     coMap.put("premises","");
                     bpc.request.getSession().setAttribute("coMap",coMap);
                 }else {
-                    Map<String,String> coMap=(Map<String, String>) bpc.request.getSession().getAttribute("coMap");
+                    HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                     coMap.put("premises","premises");
                     bpc.request.getSession().setAttribute("coMap",coMap);
                 }
@@ -650,7 +650,7 @@ public class NewApplicationDelegator {
             if("next".equals(crud_action_values)){
                 documentValid(bpc.request, errorMap);
                 doIsCommom(bpc.request, errorMap);
-                Map<String,String> coMap=(Map<String, String>)bpc.request.getSession().getAttribute("coMap");
+                HashMap<String,String> coMap=(HashMap<String, String>)bpc.request.getSession().getAttribute("coMap");
                 if(errorMap.isEmpty()){
                     coMap.put("document","document");
                 }else {
@@ -821,7 +821,7 @@ public class NewApplicationDelegator {
      */
     public void doSaveDraft(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do doSaveDraft start ...."));
-        Map<String,String>coMap=(Map<String, String>)bpc.getSession().getAttribute("coMap");
+        HashMap<String,String>coMap=(HashMap<String, String>)bpc.getSession().getAttribute("coMap");
         List<String> strList=new ArrayList<>(4);
         coMap.forEach((k,v)->{
             if(!StringUtil.isEmpty(v)){
@@ -1053,12 +1053,12 @@ public class NewApplicationDelegator {
         if(!map.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"Msg",map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
-            Map<String,String> coMap=(Map<String, String>)bpc.request.getSession().getAttribute("coMap");
+            HashMap<String,String> coMap=(HashMap<String, String>)bpc.request.getSession().getAttribute("coMap");
             coMap.put("previewli","");
             bpc.request.getSession().setAttribute("coMap",coMap);
             return;
         }else {
-            Map<String,String> coMap=(Map<String, String>)bpc.request.getSession().getAttribute("coMap");
+            HashMap<String,String> coMap=(HashMap<String, String>)bpc.request.getSession().getAttribute("coMap");
             coMap.put("previewli","previewli");
             bpc.request.getSession().setAttribute("coMap",coMap);
         }
@@ -1757,7 +1757,7 @@ public class NewApplicationDelegator {
             String documentMapStr = JsonUtil.parseToJson(documentMap);
             log.info("documentMap json str:"+documentMapStr);
         }
-        Map<String,String> coMap=(Map<String, String>) bpc.request.getSession().getAttribute("coMap");
+        HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
 
         bpc.request.getSession().setAttribute("coMap",coMap);
         if(!StringUtil.isEmpty(sB.toString())){
@@ -2240,7 +2240,7 @@ public class NewApplicationDelegator {
         if(appSubmissionDto!=null){
             List<String> stepColor = appSubmissionDto.getStepColor();
             if(stepColor!=null){
-                Map<String,String> coMap=new HashMap<>(4);
+                HashMap<String,String> coMap=new HashMap<>(4);
                 coMap.put("premises","");
                 coMap.put("document","");
                 coMap.put("information","");
@@ -2279,7 +2279,7 @@ public class NewApplicationDelegator {
             if(appSubmissionDto!=null){
                 List<String> stepColor = appSubmissionDto.getStepColor();
                 if(stepColor!=null){
-                    Map<String,String> coMap=new HashMap<>(4);
+                    HashMap<String,String> coMap=new HashMap<>(4);
                     coMap.put("premises","");
                     coMap.put("document","");
                     coMap.put("information","");
