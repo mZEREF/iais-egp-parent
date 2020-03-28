@@ -120,7 +120,7 @@ public class InspecEmailDelegator {
         ApplicationViewDto applicationViewDto = fillupChklistService.getAppViewDto(taskDto.getId());
         applicationViewDto.setCurrentStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getStatus()}).get(0).getText());
         String appNo=applicationViewDto.getApplicationDto().getApplicationNo();
-        String licenseeId=inspEmailService.getAppInsRepDto(correlationId).getLicenseeId();
+        String licenseeId=applicationViewDto.getApplicationGroupDto().getLicenseeId();
         String licenseeName=inspEmailService.getLicenseeDtoById(licenseeId).getName();
         String appPremCorrId=correlationId;
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
@@ -136,24 +136,19 @@ public class InspecEmailDelegator {
             inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
         }
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-        List<NcAnswerDto> ncAnswerDtos=IaisCommonUtils.genNewArrayList();
-        try{
-            ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(appPremCorrId);
-            if(ncAnswerDtos.size()!=0){
-                StringBuilder stringBuilder=new StringBuilder();
-                int i=0;
-                for (NcAnswerDto ncAnswerDto:ncAnswerDtos
-                ) {
-                    stringBuilder.append("<tr><td>").append(++i);
-                    stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
-                    stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getClause()));
-                    stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
-                    stringBuilder.append("</td></tr>");
-                }
-                map.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
+        List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(appPremCorrId);
+        if(ncAnswerDtos.size()!=0){
+            StringBuilder stringBuilder=new StringBuilder();
+            int i=0;
+            for (NcAnswerDto ncAnswerDto:ncAnswerDtos
+            ) {
+                stringBuilder.append("<tr><td>").append(++i);
+                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
+                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getClause()));
+                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
+                stringBuilder.append("</td></tr>");
             }
-        }catch (Exception e){
-            log.info(e.getMessage());
+            map.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
         }
         makeEmail(inspectionEmailTemplateDto, map);
 

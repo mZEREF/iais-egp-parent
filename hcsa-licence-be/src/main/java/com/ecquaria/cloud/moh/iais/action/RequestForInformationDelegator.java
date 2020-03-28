@@ -516,17 +516,17 @@ public class RequestForInformationDelegator {
                 searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
                 ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
             }
-        }
-        if(!StringUtil.isEmpty(subDate)){
-            licParam.getFilters().put("start_date",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
-                    AppConsts.DEFAULT_DATE_FORMAT));
-        }
-        if(!StringUtil.isEmpty(toDate)){
-            licParam.getFilters().put("expiry_date",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
-                    AppConsts.DEFAULT_DATE_FORMAT));
-        }
-        if(!StringUtil.isEmpty(serviceLicenceType)){
-            licParam.getFilters().put("licSvcName",serviceLicenceType);
+            if(!StringUtil.isEmpty(subDate)){
+                licParam.getFilters().put("start_date",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
+                        AppConsts.DEFAULT_DATE_FORMAT));
+            }
+            if(!StringUtil.isEmpty(toDate)){
+                licParam.getFilters().put("expiry_date",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
+                        AppConsts.DEFAULT_DATE_FORMAT));
+            }
+            if(!StringUtil.isEmpty(serviceLicenceType)){
+                licParam.getFilters().put("licSvcName",serviceLicenceType);
+            }
         }
         ParamUtil.setRequestAttr(request,"SearchParam", licParam);
         ParamUtil.setRequestAttr(request,"serviceLicenceType",serviceLicenceType);
@@ -587,7 +587,7 @@ public class RequestForInformationDelegator {
         String  licPremId = (String) ParamUtil.getSessionAttr(request,"id");
         List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licPremId);
         for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
-             ) {
+        ) {
             OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licPreRfi.getLicenseeId()).getEntity();
             if(organizationLicDto.getLicenseeEntityDto()!=null){
                 licPreRfi.setEmail(Arrays.toString(organizationLicDto.getLicenseeEntityDto().getOfficeEmailAddr()));
@@ -613,7 +613,7 @@ public class RequestForInformationDelegator {
 
         if(!licPremisesReqForInfoDtoList.isEmpty()) {
             for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
-                 ) {
+            ) {
                 if(StringUtil.isEmpty(licPreRfi.getUserReply())){
                     ParamUtil.setSessionAttr(request, "licenceNo", licPreRfi.getLicenceNo());
                 }

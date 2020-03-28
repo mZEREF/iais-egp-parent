@@ -21,112 +21,112 @@
                     <br><br><br><br><br><br>
                     <h2>Basic Search Criteria</h2>
 
-                        <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
-                            <div class="panel-body">
-                                <div class="panel-main-content">
-                                    <iais:section title="" id = "supPoolList">
-                                        <iais:row>
-                                            <iais:field value="Search No"/>
-                                            <iais:value width="18">
-                                                <label>
-                                                    <input type="text"  style="width:180%; font-weight:normal;" name="searchNo" maxlength="100" value="${searchNo}" />
-                                                </label>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:value width="18" cssClass="form-check">
-                                                <c:choose>
-                                                    <c:when test="${count==1}">
-                                                        <input class="form-check-input licenceCheck" id="hciChk" type="checkbox"
-                                                               name="hciChk" checked >
-                                                        <label class="form-check-label" for="hciChk">
-                                                            <span class="check-square"></span>
-                                                        </label> HCI Name
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <input class="form-check-input licenceCheck" id="hciChk" type="checkbox" name="hciChk"  >
-                                                        <label class="form-check-label" for="hciChk">
-                                                            <span class="check-square"></span>
-                                                        </label> HCI Name
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </iais:value>
-                                            <iais:value width="18" cssClass="form-check">
-                                                <c:choose>
-                                                    <c:when test="${count==2}">
-                                                            <input class="form-check-input licenceCheck" id="applicationChk" type="checkbox"
-                                                                   checked      name="applicationChk"  >
-                                                        <label class="form-check-label" for="applicationChk">
-                                                            <span class="check-square"></span>
-                                                        </label> Application No
-                                                    </c:when>
-                                                    <c:otherwise><input class="form-check-input licenceCheck" id="applicationChk" type="checkbox"
-                                                                        name="applicationChk"  >
-                                                        <label class="form-check-label" for="applicationChk">
-                                                            <span class="check-square"></span>
-                                                        </label> Application No
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </iais:value>
-                                            <iais:value width="18" cssClass="form-check">
-                                                <c:choose>
-                                                    <c:when test="${count==3}">
-                                                            <input class="form-check-input licenceCheck" id="licenceChk" type="checkbox" checked              name="licenceChk"  >
-                                                        <label class="form-check-label" for="licenceChk"><span
-                                                                class="check-square"></span>
-                                                        </label> Licence No
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                            <input class="form-check-input licenceCheck" id="licenceChk" type="checkbox"
-                                                                        name="licenceChk"  >
-                                                        <label class="form-check-label" for="licenceChk"><span
-                                                                class="check-square"></span>
-                                                        </label> Licence No</c:otherwise>
-                                                </c:choose>
-                                            </iais:value>
-                                            <iais:value width="18" cssClass="form-check">
-                                                <c:choose>
-                                                    <c:when test="${count==4}">
-                                                            <input class="form-check-input licenceCheck" id="licenseeChk" type="checkbox"
-                                                                                      checked         name="licenseeChk"  >
-                                                        <label class="form-check-label" for="licenseeChk"><span
-                                                                class="check-square"></span>
-                                                        </label> Licensee Name</c:when>
-                                                    <c:otherwise>
-                                                            <input class="form-check-input licenceCheck" id="licenseeChk" type="checkbox"
-                                                                        name="licenseeChk"  >
-                                                        <label class="form-check-label" for="licenseeChk"><span
-                                                                class="check-square"></span>
-                                                        </label> Licensee Name</c:otherwise>
-                                                </c:choose>
-                                            </iais:value>
-                                            <iais:value width="18" cssClass="form-check">
-                                                <c:choose>
-                                                    <c:when test="${count==5}"><input class="form-check-input licenceCheck" id="servicePersonnelChk" type="checkbox"
-                                                                                      checked             name="servicePersonnelChk"  >
-                                                        <label class="form-check-label" for="servicePersonnelChk"><span
-                                                                class="check-square"></span>
-                                                        </label> Service Personnel Name</c:when>
-                                                    <c:otherwise><input class="form-check-input licenceCheck" id="servicePersonnelChk" type="checkbox"
-                                                                        name="servicePersonnelChk"  >
-                                                        <label class="form-check-label" for="servicePersonnelChk"><span
-                                                                class="check-square"></span>
-                                                        </label> Service Personnel Name</c:otherwise>
-                                                </c:choose>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:action style="text-align:right;">
-                                            <button type="button" class="btn btn-secondary" type="button"
-                                                    onclick="javascript:doClear();">Clear</button>
-                                            <button type="button" class="btn btn-primary" type="button"
-                                                     onclick="javascript:doSearch();">Search</button>
-                                            <button type="button" class="btn btn-primary" type="button"
-                                                     onclick="javascript:doAdvancedSearch();">Advanced Search</button>
-                                        </iais:action>
-                                    </iais:section>
-                                </div>
+                    <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                        <div class="panel-body">
+                            <div class="panel-main-content">
+                                <iais:section title="" id = "supPoolList">
+                                    <iais:row>
+                                        <iais:field value="Search No"/>
+                                        <iais:value width="18">
+                                            <label>
+                                                <input type="text"  style="width:180%; font-weight:normal;" name="searchNo" maxlength="100" value="${searchNo}" />
+                                            </label>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:value width="18" cssClass="form-check">
+                                            <c:choose>
+                                                <c:when test="${count==1}">
+                                                    <input class="form-check-input licenceCheck" id="hciChk" type="checkbox"
+                                                           name="hciChk" checked >
+                                                    <label class="form-check-label" for="hciChk">
+                                                        <span class="check-square"></span>
+                                                    </label> HCI Name
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <input class="form-check-input licenceCheck" id="hciChk" type="checkbox" name="hciChk"  >
+                                                    <label class="form-check-label" for="hciChk">
+                                                        <span class="check-square"></span>
+                                                    </label> HCI Name
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </iais:value>
+                                        <iais:value width="18" cssClass="form-check">
+                                            <c:choose>
+                                                <c:when test="${count==2}">
+                                                    <input class="form-check-input licenceCheck" id="applicationChk" type="checkbox"
+                                                           checked      name="applicationChk"  >
+                                                    <label class="form-check-label" for="applicationChk">
+                                                        <span class="check-square"></span>
+                                                    </label> Application No
+                                                </c:when>
+                                                <c:otherwise><input class="form-check-input licenceCheck" id="applicationChk" type="checkbox"
+                                                                    name="applicationChk"  >
+                                                    <label class="form-check-label" for="applicationChk">
+                                                        <span class="check-square"></span>
+                                                    </label> Application No
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </iais:value>
+                                        <iais:value width="18" cssClass="form-check">
+                                            <c:choose>
+                                                <c:when test="${count==3}">
+                                                    <input class="form-check-input licenceCheck" id="licenceChk" type="checkbox" checked              name="licenceChk"  >
+                                                    <label class="form-check-label" for="licenceChk"><span
+                                                            class="check-square"></span>
+                                                    </label> Licence No
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <input class="form-check-input licenceCheck" id="licenceChk" type="checkbox"
+                                                           name="licenceChk"  >
+                                                    <label class="form-check-label" for="licenceChk"><span
+                                                            class="check-square"></span>
+                                                    </label> Licence No</c:otherwise>
+                                            </c:choose>
+                                        </iais:value>
+                                        <iais:value width="18" cssClass="form-check">
+                                            <c:choose>
+                                                <c:when test="${count==4}">
+                                                    <input class="form-check-input licenceCheck" id="licenseeChk" type="checkbox"
+                                                           checked         name="licenseeChk"  >
+                                                    <label class="form-check-label" for="licenseeChk"><span
+                                                            class="check-square"></span>
+                                                    </label> Licensee Name</c:when>
+                                                <c:otherwise>
+                                                    <input class="form-check-input licenceCheck" id="licenseeChk" type="checkbox"
+                                                           name="licenseeChk"  >
+                                                    <label class="form-check-label" for="licenseeChk"><span
+                                                            class="check-square"></span>
+                                                    </label> Licensee Name</c:otherwise>
+                                            </c:choose>
+                                        </iais:value>
+                                        <iais:value width="18" cssClass="form-check">
+                                            <c:choose>
+                                                <c:when test="${count==5}"><input class="form-check-input licenceCheck" id="servicePersonnelChk" type="checkbox"
+                                                                                  checked             name="servicePersonnelChk"  >
+                                                    <label class="form-check-label" for="servicePersonnelChk"><span
+                                                            class="check-square"></span>
+                                                    </label> Service Personnel Name</c:when>
+                                                <c:otherwise><input class="form-check-input licenceCheck" id="servicePersonnelChk" type="checkbox"
+                                                                    name="servicePersonnelChk"  >
+                                                    <label class="form-check-label" for="servicePersonnelChk"><span
+                                                            class="check-square"></span>
+                                                    </label> Service Personnel Name</c:otherwise>
+                                            </c:choose>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:action style="text-align:right;">
+                                        <button type="button" class="btn btn-secondary" type="button"
+                                                onclick="javascript:doClear();">Clear</button>
+                                        <button type="button" class="btn btn-primary" type="button"
+                                                onclick="javascript:doSearch();">Search</button>
+                                        <button type="button" class="btn btn-primary" type="button"
+                                                onclick="javascript:doAdvancedSearch();">Advanced Search</button>
+                                    </iais:action>
+                                </iais:section>
                             </div>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -270,29 +270,30 @@
         SOP.Crud.cfxSubmit("mainForm", "appDetails",appCorrId);
     }
     function doCessation() {
-        showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "cessation");
-        <%--var chk=$("[name='appIds']:checked");--%>
-        <%--var dropIds = new Array();--%>
-        <%--chk.each(function(){--%>
-        <%--    dropIds.push($(this).val());--%>
-        <%--});--%>
-        <%--var data = {--%>
-        <%--    'appIds':dropIds--%>
-        <%--};--%>
-        <%--$.ajax({--%>
-        <%--    'url':'${pageContext.request.contextPath}/valid-licenceId',--%>
-        <%--    'date':data,--%>
-        <%--    'type':'GET',--%>
-        <%--    'success':function (data) {--%>
-        <%--        if(data.length===0){--%>
-        <%--            $("#selectDecisionMsg").show();--%>
-        <%--            //dismissWaiting();--%>
-        <%--        }else {--%>
-        <%--            $("#selectDecisionMsg").style.display="none";--%>
-        <%--            SOP.Crud.cfxSubmit("mainForm", "cessation");--%>
-        <%--        }--%>
-        <%--    }--%>
-        <%--});--%>
+        //showWaiting();
+        //SOP.Crud.cfxSubmit("mainForm", "cessation");
+        var chk=$("[name='appIds']:checked");
+        var dropIds = new Array();
+        chk.each(function(){
+            dropIds.push($(this).val());
+        });
+        var data = {
+            'appIds':dropIds
+        };
+        $.ajax({
+            'url':'${pageContext.request.contextPath}/valid-licenceId',
+            'date':data,
+            'dataType':'json',
+            'type':'GET',
+            'success':function (data) {
+                if(data.length===0){
+                    $("#selectDecisionMsg").show();
+                    //dismissWaiting();
+                }else {
+                    $("#selectDecisionMsg").style.display="none";
+                    SOP.Crud.cfxSubmit("mainForm", "cessation");
+                }
+            }
+        });
     }
 </script>

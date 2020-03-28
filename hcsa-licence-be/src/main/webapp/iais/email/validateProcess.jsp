@@ -102,7 +102,7 @@
                                     <tr height="1">
                                         <td class="col-xs-2" >
                                             <p >
-                                                Processing Decision:<b style="color:#ff0000;"> *</b>
+                                                Processing Decision:<strong style="color:#ff0000;"> *</strong>
                                             </p>
                                         </td>
                                         <td>
@@ -122,7 +122,7 @@
                                         <td>
                                             <div class="col-sm-9">
                                                 <p style="color:#ff0000;">
-                                                    This field is mandatory.
+                                                    This field is mandatory
                                                 </p>
                                             </div>
                                         </td>

@@ -23,7 +23,7 @@
                             <li class="complete" role="presentation"><a href="#tabPersonnelDetails" aria-controls="tabPersonnelDetails" role="tab"
                                                                         data-toggle="tab">Personnel Details</a></li>
                             <li class="active" role="presentation"><a href="#tabInspectionReport" aria-controls="tabInspectionReport" role="tab"
-                                                                        data-toggle="tab">Inspection Report</a></li>
+                                                                      data-toggle="tab">Inspection Report</a></li>
                         </ul>
                         <div class="tab-nav-mobile visible-xs visible-sm">
                             <div class="swiper-wrapper" role="tablist">
@@ -40,7 +40,7 @@
 
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->
-                                    <div class="panel-heading"><b>Licensee Details</b></div>
+                                    <div class="panel-heading"><strong>Licensee Details</strong></div>
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="table-gp">
@@ -64,7 +64,7 @@
 
                                 <div>&nbsp</div>
                                 <div class="panel panel-default">
-                                    <div class="panel-heading"><b>Company Details</b></div>
+                                    <div class="panel-heading"><strong>Company Details</strong></div>
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="table-gp">
@@ -109,7 +109,7 @@
                                 <c:forEach var="member" items="${organizationLicDto.licenseeKeyApptPersonDtos}" varStatus="status">
                                     <div>&nbsp</div>
                                     <div class="panel panel-default">
-                                        <div class="panel-heading"><b>Board Members</b></div>
+                                        <div class="panel-heading"><strong>Board Members</strong></div>
                                         <div class="row">
                                             <div class="col-xs-12">
                                                 <div class="table-gp">
@@ -150,7 +150,7 @@
 
                                 <div>&nbsp</div>
                                 <div class="panel panel-default">
-                                    <div class="panel-heading"><b>Sole Proprietor - Licensee</b></div>
+                                    <div class="panel-heading"><strong>Sole Proprietor - Licensee</strong></div>
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="table-gp">
@@ -221,10 +221,10 @@
 
                             <div class="tab-pane" id="tabPersonnelDetails" role="tabpanel">
 
-                                    <!-- Default panel contents -->
+                                <!-- Default panel contents -->
                                 <c:forEach var="personnel" items="${personnelsDto}">
                                     <div class="panel panel-default">
-                                        <div class="panel-heading"><b>${personnel.licKeyPersonnelDto.psnType}</b></div>
+                                        <div class="panel-heading"><strong>${personnel.licKeyPersonnelDto.psnType}</strong></div>
                                         <div class="row">
                                             <div class="col-xs-12">
                                                 <div class="table-gp">
