@@ -2571,8 +2571,10 @@ public class NewApplicationDelegator {
                                             int i1 = Integer.parseInt(convStartFromHH);
                                             int i2 = Integer.parseInt(convStartFromMM);
 
-                                            if(i1>=24||i2>=60){
-                                                errorMap.put("onsiteStartToMM"+j,"CHKLMD001_ERR003");
+                                            if(i1>=24){
+                                                errorMap.put("onsiteStartToMM"+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i2>=60){
+                                                errorMap.put("onsiteStartToMM"+j,"UC_CHKLMD001_ERR010");
                                             }
 
                                         }catch (Exception e){
@@ -2583,7 +2585,9 @@ public class NewApplicationDelegator {
                                         int i3 = Integer.parseInt(onsiteEndToHH);
                                         int i4 = Integer.parseInt(onsiteEndToMM);
                                         if(i3>=24||i4>=60){
-                                            errorMap.put("onsiteEndToMM"+j,"CHKLMD001_ERR003");
+                                            errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR009");
+                                        }else if(i4>=60){
+                                            errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR010");
                                         }
                                     }catch (Exception e){
                                         errorMap.put("onsiteEndToMM"+j,"CHKLMD001_ERR003");
@@ -2608,8 +2612,10 @@ public class NewApplicationDelegator {
                                             int i1 = Integer.parseInt(convStartFromHH);
                                             int i2 = Integer.parseInt(convStartFromMM);
 
-                                            if(i1>=24||i2>=60){
-                                                errorMap.put("onsiteStartToMM"+j,"CHKLMD001_ERR003");
+                                            if(i1>=24){
+                                                errorMap.put("onsiteStartToMM"+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i2>=60){
+                                                errorMap.put("onsiteStartToMM"+j,"UC_CHKLMD001_ERR010");
                                             }
 
                                         }catch (Exception e){
@@ -2622,8 +2628,10 @@ public class NewApplicationDelegator {
                                         try {
                                             int i3 = Integer.parseInt(onsiteEndToHH);
                                             int i4 = Integer.parseInt(onsiteEndToMM);
-                                            if(i3>=24||i4>=60){
-                                                errorMap.put("onsiteEndToMM"+j,"CHKLMD001_ERR003");
+                                            if(i3>=24){
+                                                errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i4>=60){
+                                                errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR010");
                                             }
                                         }catch (Exception e){
                                             errorMap.put("onsiteEndToMM"+j,"CHKLMD001_ERR003");
@@ -2782,8 +2790,10 @@ public class NewApplicationDelegator {
                                         try {
                                             int i1 = Integer.parseInt(convStartFromHH);
                                             int i2 = Integer.parseInt(convStartFromMM);
-                                            if(i1>=24||i2>=60){
-                                                errorMap.put("convStartToHH"+j,"CHKLMD001_ERR003");
+                                            if(i1>=24){
+                                                errorMap.put("convStartToHH"+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i2>=60){
+                                                errorMap.put("convStartToHH"+j,"UC_CHKLMD001_ERR010");
                                             }
 
                                         }catch (Exception e){
@@ -2792,8 +2802,10 @@ public class NewApplicationDelegator {
                                         try {
                                             int i3 = Integer.parseInt(convEndToHH);
                                             int i4 = Integer.parseInt(convEndToMM);
-                                            if(i3>=24||i4>=60){
-                                                errorMap.put("convEndToHH"+j,"CHKLMD001_ERR003");
+                                            if(i3>=24){
+                                                errorMap.put("convEndToHH"+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i4>=60){
+                                                errorMap.put("convEndToHH"+j,"UC_CHKLMD001_ERR010");
                                             }
                                         }catch (Exception e){
                                             errorMap.put("convEndToHH"+j,"CHKLMD001_ERR003");
@@ -2817,8 +2829,10 @@ public class NewApplicationDelegator {
                                         try {
                                             int i1 = Integer.parseInt(convStartFromHH);
                                             int i2 = Integer.parseInt(convStartFromMM);
-                                            if(i1>=24||i2>=60){
-                                                errorMap.put("convStartToHH"+j,"CHKLMD001_ERR003");
+                                            if(i1>=24){
+                                                errorMap.put("convStartToHH"+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i2>=60){
+                                                errorMap.put("convStartToHH"+j,"UC_CHKLMD001_ERR010");
                                             }
                                         }catch (Exception e){
                                             errorMap.put("convStartToHH"+j,"CHKLMD001_ERR003");
@@ -2833,7 +2847,9 @@ public class NewApplicationDelegator {
                                             int i3 = Integer.parseInt(convEndToHH);
                                             int i4 = Integer.parseInt(convEndToMM);
                                             if(i3>=24||i4>=60){
-                                                errorMap.put("convEndToHH"+j,"CHKLMD001_ERR003");
+                                                errorMap.put("convEndToHH"+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i4>=60){
+                                                errorMap.put("convEndToHH"+j,"UC_CHKLMD001_ERR010");
                                             }
 
                                         }catch (Exception e){
