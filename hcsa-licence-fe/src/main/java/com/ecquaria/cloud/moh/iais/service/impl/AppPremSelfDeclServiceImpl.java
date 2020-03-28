@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 
+import com.ecquaria.cloud.moh.iais.annotation.TimerTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclaration;
@@ -219,11 +220,12 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     @Override
     /**
     * @author: yichen
-    * @description: If the transaction for FE fails, the action saved to BE is not triggered.
-    * If BE fails, will be bactch-job synchronizes the data
+    * @description:
+    * In case of RFI, the previous record needs to be deactivated.Then synchronize data to be
     * @param: [selfDeclList]
     * @return: void
     */
+    @TimerTrack
     public void saveSelfDecl(List<SelfDeclaration> selfDeclList) {
         //if it is RFI, the last version of record should be inactive
         boolean flag = false;
@@ -231,7 +233,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
         if (!flag && !selfDeclList.isEmpty()){
             for (SelfDeclaration selfDeclaration : selfDeclList){
                 if (!selfDeclaration.isCommon()){
-                    lastVersionIds = selfDeclaration.getPkId();
+                    lastVersionIds = selfDeclaration.getLastVersionIds();
                     flag = true;
                 }
 

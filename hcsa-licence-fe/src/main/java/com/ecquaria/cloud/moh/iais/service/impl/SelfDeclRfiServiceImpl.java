@@ -82,7 +82,7 @@ public class SelfDeclRfiServiceImpl implements SelfDeclRfiService {
 
 
                 //There's no place to put it. It's only here
-                serviceSelfDecl.setPkId(lastVersionIds);
+                serviceSelfDecl.setLastVersionIds(lastVersionIds);
 
                 selfDeclarationList.add(serviceSelfDecl);
             }
@@ -117,6 +117,7 @@ public class SelfDeclRfiServiceImpl implements SelfDeclRfiService {
         // load subtype info
         if (serviceSelf != null){
             String svcCode = serviceSelf.getSvcCode();
+            iterator = selfDeclChklList.iterator();
             while (iterator.hasNext()){
                 AppPremisesSelfDeclChklDto selfdecl = iterator.next();
                 String configId = selfdecl.getChkLstConfId();
@@ -127,6 +128,7 @@ public class SelfDeclRfiServiceImpl implements SelfDeclRfiService {
                         if (!StringUtils.isEmpty(checklistConfig.getSvcSubType())
                                 && checklistConfig.getSvcCode().equals(svcCode)){
 
+                            serviceSelf.setHasSubtype(true);
                             LinkedHashMap<String, List<PremCheckItem>> eachPremQuestion = serviceSelf.getEachPremQuestion();
                             if (eachPremQuestion.containsKey(selfdecl.getAppPremCorreId())){
                                 List<PremCheckItem> items = eachPremQuestion.get(selfdecl.getAppPremCorreId());
@@ -136,7 +138,10 @@ public class SelfDeclRfiServiceImpl implements SelfDeclRfiService {
                                 List<QuestionAnswer> questionAnswers = JsonUtil.transferListContent(answerList, QuestionAnswer.class);
                                 questionAnswers.forEach(question -> {
                                     PremCheckItem premCheckItem = new PremCheckItem();
+                                    premCheckItem.setRegulation(question.getRegulation());
+                                    premCheckItem.setChecklistItem(question.getChecklistItem());
                                     premCheckItem.setConfigId(selfdecl.getChkLstConfId());
+                                    premCheckItem.setAnswerKey(UUID.randomUUID().toString());
                                     premCheckItem.setChecklistItemId(question.getChecklistItemId());
                                     premCheckItem.setAnswer(question.getAnswer());
                                     premCheckItem.setSubType(true);
@@ -201,7 +206,6 @@ public class SelfDeclRfiServiceImpl implements SelfDeclRfiService {
                 }
             }
         }
-        commonSelfDecl.setPkId(saveByInactivePkId);
         return commonSelfDecl;
     }
 }

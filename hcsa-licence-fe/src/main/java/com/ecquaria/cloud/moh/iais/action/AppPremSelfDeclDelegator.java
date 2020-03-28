@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclaration;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremSelfDeclService;
@@ -64,25 +65,25 @@ public class AppPremSelfDeclDelegator {
      */
     public void initData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        /*String groupId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
+        String groupId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
         String action = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION);
 
-        if (StringUtil.isEmpty(groupId) || StringUtils.isEmpty(action)){
+        if (StringUtils.isEmpty(groupId) || StringUtils.isEmpty(action)){
             log.info("can not find group id");
             return;
-        }*/
+        }
 
-        String action = "rfi";
-        String groupId = "E83380FA-2668-EA11-BE79-000C29D29DB0";
+        /*String action = "new";
+        String groupId = "C18DB488-C470-EA11-BE7A-000C29D29DB0";*/
 
-        /*if ("new".equals(action)){
+        if ("new".equals(action)){
             boolean isSubmitted = appPremSelfDesc.hasSelfDeclRecord(groupId);
             if (isSubmitted){
                 ParamUtil.setRequestAttr(request, "isSubmitted", "You have submitted self decl. Please do not submit again.");
                 ParamUtil.setRequestAttr(request, "selfDeclQueryAttr", null);
                 return;
             }
-        }*/
+        }
 
         ParamUtil.setSessionAttr(request, "currentSelfDeclGroupId", groupId);
         List<SelfDeclaration> selfDeclList = (List<SelfDeclaration>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
