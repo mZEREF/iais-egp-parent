@@ -1,4 +1,8 @@
 $(window).on("load", function(){
+    intiTinymce();
+});
+
+function intiTinymce() {
     tinymce.init({
         selector: "#htmlEditroArea",  // change this value according to your HTML
         menubar: 'file edit view insert format tools',
@@ -13,4 +17,4 @@ $(window).on("load", function(){
             ' alignright alignjustify | bullist numlist outdent indent |' +
             ' removeformat | help',
     });
-});
+}
