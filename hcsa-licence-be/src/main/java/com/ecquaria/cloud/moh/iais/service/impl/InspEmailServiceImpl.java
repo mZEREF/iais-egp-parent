@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplate
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
@@ -55,11 +56,13 @@ public class InspEmailServiceImpl implements InspEmailService {
 
     @Override
     public String updateEmailDraft(InspectionEmailTemplateDto inspectionEmailTemplateDto) {
+        inspectionEmailTemplateDto.setMessageContent(StringUtil.removeNonUtf8(inspectionEmailTemplateDto.getMessageContent()));
         return insEmailClient.updateEmailDraft(inspectionEmailTemplateDto).getEntity();
     }
 
     @Override
     public String insertEmailDraft(InspectionEmailTemplateDto inspectionEmailTemplateDto) {
+        inspectionEmailTemplateDto.setMessageContent(StringUtil.removeNonUtf8(inspectionEmailTemplateDto.getMessageContent()));
         return insEmailClient.insertEmailDraft(inspectionEmailTemplateDto).getEntity();
     }
 
