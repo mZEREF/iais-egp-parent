@@ -163,9 +163,9 @@ public class ConfigServiceImpl implements ConfigService {
         try {
             sendEmail(request);
         } catch (IOException e) {
-            e.printStackTrace();
+         log.error(e.getMessage(),e);
         } catch (TemplateException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(),e);
         }
         request.setAttribute("crud_action_type", "save");
     }
@@ -312,9 +312,9 @@ public class ConfigServiceImpl implements ConfigService {
             try {
                 sendEmail(request);
             } catch (IOException e) {
-                e.printStackTrace();
+              log.error(e.getMessage(),e);
             } catch (TemplateException e) {
-                e.printStackTrace();
+              log.error(e.getMessage(),e);
             }
             hcsaConfigClient.updateService(serviceId);
         }
@@ -1400,7 +1400,7 @@ public class ConfigServiceImpl implements ConfigService {
         try {
             parse = new SimpleDateFormat("yyyy-MM-dd").parse(effectiveDate);
         } catch (ParseException e) {
-            e.printStackTrace();
+          log.error(e.getMessage(),e);
         }
         String format = new SimpleDateFormat("dd/MM/yyyy").format(parse);
         hcsaServiceDto.setEffectiveDate(format);
@@ -1478,7 +1478,7 @@ public class ConfigServiceImpl implements ConfigService {
             response.sendRedirect(tokenUrl);
             request.getSession().removeAttribute("orgUserDto");
         } catch (IOException e) {
-            e.printStackTrace();
+          log.error(e.getMessage(),e);
         }
     }
 }

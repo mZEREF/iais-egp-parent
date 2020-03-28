@@ -514,7 +514,7 @@ public class ClinicalLaboratoryDelegator {
                         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
                     }
                     ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
-                    Map<String,String> coMap=(Map<String, String>) bpc.request.getSession().getAttribute("coMap");
+                    HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                     if(errorMap.isEmpty()){
                         coMap.put("information","information");
                     }else {
@@ -591,7 +591,7 @@ public class ClinicalLaboratoryDelegator {
                 }
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
 
-                Map<String,String> coMap=(Map<String, String>) bpc.request.getSession().getAttribute("coMap");
+                HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                 if(errList.isEmpty()){
                     coMap.put("information","information");
                 }else {
@@ -690,7 +690,7 @@ public class ClinicalLaboratoryDelegator {
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
 
 
-                Map<String,String> coMap=(Map<String, String>) bpc.request.getSession().getAttribute("coMap");
+                HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                 if(errorMap.isEmpty()){
                     coMap.put("information","information");
                 }else {
@@ -769,7 +769,7 @@ public class ClinicalLaboratoryDelegator {
                     appSubmissionDto.setChangeSelectDto(appEditSelectDto);
                 }
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
-                Map<String,String> coMap=(Map<String, String>) bpc.request.getSession().getAttribute("coMap");
+                HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                 if(map.isEmpty()){
                     coMap.put("information","information");
                 }else {

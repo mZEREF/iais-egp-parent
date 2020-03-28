@@ -58,7 +58,7 @@ public class AppealDelegator {
             try {
                 bpc.response.sendRedirect(tokenUrl);
             } catch (IOException e) {
-                e.printStackTrace();
+              log.error(e.getMessage(),e);
             }
             return;
         }
