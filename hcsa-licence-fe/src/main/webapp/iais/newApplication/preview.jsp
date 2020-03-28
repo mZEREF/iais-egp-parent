@@ -75,7 +75,7 @@
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-6"><a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a></div>
                                         <div class="col-xs-12 col-sm-6">
-                                            <div class="button-group">
+                                            <div class="button-group hidden">
                                                 <c:if test="${requestInformationConfig==null}">
                                                 <a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a>
                                                 </c:if>
@@ -139,7 +139,13 @@
                 $('#docEdit').unbind();
             </c:if>
         </c:if>
+
+        $(window).on( "load", function() {
+            $('.button-group').removeClass('hidden');
+        })
     });
+
+
 
     $('.svc-pannel-collapse').click(function () {
         $svcContenEle = $(this).closest('div.svc-content');
