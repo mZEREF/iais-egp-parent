@@ -62,8 +62,8 @@
                                 </table>
                                 <p class="text-right text-center-mobile">
                                     <iais:action style="text-align:center;">
-                                        <button type="button" class="btn btn-primary" onclick="javascript:doPreview();">Preview</button>&nbsp;
-                                        <button type="button" class="btn btn-primary" onclick="javascript:doReload();">Reload</button>
+                                        <button type="button" class="btn btn-secondary" onclick="javascript:doPreview();">Preview</button>&nbsp;
+                                        <button type="button" class="btn btn-secondary" onclick="javascript:doReload();">Reload</button>
                                     </iais:action >
                                 </p>
                             </div>
