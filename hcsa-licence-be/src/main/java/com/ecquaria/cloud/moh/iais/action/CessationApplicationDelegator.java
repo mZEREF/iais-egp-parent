@@ -52,7 +52,7 @@ public class CessationApplicationDelegator {
 
     public void init(BaseProcessClass bpc){
         List<String> licIds = (List<String>)ParamUtil.getSessionAttr(bpc.request, "licIds");
-        if(licIds==null){
+        if(licIds==null||licIds.size()==0){
             licIds = IaisCommonUtils.genNewArrayList();
             licIds.add("ACB51822-A656-EA11-BE7F-000C29F371DC");
             licIds.add("4083B3AD-B04D-EA11-BE7F-000C29F371DC");

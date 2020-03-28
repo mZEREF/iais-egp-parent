@@ -170,7 +170,7 @@
                                         <tr>
                                             <td class="form-check">
                                                 <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
-                                                       name="appIds" value="${pool.appId}"   >
+                                                       name="appIds" value="${pool.appId}|${pool.isCessation}"   >
                                                 <label class="form-check-label" for="licence${status.index + 1}"><span
                                                         class="check-square"></span>
                                                 </label>
@@ -270,30 +270,8 @@
         SOP.Crud.cfxSubmit("mainForm", "appDetails",appCorrId);
     }
     function doCessation() {
-        //showWaiting();
-        //SOP.Crud.cfxSubmit("mainForm", "cessation");
-        var chk=$("[name='appIds']:checked");
-        var dropIds = new Array();
-        chk.each(function(){
-            dropIds.push($(this).val());
-        });
-        var data = {
-            'appIds':dropIds
-        };
-        $.ajax({
-            'url':'${pageContext.request.contextPath}/valid-licenceId',
-            'date':data,
-            'dataType':'json',
-            'type':'GET',
-            'success':function (data) {
-                if(data.length===0){
-                    $("#selectDecisionMsg").show();
-                    //dismissWaiting();
-                }else {
-                    $("#selectDecisionMsg").style.display="none";
-                    SOP.Crud.cfxSubmit("mainForm", "cessation");
-                }
-            }
-        });
+        showWaiting();
+        SOP.Crud.cfxSubmit("mainForm", "cessation");
+
     }
 </script>

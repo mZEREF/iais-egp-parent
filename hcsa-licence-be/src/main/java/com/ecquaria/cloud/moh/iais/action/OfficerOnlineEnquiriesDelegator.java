@@ -39,15 +39,12 @@ import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -772,8 +769,14 @@ public class OfficerOnlineEnquiriesDelegator {
         ParamUtil.setSessionAttr(request,"id",id);
         String [] appIds=ParamUtil.getStrings(request,"appIds");
         List<String> applIds=IaisCommonUtils.genNewArrayList();
+
         try{
-            Collections.addAll(applIds, appIds);
+            for(int i=0;i<appIds.length;i++){
+                String is=appIds[i].split("\\|")[1];
+                if(is.equals("1")){
+                    applIds.add(appIds[i].split("\\|")[0]);
+                }
+            }
         }catch (Exception e){
             log.info(e.getMessage());
         }
@@ -814,21 +817,21 @@ public class OfficerOnlineEnquiriesDelegator {
     }
 
 
-    @GetMapping(value = "/valid-licenceId")
-    public @ResponseBody
-    List<String> reloadRevEmail(HttpServletRequest request)  {
-        String [] appIds=ParamUtil.getStrings(request,"appIds");
-        List<String> applIds=IaisCommonUtils.genNewArrayList();
-        try{
-            Collections.addAll(applIds, appIds);
-        }catch (Exception e){
-            log.info(e.getMessage());
-        }
-        List<String> licIds=onlineEnquiriesService.getLicIdsByappIds(applIds);
-        List<String> licenceIds=cessationClient.getlicIdToCessation(licIds).getEntity();
-        licIds.removeIf(licId -> !licenceIds.contains(licId));
-        return licIds;
-    }
+//    @GetMapping(value = "/valid-licenceId")
+//    public @ResponseBody
+//    List<String> reloadRevEmail(HttpServletRequest request)  {
+//        String [] appIds=ParamUtil.getStrings(request,"appIds");
+//        List<String> applIds=IaisCommonUtils.genNewArrayList();
+//        try{
+//            Collections.addAll(applIds, appIds);
+//        }catch (Exception e){
+//            log.info(e.getMessage());
+//        }
+//        List<String> licIds=onlineEnquiriesService.getLicIdsByappIds(applIds);
+//        List<String> licenceIds=cessationClient.getlicIdToCessation(licIds).getEntity();
+//        licIds.removeIf(licId -> !licenceIds.contains(licId));
+//        return licIds;
+//    }
 
 
 }
