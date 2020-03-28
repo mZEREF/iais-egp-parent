@@ -1,4 +1,4 @@
-setTimeout(intiTinymce(), 3000);
+setTimeout(intiTinymce(), 5000);
 
 function intiTinymce() {
     tinymce.init({
