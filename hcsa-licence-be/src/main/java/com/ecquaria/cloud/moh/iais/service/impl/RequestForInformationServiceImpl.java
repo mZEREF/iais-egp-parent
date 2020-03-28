@@ -291,7 +291,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     }
 
     @Override
-    public void compress(LicPremisesReqForInfoDto licPremisesReqForInfoDto){
+    public void compress(){
         log.info("-------------compress start ---------");
         if(new File(backups).isDirectory()){
             File[] files = new File(backups).listFiles();
@@ -323,7 +323,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         try {
                             String refId = processFileTrackDto.getRefId();
                             String submissionId = generateIdClient.getSeqId().getEntity();
-                            this.download(processFileTrackDto,licPremisesReqForInfoDto,name,refId,submissionId);
+                            this.download(processFileTrackDto,name,refId,submissionId);
                             //save success
                         }catch (Exception e){
                             //save bad
@@ -398,7 +398,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     }
 
     @Override
-    public boolean download( ProcessFileTrackDto processFileTrackDto,LicPremisesReqForInfoDto licPremisesReqForInfoDto,String fileName,String refId,String submissionId) {
+    public boolean download( ProcessFileTrackDto processFileTrackDto,String fileName,String refId,String submissionId) {
 
         Boolean flag=false;
         File file =new File(downZip+File.separator+fileName+File.separator+"userRecFile");
@@ -419,7 +419,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         by.write(size,0,count);
                         count= fileInputStream.read(size);
                     }
-                    Boolean aBoolean = fileToDto(by.toString(),licPremisesReqForInfoDto,processFileTrackDto,submissionId);
+                    Boolean aBoolean = fileToDto(by.toString(),processFileTrackDto,submissionId);
                     flag=aBoolean;
                     if(aBoolean&&processFileTrackDto!=null){
                         changeStatus(processFileTrackDto);
@@ -433,8 +433,8 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
         return flag;
     }
-    private Boolean fileToDto(String str,LicPremisesReqForInfoDto licPremisesReqForInfoDto,ProcessFileTrackDto processFileTrackDto,String submissionId){
-        licPremisesReqForInfoDto = JsonUtil.parseToObject(str, LicPremisesReqForInfoDto.class);
+    private Boolean fileToDto(String str,ProcessFileTrackDto processFileTrackDto,String submissionId){
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto = JsonUtil.parseToObject(str, LicPremisesReqForInfoDto.class);
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
         licPremisesReqForInfoDto.setAuditTrailDto(intranet);
         //eventbus

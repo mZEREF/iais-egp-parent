@@ -19,13 +19,13 @@
 <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
     <li id="infoli" class="" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab" >Info</a></li>
     <li id="documentsli" class="" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
-                                                data-toggle="tab">Documents</a></li>
+                                                         data-toggle="tab">Documents</a></li>
     <li id="checkListli" class="" role="presentation"><a id="checkList" aria-controls="tabCheckList" role="tab"
-                                                  data-toggle="tab">Checklist</a></li>
+                                                         data-toggle="tab">Checklist</a></li>
     <li id="emailViewli" class="" role="presentation"><a id="letter" aria-controls="tabLetter" role="tab"
-                                                                 data-toggle="tab">Email</a></li>
+                                                         data-toggle="tab">Email</a></li>
     <li id="processingli" class="" role="presentation"><a id="processing" aria-controls="tabProcessing" role="tab"
-                                                                 data-toggle="tab">Processing</a></li>
+                                                          data-toggle="tab">Processing</a></li>
 </ul>
 <div class="tab-nav-mobile visible-xs visible-sm">
     <div class="swiper-wrapper" role="tablist">

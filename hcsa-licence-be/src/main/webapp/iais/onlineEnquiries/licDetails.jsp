@@ -221,7 +221,7 @@
 
                             <div class="tab-pane" id="tabPersonnelDetails" role="tabpanel">
 
-                                    <!-- Default panel contents -->
+                                <!-- Default panel contents -->
                                 <c:forEach var="personnel" items="${personnelsDto}">
                                     <div class="panel panel-default">
                                         <div class="panel-heading"><strong>${personnel.licKeyPersonnelDto.psnType}</strong></div>

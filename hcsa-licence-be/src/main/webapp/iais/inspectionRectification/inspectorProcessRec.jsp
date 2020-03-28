@@ -112,6 +112,9 @@
                                 View Application
                               </button>
                             </a>
+                            <button type="button" class="btn btn-primary" onclick="javascript:doInspectorProRecView()">
+                              View Checklist
+                            </button>
                           </div>
                           <div>&nbsp</div>
                           <div class="panel panel-default">
@@ -422,6 +425,11 @@
         } else if ("REDECI007" != value){
             $("#indicateCondRemarks").hide();
         }
+    }
+
+    function doInspectorProRecView() {
+        $("#actionValue").val('view');
+        inspectorProRecSubmit('view');
     }
 
     function doInspectorProRecSubmit() {

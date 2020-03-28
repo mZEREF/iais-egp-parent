@@ -97,7 +97,7 @@
                         </c:if>
                         <tr>
                             <td class="col-xs-8">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Subspeciality or relevant qualification:</p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Subspeciality or relevant qualification :</p>
                             </td>
                             <td>
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.qualification}</p>
@@ -110,6 +110,14 @@
                             </td>
                             <td>
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.mobileNo}</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-8">
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Email Address :</p>
+                            </td>
+                            <td>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.emailAddr}</p>
                             </td>
                         </tr>
                     </table>

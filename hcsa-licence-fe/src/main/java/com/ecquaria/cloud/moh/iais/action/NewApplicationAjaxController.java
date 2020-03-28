@@ -399,8 +399,8 @@ public class NewApplicationAjaxController {
         //assign select
         List<SelectOption> assignPrincipalOfficerSel = ClinicalLaboratoryDelegator.getAssignPrincipalOfficerSel(svcId, false);
         Map<String,String> assignPrincipalOfficerAttr = IaisCommonUtils.genNewHashMap();
-        assignPrincipalOfficerAttr.put("name", "deputyAssignSelect");
-        assignPrincipalOfficerAttr.put("class", "deputyAssignSelect");
+        assignPrincipalOfficerAttr.put("name", "deputyPoSelect");
+        assignPrincipalOfficerAttr.put("class", "deputyPoSelect");
         assignPrincipalOfficerAttr.put("style", "display: none;");
         String principalOfficerSelStr = NewApplicationHelper.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, NewApplicationDelegator.FIRESTOPTION);
 

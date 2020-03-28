@@ -63,5 +63,8 @@ public class INTRANET___MohIntranetUser___1 extends BaseProcessClass {
 	public void import_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "doImport", this);
 	}
+	public void back_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "inportBack", this);
+	}
 
 }

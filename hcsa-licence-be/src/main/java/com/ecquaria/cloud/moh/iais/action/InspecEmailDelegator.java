@@ -120,7 +120,7 @@ public class InspecEmailDelegator {
         ApplicationViewDto applicationViewDto = fillupChklistService.getAppViewDto(taskDto.getId());
         applicationViewDto.setCurrentStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getStatus()}).get(0).getText());
         String appNo=applicationViewDto.getApplicationDto().getApplicationNo();
-        String licenseeId=inspEmailService.getAppInsRepDto(correlationId).getLicenseeId();
+        String licenseeId=applicationViewDto.getApplicationGroupDto().getLicenseeId();
         String licenseeName=inspEmailService.getLicenseeDtoById(licenseeId).getName();
         String appPremCorrId=correlationId;
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
@@ -131,22 +131,17 @@ public class InspecEmailDelegator {
         inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciAddress());
         HcsaServiceDto hcsaServiceDto=inspectionService.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId());
         inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
-        List<NcAnswerDto> ncAnswerDtos =insepctionNcCheckListService.getNcAnswerDtoList(appPremCorrId);
         AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,InspectionConstants.RECOM_TYPE_TCU);
         if(appPreRecommentdationDto!=null){
             inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
         }
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-        map.put("APPLICANT_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicantName()));
-        map.put("APPLICATION_NUMBER",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicationNumber()));
-        map.put("HCI_CODE",StringUtil.viewHtml(inspectionEmailTemplateDto.getHciCode()));
-        map.put("HCI_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getHciNameOrAddress()));
-        map.put("SERVICE_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getServiceName()));
-        if(!ncAnswerDtos.isEmpty()){
+        List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(appPremCorrId);
+        if(ncAnswerDtos.size()!=0){
             StringBuilder stringBuilder=new StringBuilder();
             int i=0;
             for (NcAnswerDto ncAnswerDto:ncAnswerDtos
-                 ) {
+            ) {
                 stringBuilder.append("<tr><td>").append(++i);
                 stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
                 stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getClause()));
@@ -155,6 +150,8 @@ public class InspecEmailDelegator {
             }
             map.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
         }
+        makeEmail(inspectionEmailTemplateDto, map);
+
         if(inspectionEmailTemplateDto.getBestPractices()!=null){
             map.put("BEST_PRACTICE",StringUtil.viewHtml(inspectionEmailTemplateDto.getBestPractices()));
         }
@@ -191,6 +188,14 @@ public class InspecEmailDelegator {
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,applicationViewDto);
         ParamUtil.setRequestAttr(request,"appPremisesRoutingHistoryDtos", appPremisesRoutingHistoryDtos);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
+    }
+
+    static void makeEmail(InspectionEmailTemplateDto inspectionEmailTemplateDto, Map<String, Object> map) {
+        map.put("APPLICANT_NAME", StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicantName()));
+        map.put("APPLICATION_NUMBER",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicationNumber()));
+        map.put("HCI_CODE",StringUtil.viewHtml(inspectionEmailTemplateDto.getHciCode()));
+        map.put("HCI_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getHciNameOrAddress()));
+        map.put("SERVICE_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getServiceName()));
     }
 
     public void emailSubmitStep(BaseProcessClass bpc){

@@ -81,7 +81,7 @@
                                     </tr>
                                     <tr id="${num.count}patRegNo${uid.count}" hidden>
                                         <td style="position: absolute;top: 55%;left: 3% ;width: 30%">Professional Registered No.</td>
-                                        <td style="position: absolute;top: 55%;right: 3% ;width: 55%"><iais:input type="text" maxLength="100" name="${num.count}patRegNo${uid.count}" value="${appCessHci.patRegNo}></iais:input></td>
+                                        <td style="position: absolute;top: 55%;right: 3% ;width: 55%"><iais:input type="text" maxLength="100" name="${num.count}patRegNo${uid.count}" value="${appCessHci.patRegNo}"></iais:input></td>
                                         <span style="position: absolute;top: 85%;left: 15% ;width: 80%" id="error_${num.count}patRegNo${uid.count}" name="iaisErrorMsg" class="error-msg"></span>
                                     </tr>
                                     <tr id="${num.count}patOthers${uid.count}" hidden>
