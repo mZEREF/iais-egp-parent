@@ -4,7 +4,28 @@
         <![CDATA[
             SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.PMT_STATUS, T5.APP_TYPE, T5.SUBMIT_DT, T5.COU FROM
             (SELECT DISTINCT T4.ID, T4.GROUP_NO, T4.PMT_STATUS, T1.ID AS APP_PREM_CORRID, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS, T3.HCI_CODE, T3.HCI_NAME, T4.SUBMIT_DT,
-             (T3.BLK_NO + ' ' + T3.STREET_NAME + ' ' + T3.BUILDING_NAME + ' # '+ T3.FLOOR_NO + '-' + T3.UNIT_NO + ', ' + T3.POSTAL_CODE) AS PREMISE,
+             CONCAT(T3.BLK_NO ,
+               case T3.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.STREET_NAME end
+               , case T3.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.BUILDING_NAME end
+               , case T3.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+T3.FLOOR_NO end
+               , case T3.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+T3.UNIT_NO end
+               , case T3.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+T3.POSTAL_CODE end
+              ) AS PREMISE,
              T6.COU
              FROM APP_PREMISES_CORRELATION T1
              JOIN APPLICATION T2 ON T2.ID = T1.APPLICATION_ID
@@ -28,7 +49,28 @@
         <![CDATA[
             SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.APP_TYPE FROM
             (SELECT DISTINCT T4.ID, T1.ID AS APP_PREM_CORR_ID, T4.GROUP_NO, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS, T3.HCI_CODE, T3.HCI_NAME,
-             (T3.BLK_NO + ' ' + T3.STREET_NAME + ' ' + T3.BUILDING_NAME + ' # '+ T3.FLOOR_NO + '-' + T3.UNIT_NO + ', ' + T3.POSTAL_CODE) AS PREMISE
+             CONCAT(T3.BLK_NO ,
+               case T3.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.STREET_NAME end
+               , case T3.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.BUILDING_NAME end
+               , case T3.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+T3.FLOOR_NO end
+               , case T3.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+T3.UNIT_NO end
+               , case T3.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+T3.POSTAL_CODE end
+              ) AS PREMISE
              FROM APP_PREMISES_CORRELATION T1
              JOIN APPLICATION T2 ON T2.ID = T1.APPLICATION_ID
              JOIN APP_GRP_PREMISES T3 ON T3.ID = T1.APP_GRP_PREM_ID
