@@ -598,6 +598,7 @@
                                                         <iais:row>
                                                             <iais:field value="Fast Tracking?" required="false"/>
                                                             <iais:value width="10">
+                                                                <p>
                                                                 <c:choose>
                                                                     <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012'}">
                                                                         <input class="form-check-input" id="fastTracking" type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
@@ -614,6 +615,7 @@
                                                                         </c:choose>
                                                                     </c:otherwise>
                                                                 </c:choose>
+                                                                </p>
                                                             </iais:value>
                                                         </iais:row>
                                                     <%--</div>--%>
