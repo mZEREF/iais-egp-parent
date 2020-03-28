@@ -144,7 +144,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
     public List<SelectOption> getProcessRecDecOption() {
         String[] processDecArr = new String[]
                 {InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION, InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION,
-                 InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION};
+                        InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION};
         List<SelectOption> processDecOption = MasterCodeUtil.retrieveOptionsByCodes(processDecArr);
         return processDecOption;
     }
@@ -311,7 +311,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
         List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(id).getEntity();
         if(!IaisCommonUtils.isEmpty(appPremisesPreInspectionNcItemDtos)){
             for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtos) {
-                ncItemDtoMap.put(appPremisesPreInspectionNcItemDto.getItemId(), appPremisesPreInspectionNcItemDto);
+                ncItemDtoMap.put(appPremisesPreInspectionNcItemDto.getId(), appPremisesPreInspectionNcItemDto);
             }
         }
         return ncItemDtoMap;
