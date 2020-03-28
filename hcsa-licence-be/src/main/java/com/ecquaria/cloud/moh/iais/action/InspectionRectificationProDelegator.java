@@ -287,7 +287,8 @@ public class InspectionRectificationProDelegator {
             } else {
                 ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
             }
-        }else if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue)){
+        }else if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue) || InspectionConstants.SWITCH_ACTION_VIEW.equals(actionValue) ||
+                InspectionConstants.SWITCH_ACTION_INSPECTOR_CHECKLIST.equals(actionValue)){
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
         }
     }
