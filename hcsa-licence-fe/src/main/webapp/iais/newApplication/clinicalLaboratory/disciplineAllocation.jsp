@@ -59,7 +59,7 @@
                                   <div id="edit-content">
                                     <c:choose>
                                       <c:when test="${AppSubmissionDto.appEditSelectDto.serviceEdit}">
-                                        <p class="text-right"><a id="edit"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
+                                        <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                                       </c:when>
                                       <c:otherwise>
 
