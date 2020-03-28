@@ -106,7 +106,7 @@
                       <div class="control control-caption-horizontal">
                         <div class="form-group form-horizontal formgap">
                           <div class="control-label formtext col-sm-5">
-                            <label class="control-label control-set-font control-font-label">Profession Type</label>
+                            <label class="control-label control-set-font control-font-label">Professional Type</label>
                             <span class="mandatory">*</span>
                             <span class="upload_controls"></span>
                           </div>

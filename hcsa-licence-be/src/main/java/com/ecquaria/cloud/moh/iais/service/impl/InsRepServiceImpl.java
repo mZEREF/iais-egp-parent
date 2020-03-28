@@ -161,7 +161,6 @@ public class InsRepServiceImpl implements InsRepService {
             nameList.add(otherOffices);
             inspectionReportDto.setInspectOffices(nameList);
         }
-
         //get application type (pre/post)
         Integer isPre = applicationGroupDto.getIsPreInspection();
         String appType = MasterCodeUtil.getCodeDesc(appTypeCode);

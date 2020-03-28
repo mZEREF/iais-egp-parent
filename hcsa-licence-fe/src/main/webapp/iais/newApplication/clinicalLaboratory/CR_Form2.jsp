@@ -1,5 +1,3 @@
-
-
 <style>
   table.control-grid.columns1 > tbody > tr > td > .section.control input[type=text], table.control-grid.columns1 > tbody > tr > td > .section.control input[type=email], table.control-grid.columns1 > tbody > tr > td > .section.control input[type=number], table.control-grid.columns1 > tbody > tr > td > .section.control .nice-select {
     margin-bottom: 15px;margin-top: 25px;
@@ -194,7 +192,7 @@
                                 <div  class="control control-caption-horizontal">
                                   <div class="form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext">
-                                      <label  class="control-label control-set-font control-font-label">Profession Type</label>
+                                      <label  class="control-label control-set-font control-font-label">Professional Type</label>
                                       <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>
@@ -332,7 +330,10 @@
         <c:if test="${'BLB'!=currentSvcCode && 'RDS'!=currentSvcCode && requestInformationConfig==null}">
           <tr id="addInfo">
             <td>
-              <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Clinical Governance Officer</span>
+              <div class="col-sm-5 col-md-5">
+                <span class="addListBtn" style="color:deepskyblue;cursor:pointer;"><span style="margin-left: -14px">+ Add Another Clinical Governance Officer</span></span>
+              </div>
+              <div  class="col-sm-5 col-md-5"><span class="errorMsg" style="color: red;"></span></div>
             </td>
           </tr>
         </c:if>
@@ -418,36 +419,43 @@
         var appendHtml = '<hr/> <table class="testTable">'+ assignContent+'</table>';
         $('.assignContent:last').after(appendHtml);*/
         $('.hideen-div').addClass('hidden');
+        var number = $('.assign-psn-item').size();
+        var addNumber = ${HcsaSvcPersonnel.maximumCount} - number;
         $.ajax({
-            'url':'${pageContext.request.contextPath}/governance-officer-html',
-            'dataType':'text',
-            'type':'GET',
-            'success':function (data) {
-                console.log("suc");
-                var length = $('.assignContent').length;
-                if(length>1){
-                    data = "<hr/>" + data;
-                }
-                $('.assignContent:last').after(data);
-                showSpecialty();
-
-                $('select.assignSel').change(function () {
-                    $parentEle = $(this).closest('td.first');
-                    if ($(this).val() == "newOfficer") {
-                        $parentEle.find('> .new-officer-form').removeClass('hidden');
-                        $parentEle.find('> .profile-info-gp').addClass('hidden');
-                    } else {
-                        $parentEle.find('> .profile-info-gp').removeClass('hidden');
-                        $parentEle.find('> .new-officer-form').addClass('hidden');
-                    }
-                });
-                //init font-size
-                $('.cgo-header').css('font-size',"18px");
-
-                <!--change psn item -->
-                changePsnItem();
+            url:'${pageContext.request.contextPath}/governance-officer-html',
+            dataType:'json',
+            data:{
+                "HasNumber":number,
+                "AddNumber":addNumber
             },
-            'error':function (data) {
+            type:'POST',
+            success:function (data) {
+                console.log(data.res);
+                if ('success' == data.res) {
+                    data.sucInfo = "<hr/>" + data.sucInfo;
+                    $('.assignContent:last').after(data.sucInfo);
+                    showSpecialty();
+
+                    $('select.assignSel').change(function () {
+                        $parentEle = $(this).closest('td.first');
+                        if ($(this).val() == "newOfficer") {
+                            $parentEle.find('> .new-officer-form').removeClass('hidden');
+                            $parentEle.find('> .profile-info-gp').addClass('hidden');
+                        } else {
+                            $parentEle.find('> .profile-info-gp').removeClass('hidden');
+                            $parentEle.find('> .new-officer-form').addClass('hidden');
+                        }
+                    });
+                    //init font-size
+                    $('.cgo-header').css('font-size',"18px");
+                    <!--change psn item -->
+                    changePsnItem();
+                }else{
+                    $('.errorMsg').html(data.errInfo);
+                }
+
+            },
+            error:function (data) {
                 console.log("err");
             }
         });

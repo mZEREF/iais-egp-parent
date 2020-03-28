@@ -41,7 +41,7 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-8">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation:</p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation :</p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${po.designation}"/></p>
@@ -57,7 +57,7 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-8">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No :</p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>MobileNo :</p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.mobileNo}</p>

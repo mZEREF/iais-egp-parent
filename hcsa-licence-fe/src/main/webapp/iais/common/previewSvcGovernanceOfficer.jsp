@@ -55,6 +55,7 @@
                         <tr>
                             <td class="col-xs-8">
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Type :</p>
+
                             </td>
                             <td>
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
@@ -63,6 +64,7 @@
                                         <c:when test="${cgo.professionType=='PROF002'  }">Doctor</c:when>
                                         <c:when test="${cgo.professionType=='PROF003'  }">Nurse</c:when>
                                     </c:choose> </p>
+                                </p>
                             </td>
                         </tr>
 

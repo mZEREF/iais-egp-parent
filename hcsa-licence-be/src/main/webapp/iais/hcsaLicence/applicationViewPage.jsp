@@ -464,7 +464,7 @@
                                                 <iais:section title="">
                                                         <iais:row>
                                                             <iais:field value="Current Status" required="false"/>
-                                                            <iais:value width="10">${applicationViewDto.currentStatus}</iais:value>
+                                                            <iais:value width="10"><p>${applicationViewDto.currentStatus}</p></iais:value>
                                                         </iais:row>
                                                     <%--<div>--%>
                                                         <iais:row>
@@ -507,7 +507,7 @@
                                                     </c:if>
                                                     <div id="rollBackDropdown" class="hidden">
                                                         <iais:row>
-                                                            <iais:field value="Route Back To" required="false"/>
+                                                            <iais:field value="Route Back To" required="true"/>
                                                             <iais:value width="10">
                                                                 <select name="rollBack" class="nice-select input-large">
                                                                     <option value="">Please Select</option>
@@ -522,7 +522,7 @@
                                                     </div>
                                                     <div id="verifiedDropdown" class="hidden">
                                                         <iais:row>
-                                                            <iais:field value="Verified" required="false"/>
+                                                            <iais:field value="Verified" required="true"/>
                                                             <iais:value width="10">
                                                                 <select name="verified" class="nice-select input-large">
                                                                     <option value="">Please Select</option>
@@ -540,7 +540,7 @@
                                                             <iais:field value="Licence Start Date" required="false"/>
                                                             <iais:value width="10">
                                                                 <c:choose>
-                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012'}">
+                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007'}">
                                                                     <iais:datePicker id="licenceStartDate" name="tuc"
                                                                                      value="${date}"></iais:datePicker>
                                                                     </c:when>

@@ -624,19 +624,19 @@ public class InterInboxDelegator {
 
         List<SelectOption> appServiceStatusSelectList = IaisCommonUtils.genNewArrayList();
         appServiceStatusSelectList.add(new SelectOption("All", "All"));
-        appServiceStatusSelectList.add(new SelectOption("All", "Draft"));
-        appServiceStatusSelectList.add(new SelectOption("All", "Recalled"));
-        appServiceStatusSelectList.add(new SelectOption("All", "Pending Payment"));
-        appServiceStatusSelectList.add(new SelectOption("All", "Pending Clarification"));
-        appServiceStatusSelectList.add(new SelectOption("All", "Pending Screening"));
-        appServiceStatusSelectList.add(new SelectOption("All", "Pending Inspection"));
-        appServiceStatusSelectList.add(new SelectOption("All", "Pending Appointment Scheduling"));
-        appServiceStatusSelectList.add(new SelectOption("All", "Pending Appointment Re-Scheduling"));
-        appServiceStatusSelectList.add(new SelectOption("All", "Pending NC Rectification"));
-        appServiceStatusSelectList.add(new SelectOption("All", "Pending Approval"));
-        appServiceStatusSelectList.add(new SelectOption("All", "Approved"));
-        appServiceStatusSelectList.add(new SelectOption("All", "Rejected"));
-        appServiceStatusSelectList.add(new SelectOption("All", "Withdrawn"));
+        appServiceStatusSelectList.add(new SelectOption("APST008", "Draft"));
+        appServiceStatusSelectList.add(new SelectOption("APST050", "Recalled"));
+        appServiceStatusSelectList.add(new SelectOption("APST051", "Pending Payment"));
+        appServiceStatusSelectList.add(new SelectOption("APST023", "Pending Clarification"));
+        appServiceStatusSelectList.add(new SelectOption("APST007", "Pending Screening"));
+        appServiceStatusSelectList.add(new SelectOption("APST001", "Pending Inspection"));
+        appServiceStatusSelectList.add(new SelectOption("APST039", "Pending Appointment Scheduling"));
+        appServiceStatusSelectList.add(new SelectOption("APST040", "Pending Appointment Re-Scheduling"));
+        appServiceStatusSelectList.add(new SelectOption("APST027", "Pending NC Rectification"));
+        appServiceStatusSelectList.add(new SelectOption("APST002", "Pending Approval"));
+        appServiceStatusSelectList.add(new SelectOption("APST005", "Approved"));
+        appServiceStatusSelectList.add(new SelectOption("APST006", "Rejected"));
+        appServiceStatusSelectList.add(new SelectOption("APST045", "Withdrawn"));
         ParamUtil.setRequestAttr(request, "appStatusSelect", appServiceStatusSelectList);
 
         List<SelectOption> appServiceTypeSelectList = IaisCommonUtils.genNewArrayList();

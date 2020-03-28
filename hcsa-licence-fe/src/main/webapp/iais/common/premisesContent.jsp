@@ -113,18 +113,18 @@
             </div>
             <div class="new-premise-form-on-site hidden  ">
                 <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label" for="siteSafefyNo">Fire Safety & Shelter Bureau Ref No. <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" title="&lt;p&gt;This is a xxx digit No. that you can access from the Life Saving Force Portral.&lt;/p&gt;">i</a></label>
+                        <div class="col-xs-9 col-sm-5 col-md-5">
+                            <input id="siteSafefyNo" maxlength="66" name="onSiteScdfRefNo" type="text" value="${appGrpPremisesDto.scdfRefNo}">
+                        </div>
+                    </div>
                     <iais:row>
                         <iais:field value="Fire Safety Certificate Issued Date" width="12"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
                             <iais:datePicker cssClass="fireIssuedDate " name="onSiteFireSafetyCertIssuedDate" value="${appGrpPremisesDto.certIssuedDtStr}" />
                         </iais:value>
                     </iais:row>
-                    <div class="form-group">
-                        <label class="col-xs-12 col-md-4 control-label" for="siteSafefyNo">Fire Safety Shelter Bureau Ref. No. <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" title="&lt;p&gt;This is a xxx digit No. that you can access from the Life Saving Force Portral.&lt;/p&gt;">i</a></label>
-                        <div class="col-xs-9 col-sm-5 col-md-5">
-                            <input id="siteSafefyNo" maxlength="66" name="onSiteScdfRefNo" type="text" value="${appGrpPremisesDto.scdfRefNo}">
-                        </div>
-                    </div>
                     <iais:row>
                         <iais:field value="Name of HCI " mandatory="true" width="11"/>
                         <iais:value width="11" cssClass="col-md-5 disabled">

@@ -8,9 +8,12 @@
 <webui:setLayout name="iais-internet"/>
 <%@ include file="./dashboard.jsp" %>
 <style>
-.margin-bottom-10{
-    margin-bottom:10px; ;
-}
+    .margin-bottom-10{
+        margin-bottom:10px;
+    }
+    .aMarginleft{
+        margin-left: 9px;
+    }
 </style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="crud_action_type"  value=""/>
@@ -25,7 +28,7 @@
 
                         <c:forEach items="${hcsaServiceDtoList}" var="list">
                             <div class="col-xs-12">
-                                <p class="ack-font-20">-<strong><c:out value="${list.svcName}"/> </strong></p>
+                                <p class="ack-font-20">- <strong><c:out value="${list.svcName}"/> </strong></p>
                             </div>
                         </c:forEach>
                         <div class="ack-font-16">
@@ -35,10 +38,10 @@
                             <br/>
                         </div>
                         <div class="col-xs-12">
-                            We will review apllication and notify you if any change are required.
+                            We will review your application and notify you if any changes are required.
                         </div>
                         <div class="col-xs-12">
-                            An in inspection date will be arranged if necessary.
+                            An inspection date will be arranged if necessary.
                             <br/>
                             <br/>
                         </div>
@@ -46,7 +49,7 @@
                             Transactional details:
                         </div>
                         <div class="col-xs-12">
-                            <table class="table" style="background-color: #BABABA;">
+                            <table class="table">
                                 <thead>
                                 <tr>
                                     <th>Application No.</th>
@@ -87,31 +90,24 @@
                     </c:otherwise>
                 </c:choose>
             </div>
-            <div class="row margin-bottom-10">
-                <div class="col-xs-12 col-md-2">
+            <div class="row margin-bottom-10 text-right">
+                <div class="col-xs-12 col-md-1">
                     <p class="print"><a href="#"> <em class="fa fa-print"></em>Print</a></p>
                 </div>
-                <div class="col-xs-12 col-md-10 text-right">
-                    <a class="btn btn-secondary" id="doPrefInsDate">Indicate preferred Inspection Date</a>
-                </div>
+                <div class="col-xs-11 col-md-11">
+
+                <c:if test="${requestInformationConfig == null}">
+                        <a class="btn btn-primary aMarginleft col-md-2 pull-right" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to <br>Dashboard</a>
+                        <a class="btn btn-secondary aMarginleft col-md-3 pull-right" href="/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu">Apply for <br>Another Licence</a>
+                        <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doSelfAssessment">Submit <br>Self-Assessment</a>
+                </c:if>
+                <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doPrefInsDate">Indicate preferred<br>Inspection Date</a>
+                <%--<div class="col-xs-12 col-md-10 text-right">--%>
+
+                    <%--<a class="btn btn-secondary" id="doPrefInsDate">Indicate preferred Inspection Date</a>--%>
+                <%--</div>--%>
             </div>
-            <c:if test="${requestInformationConfig == null}">
-                <div class="row margin-bottom-10">
-                    <div class="col-xs-12 text-right">
-                        <a class="btn btn-secondary" id="doSelfAssessment">Submit Self-Assessment</a>
-                    </div>
                 </div>
-                <div class="row margin-bottom-10">
-                    <div class="col-xs-12 text-right">
-                        <a class="btn btn-secondary" href="/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu">Apply for Another Licence</a>
-                    </div>
-                </div>
-                <div class="row margin-bottom-10">
-                    <div class="col-xs-12 text-right">
-                        <a class="btn btn-primary" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to Dashboard</a>
-                    </div>
-                </div>
-            </c:if>
         </div>
     </div>
 </form>

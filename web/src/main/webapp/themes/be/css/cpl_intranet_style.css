@@ -2581,7 +2581,6 @@ span.error-msg {
   -ms-transform: none;
   -o-transform: none;
   transform: none;
-  z-index: 99999;
 }
 .nice-select ul.list li {
   min-height: 50px;

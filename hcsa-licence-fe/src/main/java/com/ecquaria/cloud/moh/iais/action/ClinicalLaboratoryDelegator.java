@@ -689,6 +689,7 @@ public class ClinicalLaboratoryDelegator {
                 }
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
 
+
                 Map<String,String> coMap=(Map<String, String>) bpc.request.getSession().getAttribute("coMap");
                 if(errorMap.isEmpty()){
                     coMap.put("information","information");

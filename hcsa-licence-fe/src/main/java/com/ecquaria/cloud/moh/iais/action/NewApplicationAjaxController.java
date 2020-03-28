@@ -17,10 +17,7 @@ import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -212,72 +209,79 @@ public class NewApplicationAjaxController {
     }
 
 
-    @RequestMapping(value = "/governance-officer-html", method = RequestMethod.GET)
-    public @ResponseBody String genGovernanceOfficerHtmlList(HttpServletRequest request){
+    @PostMapping(value = "/governance-officer-html")
+    public @ResponseBody Map<String,String> genGovernanceOfficerHtmlList(HttpServletRequest request){
         log.debug(StringUtil.changeForLog("gen governance officer html start ...."));
-        String sql = SqlMap.INSTANCE.getSql("governanceOfficer", "generateGovernanceOfficerHtml").getSqlStr();
+        Map<String,String> resp = IaisCommonUtils.genNewHashMap();
+        int canAddNumber = ParamUtil.getInt(request,"AddNumber");
+        String HasNumber = ParamUtil.getRequestString(request,"HasNumber");
+        String errMsg = "Only <"+HasNumber+" of CGO> is allowed to be added";
+        if(canAddNumber>0){
+            String sql = SqlMap.INSTANCE.getSql("governanceOfficer", "generateGovernanceOfficerHtml").getSqlStr();
+            //assign cgo select
+            List<SelectOption> cgoSelectList= (List) ParamUtil.getSessionAttr(request, "CgoSelectList");
+            Map<String,String> cgoSelectAttr = IaisCommonUtils.genNewHashMap();
+            cgoSelectAttr.put("class", "assignSel");
+            cgoSelectAttr.put("name", "assignSelect");
+            cgoSelectAttr.put("style", "display: none;");
+            String cgoSelectStr = NewApplicationHelper.generateDropDownHtml(cgoSelectAttr, cgoSelectList, null);
 
-        //assign cgo select
-        List<SelectOption> cgoSelectList= (List) ParamUtil.getSessionAttr(request, "CgoSelectList");
-        Map<String,String> cgoSelectAttr = IaisCommonUtils.genNewHashMap();
-        cgoSelectAttr.put("class", "assignSel");
-        cgoSelectAttr.put("name", "assignSelect");
-        cgoSelectAttr.put("style", "display: none;");
-        String cgoSelectStr = NewApplicationHelper.generateDropDownHtml(cgoSelectAttr, cgoSelectList, null);
+            //salutation
+            List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
+            Map<String,String> salutationAttr = IaisCommonUtils.genNewHashMap();
+            salutationAttr.put("class", "salutationSel");
+            salutationAttr.put("name", "salutation");
+            salutationAttr.put("style", "display: none;");
+            String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
 
-        //salutation
-        List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-        Map<String,String> salutationAttr = IaisCommonUtils.genNewHashMap();
-        salutationAttr.put("class", "salutationSel");
-        salutationAttr.put("name", "salutation");
-        salutationAttr.put("style", "display: none;");
-        String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
+            //ID Type
+            List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
+            Map<String,String>  idTypeAttr = IaisCommonUtils.genNewHashMap();
+            idTypeAttr.put("class", "idTypeSel");
+            idTypeAttr.put("name", "idType");
+            idTypeAttr.put("style", "display: none;");
+            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null);
 
-        //ID Type
-        List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
-        Map<String,String>  idTypeAttr = IaisCommonUtils.genNewHashMap();
-        idTypeAttr.put("class", "idTypeSel");
-        idTypeAttr.put("name", "idType");
-        idTypeAttr.put("style", "display: none;");
-        String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null);
+            //Designation
+            List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
+            Map<String,String> designationAttr = IaisCommonUtils.genNewHashMap();
+            designationAttr.put("class", "designationSel");
+            designationAttr.put("name", "designation");
+            designationAttr.put("style", "display: none;");
+            String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
 
-        //Designation
-        List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
-        Map<String,String> designationAttr = IaisCommonUtils.genNewHashMap();
-        designationAttr.put("class", "designationSel");
-        designationAttr.put("name", "designation");
-        designationAttr.put("style", "display: none;");
-        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
+            //Professional Regn Type
+            List<SelectOption> proRegnTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE);
+            Map<String,String> proRegnTypeAttr = IaisCommonUtils.genNewHashMap();
+            proRegnTypeAttr.put("class", "professionTypeSel");
+            proRegnTypeAttr.put("name", "professionType");
+            proRegnTypeAttr.put("style", "display: none;");
+            String proRegnTypeSelectStr = NewApplicationHelper.generateDropDownHtml(proRegnTypeAttr, proRegnTypeList, NewApplicationDelegator.FIRESTOPTION);
 
-        //Professional Regn Type
-        List<SelectOption> proRegnTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE);
-        Map<String,String> proRegnTypeAttr = IaisCommonUtils.genNewHashMap();
-        proRegnTypeAttr.put("class", "professionTypeSel");
-        proRegnTypeAttr.put("name", "professionType");
-        proRegnTypeAttr.put("style", "display: none;");
-        String proRegnTypeSelectStr = NewApplicationHelper.generateDropDownHtml(proRegnTypeAttr, proRegnTypeList, NewApplicationDelegator.FIRESTOPTION);
+            //Specialty
+            List<SelectOption> specialtyList = (List<SelectOption>) ParamUtil.getSessionAttr(request, "SpecialtySelectList");
+            Map<String,String> specialtyAttr = IaisCommonUtils.genNewHashMap();
+            specialtyAttr.put("name", "specialty");
+            specialtyAttr.put("class", "specialty");
+            specialtyAttr.put("style", "display: none;");
+            String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialtyList, null);
 
-        //Specialty
-        List<SelectOption> specialtyList = (List<SelectOption>) ParamUtil.getSessionAttr(request, "SpecialtySelectList");
-        Map<String,String> specialtyAttr = IaisCommonUtils.genNewHashMap();
-        specialtyAttr.put("name", "specialty");
-        specialtyAttr.put("class", "specialty");
-        specialtyAttr.put("style", "display: none;");
-        String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialtyList, null);
+            sql = sql.replace("(1)", cgoSelectStr);
+            sql = sql.replace("(2)", salutationSelectStr);
+            sql = sql.replace("(3)", idTypeSelectStr);
+            sql = sql.replace("(4)", designationSelectStr);
+            sql = sql.replace("(5)", proRegnTypeSelectStr);
+            sql = sql.replace("(6)", specialtySelectStr);
 
+            log.debug(StringUtil.changeForLog("gen governance officer html end ...."));
+            resp.put("sucInfo",sql);
+            resp.put("res","success");
+        }else{
+            resp.put("errInfo",errMsg);
 
+        }
+        return resp;
 
-        sql = sql.replace("(1)", cgoSelectStr);
-        sql = sql.replace("(2)", salutationSelectStr);
-        sql = sql.replace("(3)", idTypeSelectStr);
-        sql = sql.replace("(4)", designationSelectStr);
-        sql = sql.replace("(5)", proRegnTypeSelectStr);
-        sql = sql.replace("(6)", specialtySelectStr);
-
-
-
-        log.debug(StringUtil.changeForLog("gen governance officer html end ...."));
-        return sql;
     }
 
     /**

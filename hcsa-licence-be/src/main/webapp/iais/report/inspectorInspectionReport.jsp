@@ -24,7 +24,7 @@
                             <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
                             <li id="report" class="${reportClassTop}" role="presentation"><a id ="reportClink" href="#tabInspectionReport" aria-controls="tabProcessing" role="tab"
-                                                                        data-toggle="tab">Inspection Report</a></li>
+                                                                                             data-toggle="tab">Inspection Report</a></li>
                             <li class="complete" role="presentation"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab"
                                                                         data-toggle="tab">Processing</a></li>
 
@@ -235,13 +235,13 @@
                                                     </iais:value>
                                                 </iais:row>
 
-                                                    <iais:row>
-                                                        <iais:field value="Processing Decision" required="true"/>
-                                                        <iais:value width="6">
-                                                            <iais:select id="processSubmit" name="processingDecision" options="processingDe" firstOption="Please select" value="${appPremisesRecommendationDto.processingDecision}"/>
-                                                            <span id="error_submit" class="error-msg" hidden> The field is mandatory.</span>
-                                                        </iais:value>
-                                                    </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Processing Decision" required="true"/>
+                                                    <iais:value width="6">
+                                                        <iais:select id="processSubmit" name="processingDecision" options="processingDe" firstOption="Please select" value="${appPremisesRecommendationDto.processingDecision}"/>
+                                                        <span id="error_submit" class="error-msg" hidden> The field is mandatory.</span>
+                                                    </iais:value>
+                                                </iais:row>
                                             </iais:section>
 
                                             <iais:action style="text-align:right;">

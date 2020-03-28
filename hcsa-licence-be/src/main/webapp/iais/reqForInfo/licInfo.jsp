@@ -252,7 +252,7 @@
                                                             <td>${personnel.keyPersonnelDto.designation}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td align="right">Profession Type</td>
+                                                            <td align="right">Professional Type</td>
                                                             <td>${personnel.keyPersonnelExtDto.professionType}</td>
                                                         </tr>
                                                         <tr>

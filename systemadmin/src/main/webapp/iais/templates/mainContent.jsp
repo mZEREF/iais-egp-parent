@@ -38,23 +38,23 @@
                                        varStatus="status">
                                 <tr>
                                     <td>
-                                        <p class="visible-xs visible-sm table-row-title">No.</p>
-                                        <p>#${(MsgTemplateSearchParam.pageNo - 1) * MsgTemplateSearchParam.pageSize + status.index + 1}</p>
+                                        <p class="visible-xs visible-sm table-row-title">S/N</p>
+                                        <p>${(MsgTemplateSearchParam.pageNo - 1) * MsgTemplateSearchParam.pageSize + status.index + 1}</p>
                                     </td>
                                     <td>
-                                        <p class="visible-xs visible-sm table-row-title">Message Type.</p>
+                                        <p class="visible-xs visible-sm table-row-title">Message Type</p>
                                         <p>${msgTemplateResult.messageType}</p>
                                     </td>
                                     <td>
-                                        <p class="visible-xs visible-sm table-row-title">Template Name.</p>
+                                        <p class="visible-xs visible-sm table-row-title">Template Name</p>
                                         <p>${msgTemplateResult.templateName}</p>
                                     </td>
                                     <td>
-                                        <p class="visible-xs visible-sm table-row-title">Delivery Mode.</p>
+                                        <p class="visible-xs visible-sm table-row-title">Delivery Mode</p>
                                         <p>${msgTemplateResult.deliveryMode}</p>
                                     </td>
                                     <td>
-                                        <p class="visible-xs visible-sm table-row-title">Effective Start Date.</p>
+                                        <p class="visible-xs visible-sm table-row-title">Effective Start Date</p>
                                         <p><fmt:formatDate value="${msgTemplateResult.effectiveFrom}"
                                                            pattern="dd/MM/yyyy"/></p>
                                     </td>
