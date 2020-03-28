@@ -17,18 +17,19 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.util.CopyUtil;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.util.CopyUtil;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author weilu
@@ -52,7 +53,7 @@ public class CessationApplicationDelegator {
 
     public void init(BaseProcessClass bpc){
         List<String> licIds = (List<String>)ParamUtil.getSessionAttr(bpc.request, "licIds");
-        if(licIds==null){
+        if(licIds==null||licIds.size()==0){
             licIds = IaisCommonUtils.genNewArrayList();
             licIds.add("ACB51822-A656-EA11-BE7F-000C29F371DC");
             licIds.add("4083B3AD-B04D-EA11-BE7F-000C29F371DC");

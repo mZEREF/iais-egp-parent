@@ -137,8 +137,9 @@ public class InspectEmailAo1Delegator {
         if(serListDto != null){
             List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
             if(fdtoList != null && fdtoList.size() >0){
-                for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList)
+                for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList){
                     insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(inspectionFillCheckListDto);
+                }
             }
         }
         //set num
