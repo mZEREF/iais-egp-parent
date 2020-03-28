@@ -1,4 +1,4 @@
-$(window).on(function(){
+$(window).on("load", function(){
     tinymce.init({
         selector: "#htmlEditroArea",  // change this value according to your HTML
         menubar: 'file edit view insert format tools',
