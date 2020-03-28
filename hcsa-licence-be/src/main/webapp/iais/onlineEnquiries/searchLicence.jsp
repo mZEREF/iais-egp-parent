@@ -166,7 +166,7 @@
                     <c:if test="${choose[0]==1}">
                         <h4>
                         <span >Search By HCI
-                            <b class="form-check">&nbsp;
+                            <strong class="form-check">&nbsp;
                                 <c:choose>
                                     <c:when test="${choose[0]==1}">
                                     <input class="form-check-input licenceCheck" id="hciChk" type="checkbox"
@@ -182,7 +182,7 @@
                                     </label>
                                     </c:otherwise>
                                 </c:choose>
-                            </b>
+                            </strong>
                         </span>
                         </h4>
                         
@@ -232,7 +232,7 @@
                     <c:if test="${choose[3]==4}">
                         <h4>
                         <span >Search By Licensee
-                            <b class="form-check">&nbsp;
+                            <strong class="form-check">&nbsp;
                                 <c:choose>
                                     <c:when test="${choose[3]==4}">
                                         <input class="form-check-input licenceCheck" id="licenseeChk" type="checkbox" checked  name="licenseeChk"  >
@@ -247,7 +247,7 @@
                                         </label>
                                     </c:otherwise>
                                 </c:choose>
-                            </b>
+                            </strong>
                         </span>
                         </h4>
                         
@@ -288,7 +288,7 @@
                     <c:if test="${choose[4]==5}">
                         <h4>
                         <span>Search By Service Personnel Details (CGO, PO, DPO & MedAlert)
-                            <b class="form-check">&nbsp;
+                            <strong class="form-check">&nbsp;
                                 <c:choose>
                                     <c:when test="${choose[4]==5}">
                                         <input class="form-check-input licenceCheck" id="servicePersonnelChk" type="checkbox" checked  name="servicePersonnelChk"  >
@@ -303,7 +303,7 @@
                                     </label>
                                     </c:otherwise>
                                 </c:choose>
-                            </b>
+                            </strong>
                         </span>
                         </h4>
                         
@@ -365,7 +365,6 @@
 </form>
 <script type="text/javascript">
     function doLicSearch(){
-        showWaiting();
         showWaiting();
         var startTo=$('#start_to_date').val();
         var startSub=$('#start_date').val();

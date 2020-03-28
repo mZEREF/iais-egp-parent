@@ -817,7 +817,7 @@ public class OfficerOnlineEnquiriesDelegator {
     @GetMapping(value = "/valid-licenceId")
     public @ResponseBody
     List<String> reloadRevEmail(HttpServletRequest request)  {
-        String[] appIds=ParamUtil.getMaskedStrings(request,"appIds");
+        String [] appIds=ParamUtil.getStrings(request,"appIds");
         List<String> applIds=IaisCommonUtils.genNewArrayList();
         try{
             Collections.addAll(applIds, appIds);

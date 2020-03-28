@@ -516,17 +516,17 @@ public class RequestForInformationDelegator {
                 searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
                 ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
             }
-        }
-        if(!StringUtil.isEmpty(subDate)){
-            licParam.getFilters().put("start_date",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
-                    AppConsts.DEFAULT_DATE_FORMAT));
-        }
-        if(!StringUtil.isEmpty(toDate)){
-            licParam.getFilters().put("expiry_date",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
-                    AppConsts.DEFAULT_DATE_FORMAT));
-        }
-        if(!StringUtil.isEmpty(serviceLicenceType)){
-            licParam.getFilters().put("licSvcName",serviceLicenceType);
+            if(!StringUtil.isEmpty(subDate)){
+                licParam.getFilters().put("start_date",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
+                        AppConsts.DEFAULT_DATE_FORMAT));
+            }
+            if(!StringUtil.isEmpty(toDate)){
+                licParam.getFilters().put("expiry_date",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
+                        AppConsts.DEFAULT_DATE_FORMAT));
+            }
+            if(!StringUtil.isEmpty(serviceLicenceType)){
+                licParam.getFilters().put("licSvcName",serviceLicenceType);
+            }
         }
         ParamUtil.setRequestAttr(request,"SearchParam", licParam);
         ParamUtil.setRequestAttr(request,"serviceLicenceType",serviceLicenceType);

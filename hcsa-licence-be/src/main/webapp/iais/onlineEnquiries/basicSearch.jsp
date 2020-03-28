@@ -270,29 +270,30 @@
         SOP.Crud.cfxSubmit("mainForm", "appDetails",appCorrId);
     }
     function doCessation() {
-        showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "cessation");
-        <%--var chk=$("[name='appIds']:checked");--%>
-        <%--var dropIds = new Array();--%>
-        <%--chk.each(function(){--%>
-        <%--    dropIds.push($(this).val());--%>
-        <%--});--%>
-        <%--var data = {--%>
-        <%--    'appIds':dropIds--%>
-        <%--};--%>
-        <%--$.ajax({--%>
-        <%--    'url':'${pageContext.request.contextPath}/valid-licenceId',--%>
-        <%--    'date':data,--%>
-        <%--    'type':'GET',--%>
-        <%--    'success':function (data) {--%>
-        <%--        if(data.length===0){--%>
-        <%--            $("#selectDecisionMsg").show();--%>
-        <%--            //dismissWaiting();--%>
-        <%--        }else {--%>
-        <%--            $("#selectDecisionMsg").style.display="none";--%>
-        <%--            SOP.Crud.cfxSubmit("mainForm", "cessation");--%>
-        <%--        }--%>
-        <%--    }--%>
-        <%--});--%>
+        //showWaiting();
+        //SOP.Crud.cfxSubmit("mainForm", "cessation");
+        var chk=$("[name='appIds']:checked");
+        var dropIds = new Array();
+        chk.each(function(){
+            dropIds.push($(this).val());
+        });
+        var data = {
+            'appIds':dropIds
+        };
+        $.ajax({
+            'url':'${pageContext.request.contextPath}/valid-licenceId',
+            'date':data,
+            'dataType':'json',
+            'type':'GET',
+            'success':function (data) {
+                if(data.length===0){
+                    $("#selectDecisionMsg").show();
+                    //dismissWaiting();
+                }else {
+                    $("#selectDecisionMsg").style.display="none";
+                    SOP.Crud.cfxSubmit("mainForm", "cessation");
+                }
+            }
+        });
     }
 </script>
