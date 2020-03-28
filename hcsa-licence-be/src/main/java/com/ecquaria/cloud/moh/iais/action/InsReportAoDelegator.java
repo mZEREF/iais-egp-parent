@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -24,12 +23,10 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloudfeign.FeignException;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
@@ -47,10 +44,14 @@ public class InsReportAoDelegator {
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
-    private final String RECOMMENDATION_DTO= "appPremisesRecommendationDto";
-    private final String OTHERS="Others";
-    private final String APPROVAL="Approval";
-    private final String REJECT="Reject";
+    private final static String RECOMMENDATION_DTO= "appPremisesRecommendationDto";
+    private final static String OTHERS="Others";
+    private final static String APPROVAL="Approval";
+    private final static String REJECT="Reject";
+    private final static String INSREPDTO="insRepDto";
+    private final static String APPLICATIONVIEWDTO="applicationViewDto";
+    private final static String TASKDTO="taskDto";
+
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
@@ -60,9 +61,9 @@ public class InsReportAoDelegator {
 
     public void AoInit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the inspectionReportInit start ...."));
-        ParamUtil.setSessionAttr(bpc.request, "insRepDto", null);
+        ParamUtil.setSessionAttr(bpc.request, INSREPDTO, null);
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, null);
-        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
+        ParamUtil.setSessionAttr(bpc.request, APPLICATIONVIEWDTO, null);
 
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String taskId = ParamUtil.getString(bpc.request,"taskId");
@@ -96,9 +97,9 @@ public class InsReportAoDelegator {
         ParamUtil.setSessionAttr(bpc.request, "riskLevelOptions", (Serializable) riskLevelOptions);
         ParamUtil.setSessionAttr(bpc.request, "chronoOption", (Serializable) chronoOption);
         ParamUtil.setSessionAttr(bpc.request, "riskOption", (Serializable)riskOption);
-        ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
-        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
-        ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
+        ParamUtil.setSessionAttr(bpc.request, INSREPDTO, insRepDto);
+        ParamUtil.setSessionAttr(bpc.request, APPLICATIONVIEWDTO, applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request, TASKDTO, taskDto);
     }
 
     public void AoReportPre(BaseProcessClass bpc) {
@@ -107,18 +108,18 @@ public class InsReportAoDelegator {
 
     public void action(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the action start ...."));
-        InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
-        TaskDto taskDto =  (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
-        ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
-        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
-        ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
+        InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, INSREPDTO);
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, APPLICATIONVIEWDTO);
+        TaskDto taskDto =  (TaskDto)ParamUtil.getSessionAttr(bpc.request, TASKDTO);
+        ParamUtil.setSessionAttr(bpc.request, INSREPDTO, insRepDto);
+        ParamUtil.setSessionAttr(bpc.request, APPLICATIONVIEWDTO, applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request, TASKDTO, taskDto);
     }
 
     public void back(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the back start ...."));
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
-        TaskDto taskDto =  (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, APPLICATIONVIEWDTO);
+        TaskDto taskDto =  (TaskDto)ParamUtil.getSessionAttr(bpc.request, TASKDTO);
         String historyRemarks = ParamUtil.getRequestString(bpc.request, "processingDecision");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -127,11 +128,11 @@ public class InsReportAoDelegator {
 
     public void approve(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the inspectorReportAction start ...."));
-        InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, INSREPDTO);
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, APPLICATIONVIEWDTO);
         AppPremisesRecommendationDto appPremisesRecommendationDto = (AppPremisesRecommendationDto)ParamUtil.getSessionAttr(bpc.request, RECOMMENDATION_DTO);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        TaskDto taskDto =  (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        TaskDto taskDto =  (TaskDto)ParamUtil.getSessionAttr(bpc.request, TASKDTO);
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         AppPremisesRecommendationDto preapreRecommendationDto = prepareRecommendation(bpc,appPremisesRecommendationDto);
         ParamUtil.setSessionAttr(bpc.request, "preapreRecommendationDto", preapreRecommendationDto);
@@ -149,26 +150,11 @@ public class InsReportAoDelegator {
             ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", reportClassBelow);
             return;
         }
-        saveAoRecommendation(appPremisesCorrelationId,bpc,preapreRecommendationDto);
+        saveAoRecommendation(appPremisesCorrelationId,preapreRecommendationDto);
         insRepService.routingTaskToAo2(taskDto,applicationDto,appPremisesCorrelationId);
-        ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
+        ParamUtil.setSessionAttr(bpc.request, INSREPDTO, insRepDto);
         ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
     }
-
-//    private AppPremisesRecommendationDto prepareSaveRecommendation (BaseProcessClass bpc,String appPremisesCorrelationId){
-//        String processingDecision = ParamUtil.getRequestString(bpc.request, "processingDecision");
-//        AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
-//        appPremisesRecommendationDto.setRecomInDate(new Date());
-//        appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
-//        if(APPROVAL.equals(processingDecision)){
-//            appPremisesRecommendationDto.setRecomDecision(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-//            appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-//        }else if(REJECT.equals(processingDecision)){
-//            appPremisesRecommendationDto.setRecomDecision(ApplicationConsts.PROCESSING_DECISION_REJECT);
-//            appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-//        }
-//        return appPremisesRecommendationDto;
-//    }
 
     private AppPremisesRecommendationDto prepareRecommendation (BaseProcessClass bpc,AppPremisesRecommendationDto appPremisesRecommendationDto){
         String riskLevel = ParamUtil.getRequestString(bpc.request, "riskLevel");
@@ -199,9 +185,6 @@ public class InsReportAoDelegator {
             String reportRemarks = appPremisesRecommendationDto.getRemarks();
             initRecommendationDto.setRemarks(reportRemarks);
             String recomDecision = appPremisesRecommendationDto.getRecomDecision();
-            if(!REJECT.equals(recomDecision)){
-
-            }
             String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
             if(StringUtil.isEmpty(chronoUnit)&&StringUtil.isEmpty(recomInNumber)){
@@ -228,9 +211,7 @@ public class InsReportAoDelegator {
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, initRecommendationDto);
     }
 
-    private void saveAoRecommendation(String appPremisesCorrelationId,BaseProcessClass bpc,AppPremisesRecommendationDto preapreRecommendationDto){
-//        AppPremisesRecommendationDto recommendationDto = prepareSaveRecommendation(bpc, appPremisesCorrelationId);
-//        insRepService.updateRecommendation(recommendationDto);
+    private void saveAoRecommendation(String appPremisesCorrelationId,AppPremisesRecommendationDto preapreRecommendationDto){
         String engageEnforcement = preapreRecommendationDto.getEngageEnforcement();
         String riskLevel = preapreRecommendationDto.getRiskLevel();
         String followUpAction = preapreRecommendationDto.getFollowUpAction();
@@ -259,14 +240,14 @@ public class InsReportAoDelegator {
     }
 
     private List<SelectOption> getChronoOption() {
-        List<SelectOption> ChronoResult = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> chronoResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("Year", "Year");
         SelectOption so2 = new SelectOption("Month", "Month");
         SelectOption so3 = new SelectOption("Week", "Week");
-        ChronoResult.add(so1);
-        ChronoResult.add(so2);
-        ChronoResult.add(so3);
-        return ChronoResult;
+        chronoResult.add(so1);
+        chronoResult.add(so2);
+        chronoResult.add(so3);
+        return chronoResult;
     }
 
     private List<SelectOption> getriskLevel() {
