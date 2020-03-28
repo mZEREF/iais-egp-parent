@@ -441,7 +441,7 @@
     <div height="1" style="display: none" id="selectDecisionMsg">
         <div class="col-sm-9">
             <p style="color:#ff0000;">
-                There is no valid licenceId.
+                There is no valid licenceNo
             </p>
         </div>
     </div>
