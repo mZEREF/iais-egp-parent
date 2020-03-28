@@ -864,6 +864,7 @@ public class ClinicalLaboratoryDelegator {
                             file.getFileItem().setFieldName("selectedFile");
                             appSvcDocDto = new AppSvcDocDto();
                             appSvcDocDto.setSvcDocId(docConfigId);
+                     /*       appSvcDocDto.setUpFileName();*/
                             appSvcDocDto.setDocName(file.getOriginalFilename());
                             long size = file.getSize()/1024;
                             appSvcDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
