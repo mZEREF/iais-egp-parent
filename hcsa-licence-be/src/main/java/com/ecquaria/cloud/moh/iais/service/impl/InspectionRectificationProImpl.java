@@ -311,7 +311,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
         List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(id).getEntity();
         if(!IaisCommonUtils.isEmpty(appPremisesPreInspectionNcItemDtos)){
             for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtos) {
-                ncItemDtoMap.put(appPremisesPreInspectionNcItemDto.getItemId(), appPremisesPreInspectionNcItemDto);
+                ncItemDtoMap.put(appPremisesPreInspectionNcItemDto.getId(), appPremisesPreInspectionNcItemDto);
             }
         }
         return ncItemDtoMap;
