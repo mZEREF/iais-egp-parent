@@ -496,6 +496,24 @@ public class NewApplicationAjaxController {
         return appGrpPremisesDto;
     }
 
+    /**
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping(value = "/psn-new")
+    public @ResponseBody AppSvcCgoDto getNewPsnInfo(HttpServletRequest request){
+        log.debug(StringUtil.changeForLog("the getNewPsnInfo start ...."));
+        String idNo = ParamUtil.getString(request,"idNo");
+        if(StringUtil.isEmpty(idNo)){
+            return null;
+        }
+        AppSubmissionDto appSubmissionDto = ClinicalLaboratoryDelegator.getAppSubmissionDto(request);
+        AppSvcCgoDto appSvcCgoDto = NewApplicationHelper.getPsnFromSubDto(appSubmissionDto,idNo);
+
+        log.debug(StringUtil.changeForLog("the getNewPsnInfo end ...."));
+        return appSvcCgoDto;
+    }
 
 
 

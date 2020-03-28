@@ -298,6 +298,7 @@ public class ClinicalLaboratoryDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         List<HcsaSvcPersonnelDto> principalOfficerConfig  =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
         List<HcsaSvcPersonnelDto> deputyPrincipalOfficerConfig   =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         int mandatory = 0;
         int deputyMandatory = 0;
         if(principalOfficerConfig != null && !principalOfficerConfig.isEmpty()){
@@ -343,6 +344,12 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setRequestAttr(bpc.request, "IdTypeSelect", IdTypeSelect);
 
         List<SelectOption> assignSelectList = getAssignPrincipalOfficerSel(currentSvcId, true);
+        Map<String,AppSvcCgoDto> psnMap = NewApplicationHelper.getPsnMapFromSubDto(appSubmissionDto);
+        psnMap.forEach((k,v)->{
+            //todo:confirm
+            SelectOption sp = new SelectOption(k,v.getName()+" "+v.getIdNo());
+            assignSelectList.add(sp);
+        });
         ParamUtil.setRequestAttr(bpc.request, "PrincipalOfficersAssignSelect", assignSelectList);
 
         List<SelectOption> deputyAssignSelectList = getAssignPrincipalOfficerSel(currentSvcId, true);
@@ -1318,6 +1325,7 @@ public class ClinicalLaboratoryDelegator {
 
     private List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDto(HttpServletRequest request, Boolean isGetDataFromPagePo, Boolean isGetDataFromPageDpo){
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
+        String deputySelect = ParamUtil.getString(request, "deputyPrincipalOfficer");
         if(isGetDataFromPagePo){
             String [] assignSelect = ParamUtil.getStrings(request, "poSelect");
             String [] salutation = ParamUtil.getStrings(request, "salutation");
@@ -1347,8 +1355,8 @@ public class ClinicalLaboratoryDelegator {
         }
 
         //depo
-        if(isGetDataFromPageDpo){
-            String [] assignSelect = ParamUtil.getStrings(request, "deputyPoSelect");
+        if("1".equals(deputySelect) && isGetDataFromPageDpo){
+            String [] assignSelect = ParamUtil.getStrings(request, "deputyAssignSelect");
             String [] deputySalutation = ParamUtil.getStrings(request, "deputySalutation");
             String [] deputyDesignation = ParamUtil.getStrings(request, "deputyDesignation");
             String [] deputyName = ParamUtil.getStrings(request, "deputyName");
