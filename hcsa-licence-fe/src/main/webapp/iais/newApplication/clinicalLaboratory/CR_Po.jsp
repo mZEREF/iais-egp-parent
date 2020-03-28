@@ -9,18 +9,14 @@
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
       <div class="panel panel-default">
         <div class="panel-heading " id="headingPrincipal" role="tab">
+          <c:set var="canExpand" value="${(ReloadPrincipalOfficers != null && ReloadPrincipalOfficers.size()>0) || (ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0)}"/>
           <h4 class="panel-title"><a role="button" class="
-          <c:choose>
-            <c:when test="${(ReloadPrincipalOfficers != null && ReloadPrincipalOfficers.size()>0) || (ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0)}">
-
-            </c:when>
-            <c:otherwise>
-            collapsed
-            </c:otherwise>
-          </c:choose>
+          <c:if test="${!canExpand}">
+          collapsed
+          </c:if>
 " data-toggle="collapse" href="#collapsePrincipal" aria-expanded="true" aria-controls="collapsePrincipal">Principal Officer</a></h4>
         </div>
-        <div class="panel-collapse collapse <c:if test="${(ReloadPrincipalOfficers != null && ReloadPrincipalOfficers.size()>0) || (ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0)}" >
+        <div class="panel-collapse collapse <c:if test="${canExpand}" >
           in
         </c:if>  " id="collapsePrincipal" role="tabpanel" aria-labelledby="headingPremise">
 
@@ -295,7 +291,7 @@
                             <span class="upload_controls"></span>
                           </div>
                           <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
-                              <iais:select cssClass="deputyPoSelect"  name="deputyAssignSelect" options="DeputyPrincipalOfficersAssignSelect"  value="${deputy.assignSelect}" ></iais:select>
+                              <iais:select cssClass="deputyPoSelect"  name="deputyPoSelect" options="DeputyPrincipalOfficersAssignSelect"  value="${deputy.assignSelect}" ></iais:select>
                           </div>
                         </div>
                       </div>

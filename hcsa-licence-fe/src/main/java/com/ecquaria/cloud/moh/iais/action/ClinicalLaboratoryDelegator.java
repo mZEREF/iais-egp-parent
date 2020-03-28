@@ -1318,7 +1318,6 @@ public class ClinicalLaboratoryDelegator {
 
     private List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDto(HttpServletRequest request, Boolean isGetDataFromPagePo, Boolean isGetDataFromPageDpo){
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
-        String deputySelect = ParamUtil.getString(request, "deputyPrincipalOfficer");
         if(isGetDataFromPagePo){
             String [] assignSelect = ParamUtil.getStrings(request, "poSelect");
             String [] salutation = ParamUtil.getStrings(request, "salutation");
@@ -1348,8 +1347,8 @@ public class ClinicalLaboratoryDelegator {
         }
 
         //depo
-        if("1".equals(deputySelect) && isGetDataFromPageDpo){
-            String [] assignSelect = ParamUtil.getStrings(request, "deputyAssignSelect");
+        if(isGetDataFromPageDpo){
+            String [] assignSelect = ParamUtil.getStrings(request, "deputyPoSelect");
             String [] deputySalutation = ParamUtil.getStrings(request, "deputySalutation");
             String [] deputyDesignation = ParamUtil.getStrings(request, "deputyDesignation");
             String [] deputyName = ParamUtil.getStrings(request, "deputyName");
@@ -1359,7 +1358,7 @@ public class ClinicalLaboratoryDelegator {
             String [] deputyOfficeTelNo = ParamUtil.getStrings(request, "deputyOfficeTelNo");
             String [] deputyEmailAddr = ParamUtil.getStrings(request, "deputyEmailAddr");
             if(assignSelect != null && assignSelect.length>0){
-                for(int i=0 ;i <deputyDesignation.length;i++){
+                for(int i=0 ;i <assignSelect.length;i++){
                     AppSvcPrincipalOfficersDto dpoDto = new AppSvcPrincipalOfficersDto();
                     dpoDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
                     dpoDto.setAssignSelect(assignSelect[i]);
