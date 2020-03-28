@@ -179,7 +179,15 @@ public class ApplicationClientFallback implements ApplicationClient {
     }
 
     @Override
-    public FeignResponseEntity<List<SelfDeclaration>> getSelfDeclRfiData(String groupId) {
+    public FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> getAppPremisesSelfDeclByCorrelationId(String correlationId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<String> inActiveLastVersionByGroupId(List<String> lastVersionId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

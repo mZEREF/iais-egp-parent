@@ -200,9 +200,6 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
         return premCheckItemList;
     }
 
-
-
-
     /**
     * @author: yichen
     * @description: The configuration for common is displayed in the first location of the TAB
@@ -228,7 +225,23 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     * @return: void
     */
     public void saveSelfDecl(List<SelfDeclaration> selfDeclList) {
-        //save fe after return data
+        //if it is RFI, the last version of record should be inactive
+        boolean flag = false;
+        List<String> lastVersionIds = null;
+        if (!flag && !selfDeclList.isEmpty()){
+            for (SelfDeclaration selfDeclaration : selfDeclList){
+                if (!selfDeclaration.isCommon()){
+                    lastVersionIds = selfDeclaration.getPkId();
+                    flag = true;
+                }
+
+            }
+        }
+
+        if (!IaisCommonUtils.isEmpty(lastVersionIds)){
+            applicationClient.inActiveLastVersionByGroupId(lastVersionIds);
+        }
+
         List<AppPremisesSelfDeclChklDto> contentJsonList = applicationClient.saveAllSelfDecl(selfDeclList).getEntity();
 
         try {

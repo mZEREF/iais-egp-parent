@@ -9,13 +9,13 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclaration;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremSelfDeclService;
+import com.ecquaria.cloud.moh.iais.service.SelfDeclRfiService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +30,16 @@ import java.util.Map;
 @Delegator(value = "appPremSelfDeclDelegator")
 @Slf4j
 public class AppPremSelfDeclDelegator {
+    private static final String GROUP_ID_ATTR = "groupId";
+    private static final String SELF_DECL_ACTION = "selfDeclAction";
+
     private final AppPremSelfDeclService appPremSelfDesc;
+    private final SelfDeclRfiService selfDeclRfiService;
 
     @Autowired
-    public AppPremSelfDeclDelegator(AppPremSelfDeclService appPremSelfDesc){
+    public AppPremSelfDeclDelegator(AppPremSelfDeclService appPremSelfDesc, SelfDeclRfiService selfDeclRfiService){
         this.appPremSelfDesc = appPremSelfDesc;
+        this.selfDeclRfiService = selfDeclRfiService;
     }
 
     /**
@@ -59,30 +64,38 @@ public class AppPremSelfDeclDelegator {
      */
     public void initData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
-        if (appSubmissionDto == null || StringUtils.isEmpty(appSubmissionDto.getAppGrpId())){
-            return;
-        }
+        /*String groupId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
+        String action = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION);
 
-        String groupId = appSubmissionDto.getId();
-
-       boolean isSubmitted = appPremSelfDesc.hasSelfDeclRecord(groupId);
-        if (isSubmitted){
-            ParamUtil.setRequestAttr(request, "isSubmitted", "You have submitted self decl. Please do not submit again.");
-            ParamUtil.setRequestAttr(request, "selfDeclQueryAttr", null);
+        if (StringUtil.isEmpty(groupId) || StringUtils.isEmpty(action)){
+            log.info("can not find group id");
             return;
-        }
+        }*/
+
+        String action = "rfi";
+        String groupId = "E83380FA-2668-EA11-BE79-000C29D29DB0";
+
+        /*if ("new".equals(action)){
+            boolean isSubmitted = appPremSelfDesc.hasSelfDeclRecord(groupId);
+            if (isSubmitted){
+                ParamUtil.setRequestAttr(request, "isSubmitted", "You have submitted self decl. Please do not submit again.");
+                ParamUtil.setRequestAttr(request, "selfDeclQueryAttr", null);
+                return;
+            }
+        }*/
 
         ParamUtil.setSessionAttr(request, "currentSelfDeclGroupId", groupId);
-
+        List<SelfDeclaration> selfDeclList = (List<SelfDeclaration>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
         log.info("assign to self decl group id ==>>>>> " + groupId);
 
-        List<SelfDeclaration> selfDeclList = (List<SelfDeclaration>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
-        if (selfDeclList == null){
-            List<SelfDeclaration> selfDeclByGroupId = appPremSelfDesc.getSelfDeclByGroupId(groupId);
-            ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", (Serializable) selfDeclByGroupId);
+        if (selfDeclList == null) {
+            if ("rfi".equals(action)){
+                selfDeclList= selfDeclRfiService.getSelfDeclRfiData(groupId);
+            }else if ("new".equals(action)){
+                selfDeclList = appPremSelfDesc.getSelfDeclByGroupId(groupId);
+            }
+            ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", (Serializable) selfDeclList);
         }
-
     }
 
     /**
@@ -116,7 +129,9 @@ public class AppPremSelfDeclDelegator {
             List<PremCheckItem> premCheckItemList = entry.getValue();
             for (PremCheckItem item : premCheckItemList){
                 String answer = ParamUtil.getString(request, item.getAnswerKey());
-                item.setAnswer(answer);
+                if (answer != null){
+                    item.setAnswer(answer);
+                }
                 ParamUtil.setSessionAttr(request, item.getAnswerKey(), answer);
             }
         }
@@ -150,7 +165,6 @@ public class AppPremSelfDeclDelegator {
         ParamUtil.setRequestAttr(bpc.request,"crud_action_type", action);
     }
 
-
     /**
      * AutoStep: submitSelfDesc
      *
@@ -162,7 +176,7 @@ public class AppPremSelfDeclDelegator {
         List<SelfDeclaration> selfDeclList = (List<SelfDeclaration>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
 
         //Once transaction
-        boolean hasWriteAnswer = hasWtriteAnswer(selfDeclList).booleanValue();
+        boolean hasWriteAnswer = hasWriteAnswer(selfDeclList).booleanValue();
         if (!hasWriteAnswer){
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("premItemAnswer", "Please fill in the necessary answers."));
@@ -175,8 +189,7 @@ public class AppPremSelfDeclDelegator {
         ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
     }
 
-    // Lamda is not recommended
-    private Boolean hasWtriteAnswer(List<SelfDeclaration> selfDeclList){
+    private Boolean hasWriteAnswer(List<SelfDeclaration> selfDeclList){
         boolean fullPower = true;
         if (selfDeclList != null){
             for (SelfDeclaration selfDecl : selfDeclList){
