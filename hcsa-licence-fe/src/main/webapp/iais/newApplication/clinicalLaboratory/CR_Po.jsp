@@ -602,7 +602,7 @@
         $poContentEle.find('input[name="idNo"]').val(data.idNo);
         $poContentEle.find('input[name="name"]').val(data.name);
         $poContentEle.find('input[name="mobileNo"]').val(data.mobileNo);
-        $poContentEle.find('input[name="officeTelNo"]').val(data.officeTelNo);
+        //$poContentEle.find('input[name="officeTelNo"]').val(data.officeTelNo);
         $poContentEle.find('input[name="emailAddress"]').val(data.emailAddr);
         <!--salutation-->
         $poContentEle.find('select[name="salutation"]').val(data.salutation);
