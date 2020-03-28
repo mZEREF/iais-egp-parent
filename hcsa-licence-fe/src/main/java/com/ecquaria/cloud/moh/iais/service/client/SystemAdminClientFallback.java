@@ -31,4 +31,11 @@ public class SystemAdminClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
+
+    FeignResponseEntity<String> getMasterCodeById(String id){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

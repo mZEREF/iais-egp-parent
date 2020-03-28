@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -30,5 +31,8 @@ public interface SystemAdminClient  {
 
     @GetMapping(path = "/iais-messageTemplate/template/{msgId}")
     FeignResponseEntity<MsgTemplateDto> getMsgTemplate(@PathVariable("msgId") String id);
+
+    @GetMapping(value = "/iais-mastercode/masterCode/{id}")
+    FeignResponseEntity<MasterCodeDto> getMasterCodeById(@PathVariable("id") String id);
 
 }
