@@ -86,7 +86,8 @@
                 'url':'${pageContext.request.contextPath}/reload-nc-email',
                 'type':'GET',
                 'success':function (data) {
-                    location.reload();
+                    showWaiting();
+                    SOP.Crud.cfxSubmit("mainForm", "emailView");
                 }
             });
         }

@@ -392,7 +392,7 @@ public class InspectionMergeSendNcEmailDelegator {
                 emailDto.setContent(inspectionEmailTemplateDto.getMessageContent());
                 emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
                 emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-                String licenseeId=inspEmailService.getAppInsRepDto(appPremCorrIds.get(0)).getLicenseeId();
+                String licenseeId=applicationViewDto.getApplicationGroupDto().getLicenseeId();
                 emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                 emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
                 String requestRefNum = emailClient.sendNotification(emailDto).getEntity();

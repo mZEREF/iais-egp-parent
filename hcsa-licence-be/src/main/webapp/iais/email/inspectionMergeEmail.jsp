@@ -98,7 +98,7 @@
                                         <td>
                                             <div class="col-sm-9">
                                                 <p style="color:#ff0000;">
-                                                    This field is mandatory.
+                                                    This field is mandatory
                                                 </p>
                                             </div>
                                         </td>
@@ -123,7 +123,7 @@
                                         <td>
                                             <div class="col-sm-9">
                                                 <p style="color:#ff0000;">
-                                                    The field is mandatory.
+                                                    The field is mandatory
                                                 </p>
                                             </div>
                                         </td>

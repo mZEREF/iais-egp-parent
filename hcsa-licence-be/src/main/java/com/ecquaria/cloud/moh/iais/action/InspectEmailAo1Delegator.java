@@ -38,7 +38,6 @@ import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
-import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
@@ -82,8 +81,6 @@ public class InspectEmailAo1Delegator {
     InspectionService inspectionService;
     @Autowired
     private TaskService taskService;
-    @Autowired
-    InsRepService insRepService;
     @Autowired
     ApplicationViewService applicationViewService;
     @Autowired
@@ -223,7 +220,7 @@ public class InspectEmailAo1Delegator {
             return;
         }
         String decision=ParamUtil.getString(request,"decision");
-        if(decision.equals("Select")){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
+        if("Select".equals(decision)){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
@@ -435,19 +432,18 @@ public class InspectEmailAo1Delegator {
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);
         String appNo=applicationViewDto.getApplicationDto().getApplicationNo();
-        String licenseeId=inspEmailService.getAppInsRepDto(appNo).getLicenseeId();
+        String licenseeId=applicationViewDto.getApplicationGroupDto().getLicenseeId();
         String licenseeName=inspEmailService.getLicenseeDtoById(licenseeId).getName();
-        String appPremCorrId=correlationId;
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
-        inspectionEmailTemplateDto.setAppPremCorrId(appPremCorrId);
+        inspectionEmailTemplateDto.setAppPremCorrId(correlationId);
         inspectionEmailTemplateDto.setApplicantName(licenseeName);
         inspectionEmailTemplateDto.setApplicationNumber(appNo);
         inspectionEmailTemplateDto.setHciCode(applicationViewDto.getHciCode());
         inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciAddress());
         HcsaServiceDto hcsaServiceDto=inspectionService.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId());
         inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
-        List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(appPremCorrId);
-        AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,InspectionConstants.RECOM_TYPE_TCU);
+        List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(correlationId);
+        AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(correlationId,InspectionConstants.RECOM_TYPE_TCU);
         inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
 
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
@@ -474,6 +470,7 @@ public class InspectEmailAo1Delegator {
         String draftEmailId= (String) ParamUtil.getSessionAttr(request,DRA_EMA_ID);
         inspectionEmailTemplateDto.setId(draftEmailId);
         inspEmailService.updateEmailDraft(inspectionEmailTemplateDto);
+        ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
         return mesContext;
     }
 

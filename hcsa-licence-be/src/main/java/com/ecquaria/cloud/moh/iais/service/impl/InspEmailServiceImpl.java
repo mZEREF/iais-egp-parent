@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -19,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsEmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +46,7 @@ public class InspEmailServiceImpl implements InspEmailService {
     private ApplicationViewService applicationViewService;
     @Autowired
     private HcsaChklClient hcsaChklClient;
-    @Autowired
-    InsRepClient insRepClient;
+
     @Autowired
     OrganizationClient licenseeClient;
 
@@ -83,10 +80,7 @@ public class InspEmailServiceImpl implements InspEmailService {
     public List<ChecklistQuestionDto> getcheckListQuestionDtoList(String svcCode,String svcType){
         return hcsaChklClient.getcheckListQuestionDtoList(svcCode,"Inspection").getEntity();
     }
-    @Override
-    public AppInsRepDto getAppInsRepDto(String appCorrId){
-        return insRepClient.getAppInsRepDto(appCorrId).getEntity();
-    }
+
 
 
     @Override

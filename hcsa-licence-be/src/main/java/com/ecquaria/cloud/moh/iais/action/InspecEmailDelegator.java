@@ -120,7 +120,7 @@ public class InspecEmailDelegator {
         ApplicationViewDto applicationViewDto = fillupChklistService.getAppViewDto(taskDto.getId());
         applicationViewDto.setCurrentStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getStatus()}).get(0).getText());
         String appNo=applicationViewDto.getApplicationDto().getApplicationNo();
-        String licenseeId=inspEmailService.getAppInsRepDto(correlationId).getLicenseeId();
+        String licenseeId=applicationViewDto.getApplicationGroupDto().getLicenseeId();
         String licenseeName=inspEmailService.getLicenseeDtoById(licenseeId).getName();
         String appPremCorrId=correlationId;
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
