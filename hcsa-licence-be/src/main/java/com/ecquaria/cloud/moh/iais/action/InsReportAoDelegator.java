@@ -48,9 +48,6 @@ public class InsReportAoDelegator {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
     private final String RECOMMENDATION_DTO= "appPremisesRecommendationDto";
-    private final String RECOMMENDATION="recommendation";
-    private final String CHRONO="chrono";
-    private final String NUMBER="number";
     private final String OTHERS="Others";
     private final String APPROVAL="Approval";
     private final String REJECT="Reject";
@@ -70,7 +67,7 @@ public class InsReportAoDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String taskId = ParamUtil.getString(bpc.request,"taskId");
         if(StringUtil.isEmpty(taskId)){
-            taskId = "0007F958-CF6F-EA11-BE82-000C29F371DC";
+            taskId = "992189EA-9570-EA11-BE82-000C29F371DC";
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();

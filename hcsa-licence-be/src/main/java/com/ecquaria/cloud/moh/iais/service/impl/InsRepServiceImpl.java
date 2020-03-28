@@ -161,6 +161,7 @@ public class InsRepServiceImpl implements InsRepService {
             nameList.add(otherOffices);
             inspectionReportDto.setInspectOffices(nameList);
         }
+
         //get application type (pre/post)
         Integer isPre = applicationGroupDto.getIsPreInspection();
         String appType = MasterCodeUtil.getCodeDesc(appTypeCode);
@@ -511,7 +512,7 @@ public class InsRepServiceImpl implements InsRepService {
         taskService.createTasks(taskDtos);
         String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
         createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
-        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, appPremisesRecommendationDto.getProcessRemarks(), InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId2, subStage);
+        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, appPremisesRecommendationDto.getProcessRemarks(), null, RoleConsts.USER_ROLE_AO1, groupId2, subStage);
     }
 
     @Override
@@ -780,8 +781,6 @@ public class InsRepServiceImpl implements InsRepService {
             taskDto.setUserId(null);
         }
         taskDto.setId(null);
-        taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_AO2);
-        taskDto.setTaskType(TaskConsts.TASK_TYPE_MAIN_FLOW);
         taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
         taskDto.setWkGrpId(groupId);
         taskDto.setDateAssigned(new Date());
