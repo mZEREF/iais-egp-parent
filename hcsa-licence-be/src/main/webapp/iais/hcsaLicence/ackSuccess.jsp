@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -12,7 +13,7 @@
             <div class="center-content">
                 <div class="intranet-content">
                     <div class="bg-title">
-                        <iais:message key="${successInfo}" escape="true"></iais:message>
+                        <h2><iais:message key="${successInfo}" escape="true"></iais:message></h2>
                     </div>
                 </div>
                 <div align="left"><span><a href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"></em> Back</a></span></div>

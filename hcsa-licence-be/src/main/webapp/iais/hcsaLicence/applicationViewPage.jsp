@@ -488,7 +488,7 @@
                                                             <iais:value width="10">
                                                                 <iais:select name="nextStage" id="nextStage"
                                                                              options="nextStages"
-                                                                             value="<%=nextStage%>" ></iais:select>
+                                                                             value="<%=nextStage%>"></iais:select>
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
@@ -496,15 +496,30 @@
                                                         <div id="replytr" class="hidden">
                                                             <iais:row>
                                                                 <iais:field value="Processing Decision" required="true"/>
-                                                                <%String nextStageReply = request.getParameter("nextStage");%>
+<%--                                                                <%String selectNextStageReply = request.getParameter("selectNextStageReply");%>--%>
                                                                 <iais:value width="10">
-                                                                    <iais:select name="nextStageReply" id="nextStageReply"
+                                                                    <iais:select name="nextStageReplys" id="nextStageReply"
                                                                                  options="nextStageReply"
-                                                                                 value="<%=nextStageReply%>"></iais:select>
+                                                                                 value="${selectNextStageReply}"></iais:select>
                                                                 </iais:value>
                                                             </iais:row>
                                                         </div>
                                                     </c:if>
+
+                                                    <%-- DMS approval and reject --%>
+                                                    <c:if test="${applicationViewDto.applicationDto.status == 'APST014'}">
+                                                        <div id="decision">
+                                                            <iais:row>
+                                                                <iais:field value="Decision" required="true"/>
+                                                                <iais:value width="10">
+                                                                    <iais:select name="decisionValues" id="decisionValues"
+                                                                                 options="decisionValues"
+                                                                                 value="${selectDecisionValue}"></iais:select>
+                                                                </iais:value>
+                                                            </iais:row>
+                                                        </div>
+                                                    </c:if>
+
                                                     <div id="rollBackDropdown" class="hidden">
                                                         <iais:row>
                                                             <iais:field value="Route Back To" required="true"/>
@@ -558,7 +573,7 @@
                                                             <div id="recommendationFieldFalse"><iais:field value="Recommendation" required="false"/></div>
                                                             <iais:value width="10">
                                                                 <c:choose>
-                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012'}">
+                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012' || applicationViewDto.applicationDto.status=='APST014'}">
                                                                         <select name="recommendation"
                                                                                 class="nice-select input-large">
                                                                             <option value="">Please Select</option>
@@ -567,7 +582,7 @@
                                                                                 <option value="${recommendation}" <c:if test="${recommendationStr == recommendation}">selected</c:if>><c:out
                                                                                         value="${recommendation}"></c:out></option>
                                                                             </c:forEach>
-                                                                            <option value="reject" <c:if test="${recommendationStr == 'reject'}">selected</c:if>>reject</option>
+                                                                            <option value="reject" <c:if test="${recommendationStr == 'reject'}">selected</c:if>>Reject</option>
                                                                         </select>
                                                                         <span id="error_recommendation" name="iaisErrorMsg" class="error-msg"></span>
                                                                     </c:when>
@@ -697,7 +712,7 @@
         }
         if ('${applicationViewDto.applicationDto.status}' == 'APST000' || '${applicationViewDto.applicationDto.status}' == 'APST014' || '${applicationViewDto.applicationDto.status}' == 'APST013') {
             $('#processingDecision').addClass('hidden');
-            $('#recommendationDropdown').addClass('hidden');
+            // $('#recommendationDropdown').addClass('hidden');
             $('#replytr').removeClass('hidden');
             $('#licenceStartDate').addClass('hidden');
         }
@@ -705,55 +720,34 @@
         check();
         validate();
         checkVerifiedField();
+        //check DMS
+        DMSCheck();
+        //DMSCheck();
     });
+
+    <%--function DMSCheck(){--%>
+    <%--    var decisionValue = $("[name='decisionValues']").val();--%>
+    <%--    if('${applicationViewDto.applicationDto.status}' == 'APST014'){--%>
+    <%--        if(decisionValue == 'decisionApproval'){--%>
+    <%--            $('#recommendationFieldTrue').removeClass('hidden');--%>
+    <%--            $('#recommendationFieldFalse').addClass('hidden');--%>
+    <%--        }else{--%>
+    <%--            $('#recommendationFieldTrue').addClass('hidden');--%>
+    <%--            $('#recommendationFieldFalse').removeClass('hidden');--%>
+    <%--        }--%>
+    <%--    }--%>
+    <%--}--%>
+
+    function DMSCheck(){
+        if('${applicationViewDto.applicationDto.status}' == 'APST014'){
+                $('#recommendationFieldTrue').removeClass('hidden');
+                $('#recommendationFieldFalse').addClass('hidden');
+        }
+    }
 
 
     $("#submitButton").click(function () {
         showWaiting();
-        // var textarea = $("#internalRemarksId").val();
-        // if (textarea == "") {
-        //     $('#notNull').remove();
-        //     $("#internalRemarksId").after("<span id='notNull' style='color: red;'>*NOT NULL!</span>");
-        //     dismissWaiting();
-        //     return false;
-        // }
-
-        <%--if ('${applicationViewDto.applicationDto.status}' == 'APST000') {--%>
-            <%--var nextStageReply = $("[name='nextStageReply']").val();--%>
-            <%--if (nextStageReply == "---select---") {--%>
-                <%--$('#NSRnotNull').remove();--%>
-                <%--$("[name='nextStageReply']").after("<span id='NSRnotNull' style='color: red;'>*PLEASE SELECT!</span>");--%>
-                <%--dismissWaiting();--%>
-                <%--return false;--%>
-            <%--} else {--%>
-                <%--document.getElementById("mainForm").submit();--%>
-            <%--}--%>
-        <%--}--%>
-
-        // var selectValue = $("[name='nextStage']").val();
-        // if (selectValue == "---select---") {
-        //     $('#NSnotNull').remove();
-        //     $("[name='nextStage']").after("<span id='NSnotNull' style='color: red;'>*PLEASE SELECT!</span>");
-        //     dismissWaiting();
-        //     return false;
-        // }
-        // if (selectValue == "VERIFIED") {
-        //     var verified = $("[name='verified']").val();
-        //     if (verified == "---select---") {
-        //         $('#VnotNull').remove();
-        //         $("[name='verified']").after("<span id='VnotNull' style='color: red;'>*PLEASE SELECT!</span>");
-        //         dismissWaiting();
-        //         return false;
-        //     }
-        // } else if (selectValue == "ROLLBACK") {
-        //     var rollBack = $("[name='rollBack']").val();
-        //     if (rollBack == "---select---") {
-        //         $('#BnotNull').remove();
-        //         $("[name='rollBack']").after("<span id='BnotNull' style='color: red;'>*PLEASE SELECT!</span>");
-        //         dismissWaiting();
-        //         return false;
-        //     }
-        // }
         document.getElementById("mainForm").submit();
         $("#submitButton").attr("disabled", true);
     });
@@ -769,7 +763,6 @@
         } else {
             $('#rollBackDropdown').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
-
         }
     }
 
@@ -814,6 +807,12 @@
             $('#rfiSelect').hide();
         }
     });
+
+    //check decision value
+    // $("[name='decisionValues']").change(function selectChange() {
+    //     //var selectValue = $("[name='decisionValues']").val();
+    //     DMSCheck();
+    // });
 
 
     $('#verifiedDropdown').change(function verifiedChange() {
