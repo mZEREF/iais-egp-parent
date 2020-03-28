@@ -102,4 +102,22 @@ public interface InspectionRectificationProService {
       * @Descripation: getNcItemDtoMap
       */
     Map<String, AppPremisesPreInspectionNcItemDto> getNcItemDtoMap(String id);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/3/28
+      * @Param: workGroupId
+      * @return: List<String>
+      * @Descripation: getInspectorLeadsByWorkGroupId
+      */
+    List<String> getInspectorLeadsByWorkGroupId(String workGroupId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/3/28
+      * @Param: refNo
+      * @return: int
+      * @Descripation: get How Much Nc By AppPremCorrId
+      */
+    int getHowMuchNcByAppPremCorrId(String refNo);
 }

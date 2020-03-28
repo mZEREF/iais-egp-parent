@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -54,6 +55,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +77,9 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
 
     @Autowired
     private AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
+
+    @Autowired
+    private OrganizationClient organizationClient;
 
     @Autowired
     private TaskService taskService;
@@ -315,6 +320,32 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             }
         }
         return ncItemDtoMap;
+    }
+
+    @Override
+    public List<String> getInspectorLeadsByWorkGroupId(String workGroupId) {
+        List<String> inspectorLeads = IaisCommonUtils.genNewArrayList();
+        List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+        List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
+        for(String id : leadIds){
+            for(OrgUserDto oDto : orgUserDtos){
+                if(id.equals(oDto.getId())){
+                    inspectorLeads.add(oDto.getDisplayName());
+                }
+            }
+        }
+        return inspectorLeads;
+    }
+
+    @Override
+    public int getHowMuchNcByAppPremCorrId(String refNo) {
+        int ncCount = 0;
+        AppPremPreInspectionNcDto appPremPreInspectionNcDto = getAppPremPreInspectionNcDtoByCorrId(refNo);
+        List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(appPremPreInspectionNcDto.getId()).getEntity();
+        if(!IaisCommonUtils.isEmpty(appPremisesPreInspectionNcItemDtos)){
+            ncCount = appPremisesPreInspectionNcItemDtos.size();
+        }
+        return ncCount;
     }
 
     private List<ChecklistItemDto> getcheckDtosByItemIds(List<String> itemIds) {

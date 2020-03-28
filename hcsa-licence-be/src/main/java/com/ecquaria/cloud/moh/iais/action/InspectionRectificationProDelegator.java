@@ -12,8 +12,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -25,6 +29,9 @@ import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
+import com.ecquaria.cloud.moh.iais.service.InsRepService;
+import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import freemarker.template.TemplateException;
@@ -59,7 +66,23 @@ public class InspectionRectificationProDelegator {
     private TaskService taskService;
 
     @Autowired
+    private FillupChklistService fillupChklistService;
+
+    @Autowired
+    private InsepctionNcCheckListService insepctionNcCheckListService;
+
+    @Autowired
     private ApplicationViewService applicationViewService;
+
+    @Autowired
+    private InsRepService insRepService;
+
+    private static final String SERLISTDTO="serListDto";
+    private static final String COMMONDTO="commonDto";
+    private static final String ADHOCLDTO="adchklDto";
+    private static final String TASKDTO="taskDto";
+    private static final String APPLICATIONVIEWDTO = "applicationViewDto";
+    private static final String CHECKLISTFILEDTO = "checkListFileDto";
 
     @Autowired
     private InspectionRectificationProDelegator(ApplicationViewService applicationViewService, TaskService taskService, InspectionRectificationProService inspectionRectificationProService){
@@ -92,6 +115,13 @@ public class InspectionRectificationProDelegator {
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", null);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", null);
         ParamUtil.setSessionAttr(bpc.request, "inboxUrl", null);
+        ParamUtil.setSessionAttr(bpc.request,SERLISTDTO,null);
+        ParamUtil.setSessionAttr(bpc.request,ADHOCLDTO,null);
+        ParamUtil.setSessionAttr(bpc.request,COMMONDTO,null);
+        ParamUtil.setSessionAttr(bpc.request,TASKDTO,null);
+        ParamUtil.setSessionAttr(bpc.request,APPLICATIONVIEWDTO,null);
+        ParamUtil.setSessionAttr(bpc.request,CHECKLISTFILEDTO,null);
+        ParamUtil.setSessionAttr(bpc.request, "inspectionReportDto", null);
     }
 
     /**
@@ -117,44 +147,58 @@ public class InspectionRectificationProDelegator {
             List<ChecklistItemDto> checklistItemDtos = inspectionRectificationProService.getQuesAndClause(taskDto.getRefNo());
             AppPremPreInspectionNcDto appPremPreInspectionNcDto = inspectionRectificationProService.getAppPremPreInspectionNcDtoByCorrId(taskDto.getRefNo());
             Map<String, AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoMap = inspectionRectificationProService.getNcItemDtoMap(appPremPreInspectionNcDto.getId());
-            if(checklistItemDtos != null && !(checklistItemDtos.isEmpty())) {
-                int index = 0;
-                for (ChecklistItemDto cDto : checklistItemDtos) {
-                    InspecUserRecUploadDto iDto = new InspecUserRecUploadDto();
-                    iDto.setCheckClause(cDto.getRegulationClause());
-                    iDto.setCheckQuestion(cDto.getChecklistItem());
-                    iDto.setIndex(index++);
-                    iDto.setAppNo(applicationDto.getApplicationNo());
-                    iDto.setItemId(cDto.getItemId());
-                    if(appPremisesPreInspectionNcItemDtoMap != null) {
-                        AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = appPremisesPreInspectionNcItemDtoMap.get(cDto.getItemId());
-                        if(appPremisesPreInspectionNcItemDto != null) {
-                            int feRecFlag = appPremisesPreInspectionNcItemDto.getFeRectifiedFlag();
-                            int recFlag = appPremisesPreInspectionNcItemDto.getIsRecitfied();
-                            if (1 == feRecFlag && 0 == recFlag) {
-                                if (appPremisesPreInspectionNcItemDto != null) {
-                                    iDto.setUploadRemarks(appPremisesPreInspectionNcItemDto.getRemarks());
-                                } else {
-                                    iDto.setUploadRemarks(HcsaConsts.HCSA_PREMISES_HCI_NULL);
-                                }
-                                iDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
-                                List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = inspectionRectificationProService.getAppNcDocList(appPremisesPreInspectionNcItemDto.getId());
-                                List<FileRepoDto> fileRepoDtos = inspectionRectificationProService.getFileByItemId(appPremPreInspectionNcDocDtos);
-                                iDto.setAppPremPreInspectionNcDocDtos(appPremPreInspectionNcDocDtos);
-                                iDto.setFileRepoDtos(fileRepoDtos);
-                                inspecUserRecUploadDtos.add(iDto);
-                            }
+            if(appPremisesPreInspectionNcItemDtoMap != null) {
+                for (Map.Entry<String, AppPremisesPreInspectionNcItemDto> map : appPremisesPreInspectionNcItemDtoMap.entrySet()) {
+                    //get AppPremisesPreInspectionNcItemDto
+                    AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = map.getValue();
+                    String itemId = appPremisesPreInspectionNcItemDto.getItemId();
+                    int feRecFlag = appPremisesPreInspectionNcItemDto.getFeRectifiedFlag();
+                    int recFlag = appPremisesPreInspectionNcItemDto.getIsRecitfied();
+                    //filter need show rectification nc
+                    if (1 == feRecFlag && 0 == recFlag) {
+                        InspecUserRecUploadDto iDto = new InspecUserRecUploadDto();
+                        iDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
+                        iDto.setAppNo(applicationDto.getApplicationNo());
+                        if (checklistItemDtos != null && !(checklistItemDtos.isEmpty())) {
+                            iDto = setNcDataByItemId(iDto, itemId, checklistItemDtos);
                         }
+                        if (appPremisesPreInspectionNcItemDto != null) {
+                            iDto.setUploadRemarks(appPremisesPreInspectionNcItemDto.getRemarks());
+                        } else {
+                            iDto.setUploadRemarks(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+                        }
+                        iDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
+                        List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = inspectionRectificationProService.getAppNcDocList(appPremisesPreInspectionNcItemDto.getId());
+                        List<FileRepoDto> fileRepoDtos = inspectionRectificationProService.getFileByItemId(appPremPreInspectionNcDocDtos);
+                        iDto.setAppPremPreInspectionNcDocDtos(appPremPreInspectionNcDocDtos);
+                        iDto.setFileRepoDtos(fileRepoDtos);
+                        inspecUserRecUploadDtos.add(iDto);
                     }
                 }
-                inspectionPreTaskDto.setInspecUserRecUploadDtos(inspecUserRecUploadDtos);
             }
+
+            inspectionPreTaskDto.setInspecUserRecUploadDtos(inspecUserRecUploadDtos);
         }
         List<SelectOption> processDecOption = inspectionRectificationProService.getProcessRecDecOption();
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+    }
+
+    private InspecUserRecUploadDto setNcDataByItemId(InspecUserRecUploadDto iDto, String itemId, List<ChecklistItemDto> checklistItemDtos) {
+        int index = 0;
+        for(ChecklistItemDto checklistItemDto : checklistItemDtos){
+            if(checklistItemDto.getItemId().equals(itemId)){
+                iDto.setCheckClause(checklistItemDto.getRegulationClause());
+                iDto.setCheckQuestion(checklistItemDto.getChecklistItem());
+                iDto.setIndex(index++);
+                iDto.setItemId(checklistItemDto.getItemId());
+                //To prevent the repeat, because have the same item by different Config
+                return iDto;
+            }
+        }
+        return iDto;
     }
 
     @RequestMapping(value = "/file-repo-popup", method = RequestMethod.GET)
@@ -263,6 +307,7 @@ public class InspectionRectificationProDelegator {
         inspectionRectificationProService.routingTaskToReport(taskDto, inspectionPreTaskDto, applicationViewDto, loginContext);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
     }
 
     /**
@@ -297,6 +342,7 @@ public class InspectionRectificationProDelegator {
         inspectionRectificationProService.routingTaskToReport(taskDto, inspectionPreTaskDto, applicationViewDto, loginContext);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
     }
 
     /**
@@ -307,6 +353,17 @@ public class InspectionRectificationProDelegator {
      */
     public void InspectorProRectificationView(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the InspectorProRectificationView start ...."));
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        InspectionReportDto inspectionReportDto = insRepService.getInsRepDto(taskDto, applicationViewDto, loginContext);
+        List<String> inspectorLeads = inspectionRectificationProService.getInspectorLeadsByWorkGroupId(taskDto.getWkGrpId());
+        inspectionReportDto.setInspectorLeads(inspectorLeads);
+        int ncCount = inspectionRectificationProService.getHowMuchNcByAppPremCorrId(taskDto.getRefNo());
+        inspectionReportDto.setNcCount(ncCount);
+        ParamUtil.setSessionAttr(bpc.request, "inspectionReportDto", inspectionReportDto);
+        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
     }
 
     /**
@@ -327,6 +384,59 @@ public class InspectionRectificationProDelegator {
      */
     public void InspectorProRectificationChList(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the InspectorProRectificationChList start ...."));
+        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        String appPremCorrId = taskDto.getRefNo();
+        String taskId = taskDto.getId();
+        //draft start
+        InspectionFillCheckListDto maxComChkDto = fillupChklistService.getMaxVersionComAppChklDraft(appPremCorrId);
+        List<InspectionFillCheckListDto> allComChkDtoList = fillupChklistService.getAllVersionComAppChklDraft(appPremCorrId);
+        List<InspectionFDtosDto> fdtosdraft= fillupChklistService.geAllVersionServiceDraftList(appPremCorrId);
+        InspectionFDtosDto maxVersionfdtos = fillupChklistService.getMaxVersionServiceDraft(fdtosdraft);
+        List<InspectionFDtosDto> otherVersionfdtos = fillupChklistService.getOtherVersionfdtos(fdtosdraft);
+        List<AdCheckListShowDto> otherVersionAdhocDraftList = fillupChklistService.getOtherAdhocList(appPremCorrId);
+        ParamUtil.setSessionAttr(bpc.request,"otherVersionAdhocDraftList",(Serializable) otherVersionAdhocDraftList);
+        ParamUtil.setSessionAttr(bpc.request,"otherVersionfdtos",(Serializable) otherVersionfdtos);
+        ParamUtil.setSessionAttr(bpc.request,"allComChkDtoList",(Serializable)allComChkDtoList);
+        ParamUtil.setSessionAttr(bpc.request,"maxComChkDto", maxComChkDto);
+        //draft end
+        InspectionFillCheckListDto commonDto = null;
+        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"service");
+        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"common");
+        if(commonList != null && !commonList.isEmpty()){
+            commonDto = commonList.get(0);
+        }
+        InspectionFDtosDto serListDto =  fillupChklistService.getInspectionFDtosDto(appPremCorrId,taskDto,cDtoList);
+        AdCheckListShowDto adchklDto = fillupChklistService.getAdhocDraftByappCorrId(appPremCorrId);
+        if(adchklDto == null){
+            adchklDto = fillupChklistService.getAdhoc(appPremCorrId);
+        }
+
+        ParamUtil.setSessionAttr(bpc.request,TASKDTO,taskDto);
+        ParamUtil.setSessionAttr(bpc.request,ADHOCLDTO,adchklDto);
+        if(maxComChkDto != null){
+            List<InspectionFillCheckListDto> coms = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
+            if(!IaisCommonUtils.isEmpty(coms)){
+                commonDto = coms.get(0);
+            }
+        }
+        // change common data;
+        insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(commonDto);
+        ParamUtil.setSessionAttr(bpc.request,COMMONDTO,commonDto);
+        if(maxVersionfdtos != null && !IaisCommonUtils.isEmpty(maxVersionfdtos.getFdtoList())){
+            List<InspectionFillCheckListDto> ftos = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
+            serListDto.setFdtoList(ftos);
+        }
+        //  change service checklist data
+        if(serListDto != null){
+            List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
+            if(fdtoList != null && fdtoList.size() > 0){
+                for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList) {
+                    insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(inspectionFillCheckListDto);
+                }
+            }
+        }
+        ParamUtil.setSessionAttr(bpc.request,SERLISTDTO,serListDto);
+        ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
     }
 
     /**

@@ -35,73 +35,79 @@
                   <iais:row>
                     <iais:field value="Inspection Date"/>
                     <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.serviceName}"/></label></p>
+                      <p><label><fmt:formatDate value='${inspectionReportDto.inspectionDate}' pattern='dd/MM/yyyy' /></label></p>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field value="Inspection Start Time"/>
                     <iais:value width="7">
-                      <p><label><fmt:formatDate value='${inspectionTaskPoolListDto.submitDt}' pattern='dd/MM/yyyy' /></label></p>
+                      <p><label><fmt:formatDate value='${inspectionReportDto.inspectionStartTime}' pattern='dd/MM/yyyy' /></label></p>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field value="Inspection End Time"/>
                     <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.serviceName}"/></label></p>
+                      <p><label><fmt:formatDate value='${inspectionReportDto.inspectionEndTime}' pattern='dd/MM/yyyy' /></label></p>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field value="Inspector Lead"/>
                     <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.serviceName}"/></label></p>
+                      <c:forEach var = "insepctionLead" items = "${inspectionReportDto.inspectorLeads}">
+                        <p><label><c:out value="${insepctionLead}"/></label></p>
+                      </c:forEach>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field value="Inspection Officer (s)"/>
                     <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.serviceName}"/></label></p>
+                      <c:forEach var = "insepctor" items = "${inspectionReportDto.inspectors}">
+                        <p><label><c:out value="${insepctor}"/></label></p>
+                      </c:forEach>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field value="Other Inspection Officers"/>
                     <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.serviceName}"/></label></p>
+                      <c:forEach var = "otherInsepctor" items = "${inspectionReportDto.inspectOffices}">
+                        <p><label><c:out value="${otherInsepctor}"/></label></p>
+                      </c:forEach>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field value="No. of Non-Compliance"/>
                     <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.serviceName}"/></label></p>
+                      <p><label><c:out value="${inspectionReportDto.ncCount}"/></label></p>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field value="Remarks"/>
                     <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.serviceName}"/></label></p>
+                      <p><label><c:out value="${inspectionReportDto.taskRemarks}"/></label></p>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field value="Best Practices"/>
                     <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.serviceName}"/></label></p>
+                      <p><label><c:out value="${inspectionTaskPoolListDto.bestPractice}"/></label></p>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field value="Letter written to Licensee"/>
                     <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.serviceName}"/></label></p>
+                      <p><label><c:out value="${inspectionReportDto.serviceName}"/></label></p>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field value="TCU"/>
                     <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.serviceName}"/></label></p>
+                      <p><input type="checkbox" name="inspectorCheck" disabled id="inspectorCheck" <c:if test="${'Yes' eq inspectionReportDto.markedForAudit}">checked="checked"</c:if>/></p>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field value="TCU Date"/>
                     <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.serviceName}"/></label></p>
+                      <p><label><fmt:formatDate value='${inspectionReportDto.tcuDate}' pattern='dd/MM/yyyy' /></label></p>
                     </iais:value>
                   </iais:row>
                   <iais:action >
