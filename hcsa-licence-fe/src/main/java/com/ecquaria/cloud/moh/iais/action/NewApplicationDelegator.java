@@ -162,7 +162,33 @@ public class NewApplicationDelegator {
         coMap.put("information","");
         coMap.put("previewli","");
         bpc.request.getSession().setAttribute("coMap",coMap);
+        List<SelectOption> hhList=new ArrayList<>(25);
+        List<SelectOption> mmList=new ArrayList<>(61);
+        SelectOption selectOption1 = new SelectOption("","NA");
+        hhList.add(selectOption1);
+        mmList.add(selectOption1);
+        for(int i=0;i<24;i++){
+            if(i<10){
+                SelectOption selectOption = new SelectOption(i+"","0"+i);
+                hhList.add(selectOption);
+            }else {
+                SelectOption selectOption = new SelectOption(i+"",""+i);
+                hhList.add(selectOption);
+            }
+        }
+        for(int i=0;i<60;i++){
+            if(i<10){
+                SelectOption selectOption = new SelectOption(i+"","0"+i);
+                mmList.add(selectOption);
 
+            }else {
+                SelectOption selectOption = new SelectOption(i+"",""+i);
+                mmList.add(selectOption);
+            }
+        }
+
+        bpc.request.getSession().setAttribute("hhList",hhList);
+        bpc.request.getSession().setAttribute("mmList",mmList);
         //request For Information Loading
         ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,null);
         requestForChangeOrRenewLoading(bpc);
@@ -543,6 +569,7 @@ public class NewApplicationDelegator {
                         file.getFileItem().setFieldName("selectedFile");
                         appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
                         appGrpPrimaryDocDto.setSvcComDocId(comm.getId());
+                        appGrpPrimaryDocDto.setSvcComDocName(comm.getDocTitle());
                         appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
                         appGrpPrimaryDocDto.setRealDocSize(file.getSize());
                         long size = file.getSize() / 1024;
@@ -585,6 +612,7 @@ public class NewApplicationDelegator {
                             file.getFileItem().setFieldName("selectedFile");
                             appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
                             appGrpPrimaryDocDto.setSvcComDocId(prem.getId());
+                            appGrpPrimaryDocDto.setSvcComDocName(prem.getDocTitle());
                             appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
                             appGrpPrimaryDocDto.setRealDocSize(file.getSize());
                             long size = file.getSize() / 1024;
@@ -768,11 +796,20 @@ public class NewApplicationDelegator {
     public void doSaveDraft(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do doSaveDraft start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        Map<String,String>coMap=(Map<String, String>)bpc.getSession().getAttribute("coMap");
+        List<String> strList=new ArrayList<>(4);
+        coMap.forEach((k,v)->{
+            if(!StringUtil.isEmpty(v)){
+                strList.add(v);
+            }
+
+        });
         if(StringUtil.isEmpty(appSubmissionDto.getDraftNo())){
             String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
             log.info(StringUtil.changeForLog("the draftNo -->:") + draftNo);
             appSubmissionDto.setDraftNo(draftNo);
         }
+        appSubmissionDto.setStepColor(strList);
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         log.info(StringUtil.changeForLog("the do doSaveDraft end ...."));
@@ -2177,6 +2214,36 @@ public class NewApplicationDelegator {
         if(!StringUtil.isEmpty(draftNo)){
             log.info(StringUtil.changeForLog("draftNo is not empty"));
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
+            if(appSubmissionDto!=null){
+                List<String> stepColor = appSubmissionDto.getStepColor();
+                if(stepColor!=null){
+                    Map<String,String> coMap=new HashMap<>(4);
+                    coMap.put("premises","");
+                    coMap.put("document","");
+                    coMap.put("information","");
+                    coMap.put("previewli","");
+                    if(!stepColor.isEmpty()){
+                        for(String str : stepColor){
+                            if("premises".equals(str)){
+                                coMap.put("premises",str);
+                            }else if("document".equals(str)){
+                                coMap.put("document",str);
+                            }else if("information".equals(str)){
+                                coMap.put("information",str);
+                            }else if("previewli".equals(str)){
+                                coMap.put("previewli",str);
+                            }
+
+                        }
+
+                    }
+
+                    bpc.getSession().setAttribute("coMap",coMap);
+
+                }
+
+            }
+
             ParamUtil.setSessionAttr(bpc.request,DRAFTCONFIG,"test");
             if(appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() >0){
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
