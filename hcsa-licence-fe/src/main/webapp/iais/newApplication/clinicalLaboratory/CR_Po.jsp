@@ -463,35 +463,10 @@
             var data= {};
             if("newOfficer" == selectVal){
                 $poContentEle.find('div.principalOfficers').removeClass('hidden');
-                fillPoData($poContentEle,data);
+                //fillPoData($poContentEle,data);
             }else if('-1' == selectVal){
                 $poContentEle.find('div.principalOfficers').addClass('hidden');
-                fillPoData($poContentEle,data);
-            }else{
-                $poContentEle.find('div.principalOfficers').removeClass('hidden');
-                if(init == 0){
-                   return;
-                }
-                fillPoData($poContentEle,data);
-                var jsonData = {
-                    'idNo':selectVal
-                };
-                $.ajax({
-                    'url':'${pageContext.request.contextPath}/psn-new',
-                    'dataType':'json',
-                    'data':jsonData,
-                    'type':'GET',
-                    'success':function (data) {
-                        if(data == null){
-                            return;
-                        }
-                        fillPoData($poContentEle,data);
-
-                    },
-                    'error':function () {
-
-                    }
-                });
+                //fillPoData($poContentEle,data);
             }
         });
     };

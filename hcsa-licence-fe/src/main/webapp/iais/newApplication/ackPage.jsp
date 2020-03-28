@@ -92,7 +92,7 @@
             </div>
             <div class="row margin-bottom-10 text-right">
                 <div class="col-xs-12 col-md-1">
-                    <p class="print"><a href="#"> <em class="fa fa-print"></em>Print</a></p>
+                    <p class="print"><a href="#" id="print-ack"> <em class="fa fa-print"></em>Print</a></p>
                 </div>
                 <div class="col-xs-11 col-md-11">
 
@@ -126,7 +126,9 @@
         mainForm.submit();
     });
 
-
+    $("#print-ack").click(function () {
+        window.print();
+    })
 </script>
 
 

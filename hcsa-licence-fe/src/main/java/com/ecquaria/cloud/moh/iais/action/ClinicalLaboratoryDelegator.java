@@ -344,12 +344,12 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setRequestAttr(bpc.request, "IdTypeSelect", IdTypeSelect);
 
         List<SelectOption> assignSelectList = getAssignPrincipalOfficerSel(currentSvcId, true);
-        Map<String,AppSvcCgoDto> psnMap = NewApplicationHelper.getPsnMapFromSubDto(appSubmissionDto);
+        /*Map<String,AppSvcCgoDto> psnMap = NewApplicationHelper.getPsnMapFromSubDto(appSubmissionDto);
         psnMap.forEach((k,v)->{
             //todo:confirm
             SelectOption sp = new SelectOption(k,v.getName()+" "+v.getIdNo());
             assignSelectList.add(sp);
-        });
+        });*/
         ParamUtil.setRequestAttr(bpc.request, "PrincipalOfficersAssignSelect", assignSelectList);
 
         List<SelectOption> deputyAssignSelectList = getAssignPrincipalOfficerSel(currentSvcId, true);
