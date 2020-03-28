@@ -95,7 +95,7 @@
                , case T3.POSTAL_CODE
                   when null then null
                   when '' then null
-                  else ','+T3.POSTAL_CODE end
+                  else ', '+T3.POSTAL_CODE end
               ) AS address
                  FROM APPLICATION T1
                 JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID
@@ -139,7 +139,7 @@
                , case T3.POSTAL_CODE
                   when null then null
                   when '' then null
-                  else ','+T3.POSTAL_CODE end
+                  else ', '+T3.POSTAL_CODE end
               ) AS address
              FROM APPLICATION T1
                 JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID

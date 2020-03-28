@@ -36,7 +36,7 @@ public interface InspectionMainService {
      * @return: List<SelectOption>
      * @Descripation: get App Status
      */
-    List<SelectOption> getAppStatusOption();
+    List<SelectOption> getAppStatusOption(String role);
 
     /**
      * @author: guyin

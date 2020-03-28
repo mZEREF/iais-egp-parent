@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -78,17 +79,86 @@ public class InspectionMainServiceImpl implements InspectionMainService {
     }
 
     @Override
-    public List<SelectOption> getAppStatusOption() {
-        String[] statusStrs = new String[]{
-                ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
-                ApplicationConsts.APPLICATION_STATUS_APPROVED,
-                ApplicationConsts.APPLICATION_STATUS_REJECTED,
-                ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
-                ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING,
-                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
-                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
-                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03
-        };
+    public List<SelectOption> getAppStatusOption(String role) {
+        String[] statusStrs;
+        switch (role){
+            case RoleConsts.USER_ROLE_PSO_LEAD:
+            case RoleConsts.USER_ROLE_PSO:
+                statusStrs = new String[]{
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
+                        ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE,
+                };
+                break;
+            case RoleConsts.USER_ROLE_ASO_LEAD:
+            case RoleConsts.USER_ROLE_ASO:
+                statusStrs = new String[]{
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_DMS_APPROVAL,
+                        ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE,
+                        ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE,
+                };
+                break;
+            case RoleConsts.USER_ROLE_AO1_LEAD:
+            case RoleConsts.USER_ROLE_AO1:
+                statusStrs = new String[]{
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_AO1_SUPPORT,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW,
+                };
+                break;
+            case RoleConsts.USER_ROLE_AO2_LEAD:
+            case RoleConsts.USER_ROLE_AO2:
+                statusStrs = new String[]{
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_AO2_SUPPORT,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
+                };
+                break;
+            case RoleConsts.USER_ROLE_AO3_LEAD:
+            case RoleConsts.USER_ROLE_AO3:
+                statusStrs = new String[]{
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,
+                };
+                break;
+            case RoleConsts.USER_ROLE_BROADCAST:
+                statusStrs = new String[]{
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
+                };
+                break;
+            case RoleConsts.USER_ROLE_INSPECTION_LEAD:
+                statusStrs = new String[]{
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_DMS_APPROVAL,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,
+                };
+                break;
+            case RoleConsts.USER_ROLE_INSPECTIOR:
+                statusStrs = new String[]{
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_DMS_APPROVAL,
+                };
+                break;
+            default:
+                statusStrs = new String[]{
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,
+                };
+                break;
+        }
+
         List<SelectOption> appStatusOption = MasterCodeUtil.retrieveOptionsByCodes(statusStrs);
         return appStatusOption;
     }
