@@ -370,10 +370,10 @@ public class NewApplicationDelegator {
     public void preparePreview(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do preparePreview start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        List<AppGrpPremisesDto> appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList();
+        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
         List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
-        if(!IaisCommonUtils.isEmpty(appGrpPremisesDto) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)){
-            int premCount = appGrpPremisesDto.size();
+        if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+            int premCount = appGrpPremisesDtos.size();
             int svcCount = hcsaServiceDtos.size();
             log.info(StringUtil.changeForLog("premises count:"+premCount+" ,service count:"+svcCount));
             if(premCount >1 && svcCount == 1){
