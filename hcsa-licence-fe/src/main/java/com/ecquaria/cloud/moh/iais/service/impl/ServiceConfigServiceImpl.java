@@ -170,7 +170,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public void updatePaymentStatus(ApplicationGroupDto appGrp) {
-        applicationClient.doUpDate(appGrp);
+        applicationClient.doPaymentUpDate(appGrp);
     }
 
     @Override
