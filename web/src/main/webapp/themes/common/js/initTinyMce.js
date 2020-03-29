@@ -1,4 +1,6 @@
-setTimeout(intiTinymce(), 5000);
+$(window).on("load", function(){
+    intiTinymce();
+});
 
 function intiTinymce() {
     tinymce.init({
