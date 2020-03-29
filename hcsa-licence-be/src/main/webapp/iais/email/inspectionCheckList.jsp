@@ -35,10 +35,11 @@
                                                 <button type="button" class="btn btn-primary" onclick="javascript: doViewCheckList();">
                                                     View CheckList
                                                 </button>
-                                                <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
+                                            <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
                                             <button type="button" class="btn btn-primary" onclick="javascript: doNext();">
                                                 Save
                                             </button>
+
                                         </div>
                                         <input type="hidden" name = "saveflag" id="saveflag"/>
                                     </div>
