@@ -1,5 +1,5 @@
 $(window).on("load", function(){
-    setTimeout("intiTinymce()", 500);
+    setTimeout("intiTinymce()", 1000);
 });
 
 function intiTinymce() {
