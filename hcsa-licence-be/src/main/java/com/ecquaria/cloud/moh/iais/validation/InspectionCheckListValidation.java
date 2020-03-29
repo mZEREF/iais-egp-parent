@@ -36,6 +36,12 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         //ahocVad(request,errMap);
         fillUpVad(request,errMap);
         otherinfoVad(serListDto,errMap);
+        // validate file
+        if(serListDto.getAppPremisesSpecialDocDto() != null){
+            if(9999 < serListDto.getAppPremisesSpecialDocDto().getDocSize())
+                errMap.put("litterFile","The file size is too large.");
+
+        }
         return errMap;
     }
 

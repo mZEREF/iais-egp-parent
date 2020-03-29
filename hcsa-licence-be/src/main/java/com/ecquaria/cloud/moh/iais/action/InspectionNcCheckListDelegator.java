@@ -285,7 +285,7 @@ public class InspectionNcCheckListDelegator {
                     if(size <= Integer.MAX_VALUE ){
                         appIntranetDocDto.setDocSize((int)size);
                     }else {
-                        appIntranetDocDto.setDocSize(0);
+                        appIntranetDocDto.setDocSize(Integer.MAX_VALUE);
                     }
                     serListDto.setFile(file);
                     serListDto.setAppPremisesSpecialDocDto(appIntranetDocDto);

@@ -79,6 +79,7 @@
                 </span>
                 <input id="litterFile" name="litterFile" type="hidden" value="<c:out value="${serListDto.appPremisesSpecialDocDto.docName}"></c:out>" />
                 <input id="litterFileId" name="litterFileId" type="hidden" value="<c:out value="${serListDto.appPremisesSpecialDocDto.id}"></c:out>"/>
+                <span class="error-msg" id="error_litterFile" name="iaisErrorMsg"></span>
             </div>
         </div>
     </div>
@@ -138,5 +139,6 @@
         $("#licFileName").html("");
         $('#litterFile').val("");
         $('#litterFileId').val("");
+        $("#error_litterFile").html("");
     }
 </script>
