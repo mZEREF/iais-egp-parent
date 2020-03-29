@@ -1,5 +1,4 @@
 $(window).on("load", function(){
-    $("#htmlEditroArea").hide();
     setTimeout("intiTinymce()", 500);
 });
 
