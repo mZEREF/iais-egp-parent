@@ -23,6 +23,11 @@ public class FileRepoClientFallback implements FileRepoClient{
     }
 
     @Override
+    public FeignResponseEntity<String> removeFileById(String fileId) {
+        return null;
+    }
+
+    @Override
     public FeignResponseEntity<byte[]> getFileFormDataBase(String guid) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

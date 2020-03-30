@@ -86,6 +86,27 @@
     <JavaCode defClass="" executor="" methodName="doProcessing_OnStepProcess_0" name="doProcessing_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="setMulAction" x="490" y="50">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="setMulAction_OnStepProcess_0" name="setMulAction_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doChecklist" x="520" y="-40">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doChecklist_OnStepProcess_0" name="doChecklist_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="saveChecklist" x="360" y="160">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="saveChecklist_OnStepProcess_0" name="saveChecklist_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="emailViewPage" stageIndicator="" x="536" y="356">
@@ -118,6 +139,12 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewCheckList" stageIndicator="" x="360" y="-30">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Links>
@@ -135,9 +162,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preCheckList" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
    <position>{(739,285)(602,165)(389,285)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/checkListNext" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/checkListpage" style="rectanular">
-   <position>{(499,285)(589,285)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
    <position>{(876,316)(602,92)(424,197)(206,336)}</position>
@@ -185,16 +209,40 @@
    <position>{(100,330)(206,336)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preProcessing" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(296,336)(425,660)}</position>
+   <position>{(296,336)(400,630)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ProcessingPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preProcessing" style="oblique">
-   <position>{(425,660)(605,660)}</position>
+   <position>{(400,630)(580,630)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doProcessing" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ProcessingPage" style="oblique">
-   <position>{(605,660)(785,660)}</position>
+   <position>{(580,630)(760,630)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doProcessing" style="oblique">
-   <position>{(785,660)(876,316)}</position>
+   <position>{(760,630)(876,316)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/setMulAction" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/checkListpage" style="rectanular">
+   <position>{(499,285)(510,70)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/setMulAction" style="rectanular">
+   <position>{(510,70)(610,70)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doChecklist" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(610,70)(540,-20)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/checkListNext" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(610,70)(589,285)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ViewCheckList" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doChecklist" style="rectanular">
+   <position>{(540,-20)(380,-10)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ViewCheckList" style="rectanular">
+   <position>{(380,-10)(400,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/saveChecklist" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(400,80)(380,180)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preCheckList" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/saveChecklist" style="rectanular">
+   <position>{(380,180)(389,285)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -210,6 +258,15 @@
    <SwitchCase component="/Steps/AutomaticStep/SendEmail" value="&quot;send&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PreviewEmail" value="&quot;preview&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preProcessing" value="&quot;processing&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/checkListNext" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="590" y="50">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/doChecklist" value="&quot;doChecklist&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/checkListNext" value="&quot;save&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="380" y="60">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/saveChecklist" value="&quot;back&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
