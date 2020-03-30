@@ -2593,7 +2593,7 @@ public class NewApplicationDelegator {
                                     try {
                                         int i3 = Integer.parseInt(onsiteEndToHH);
                                         int i4 = Integer.parseInt(onsiteEndToMM);
-                                        if(i3>=24||i4>=60){
+                                        if(i3>=24){
                                             errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR009");
                                         }else if(i4>=60){
                                             errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR010");
@@ -2677,17 +2677,11 @@ public class NewApplicationDelegator {
                                 MasterCodeDto masterCode=(MasterCodeDto)masterCodeDto;
                                 String codeValue = masterCode.getCodeValue();
                                 String[] s = codeValue.split(" ");
-                                String[] s1 = hciName.split(" ");
                                 for(int index=0;index<s.length;index++){
-                                    for(int ind=0;ind<s1.length;ind++){
-                                        if(s[i].equalsIgnoreCase(s1[ind])){
-                                            errorMap.put("hciName"+i,"CHKLMD001_ERR002");
-                                        }
+                                    if(hciName.toUpperCase().contains(s[i].toUpperCase())){
+                                        errorMap.put("hciName"+i,"CHKLMD001_ERR002");
                                     }
-
                                 }
-
-
                             }
                         }
                         String offTelNo = appGrpPremisesDtoList.get(i).getOffTelNo();
