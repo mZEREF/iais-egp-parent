@@ -1,7 +1,3 @@
-
-
-
-
 <div class="row">
 </div>
 <div class="row">
@@ -9,18 +5,14 @@
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
       <div class="panel panel-default">
         <div class="panel-heading " id="headingPrincipal" role="tab">
+          <c:set var="canExpand" value="${(ReloadPrincipalOfficers != null && ReloadPrincipalOfficers.size()>0) || (ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0)}"/>
           <h4 class="panel-title"><a role="button" class="
-          <c:choose>
-            <c:when test="${(ReloadPrincipalOfficers != null && ReloadPrincipalOfficers.size()>0) || (ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0)}">
-
-            </c:when>
-            <c:otherwise>
-            collapsed
-            </c:otherwise>
-          </c:choose>
+          <c:if test="${!canExpand}">
+          collapsed
+          </c:if>
 " data-toggle="collapse" href="#collapsePrincipal" aria-expanded="true" aria-controls="collapsePrincipal">Principal Officer</a></h4>
         </div>
-        <div class="panel-collapse collapse <c:if test="${(ReloadPrincipalOfficers != null && ReloadPrincipalOfficers.size()>0) || (ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0)}" >
+        <div class="panel-collapse collapse <c:if test="${canExpand}" >
           in
         </c:if>  " id="collapsePrincipal" role="tabpanel" aria-labelledby="headingPremise">
 
@@ -202,6 +194,7 @@
                   <div class="col-sm-4">
                     <span id="addPoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Principal Officer</span>
                   </div>
+                  <div  class="col-sm-5 col-md-5"><span class="poErrorMsg" style="color: red;"></span></div>
                 </div>
               </c:if>
               <br/>
@@ -287,6 +280,8 @@
                     <h2>Deputy Principal Officer</h2>
                   </c:if>
                   <div class="dpo-content">
+                  </div>
+                  <div class="dpo-content">
                     <div class="row">
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
@@ -295,7 +290,7 @@
                             <span class="upload_controls"></span>
                           </div>
                           <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
-                              <iais:select cssClass="deputyPoSelect"  name="deputyAssignSelect" options="DeputyPrincipalOfficersAssignSelect"  value="${deputy.assignSelect}" ></iais:select>
+                              <iais:select cssClass="deputyPoSelect"  name="deputyPoSelect" options="DeputyPrincipalOfficersAssignSelect"  value="${deputy.assignSelect}" ></iais:select>
                           </div>
                         </div>
                       </div>
@@ -404,8 +399,11 @@
               </c:forEach>
             </c:if>
             <div class="row <c:if test="${'APTY005' ==AppSubmissionDto.appType  &&'1' == canEditDpo}">disabled</c:if>">
-              <div class="col-sm-6">
+              <div class="col-sm-5">
                 <span id="addDpoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Deputy Principal Officer</span>
+              </div>
+              <div  class="col-sm-5 col-md-5">
+                <span class="dpoErrorMsg" style="color: red;margin-left: -75px;"></span>
               </div>
             </div>
             <br/>
@@ -414,13 +412,16 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 
 <script>
+    var init;
     $(document).ready(function () {
+        <!-- init start-->
+        init = 0;
+
         poSelect();
         dpoSelect();
 
@@ -450,16 +451,22 @@
             $('.deputy-content div.nice-select').addClass('disabled');
             $('#addDpoBtn').unbind('click');
         }
+
+        <!-- init end-->
+        init = 1;
     });
 
     var poSelect = function(){
         $('.poSelect').change(function () {
-            $poContentEle = $(this).closest('div.po-content');
+            var $poContentEle = $(this).closest('div.po-content');
             var selectVal = $(this).val();
+            var data= {};
             if("newOfficer" == selectVal){
                 $poContentEle.find('div.principalOfficers').removeClass('hidden');
+                //fillPoData($poContentEle,data);
             }else if('-1' == selectVal){
                 $poContentEle.find('div.principalOfficers').addClass('hidden');
+                //fillPoData($poContentEle,data);
             }
         });
     };
@@ -490,20 +497,26 @@
 
     var addPo = function(){
         $('#addPoBtn').click(function () {
+            var hasNumber = $('div.po-content').size() - 1;
+            console.log("hasNumber" + hasNumber);
             $.ajax({
-                'url':'${pageContext.request.contextPath}/principal-officer-html',
-                'dataType':'text',
-                'type':'GET',
-                'success':function (data) {
-                    console.log("suc");
-                    $('.po-content:last').after(data);
-
-                    poSelect();
-
-                    retrieveData();
-
+                url:'${pageContext.request.contextPath}/principal-officer-html',
+                dataType:'json',
+                type:'POST',
+                data:{
+                    'HasNumber':hasNumber
                 },
-                'error':function (data) {
+                success:function (data) {
+                    if ('success' == data.res) {
+                      console.log(data.res);
+                      $('.po-content:last').after(data.sucInfo);
+                      poSelect();
+                      retrieveData();
+                    }else{
+                        $('.poErrorMsg').html(data.errInfo);
+                    }
+                },
+                error:function (data) {
                     console.log("err");
                 }
             });
@@ -514,31 +527,34 @@
 
     var addDpo = function(){
         $('#addDpoBtn').click(function () {
+            var hasNumber = $('.dpo-content').size() - 1;
+            console.log("hasNumber" + hasNumber);
             $.ajax({
-                'url':'${pageContext.request.contextPath}/deputy-principal-officer-html',
-                'dataType':'text',
-                'type':'GET',
-                'success':function (data) {
-                    console.log("suc");
-                    $('.dpo-content:last').after(data);
-
-                    dpoSelect();
-
+                url:'${pageContext.request.contextPath}/deputy-principal-officer-html',
+                dataType:'json',
+                type:'POST',
+                data:{
+                    'HasNumber':hasNumber
                 },
-                'error':function (data) {
+                'success':function (data) {
+                    if ('success' == data.res) {
+                        console.log("suc");
+                        $('.dpo-content:last').after(data.sucInfo);
+                        dpoSelect();
+                    }else{
+                        $('.dpoErrorMsg').html(data.errInfo);
+                    }
+                },
+                error:function (data) {
                     console.log("err");
                 }
             });
-
         });
     }
 
-
-
-
     var retrieveData = function () {
         $('.idNoVal').blur(function () {
-            $poContentEle = $(this).closest('div.po-content');
+            var $poContentEle = $(this).closest('div.po-content');
             var data = {
                 'idNo':$(this).val()
             };
@@ -550,29 +566,13 @@
                 'success':function (data) {
                     console.log("suc");
                     if(data != null) {
-                        $poContentEle.find('input[name="name"]').val(data.name);
-                        $poContentEle.find('input[name="mobileNo"]').val(data.mobileNo);
-                        $poContentEle.find('input[name="officeTelNo"]').val(data.officeTelNo);
-                        $poContentEle.find('input[name="emailAddress"]').val(data.emailAddr);
-                        <!--salutation-->
-                        $poContentEle.find('select[name="salutation"]').val(data.salutation);
-                        var salutationVal = $poContentEle.find('option[value="' + data.salutation + '"]').html();
-                        $poContentEle.find('select[name="salutation"]').next().find('.current').html(salutationVal);
-                        <!-- idType-->
-                        $poContentEle.find('select[name="idType"]').val(data.idType);
-                        var idTypeVal = $poContentEle.find('option[value="' + data.idType + '"]').html();
-                        $poContentEle.find('select[name="idType"]').next().find('.current').html(idTypeVal);
-                        <!--Designation  -->
-                        $poContentEle.find('select[name="designation"]').val(data.designation);
-                        var designationVal = $poContentEle.find('option[value="' + data.designation + '"]').html();
-                        $poContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
+                        fillPoData($poContentEle,data);
                     }
                 },
                 'error':function (data) {
                     console.log("err");
                 }
             });
-
         });
     }
 
@@ -597,6 +597,25 @@
             addDpo();
             $('#edit-dpo').addClass('hidden');
         });
+    }
+    var fillPoData = function ($poContentEle,data) {
+        $poContentEle.find('input[name="idNo"]').val(data.idNo);
+        $poContentEle.find('input[name="name"]').val(data.name);
+        $poContentEle.find('input[name="mobileNo"]').val(data.mobileNo);
+        //$poContentEle.find('input[name="officeTelNo"]').val(data.officeTelNo);
+        $poContentEle.find('input[name="emailAddress"]').val(data.emailAddr);
+        <!--salutation-->
+        $poContentEle.find('select[name="salutation"]').val(data.salutation);
+        var salutationVal = $poContentEle.find('option[value="' + data.salutation + '"]').html();
+        $poContentEle.find('select[name="salutation"]').next().find('.current').html(salutationVal);
+        <!-- idType-->
+        $poContentEle.find('select[name="idType"]').val(data.idType);
+        var idTypeVal = $poContentEle.find('option[value="' + data.idType + '"]').html();
+        $poContentEle.find('select[name="idType"]').next().find('.current').html(idTypeVal);
+        <!--Designation  -->
+        $poContentEle.find('select[name="designation"]').val(data.designation);
+        var designationVal = $poContentEle.find('option[value="' + data.designation + '"]').html();
+        $poContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
     }
 
 </script>

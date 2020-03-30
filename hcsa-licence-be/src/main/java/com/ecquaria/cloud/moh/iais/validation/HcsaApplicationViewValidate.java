@@ -14,6 +14,9 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
     private final String STATUS = "APST000";
     private final String VERIFIED = "VERIFIED";
     private final String ROLLBACK = "ROLLBACK";
+    private final String DECISION_APPROVAL = "decisionApproval";
+    private final String DECISION_REJECT = "decisionReject";
+    private final String RECOMMENDATION_REJECT = "reject";
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
 
@@ -41,10 +44,36 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
 
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
         String status = applicationViewDto.getApplicationDto().getStatus();
+        //DMS recommendation
+        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
+            String decisionValue = ParamUtil.getString(request,"decisionValues");
+
+            if(StringUtil.isEmpty(decisionValue)){
+                errMap.put("decisionValues","The field is mandatory.");
+            }else{
+                if(DECISION_APPROVAL.equals(decisionValue)){
+                    if(StringUtil.isEmpty(recommendationStr)){
+                        errMap.put("recommendation","Please key in recommendation");
+                    }else if(RECOMMENDATION_REJECT.equals(recommendationStr)){
+                        errMap.put("recommendation","The value of recommendation cannot be 'reject'.");
+                    }
+                }else if(DECISION_REJECT.equals(decisionValue)){
+                    if(StringUtil.isEmpty(recommendationStr)){
+                        errMap.put("recommendation","Please key in recommendation");
+                    }else if(!RECOMMENDATION_REJECT.equals(recommendationStr)){
+                        errMap.put("recommendation","The value of recommendation must be 'reject'.");
+                    }
+                }
+                ParamUtil.setRequestAttr(request,"selectDecisionValue",decisionValue);
+            }
+        }
+
         if(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(status) || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
-            String nextStageReply = ParamUtil.getRequestString(request, "nextStageReply");
-            if(StringUtil.isEmpty(nextStageReply)){
-                errMap.put("nextStageReply","The field is mandatory.");
+            String nextStageReplys = ParamUtil.getRequestString(request, "nextStageReplys");
+            if(StringUtil.isEmpty(nextStageReplys)){
+                errMap.put("nextStageReplys","The field is mandatory.");
+            }else{
+                ParamUtil.setRequestAttr(request,"selectNextStageReply",nextStageReplys);
             }
         }else{
             String nextStage = ParamUtil.getRequestString(request, "nextStage");

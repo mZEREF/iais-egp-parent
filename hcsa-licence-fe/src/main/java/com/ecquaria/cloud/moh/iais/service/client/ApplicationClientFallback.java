@@ -130,6 +130,7 @@ public class ApplicationClientFallback implements ApplicationClient {
         entity.setHeaders(headers);
         return entity;
     }
+
     @Override
     public FeignResponseEntity<String> doPaymentUpDate( ApplicationGroupDto applicationGroupDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();

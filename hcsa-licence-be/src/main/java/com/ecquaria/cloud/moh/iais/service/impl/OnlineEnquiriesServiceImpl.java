@@ -199,7 +199,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
                 Calendar c = Calendar.getInstance();
                 for (AppPremisesRecommendationDto appPremisesRecommendationDto:appPremisesRecommendationDtos
-                     ) {
+                ) {
                     c.setTime(appPremisesRecommendationDto.getRecomInDate());
                     complianceHistoryDto.setInspectionDateYear(c.get(Calendar.YEAR));
                     complianceHistoryDtos.add(complianceHistoryDto);
@@ -207,7 +207,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 
             }catch (Exception e){
                 log.info(e.getMessage());
-               // complianceHistoryDtos.add(complianceHistoryDto);
+                // complianceHistoryDtos.add(complianceHistoryDto);
             }
         }
 
@@ -759,14 +759,14 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         List<String> licIds =IaisCommonUtils.genNewArrayList();
         List<LicAppCorrelationDto> appCorrelationDtoList=IaisCommonUtils.genNewArrayList();
         for (String appId:appIds
-             ) {
+        ) {
             List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrByappId(appId).getEntity();
             if(licAppCorrelationDtos.size()>0){
                 appCorrelationDtoList.addAll(licAppCorrelationDtos);
             }
         }
         for (LicAppCorrelationDto licAppCorrelationDto:appCorrelationDtoList
-             ) {
+        ) {
             licIds.add(licAppCorrelationDto.getLicenceId());
         }
         HashSet<String> set = new HashSet<>(licIds);

@@ -131,7 +131,7 @@ public class BackendInboxDelegator {
         commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
         List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
-        List<SelectOption> appStatusOption = inspectionService.getAppStatusOption();
+        List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext.getCurRoleId());
 
         ParamUtil.setRequestAttr(bpc.request,"hci_code",hci_code);
         ParamUtil.setRequestAttr(bpc.request,"hci_address",hci_address);

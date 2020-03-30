@@ -25,7 +25,7 @@
                             <li class="active" role="presentation"><a href="#tabLetter" aria-controls="tabLetter" role="tab"
                                                                       data-toggle="tab">Email</a></li>
                             <li class="complete" role="presentation"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab"
-                                                                      data-toggle="tab">Processing</a></li>
+                                                                        data-toggle="tab">Processing</a></li>
                         </ul>
                         <div class="tab-nav-mobile visible-xs visible-sm">
                             <div class="swiper-wrapper" role="tablist">

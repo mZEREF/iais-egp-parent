@@ -707,8 +707,51 @@ public class NewApplicationHelper {
                 }
             }
         }
+    }
 
+    /**
+     *
+     * @param appSubmissionDto
+     * @Descriptio just get cgo psn
+     * @return
+     */
+    public static Map<String,AppSvcCgoDto> getPsnMapFromSubDto(AppSubmissionDto appSubmissionDto){
+        Map<String,AppSvcCgoDto> psnMap = IaisCommonUtils.genNewHashMap();
+        if(appSubmissionDto == null){
+            return psnMap;
+        }
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+                if(appSvcCgoDtos != null){
+                    for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtos){
+                        psnMap.put(appSvcCgoDto.getIdNo(),appSvcCgoDto);
+                    }
+                }
+            }
+        }
+        return psnMap;
+    }
 
+    public static AppSvcCgoDto getPsnFromSubDto(AppSubmissionDto appSubmissionDto, String idNo){
+        if(StringUtil.isEmpty(idNo)){
+            return null;
+        }
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+                if(appSvcCgoDtos != null){
+                    for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtos){
+                        if(idNo.equals(appSvcCgoDto.getIdNo())){
+                            return appSvcCgoDto;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     //=============================================================================

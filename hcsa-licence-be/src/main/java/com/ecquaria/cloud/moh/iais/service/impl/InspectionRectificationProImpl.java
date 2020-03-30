@@ -149,7 +149,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
     public List<SelectOption> getProcessRecDecOption() {
         String[] processDecArr = new String[]
                 {InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION, InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION,
-                 InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION};
+                        InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION};
         List<SelectOption> processDecOption = MasterCodeUtil.retrieveOptionsByCodes(processDecArr);
         return processDecOption;
     }

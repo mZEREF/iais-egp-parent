@@ -309,6 +309,7 @@ public class RequestForChangeMenuDelegator {
         String premId = ParamUtil.getMaskedString(bpc.request, "premisesId" + index);
         PremisesListQueryDto premisesListQueryDto = new PremisesListQueryDto();
         AppSubmissionDto appSubmissionDto = null;
+        String status = "";
         if (!StringUtil.isEmpty(licId) && !StringUtil.isEmpty(premId)) {
             List<PremisesListQueryDto> premisesListQueryDtos = (List<PremisesListQueryDto>) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS);
             if (!IaisCommonUtils.isEmpty(premisesListQueryDtos)) {
@@ -332,10 +333,11 @@ public class RequestForChangeMenuDelegator {
                         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
                         NewApplicationHelper.setSubmissionDtoSvcData(bpc.request,appSubmissionDto);
                     }
+                    status= premisesListQueryDto.getLicenceStatus();
                 }
             }
         }
-        String status = premisesListQueryDto.getLicenceStatus();
+
         if(!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)){
             ParamUtil.setRequestAttr(bpc.request,"Error_Status","licence status is not active");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesList");

@@ -92,7 +92,7 @@
             </div>
             <div class="row margin-bottom-10 text-right">
                 <div class="col-xs-12 col-md-1">
-                    <p class="print"><a href="#"> <em class="fa fa-print"></em>Print</a></p>
+                    <p class="print"><a href="#" id="print-ack"> <em class="fa fa-print"></em>Print</a></p>
                 </div>
                 <div class="col-xs-11 col-md-11">
 
@@ -102,10 +102,6 @@
                         <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doSelfAssessment">Submit <br>Self-Assessment</a>
                 </c:if>
                 <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doPrefInsDate">Indicate preferred<br>Inspection Date</a>
-                <%--<div class="col-xs-12 col-md-10 text-right">--%>
-
-                    <%--<a class="btn btn-secondary" id="doPrefInsDate">Indicate preferred Inspection Date</a>--%>
-                <%--</div>--%>
             </div>
                 </div>
         </div>
@@ -126,7 +122,9 @@
         mainForm.submit();
     });
 
-
+    $("#print-ack").click(function () {
+        window.print();
+    })
 </script>
 
 

@@ -22,57 +22,57 @@
                         <span>Advanced Search Criteria For Licence</span>
                     </h3>
 
-                        <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
-                            <div class="panel-body">
-                                <div class="panel-main-content">
-                                    <iais:section title="" id = "supPoolList">
-                                        <iais:row>
-                                            <iais:field value="Licence No."/>
-                                            <iais:value width="18">
-                                                <label>
-                                                    <input type="text" style="width:180%; font-weight:normal;" name="licence_no" value="${SearchParam.filters['licence_no']}" />
-                                                </label>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Service Type"/>
-                                            <iais:value width="18">
-                                                <iais:select  name="service_licence_type" options="licSvcTypeOption" firstOption="Please Select" value="${serviceLicenceType}" ></iais:select>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Licence Status"/>
-                                            <iais:value width="18">
-                                                <iais:select name="licence_status" options="licStatusOption" firstOption="Please Select" value="${SearchParam.filters['licence_status']}" ></iais:select>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Licence Period From"/>
-                                            <iais:value width="18">
-                                                <iais:datePicker id = "sub_date" name = "sub_date" value="${SearchParam.filters['start_date']}" ></iais:datePicker>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Licence Period To"/>
-                                            <iais:value width="18">
-                                                <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['expiry_date']}"></iais:datePicker>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row >
-                                            <p style="color:#ff0000; display: none" id="periodDateError">
-                                                Licence Period From cannot be later than Licence Period To.                                            </p>
-                                        </iais:row>
-                                        <iais:action style="text-align:left;">
-                                            <a  onclick="javascript:doLicBack()">< Back</a>
-                                        </iais:action>
-                                        <iais:action style="text-align:right;">
-                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doLicClear()">Clear</button>
-                                            <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Search</button>
-                                        </iais:action>
-                                    </iais:section>
-                                </div>
+                    <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                        <div class="panel-body">
+                            <div class="panel-main-content">
+                                <iais:section title="" id = "supPoolList">
+                                    <iais:row>
+                                        <iais:field value="Licence No."/>
+                                        <iais:value width="18">
+                                            <label>
+                                                <input type="text" style="width:180%; font-weight:normal;" name="licence_no" value="${SearchParam.filters['licence_no']}" />
+                                            </label>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Service Type"/>
+                                        <iais:value width="18">
+                                            <iais:select  name="service_licence_type" options="licSvcTypeOption" firstOption="Please Select" value="${serviceLicenceType}" ></iais:select>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Licence Status"/>
+                                        <iais:value width="18">
+                                            <iais:select name="licence_status" options="licStatusOption" firstOption="Please Select" value="${SearchParam.filters['licence_status']}" ></iais:select>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Licence Period From"/>
+                                        <iais:value width="18">
+                                            <iais:datePicker id = "sub_date" name = "sub_date" value="${SearchParam.filters['start_date']}" ></iais:datePicker>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Licence Period To"/>
+                                        <iais:value width="18">
+                                            <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['expiry_date']}"></iais:datePicker>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row >
+                                        <p style="color:#ff0000; display: none" id="periodDateError">
+                                            Licence Period From cannot be later than Licence Period To.                                            </p>
+                                    </iais:row>
+                                    <iais:action style="text-align:left;">
+                                        <a  onclick="javascript:doLicBack()">< Back</a>
+                                    </iais:action>
+                                    <iais:action style="text-align:right;">
+                                        <button class="btn btn-secondary" type="button"  onclick="javascript:doLicClear()">Clear</button>
+                                        <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Search</button>
+                                    </iais:action>
+                                </iais:section>
                             </div>
                         </div>
+                    </div>
 
                 </div>
             </div>

@@ -317,6 +317,13 @@ public class HcsaApplicationDelegator {
 
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
+
+        List<SelectOption> decisionValues = IaisCommonUtils.genNewArrayList();
+        decisionValues.add(new SelectOption("", "Please Select"));
+        decisionValues.add(new SelectOption("decisionApproval", "Approval"));
+        decisionValues.add(new SelectOption("decisionReject", "Reject"));
+        ParamUtil.setSessionAttr(bpc.request, "decisionValues", (Serializable)decisionValues);
+
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
     }
 
@@ -384,7 +391,7 @@ public class HcsaApplicationDelegator {
                 nextStage="PROCRB";
             }
 
-            String reply=ParamUtil.getString(bpc.request,"nextStageReply");
+            String reply=ParamUtil.getString(bpc.request,"nextStageReplys");
             if(!StringUtil.isEmpty(reply)){
                 nextStage=reply;
             }
@@ -414,13 +421,22 @@ public class HcsaApplicationDelegator {
         String successInfo = MessageCodeKey.ACK003;
         String verified = ParamUtil.getString(bpc.request,"verified");
         String rollBack = ParamUtil.getString(bpc.request,"rollBack");
+        String decisionValue = ParamUtil.getString(bpc.request,"decisionValues");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String status = applicationDto.getStatus();
         String crud_action_type = (String) ParamUtil.getRequestAttr(bpc.request, "crud_action_type");
         //replay "PROCREP"
         if("PROCREP".equals(crud_action_type)){
-            successInfo = MessageCodeKey.ACK015;
+            if("decisionApproval".equals(decisionValue)){
+                //DMS APPROVAL
+                successInfo = MessageCodeKey.ACK013;
+            }else if("decisionReject".equals(decisionValue)){
+                //DMS REJECT
+                successInfo = MessageCodeKey.ACK014;
+            }else{
+                successInfo = MessageCodeKey.ACK015;
+            }
         }else{
             //ASO PSO
             if(RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)){

@@ -34,5 +34,4 @@ public interface SystemAdminClient  {
 
     @GetMapping(value = "/iais-mastercode/masterCode/{id}")
     FeignResponseEntity<MasterCodeDto> getMasterCodeById(@PathVariable("id") String id);
-
 }

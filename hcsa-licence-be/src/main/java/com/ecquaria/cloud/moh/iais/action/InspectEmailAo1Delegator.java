@@ -140,7 +140,7 @@ public class InspectEmailAo1Delegator {
         if(serListDto != null){
             List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
             if(fdtoList != null && fdtoList.size() >0){
-                for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList){
+                for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList) {
                     insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(inspectionFillCheckListDto);
                 }
             }
@@ -341,10 +341,10 @@ public class InspectEmailAo1Delegator {
         String correlationId = taskDto.getRefNo();
         InspectionEmailTemplateDto inspectionEmailTemplateDto;
         if(ParamUtil.getSessionAttr(request,INS_EMAIL_DTO)!=null){
-             inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
+            inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         }
         else {
-             inspectionEmailTemplateDto= inspEmailService.getInsertEmail(correlationId);
+            inspectionEmailTemplateDto= inspEmailService.getInsertEmail(correlationId);
         }
 
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);

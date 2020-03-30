@@ -73,7 +73,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
         try {
             parameter = getParameter(request);
         } catch (ParseException e) {
-           log.error(e.getMessage(),e);
+          log.error(e.getMessage(),e);
         }
 
         hcsaConfigClient.saveKpiAndReminder(parameter);

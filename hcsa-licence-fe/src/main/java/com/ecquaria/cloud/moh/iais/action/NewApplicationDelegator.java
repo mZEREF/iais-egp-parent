@@ -141,6 +141,7 @@ public class NewApplicationDelegator {
     private WithOutRenewalService withOutRenewalService;
     @Autowired
     private SystemAdminClient systemAdminClient;
+
     /**
      * StartStep: Start
      *
@@ -399,11 +400,11 @@ public class NewApplicationDelegator {
     public void preparePreview(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do preparePreview start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        List<AppGrpPremisesDto> appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList();
+        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
         List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
-        if(!IaisCommonUtils.isEmpty(appGrpPremisesDto) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)){
-            int premCount = appGrpPremisesDto.size();
-            int svcCount = appGrpPremisesDto.size();
+        if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+            int premCount = appGrpPremisesDtos.size();
+            int svcCount = hcsaServiceDtos.size();
             log.info(StringUtil.changeForLog("premises count:"+premCount+" ,service count:"+svcCount));
             if(premCount >1 && svcCount == 1){
                 //multi prem one svc
@@ -695,23 +696,20 @@ public class NewApplicationDelegator {
             String name = "common"+comm.getId();
             file = (CommonsMultipartFile) mulReq.getFile(name);
             Boolean isMandatory = comm.getIsMandatory();
-            if(isMandatory&&file.getSize()==0){
-                if(appGrpPrimaryDocDtoList!=null&&appGrpPrimaryDocDtoList.isEmpty()){
-                    errorMap.put(name, "UC_CHKLMD001_ERR001");
-                }else {
-                    Boolean flag=false;
-                    for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
-                        String svcComDocId = appGrpPrimaryDocDto.getSvcComDocId();
-                        if(comm.getId().equals(svcComDocId)){
-                            flag=true;
-                            break;
-                        }
-                    }
-                    if(!flag){
-                        errorMap.put(name, "UC_CHKLMD001_ERR001");
+            if(isMandatory&&file.getSize()==0&&appGrpPrimaryDocDtoList.isEmpty()){
+                errorMap.put(name, "UC_CHKLMD001_ERR001");
+            }else {
+                Boolean flag=false;
+                for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
+                    String svcComDocId = appGrpPrimaryDocDto.getSvcComDocId();
+                    if(comm.getId().equals(svcComDocId)){
+                        flag=true;
+                        break;
                     }
                 }
-
+                if(!flag){
+                    errorMap.put(name, "UC_CHKLMD001_ERR001");
+                }
             }
 
         }
@@ -831,6 +829,14 @@ public class NewApplicationDelegator {
         });
 
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        HashMap<String,String>coMap=(HashMap<String, String>)bpc.getSession().getAttribute("coMap");
+        List<String> strList=new ArrayList<>(4);
+        coMap.forEach((k,v)->{
+            if(!StringUtil.isEmpty(v)){
+                strList.add(v);
+            }
+
+        });
         if(StringUtil.isEmpty(appSubmissionDto.getDraftNo())){
             String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
             log.info(StringUtil.changeForLog("the draftNo -->:") + draftNo);
@@ -2234,8 +2240,6 @@ public class NewApplicationDelegator {
         }
 
     }
-
-    //
     private void loadingCoMap( AppSubmissionDto appSubmissionDto,HttpServletRequest request){
         if(appSubmissionDto!=null){
             List<String> stepColor = appSubmissionDto.getStepColor();
@@ -2267,7 +2271,6 @@ public class NewApplicationDelegator {
 
         }
     }
-
 
     private void loadingDraft(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do loadingDraft start ...."));
@@ -2491,7 +2494,7 @@ public class NewApplicationDelegator {
             date=  i1*60+i2*1;
             if(i1>=24){
                 errorMap.put(key+i,"UC_CHKLMD001_ERR009");
-            }else if(i2>60) {
+            }else if(i2>=60){
                 errorMap.put(key+i,"UC_CHKLMD001_ERR010");
             }
         }catch (Exception e){
@@ -2564,6 +2567,7 @@ public class NewApplicationDelegator {
                         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
                         if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
                             for(int j=0;j<appPremPhOpenPeriodList.size();j++){
+
                                 String convStartFromHH = appPremPhOpenPeriodList.get(j).getOnsiteStartFromHH();
                                 String convStartFromMM = appPremPhOpenPeriodList.get(j).getOnsiteStartFromMM();
                                 String onsiteEndToHH = appPremPhOpenPeriodList.get(j).getOnsiteEndToHH();
@@ -2597,7 +2601,7 @@ public class NewApplicationDelegator {
                                     try {
                                         int i3 = Integer.parseInt(onsiteEndToHH);
                                         int i4 = Integer.parseInt(onsiteEndToMM);
-                                        if(i3>=24){
+                                        if(i3>=24||i4>=60){
                                             errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR009");
                                         }else if(i4>=60){
                                             errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR010");
@@ -2675,7 +2679,7 @@ public class NewApplicationDelegator {
                         String hciName = appGrpPremisesDtoList.get(i).getHciName();
                         if(StringUtil.isEmpty(hciName)){
                             errorMap.put("hciName"+i,"UC_CHKLMD001_ERR001");
-                        }else {
+                        } {
                             Object masterCodeDto = bpc.request.getAttribute("masterCodeDto");
                             if(masterCodeDto!=null){
                                 MasterCodeDto masterCode=(MasterCodeDto)masterCodeDto;

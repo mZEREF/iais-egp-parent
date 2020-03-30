@@ -23,7 +23,7 @@
                             <li class="complete" role="presentation"><a href="#tabPersonnelDetails" aria-controls="tabPersonnelDetails" role="tab"
                                                                         data-toggle="tab">Personnel Details</a></li>
                             <li class="active" role="presentation"><a href="#tabInspectionReport" aria-controls="tabInspectionReport" role="tab"
-                                                                        data-toggle="tab">Inspection Report</a></li>
+                                                                      data-toggle="tab">Inspection Report</a></li>
                         </ul>
                         <div class="tab-nav-mobile visible-xs visible-sm">
                             <div class="swiper-wrapper" role="tablist">
@@ -221,7 +221,7 @@
 
                             <div class="tab-pane" id="tabPersonnelDetails" role="tabpanel">
 
-                                    <!-- Default panel contents -->
+                                <!-- Default panel contents -->
                                 <c:forEach var="personnel" items="${personnelsDto}">
                                     <div class="panel panel-default">
                                         <div class="panel-heading"><strong>${personnel.licKeyPersonnelDto.psnType}</strong></div>

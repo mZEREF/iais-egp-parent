@@ -291,7 +291,7 @@
                                 <p>Risk Level <strong style="color:#ff0000;"> *</strong></p>
                             </td>
                             <td class="col-xs-4">
-                                <iais:select name="riskLevel" options="riskLevelOptions"  firstOption="Please select" value="${appPremisesRecommendationDto.riskLevel}"/>
+                                <iais:select name="riskLevel" options="riskLevelOptions"  firstOption="Please Select" value="${appPremisesRecommendationDto.riskLevel}"/>
                                 <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>

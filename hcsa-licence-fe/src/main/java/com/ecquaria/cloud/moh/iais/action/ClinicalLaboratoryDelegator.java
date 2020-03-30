@@ -298,6 +298,7 @@ public class ClinicalLaboratoryDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         List<HcsaSvcPersonnelDto> principalOfficerConfig  =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
         List<HcsaSvcPersonnelDto> deputyPrincipalOfficerConfig   =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         int mandatory = 0;
         int deputyMandatory = 0;
         if(principalOfficerConfig != null && !principalOfficerConfig.isEmpty()){
@@ -343,6 +344,12 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setRequestAttr(bpc.request, "IdTypeSelect", IdTypeSelect);
 
         List<SelectOption> assignSelectList = getAssignPrincipalOfficerSel(currentSvcId, true);
+        /*Map<String,AppSvcCgoDto> psnMap = NewApplicationHelper.getPsnMapFromSubDto(appSubmissionDto);
+        psnMap.forEach((k,v)->{
+            //todo:confirm
+            SelectOption sp = new SelectOption(k,v.getName()+" "+v.getIdNo());
+            assignSelectList.add(sp);
+        });*/
         ParamUtil.setRequestAttr(bpc.request, "PrincipalOfficersAssignSelect", assignSelectList);
 
         List<SelectOption> deputyAssignSelectList = getAssignPrincipalOfficerSel(currentSvcId, true);
@@ -769,7 +776,7 @@ public class ClinicalLaboratoryDelegator {
                     appSubmissionDto.setChangeSelectDto(appEditSelectDto);
                 }
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
-                Map<String,String> coMap=(Map<String, String>) bpc.request.getSession().getAttribute("coMap");
+                HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                 if(map.isEmpty()){
                     coMap.put("information","information");
                 }else {
@@ -1360,7 +1367,7 @@ public class ClinicalLaboratoryDelegator {
             String [] deputyOfficeTelNo = ParamUtil.getStrings(request, "deputyOfficeTelNo");
             String [] deputyEmailAddr = ParamUtil.getStrings(request, "deputyEmailAddr");
             if(assignSelect != null && assignSelect.length>0){
-                for(int i=0 ;i <deputyDesignation.length;i++){
+                for(int i=0 ;i <assignSelect.length;i++){
                     AppSvcPrincipalOfficersDto dpoDto = new AppSvcPrincipalOfficersDto();
                     dpoDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
                     dpoDto.setAssignSelect(assignSelect[i]);

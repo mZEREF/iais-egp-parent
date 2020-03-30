@@ -21,7 +21,7 @@
                         <div class="tab-content">
                             <div class="tab-pane" id="tabInfo" role="tabpanel">
                                 <%@include file="/iais/inspectionncList/tabViewApp.jsp"%>
-                        </div>
+                            </div>
 
                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
                                 <%@include file="/iais/inspectionncList/tabDocuments.jsp"%>

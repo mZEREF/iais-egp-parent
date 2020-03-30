@@ -31,12 +31,12 @@ public interface InspectionAssignTaskService {
     List<TaskDto> getCommPoolByGroupWordId(LoginContext loginContext);
 
     /**
-      * @author: shicheng
-      * @Date 2019/11/23
-      * @Param: appCorrelationId, commPools, loginContext
-      * @return: InspecTaskCreAndAssQueryDto
-      * @Descripation: Gets a single Common Pool of information for allocation
-      */
+     * @author: shicheng
+     * @Date 2019/11/23
+     * @Param: appCorrelationId, commPools, loginContext
+     * @return: InspecTaskCreAndAssQueryDto
+     * @Descripation: Gets a single Common Pool of information for allocation
+     */
     InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String appCorrelationId, List<TaskDto> commPools, LoginContext loginContext, InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
 
     /**
@@ -49,110 +49,110 @@ public interface InspectionAssignTaskService {
     AppGrpPremisesDto getAppGrpPremisesDtoByAppGroId(String applicationId);
 
     /**
-      * @author: shicheng
-      * @Date 2019/11/27
-      * @Param: searchParam
-      * @return: SearchResult
-      * @Descripation: Search results based on search criteria
-      */
+     * @author: shicheng
+     * @Date 2019/11/27
+     * @Param: searchParam
+     * @return: SearchResult
+     * @Descripation: Search results based on search criteria
+     */
     SearchResult<InspectionCommonPoolQueryDto> getSearchResultByParam(SearchParam searchParam);
 
     /**
-      * @author: shicheng
-      * @Date 2019/11/27
-      * @Param: commPools
-      * @return: List<String>
-      * @Descripation: get Application No By commPools
-      */
+     * @author: shicheng
+     * @Date 2019/11/27
+     * @Param: commPools
+     * @return: List<String>
+     * @Descripation: get Application No By commPools
+     */
     List<String> getAppCorrIdListByPool(List<TaskDto> commPools);
 
     /**
-      * @author: shicheng
-      * @Date 2019/11/27
-      * @Param: null
-      * @return: List<SelectOption>
-      * @Descripation: getAppTypeOption
-      */
+     * @author: shicheng
+     * @Date 2019/11/27
+     * @Param: null
+     * @return: List<SelectOption>
+     * @Descripation: getAppTypeOption
+     */
     List<SelectOption> getAppTypeOption();
 
     /**
-      * @author: shicheng
-      * @Date 2019/11/29
-      * @Param: commPools inspecTaskCreAndAssDto applicationViewDto internalRemarks taskDto
-      * @return: void
-      * @Descripation: update Common Pool and create Inspector Task
-      */
+     * @author: shicheng
+     * @Date 2019/11/29
+     * @Param: commPools inspecTaskCreAndAssDto applicationViewDto internalRemarks taskDto
+     * @return: void
+     * @Descripation: update Common Pool and create Inspector Task
+     */
     void assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationViewDto applicationViewDto, String internalRemarks, TaskDto taskDto);
 
     /**
-      * @author: shicheng
-      * @Date 2019/12/2
-      * @Param: searchResult
-      * @return: SearchResult
-      * @Descripation: get Address By Result
-      */
+     * @author: shicheng
+     * @Date 2019/12/2
+     * @Param: searchResult
+     * @return: SearchResult
+     * @Descripation: get Address By Result
+     */
     SearchResult<InspectionCommonPoolQueryDto> getAddressByResult(SearchResult<InspectionCommonPoolQueryDto> searchResult);
 
     /**
-      * @author: shicheng
-      * @Date 2019/12/5
-      * @Param: applicationNo
-      * @return: ApplicationViewDto
-      * @Descripation: search ApplicationViewDto By app premises correlation Id
-      */
+     * @author: shicheng
+     * @Date 2019/12/5
+     * @Param: applicationNo
+     * @return: ApplicationViewDto
+     * @Descripation: search ApplicationViewDto By app premises correlation Id
+     */
     ApplicationViewDto searchByAppCorrId(String correlationId);
 
     /**
-      * @author: shicheng
-      * @Date 2019/12/10
-      * @Param: internalRemarks, taskKey, status, appPremisesCorrelationId, processDec, RoleId, subStage, workGroupId
-      * @return: AppPremisesRoutingHistoryDto
-      * @Descripation: createAppPremisesRoutingHistory
-      */
+     * @author: shicheng
+     * @Date 2019/12/10
+     * @Param: internalRemarks, taskKey, status, appPremisesCorrelationId, processDec, RoleId, subStage, workGroupId
+     * @return: AppPremisesRoutingHistoryDto
+     * @Descripation: createAppPremisesRoutingHistory
+     */
     AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String status, String taskKey, String internalRemarks, String processDec, String RoleId, String subStage, String workGroupId);
 
     /**
-      * @author: shicheng
-      * @Date 2019/12/10
-      * @Param: commPools, inspecTaskCreAndAssDto, internalRemarks
-      * @return: void
-      * @Descripation: routing Task By CommonPool
-      */
+     * @author: shicheng
+     * @Date 2019/12/10
+     * @Param: commPools, inspecTaskCreAndAssDto, internalRemarks
+     * @return: void
+     * @Descripation: routing Task By CommonPool
+     */
     void routingTaskByCommonPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks);
 
     /**
-      * @author: shicheng
-      * @Date 2020/3/19
-      * @Param: appGrpPremisesDto
-      * @return: String
-      * @Descripation: getAddress
-      */
+     * @author: shicheng
+     * @Date 2020/3/19
+     * @Param: appGrpPremisesDto
+     * @return: String
+     * @Descripation: getAddress
+     */
     String getAddress(AppGrpPremisesDto appGrpPremisesDto);
 
     /**
-      * @author: shicheng
-      * @Date 2020/3/19
-      * @Param: searchParam
-      * @return: SearchResult<InspectionAppInGroupQueryDto>
-      * @Descripation: getAjaxResultByParam
-      */
+     * @author: shicheng
+     * @Date 2020/3/19
+     * @Param: searchParam
+     * @return: SearchResult<InspectionAppInGroupQueryDto>
+     * @Descripation: getAjaxResultByParam
+     */
     SearchResult<ComPoolAjaxQueryDto> getAjaxResultByParam(SearchParam searchParam);
 
     /**
-      * @author: shicheng
-      * @Date 2020/3/20
-      * @Param: loginContext
-      * @return: GroupRoleFieldDto
-      * @Descripation: get Group Role Field
-      */
+     * @author: shicheng
+     * @Date 2020/3/20
+     * @Param: loginContext
+     * @return: GroupRoleFieldDto
+     * @Descripation: get Group Role Field
+     */
     GroupRoleFieldDto getGroupRoleField(LoginContext loginContext);
 
     /**
-      * @author: shicheng
-      * @Date 2020/3/28
-      * @Param: workGroupId, inspecTaskCreAndAssDto, orgUserDtos
-      * @return: 
-      * @Descripation: 
-      */
+     * @author: shicheng
+     * @Date 2020/3/28
+     * @Param: workGroupId, inspecTaskCreAndAssDto, orgUserDtos
+     * @return:
+     * @Descripation:
+     */
     void setInspectorLeadName(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos, String workGroupId);
 }

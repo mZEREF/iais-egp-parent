@@ -132,7 +132,7 @@
                   </div>
                   <div class="col-sm-5 col-md-8">
                     <div class="">
-                      (1)
+                      (4)
                     </div>
                   </div>
                 </div>
@@ -147,7 +147,7 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
-                       (4)
+                       (1)
                       </div>
                       <div class="col-sm-4">
                         <input name="deputyName" type="text" class="form-control control-input control-set-font control-font-normal" value="" size="30">

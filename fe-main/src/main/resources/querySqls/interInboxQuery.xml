@@ -46,7 +46,7 @@
             from
                 app_grp_submission_draft AS A
             where  A.status = 'CMSTAT001') AS B
-         WHERE B.STATUS != 'CMSTAT002' AND B.STATUS !='APST009'
+         WHERE B.STATUS != 'CMSTAT002' AND B.STATUS !='APST009' AND B.STATUS !='APST051'
             <#if id??> AND CHARINDEX(:id, app.id) >0</#if>
             <#if appType??> AND B.app_type = :appType</#if>
             <#if licenseeId??> AND B.licensee_id = :licenseeId</#if>

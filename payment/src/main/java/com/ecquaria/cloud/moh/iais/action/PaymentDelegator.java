@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.PaymentService;
@@ -46,7 +47,7 @@ public class PaymentDelegator {
         paymentDto.setPmtStatus(result);
         PaymentDto paymentDtoSave = paymentService.savePayment(paymentDto);
         Date txnDtD = paymentDtoSave.getTxnDt();
-        String txnDt = DateUtil.formatDate(txnDtD, "yyyy-MM-dd");
+        String txnDt = Formatter.formatDateTime(txnDtD, "dd/MM/yyyy HH:mm:ss");
         String txnRefNo = paymentDtoSave.getTxnRefNo();
         String showUrl = "https://" + request.getServerName();
         String s = showUrl+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment?result=success&reqRefNo="+reqRefNo+"&txnDt="+txnDt+"&txnRefNo="+txnRefNo;

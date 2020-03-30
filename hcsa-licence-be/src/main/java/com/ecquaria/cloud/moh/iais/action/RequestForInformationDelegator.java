@@ -587,7 +587,7 @@ public class RequestForInformationDelegator {
         String  licPremId = (String) ParamUtil.getSessionAttr(request,"id");
         List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licPremId);
         for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
-             ) {
+        ) {
             OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licPreRfi.getLicenseeId()).getEntity();
             if(organizationLicDto.getLicenseeEntityDto()!=null){
                 licPreRfi.setEmail(Arrays.toString(organizationLicDto.getLicenseeEntityDto().getOfficeEmailAddr()));
@@ -613,7 +613,7 @@ public class RequestForInformationDelegator {
 
         if(!licPremisesReqForInfoDtoList.isEmpty()) {
             for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
-                 ) {
+            ) {
                 if(StringUtil.isEmpty(licPreRfi.getUserReply())){
                     ParamUtil.setSessionAttr(request, "licenceNo", licPreRfi.getLicenceNo());
                 }
