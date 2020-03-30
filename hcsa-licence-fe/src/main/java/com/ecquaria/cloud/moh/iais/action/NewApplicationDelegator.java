@@ -76,6 +76,7 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -159,7 +160,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, null);
         ParamUtil.setSessionAttr(bpc.request,DRAFTCONFIG,null);
 
-        HashMap<String,String> coMap=new HashMap<>();
+        HashMap<String,String> coMap=new HashMap<>(4);
         coMap.put("premises","");
         coMap.put("document","");
         coMap.put("information","");
@@ -736,6 +737,11 @@ public class NewApplicationDelegator {
      */
     public void doPreview(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do doPreview start ...."));
+        StringBuffer requestURL = bpc.request.getRequestURL();
+        String queryString = bpc.request.getQueryString();
+        String reUrl=requestURL.append("?").append(queryString).toString();
+
+
 
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
     }
@@ -813,6 +819,15 @@ public class NewApplicationDelegator {
      */
     public void doSaveDraft(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do doSaveDraft start ...."));
+        HashMap<String,String>coMap=(HashMap<String, String>)bpc.getSession().getAttribute("coMap");
+        List<String> strList=new ArrayList<>(4);
+        coMap.forEach((k,v)->{
+            if(!StringUtil.isEmpty(v)){
+                strList.add(v);
+            }
+
+        });
+
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         HashMap<String,String>coMap=(HashMap<String, String>)bpc.getSession().getAttribute("coMap");
         List<String> strList=new ArrayList<>(4);
