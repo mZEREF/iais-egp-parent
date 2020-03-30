@@ -78,7 +78,9 @@
                   <table class="personnel-content">
                     <tbody>
                     <tr><td style="text-align:right;">
-                      <h4 class="text-danger"><i class="fa fa-times-circle" onclick="$(this).parent().parent().parent().parent().remove()"></i></h4>
+                      <c:if test="${status.count > 0}">
+                        <h4 class="text-danger"><i class="fa fa-times-circle" onclick="$(this).parent().parent().parent().parent().remove()"></i></h4>
+                      </c:if>
                     </td></tr>
                     <tr height="1">
                       <td class="" >
