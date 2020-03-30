@@ -455,7 +455,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     * save file to fileRepro*/
     private void saveFileRepo(String fileNames,String groupPath,String submissionId){
         boolean aBoolean=false;
-        File file =new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileNames+File.separator+groupPath+File.separator+"folder"+File.separator+groupPath+File.separator+"file");
+        File file =new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileNames+File.separator+groupPath+File.separator+"folder"+File.separator+groupPath+File.separator+"files");
         if(!file.exists()){
             file.mkdirs();
         }
