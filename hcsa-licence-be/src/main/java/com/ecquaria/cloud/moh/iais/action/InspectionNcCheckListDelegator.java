@@ -265,6 +265,7 @@ public class InspectionNcCheckListDelegator {
             serListDto.setTuc(tcu);
         }else{
             serListDto.setTcuFlag(false);
+            serListDto.setTuc(null);
         }
         serListDto.setBestPractice(bestpractice);
 

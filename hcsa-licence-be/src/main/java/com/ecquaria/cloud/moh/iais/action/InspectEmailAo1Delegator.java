@@ -608,6 +608,7 @@ public class InspectEmailAo1Delegator {
             serListDto.setTuc(tcu);
         }else{
             serListDto.setTcuFlag(false);
+            serListDto.setTuc(null);
         }
         serListDto.setBestPractice(bestpractice);
 
