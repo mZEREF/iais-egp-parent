@@ -192,13 +192,13 @@ public class InspecUserRecUploadDelegator {
     public void inspecUserRectifiUploadConfirm(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadConfirm start ...."));
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
-        String itemId = ParamUtil.getMaskedString(bpc.request, "itemId");
-        log.info(StringUtil.changeForLog("The item id is ===>" + itemId));
-        if(!StringUtil.isEmpty(itemId)) {
+        String ncItemId = ParamUtil.getMaskedString(bpc.request, "ncItemId");
+        log.info(StringUtil.changeForLog("The item id is ===>" + ncItemId));
+        if(!StringUtil.isEmpty(ncItemId)) {
             InspecUserRecUploadDto inspecUserRecUploadDto = null;
             for (InspecUserRecUploadDto iuruDto : inspecUserRecUploadDtos) {
-                if (!StringUtil.isEmpty(itemId)) {
-                    if (itemId.equals(iuruDto.getItemId())) {
+                if (!StringUtil.isEmpty(ncItemId)) {
+                    if (ncItemId.equals(iuruDto.getId())) {
                         inspecUserRecUploadDto = iuruDto;
                     }
                 }
@@ -270,7 +270,7 @@ public class InspecUserRecUploadDelegator {
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         inspecUserRecUploadService.submitRecByUser(loginContext, inspecUserRecUploadDto);
         for(InspecUserRecUploadDto iDto : inspecUserRecUploadDtos){
-            if(iDto.getItemId().equals(inspecUserRecUploadDto.getItemId())){
+            if(iDto.getId().equals(inspecUserRecUploadDto.getId())){
                 iDto.setButtonFlag(AppConsts.SUCCESS);
             }
         }

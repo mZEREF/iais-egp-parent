@@ -23,7 +23,7 @@
     <form method="post" id="mainReviewForm" action=<%=process.runtime.continueURL()%>>
       <%@ include file="/include/formHidden.jsp" %>
       <input type="hidden" name="inspecUserRecUploadType" value="">
-      <input type="hidden" id="itemId" name="itemId" value="">
+      <input type="hidden" id="ncItemId" name="ncItemId" value="">
       <input type="hidden" id="actionValue" name="actionValue" value="">
       <div class="main-content">
         <div class="row">
@@ -68,7 +68,7 @@
                                   </c:if>
                                   <c:if test="${'SUCCESS' ne feRecNc.buttonFlag}">
                                     <td>
-                                      <button class="btn btn-secondary btn-md" type="button" onclick="javascript:doUserRecUploadRectify('<iais:mask name="itemId" value="${feRecNc.itemId}"/>')">Rectify</button>
+                                      <button class="btn btn-secondary btn-md" type="button" onclick="javascript:doUserRecUploadRectify('<iais:mask name="ncItemId" value="${feRecNc.id}"/>')">Rectify</button>
                                     </td>
                                     <td>
                                       <h4 class="text-danger"><i class="fa fa-times-circle"></i></h4>
@@ -99,8 +99,8 @@
       mainPoolForm.submit();
   }
 
-  function doUserRecUploadRectify(itemId) {
-      $("#itemId").val(itemId);
+  function doUserRecUploadRectify(ncItemId) {
+      $("#ncItemId").val(ncItemId);
       $("#actionValue").val('confirm');
       userRecUploadSubmit('confirm');
   }
