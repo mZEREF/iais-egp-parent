@@ -721,6 +721,4 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
         entity.setHeaders(headers);
         return entity;
     }
-
-
 }

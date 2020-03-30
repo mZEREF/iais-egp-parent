@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -1052,6 +1053,8 @@ public class ClinicalLaboratoryDelegator {
             }
 
             appSvcPersonnelDtos = genAppSvcPersonnelDtoList(bpc.request, personnelTypeList,currentSvcCod);
+
+
             appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(appSvcPersonnelDtos);
 
        /* if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)){
@@ -1204,9 +1207,12 @@ public class ClinicalLaboratoryDelegator {
 
     }
     private static void doValidatetionServicePerson(Map <String,String> errorMap,List<AppSvcPersonnelDto> appSvcPersonnelDtos){
-
         for(int i=0;i<appSvcPersonnelDtos.size();i++){
             String personnelSel = appSvcPersonnelDtos.get(i).getPersonnelType();
+            if (StringUtils.isEmpty(personnelSel)){
+                errorMap.put("personnelSelErrorMsg" + i,"UC_CHKLMD001_ERR001");
+            }
+
             if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)){
                 String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
                 String name = appSvcPersonnelDtos.get(i).getName();

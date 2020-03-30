@@ -59,6 +59,21 @@ public interface FeEicGatewayClient {
                                                                                      @RequestHeader("date-Secondary") String dateSec,
                                                                                      @RequestHeader("authorization-Secondary") String authorizationSec);
 
+
+    /**
+     * @author: yichen
+     * @description: route to BE db
+     * @param:
+     * @return:
+     */
+    @PostMapping(value = "/v1/app-self-desc-status-sync/",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> inactiveLastVersionRecord(@RequestBody List<String> lastVersionId,
+                                                          @RequestHeader("date") String date,
+                                                          @RequestHeader("authorization") String authorization,
+                                                          @RequestHeader("date-Secondary") String dateSec,
+                                                          @RequestHeader("authorization-Secondary") String authorizationSec);
+
+
     /**
      *@Author :weilu on 2020/1/15 12:35
      *@param :

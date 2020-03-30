@@ -81,8 +81,7 @@
               <div class="col-xs-12 col-md-10">
                 <div class="text-right">
                   <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
-                  <a class="btn btn-secondary"  href="${pageContext.request.contextPath}/checklist-item-file?action=checklistItem">Export Checklist Item</a>
-                  <a class="btn btn-secondary"   href="${pageContext.request.contextPath}/checklist-item-file?action=regulation">Export Regulation</a>
+                  <a class="btn btn-secondary" id="exportButtonId" href="${pageContext.request.contextPath}/checklist-item-file?action=checklistItem" onclick="$('#exportButtonId').attr('class', 'btn btn-secondary disabled') ">Export Checklist Item</a>
                   <a class="btn btn-primary next" id="crud_search_button" value="doSearch" href="#">Search</a>
                 </div>
               </div>
@@ -109,6 +108,7 @@
                                            value="Checklist Item"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true" field="RISK_LEVEL" value="Risk Level"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="status" value="Status"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false" field="action" value="Action"></iais:sortableHeader>
                     </tr>
                     </thead>
                     <tbody>
@@ -197,8 +197,6 @@
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: prepareClone();">Clone ChecklistItem</a>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
-                                   onclick="javascript: doUploadFile('regulation');">Upload Regulation</a>
-                                <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: doUploadFile('checklistItem');">Upload Checklist Item</a>
 
 
@@ -270,6 +268,7 @@
     function sortRecords(sortFieldName,sortType){
         SOP.Crud.cfxSubmit("mainForm","sortRecords",sortFieldName,sortType);
     }
+
 
 
 

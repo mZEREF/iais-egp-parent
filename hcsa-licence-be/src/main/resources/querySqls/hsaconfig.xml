@@ -26,6 +26,17 @@
 
     </sql>
 
+    <sql key="regulationQuery"  remarks="query regulation">
+        <![CDATA[
+                SELECT ID, CLAUSE_NO, CLAUSE, STATUS, CREATED_DT, CREATED_BY, UPDATED_DT, UPDATED_BY
+                FROM chkl_config_hcsa_svc_regulation
+                <#if id??> and id = :id</#if>
+                <#if clauseNo??> and id = :clauseNo</#if>
+                <#if clause??> and id = :clause</#if>
+        ]]>
+
+    </sql>
+
     <sql key="listChecklistItemByItemId"  remarks="query chechlist items by item id">
         <![CDATA[
                 select item.id as item_id, regulation.clause_no as clause_num, regulation.clause as clause,

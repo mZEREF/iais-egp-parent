@@ -713,7 +713,7 @@ public class HcsaChklItemDelegator {
     
     /**
     * @author: yichen 
-    * @description: ajax call that the mehod download excel file by db genereate
+    * @description:
     * @param: 
     * @return:
     */
@@ -723,12 +723,6 @@ public class HcsaChklItemDelegator {
         String action = ParamUtil.getString(request, "action");
         File file = null;
         switch (action){
-            case REGULATION:
-                List<HcsaChklSvcRegulationDto> regulationList = hcsaChklService.getRegulationClauseListIsActive();
-                if (regulationList != null){
-                    file = ExcelWriter.exportExcel(regulationList, HcsaChklSvcRegulationDto.class, "Checklist_Regulations_Upload_Template");
-                }
-                break;
             case CHECKLIST_ITEM:
                 SearchParam  searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
                 QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
@@ -742,7 +736,6 @@ public class HcsaChklItemDelegator {
                     checkItemQueryDto.setRiskLevel("".equals(riskLvl) ? "-" : riskLvl);
                     checkItemQueryDto.setStatus(MasterCodeUtil.getCodeDesc(checkItemQueryDto.getStatus()));
                 }
-
                     file = ExcelWriter.exportExcel(checkItemQueryDtoList, CheckItemQueryDto.class, "Checklist_Items_Upload_Template");
                 break;
             default:

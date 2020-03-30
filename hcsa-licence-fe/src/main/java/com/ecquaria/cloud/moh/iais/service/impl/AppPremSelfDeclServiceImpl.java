@@ -248,11 +248,16 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
         try {
             //route to be
-            if (contentJsonList != null && !contentJsonList.isEmpty()){
-                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 
-                int statusCode = gatewayClient.routeSelfDeclData(contentJsonList, signature.date(), signature.authorization(),
+            if (!IaisCommonUtils.isEmpty(lastVersionIds)){
+                gatewayClient.inactiveLastVersionRecord(lastVersionIds, signature.date(), signature.authorization(),
+                        signature2.date(), signature2.authorization()).getStatusCode();
+            }
+
+            if (contentJsonList != null && !contentJsonList.isEmpty()){
+                gatewayClient.routeSelfDeclData(contentJsonList, signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization()).getStatusCode();
             }
         }catch (Exception e){

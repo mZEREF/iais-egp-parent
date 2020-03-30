@@ -74,8 +74,12 @@
                 <c:if test="${AppSvcPersonnelDtoList != null && AppSvcPersonnelDtoList.size()>0}">
                   <c:set value="${AppSvcPersonnelDtoList[status.index]}" var="appSvcPersonnelDto"/>
                 </c:if>
+
                   <table class="personnel-content">
                     <tbody>
+                    <tr><td style="text-align:right;">
+                      <h4 class="text-danger"><i class="fa fa-times-circle" onclick="$(this).parent().parent().parent().parent().remove()"></i></h4>
+                    </td></tr>
                     <tr height="1">
                       <td class="" >
                         <div id="control--runtime--2" class="control control-caption-horizontal svcPsnSel">
@@ -88,7 +92,7 @@
                             <div class="col-sm-5 col-md-7">
                               <div class="">
                                 <iais:select cssClass="personnelSel"  name="personnelSel" options="ServicePersonnelType" value="${appSvcPersonnelDto.personnelType}" firstOption="Please Select"></iais:select>
-                                <span class="error-msg" name="iaisErrorMsg" id=""></span>
+                                <span class="error-msg" name="iaisErrorMsg" id="error_personnelSelErrorMsg${status.index}" ></span>
                               </div>
                             </div>
                           </div>
