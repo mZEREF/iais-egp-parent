@@ -486,8 +486,14 @@ public class ClinicalLaboratoryDelegator {
 
                         appSvcChckListDto = new AppSvcChckListDto();
                         appSvcChckListDto.setChkLstConfId(checkInfo.getId());
+                        if("27D8EB5B-1123-EA11-BE78-000C29D29DB0".equals(checkInfo.getId())){
+                            String subName = ParamUtil.getString(bpc.request, "pleaseIndicate");
+                            appSvcChckListDto.setChkName(subName);
+                        }
+                        else {
+                            appSvcChckListDto.setChkName(checkInfo.getName());
+                        }
                         appSvcChckListDto.setChkLstType(checkInfo.getType());
-                        appSvcChckListDto.setChkName(checkInfo.getName());
                         appSvcChckListDto.setParentName(checkInfo.getParentId());
                         appSvcChckListDto.setChildrenName(checkInfo.getChildrenId());
                         appSvcChckListDtoList.add(appSvcChckListDto);
