@@ -1057,9 +1057,15 @@ public class HcsaApplicationDelegator {
         broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
         applicationDto.setStatus(appStatus);
         broadcastApplicationDto.setApplicationDto(applicationDto);
+        String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
+        String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
+        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(appStatus)){
+            TaskUrl = TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION;
+            taskType = TaskConsts.TASK_TYPE_INSPECTION;
+        }
 
-        TaskDto newTaskDto = TaskUtil.getTaskDto(stageId,TaskConsts.TASK_TYPE_MAIN_FLOW,
-                taskDto.getRefNo(),wrkGpId, userId,new Date(),0,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,roleId,
+        TaskDto newTaskDto = TaskUtil.getTaskDto(stageId,taskType,
+                taskDto.getRefNo(),wrkGpId, userId,new Date(),0,TaskUrl,roleId,
                 IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastOrganizationDto.setCreateTask(newTaskDto);
 

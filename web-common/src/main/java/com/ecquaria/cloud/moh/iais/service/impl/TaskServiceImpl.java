@@ -95,11 +95,13 @@ public class TaskServiceImpl implements TaskService {
             int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
                     statgId,applicationDto.getApplicationType());
             //handle the taskUrl
+            String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
             String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
             if(HcsaConsts.ROUTING_STAGE_INS.equals(statgId)){
                 TaskUrl = TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION;
+                taskType = TaskConsts.TASK_TYPE_INSPECTION;
             }
-            result = TaskUtil.getTaskDto(statgId,TaskConsts.TASK_TYPE_MAIN_FLOW,
+            result = TaskUtil.getTaskDto(statgId,taskType,
                     correlationId,workGroupId,
                     taskScoreDto.getUserId(),assignDate,score,TaskUrl,roleId,
                     IaisEGPHelper.getCurrentAuditTrailDto());
