@@ -61,6 +61,17 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import java.io.IOException;
+import java.io.Serializable;
+import java.sql.Time;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -69,19 +80,6 @@ import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Serializable;
-import java.sql.Time;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * egator
@@ -819,23 +817,14 @@ public class NewApplicationDelegator {
      */
     public void doSaveDraft(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do doSaveDraft start ...."));
-        HashMap<String,String>coMap=(HashMap<String, String>)bpc.getSession().getAttribute("coMap");
-        List<String> strList=new ArrayList<>(4);
-        coMap.forEach((k,v)->{
-            if(!StringUtil.isEmpty(v)){
-                strList.add(v);
-            }
-
-        });
 
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        HashMap<String,String>coMap=(HashMap<String, String>)bpc.getSession().getAttribute("coMap");
+        HashMap<String,String> coMap=(HashMap<String, String>)bpc.getSession().getAttribute("coMap");
         List<String> strList=new ArrayList<>(4);
         coMap.forEach((k,v)->{
             if(!StringUtil.isEmpty(v)){
                 strList.add(v);
             }
-
         });
         if(StringUtil.isEmpty(appSubmissionDto.getDraftNo())){
             String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
