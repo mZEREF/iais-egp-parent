@@ -2678,7 +2678,7 @@ public class NewApplicationDelegator {
                                 String codeValue = masterCode.getCodeValue();
                                 String[] s = codeValue.split(" ");
                                 for(int index=0;index<s.length;index++){
-                                    if(hciName.toUpperCase().contains(s[i].toUpperCase())){
+                                    if(hciName.toUpperCase().contains(s[index].toUpperCase())){
                                         errorMap.put("hciName"+i,"CHKLMD001_ERR002");
                                     }
                                 }
