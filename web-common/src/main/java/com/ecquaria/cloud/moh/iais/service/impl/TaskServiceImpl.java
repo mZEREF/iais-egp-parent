@@ -350,7 +350,7 @@ public class TaskServiceImpl implements TaskService {
     public List<String> getDistincTaskRefNumByCurrentGroup(String wrkGroupId) {
         List<TaskDto> commPoolByGroupWordId =  getCommPoolByGroupWordId(wrkGroupId);
         List<String> taskRefNumList = IaisCommonUtils.genNewArrayList();
-        commPoolByGroupWordId.stream().forEach(i -> taskRefNumList.add(i.getRefNo()));
+        commPoolByGroupWordId.forEach(i -> taskRefNumList.add(i.getRefNo()));
         return taskRefNumList.stream().distinct().collect(Collectors.toList());
     }
 

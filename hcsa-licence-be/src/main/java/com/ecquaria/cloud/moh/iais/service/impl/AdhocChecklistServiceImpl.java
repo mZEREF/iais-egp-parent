@@ -85,7 +85,7 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
             inspChecklist.add(svcConfig);
         }
 
-        correlation.stream().forEach(corre -> {
+        correlation.forEach(corre -> {
             String correId = corre.getId();
             setRelationCorreId(correId);
             List<AppSvcPremisesScopeDto> premScope = applicationClient.getAppSvcPremisesScopeListByCorreId(correId).getEntity();
