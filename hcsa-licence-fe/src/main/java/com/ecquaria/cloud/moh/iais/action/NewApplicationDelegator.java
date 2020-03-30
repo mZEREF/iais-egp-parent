@@ -696,7 +696,7 @@ public class NewApplicationDelegator {
             Boolean isMandatory = comm.getIsMandatory();
             if(isMandatory&&file.getSize()==0&&appGrpPrimaryDocDtoList.isEmpty()){
                 errorMap.put(name, "UC_CHKLMD001_ERR001");
-            }else {
+            }else if(isMandatory&&!appGrpPrimaryDocDtoList.isEmpty()){
                 Boolean flag=false;
                 for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
                     String svcComDocId = appGrpPrimaryDocDto.getSvcComDocId();
@@ -738,8 +738,6 @@ public class NewApplicationDelegator {
         StringBuffer requestURL = bpc.request.getRequestURL();
         String queryString = bpc.request.getQueryString();
         String reUrl=requestURL.append("?").append(queryString).toString();
-
-
 
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
     }
@@ -826,6 +824,7 @@ public class NewApplicationDelegator {
                 strList.add(v);
             }
         });
+
         if(StringUtil.isEmpty(appSubmissionDto.getDraftNo())){
             String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
             log.info(StringUtil.changeForLog("the draftNo -->:") + draftNo);
@@ -1737,7 +1736,8 @@ public class NewApplicationDelegator {
             log.info("govenMap json str:"+govenMapStr);
         }
         //
-        Map<String, String> map = doCheckBox(bpc,sB);
+        Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
+        Map<String, String> map = doCheckBox(bpc,sB,allSvcAllPsnConfig);
         if(!map.isEmpty()){
             previewAndSubmitMap.putAll(map);
             String mapStr = JsonUtil.parseToJson(map);
@@ -1799,12 +1799,12 @@ public class NewApplicationDelegator {
 
     //todo
 
-    private Map<String,String> doCheckBox( BaseProcessClass bpc,StringBuilder sB){
+    public static Map<String,String> doCheckBox( BaseProcessClass bpc,StringBuilder sB,  Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig){
 
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         Map<String,String> errorMap=IaisCommonUtils.genNewHashMap();
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
+
         for(int i=0;i< dto.size();i++ ){
             String serviceId = dto.get(i).getServiceId();
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.get(i).getAppSvcLaboratoryDisciplinesDtoList();
@@ -1815,9 +1815,11 @@ public class NewApplicationDelegator {
             List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.get(i).getAppSvcDisciplineAllocationDtoList();
             doSvcDis(errorMap,appSvcDisciplineAllocationDtoList,serviceId,sB);
             List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.get(i).getAppSvcPrincipalOfficersDtoList();
-
+            Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(dto.get(i).getAppSvcCgoDtoList());
+            if(!govenMap.isEmpty()){
+                sB.append(serviceId);
+            }
             doPO(hcsaSvcPersonnelDtos,errorMap,appSvcPrincipalOfficersDtoList,serviceId,sB);
-
 
             List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.get(i).getAppSvcPersonnelDtoList();
             doAppSvcPersonnelDtoList(hcsaSvcPersonnelDtos,errorMap,appSvcPersonnelDtoList,serviceId,sB);
@@ -1825,11 +1827,10 @@ public class NewApplicationDelegator {
             doSvcDocument(errorMap,appSvcDocDtoLit,serviceId,sB);
         }
 
-
         return  errorMap;
     }
 
-    private void doSvcDocument(Map<String,String> map,   List<AppSvcDocDto> appSvcDocDtoLit,String serviceId,StringBuilder sB ){
+    private static void doSvcDocument(Map<String,String> map,   List<AppSvcDocDto> appSvcDocDtoLit,String serviceId,StringBuilder sB ){
         if(appSvcDocDtoLit!=null){
             for (AppSvcDocDto appSvcDocDto:appSvcDocDtoLit){
                 Integer docSize = appSvcDocDto.getDocSize();
@@ -1847,7 +1848,7 @@ public class NewApplicationDelegator {
                 }
 
                 if(!flag){
-                    /*   sB.append(serviceId);*/
+                    sB.append(serviceId);
                 }
             }
 
@@ -1857,14 +1858,14 @@ public class NewApplicationDelegator {
 
     }
 
-    private void dolabory(Map<String,String> map ,List<AppSvcLaboratoryDisciplinesDto> list,String serviceId, StringBuilder sB){
+    private static void  dolabory(Map<String,String> map ,List<AppSvcLaboratoryDisciplinesDto> list,String serviceId, StringBuilder sB){
         if(list!=null&&list.isEmpty()){
 
         }
     }
 
 
-    private void doAppSvcPersonnelDtoList(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos ,Map map,List<AppSvcPersonnelDto> appSvcPersonnelDtos,String serviceId, StringBuilder sB){
+    private static void doAppSvcPersonnelDtoList(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos ,Map map,List<AppSvcPersonnelDto> appSvcPersonnelDtos,String serviceId, StringBuilder sB){
         if(appSvcPersonnelDtos==null){
             if(hcsaSvcPersonnelDtos!=null){
                 for(HcsaSvcPersonnelDto every:hcsaSvcPersonnelDtos){
@@ -1960,7 +1961,7 @@ public class NewApplicationDelegator {
         }
 
     }
-    private void doAppSvcCgoDto(  List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map map ,List<AppSvcCgoDto> list,String serviceId,StringBuilder sB){
+    private static void doAppSvcCgoDto(  List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map map ,List<AppSvcCgoDto> list,String serviceId,StringBuilder sB){
         if(list==null){
             if(hcsaSvcPersonnelDtos!=null){
                 for(HcsaSvcPersonnelDto every:hcsaSvcPersonnelDtos){
@@ -2017,13 +2018,13 @@ public class NewApplicationDelegator {
     }
 
 
-    private void doSvcDis( Map map ,List<AppSvcDisciplineAllocationDto> list,String serviceId,StringBuilder sB){
+    private static void doSvcDis( Map map ,List<AppSvcDisciplineAllocationDto> list,String serviceId,StringBuilder sB){
         if(list==null){
 
         }
     }
 
-    private void doPO( List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map oneErrorMap ,List<AppSvcPrincipalOfficersDto> poDto,String serviceId,StringBuilder sB){
+    private static void doPO( List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map oneErrorMap ,List<AppSvcPrincipalOfficersDto> poDto,String serviceId,StringBuilder sB){
         if(poDto==null){
             if(hcsaSvcPersonnelDtos!=null){
                 for(HcsaSvcPersonnelDto every :hcsaSvcPersonnelDtos){
@@ -2556,7 +2557,6 @@ public class NewApplicationDelegator {
                         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
                         if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
                             for(int j=0;j<appPremPhOpenPeriodList.size();j++){
-
                                 String convStartFromHH = appPremPhOpenPeriodList.get(j).getOnsiteStartFromHH();
                                 String convStartFromMM = appPremPhOpenPeriodList.get(j).getOnsiteStartFromMM();
                                 String onsiteEndToHH = appPremPhOpenPeriodList.get(j).getOnsiteEndToHH();
@@ -2590,7 +2590,7 @@ public class NewApplicationDelegator {
                                     try {
                                         int i3 = Integer.parseInt(onsiteEndToHH);
                                         int i4 = Integer.parseInt(onsiteEndToMM);
-                                        if(i3>=24||i4>=60){
+                                        if(i3>=24){
                                             errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR009");
                                         }else if(i4>=60){
                                             errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR010");
@@ -2674,16 +2674,13 @@ public class NewApplicationDelegator {
                                 MasterCodeDto masterCode=(MasterCodeDto)masterCodeDto;
                                 String codeValue = masterCode.getCodeValue();
                                 String[] s = codeValue.split(" ");
-                                String[] s1 = hciName.split(" ");
+
                                 for(int index=0;index<s.length;index++){
-                                    for(int ind=0;ind<s1.length;ind++){
-                                        if(s[i].equalsIgnoreCase(s1[ind])){
-                                            errorMap.put("hciName"+i,"CHKLMD001_ERR002");
-                                        }
+                                    if(hciName.toUpperCase().contains(s[index].toUpperCase())){
+                                        errorMap.put("hciName"+i,"CHKLMD001_ERR002");
                                     }
 
                                 }
-
 
                             }
                         }
@@ -2979,7 +2976,7 @@ public class NewApplicationDelegator {
         return errorMap;
     }
 
-    private AppSubmissionDto getAppSubmissionDto(HttpServletRequest request){
+    private static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request){
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
         if(appSubmissionDto == null){
             log.info(StringUtil.changeForLog("appSubmissionDto is empty "));
