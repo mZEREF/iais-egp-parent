@@ -36,6 +36,8 @@ import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.esotericsoftware.minlog.Log;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -241,14 +243,25 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 fileRepoDto.setRelativePath(AppConsts.FALSE);
                 fillUpCheckListGetAppClient.deleteAppPremisesSpecialDocByPremId(appPremId);
+                String oldFileGuid = serListDto.getOldFileGuid();
+                if(!StringUtil.isEmpty(oldFileGuid)){
+                    fileRepoClient.removeFileById(oldFileGuid);
+                    serListDto.setOldFileGuid(null);
+                }
                 String guid = fileRepoClient.saveFiles(multipartFile,JsonUtil.parseToJson(fileRepoDto)).getEntity();
                 serListDto.getAppPremisesSpecialDocDto().setFileRepoId(guid);
+                serListDto.setOldFileGuid(guid);
                 appPremisesSpecialDocDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 appPremisesSpecialDocDto.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
                 appPremisesSpecialDocDto.setSubmitDt(new Date());
                 appPremisesSpecialDocDto.setId(fillUpCheckListGetAppClient.saveAppPremisesSpecialDoc(serListDto.getAppPremisesSpecialDocDto()).getEntity());
             }
         }else {
+            String oldFileGuid = serListDto.getOldFileGuid();
+            if(!StringUtil.isEmpty(oldFileGuid)){
+                fileRepoClient.removeFileById(oldFileGuid);
+                serListDto.setOldFileGuid(null);
+            }
             fillUpCheckListGetAppClient.deleteAppPremisesSpecialDocByPremId(appPremId);
         }
     }
