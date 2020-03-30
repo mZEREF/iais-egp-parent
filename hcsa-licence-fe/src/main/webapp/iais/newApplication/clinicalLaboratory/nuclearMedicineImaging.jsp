@@ -27,6 +27,9 @@
                   <c:when test="${'NMI' ==currentSvcCode}">
                     <label>The Nuclear Medicine Imagine Service have the following personnel that satisfy the minimum requirements at all times</label>
                   </c:when>
+                  <c:when test="${'NMA' ==currentSvcCode}">
+                    <label>The Nuclear Medicine Assay Service have the following personnel that satisfy the minimum requirements at all times</label>
+                  </c:when>
                 </c:choose>
               </div>
 
