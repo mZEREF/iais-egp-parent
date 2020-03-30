@@ -224,7 +224,7 @@ public class InspectEmailAo1Delegator {
             return;
         }
         String decision=ParamUtil.getString(request,"decision");
-        if("Select".equals(decision)){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
+        if("Select".equals(decision)){decision=InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT;}
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
