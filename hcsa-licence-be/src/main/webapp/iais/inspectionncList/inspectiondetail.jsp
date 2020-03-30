@@ -104,6 +104,7 @@
             $("#tcuLabel").show()
         }else{
             $("#tcuLabel").hide();
+            $("#tuc").val("");
         }
         if(${serListDto.tuc!= null}){
             $("#tcuType").attr('checked',true)
@@ -115,6 +116,7 @@
             $("#tcuLabel").show()
         }else{
             $("#tcuLabel").hide();
+            $("#tuc").val("");
         }
     }
 
