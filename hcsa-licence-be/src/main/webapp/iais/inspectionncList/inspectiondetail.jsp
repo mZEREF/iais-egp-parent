@@ -13,19 +13,27 @@
         <div class="ax_default text_area">
             <span  style="font-size: 18px"><strong>Inspection Start Time (HH MM)</strong></span>
         </div>
-        <div style="float: left"><input type="number" oninput="if(value.length>2)value=value.slice(0,2)" maxlength="2" name="startHour" value="<c:out value="${serListDto.startHour}"/>"></div><div style="float: left;padding-left: 10px;"><input type="number" oninput="if(value.length>2)value=value.slice(0,2)" maxlength="2" name="startHourMin" value="<c:out value="${serListDto.startMin}"/>"></div>
-        <span class="error-msg" id="error_sTime" name="iaisErrorMsg"></span>
+        <div style="float: left" class="col-md-6">
+            <iais:select name="startHour" options="hhSelections" value="${serListDto.startHour}" firstOption="NA"></iais:select>
+            </div>
+        <div style="float: left;padding-left: 10px;" class="col-md-6">
+            <iais:select name="startHourMin" options="ddSelections" value="${serListDto.startMin}" firstOption="NA"></iais:select>
+            </div>
     </div>
-
+    <div class="input-group">  <span class="error-msg" id="error_sTime" name="iaisErrorMsg"></span></div>
     <div class="input-group">
         <div class="ax_default text_area">
-            <span  style="font-size: 18px"><strong>Inspection End Time(HH MM)</strong></span>
+            <span  style="font-size: 18px"><strong>Inspection End Time (HH MM)&nbsp;&nbsp;</strong></span>
         </div>
-        <div style="float: left"><input type="number" oninput="if(value.length>2)value=value.slice(0,2)" maxlength="2" name="endHour" value="<c:out value="${serListDto.endHour}"/>"></div><div style="float: left;padding-left: 10px;"><input type="number" oninput="if(value.length>2)value=value.slice(0,2)" maxlength="2" name="endHourMin" value="<c:out value="${serListDto.endMin}"/>"></div>
-        <span class="error-msg" id="error_eTime" name="iaisErrorMsg"></span>
-        <span class="error-msg" id="error_timevad" name="iaisErrorMsg"></span>
+        <div style="float: left" class="col-md-6">
+           <iais:select name="endHour" options="hhSelections" value="${serListDto.endHour}" firstOption="NA" ></iais:select>
+           </div>
+        <div style="float: left;padding-left: 10px;" class="col-md-6">
+               <iais:select name="endHourMin" options="ddSelections" value="${serListDto.endMin}" firstOption="NA"></iais:select>
+        </div>
     </div>
-
+    <div class="input-group"> <span class="error-msg" id="error_eTime" name="iaisErrorMsg"></span>
+        <span class="error-msg" id="error_timevad" name="iaisErrorMsg"></span></div>
     <div class="input-group">
         <div class="ax_default text_area">
             <span style="font-size: 18px"><strong>Inspector Lead</strong></span> <c:out value="${serListDto.inspectionLeader}"/>

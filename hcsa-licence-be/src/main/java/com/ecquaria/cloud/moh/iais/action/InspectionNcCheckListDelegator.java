@@ -158,7 +158,9 @@ public class InspectionNcCheckListDelegator {
             }
        }
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
-
+        //get selections dd hh
+        ParamUtil.setSessionAttr(request,"hhSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(true));
+        ParamUtil.setSessionAttr(request,"ddSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(false));
     }
 
     public void pre(BaseProcessClass bpc){
