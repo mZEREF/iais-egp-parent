@@ -597,7 +597,7 @@ public class HcsaChklItemDelegator {
 
         String itemId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
         List<ChecklistItemDto> chklItemDtos = (List<ChecklistItemDto>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR);
-        chklItemDtos.stream().forEach(itemDto -> {
+        chklItemDtos.forEach(itemDto -> {
             if (itemDto.getItemId().equals(itemId)){
                 ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, itemDto);
             }

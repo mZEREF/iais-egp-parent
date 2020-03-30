@@ -127,7 +127,7 @@ public class InspTeamNonWorkingDayDelegator {
 		}
 
 		List<SelectOption> wrlGrpNameOpt = IaisCommonUtils.genNewArrayList();
-		workingGroupQueryList.stream().forEach(wkr -> {
+		workingGroupQueryList.forEach(wkr -> {
 			String groupId = wkr.getId();
 			String groupName = wkr.getGroupName();
 			wrlGrpNameOpt.add(new SelectOption(groupId, groupName));

@@ -312,7 +312,7 @@ public class AdhocChecklistDelegator {
         AdhocCheckListConifgDto adhocCheckListConifgDto = getAdhocItemBySession(request);
         List<AdhocChecklistItemDto> allAdhocItem = adhocCheckListConifgDto.getAllAdhocItem();
 
-        selectItemList.stream().forEach(selectItem -> {
+        selectItemList.forEach(selectItem -> {
             AdhocChecklistItemDto adhocItem = new AdhocChecklistItemDto();
             String question = selectItem.getChecklistItem();
             String answerType = selectItem.getAnswerType();

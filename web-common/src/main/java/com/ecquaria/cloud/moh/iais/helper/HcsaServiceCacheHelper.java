@@ -100,7 +100,7 @@ public final class HcsaServiceCacheHelper {
 			List<HcsaServiceDto> serviceList = serviceClient.getActiveServices().getEntity();
 			RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
 			redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, KEY_NAME_HCSA_SERVICE_LIST, serviceList);
-			serviceList.stream().forEach(i -> redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, i.getId(),
+			serviceList.forEach(i -> redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, i.getId(),
 					i, RedisCacheHelper.NOT_EXPIRE));
 		}
 	}
@@ -113,7 +113,7 @@ public final class HcsaServiceCacheHelper {
 			HcsaServiceClient serviceClient = SpringContextHelper.getContext().getBean(HcsaServiceClient.class);
 			List<HcsaServiceDto> serviceList = serviceClient.getActiveServices().getEntity();
 			redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, KEY_NAME_HCSA_SERVICE_LIST, serviceList);
-			serviceList.stream().forEach(i -> redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, i.getId(),
+			serviceList.forEach(i -> redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, i.getId(),
 					i, RedisCacheHelper.NOT_EXPIRE));
 		}
 

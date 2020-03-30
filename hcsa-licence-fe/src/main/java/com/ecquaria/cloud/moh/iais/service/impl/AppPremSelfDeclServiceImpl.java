@@ -130,7 +130,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
                         ChecklistConfigDto subTypeConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module, subTypeName).getEntity();
                         if (subTypeConfig != null){
                             List<PremCheckItem> subtypeCheckItemList = getQuestionItemList(subTypeConfig, true, address);
-                            subtypeCheckItemList.stream().forEach(s -> {
+                            subtypeCheckItemList.forEach(s -> {
                                 premCheckItemList.add(s);
                             });
                         }
