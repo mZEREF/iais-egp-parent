@@ -1384,7 +1384,7 @@ public class ClinicalLaboratoryDelegator {
 
         //depo
         if("1".equals(deputySelect) && isGetDataFromPageDpo){
-            String [] assignSelect = ParamUtil.getStrings(request, "deputyAssignSelect");
+            String [] assignSelect = ParamUtil.getStrings(request, "deputyPoSelect");
             String [] deputySalutation = ParamUtil.getStrings(request, "deputySalutation");
             String [] deputyDesignation = ParamUtil.getStrings(request, "deputyDesignation");
             String [] deputyName = ParamUtil.getStrings(request, "deputyName");
