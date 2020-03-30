@@ -41,13 +41,13 @@
                   <iais:row>
                     <iais:field value="Inspection Start Time"/>
                     <iais:value width="7">
-                      <p><label><fmt:formatDate value='${inspectionReportDto.inspectionStartTime}' pattern='dd/MM/yyyy' /></label></p>
+                      <p><label><c:out value="${inspectionReportDto.inspectionStartTime}"/></label></p>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field value="Inspection End Time"/>
                     <iais:value width="7">
-                      <p><label><fmt:formatDate value='${inspectionReportDto.inspectionEndTime}' pattern='dd/MM/yyyy' /></label></p>
+                      <p><label><c:out value="${inspectionReportDto.inspectionEndTime}"/></label></p>
                     </iais:value>
                   </iais:row>
                   <iais:row>
@@ -89,7 +89,7 @@
                   <iais:row>
                     <iais:field value="Best Practices"/>
                     <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.bestPractice}"/></label></p>
+                      <p><label><c:out value="${inspectionReportDto.bestPractice}"/></label></p>
                     </iais:value>
                   </iais:row>
                   <iais:row>
@@ -107,7 +107,12 @@
                   <iais:row>
                     <iais:field value="TCU Date"/>
                     <iais:value width="7">
-                      <p><label><fmt:formatDate value='${inspectionReportDto.tcuDate}' pattern='dd/MM/yyyy' /></label></p>
+                      <c:if test="${inspectionReportDto.tcuDate != null}">
+                        <p><label><fmt:formatDate value='${inspectionReportDto.tcuDate}' pattern='dd/MM/yyyy' /></label></p>
+                      </c:if>
+                      <c:if test="${inspectionReportDto.tcuDate == null}">
+                        <p><label>-</label></p>
+                      </c:if>
                     </iais:value>
                   </iais:row>
                   <iais:action >
