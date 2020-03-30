@@ -32,49 +32,56 @@
               <div class="intranet-content">
                 <iais:body >
                   <iais:section title="" id = "upload_Rectification">
-                      <div class="table-gp">
-                        <table class="table">
-                          <thead>
-                          <tr align="center">
-                            <th>No</th>
-                            <th>NC Clause</th>
-                            <th>Checklist Question</th>
-                            <th>Actions</th>
-                            <th>Rectified?</th>
-                          </tr>
-                          </thead>
-                          <tbody>
-                          <c:choose>
-                            <c:when test="${empty inspecUserRecUploadDtos}">
+                    <div class="table-gp">
+                      <table class="table">
+                        <thead>
+                        <tr align="center">
+                          <th>No</th>
+                          <th>NC Clause</th>
+                          <th>Checklist Question</th>
+                          <th>Actions</th>
+                          <th>Rectified?</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:choose>
+                          <c:when test="${empty inspecUserRecUploadDtos}">
+                            <tr>
+                              <td colspan="7">
+                                <iais:message key="ACK018" escape="true"></iais:message>
+                              </td>
+                            </tr>
+                          </c:when>
+                          <c:otherwise>
+                            <c:forEach var="feRecNc" items="${inspecUserRecUploadDtos}" varStatus = "recNo">
                               <tr>
-                                <td colspan="7">
-                                  <iais:message key="ACK018" escape="true"></iais:message>
-                                </td>
-                              </tr>
-                            </c:when>
-                            <c:otherwise>
-                              <c:forEach var="feRecNc" items="${inspecUserRecUploadDtos}" varStatus = "recNo">
-                                <tr>
-                                  <td><c:out value="${recNo.count}"/></td>
-                                  <td><c:out value="${feRecNc.checkClause}"/></td>
-                                  <td><iais:code code="${feRecNc.checkQuestion}"/></td>
+                                <td><c:out value="${recNo.count}"/></td>
+                                <td><c:out value="${feRecNc.checkClause}"/></td>
+                                <td><iais:code code="${feRecNc.checkQuestion}"/></td>
+                                <c:if test="${'SUCCESS' eq feRecNc.buttonFlag}">
                                   <td>
-                                    <c:if test="${'SUCCESS' eq feRecNc.buttonFlag}">
-                                      <button class="btn btn-default btn-sm disabled" type="button" disabled>Rectify</button>
-                                    </c:if>
-                                    <c:if test="${'SUCCESS' ne feRecNc.buttonFlag}">
-                                      <button class="btn btn-default btn-sm" type="button" onclick="javascript:doUserRecUploadRectify('<iais:mask name="itemId" value="${feRecNc.itemId}"/>')">Rectify</button>
-                                    </c:if>
+                                    <button class="btn btn-secondary btn-md disabled" type="button" disabled>Rectify</button>
                                   </td>
-                                  <td><c:out value="${feRecNc.buttonFlag}"/></td>
-                                </tr>
-                              </c:forEach>
-                            </c:otherwise>
-                          </c:choose>
-                          </tbody>
-                        </table>
-                      </div>
-                    </iais:section>
+                                  <td>
+                                    <h4 class="text-success"><i class="fa fa-check-circle"></i></h4>
+                                  </td>
+                                </c:if>
+                                <c:if test="${'SUCCESS' ne feRecNc.buttonFlag}">
+                                  <td>
+                                    <button class="btn btn-secondary btn-md" type="button" onclick="javascript:doUserRecUploadRectify('<iais:mask name="itemId" value="${feRecNc.itemId}"/>')">Rectify</button>
+                                  </td>
+                                  <td>
+                                    <h4 class="text-danger"><i class="fa fa-times-circle"></i></h4>
+                                  </td>
+                                </c:if>
+                              </tr>
+                            </c:forEach>
+                          </c:otherwise>
+                        </c:choose>
+                        </tbody>
+                      </table>
+                    </div>
+                  </iais:section>
                 </iais:body>
               </div>
             </div>
@@ -86,15 +93,15 @@
 </div>
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
-  function userRecUploadSubmit(action){
-      $("[name='inspecUserRecUploadType']").val(action);
-      var mainPoolForm = document.getElementById('mainReviewForm');
-      mainPoolForm.submit();
-  }
+    function userRecUploadSubmit(action){
+        $("[name='inspecUserRecUploadType']").val(action);
+        var mainPoolForm = document.getElementById('mainReviewForm');
+        mainPoolForm.submit();
+    }
 
-  function doUserRecUploadRectify(itemId) {
-      $("#itemId").val(itemId);
-      $("#actionValue").val('confirm');
-      userRecUploadSubmit('confirm');
-  }
+    function doUserRecUploadRectify(itemId) {
+        $("#itemId").val(itemId);
+        $("#actionValue").val('confirm');
+        userRecUploadSubmit('confirm');
+    }
 </script>

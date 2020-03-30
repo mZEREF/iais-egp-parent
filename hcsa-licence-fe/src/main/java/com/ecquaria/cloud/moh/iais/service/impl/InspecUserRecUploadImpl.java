@@ -245,6 +245,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                         inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDtos(appPremisesPreInspectionNcItemDtos);
                         inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
                         inspecUserRecUploadDto.setAppPremPreInspectionNcDto(appPremPreInspectionNcDto);
+                        inspecUserRecUploadDtos.add(inspecUserRecUploadDto);
                     }
                 }
             }
