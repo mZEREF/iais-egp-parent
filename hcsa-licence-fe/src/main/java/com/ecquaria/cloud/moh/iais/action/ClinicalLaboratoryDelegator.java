@@ -560,7 +560,7 @@ public class ClinicalLaboratoryDelegator {
             svcAllPsnConfig = serviceConfigService.getAllSvcAllPsnConfig(svcStepConfigs, svcIds);
         }
         Map<String, String> map = NewApplicationDelegator.doCheckBox(bpc, sB, svcAllPsnConfig);
-        if(!StringUtil.isEmpty(sB)){
+        if(!StringUtil.isEmpty(sB.toString())){
             map.put("error","error");
         }
         return  map;
