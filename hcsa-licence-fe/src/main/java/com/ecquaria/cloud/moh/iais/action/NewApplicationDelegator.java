@@ -698,7 +698,7 @@ public class NewApplicationDelegator {
             Boolean isMandatory = comm.getIsMandatory();
             if(isMandatory&&file.getSize()==0&&appGrpPrimaryDocDtoList.isEmpty()){
                 errorMap.put(name, "UC_CHKLMD001_ERR001");
-            }else {
+            }else if(isMandatory&&!appGrpPrimaryDocDtoList.isEmpty()){
                 Boolean flag=false;
                 for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
                     String svcComDocId = appGrpPrimaryDocDto.getSvcComDocId();
@@ -829,14 +829,6 @@ public class NewApplicationDelegator {
         });
 
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        HashMap<String,String>coMap=(HashMap<String, String>)bpc.getSession().getAttribute("coMap");
-        List<String> strList=new ArrayList<>(4);
-        coMap.forEach((k,v)->{
-            if(!StringUtil.isEmpty(v)){
-                strList.add(v);
-            }
-
-        });
         if(StringUtil.isEmpty(appSubmissionDto.getDraftNo())){
             String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
             log.info(StringUtil.changeForLog("the draftNo -->:") + draftNo);
