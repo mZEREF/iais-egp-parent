@@ -96,7 +96,10 @@ public class InterInboxDelegator {
         log.info(StringUtil.changeForLog("Step ---> initToPage"));
         HttpServletRequest request = bpc.request;
         String initpage = ParamUtil.getRequestString(request,"initPage");
-        ParamUtil.setRequestAttr(request,"init_to_page",initpage);
+        if (!StringUtil.isEmpty(initpage)){
+            ParamUtil.setRequestAttr(request,"init_to_page",initpage);
+        }
+        ParamUtil.setRequestAttr(request,"init_to_page","");
     }
     /**
      *
