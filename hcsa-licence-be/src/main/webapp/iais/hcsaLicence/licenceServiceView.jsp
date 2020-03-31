@@ -61,7 +61,7 @@
                                       <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}"  style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}"/></label></span>
                                     </wrms:value></p>
 
-                                    <p ><span  ><strong >HCL NAME:</strong> ${appGrpPremDto.hciName}</span>
+                                    <p ><span  ><strong >Hci Name:</strong> ${appGrpPremDto.hciName}</span>
                                        <wrms:value width="7">
                                         <span class="newVal " attr="${appGrpPremDto.hciName}" style="display: none"><label><c:out value=""/></label></span>
                                         <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"/></label></span>
@@ -89,7 +89,7 @@
                                           <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo}"/></label></span>
                                         </wrms:value></p>
                                     </c:if>
-                                    <p><strong>Address Type  :</strong><c:if test="${appGrpPremDto.addrType=='ADDTY001'}"> Apt Blk</c:if>
+                                    <p><strong>Address Type :</strong><c:if test="${appGrpPremDto.addrType=='ADDTY001'}"> Apt Blk</c:if>
                                       <c:if test="${appGrpPremDto.addrType=='ADDTY002'}"> Without Apt Blk</c:if>
                                       <wrms:value width="7">
                                         <span class="newVal " attr="${appGrpPremDto.addrType}" style="display: none"><label><c:out value=""/></label></span>

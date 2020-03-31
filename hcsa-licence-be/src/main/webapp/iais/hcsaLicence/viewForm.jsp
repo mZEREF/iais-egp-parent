@@ -23,6 +23,13 @@
     <h2>LABORATORY DISCIPLINES</h2>
     <c:forEach var="appSvcLaboratoryDisciplinesDto" items="${currentPreviewSvcInfo.appSvcLaboratoryDisciplinesDtoList}" varStatus="status">
         <div class="amend-preview-info">
+          <p><span class="preview-title col-xs-6 col-md-4">Premises ${status.index+1}: ${appGrpPremisesDtoList[status.index].address} </span><%--${appSvcLaboratoryDisciplinesDto.premiseGetAddress}--%>
+            <wrms:value width="7">
+              <span class="newVal " attr="${appGrpPremisesDtoList[status.index].address}" style="display: none" ><label><c:out value=""/></label></span>
+              <span class="oldVal compareTdStyle" attr="${oldAppGrpPremisesDtoList[status.index].address}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].premiseGetAddress}"/></label></span>
+            </wrms:value>
+          </p>
+
           <div class="form-check-gp">
             <div class="row">
               <div class="col-xs-12" style="margin-left: 2%">
