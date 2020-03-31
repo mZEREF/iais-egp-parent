@@ -181,10 +181,12 @@ public class InspectReviseNcEmailDelegator {
             return;
         }
         String content=ParamUtil.getString(request,MSG_CON);
+        content=StringUtil.removeNonUtf8(content);
         String subject=ParamUtil.getString(request,SUBJECT);
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setMessageContent(content);
         inspectionEmailTemplateDto.setSubject(subject);
+        inspectionEmailTemplateDto.setMessageContent(StringUtil.removeNonUtf8(inspectionEmailTemplateDto.getMessageContent()));
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO,inspectionEmailTemplateDto);
         ParamUtil.setSessionAttr(request,SUBJECT, subject);
         ParamUtil.setSessionAttr(request,MSG_CON, content);
@@ -313,6 +315,7 @@ public class InspectReviseNcEmailDelegator {
         else {
             inspectionEmailTemplateDto= inspEmailService.getInsertEmail(correlationId);
         }
+        inspectionEmailTemplateDto.setMessageContent(StringUtil.removeNonUtf8(inspectionEmailTemplateDto.getMessageContent()));
         ParamUtil.setSessionAttr(request,DRA_EMA_ID,inspectionEmailTemplateDto.getId());
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
         ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"emailView");
@@ -369,6 +372,7 @@ public class InspectReviseNcEmailDelegator {
             inspectionEmailTemplateDto.setMessageContent(content);
         }
         inspectionEmailTemplateDto.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getStatus()}).get(0).getText());
+        inspectionEmailTemplateDto.setMessageContent(StringUtil.removeNonUtf8(inspectionEmailTemplateDto.getMessageContent()));
         ParamUtil.setRequestAttr(request,"appPremisesRoutingHistoryDtos", appPremisesRoutingHistoryDtos);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setSessionAttr(request,DRA_EMA_ID,inspectionEmailTemplateDto.getId());
