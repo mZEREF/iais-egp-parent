@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -21,7 +22,7 @@
                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                             <li class="active" id="info" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
                                                                       data-toggle="tab">Info</a></li>
-                            <li class="complete" role="presentation"><a href="#tabDocuments"
+                            <li class="complete" id="document" role="presentation"><a href="#tabDocuments"
                                                                         aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
                             <li id="ApplicationViewInspection" class="complete" role="presentation"
@@ -36,7 +37,7 @@
                             <div class="swiper-wrapper" role="tablist">
                                 <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
                                                              data-toggle="tab">Info</a></div>
-                                <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments"
+                                <div class="swiper-slide"><a href="#tabDocuments" id="doDocument" aria-controls="tabDocuments"
                                                              role="tab" data-toggle="tab">Documents</a></div>
 
                                 <div class="swiper-slide"><a href="#tabInspection" aria-controls="tabInspection"
@@ -205,13 +206,59 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr>
-                                                    <td colspan="7" align="center">
-                                                        <iais:message key="ACK018" escape="true"></iais:message>
-                                                    </td>
-                                                </tr>
+<%--                                                <tr>--%>
+<%--                                                    <td colspan="7" align="center">--%>
+<%--                                                        <iais:message key="ACK018" escape="true"></iais:message>--%>
+<%--                                                    </td>--%>
+<%--                                                </tr>--%>
+
+                                                    <c:choose>
+                                                        <c:when test="${empty applicationViewDto.appIntranetDocDtoList}">
+                                                            <tr>
+                                                                <td colspan="7">
+                                                                    <iais:message key="ACK018" escape="true"></iais:message>
+                                                                </td>
+                                                            </tr>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
+                                                                <tr>
+                                                                    <td>
+                                                                        <p><c:out value="${interalFile.docName}"></c:out></p>
+                                                                    </td>
+                                                                    <td>
+                                                                        <p><a href="#"><c:out
+                                                                                value="${interalFile.docName}.${interalFile.docType}"></c:out></a></p>
+                                                                    </td>
+                                                                    <td>
+                                                                        <p><c:out value="${interalFile.docSize}KB"></c:out></p>
+                                                                    </td>
+                                                                    <td>
+                                                                        <p><c:out value="${interalFile.submitBy}"></c:out></p>
+                                                                    </td>
+                                                                    <td>
+                                                                        <p><fmt:formatDate value='${interalFile.submitDt}' pattern='dd/MM/yyyy HH:mm:ss'/></p>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a href="javascript:callAjaxDeleteFile('${interalFile.fileRepoId}');"><label style="color: #D22727; font-size: 2rem; cursor:pointer;">X</label></a>
+<%--                                                                        onclick="callAjaxDeleteFile(${interalFile.fileRepoId})"--%>
+                                                                    </td>
+                                                                </tr>
+                                                            </c:forEach>
+                                                        </c:otherwise>
+                                                    </c:choose>
+
+
+
                                                 </tbody>
                                             </table>
+                                            <%--upload file--%>
+                                            <div align="right">
+                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadDoc">
+                                                    Upload Document
+                                                </button>
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -566,7 +613,7 @@
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
-                                                    <div id="recommendationDropdown" class="hidden">
+                                                    <div id="recommendationDropdown">
                                                         <iais:row>
 
                                                             <div id="recommendationFieldTrue" class="hidden"><iais:field value="Recommendation" required="true"/></div>
@@ -698,6 +745,7 @@
             </div>
         </form>
         <%@include file="/include/validation.jsp" %>
+        <%@include file="uploadFile.jsp" %>
     </div>
 </div>
 
@@ -710,7 +758,7 @@
             });
         if ('${taskDto.taskKey}' == '12848A70-820B-EA11-BE7D-000C29F371DC' || '${taskDto.taskKey}' == '13848A70-820B-EA11-BE7D-000C29F371DC') {
             $('#ApplicationViewInspection').css('display', 'none');
-            $('#recommendationDropdown').removeClass('hidden');
+            // $('#recommendationDropdown').removeClass('hidden');
         }
         if ('${applicationViewDto.applicationDto.status}' == 'APST000' || '${applicationViewDto.applicationDto.status}' == 'APST014' || '${applicationViewDto.applicationDto.status}' == 'APST013') {
             $('#processingDecision').addClass('hidden');
@@ -724,7 +772,6 @@
         checkVerifiedField();
         //check DMS
         DMSCheck();
-        //DMSCheck();
     });
 
     <%--function DMSCheck(){--%>
@@ -843,6 +890,10 @@
             $('#info').removeClass("active");
             $('#process').addClass("active");
             $('#doProcess').click();
+        }else if("Y" == '${doDocument}'){
+            $('#info').removeClass("active");
+            $('#document').addClass("active");
+            $('#doDocument').click();
         }
     }
 
