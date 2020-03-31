@@ -75,11 +75,11 @@
                   <c:set value="${AppSvcPersonnelDtoList[status.index]}" var="appSvcPersonnelDto"/>
                 </c:if>
 
-                  <table class="personnel-content">
+                  <table class="personnel-content" id="personnelRemoveId${status.index}">
                     <tbody>
                     <tr><td style="text-align:right;">
-                      <c:if test="${status.count > 0}">
-                        <h4 class="text-danger"><i class="fa fa-times-circle" onclick="$(this).parent().parent().parent().parent().remove()"></i></h4>
+                      <c:if test="${status.count > 1}">
+                        <h4 class="text-danger"><i class="fa fa-times-circle" onclick="$('#personnelRemoveId${status.index}').remove()"></i></h4>
                       </c:if>
                     </td></tr>
                     <tr height="1">
