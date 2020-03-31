@@ -5,6 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.log4j.Log4j;
@@ -27,9 +29,11 @@ public class ConfigServiceDelegator {
 
     public void start(BaseProcessClass bpc){
         log.info("*********startt***********");
+        AccessUtil.initLoginUserInfo(bpc.request);
+        AuditTrailHelper.auditFunction("ConfigServiceDelegator", "Assign Report");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
-        OrgUserDto entity;entity = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
+        OrgUserDto entity = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
         bpc.request.getSession().setAttribute("orgUserDto",entity);
 
     }
