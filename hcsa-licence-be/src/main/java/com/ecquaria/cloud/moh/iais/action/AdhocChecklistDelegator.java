@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Delegator(value = "adhocChecklistDelegator")
 @Slf4j
@@ -274,15 +275,10 @@ public class AdhocChecklistDelegator {
             log.debug("indicates that a record has been selected ");
             if (!IaisCommonUtils.isEmpty(allAdhocItem)){
                 allAdhocItem.removeIf(i -> StringUtil.isEmpty(i.getItemId()));
-                String statusStr = SqlHelper.constructNotInCondition("item.id", allAdhocItem.size());
-                // <#if adhocItemId??> and ${adhocItemId} </#if>
-                searchParam.addParam("adhocItemId", statusStr);
-                int indx = 0;
-                for (AdhocChecklistItemDto adhocChecklistItemDto : allAdhocItem){
-                    String itemId = adhocChecklistItemDto.getItemId();
-                    searchParam.addFilter("item.id"+indx, itemId);
-                    indx++;
-                }
+
+                SqlHelper.builderNotInSql(searchParam, "item.id", "adhocItemId",
+                        allAdhocItem.stream().map(AdhocChecklistItemDto::getItemId).collect(Collectors.toList()));
+
             }
         }
 

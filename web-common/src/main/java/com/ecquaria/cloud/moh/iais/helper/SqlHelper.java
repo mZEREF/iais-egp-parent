@@ -13,7 +13,11 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 /**
  * SqlHelper
@@ -82,6 +86,38 @@ public class SqlHelper {
         return sBuilder.toString();
     }
 
+
+    public static void builderInSql(SearchParam searchParam, String columnName, String paramName, List<String> values){
+        if (searchParam == null || columnName == null|| paramName == null || IaisCommonUtils.isEmpty(values)){
+            throw new IllegalArgumentException("Null parameter not allowed");
+        }
+
+        //<#if paramName??> and ${paramName} </#if>
+        String inSql = SqlHelper.constructInCondition(columnName, values.size());
+        searchParam.addParam(paramName, inSql);
+        int indx = 0;
+        for (String s : values){
+            searchParam.addFilter(columnName + indx, s);
+            indx++;
+        }
+
+    }
+
+    public static void builderNotInSql(SearchParam searchParam, String columnName, String paramName, List<String> values){
+        if (searchParam == null || columnName == null|| paramName == null || IaisCommonUtils.isEmpty(values)){
+            throw new IllegalArgumentException("Null parameter not allowed");
+        }
+
+        //<#if paramName??> and ${paramName} </#if>
+        String inSql = SqlHelper.constructNotInCondition(columnName, values.size());
+        searchParam.addParam(paramName, inSql);
+        int indx = 0;
+        for (String s : values){
+            searchParam.addFilter(columnName + indx, s);
+            indx++;
+        }
+
+    }
 
     private SqlHelper() {throw new IllegalStateException("Utility class");}
 }

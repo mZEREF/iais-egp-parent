@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -36,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
@@ -55,7 +55,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -185,8 +184,6 @@ public class HcsaChklItemDelegator {
         HttpServletRequest request = bpc.request;
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
 
-        String value = (String) ParamUtil.getSessionAttr(request, "switchUploadPage");
-
         MultipartFile file = mulReq.getFile("selectedFile");
 
         Map<String, String> errorMap = validationFile(request, file);
@@ -194,20 +191,11 @@ public class HcsaChklItemDelegator {
             return;
         }
 
-        List<ErrorMsgContent> errorMsgContentList = new ArrayList<>();
+        List<ErrorMsgContent> errorMsgContentList;
         File toFile = FileUtils.multipartFileToFile(file);
         try {
-            switch (value){
-                case REGULATION:
-                    List<HcsaChklSvcRegulationDto> regulationDtoList = FileUtils.transformToJavaBean(toFile, HcsaChklSvcRegulationDto.class);
-                    errorMsgContentList = hcsaChklService.submitUploadRegulation(regulationDtoList);
-                    break;
-                case CHECKLIST_ITEM:
-                    List<ChecklistItemDto> checklistItemDtoList = FileUtils.transformToJavaBean(toFile, ChecklistItemDto.class);
-                    errorMsgContentList  = hcsaChklService.submitUploadItems(checklistItemDtoList);
-                    break;
-                default:
-            }
+                List<ChecklistItemDto> checklistItemDtoList = FileUtils.transformToJavaBean(toFile, ChecklistItemDto.class);
+                errorMsgContentList  = hcsaChklService.submitUploadItems(checklistItemDtoList);
         }catch (IaisRuntimeException e){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(FILE_UPLOAD_ERROR, "CHKL_ERR011"));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
@@ -468,6 +456,15 @@ public class HcsaChklItemDelegator {
         }
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+
+        //When configuring config, the same checklist item is not allowed
+        List<String> selectedItemIdToConfig = (List<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG);
+        if ("routeToItemProcess".equals(currentAction)){
+            if (!IaisCommonUtils.isEmpty(selectedItemIdToConfig)){
+                SqlHelper.builderNotInSql(searchParam, "item.id", HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, selectedItemIdToConfig);
+            }
+        }
+
         QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
 
         SearchResult searchResult = hcsaChklService.listChklItem(searchParam);

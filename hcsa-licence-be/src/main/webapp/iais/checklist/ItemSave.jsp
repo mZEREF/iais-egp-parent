@@ -87,7 +87,7 @@
                         <div class="col-xs-5 col-md-3">
                             <iais:field value="Answer Type" required="true"></iais:field>
                             <div class="col-xs-5 col-md-3">
-                                <iais:select name="answerType" id="answerType" codeCategory="CATE_ID_ANSWER_TYPE" firstOption="Please Select" value="${itemRequestAttr.answerType}"></iais:select>
+                                <iais:select name="answerType" id="answerType" codeCategory="CATE_ID_ANSWER_TYPE" firstOption="Please Select" filterValue="ANTP003, ANTP001" value="${itemRequestAttr.answerType}"></iais:select>
                                 <span id="error_answerType" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>

@@ -39,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -85,6 +86,7 @@ public class HcsaChklConfigDelegator {
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_SEARCH, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_RESULT, null);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, null);
         ParamUtil.setSessionAttr(request, "addedItemIdList", null);
         ParamUtil.setSessionAttr(request, "actionBtn", null);
 
@@ -630,6 +632,11 @@ public class HcsaChklConfigDelegator {
             ChecklistConfigDto disposition = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
             String currentValidateId = (String) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.PARAM_PAGE_INDEX);
 
+            List<String> selectedItemIdToConfig = (List<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG);
+            if (IaisCommonUtils.isEmpty(selectedItemIdToConfig)){
+                selectedItemIdToConfig = IaisCommonUtils.genNewArrayList();
+            }
+
             if(disposition != null && currentValidateId != null){
                 List<ChecklistSectionDto> currentSection = disposition.getSectionDtos();
                 for(ChecklistSectionDto section : currentSection){
@@ -637,7 +644,8 @@ public class HcsaChklConfigDelegator {
                         List<ChecklistItemDto> collocate = section.getChecklistItemDtos();
                         if(collocate != null && !collocate.isEmpty()){
                             for (ChecklistItemDto addCrumb : necessary){
-                               collocate.add(addCrumb);
+                                selectedItemIdToConfig.add(addCrumb.getItemId());
+                                collocate.add(addCrumb);
                             }
                         }else {
                             section.setChecklistItemDtos(necessary);
@@ -647,6 +655,8 @@ public class HcsaChklConfigDelegator {
 
             }
 
+            selectedItemIdToConfig.addAll(Arrays.asList(checkBoxItemId));
+            ParamUtil.setSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, (Serializable) selectedItemIdToConfig);
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, disposition);
 
         }catch (NullPointerException e){

@@ -22,6 +22,7 @@
                 <#if riskLevel??> and item.risk_level = :riskLevel</#if>
                 <#if status??> and item.status = :status</#if>
                 <#if adhocItemId??> and ${adhocItemId} </#if>
+                <#if selectedItemIdToConfig??> and ${selectedItemIdToConfig} </#if>
         ]]>
 
     </sql>
