@@ -202,10 +202,12 @@ public class InspectEmailAo1Delegator {
             return;
         }
         String content=ParamUtil.getString(request,MSG_CON);
+        content=StringUtil.removeNonUtf8(content);
         String subject=ParamUtil.getString(request,SUBJECT);
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setMessageContent(content);
         inspectionEmailTemplateDto.setSubject(subject);
+        inspectionEmailTemplateDto.setMessageContent(StringUtil.removeNonUtf8(inspectionEmailTemplateDto.getMessageContent()));
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO,inspectionEmailTemplateDto);
         ParamUtil.setSessionAttr(request,SUBJECT, subject);
         ParamUtil.setSessionAttr(request,MSG_CON, content);
@@ -333,7 +335,9 @@ public class InspectEmailAo1Delegator {
         }
         else {
             inspectionEmailTemplateDto= inspEmailService.getInsertEmail(correlationId);
-        }         ParamUtil.setSessionAttr(request,DRA_EMA_ID,inspectionEmailTemplateDto.getId());
+        }
+        inspectionEmailTemplateDto.setMessageContent(StringUtil.removeNonUtf8(inspectionEmailTemplateDto.getMessageContent()));
+        ParamUtil.setSessionAttr(request,DRA_EMA_ID,inspectionEmailTemplateDto.getId());
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
         ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"emailView");
     }
@@ -377,6 +381,7 @@ public class InspectEmailAo1Delegator {
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setRequestAttr(request,"appPremisesRoutingHistoryDtos", appPremisesRoutingHistoryDtos);
         ParamUtil.setSessionAttr(request,DRA_EMA_ID,inspectionEmailTemplateDto.getId());
+        inspectionEmailTemplateDto.setMessageContent(StringUtil.removeNonUtf8(inspectionEmailTemplateDto.getMessageContent()));
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
         ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"processing");
     }
@@ -477,6 +482,7 @@ public class InspectEmailAo1Delegator {
         String draftEmailId= (String) ParamUtil.getSessionAttr(request,DRA_EMA_ID);
         inspectionEmailTemplateDto.setId(draftEmailId);
         inspEmailService.updateEmailDraft(inspectionEmailTemplateDto);
+        inspectionEmailTemplateDto.setMessageContent(StringUtil.removeNonUtf8(inspectionEmailTemplateDto.getMessageContent()));
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
         return mesContext;
     }

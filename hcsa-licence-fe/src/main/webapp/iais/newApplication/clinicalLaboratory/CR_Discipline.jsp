@@ -116,10 +116,16 @@
                                            name="<c:out value="${premIndexNo}control--runtime--1"/>" class="control-input"
                                            value="<c:out value="${checkIndexNo2}" />">
                                     <label  for="<c:out value="control--${levelTwo.index}--${levelTwo.index}"/>" class="control-label control-set-font control-font-normal" />
-                                    <span class="check-square"></span><c:out value="${levelTwoList.name}"/>
+                                    <span class="check-square"></span>
+                                    <c:out value="${levelTwoList.name}"/>
                                     </label>
                                     <input class="checkValue" type="hidden" name="<c:out value="${checkIndexNo2}"/>" value="<iais:mask name="${checkIndexNo2}" value="${levelTwoList.id}"/>"/>
                                   </div>
+                                </td>
+                                <td>
+                                  <c:choose>
+                                    <c:when test="${levelTwoList.id=='27D8EB5B-1123-EA11-BE78-000C29D29DB0'}"><input type="text"  name="pleaseIndicate" ></c:when>
+                                  </c:choose>
                                 </td>
                               </tr>
                               <c:if test="${not empty levelTwoList.list}">
