@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -53,6 +54,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
     OrganizationMainClient organizationClient;
     @Override
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId) {
+
         return applicationClient.getGroupAppsByNo(appGroupId).getEntity();
     }
 
@@ -88,7 +90,11 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
         boolean result = false;
         if(!IaisCommonUtils.isEmpty(applicationDtos) && !StringUtil.isEmpty(status)){
             for(ApplicationDto applicationDto : applicationDtos){
-                if(status.equals(applicationDto.getStatus())){
+                if(status.equals(applicationDto.getStatus())
+                        || ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(applicationDto.getStatus())
+                        || ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationDto.getStatus())
+                        || ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus())
+                ){
                     result = true;
                     break;
                 }
