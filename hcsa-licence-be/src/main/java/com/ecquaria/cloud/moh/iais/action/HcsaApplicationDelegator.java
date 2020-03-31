@@ -339,6 +339,12 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do chooseStage start ...."));
         //do upload file
         String doDocument = ParamUtil.getString(bpc.request,"uploadFile");
+        String interalFileId = ParamUtil.getString(bpc.request,"interalFileId");
+        if(!StringUtil.isEmpty(interalFileId)){
+            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "PREPARE");
+            ParamUtil.setRequestAttr(bpc.request, "doDocument", "Y");
+            return;
+        }
         if("Y".equals(doDocument)){
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "PREPARE");
             ParamUtil.setRequestAttr(bpc.request, "doDocument", "Y");
@@ -900,6 +906,11 @@ public class HcsaApplicationDelegator {
 //        uploadFileClient.saveAppIntranetDocByAppIntranetDoc();
 
         String doDocument = ParamUtil.getString(bpc.request,"uploadFile");
+        String interalFileId = ParamUtil.getString(bpc.request,"interalFileId");
+        if(!StringUtil.isEmpty(interalFileId)){
+            uploadFileClient.deleteAppIntranetDocsById(interalFileId);
+        }
+
         if("Y".equals(doDocument)){
             HcsaApplicationUploadFileValidate uploadFileValidate = new HcsaApplicationUploadFileValidate();
             Map<String, String> errorMap = uploadFileValidate.validate(bpc.request);

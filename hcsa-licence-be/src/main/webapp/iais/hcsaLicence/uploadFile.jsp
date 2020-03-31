@@ -10,6 +10,7 @@
             <div class="modal-body">
                 <form id="fileUploadForm" name="fileUploadForm" enctype="multipart/form-data"
                       action="<%=process.runtime.continueURL()%>" method="post">
+<%--                    action="" method="post">--%>
                     <iais:field value="Upload your files" required="true"/>
                     <input type="hidden" id="uploadFile" name="uploadFile" value="">
                     <input type="hidden" name="taskId" value="${taskId}">
@@ -74,13 +75,15 @@
     function uploadInternalDoc(){
         if(validateUploadInternal()) {
             $('#uploadFile').val('Y');
-            //callAjaxUploadFile();
+            // callAjaxUploadFile();
             $('#fileUploadForm').submit();
         }
     }
 
-    function callAjaxDeleteFile(repoId) {
-        alert(repoId);
+    function deleteFile(repoId) {
+        $('#interalFileId').val(repoId);
+        $('#mainForm').submit();
+        //alert(repoId);
     }
 
     function callAjaxUploadFile(){

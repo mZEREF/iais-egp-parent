@@ -16,6 +16,7 @@
             <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
             <input type="hidden" name="iaisErrorFlag" id="iaisErrorFlag"/>
             <input type="hidden" name="crud_action_additional" id="crud_action_additional"/>
+            <input type="hidden" name="interalFileId" id="interalFileId"/>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
@@ -215,7 +216,7 @@
                                                     <c:choose>
                                                         <c:when test="${empty applicationViewDto.appIntranetDocDtoList}">
                                                             <tr>
-                                                                <td colspan="7">
+                                                                <td colspan="7"  align="center">
                                                                     <iais:message key="ACK018" escape="true"></iais:message>
                                                                 </td>
                                                             </tr>
@@ -240,8 +241,7 @@
                                                                         <p><fmt:formatDate value='${interalFile.submitDt}' pattern='dd/MM/yyyy HH:mm:ss'/></p>
                                                                     </td>
                                                                     <td>
-                                                                        <a href="javascript:callAjaxDeleteFile('${interalFile.fileRepoId}');"><label style="color: #D22727; font-size: 2rem; cursor:pointer;">X</label></a>
-<%--                                                                        onclick="callAjaxDeleteFile(${interalFile.fileRepoId})"--%>
+                                                                        <a href="javascript:deleteFile('${interalFile.id}');"><label style="color: #D22727; font-size: 2rem; cursor:pointer;">X</label></a>
                                                                     </td>
                                                                 </tr>
                                                             </c:forEach>
