@@ -22,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
-import sop.commons.util.CommonFieldsUtil;
 import sop.util.CopyUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -592,6 +591,9 @@ public class NewApplicationHelper {
                             for(AppSvcChckListDto appSvcChckListDto:appSvcChckListDtoList){
                                 if(chkLstId.equals(appSvcChckListDto.getChkLstConfId())){
                                     appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getChkName());
+                                    if("27D8EB5B-1123-EA11-BE78-000C29D29DB0".equals(appSvcChckListDto.getChkLstConfId())){
+                                        appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getOtherScopeName());
+                                    }
                                 }
                             }
                         }

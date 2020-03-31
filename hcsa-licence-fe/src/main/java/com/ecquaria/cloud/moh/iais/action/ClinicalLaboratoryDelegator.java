@@ -488,6 +488,7 @@ public class ClinicalLaboratoryDelegator {
                         appSvcChckListDto.setChkLstConfId(checkInfo.getId());
                         if("27D8EB5B-1123-EA11-BE78-000C29D29DB0".equals(checkInfo.getId())){
                             String subName = ParamUtil.getString(bpc.request, "pleaseIndicate");
+                            ParamUtil.setSessionAttr(bpc.request,"pleaseIndicate",subName);
                             appSvcChckListDto.setOtherScopeName(subName);
                         }
                         appSvcChckListDto.setChkLstType(checkInfo.getType());

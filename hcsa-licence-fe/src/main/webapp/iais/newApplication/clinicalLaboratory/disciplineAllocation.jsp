@@ -90,21 +90,25 @@
                                           <p>${premisesAndChkLst.premiseGetAddress} </p>
                                         </td>
                                       </c:if>
-                                      <td>
-                                        <p class="visible-xs visible-sm table-row-title">Laboratory Disciplines</p>
-                                        <input type="hidden" name="${cgoName}" value="${chkLst.chkLstConfId}"/>
-                                        <p>${chkLst.chkName}</p>
-                                      </td>
-                                      <td style="width:30%">
-                                        <p class="visible-xs visible-sm table-row-title">Clinical Governance Officers</p>
-                                        <c:set var="cgoSelKey" value="${premisesIndexNo}${chkLst.chkLstConfId}"/>
-                                        <iais:select  cssClass="${premisesIndexNo}" name="${cgoName}" firstOption="Please Select"  options="CgoSelect"  value="${ReloadAllocationMap[cgoSelKey]}"></iais:select>
-                                        <div class="col-sm-10 padding-left" style="margin-top: 2%">
-                                          <span  class="error-msg" name="iaisErrorMsg" id="error_disciplineAllocation${row_count}"></span>
-                                          <c:set var="row_count" value="${row_count+1}" />
-                                        </div>
-
-                                      </td>
+                                      <c:if test="${chkLst.chkLstConfId!='0B38F14D-1123-EA11-BE78-000C29D29DB0'}">
+                                        <td>
+                                          <p class="visible-xs visible-sm table-row-title">Laboratory Disciplines</p>
+                                          <input type="hidden" name="${cgoName}" value="${chkLst.chkLstConfId}"/>
+                                          <c:choose>
+                                            <c:when test="${chkLst.chkLstConfId=='27D8EB5B-1123-EA11-BE78-000C29D29DB0'}"><p>${chkLst.otherScopeName}</p></c:when>
+                                            <c:otherwise><p>${chkLst.chkName}</p></c:otherwise>
+                                          </c:choose>
+                                        </td>
+                                        <td style="width:30%">
+                                          <p class="visible-xs visible-sm table-row-title">Clinical Governance Officers</p>
+                                          <c:set var="cgoSelKey" value="${premisesIndexNo}${chkLst.chkLstConfId}"/>
+                                          <iais:select  cssClass="${premisesIndexNo}" name="${cgoName}" firstOption="Please Select"  options="CgoSelect"  value="${ReloadAllocationMap[cgoSelKey]}"></iais:select>
+                                          <div class="col-sm-10 padding-left" style="margin-top: 2%">
+                                            <span  class="error-msg" name="iaisErrorMsg" id="error_disciplineAllocation${row_count}"></span>
+                                            <c:set var="row_count" value="${row_count+1}" />
+                                          </div>
+                                        </td>
+                                      </c:if>
                                     </tr>
                                   </c:forEach>
                                   </tbody>

@@ -124,7 +124,7 @@
                                 </td>
                                 <td>
                                   <c:choose>
-                                    <c:when test="${levelTwoList.id=='27D8EB5B-1123-EA11-BE78-000C29D29DB0'}"><input type="text"  name="pleaseIndicate" ></c:when>
+                                    <c:when test="${levelTwoList.id=='27D8EB5B-1123-EA11-BE78-000C29D29DB0'}"><input type="text" name="pleaseIndicate"   value="${pleaseIndicate}"></c:when>
                                   </c:choose>
                                 </td>
                               </tr>
