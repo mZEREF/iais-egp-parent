@@ -15,6 +15,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -310,6 +312,17 @@ public class InspectionMergeSendNcEmailDelegator {
                     ) {
                         if(nc.getIsRecitfied()==0){
                             isNoNc=false;
+                        }
+                    }
+                    AdCheckListShowDto adCheckListShowDto = fillupChklistService.getAdhoc(appPremCorrId);
+                    if(adCheckListShowDto!=null){
+                        List<AdhocNcCheckItemDto> adItemList = adCheckListShowDto.getAdItemList();
+                        if(adItemList!=null && !adItemList.isEmpty()){
+                            for(AdhocNcCheckItemDto temp:adItemList){
+                                if(!temp.getRectified()){
+                                    isNoNc=false;
+                                }
+                            }
                         }
                     }
                 }catch (Exception e){

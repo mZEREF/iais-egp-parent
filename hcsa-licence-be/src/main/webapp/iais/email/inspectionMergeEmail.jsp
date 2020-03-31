@@ -12,15 +12,19 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <%@ include file="/include/formHidden.jsp" %>
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
-    <div class="main-content">
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="tab-gp dashboard-tab">
+<%@ include file="/include/formHidden.jsp" %>
+<input type="hidden" name="crud_action_type" value="">
+<input type="hidden" name="crud_action_value" value="">
+<input type="hidden" name="crud_action_additional" value="">
+<div class="main-content">
+<div class="row">
+<div class="col-lg-12 col-xs-12">
+<div class="center-content">
+<div class="intranet-content">
+<iais:body >
+    <div class="container">
+    <div class="col-xs-12">
+    <div class="tab-gp dashboard-tab">
                         <br><br><br>
                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                             <li class="complete" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
@@ -140,13 +144,16 @@
 
 
                             </div>
-
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
+    </div>
+    </div>
+</iais:body>
+</div>
+</div>
+</div>
+</div>
+</div>
 </form>
 
 

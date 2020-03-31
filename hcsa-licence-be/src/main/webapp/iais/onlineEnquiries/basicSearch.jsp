@@ -139,7 +139,12 @@
                         <table class="table">
                             <thead>
                             <tr align="center">
-                                <iais:sortableHeader needSort="false" field="" value=""></iais:sortableHeader>
+                                <th class="form-check">
+                                    <input class="form-check-input licenceCheck" type="checkbox" name="userUids" id="checkboxAll" onchange="javascirpt:checkAll();"/>
+                                    <label class="form-check-label" for="checkboxAll">
+                                        <span class="check-square"></span>
+                                    </label>
+                                </th>
                                 <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="APPLICATION_NO" value="Application No."></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="APP_TYPE" value="Application Type"></iais:sortableHeader>
@@ -269,6 +274,15 @@
 
         SOP.Crud.cfxSubmit("mainForm", "appDetails",appCorrId);
     }
+
+    function checkAll() {
+        if ($('#checkboxAll').is(':checked')) {
+            $("input[name='appIds']").attr("checked","true");
+        } else {
+            $("input[name='appIds']").removeAttr("checked");
+        }
+    }
+
     function doCessation() {
         showWaiting();
         var chk=$("[name='appIds']:checked");

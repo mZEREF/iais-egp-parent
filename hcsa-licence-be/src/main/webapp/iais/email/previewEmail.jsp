@@ -1,6 +1,6 @@
-<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/tinymce/tinymce.min.js"></script>
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/initTinyMce.js"></script>
@@ -12,7 +12,7 @@
 
 //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
-            (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+            (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 
 <webui:setAttribute name="header-ext">
@@ -34,12 +34,11 @@
 <webui:setLayout name="iais-intranet"/>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
-    String webroot=IaisEGPConstant.FE_CSS_ROOT;
+    String webroot = IaisEGPConstant.FE_CSS_ROOT;
 %>
 
 
-
-<form method="post" action=<%=process.runtime.continueURL()%> >
+<form method="post" action=<%=process.runtime.continueURL()%>>
     <br><br><br><br><br><br>
 
     <h3>${subject}</h3>
@@ -47,5 +46,5 @@
         ${messageContent}
     </div>
 
-    <a onclick="javascript:SOP.Crud.cfxSubmit('mainForm');" >< Back</a>
+    <a onclick="javascript:SOP.Crud.cfxSubmit('mainForm');">< Back</a>
 </form>
