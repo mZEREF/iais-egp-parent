@@ -1,4 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
@@ -6,28 +7,28 @@
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+           String webroot=IaisEGPConstant.BE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
+<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
 <form method="post" id="mainForm"  enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
     <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
-
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <div class="main-content">
-        <div class="container">
             <div class="row">
-                <div class="col-xs-12">
-                    <div class="tab-gp dashboard-tab">
-                        <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                            <li class="<c:choose>
+             <div class="col-lg-12 col-xs-12">
+             <div class="center-content">
+             <div class="intranet-content">
+            <iais:body>
+                <div class="container">
+                    <div class="col-xs-12">
+                        <div class="tab-gp dashboard-tab">
+                            <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
+                                <li class="<c:choose>
                                             <c:when test="${serListDto.checkListTab=='chkList'}">
                                                    complete
                                                 </c:when>
@@ -35,9 +36,9 @@
                                                     active
                                                 </c:otherwise>
                                             </c:choose>" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
-                            <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
-                                                                        data-toggle="tab">Documents</a></li>
-                            <li class="<c:choose>
+                                <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
+                                                                            data-toggle="tab">Documents</a></li>
+                                <li class="<c:choose>
                                             <c:when test="${serListDto.checkListTab=='chkList'}">
                                                    active
                                                 </c:when>
@@ -46,28 +47,28 @@
                                                 </c:otherwise>
                                             </c:choose>" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
                                                                                 data-toggle="tab">CheckList</a></li>
-                            <li class="complete" role="presentation"><a href="#Processing" aria-controls="Processing" role="tab"
-                                                                        data-toggle="tab">Processing</a></li>
-                        </ul>
-                        <div class="tab-nav-mobile visible-xs visible-sm">
-                            <div class="swiper-wrapper" role="tablist">
-                                <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></div>
-                                <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a></div>
-                                <div class="swiper-slide"><a href="#tabPayment" aria-controls="tabPayment" role="tab" data-toggle="tab">Payment</a></div>
-                                <div class="swiper-slide"><a href="#Processing" aria-controls="Processing" role="tab" data-toggle="tab">Processing</a></div>
+                                <li class="complete" role="presentation"><a href="#Processing" aria-controls="Processing" role="tab"
+                                                                            data-toggle="tab">Processing</a></li>
+                            </ul>
+                            <div class="tab-nav-mobile visible-xs visible-sm">
+                                <div class="swiper-wrapper" role="tablist">
+                                    <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></div>
+                                    <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a></div>
+                                    <div class="swiper-slide"><a href="#tabPayment" aria-controls="tabPayment" role="tab" data-toggle="tab">Payment</a></div>
+                                    <div class="swiper-slide"><a href="#Processing" aria-controls="Processing" role="tab" data-toggle="tab">Processing</a></div>
+                                </div>
+                                <div class="swiper-button-prev"></div>
+                                <div class="swiper-button-next"></div>
                             </div>
-                            <div class="swiper-button-prev"></div>
-                            <div class="swiper-button-next"></div>
-                        </div>
-                        <div class="tab-content">
-                            <div class="tab-pane  <c:if test="${serListDto.checkListTab!='chkList'}">active</c:if>" id="tabInfo" role="tabpanel">
+                            <div class="tab-content">
+                                <div class="tab-pane  <c:if test="${serListDto.checkListTab!='chkList'}">active</c:if>" id="tabInfo" role="tabpanel">
                                     <%@include file="/iais/inspectionncList/tabViewApp.jsp"%>
-                            </div>
-                            <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                <%@include file="/iais/inspectionncList/tabDocuments.jsp"%>
-                            </div>
-                            <div class="tab-pane <c:if test="${serListDto.checkListTab=='chkList'}">active</c:if>" id="tabPayment" role="tabpanel">
-                                <%@include file="/iais/inspectionncList/inspectiondetail.jsp"%>
+                                </div>
+                                <div class="tab-pane" id="tabDocuments" role="tabpanel">
+                                    <%@include file="/iais/inspectionncList/tabDocuments.jsp"%>
+                                </div>
+                                <div class="tab-pane <c:if test="${serListDto.checkListTab=='chkList'}">active</c:if>" id="tabPayment" role="tabpanel">
+                                    <%@include file="/iais/inspectionncList/inspectiondetail.jsp"%>
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div align="right">
@@ -80,76 +81,80 @@
                                         </div>
                                     </div>
                                 </div>
-                            <div class="tab-pane" id="Processing" role="tabpanel">
-                                <div class="alert alert-info" role="alert">
-                                    <strong>
-                                        <h4>Processing History</h4>
-                                    </strong>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <div class="table-gp">
-                                            <table class="table">
-                                                <thead>
-                                                <tr>
-                                                    <th>Username</th>
-                                                    <th>Working Group</th>
-                                                    <th>Status Update</th>
-                                                    <th>Remarks</th>
-                                                    <th>Last Updated</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <c:forEach
-                                                        items="${applicationViewDto.appPremisesRoutingHistoryDtoList}"
-                                                        var="appPremisesRoutingHistoryDto">
+                                <div class="tab-pane" id="Processing" role="tabpanel">
+                                    <div class="alert alert-info" role="alert">
+                                        <strong>
+                                            <h4>Processing History</h4>
+                                        </strong>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="table-gp">
+                                                <table class="table">
+                                                    <thead>
                                                     <tr>
-                                                        <td>
-                                                            <p><c:out
-                                                                    value="${appPremisesRoutingHistoryDto.actionby}"></c:out></p>
-                                                        </td>
-                                                        <td>
-                                                            <p><c:out
-                                                                    value="${appPremisesRoutingHistoryDto.workingGroup}"></c:out></p>
-                                                        </td>
-                                                        <td>
-                                                            <p><c:out
-                                                                    value="${appPremisesRoutingHistoryDto.processDecision}"></c:out></p>
-                                                        </td>
-                                                        <td>
-                                                            <p><c:out
-                                                                    value="${appPremisesRoutingHistoryDto.internalRemarks}"></c:out></p>
-                                                        </td>
-                                                        <td>
-                                                            <p><c:out
-                                                                    value="${appPremisesRoutingHistoryDto.updatedDt}"></c:out></p>
-                                                        </td>
+                                                        <th>Username</th>
+                                                        <th>Working Group</th>
+                                                        <th>Status Update</th>
+                                                        <th>Remarks</th>
+                                                        <th>Last Updated</th>
                                                     </tr>
-                                                </c:forEach>
-                                                </tbody>
-                                            </table>
+                                                    </thead>
+                                                    <tbody>
+                                                    <c:forEach
+                                                            items="${applicationViewDto.appPremisesRoutingHistoryDtoList}"
+                                                            var="appPremisesRoutingHistoryDto">
+                                                        <tr>
+                                                            <td>
+                                                                <p><c:out
+                                                                        value="${appPremisesRoutingHistoryDto.actionby}"></c:out></p>
+                                                            </td>
+                                                            <td>
+                                                                <p><c:out
+                                                                        value="${appPremisesRoutingHistoryDto.workingGroup}"></c:out></p>
+                                                            </td>
+                                                            <td>
+                                                                <p><c:out
+                                                                        value="${appPremisesRoutingHistoryDto.processDecision}"></c:out></p>
+                                                            </td>
+                                                            <td>
+                                                                <p><c:out
+                                                                        value="${appPremisesRoutingHistoryDto.internalRemarks}"></c:out></p>
+                                                            </td>
+                                                            <td>
+                                                                <p><c:out
+                                                                        value="${appPremisesRoutingHistoryDto.updatedDt}"></c:out></p>
+                                                            </td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <div align="right">
-                                            <button type="button" class="btn btn-primary" onclick="javascript: doSubmit();">
-                                                Submit
-                                            </button>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div align="right">
+                                                <button type="button" class="btn btn-primary" onclick="javascript: doSubmit();">
+                                                    Submit
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        </div>
                     </div>
                 </div>
-            </div>
+             </div>
+             </div>
+             </div>
+            </iais:body>
+                </div>
         </div>
-    </div>
 </form>
+</div>
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
     function doViewCheckList(){

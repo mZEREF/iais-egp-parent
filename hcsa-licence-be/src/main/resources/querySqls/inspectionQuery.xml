@@ -120,13 +120,40 @@
 
     <sql key="aduitSystemList"  remarks="query system aduitList">
         <![CDATA[
-            select t1.id as id, t2.id as licId,t3.HCI_CODE as hclcode,t3.HCI_NAME hclName,
-            t3.HCI_NAME+' '+t3.STREET_NAME+' '+t3.UNIT_NO+' '+t3.BLK_NO+',#'+t3.FLOOR_NO+'Singapore '+t3.POSTAL_CODE as address,t3.POSTAL_CODE as postalCode,t3.PREMISES_TYPE premisesType,
-            t2.SVC_NAME as serviceName from lic_premises t1,licence t2,premises t3 where t1.LICENCE_ID = t2.id and t1.PREMISES_ID = t3.id and t2.STATUS= 'LICEST001'
-            <#if serviceNameList??> and t2.SVC_NAME IN ${serviceNameList} </#if>
-            <#if postalCode??> and charindex(:postalCode,t3.POSTAL_CODE)!=0 </#if>
-            <#if hclCode??> and charindex(:hclCode,t3.HCI_CODE)!=0 </#if>
-            <#if premType??> and charindex(:premType,t3.PREMISES_TYPE) != 0 </#if>
+               SELECT
+               t3.ID as id,t3.LICENCE_ID as licId,t3.PREMISES_ID,t3.IS_POST_INSP_NEEDED,t3.TCU_DATE,t3.IS_TCU_NEEDED,
+               t4.LICENCE_NO,t4.SVC_NAME as serviceName,t4.START_DATE,t4.EXPIRY_DATE,t4.IS_GRP_LIC,t4.ORIGIN_LICENCE_ID,t4.IS_MIGRATED,t4.MIGRATED_DT,
+               t4.IS_FEE_RETRO_NEEDED,t4.VERSION,t4.LICENSEE_ID,t4.END_DATE,
+               t5.HCI_CODE as  hclcode,t5.HCI_NAME as hclName,t5.HCI_CONTACT_NO,t5.SCDF_REF_NO,t5.CERT_ISSUED_DT,t5.VEHICLE_NO,t5.PREMISES_TYPE as premisesType,t5.POSTAL_CODE  as postalCode,
+               t5.ADDR_TYPE,t5.BLK_NO,t5.FLOOR_NO,t5.UNIT_NO,t5.STREET_NAME,t5.BUILDING_NAME,t5.VERSION,t5.STATUS,t5.ORGANIZATION_ID,
+               t5.WRK_TIME_FROM,t5.WRK_TIME_TO,t5.IS_LOCATE_WITH_OTHERS,
+               t5.HCI_NAME+' '+t5.STREET_NAME+' '+t5.UNIT_NO+' '+t5.BLK_NO+','+t5.FLOOR_NO+'Singapore '+t5.POSTAL_CODE as address,
+               t1.ID as lic_premises_audit_id,t1.AUDIT_TYPE,t1.AUDIT_RISK_TYPE,t1.REMARKS,t1.IS_IN_RISK_SCORE,t1.INCLUDE_RISK_TYPE,t1.STATUS as audit_status,
+               t2.INSPECTOR_ID,
+               t6.ID as lic_prem_insp_grp_correlation_id,t6.INS_GRP_ID,t6.STATUS as lic_prem_insp_grp_correlation_status,
+               t7.PREFER_END_DATE ,t7.PREFER_START_DATE,t7.STATUS as lic_inspection_group_status
+               FROM lic_premises t3
+               LEFT JOIN (Select * FROM lic_premises_audit  WHERE STATUS = 'CMSTAT001') t1
+               on t1.LIC_PREM_ID = t3.ID
+               left join lic_premises_audit_inspector t2
+               on t1.ID  = t2.AUDIT_ID
+               LEFT JOIN (Select * FROM licence WHERE STATUS = 'LICEST001') t4
+               ON
+               t3.LICENCE_ID = t4.ID
+               left join   premises t5
+               on
+               t3.PREMISES_ID  = t5.ID
+               left  join  lic_prem_insp_grp_correlation t6 on
+               t1.LIC_PREM_ID = t6.LIC_PREM_ID
+               left join  lic_inspection_group t7
+               on  t6.INS_GRP_ID = t7.ID
+               WHERE   t4.STATUS = 'LICEST001'
+            <#if serviceNameList??> and t4.SVC_NAME IN ${serviceNameList} </#if>
+            <#if postalCode??> and charindex(:postalCode,t5.POSTAL_CODE)!=0 </#if>
+            <#if hclCode??> and charindex(:hclCode,t5.HCI_CODE)!=0 </#if>
+            <#if premType??> and charindex(:premType,t5.PREMISES_TYPE) != 0 </#if>
+            <#if isTcuNeeded??> and t3.IS_TCU_NEEDED = :isTcuNeeded </#if>
+
         ]]>
     </sql>
 

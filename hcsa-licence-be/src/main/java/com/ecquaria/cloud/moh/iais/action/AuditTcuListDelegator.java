@@ -12,7 +12,8 @@ import com.ecquaria.cloud.moh.iais.dto.AuditAssginListValidateDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
-import com.ecquaria.cloud.moh.iais.service.AuditTcuListService;
+import com.ecquaria.cloud.moh.iais.service.AuditSystemPotitalListService;
+import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.AuditAssginListValidate;
 import com.ecquaria.cloud.moh.iais.validation.AuditCancelTaskValidate;
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +33,9 @@ import java.util.Map;
 @Delegator("auditTcuListDelegator")
 public class AuditTcuListDelegator {
     @Autowired
-    AuditTcuListService auditTcuListService;
-    @Autowired
     AuditSystemListService auditSystemListService;
+    @Autowired
+    AuditSystemPotitalListService auditSystemPotitalListService;
     private String SUBMIT_MESSAGE_SUCCESS = "submit_message_success";
     private String MAIN_URL = "mainUrl";
 
@@ -48,10 +49,13 @@ public class AuditTcuListDelegator {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,"ISTUC",true);
-        List<AuditTaskDataFillterDto> auditTaskDataDtos = auditTcuListService.getAuditTcuList();
+        List<AuditTaskDataFillterDto> auditTaskDataDtos = auditSystemPotitalListService.getSystemPotentailAdultList();
         ParamUtil.setSessionAttr(request, "auditTaskDataDtos", (Serializable) auditTaskDataDtos);
         List<SelectOption> aduitTypeOp = auditSystemListService.getAuditOp();
         auditSystemListService.getInspectors(auditTaskDataDtos);
+        for(AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDataDtos ){
+            ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());
+        }
         ParamUtil.setSessionAttr(request, "aduitTypeOp", (Serializable) aduitTypeOp);
         ParamUtil.setSessionAttr(request, "modulename", "Tcu Audit List");
     }
@@ -87,7 +91,7 @@ public class AuditTcuListDelegator {
         log.debug(StringUtil.changeForLog("the confirm start ...."));
         HttpServletRequest request = bpc.request;
         List<AuditTaskDataFillterDto> auditTaskDataDtos = (List<AuditTaskDataFillterDto>) ParamUtil.getSessionAttr(request, "auditTaskDataDtos");
-//        auditSystemListService.doSubmit(auditTaskDataDtos);
+        auditSystemListService.doSubmit(auditTaskDataDtos);
         ParamUtil.setRequestAttr(request, SUBMIT_MESSAGE_SUCCESS, HcsaLicenceBeConstant.AUDIT_INSPECTION_CONFIRM_SUCCESS_MESSAGE);
         ParamUtil.setRequestAttr(request, MAIN_URL, "MohAduitTcuList");
     }
@@ -122,8 +126,9 @@ public class AuditTcuListDelegator {
             ParamUtil.setRequestAttr(request, MAIN_URL, "MohAduitTcuList");
             AuditTrailHelper.auditFunction("MohAduitTcuList", "cancel tasks");
             // save cancel task
-            // auditSystemListService.doCancel(auditTaskDataDtos);
+             auditSystemListService.doCancel(auditTaskDataDtos);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+
         }
     }
 
@@ -133,7 +138,7 @@ public class AuditTcuListDelegator {
             for (int i = 0; i < auditTaskDataDtos.size(); i++) {
                 String auditType = ParamUtil.getString(request, i + "auditType");
                 String inspectorId = ParamUtil.getString(request, i + "insOp");
-                String inspectorName = getNameById(auditTaskDataDtos.get(i).getInspectors(), inspectorId);
+                String inspectorName =  LicenceUtil.getSelectOptionTextFromSelectOptions(auditTaskDataDtos.get(i).getInspectors(),inspectorId);
                 String forad = ParamUtil.getString(request, i + "selectForAd");
                 String number = ParamUtil.getString(request, i + "number");
                 auditTaskDataDtos.get(i).setAuditType(auditType);
@@ -155,16 +160,7 @@ public class AuditTcuListDelegator {
     }
 
 
-    private String getNameById(List<SelectOption> inspectors, String inspectorId) {
-        if (!IaisCommonUtils.isEmpty(inspectors)) {
-            for (SelectOption temp : inspectors) {
-                if (inspectorId.equals(temp.getValue())) {
-                    return temp.getText();
-                }
-            }
-        }
-        return null;
-    }
+
 
 
 }

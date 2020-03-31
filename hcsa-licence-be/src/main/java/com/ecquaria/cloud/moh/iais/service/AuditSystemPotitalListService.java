@@ -11,4 +11,5 @@ import java.util.List;
  */
 public interface AuditSystemPotitalListService {
     List<AuditTaskDataFillterDto> getSystemPotentailAdultList(AuditSystemPotentialDto dto);
+    List<AuditTaskDataFillterDto> getSystemPotentailAdultList();
 }

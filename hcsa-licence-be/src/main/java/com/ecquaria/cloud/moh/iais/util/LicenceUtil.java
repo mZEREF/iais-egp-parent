@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.util;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,5 +39,15 @@ public class LicenceUtil {
         return  selectOptions;
     }
 
+    public static String getSelectOptionTextFromSelectOptions( List<SelectOption> selectOptions,String selectOptionVal){
+        if (!IaisCommonUtils.isEmpty(selectOptions) && !StringUtil.isEmpty(selectOptionVal)) {
+            for (SelectOption temp : selectOptions) {
+                if (selectOptionVal.equals(temp.getValue())) {
+                    return temp.getText();
+                }
+            }
+        }
+        return null;
+    }
 
 }

@@ -15,7 +15,7 @@
                         <h2>${submit_message_success}</h2>
                     </div>
                 </div>
-                <div align="left"><span><a href="/hcsa-licence-web/eservice/INTRANET/${mainUrl}"><em class="fa fa-angle-left"></em>Back</a></span></div>
+                <div align="left"><span><a href="/hcsa-licence-web/eservice/INTRANET/${mainUrl}"><em class="fa fa-angle-left"></em> Back</a></span></div>
             </div>
         </div>
     </div>
