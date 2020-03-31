@@ -393,7 +393,6 @@
                         </div>
                       </div>
                     </div>
-
                   </div>
                 </div>
               </c:forEach>

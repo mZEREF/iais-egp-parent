@@ -194,9 +194,14 @@
               </c:forEach>
               </c:if>
               <c:if test="${'APTY005' !=AppSubmissionDto.appType}">
-                <div>
+              <div class="row">
+                <div class="col-sm-5">
                   <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Service Personnel</span>
                 </div>
+                <div  class="col-sm-5 col-md-5">
+                  <span class="spErrorMsg" style="color: red;"></span>
+                </div>
+              </div>
               </c:if>
             </div>
           </td>
@@ -249,7 +254,6 @@
               $(this).find('div.personnel-wrkExpYear').removeClass('hidden');
           }
       });
-
   }
 
   var personnelSel = function(){
@@ -258,7 +262,6 @@
           var $personnelContentEle = $(this).closest('table.personnel-content');
           personnelSelFun(personnelSel,$personnelContentEle);
       });
-
   };
 
   var personnelSelFun = function(personnelSel,$personnelContentEle){
@@ -299,22 +302,26 @@
 
 
   $('.addListBtn').click(function () {
+      var HasNumber = $(".personnel-content").size();
+      console.log("HasNumber"+HasNumber);
       $.ajax({
-          'url':'${pageContext.request.contextPath}/nuclear-medicine-imaging-html',
-          'dataType':'text',
-          'type':'GET',
-          'success':function (data) {
-              $('.personnel-content:last').after(data);
-
-              pageController($('.personnel-content:last'));
+          url:'${pageContext.request.contextPath}/nuclear-medicine-imaging-html',
+          dataType:'json',
+          data:{
+              'HasNumber':HasNumber
           },
-          'error':function (data) {
-
+          type:'POST',
+          success:function (data) {
+              if ("success" == data.res){
+                  $('.personnel-content:last').after(data.sucInfo);
+                  pageController($('.personnel-content:last'));
+              }else{
+                  $('.spErrorMsg').html(data.errInfo);
+              }
+          },
+          error:function (data) {
           }
       });
-
-
-
   });
 
 

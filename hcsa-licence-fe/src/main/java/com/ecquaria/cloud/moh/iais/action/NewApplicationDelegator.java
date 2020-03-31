@@ -238,6 +238,7 @@ public class NewApplicationDelegator {
      */
     public void preparePremises(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do preparePremises start ...."));
+        getTimeList(bpc.request);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         //get svcCode to get svcId
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
@@ -678,7 +679,6 @@ public class NewApplicationDelegator {
                     }
                 }
             }
-
         }
 
 
@@ -819,14 +819,6 @@ public class NewApplicationDelegator {
      */
     public void doSaveDraft(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do doSaveDraft start ...."));
-        HashMap<String,String>coMap=(HashMap<String, String>)bpc.getSession().getAttribute("coMap");
-        List<String> strList=new ArrayList<>(4);
-        coMap.forEach((k,v)->{
-            if(!StringUtil.isEmpty(v)){
-                strList.add(v);
-            }
-
-        });
 
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         if(StringUtil.isEmpty(appSubmissionDto.getDraftNo())){
@@ -834,7 +826,7 @@ public class NewApplicationDelegator {
             log.info(StringUtil.changeForLog("the draftNo -->:") + draftNo);
             appSubmissionDto.setDraftNo(draftNo);
         }
-        appSubmissionDto.setStepColor(strList);
+//        appSubmissionDto.setStepColor(strList);
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         log.info(StringUtil.changeForLog("the do doSaveDraft end ...."));
@@ -3143,6 +3135,20 @@ public class NewApplicationDelegator {
         return svcAllPsnConfig;
     }
 
+
+
+    private void getTimeList(HttpServletRequest request){
+        List<SelectOption> timeHourList = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i< 24;i++){
+            timeHourList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
+        }
+        List<SelectOption> timeMinList = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i< 60;i++){
+            timeMinList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
+        }
+        ParamUtil.setRequestAttr(request, "premiseHours", timeHourList);
+        ParamUtil.setRequestAttr(request, "premiseMinute", timeMinList);
+    }
 
 }
 
