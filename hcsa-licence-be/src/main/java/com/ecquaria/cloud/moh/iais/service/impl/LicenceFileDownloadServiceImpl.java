@@ -459,6 +459,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         if(!file.exists()){
             file.mkdirs();
         }
+        log.info(file.getPath()+"file path*************");
         List<FileRepoDto> fileRepoDtos = IaisCommonUtils.genNewArrayList();
         if(file.isDirectory()){
             File[] files = file.listFiles();
@@ -470,19 +471,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         for(int i=1;i<split.length;i++){
                             fileName.append(split[i]);
                         }
-                        FileItem fileItem = null;
-                        try {
-                            fileItem = new DiskFileItem("selectedFile", Files.probeContentType(f.toPath()),
-                                    false, fileName.toString(), (int) f.length(), f.getParentFile());
-                        } catch (IOException e) {
-                          log.error(e.getMessage(),e);
-                        }
-
 
                         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
                         FileRepoDto fileRepoDto = new FileRepoDto();
 
-                        fileRepoDto.setId(fileName.toString());
+                        fileRepoDto.setId(split[0]);
                         fileRepoDto.setAuditTrailDto(intranet);
                         fileRepoDto.setFileName(f.getName());
                         fileRepoDto.setRelativePath(AppServicesConsts.COMPRESS+File.separator+fileNames+
