@@ -598,7 +598,7 @@ public class NewApplicationAjaxController {
             }
             break;
         }
-        String errMsg = "You are allowed to add up till only <"+mapMaximumCount+" of MAP> MAP";
+        String errMsg = "You are allowed to add up till only "+mapMaximumCount+" MedAlert Person";
         //mapMmaximumCount = 2;
         if (mapMaximumCount - hasNumber > 0){
             //assign select
