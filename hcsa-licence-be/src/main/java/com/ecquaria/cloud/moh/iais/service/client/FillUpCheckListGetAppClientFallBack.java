@@ -256,6 +256,14 @@ public class FillUpCheckListGetAppClientFallBack implements FillUpCheckListGetAp
     }
 
     @Override
+    public FeignResponseEntity<List<AppIntranetDocDto>> getAppIntranetDocListByPremIdAndStatus(String premId, String status) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<String> deleteAppIntranetDocsByPremId(String premId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

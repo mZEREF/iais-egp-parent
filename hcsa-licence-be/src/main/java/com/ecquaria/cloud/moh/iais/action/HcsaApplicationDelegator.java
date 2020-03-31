@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -30,13 +31,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -53,6 +50,7 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationUploadFileValidate;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -67,6 +65,9 @@ import java.util.Map;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -123,6 +124,9 @@ public class HcsaApplicationDelegator {
 
     @Autowired
     private FillUpCheckListGetAppClient uploadFileClient;
+
+    @Autowired
+    FileRepoClient fileRepoClient;
 
     /**
      * StartStep: doStart
@@ -333,6 +337,13 @@ public class HcsaApplicationDelegator {
      */
     public void chooseStage(BaseProcessClass bpc) throws ParseException {
         log.debug(StringUtil.changeForLog("the do chooseStage start ...."));
+        //do upload file
+        String doDocument = ParamUtil.getString(bpc.request,"uploadFile");
+        if("Y".equals(doDocument)){
+            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "PREPARE");
+            ParamUtil.setRequestAttr(bpc.request, "doDocument", "Y");
+            return;
+        }
         //validate
         HcsaApplicationViewValidate hcsaApplicationViewValidate = new HcsaApplicationViewValidate();
         Map<String, String> errorMap = hcsaApplicationViewValidate.validate(bpc.request);
@@ -888,11 +899,51 @@ public class HcsaApplicationDelegator {
 
 //        uploadFileClient.saveAppIntranetDocByAppIntranetDoc();
 
-//        String doDocument = ParamUtil.getString(bpc.request,"uploadFile");
-//        if("Y" == doDocument){
-//            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "PREPARE");
-//            ParamUtil.setRequestAttr(bpc.request, "doDocument", "Y");
-//        }
+        String doDocument = ParamUtil.getString(bpc.request,"uploadFile");
+        if("Y".equals(doDocument)){
+            HcsaApplicationUploadFileValidate uploadFileValidate = new HcsaApplicationUploadFileValidate();
+            Map<String, String> errorMap = uploadFileValidate.validate(bpc.request);
+            if(!errorMap.isEmpty()){
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, errorMap);
+            }else{
+                MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+                CommonsMultipartFile selectedFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
+                AppIntranetDocDto appIntranetDocDto = new AppIntranetDocDto();
+                //size
+                long size = selectedFile.getSize();
+                appIntranetDocDto.setDocSize(String.valueOf(size/1024));
+                //type
+                String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
+                String fileType = fileSplit[fileSplit.length - 1];
+                appIntranetDocDto.setDocType(fileType);
+                //name
+                String fileName = fileSplit[0];
+//            String fileName = UUID.randomUUID().toString();
+                appIntranetDocDto.setDocName(fileName);
+                //status
+                appIntranetDocDto.setDocStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                //APP_PREM_CORRE_ID
+                TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+                appIntranetDocDto.setAppPremCorrId(taskDto.getRefNo());
+                //set audit
+                appIntranetDocDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                appIntranetDocDto.setSubmitDt(new Date());
+                appIntranetDocDto.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+
+                FileRepoDto fileRepoDto = new FileRepoDto();
+                fileRepoDto.setFileName(fileName);
+                fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                fileRepoDto.setRelativePath(AppConsts.FALSE);
+
+                //save file to file DB
+                String repo_id = fileRepoClient.saveFiles(selectedFile, JsonUtil.parseToJson(fileRepoDto)).getEntity();
+                appIntranetDocDto.setFileRepoId(repo_id);
+//            appIntranetDocDto.set
+                String id = uploadFileClient.saveAppIntranetDocByAppIntranetDoc(appIntranetDocDto).getEntity();
+                appIntranetDocDto.setId(id);
+//                ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+            }
+        }
 
 
         log.debug(StringUtil.changeForLog("the do doDocument end ...."));
