@@ -42,6 +42,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1132,10 +1133,30 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prePareMedAlertPerson (BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do prePareMedAlertPerson start ...."));
+        Map<String,List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.SERVICEALLPSNCONFIGMAP);
+        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request,currentSvcId);
+        List<AppSvcPrincipalOfficersDto> medAlertPsnDtos = new ArrayList<>();
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDto.getAppSvcMedAlertPersonList())){
+            medAlertPsnDtos = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+        }
+        int mandatoryCount = 0;
+        for (Map.Entry<String, List<HcsaSvcPersonnelDto>> stringListEntry : svcConfigInfo.entrySet()){
+            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = stringListEntry.getValue();
+            for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto:hcsaSvcPersonnelDtoList) {
+                if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equalsIgnoreCase(hcsaSvcPersonnelDto.getPsnType())){
+                    mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
+                    break;
+                }
+            }
+            break;
+        }
+        ParamUtil.setRequestAttr(bpc.request,"mandatoryCount",mandatoryCount);
         List<SelectOption> idTypeSelectList = NewApplicationHelper.getIdTypeSelOp();
         ParamUtil.setRequestAttr(bpc.request, DROPWOWN_IDTYPESELECT, idTypeSelectList);
         List<SelectOption> assignSelectList = getAssignMedAlertSel(true);
         ParamUtil.setRequestAttr(bpc.request,"MedAlertAssignSelect",assignSelectList);
+        ParamUtil.setRequestAttr(bpc.request,"AppSvcMedAlertPsn",medAlertPsnDtos);
         log.debug(StringUtil.changeForLog("the do prePareMedAlertPerson end ...."));
     }
 
@@ -1148,9 +1169,11 @@ public class ClinicalLaboratoryDelegator {
     public void doMedAlertPerson (BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doMedAlertPerson start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
+        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request,currentSvcId);
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = genAppSvcMedAlertPerson(bpc.request);
-        appSvcRelatedInfoDto.setAppSvcMedAlertPersonList(appSvcMedAlertPersonList);
+        currentSvcRelatedDto.setAppSvcMedAlertPersonList(appSvcMedAlertPersonList);
+        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
 
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do doMedAlertPerson end ...."));
@@ -1454,13 +1477,6 @@ public class ClinicalLaboratoryDelegator {
         return  appSvcPrincipalOfficersDtos;
     }
 
-    private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(HttpServletRequest request){
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = (AppSvcRelatedInfoDto) ParamUtil.getSessionAttr(request, APPSVCRELATEDINFODTO);
-        if(appSvcRelatedInfoDto == null){
-            appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
-        }
-        return appSvcRelatedInfoDto;
-    }
 
     public static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request){
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
@@ -1802,7 +1818,7 @@ public class ClinicalLaboratoryDelegator {
         String [] idNo = ParamUtil.getStrings(request, "idNo");
         String [] mobileNo = ParamUtil.getStrings(request, "mobileNo");
         String [] emailAddress = ParamUtil.getStrings(request, "emailAddress");
-        String [] preferredMode = ParamUtil.getStrings(request,"preferredMode");
+        String [] preferredMode = ParamUtil.getStrings(request,"preferredModeVal");
         int length = assignSelect.length;
         List<AppSvcPrincipalOfficersDto> medAlertPersons = IaisCommonUtils.genNewArrayList();
         for(int i=0; i<length; i++){

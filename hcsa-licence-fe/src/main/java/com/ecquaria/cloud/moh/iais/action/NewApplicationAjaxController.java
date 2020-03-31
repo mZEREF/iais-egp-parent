@@ -580,6 +580,63 @@ public class NewApplicationAjaxController {
     }
 
 
+    @PostMapping(value = "/med-alert-person-html")
+    public @ResponseBody Map<String,String> genMedAlertPersonHtml(HttpServletRequest request){
+        log.debug(StringUtil.changeForLog("the genMedAlertPersonHtml start ...."));
+        String sql = SqlMap.INSTANCE.getSql("medAlertPerson", "generateMedAlertPersonHtml").getSqlStr();
+        int mapMaximumCount = 0;
+        int hasNumber = ParamUtil.getInt(request, "HasNumber");
+        Map<String,String> resp = IaisCommonUtils.genNewHashMap();
+        Map<String,List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(request,SERVICEALLPSNCONFIGMAP);
+        for (Map.Entry<String, List<HcsaSvcPersonnelDto>> stringListEntry : svcConfigInfo.entrySet()){
+            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = stringListEntry.getValue();
+            for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto:hcsaSvcPersonnelDtoList) {
+                if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equalsIgnoreCase(hcsaSvcPersonnelDto.getPsnType())){
+                    mapMaximumCount = hcsaSvcPersonnelDto.getMaximumCount();
+                    break;
+                }
+            }
+            break;
+        }
+        String errMsg = "You are allowed to add up till only <"+mapMaximumCount+" of MAP> MAP";
+        //mapMmaximumCount = 2;
+        if (mapMaximumCount - hasNumber > 0){
+            //assign select
+            List<SelectOption> assignPrincipalOfficerSel = ClinicalLaboratoryDelegator.getAssignMedAlertSel(true);
+            Map<String,String> assignPrincipalOfficerAttr = IaisCommonUtils.genNewHashMap();
+            assignPrincipalOfficerAttr.put("name", "assignSel");
+            assignPrincipalOfficerAttr.put("class", "assignSel");
+            assignPrincipalOfficerAttr.put("style", "display: none;");
+            String principalOfficerSelStr = NewApplicationHelper.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, null);
+            //salutation
+            List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
+            Map<String,String> salutationAttr = IaisCommonUtils.genNewHashMap();
+            salutationAttr.put("class", "salutation");
+            salutationAttr.put("name", "salutation");
+            salutationAttr.put("style", "display: none;");
+            String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
+            //ID Type
+            List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
+            Map<String,String>  idTypeAttr = IaisCommonUtils.genNewHashMap();
+            idTypeAttr.put("class", "idType");
+            idTypeAttr.put("name", "idType");
+            idTypeAttr.put("style", "display: none;");
+            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null);
+
+            sql = sql.replace("(1)", principalOfficerSelStr);
+            sql = sql.replace("(2)", salutationSelectStr);
+            sql = sql.replace("(3)", idTypeSelectStr);
+            resp.put("sucInfo",sql);
+            resp.put("res","success");
+        }else{
+            resp.put("errInfo",errMsg);
+        }
+
+        log.debug(StringUtil.changeForLog("the genMedAlertPersonHtml end ...."));
+        return resp;
+    }
+
+
 
     //=============================================================================
     //private method

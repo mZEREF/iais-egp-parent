@@ -2389,6 +2389,7 @@ public class NewApplicationDelegator {
         List<String> names = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         if(appSubmissionDto != null ){
+            log.info(StringUtil.changeForLog("appSubmissionDto is not null"));
             // from draft,rfi
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
@@ -2402,6 +2403,8 @@ public class NewApplicationDelegator {
                     }
 
                 }
+            }else{
+                log.info(StringUtil.changeForLog("appSvcRelatedInfoDtoList is empty"));
             }
         }else {
             List<String> baseServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseService");

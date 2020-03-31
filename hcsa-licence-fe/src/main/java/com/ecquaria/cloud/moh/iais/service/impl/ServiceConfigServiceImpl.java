@@ -234,6 +234,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                     psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
                 }else if(HcsaConsts.STEP_SERVICE_PERSONNEL.equals(stepCode)){
                     psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
+                }else if(HcsaConsts.STEP_MEDALERT_PERSON.equals(stepCode)){
+                    psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
                 }
             }
         }

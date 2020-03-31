@@ -1,8 +1,36 @@
+<style>
+    .cursorPointer{
+        cursor: pointer;
+    }
+</style>
 <div class="row">
     <div class="col-xs-12">
         <h4>MedAlert Person</h4>
         <br/>
         <div class="medAlertContent">
+        </div>
+        <c:choose>
+            <c:when test="${AppSvcMedAlertPsn.size()>mandatoryCount}">
+                <c:set var="pageLength" value="${AppSvcMedAlertPsn.size()}"/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="pageLength" value="${mandatoryCount}"/>
+            </c:otherwise>
+        </c:choose>
+        <c:forEach begin="0" end="${pageLength-1}" step="1" varStatus="status">
+        <c:set var="medAlertPsn" value="${AppSvcMedAlertPsn[status.index]}"/>
+        <div class="medAlertContent">
+            <div class="row">
+                <div class="control control-caption-horizontal">
+                    <div class=" form-group form-horizontal formgap">
+                        <div class="text-right">
+                            <c:if test="${status.index - mandatoryCount >=0}">
+                                <h4 class="text-danger"><em class="fa fa-times-circle mapDelBtn cursorPointer"></em></h4>
+                            </c:if>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="">
                 <div class="row">
                     <div class="control control-caption-horizontal">
@@ -13,7 +41,7 @@
                             </div>
                             <div class="col-sm-5 col-md-7" id="assignSelect${suffix}">
                                 <div class="">
-                                    <iais:select cssClass="assignSel"  name="assignSel" options="MedAlertAssignSelect"  value="${principalOfficer.assignSelect}" ></iais:select>
+                                    <iais:select cssClass="assignSel"  name="assignSel" options="MedAlertAssignSelect"  value="${medAlertPsn.assignSelect}" ></iais:select>
                                     <div id="control--runtime--2--errorMsg_right" style="display: none;" class="error_placements"></div>
                                     <span id="error_assignSelect${suffix}" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
@@ -22,7 +50,7 @@
                     </div>
                 </div>
             </div>
-            <div class="principalOfficers">
+            <div class="medAlertPerson hidden">
                 <div class="row">
                     <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
@@ -31,11 +59,11 @@
                                 <span class="mandatory">*</span>
                             </div>
                             <div class="col-sm-3" id="salutation${suffix}">
-                                <iais:select cssClass="salutation"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${principalOfficer.salutation}" firstOption="Please Select"></iais:select>
+                                <iais:select cssClass="salutation"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${medAlertPsn.salutation}" firstOption="Please Select"></iais:select>
                             </div>
 
                             <div class="col-sm-4">
-                                <input name="name" maxlength="66" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.name}" >
+                                <iais:input maxLength="66" type="text" name="name" value="${medAlertPsn.name}"></iais:input>
                             </div>
                         </div>
                     </div>
@@ -50,11 +78,11 @@
                             </div>
                             <div class="col-sm-3">
                                 <div class="" id="idType${suffix}">
-                                    <iais:select cssClass="idType"  name="idType"  value="${principalOfficer.idType}" options="IdTypeSelect"></iais:select>
+                                    <iais:select cssClass="idType"  name="idType"  value="${medAlertPsn.idType}" options="IdTypeSelect"></iais:select>
                                 </div>
                             </div>
                             <div class="col-sm-4">
-                                <input id="idType-idNo" name="idNo" type="text" maxlength="9"  class="idNoVal form-control control-input control-set-font control-font-normal" value="${principalOfficer.idNo}" >
+                                <iais:input maxLength="9" type="text" name="idNo" value="${medAlertPsn.idNo}"></iais:input>
                                 <span class="error-msg" id="error_poNRICFIN${status.index}" name="iaisErrorMsg"></span>
                             </div>
                         </div>
@@ -68,7 +96,7 @@
                                 <span class="mandatory">*</span>
                             </div>
                             <div class="col-sm-4 col-md-7">
-                                <input name="mobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.mobileNo}" >
+                                <iais:input maxLength="8" type="text" name="mobileNo" value="${medAlertPsn.mobileNo}"></iais:input>
                             </div>
                         </div>
                     </div>
@@ -81,7 +109,7 @@
                                 <span class="mandatory">*</span>
                             </div>
                             <div class="col-sm-4 col-md-7">
-                                <input name="emailAddress" maxlength="66" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.emailAddr}" >
+                                <iais:input maxLength="66" type="text" name="emailAddress" value="${medAlertPsn.emailAddr}"></iais:input>
                             </div>
                         </div>
                     </div>
@@ -93,10 +121,11 @@
                                 <label  class="control-label control-set-font control-font-label">Preferred Mode of Receiving MedAlert</label>
                                 <span class="mandatory">*</span>
                             </div>
-                            <div class="">
+                            <div class="preferredModeDiv">
+                                <input class="preferredModeVal" type="hidden" value="${medAlertPsn.preferredMode}" name="preferredModeVal"/>
                                 <div class="col-md-3">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="preferredMode" value = "Email" aria-invalid="false">
+                                        <input class="form-check-input preferredMode" type="radio" name="preferredMode${status.index}" value = "Email" aria-invalid="false" <c:if test="${'Email'==medAlertPsn.preferredMode}">checked="checked"</c:if>>
                                         <label class="form-check-label"><span class="check-circle"></span>
                                             Email
                                         </label>
@@ -104,7 +133,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="preferredMode" value = "SMS" aria-invalid="false">
+                                        <input class="form-check-input preferredMode" type="radio" name="preferredMode${status.index}" value = "SMS" aria-invalid="false" <c:if test="${'SMS'==medAlertPsn.preferredMode}">checked="checked"</c:if>>
                                         <label class="form-check-label"><span class="check-circle"></span>
                                             SMS
                                         </label>
@@ -115,6 +144,106 @@
                     </div>
                 </div>
             </div>
+            <br/>
+        </div>
+        </c:forEach>
+        <div class="row">
+            <div class="control control-caption-horizontal">
+                <div class=" form-group form-horizontal formgap">
+                    <div class="col-sm-3 control-label formtext col-md-5">
+                        <span id="addMapBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another MedAlert Person</span>
+                    </div>
+                    <div class="col-sm-3 control-label formtext col-md-7">
+                        <span class="error-msg mapErrorMsg" style=""></span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+
+<script>
+    $(function () {
+
+        addMAP();
+
+        preferredMode();
+
+        assignSel();
+
+        mapDel();
+
+        $('.assignSel').trigger('change');
+
+    })
+
+
+    var mapDel = function () {
+        $('.mapDelBtn').click(function () {
+            $(this).closest('div.medAlertContent').remove();
+        });
+    }
+
+
+    var preferredMode = function () {
+        $('.preferredMode').click(function () {
+            var $preferredModeDiv = $(this).closest('div.preferredModeDiv');
+            $preferredModeDiv.find('.preferredModeVal').val($(this).val());
+        });
+    }
+
+    var assignSel= function () {
+
+        $('.assignSel').change(function () {
+            var assignSelVal = $(this).val();
+            var $medAlertContentEle = $(this).closest('div.medAlertContent');
+            if('-1' == assignSelVal){
+                $medAlertContentEle.find('div.medAlertPerson').addClass('hidden');
+            }else if('newOfficer' == assignSelVal){
+                $medAlertContentEle.find('div.medAlertPerson').removeClass('hidden');
+            }else{
+
+            }
+
+        });
+    }
+
+
+    var addMAP = function(){
+        $('#addMapBtn').click(function () {
+            var hasNumber = $('.medAlertContent').size() - 1;
+            console.log("hasNumber" + hasNumber);
+            $.ajax({
+                url:'${pageContext.request.contextPath}/med-alert-person-html',
+                dataType:'json',
+                type:'POST',
+                data:{
+                    'HasNumber':hasNumber
+                },
+                'success':function (data) {
+                    if ('success' == data.res) {
+                        console.log("suc");
+                        $('.medAlertContent:last').after(data.sucInfo);
+                        $('.assignSel').unbind();
+                        addMAP();
+
+                        preferredMode();
+
+                        assignSel();
+
+                        mapDel();
+                    }else{
+                        $('.mapErrorMsg').html(data.errInfo);
+                    }
+                },
+                error:function (data) {
+                    console.log("err");
+                }
+            });
+        });
+    }
+
+
+
+</script>
