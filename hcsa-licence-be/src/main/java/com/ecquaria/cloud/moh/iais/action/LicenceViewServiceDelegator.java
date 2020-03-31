@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import java.io.Serializable;
+import java.sql.Time;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -185,6 +186,31 @@ public class LicenceViewServiceDelegator {
             String serviceId = appSvcRelatedInfoDtos.get(0).getServiceId();
             HcsaServiceDto hcsaServiceDto = applicationViewService.getHcsaServiceDtoById(serviceId);
             ParamUtil.setRequestAttr(bpc.request,HCSASERVICEDTO,hcsaServiceDto);
+        }
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+            Time wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
+            Time wrkTimeTo = appGrpPremisesDto.getWrkTimeTo();
+            String s = wrkTimeFrom.toString();
+            String s1 = wrkTimeTo.toString();
+            appGrpPremisesDto.setOnsiteEndMM(s1.split(":")[1]);
+            appGrpPremisesDto.setOnsiteStartMM(s.split(":")[1]);
+            appGrpPremisesDto.setOnsiteStartHH(s.split(":")[0]);
+            appGrpPremisesDto.setOnsiteEndHH(s1.split(":")[0]);
+        }
+        AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
+        if(oldAppSubmissionDto!=null){
+            List<AppGrpPremisesDto> appGrpPremisesDtoList1 = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+            for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1){
+                Time wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
+                Time wrkTimeTo = appGrpPremisesDto.getWrkTimeTo();
+                String s = wrkTimeFrom.toString();
+                String s1 = wrkTimeTo.toString();
+                appGrpPremisesDto.setOnsiteEndMM(s1.split(":")[1]);
+                appGrpPremisesDto.setOnsiteStartMM(s.split(":")[1]);
+                appGrpPremisesDto.setOnsiteStartHH(s.split(":")[0]);
+                appGrpPremisesDto.setOnsiteEndHH(s1.split(":")[0]);
+            }
         }
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData end ..."));

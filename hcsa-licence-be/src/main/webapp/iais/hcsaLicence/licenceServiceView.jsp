@@ -23,7 +23,7 @@
                     <div class="col-xs-12 col-md-2 text-right">
                       <br>
                       <br>
-                      <p class="print"><a href="#"> <em class="fa fa-print"></em>Print</a></p>
+                   <%--   <p class="print"><a href="#"> <em class="fa fa-print"></em>Print</a></p>--%>
                     </div>
                   </div>
                     <c:if test = "${not empty errorMsg}">
@@ -52,27 +52,19 @@
                               <c:forEach var="appGrpPremDto" items="${appSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
                                 <div class="panel-main-content">
                                   <div class="preview-info">
-                                    <p><span  ><strong>Premises ${status.index+1}:</strong> ${appGrpPremDto.premisesType}</span>
+                                    <p><span  ><strong>Premises ${status.index+1}:</strong>
+                                      <c:if test="  ${appGrpPremDto.premisesType=='ONSITE'}">On-site</c:if>
+                                      <c:if test="  ${appGrpPremDto.premisesType=='CONVEYANCE'}">Conveyance</c:if>
+                                    </span>
                                        <wrms:value width="7">
                                       <span class="newVal " attr="${appGrpPremDto.premisesType}" style="display: none"><label><c:out value=""/></label></span>
                                       <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}"  style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}"/></label></span>
                                     </wrms:value></p>
+
                                     <p ><span  ><strong >HCL NAME:</strong> ${appGrpPremDto.hciName}</span>
                                        <wrms:value width="7">
                                         <span class="newVal " attr="${appGrpPremDto.hciName}" style="display: none"><label><c:out value=""/></label></span>
                                         <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"/></label></span>
-                                      </wrms:value></p>
-                                    <p><span  ><strong>Address: </strong> ${appGrpPremDto.address}</span>
-
-                                       <wrms:value width="7">
-                                        <span class="newVal " attr="${appGrpPremDto.address}" style="display: none"><label><c:out value=""/></label></span>
-                                        <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/></label></span>
-                                      </wrms:value></p>
-
-                                    <p><span ><strong>Telephone:</strong>  ${appGrpPremDto.offTelNo}</span>
-                                       <wrms:value width="7">
-                                        <span class="newVal " attr="${appGrpPremDto.offTelNo}" style="display: none"><label><c:out value=""/></label></span>
-                                        <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo}"/></label></span>
                                       </wrms:value></p>
 
                                     <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
@@ -81,16 +73,59 @@
                                         <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"/></label></span>
                                       </wrms:value></p>
                                     </c:if>
-                                    <p><strong>Are you co-locating with anothe licensee? :</strong> ${appGrpPremDto.conveyanceVehicleNo}  <wrms:value width="7">
-                                      <span class="newVal " attr="${appGrpPremDto.conveyanceVehicleNo}" style="display: none"><label><c:out value=""/></label></span>
-                                      <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"/></label></span>
+                                    <c:if test="${'ONSITE'==appGrpPremDto.premisesType}">
+                                      <p ><span  ><strong >Hci Name:</strong> ${appGrpPremDto.hciName}</span>
+                                        <wrms:value width="7">
+                                          <span class="newVal " attr="${appGrpPremDto.hciName}" style="display: none"><label><c:out value=""/></label></span>
+                                          <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"/></label></span>
+                                        </wrms:value></p>
+                                      <p><strong>Are you co-locating with anothe licensee :</strong> No <wrms:value width="7">
+                                        <span class="newVal " attr="" style="display: none"><label><c:out value=""/></label></span>
+                                        <span class="oldVal compareTdStyle" attr="" style="display: none"><label><c:out value=""/></label></span>
+                                      </wrms:value></p>
+                                      <p><span ><strong>Office Telephone No:</strong>  ${appGrpPremDto.offTelNo}</span>
+                                        <wrms:value width="7">
+                                          <span class="newVal " attr="${appGrpPremDto.offTelNo}" style="display: none"><label><c:out value=""/></label></span>
+                                          <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo}"/></label></span>
+                                        </wrms:value></p>
+                                    </c:if>
+                                    <p><strong>Address Type  :</strong><c:if test="${appGrpPremDto.addrType=='ADDTY001'}"> Apt Blk</c:if>
+                                      <c:if test="${appGrpPremDto.addrType=='ADDTY002'}"> Without Apt Blk</c:if>
+                                      <wrms:value width="7">
+                                        <span class="newVal " attr="${appGrpPremDto.addrType}" style="display: none"><label><c:out value=""/></label></span>
+                                        <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].addrType}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].addrType}"/></label></span>
+                                      </wrms:value></p>
+
+                                    <p><strong>Postal Code:</strong> ${appGrpPremDto.postalCode}  <wrms:value width="7">
+                                      <span class="newVal " attr="${appGrpPremDto.postalCode}" style="display: none"><label><c:out value=""/></label></span>
+                                      <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].postalCode}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].postalCode}"/></label></span>
+                                    </wrms:value></p>
+                                    <p><strong>Block / House No:</strong> ${appGrpPremDto.blkNo}  <wrms:value width="7">
+                                      <span class="newVal " attr="${appGrpPremDto.blkNo}" style="display: none"><label><c:out value=""/></label></span>
+                                      <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo}"/></label></span>
+                                    </wrms:value></p>
+                                    <p><strong>Floor No:</strong> ${appGrpPremDto.floorNo}  <wrms:value width="7">
+                                      <span class="newVal " attr="${appGrpPremDto.floorNo}" style="display: none"><label><c:out value=""/></label></span>
+                                      <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}"/></label></span>
+                                    </wrms:value></p>
+                                    <p><strong>Unit No:</strong> ${appGrpPremDto.unitNo}  <wrms:value width="7">
+                                      <span class="newVal " attr="${appGrpPremDto.unitNo}" style="display: none"><label><c:out value=""/></label></span>
+                                      <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo}"/></label></span>
+                                    </wrms:value></p>
+                                    <p><strong>Street Name:</strong> ${appGrpPremDto.streetName}  <wrms:value width="7">
+                                      <span class="newVal " attr="${appGrpPremDto.streetName}" style="display: none"><label><c:out value=""/></label></span>
+                                      <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].streetName}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].streetName}"/></label></span>
+                                    </wrms:value></p>
+                                    <p><strong>Building Name:</strong> ${appGrpPremDto.buildingName}  <wrms:value width="7">
+                                      <span class="newVal " attr="${appGrpPremDto.buildingName}" style="display: none"><label><c:out value=""/></label></span>
+                                      <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].buildingName}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].buildingName}"/></label></span>
                                     </wrms:value></p>
 
-                                    <p><strong>Operating Hours (Start):</strong> ${appGrpPremDto.wrkTimeFrom}  <wrms:value width="7">
+                                    <p><strong>Operating Hours (Start):</strong>${appGrpPremDto.onsiteStartHH} (HH):  ${appGrpPremDto.onsiteStartMM}  (MM)  <wrms:value width="7">
                                       <span class="newVal " attr="${appGrpPremDto.wrkTimeFrom}" style="display: none"><label><c:out value=""/></label></span>
                                       <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}"/></label></span>
                                     </wrms:value></p>
-                                    <p><strong>Operating Hours (End):</strong> ${appGrpPremDto.wrkTimeTo}  <wrms:value width="7">
+                                    <p><strong>Operating Hours (End):</strong> ${appGrpPremDto.onsiteEndHH} (HH):  ${appGrpPremDto.onsiteEndMM} (MM)  <wrms:value width="7">
                                       <span class="newVal " attr="${appGrpPremDto.wrkTimeTo}" style="display: none"><label><c:out value=""/></label></span>
                                       <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}"/></label></span>
                                     </wrms:value></p>
@@ -98,7 +133,7 @@
                                     <c:forEach items="${appGrpPremDto.appPremPhOpenPeriodList}" var="appPremPhOpenPeriod" varStatus="statu">
 
                                       <p><strong>Public Holidays Operating Hours (Start):</strong> ${appPremPhOpenPeriod.startFrom}  <wrms:value width="7">
-                                        <span class="newVal " attr="${appGrpPremDto.conveyanceVehicleNo}" style="display: none"><label><c:out value=""/></label></span>
+                                        <span class="newVal " attr="${appGrpPremDto.startFrom}" style="display: none"><label><c:out value=""/></label></span>
                                         <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index][statu.index].startFrom}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index][statu.index].startFrom}"/></label></span>
                                       </wrms:value></p>
                                       <p><strong>Public Holidays Operating Hours (End):</strong> ${appPremPhOpenPeriod.endTo}  <wrms:value width="7">
@@ -140,14 +175,14 @@
                                         </span>
                                       <p>
                                         <p><strong>AuthoriseD Person 1</strong></p>
-                                        <p><strong>Name:</strong></p>
-                                        <p><strong>ID:</strong></p>
+                                        <p  style="display: inline">Name:</p><p >  Mo Delan</p>
+                                        <p style="display: inline">ID:</p>
                                         <br>
                                         <p><strong>AuthoriseD Person 2</strong></p>
-                                          <p><strong>Name:</strong></p>
-                                        <p><strong>ID:</strong></p>
+                                        <p style="display: inline">Name:</p><p > Linda Tan MedAlert</p>
+                                        <p style="display: inline">ID:</p>
                                         <br>
-                                        <p><strong>MedAlert Contact Person</strong></p>
+                                        <p style="display: inline"><strong>MedAlert Contact Person:</strong></p><p style="display: inline"> Shun Qiu</p>
                                       </div>
 
                                       <c:forEach var="appGrpPrimaryDocDto" items="${appSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
@@ -177,7 +212,7 @@
                           <div class="panel panel-default svc-content">
 
                             <div class="panel-heading"    id="headingServiceInfo0" role="tab" >
-                              <h4 class="panel-title"><a class="svc-pannel-collapse"  role="button" data-toggle="collapse" href="#collapseServiceInfo0" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information -- ${hcsaServiceDto.svcName}</a></h4>
+                              <h4 class="panel-title"><a class="svc-pannel-collapse"  role="button" data-toggle="collapse" href="#collapseServiceInfo0" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information - ${hcsaServiceDto.svcName}</a></h4>
                             </div>
 
                             <div class=" panel-collapse collapse" id="collapseServiceInfo0" role="tabpanel" aria-labelledby="headingServiceInfo0">
