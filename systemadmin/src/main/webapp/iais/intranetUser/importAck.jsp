@@ -13,7 +13,7 @@
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
                     <div class="intranet-content">
-                        <c:forEach items="${map}" var="error">
+                        <c:forEach items="${errorMap}" var="error">
                             <c:out value="${error.key}"></c:out>
                             <c:out value="${error.value}"></c:out>
                         </c:forEach>

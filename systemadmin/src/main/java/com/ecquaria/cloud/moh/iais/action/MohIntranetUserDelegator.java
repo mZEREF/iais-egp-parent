@@ -569,7 +569,7 @@ public class MohIntranetUserDelegator {
         for (OrgUserDto orgUserDto : orgUserDtos) {
             Map<String, String> errorMap = valiant(orgUserDto);
             if (!errorMap.isEmpty()) {
-                ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                bpc.request.setAttribute("errorMap",errorMap);
                 return;
             }
         }

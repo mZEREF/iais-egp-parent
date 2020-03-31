@@ -71,7 +71,7 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, null);
         String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
         if (StringUtil.isEmpty(taskId)) {
-            taskId = "FE9D799F-3B6B-EA11-BE82-000C29F371DC";
+            taskId = "A9E283FA-C769-EA11-BE82-000C29F371DC";
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();

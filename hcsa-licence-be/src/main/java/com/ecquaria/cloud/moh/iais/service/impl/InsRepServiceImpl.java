@@ -27,13 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRectifiedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -213,7 +207,12 @@ public class InsRepServiceImpl implements InsRepService {
                 for (NcAnswerDto ncAnswerDto : ncAnswerDtoList) {
                     ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();
                     reportNcRegulationDto.setNc(ncAnswerDto.getItemQuestion());
-                    reportNcRegulationDto.setRegulation(ncAnswerDto.getClause());
+                    String clause = ncAnswerDto.getClause();
+                    if(StringUtil.isEmpty(clause)){
+                        reportNcRegulationDto.setRegulation("-");
+                    }else {
+                        reportNcRegulationDto.setRegulation(clause);
+                    }
                     listReportNcRegulationDto.add(reportNcRegulationDto);
                 }
             }
@@ -247,18 +246,18 @@ public class InsRepServiceImpl implements InsRepService {
         String remarks = "-";
         if(NcRecommendationDto==null){
             inspectionReportDto.setMarkedForAudit("No");
-        }else if(NcRecommendationDto!=null&&NcRecommendationDto.getRecomInDate()!=null) {
+        }else if(NcRecommendationDto!=null) {
             inspectionReportDto.setMarkedForAudit("Yes");
             Date recomInDate = NcRecommendationDto.getRecomInDate();
             inspectionReportDto.setTcuDate(recomInDate);
-        }
-        String ncBestPractice = NcRecommendationDto.getBestPractice();
-        String ncRemarks = NcRecommendationDto.getRemarks();
-        if(!StringUtil.isEmpty(ncBestPractice)){
-            bestPractice = ncBestPractice ;
-        }
-        if(!StringUtil.isEmpty(ncRemarks)){
-            remarks = ncRemarks ;
+            String ncBestPractice = NcRecommendationDto.getBestPractice();
+            String ncRemarks = NcRecommendationDto.getRemarks();
+            if(!StringUtil.isEmpty(ncBestPractice)){
+                bestPractice = ncBestPractice ;
+            }
+            if(!StringUtil.isEmpty(ncRemarks)){
+                remarks = ncRemarks ;
+            }
         }
         //checkList
         List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
@@ -288,7 +287,7 @@ public class InsRepServiceImpl implements InsRepService {
         if(appPreRecommentdationDtoEnd!=null){
             inspectionEndTime = appPreRecommentdationDtoEnd.getRecomDecision();
         }
-
+        //String applicationNo = applicationDto.getApplicationNo();
 //        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNo(applicationNo).getEntity();
 //        AdCheckListShowDto adhocCheckListDto = insepctionNcCheckListService.getAdhocCheckListDto(appPremisesCorrelationId);
 //        if(adhocCheckListDto!=null){
