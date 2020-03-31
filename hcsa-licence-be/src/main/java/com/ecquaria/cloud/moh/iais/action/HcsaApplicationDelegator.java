@@ -276,8 +276,8 @@ public class HcsaApplicationDelegator {
             String recommendationOnlyShow = "";
             if(recomInNumber == null || recomInNumber == 0){
                 recommendationOnlyShow = "reject";
-            }else if(recomInNumber ==2){
-                recommendationOnlyShow = "2 Year";
+            }else{
+                recommendationOnlyShow = recomInNumber + " Year";
             }
             //PSO 0062307
             if(RoleConsts.USER_ROLE_PSO.equals(roleId)){
@@ -886,6 +886,12 @@ public class HcsaApplicationDelegator {
 //        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
 
 //        uploadFileClient.saveAppIntranetDocByAppIntranetDoc();
+
+//        String doDocument = ParamUtil.getString(bpc.request,"uploadFile");
+//        if("Y" == doDocument){
+//            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "PREPARE");
+//            ParamUtil.setRequestAttr(bpc.request, "doDocument", "Y");
+//        }
 
 
         log.debug(StringUtil.changeForLog("the do doDocument end ...."));
