@@ -82,6 +82,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * egator
@@ -2504,6 +2505,9 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,APPSUBMISSIONDTO);
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+
+
+        Set<String> distinctVehicleNo = IaisCommonUtils.genNewHashSet();
         for(int i=0;i<appGrpPremisesDtoList.size();i++){
             String premiseType = appGrpPremisesDtoList.get(i).getPremisesType();
             if (StringUtil.isEmpty(premiseType)) {
@@ -2894,6 +2898,13 @@ public class NewApplicationDelegator {
                             boolean b = VehNoValidator.validateNumber(conveyanceVehicleNo);
                             if(!b){
                                 errorMap.put("conveyanceVehicleNo"+i,"CHKLMD001_ERR008");
+                            }
+
+                            //Vehicle No. should be the unique key.
+                            if (distinctVehicleNo.contains(conveyanceVehicleNo)){
+                                errorMap.put("conveyanceVehicleNo"+i, "CHKLMD001_ERR009");
+                            }else {
+                                distinctVehicleNo.add(conveyanceVehicleNo);
                             }
                         }
 
