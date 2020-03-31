@@ -1,10 +1,17 @@
 <div class="amended-service-info-gp">
   <h2>SERVICE PERSON</h2>
 <c:forEach items="${currentPreviewSvcInfo.appSvcPersonnelDtoList}" var="appSvcPersonnelDtoList">
-  <label>Designation</label>${appSvcPersonnelDtoList.name}
-  <label>Name</label>${appSvcPersonnelDtoList.name}
-  <label>Professional Regn No</label>${appSvcPersonnelDtoList.name}
-  <label>Relevant working experience (Years)</label>${appSvcPersonnelDtoList.name}
+  <c:if test="{appSvcPersonnelDtoList.personnelType=='SPPT003'}" >
+    <label>PersonnelType: </label>Medical Physicist
+    <label>Name</label>${appSvcPersonnelDtoList.name}
+  </c:if>
+  <c:if test="{appSvcPersonnelDtoList.personnelType=='SPPT002'}">
+    <label>PersonnelType:</label>Radiation Safety Officer
+    <label>Name:</label>${appSvcPersonnelDtoList.name}
+    <label>Qualification:</label>${appSvcPersonnelDtoList.quaification}
+    <label>Relevant working experience (Years):</label>${appSvcPersonnelDtoList.wrkExpYear}
+  </c:if>
+
 </c:forEach>
 
 </div>
