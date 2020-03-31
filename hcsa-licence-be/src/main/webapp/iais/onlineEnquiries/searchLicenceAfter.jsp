@@ -33,8 +33,8 @@
                                         <input class="form-check-input licenceCheck" id="applicationChk" type="checkbox"
                                                checked      name="applicationChk"  >
                                             <label class="form-check-label" for="applicationChk">
-                                            <span class="check-square"></span>
-                                        </label>
+                                                <span class="check-square"></span>
+                                            </label>
                                         </c:when>
                                         <c:otherwise><input class="form-check-input licenceCheck" id="applicationChk" type="checkbox" name="applicationChk"  >
                                             <label class="form-check-label" for="applicationChk">
@@ -371,7 +371,12 @@
                         <table class="table">
                             <thead>
                             <tr align="center">
-                                <iais:sortableHeader needSort="false" field="" value=""></iais:sortableHeader>
+                                <th class="form-check">
+                                    <input class="form-check-input licenceCheck" type="checkbox" name="userUids" id="checkboxAll" onchange="javascirpt:checkAll();"/>
+                                    <label class="form-check-label" for="checkboxAll">
+                                        <span class="check-square"></span>
+                                    </label>
+                                </th>
                                 <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="APPLICATION_NO" value="Application No."></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="APP_TYPE" value="Application Type"></iais:sortableHeader>
@@ -459,6 +464,13 @@
     function doLicSearch(){
         $('input[name="pageJumpNoTextchangePage"]').val(1);
         licSearch()
+    }
+    function checkAll() {
+        if ($('#checkboxAll').is(':checked')) {
+            $("input[name='appIds']").attr("checked","true");
+        } else {
+            $("input[name='appIds']").removeAttr("checked");
+        }
     }
     function licSearch(){
         showWaiting();
