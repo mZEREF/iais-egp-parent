@@ -61,6 +61,16 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.servlet.webflow.HttpHandler;
+import sop.util.CopyUtil;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Time;
@@ -71,15 +81,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.servlet.webflow.HttpHandler;
-import sop.util.CopyUtil;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
+import java.util.UUID;
 
 /**
  * egator
@@ -1581,7 +1583,7 @@ public class NewApplicationDelegator {
         String [] premValue = ParamUtil.getStrings(request, "premValue");
 
         Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request, LICAPPGRPPREMISESDTOMAP);
-        for(int i =0 ; i<count;i++){
+        for(int i = 0 ; i < count; i++){
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
             String premisesSel = premisesSelect[i];
             String appType = appSubmissionDto.getAppType();
@@ -1595,10 +1597,10 @@ public class NewApplicationDelegator {
                     continue;
                 }
             }
-            if(StringUtil.isEmpty(premisesIndexNo[i])){
-                appGrpPremisesDto.setPremisesIndexNo(String.valueOf(System.currentTimeMillis()));
-            }
+
+            appGrpPremisesDto.setPremisesIndexNo(UUID.randomUUID().toString());
             appGrpPremisesDto.setPremisesType(premisesType[i]);
+
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = IaisCommonUtils.genNewArrayList();
             int length = 0;
             try {
@@ -1705,7 +1707,7 @@ public class NewApplicationDelegator {
             appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriods);
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
-        return  appGrpPremisesDtoList;
+          return  appGrpPremisesDtoList;
     }
 
 

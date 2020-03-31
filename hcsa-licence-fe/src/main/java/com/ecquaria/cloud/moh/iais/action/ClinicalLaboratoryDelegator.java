@@ -255,9 +255,7 @@ public class ClinicalLaboratoryDelegator {
         for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtoList){
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
-                if(appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getConveyanceVehicleNo())){
-                    appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(appGrpPremisesDto.getAddress());
-                }else if (appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getHciName())){
+                if(appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getPremisesIndexNo())){
                     appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(appGrpPremisesDto.getAddress());
                 }
             }
@@ -469,13 +467,13 @@ public class ClinicalLaboratoryDelegator {
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = IaisCommonUtils.genNewArrayList();
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                String premiseName = "";
-                if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+                String premiseName = appGrpPremisesDto.getPremisesIndexNo();
+               /* if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
                     premiseName = appGrpPremisesDto.getHciName();
                 } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
                     premiseName = appGrpPremisesDto.getConveyanceVehicleNo();
-                }
-                String name = premiseName + "control--runtime--1";
+                }*/
+                String name = appGrpPremisesDto.getPremisesIndexNo()+ "control--runtime--1";
                 String[] checkList = ParamUtil.getStrings(bpc.request, name);
                 List<AppSvcChckListDto> appSvcChckListDtoList = IaisCommonUtils.genNewArrayList();
                 AppSvcChckListDto appSvcChckListDto = new AppSvcChckListDto();
@@ -498,15 +496,15 @@ public class ClinicalLaboratoryDelegator {
                         appSvcChckListDtoList.add(appSvcChckListDto);
 
                         //PremisesIndexNo()+checkCode()+checkParentId()
-                        reloadChkLstMap.put(currentSvcId + appGrpPremisesDto.getHciName() + checkInfo.getId(), "checked");
+                        reloadChkLstMap.put(currentSvcId + appGrpPremisesDto.getPremisesIndexNo() + checkInfo.getId(), "checked");
                     }
                     String premisesType = appGrpPremisesDto.getPremisesType();
-                    String premisesValue = "";
-                    if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)) {
+                    String premisesValue = appGrpPremisesDto.getPremisesIndexNo();
+                    /*if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)) {
                         premisesValue = appGrpPremisesDto.getHciName();
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)) {
                         premisesValue = appGrpPremisesDto.getConveyanceVehicleNo();
-                    }
+                    }*/
                     //else his .....
                     appSvcLaboratoryDisciplinesDto = new AppSvcLaboratoryDisciplinesDto();
                     appSvcLaboratoryDisciplinesDto.setPremiseType(premisesType);
