@@ -98,8 +98,9 @@ public class InterInboxDelegator {
         String initpage = ParamUtil.getRequestString(request,"initPage");
         if (!StringUtil.isEmpty(initpage)){
             ParamUtil.setRequestAttr(request,"init_to_page",initpage);
+        }else {
+            ParamUtil.setRequestAttr(request, "init_to_page", "");
         }
-        ParamUtil.setRequestAttr(request,"init_to_page","");
     }
     /**
      *
