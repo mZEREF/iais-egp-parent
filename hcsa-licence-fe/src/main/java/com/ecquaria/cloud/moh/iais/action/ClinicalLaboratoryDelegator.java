@@ -1136,9 +1136,14 @@ public class ClinicalLaboratoryDelegator {
         Map<String,List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.SERVICEALLPSNCONFIGMAP);
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request,currentSvcId);
-        List<AppSvcPrincipalOfficersDto> medAlertPsnDtos = new ArrayList<>();
-        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDto.getAppSvcMedAlertPersonList())){
-            medAlertPsnDtos = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+        List<AppSvcPrincipalOfficersDto> medAlertPsnDtos = IaisCommonUtils.genNewArrayList();
+        List<AppSvcPrincipalOfficersDto> psnDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+        if(!IaisCommonUtils.isEmpty(psnDtos)){
+           for(AppSvcPrincipalOfficersDto item:psnDtos){
+               if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(item.getPsnType())){
+                   medAlertPsnDtos.add(item);
+               }
+           }
         }
         int mandatoryCount = 0;
         for (Map.Entry<String, List<HcsaSvcPersonnelDto>> stringListEntry : svcConfigInfo.entrySet()){
@@ -1171,8 +1176,13 @@ public class ClinicalLaboratoryDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request,currentSvcId);
+        List<AppSvcPrincipalOfficersDto> psnDtos = currentSvcRelatedDto.getAppSvcPrincipalOfficersDtoList();
+        if(IaisCommonUtils.isEmpty(psnDtos)){
+            psnDtos = IaisCommonUtils.genNewArrayList();
+        }
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = genAppSvcMedAlertPerson(bpc.request);
-        currentSvcRelatedDto.setAppSvcMedAlertPersonList(appSvcMedAlertPersonList);
+        psnDtos.addAll(appSvcMedAlertPersonList);
+        currentSvcRelatedDto.setAppSvcPrincipalOfficersDtoList(psnDtos);
         setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
 
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
