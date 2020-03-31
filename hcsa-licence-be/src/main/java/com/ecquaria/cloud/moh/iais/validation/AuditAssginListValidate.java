@@ -27,13 +27,13 @@ public class AuditAssginListValidate implements CustomizeValidator {
                     if(StringUtil.isEmpty(auditTaskDataDtos.get(i).getInspector())){
                         errMap.put(i+"insp","AUDIT_UC_ERR0001");
                     }
-                    if(StringUtil.isEmpty(auditTaskDataDtos.get(i).getAuditType())){
+                    if( !auditTaskDataDtos.get(i).isAudited() &&"confirm".equalsIgnoreCase(actionTodo) && StringUtil.isEmpty(auditTaskDataDtos.get(i).getAuditType())){
                         errMap.put(i+"adtype","AUDIT_UC_ERR0003");
                     }
                     if(auditTaskDataDtos.get(i).isAudited() && "confirm".equalsIgnoreCase(actionTodo))
-                        errMap.put(i+"select","This audit has been confirmed.");
+                        errMap.put(i+"select","AUDIT_UC_ERR0004");
                     else if(!auditTaskDataDtos.get(i).isAudited() && "cancel".equalsIgnoreCase(actionTodo))
-                        errMap.put(i+"select","This audit hasn't confirmed.");
+                        errMap.put(i+"select","AUDIT_UC_ERR0005");
                 }
             }
         }

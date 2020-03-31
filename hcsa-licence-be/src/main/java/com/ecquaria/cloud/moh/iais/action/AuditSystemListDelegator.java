@@ -110,6 +110,9 @@ public class AuditSystemListDelegator {
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, dto);
         List<AuditTaskDataFillterDto> auditTaskDataDtos = auditSystemPotitalListService.getSystemPotentailAdultList(dto);
         auditSystemListService.getInspectors(auditTaskDataDtos);
+        for(AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDataDtos ){
+            ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());
+        }
         ParamUtil.setSessionAttr(request, "auditTaskDataDtos", (Serializable) auditTaskDataDtos);
         AduitSystemGenerateValidate auditTestValidate = new AduitSystemGenerateValidate();
         Map<String, String> errMap = auditTestValidate.validate(request);
@@ -164,7 +167,7 @@ public class AuditSystemListDelegator {
             for (int i = 0; i < auditTaskDataDtos.size(); i++) {
                 String auditType = ParamUtil.getString(request, i + "auditType");
                 String inspectorId = ParamUtil.getString(request, i + "insOp");
-                String inspectorName = getNameById(auditTaskDataDtos.get(i).getInspectors(), inspectorId);
+                String inspectorName = LicenceUtil.getSelectOptionTextFromSelectOptions(auditTaskDataDtos.get(i).getInspectors(), inspectorId);
                 String forad = ParamUtil.getString(request, i + "selectForAd");
                 String number = ParamUtil.getString(request, i + "number");
                 auditTaskDataDtos.get(i).setAuditType(auditType);
@@ -185,16 +188,7 @@ public class AuditSystemListDelegator {
         ParamUtil.setSessionAttr(request, "auditTaskDataDtos", (Serializable) auditTaskDataDtos);
     }
 
-    private String getNameById(List<SelectOption> inspectors, String inspectorId) {
-        if (!IaisCommonUtils.isEmpty(inspectors)) {
-            for (SelectOption temp : inspectors) {
-                if (inspectorId.equals(temp.getValue())) {
-                    return temp.getText();
-                }
-            }
-        }
-        return null;
-    }
+
 
     public AuditAssginListValidateDto getValueFromPage(HttpServletRequest request) {
         AuditAssginListValidateDto dto = new AuditAssginListValidateDto();

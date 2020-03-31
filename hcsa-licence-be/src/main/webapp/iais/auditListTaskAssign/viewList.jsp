@@ -66,7 +66,7 @@
                                             <td><c:out value="${item.svcName}"/></td>
                                             <td><c:if test="${ !item.audited}">
                                                 <iais:select name="${id}auditType" options="aduitTypeOp"
-                                                             firstOption="Please Select" value=""></iais:select>
+                                                             firstOption="Please Select" value="${item.auditType}"></iais:select>
                                                 <c:set value="error_${id}adtype" var="erradtype"/>
                                                 <span class="error-msg" id="<c:out value="${erradtype}"/>"
                                                       name="iaisErrorMsg"></span>
@@ -79,12 +79,7 @@
                                                 <td><fmt:formatDate value="${item.tcuDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                             </c:if>
                                             <td>
-                                                <select name="<c:out value="${id}insOp"/>">
-                                                    <c:forEach var="inspOp" items="${item.inspectors}">
-                                                        <option value="<c:out value="${inspOp.value}"/>"><c:out
-                                                                value="${inspOp.text}"/></option>
-                                                    </c:forEach>
-                                                </select>
+                                                <iais:select  name="${id}insOp" options="inspectors${item.workGroupId}" value="${item.inspectorId}"   firstOption="Please Select"></iais:select>
                                                 <c:set value="error_${id}insp" var="errboth"/>
                                                 <span class="error-msg" id="<c:out value="${errboth}"/>"
                                                       name="iaisErrorMsg"></span>

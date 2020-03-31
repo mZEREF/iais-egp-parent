@@ -117,9 +117,6 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         taskDto.setScore(4);
         taskDto.setRefNo(temp.getId());
         taskDto.setPriority(0);
-        List<TaskDto> createTaskDtoList = IaisCommonUtils.genNewArrayList();
-        createTaskDtoList.add(taskDto);
-       // taskService.createTasks(createTaskDtoList);
         //createauditTypedata
         createAudit(temp);
 
@@ -139,7 +136,10 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         String subStage = HcsaConsts.ROUTING_STAGE_PRE;
         String status = ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING;
         //create grop info
-      //  createInspectionGroupInfo(temp);
+        createInspectionGroupInfo(temp);
+        List<TaskDto> createTaskDtoList = IaisCommonUtils.genNewArrayList();
+        createTaskDtoList.add(taskDto);
+      //  taskService.createTasks(createTaskDtoList);
     }
 
     private void createAudit(AuditTaskDataFillterDto temp) {
@@ -171,6 +171,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         dtocorre.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         dtocorre.setLicPremId(temp.getId());
         dtocorre.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        hcsaLicenceClient.createLicInspectionGroupCorre(dtocorre);
     }
 
     @Override
@@ -236,7 +237,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         String subStage = HcsaConsts.ROUTING_STAGE_PRE;
         String status = "status";//todo
         //create grop info
-        createInspectionGroupInfo(temp);
+        //createInspectionGroupInfo(temp);
     }
 
     @Override

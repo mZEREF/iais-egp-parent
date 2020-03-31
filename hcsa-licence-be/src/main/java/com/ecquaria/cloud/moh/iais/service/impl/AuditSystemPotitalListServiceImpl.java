@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -54,6 +55,23 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     HcsaRiskSupportBeServiceImpl hcsaRiskSupportBeServiceImpl;
 
     @Override
+    public List<AuditTaskDataFillterDto> getSystemPotentailAdultList() {
+        AuditSystemPotentialDto dto = new AuditSystemPotentialDto();
+        dto.setIsTcuNeeded(1);
+        SearchParam searchParam = getSearchParamFrom(dto, null);
+        SearchResult<AuditTaskDataDto> searchResult = getAuditSysParam(searchParam);
+        if(searchResult != null && searchResult.getRows() != null){
+            List<AuditTaskDataDto> auditTaskDataDtos = searchResult.getRows();
+            List<AuditTaskDataFillterDto> auditTaskDataFillterDtos = new ArrayList<>(auditTaskDataDtos.size());
+            for(AuditTaskDataDto auditTaskDataDto : auditTaskDataDtos){
+                auditTaskDataFillterDtos.add(MiscUtil.transferEntityDto(auditTaskDataDto,AuditTaskDataFillterDto.class));
+            }
+            return auditTaskDataFillterDtos;
+        }
+        return  null;
+    }
+
+    @Override
     public List<AuditTaskDataFillterDto> getSystemPotentailAdultList(AuditSystemPotentialDto dto) {
         List<AuditTaskDataDto> dtos = null;
         List<AuditTaskDataFillterDto> rdtoList = null;
@@ -73,6 +91,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         }
         return rdtoList;
     }
+
 
     private List<AuditTaskDataFillterDto> inspectionFitter(SearchResult<AuditTaskDataDto> searchResult, AuditSystemPotentialDto dto) {
         List<AuditTaskDataDto> auditTaskDtos = IaisCommonUtils.genNewArrayList();
@@ -367,7 +386,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
                         if (isStartDate) {
                             appPremCorrDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appprem.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
                         } else {
-                            appPremCorrDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appprem.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+                                appPremCorrDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appprem.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
                         }
                         if (appPremCorrDto != null) {
                             appPremisesRecommendationDtoList.add(appPremCorrDto);
@@ -410,7 +429,10 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
 
     public SearchParam getSearchParamFrom(AuditSystemPotentialDto dto, String insql) {
         SearchParam searchParam = new SearchParam(AuditTaskDataDto.class.getName());
-        if (!IaisCommonUtils.isEmpty(dto.getTotalServiceNameList())) {
+        if(dto.getIsTcuNeeded() != null){
+            searchParam.addFilter("isTcuNeeded", dto.getIsTcuNeeded(), true);
+        }
+        if (!IaisCommonUtils.isEmpty(dto.getTotalServiceNameList()) && !StringUtil.isEmpty(insql)) {
             searchParam.addParam("serviceNameList", insql);
             for (int i = 0; i < dto.getTotalServiceNameList().size(); i++) {
                 searchParam.addFilter("svcName" + i, dto.getTotalServiceNameList().get(i));
