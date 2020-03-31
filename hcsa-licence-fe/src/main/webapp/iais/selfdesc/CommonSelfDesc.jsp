@@ -26,7 +26,7 @@
   <input type="hidden" name="tabIndex" value="">
 
 <c:choose>
-  <c:when test="${empty selfDeclQueryAttr}">
+  <c:when test="${empty selfDeclQueryAttr.selfDeclarationList}">
     <tr>
       <td colspan="6">
         <c:out value="${isSubmitted}"></c:out>
@@ -49,7 +49,7 @@
             <%
               boolean display = false;
             %>
-              <c:forEach  var="declItem" items="${selfDeclQueryAttr}" varStatus="status">
+              <c:forEach  var="declItem" items="${selfDeclQueryAttr.selfDeclarationList}" varStatus="status">
                 <c:choose>
                   <c:when test="${declItem.common eq true}">
                     <div class="dashboard-tile-item">

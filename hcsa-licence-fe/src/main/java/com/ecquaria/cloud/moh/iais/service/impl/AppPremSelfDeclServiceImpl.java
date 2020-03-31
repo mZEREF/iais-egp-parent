@@ -3,7 +3,9 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.TimerTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfDeclSyncDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclaration;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -70,13 +72,16 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     * @param: [groupId]
     * @return: java.util.List<com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl>
     */
-    public List<SelfDeclaration> getSelfDeclByGroupId(String groupId){
+    public SelfDeclSubmitDto getSelfDeclByGroupId(String groupId){
+        SelfDeclSubmitDto selfDeclSubmitDto = new SelfDeclSubmitDto();
         List<SelfDeclaration> selfDeclGroupList = IaisCommonUtils.genNewArrayList();
         // (S) Group , (M) application
         List<ApplicationDto> appList = applicationClient.listApplicationByGroupId(groupId).getEntity();
         if (IaisCommonUtils.isEmpty(appList)) {
-            return selfDeclGroupList;
+            selfDeclSubmitDto.setSelfDeclarationList(selfDeclGroupList);
+            return selfDeclSubmitDto;
         }
+
 
         boolean addedCoomon = false;
         for(ApplicationDto app : appList){
@@ -141,16 +146,12 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
                     service.setEachPremQuestion(eachPremQuestion);
                     selfDeclGroupList.add(service);
                 }
-
-
-
             }
-
-
         }
 
         String json = JsonUtil.parseToJson(selfDeclGroupList);
-        return selfDeclGroupList;
+        selfDeclSubmitDto.setSelfDeclarationList(selfDeclGroupList);
+        return selfDeclSubmitDto;
     }
 
     private List<String> getServiceSubTypeName(String correlationId){
@@ -226,40 +227,22 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     * @return: void
     */
     @TimerTrack
-    public void saveSelfDecl(List<SelfDeclaration> selfDeclList) {
+    public void saveSelfDecl(SelfDeclSubmitDto selfDeclSubmitDto) {
         //if it is RFI, the last version of record should be inactive
-        boolean flag = false;
-        List<String> lastVersionIds = null;
-        if (!flag && !selfDeclList.isEmpty()){
-            for (SelfDeclaration selfDeclaration : selfDeclList){
-                if (!selfDeclaration.isCommon()){
-                    lastVersionIds = selfDeclaration.getLastVersionIds();
-                    flag = true;
-                }
-
-            }
-        }
-
-        if (!IaisCommonUtils.isEmpty(lastVersionIds)){
-            applicationClient.inActiveLastVersionByGroupId(lastVersionIds);
-        }
-
-        List<AppPremisesSelfDeclChklDto> contentJsonList = applicationClient.saveAllSelfDecl(selfDeclList).getEntity();
+        List<String> lastVersionIds = selfDeclSubmitDto.getLastVersionIds();
+        List<AppPremisesSelfDeclChklDto> syncData = applicationClient.saveAllSelfDecl(selfDeclSubmitDto).getEntity();
 
         try {
             //route to be
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 
-            if (!IaisCommonUtils.isEmpty(lastVersionIds)){
-                gatewayClient.inactiveLastVersionRecord(lastVersionIds, signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization()).getStatusCode();
-            }
+            FeSelfDeclSyncDataDto selfDeclSyncDataDto = new FeSelfDeclSyncDataDto();
+            selfDeclSubmitDto.setLastVersionIds(lastVersionIds);
+            selfDeclSyncDataDto.setFeSyncData(syncData);
 
-            if (contentJsonList != null && !contentJsonList.isEmpty()){
-                gatewayClient.routeSelfDeclData(contentJsonList, signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization()).getStatusCode();
-            }
+            gatewayClient.routeSelfDeclData(selfDeclSyncDataDto, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getStatusCode();
         }catch (Exception e){
             log.error("encounter failure when sync self decl to be" + e.getMessage());
         }

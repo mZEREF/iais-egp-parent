@@ -4,7 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclaration;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealPageDto;
@@ -90,7 +90,7 @@ public interface ApplicationClient  {
     FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesDtoByAppGroId(@PathVariable("applicationId") String applicationId);
 
     @PostMapping(path = "/iais-self-declaration/self-decl", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> saveAllSelfDecl(@RequestBody  List<SelfDeclaration> selfDeclList);
+    FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> saveAllSelfDecl(@RequestBody SelfDeclSubmitDto selfDeclSubmitDto);
 
     @GetMapping(path = "/iais-self-declaration/group/correlation/has-self-decl/{groupId}/record")
     FeignResponseEntity<Boolean> hasSelfDeclRecord(@PathVariable(value = "groupId") String groupId);
