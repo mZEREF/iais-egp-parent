@@ -155,7 +155,8 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
     }
 
     @Override
-    public void routingTaskToReport(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, ApplicationViewDto applicationViewDto, LoginContext loginContext) throws IOException, TemplateException {
+    public void routingTaskToReport(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, ApplicationViewDto applicationViewDto,
+                                    LoginContext loginContext) throws IOException, TemplateException {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         InspRectificationSaveDto inspRectificationSaveDto = new InspRectificationSaveDto();
@@ -208,6 +209,10 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
 
             //create new version
             String version = getVersionAddOne(taskDto);
+            //update rfi nc
+            inspRectificationSaveDto = getRfiUpdateItemNcList(inspectionPreTaskDto, inspRectificationSaveDto);
+            beEicGatewayClient.beCreateNcData(inspRectificationSaveDto, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization());
 
             InterMessageDto interMessageDto = new InterMessageDto();
             interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
@@ -237,6 +242,31 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             inboxMsgService.saveInterMessage(interMessageDto);
 
         }
+    }
+
+    private InspRectificationSaveDto getRfiUpdateItemNcList(InspectionPreTaskDto inspectionPreTaskDto, InspRectificationSaveDto inspRectificationSaveDto) {
+        List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = IaisCommonUtils.genNewArrayList();
+        List<String> checkRecRfiNcItems = inspectionPreTaskDto.getCheckRecRfiNcItems();
+        for(InspecUserRecUploadDto inspecUserRecUploadDto : inspectionPreTaskDto.getInspecUserRecUploadDtos()){
+            AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = inspecUserRecUploadDto.getAppPremisesPreInspectionNcItemDto();
+            if(appPremisesPreInspectionNcItemDto != null){
+                for(String checkRecRfiNcItem : checkRecRfiNcItems) {
+                    if(checkRecRfiNcItem.equals(appPremisesPreInspectionNcItemDto.getId())) {
+                        appPremisesPreInspectionNcItemDto.setIsRecitfied(0);
+                        appPremisesPreInspectionNcItemDto.setFeRectifiedFlag(0);
+                        appPremisesPreInspectionNcItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    } else {
+                        appPremisesPreInspectionNcItemDto.setIsRecitfied(1);
+                        appPremisesPreInspectionNcItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    }
+                    appPremisesPreInspectionNcItemDtos.add(appPremisesPreInspectionNcItemDto);
+                }
+            }
+        }
+        appPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.saveAppPreNcItem(appPremisesPreInspectionNcItemDtos).getEntity();
+        inspRectificationSaveDto.setAppPremisesPreInspectionNcItemDtos(appPremisesPreInspectionNcItemDtos);
+        inspRectificationSaveDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        return inspRectificationSaveDto;
     }
 
     private String getVersionAddOne(TaskDto taskDto) {

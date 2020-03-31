@@ -236,6 +236,18 @@ public class InspectionRectificationProDelegator {
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
         String condRemarks = ParamUtil.getString(bpc.request,"condRemarks");
         String processDec = ParamUtil.getRequestString(bpc.request,"processDec");
+        String[] ncItemId = ParamUtil.getStrings(bpc.request,"ncItemCheck");
+        List<String> ncItemIdList = IaisCommonUtils.genNewArrayList();
+        if(ncItemId != null && ncItemId.length > 0){
+            for(int i = 0; i < ncItemId.length; i++){
+                if(!StringUtil.isEmpty(ncItemId[i])){
+                    ncItemIdList.add(ncItemId[i]);
+                }
+            }
+        } else {
+            ncItemIdList = null;
+        }
+        inspectionPreTaskDto.setCheckRecRfiNcItems(ncItemIdList);
 
         if(InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION.equals(processDec)){
             inspectionPreTaskDto.setSelectValue(processDec);
@@ -277,13 +289,17 @@ public class InspectionRectificationProDelegator {
                 ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
             }
         } else if(InspectionConstants.SWITCH_ACTION_REQUEST_INFORMATION.equals(actionValue)) {
-            ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"request");
+            ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"recrfi");
             if (validationResult.isHasErrors()) {
                 Map<String, String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
-                ParamUtil.setRequestAttr(bpc.request, "validateShowPage", InspectionConstants.SWITCH_ACTION_ACK);
+                if(!StringUtil.isEmpty(inspectionPreTaskDto.getSelectValue()) && IaisCommonUtils.isEmpty(inspectionPreTaskDto.getCheckRecRfiNcItems())) {
+                    ParamUtil.setRequestAttr(bpc.request, "validateShowPage", InspectionConstants.SWITCH_ACTION_REQUEST_INFORMATION);
+                } else {
+                    ParamUtil.setRequestAttr(bpc.request, "validateShowPage", InspectionConstants.SWITCH_ACTION_ACK);
+                }
             } else {
                 ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
             }
