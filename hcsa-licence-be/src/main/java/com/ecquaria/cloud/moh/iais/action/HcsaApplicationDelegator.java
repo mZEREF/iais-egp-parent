@@ -273,11 +273,12 @@ public class HcsaApplicationDelegator {
         AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
         if(appPremisesRecommendationDto != null){
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
+            String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
             String recommendationOnlyShow = "";
             if(recomInNumber == null || recomInNumber == 0){
                 recommendationOnlyShow = "reject";
             }else{
-                recommendationOnlyShow = recomInNumber + " Year";
+                recommendationOnlyShow = recomInNumber + " " + chronoUnit;
             }
             //PSO 0062307
             if(RoleConsts.USER_ROLE_PSO.equals(roleId)){
