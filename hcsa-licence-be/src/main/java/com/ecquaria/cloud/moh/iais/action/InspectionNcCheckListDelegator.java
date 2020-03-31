@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -20,15 +21,18 @@ import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
+import com.ecquaria.sz.commons.util.FileUtil;
 import com.esotericsoftware.minlog.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -154,7 +158,9 @@ public class InspectionNcCheckListDelegator {
             }
        }
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
-
+        //get selections dd hh
+        ParamUtil.setSessionAttr(request,"hhSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(true));
+        ParamUtil.setSessionAttr(request,"ddSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(false));
     }
 
     public void pre(BaseProcessClass bpc){
@@ -171,7 +177,7 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
     }
 
-    public void doNext(BaseProcessClass bpc){
+    public void doNext(BaseProcessClass bpc) throws IOException{
 
         Log.info("=======>>>>>doNextStep>>>>>>>>>>>>>>>>doNextRequest");
         HttpServletRequest request = bpc.request;
@@ -228,7 +234,7 @@ public class InspectionNcCheckListDelegator {
 
     }
 
-    private InspectionFDtosDto getOtherInfo(MultipartHttpServletRequest request) {
+    private InspectionFDtosDto getOtherInfo(MultipartHttpServletRequest request) throws IOException {
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
         String tcuflag = ParamUtil.getString(request,"tcuType");
         String tcu = null;
@@ -261,14 +267,44 @@ public class InspectionNcCheckListDelegator {
             serListDto.setTuc(tcu);
         }else{
             serListDto.setTcuFlag(false);
+            serListDto.setTuc(null);
         }
         serListDto.setBestPractice(bestpractice);
+
+        // set litter file
+        String litterFile =  ParamUtil.getString(request,"litterFile" );
+        if(!StringUtil.isEmpty(litterFile)){
+            String litterFileId =  ParamUtil.getString(request,"litterFileId" );
+            MultipartFile file= (MultipartFile) request.getFile("selectedFile");
+            if(StringUtil.isEmpty(litterFileId) && file != null && file.getSize() != 0){
+                if (!StringUtil.isEmpty(file.getOriginalFilename())) {
+                    TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, TASKDTO);
+                    String correlationId = taskDto.getRefNo();
+                    AppPremisesSpecialDocDto appIntranetDocDto = new AppPremisesSpecialDocDto();
+                    appIntranetDocDto.setDocName(litterFile);
+                    appIntranetDocDto.setAppPremCorreId(correlationId);
+                    appIntranetDocDto.setMd5Code(FileUtil.genMd5FileChecksum(file.getBytes()));
+                    long size = file.getSize()/1024;
+                    if(size <= Integer.MAX_VALUE ){
+                        appIntranetDocDto.setDocSize((int)size);
+                    }else {
+                        appIntranetDocDto.setDocSize(Integer.MAX_VALUE);
+                    }
+                    serListDto.setFile(file);
+                    serListDto.setAppPremisesSpecialDocDto(appIntranetDocDto);
+                }
+            }
+        }else {
+            serListDto.setAppPremisesSpecialDocDto(null);
+            serListDto.setFile(null);
+        }
+
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
         return serListDto;
     }
 
 
-    public CheckListVadlidateDto getValueFromPage(HttpServletRequest request) {
+    public CheckListVadlidateDto getValueFromPage(HttpServletRequest request) throws IOException {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest)request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CheckListVadlidateDto dto = new CheckListVadlidateDto();
         getDataFromPage(request); // GET  check list base data
@@ -414,7 +450,7 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
     }
 
-    public void preViewCheckList(BaseProcessClass bpc){
+    public void preViewCheckList(BaseProcessClass bpc)throws IOException{
         Log.info("=======>>>>>preViewCheckList>>>>>>>>>>>>>>>>preViewCheckList");
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
@@ -422,7 +458,6 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
         getOtherInfo(mulReq);
-
 
     }
 }

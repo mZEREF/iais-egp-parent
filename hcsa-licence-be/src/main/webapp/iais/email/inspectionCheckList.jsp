@@ -11,8 +11,6 @@
 
 <form method="post" id="mainForm" enctype="multipart/form-data"   action=<%=process.runtime.continueURL()%>  >
 
-    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.FillupChklistDelegator"/>
-    <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto"/>
     <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
     <div class="main-content">
         <div class="container">
@@ -37,10 +35,11 @@
                                                 <button type="button" class="btn btn-primary" onclick="javascript: doViewCheckList();">
                                                     View CheckList
                                                 </button>
-                                                <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
                                             <button type="button" class="btn btn-primary" onclick="javascript: doNext();">
                                                 Save
                                             </button>
+                                            <br/>
+                                            <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
                                         </div>
                                         <input type="hidden" name = "saveflag" id="saveflag"/>
                                     </div>

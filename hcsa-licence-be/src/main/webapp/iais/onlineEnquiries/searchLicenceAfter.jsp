@@ -441,7 +441,7 @@
     <div height="1" style="display: none" id="selectDecisionMsg">
         <div class="col-sm-9">
             <p style="color:#ff0000;">
-                There is no valid licenceId.
+                There is no valid licenceNo
             </p>
         </div>
     </div>
@@ -527,7 +527,28 @@
 
     function doCessation() {
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "cessation");
+        var chk=$("[name='appIds']:checked");
+        var dropIds = new Array();
+        chk.each(function(){
+            dropIds.push($(this).val());
+        });
+
+        var flog=false;
+        for(var i=0;i<dropIds.length;i++){
+
+            var str=dropIds[i].split('|')[1];
+
+            if(str=='1'){
+                flog=true;
+            }
+        }
+        if(flog){
+            SOP.Crud.cfxSubmit("mainForm", "cessation");
+        }
+        else {
+            $("#selectDecisionMsg").show();
+            dismissWaiting();
+        }
 
     }
 </script>

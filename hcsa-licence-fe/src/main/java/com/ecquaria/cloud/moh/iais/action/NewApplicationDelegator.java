@@ -76,6 +76,7 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -159,7 +160,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, null);
         ParamUtil.setSessionAttr(bpc.request,DRAFTCONFIG,null);
 
-        HashMap<String,String> coMap=new HashMap<>();
+        HashMap<String,String> coMap=new HashMap<>(4);
         coMap.put("premises","");
         coMap.put("document","");
         coMap.put("information","");
@@ -237,6 +238,7 @@ public class NewApplicationDelegator {
      */
     public void preparePremises(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do preparePremises start ...."));
+        getTimeList(bpc.request);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         //get svcCode to get svcId
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
@@ -677,7 +679,6 @@ public class NewApplicationDelegator {
                     }
                 }
             }
-
         }
 
 
@@ -697,7 +698,7 @@ public class NewApplicationDelegator {
             Boolean isMandatory = comm.getIsMandatory();
             if(isMandatory&&file.getSize()==0&&appGrpPrimaryDocDtoList.isEmpty()){
                 errorMap.put(name, "UC_CHKLMD001_ERR001");
-            }else {
+            }else if(isMandatory&&!appGrpPrimaryDocDtoList.isEmpty()){
                 Boolean flag=false;
                 for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
                     String svcComDocId = appGrpPrimaryDocDto.getSvcComDocId();
@@ -736,6 +737,11 @@ public class NewApplicationDelegator {
      */
     public void doPreview(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do doPreview start ...."));
+        StringBuffer requestURL = bpc.request.getRequestURL();
+        String queryString = bpc.request.getQueryString();
+        String reUrl=requestURL.append("?").append(queryString).toString();
+
+
 
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
     }
@@ -813,21 +819,14 @@ public class NewApplicationDelegator {
      */
     public void doSaveDraft(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do doSaveDraft start ...."));
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        HashMap<String,String>coMap=(HashMap<String, String>)bpc.getSession().getAttribute("coMap");
-        List<String> strList=new ArrayList<>(4);
-        coMap.forEach((k,v)->{
-            if(!StringUtil.isEmpty(v)){
-                strList.add(v);
-            }
 
-        });
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         if(StringUtil.isEmpty(appSubmissionDto.getDraftNo())){
             String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
             log.info(StringUtil.changeForLog("the draftNo -->:") + draftNo);
             appSubmissionDto.setDraftNo(draftNo);
         }
-        appSubmissionDto.setStepColor(strList);
+//        appSubmissionDto.setStepColor(strList);
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         log.info(StringUtil.changeForLog("the do doSaveDraft end ...."));
@@ -1733,7 +1732,8 @@ public class NewApplicationDelegator {
             log.info("govenMap json str:"+govenMapStr);
         }
         //
-        Map<String, String> map = doCheckBox(bpc,sB);
+        Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
+        Map<String, String> map = doCheckBox(bpc,sB,allSvcAllPsnConfig);
         if(!map.isEmpty()){
             previewAndSubmitMap.putAll(map);
             String mapStr = JsonUtil.parseToJson(map);
@@ -1795,12 +1795,12 @@ public class NewApplicationDelegator {
 
     //todo
 
-    private Map<String,String> doCheckBox( BaseProcessClass bpc,StringBuilder sB){
+    public static Map<String,String> doCheckBox( BaseProcessClass bpc,StringBuilder sB,Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig){
 
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         Map<String,String> errorMap=IaisCommonUtils.genNewHashMap();
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
+
         for(int i=0;i< dto.size();i++ ){
             String serviceId = dto.get(i).getServiceId();
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.get(i).getAppSvcLaboratoryDisciplinesDtoList();
@@ -1811,7 +1811,10 @@ public class NewApplicationDelegator {
             List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.get(i).getAppSvcDisciplineAllocationDtoList();
             doSvcDis(errorMap,appSvcDisciplineAllocationDtoList,serviceId,sB);
             List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.get(i).getAppSvcPrincipalOfficersDtoList();
-
+            Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(dto.get(i).getAppSvcCgoDtoList());
+            if(!govenMap.isEmpty()){
+                sB.append(serviceId);
+            }
             doPO(hcsaSvcPersonnelDtos,errorMap,appSvcPrincipalOfficersDtoList,serviceId,sB);
 
 
@@ -1825,7 +1828,7 @@ public class NewApplicationDelegator {
         return  errorMap;
     }
 
-    private void doSvcDocument(Map<String,String> map,   List<AppSvcDocDto> appSvcDocDtoLit,String serviceId,StringBuilder sB ){
+    private static void doSvcDocument(Map<String,String> map,   List<AppSvcDocDto> appSvcDocDtoLit,String serviceId,StringBuilder sB ){
         if(appSvcDocDtoLit!=null){
             for (AppSvcDocDto appSvcDocDto:appSvcDocDtoLit){
                 Integer docSize = appSvcDocDto.getDocSize();
@@ -1853,14 +1856,14 @@ public class NewApplicationDelegator {
 
     }
 
-    private void dolabory(Map<String,String> map ,List<AppSvcLaboratoryDisciplinesDto> list,String serviceId, StringBuilder sB){
+    private static void dolabory(Map<String,String> map ,List<AppSvcLaboratoryDisciplinesDto> list,String serviceId, StringBuilder sB){
         if(list!=null&&list.isEmpty()){
 
         }
     }
 
 
-    private void doAppSvcPersonnelDtoList(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos ,Map map,List<AppSvcPersonnelDto> appSvcPersonnelDtos,String serviceId, StringBuilder sB){
+    private static void doAppSvcPersonnelDtoList(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos ,Map map,List<AppSvcPersonnelDto> appSvcPersonnelDtos,String serviceId, StringBuilder sB){
         if(appSvcPersonnelDtos==null){
             if(hcsaSvcPersonnelDtos!=null){
                 for(HcsaSvcPersonnelDto every:hcsaSvcPersonnelDtos){
@@ -1956,7 +1959,7 @@ public class NewApplicationDelegator {
         }
 
     }
-    private void doAppSvcCgoDto(  List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map map ,List<AppSvcCgoDto> list,String serviceId,StringBuilder sB){
+    private static void doAppSvcCgoDto(  List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map map ,List<AppSvcCgoDto> list,String serviceId,StringBuilder sB){
         if(list==null){
             if(hcsaSvcPersonnelDtos!=null){
                 for(HcsaSvcPersonnelDto every:hcsaSvcPersonnelDtos){
@@ -2013,13 +2016,13 @@ public class NewApplicationDelegator {
     }
 
 
-    private void doSvcDis( Map map ,List<AppSvcDisciplineAllocationDto> list,String serviceId,StringBuilder sB){
+    private static void doSvcDis( Map map ,List<AppSvcDisciplineAllocationDto> list,String serviceId,StringBuilder sB){
         if(list==null){
 
         }
     }
 
-    private void doPO( List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map oneErrorMap ,List<AppSvcPrincipalOfficersDto> poDto,String serviceId,StringBuilder sB){
+    private static void doPO( List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map oneErrorMap ,List<AppSvcPrincipalOfficersDto> poDto,String serviceId,StringBuilder sB){
         if(poDto==null){
             if(hcsaSvcPersonnelDtos!=null){
                 for(HcsaSvcPersonnelDto every :hcsaSvcPersonnelDtos){
@@ -2472,16 +2475,18 @@ public class NewApplicationDelegator {
         list.sort((h1, h2) -> h1.getSvcName().compareTo(h2.getSvcName()));
     }
 
-    private static int validateTime(Map<String, String> errorMap, String onsiteHH, String onsiteMM, int date, String key, int i, String error){
+    private static int validateTime(Map<String, String> errorMap, String onsiteHH, String onsiteMM, int date, String key, int i){
         try {
             int i1 = Integer.parseInt(onsiteHH);
             int i2= Integer.parseInt(onsiteMM);
             date=  i1*60+i2*1;
-            if(i1>=24||i2>=60){
-                errorMap.put(key+i,error);
+            if(i1>=24){
+                errorMap.put(key+i,"UC_CHKLMD001_ERR009");
+            }else if(i2>=60){
+                errorMap.put(key+i,"UC_CHKLMD001_ERR010");
             }
         }catch (Exception e){
-            errorMap.put(key+i,error);
+            errorMap.put(key+i,"CHKLMD001_ERR003");
         }
         return date;
     }
@@ -2520,7 +2525,7 @@ public class NewApplicationDelegator {
                         if(StringUtil.isEmpty(onsiteStartHH)||StringUtil.isEmpty(onsiteStartMM)){
                             errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR001");
                         }else {
-                            startDate = validateTime(errorMap, onsiteStartHH, onsiteStartMM, startDate, "onsiteStartMM", i, "CHKLMD001_ERR003");
+                            startDate = validateTime(errorMap, onsiteStartHH, onsiteStartMM, startDate, "onsiteStartMM", i);
                         }
 
                         String onsiteEndHH = appGrpPremisesDtoList.get(i).getOnsiteEndHH();
@@ -2528,7 +2533,7 @@ public class NewApplicationDelegator {
                         if(StringUtil.isEmpty(onsiteEndHH)||StringUtil.isEmpty(onsiteEndMM)){
                             errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR001");
                         }else {
-                             endDate = validateTime(errorMap, onsiteEndHH, onsiteEndMM, endDate, "onsiteEndMM", i, "CHKLMD001_ERR003");
+                             endDate = validateTime(errorMap, onsiteEndHH, onsiteEndMM, endDate, "onsiteEndMM", i);
                         }
                         if(endDate<startDate){
                             errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR008");
@@ -2571,8 +2576,10 @@ public class NewApplicationDelegator {
                                             int i1 = Integer.parseInt(convStartFromHH);
                                             int i2 = Integer.parseInt(convStartFromMM);
 
-                                            if(i1>=24||i2>=60){
-                                                errorMap.put("onsiteStartToMM"+j,"CHKLMD001_ERR003");
+                                            if(i1>=24){
+                                                errorMap.put("onsiteStartToMM"+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i2>=60){
+                                                errorMap.put("onsiteStartToMM"+j,"UC_CHKLMD001_ERR010");
                                             }
 
                                         }catch (Exception e){
@@ -2582,8 +2589,10 @@ public class NewApplicationDelegator {
                                     try {
                                         int i3 = Integer.parseInt(onsiteEndToHH);
                                         int i4 = Integer.parseInt(onsiteEndToMM);
-                                        if(i3>=24||i4>=60){
-                                            errorMap.put("onsiteEndToMM"+j,"CHKLMD001_ERR003");
+                                        if(i3>=24){
+                                            errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR009");
+                                        }else if(i4>=60){
+                                            errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR010");
                                         }
                                     }catch (Exception e){
                                         errorMap.put("onsiteEndToMM"+j,"CHKLMD001_ERR003");
@@ -2608,8 +2617,10 @@ public class NewApplicationDelegator {
                                             int i1 = Integer.parseInt(convStartFromHH);
                                             int i2 = Integer.parseInt(convStartFromMM);
 
-                                            if(i1>=24||i2>=60){
-                                                errorMap.put("onsiteStartToMM"+j,"CHKLMD001_ERR003");
+                                            if(i1>=24){
+                                                errorMap.put("onsiteStartToMM"+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i2>=60){
+                                                errorMap.put("onsiteStartToMM"+j,"UC_CHKLMD001_ERR010");
                                             }
 
                                         }catch (Exception e){
@@ -2622,8 +2633,10 @@ public class NewApplicationDelegator {
                                         try {
                                             int i3 = Integer.parseInt(onsiteEndToHH);
                                             int i4 = Integer.parseInt(onsiteEndToMM);
-                                            if(i3>=24||i4>=60){
-                                                errorMap.put("onsiteEndToMM"+j,"CHKLMD001_ERR003");
+                                            if(i3>=24){
+                                                errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i4>=60){
+                                                errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR010");
                                             }
                                         }catch (Exception e){
                                             errorMap.put("onsiteEndToMM"+j,"CHKLMD001_ERR003");
@@ -2660,17 +2673,11 @@ public class NewApplicationDelegator {
                                 MasterCodeDto masterCode=(MasterCodeDto)masterCodeDto;
                                 String codeValue = masterCode.getCodeValue();
                                 String[] s = codeValue.split(" ");
-                                String[] s1 = hciName.split(" ");
                                 for(int index=0;index<s.length;index++){
-                                    for(int ind=0;ind<s1.length;ind++){
-                                        if(s[i].equalsIgnoreCase(s1[ind])){
-                                            errorMap.put("hciName"+i,"CHKLMD001_ERR002");
-                                        }
+                                    if(hciName.toUpperCase().contains(s[index].toUpperCase())){
+                                        errorMap.put("hciName"+i,"CHKLMD001_ERR002");
                                     }
-
                                 }
-
-
                             }
                         }
                         String offTelNo = appGrpPremisesDtoList.get(i).getOffTelNo();
@@ -2743,14 +2750,14 @@ public class NewApplicationDelegator {
                         if(StringUtil.isEmpty(conStartHH)||StringUtil.isEmpty(conStartMM)){
                             errorMap.put("conStartMM"+i,"UC_CHKLMD001_ERR001");
                         }else {
-                            conStartDate = validateTime(errorMap, conStartHH, conStartMM, conStartDate, "conStartMM", i, "CHKLMD001_ERR003");
+                            conStartDate = validateTime(errorMap, conStartHH, conStartMM, conStartDate, "conStartMM", i);
                         }
                         String conEndHH = appGrpPremisesDtoList.get(i).getConEndHH();
                         String conEndMM = appGrpPremisesDtoList.get(i).getConEndMM();
                         if(StringUtil.isEmpty(conEndHH)||StringUtil.isEmpty(conEndMM)){
                             errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR001");
                         }else {
-                            conEndDate = validateTime(errorMap, conEndHH, conEndMM, conEndDate, "conEndMM", i, "CHKLMD001_ERR003");
+                            conEndDate = validateTime(errorMap, conEndHH, conEndMM, conEndDate, "conEndMM", i);
                         }
                         if(conEndDate<conStartDate){
                             errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR008");
@@ -2782,8 +2789,10 @@ public class NewApplicationDelegator {
                                         try {
                                             int i1 = Integer.parseInt(convStartFromHH);
                                             int i2 = Integer.parseInt(convStartFromMM);
-                                            if(i1>=24||i2>=60){
-                                                errorMap.put("convStartToHH"+j,"CHKLMD001_ERR003");
+                                            if(i1>=24){
+                                                errorMap.put("convStartToHH"+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i2>=60){
+                                                errorMap.put("convStartToHH"+j,"UC_CHKLMD001_ERR010");
                                             }
 
                                         }catch (Exception e){
@@ -2792,8 +2801,10 @@ public class NewApplicationDelegator {
                                         try {
                                             int i3 = Integer.parseInt(convEndToHH);
                                             int i4 = Integer.parseInt(convEndToMM);
-                                            if(i3>=24||i4>=60){
-                                                errorMap.put("convEndToHH"+j,"CHKLMD001_ERR003");
+                                            if(i3>=24){
+                                                errorMap.put("convEndToHH"+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i4>=60){
+                                                errorMap.put("convEndToHH"+j,"UC_CHKLMD001_ERR010");
                                             }
                                         }catch (Exception e){
                                             errorMap.put("convEndToHH"+j,"CHKLMD001_ERR003");
@@ -2817,8 +2828,10 @@ public class NewApplicationDelegator {
                                         try {
                                             int i1 = Integer.parseInt(convStartFromHH);
                                             int i2 = Integer.parseInt(convStartFromMM);
-                                            if(i1>=24||i2>=60){
-                                                errorMap.put("convStartToHH"+j,"CHKLMD001_ERR003");
+                                            if(i1>=24){
+                                                errorMap.put("convStartToHH"+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i2>=60){
+                                                errorMap.put("convStartToHH"+j,"UC_CHKLMD001_ERR010");
                                             }
                                         }catch (Exception e){
                                             errorMap.put("convStartToHH"+j,"CHKLMD001_ERR003");
@@ -2832,8 +2845,10 @@ public class NewApplicationDelegator {
                                         try {
                                             int i3 = Integer.parseInt(convEndToHH);
                                             int i4 = Integer.parseInt(convEndToMM);
-                                            if(i3>=24||i4>=60){
-                                                errorMap.put("convEndToHH"+j,"CHKLMD001_ERR003");
+                                            if(i3>=24){
+                                                errorMap.put("convEndToHH"+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i4>=60){
+                                                errorMap.put("convEndToHH"+j,"UC_CHKLMD001_ERR010");
                                             }
 
                                         }catch (Exception e){
@@ -2957,7 +2972,7 @@ public class NewApplicationDelegator {
         return errorMap;
     }
 
-    private AppSubmissionDto getAppSubmissionDto(HttpServletRequest request){
+    private static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request){
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
         if(appSubmissionDto == null){
             log.info(StringUtil.changeForLog("appSubmissionDto is empty "));
@@ -3120,6 +3135,20 @@ public class NewApplicationDelegator {
         return svcAllPsnConfig;
     }
 
+
+
+    private void getTimeList(HttpServletRequest request){
+        List<SelectOption> timeHourList = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i< 24;i++){
+            timeHourList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
+        }
+        List<SelectOption> timeMinList = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i< 60;i++){
+            timeMinList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
+        }
+        ParamUtil.setRequestAttr(request, "premiseHours", timeHourList);
+        ParamUtil.setRequestAttr(request, "premiseMinute", timeMinList);
+    }
 
 }
 

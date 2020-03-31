@@ -22,13 +22,14 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
-import java.util.Date;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Shicheng
@@ -150,7 +151,8 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
     }
 
     @Override
-    public InspecUserRecUploadDto getNcItemData(InspecUserRecUploadDto inspecUserRecUploadDto, int version, String appPremCorrId) {
+    public List<InspecUserRecUploadDto> getNcItemData(int version, String appPremCorrId, List<ChecklistItemDto> checklistItemDtos, String appNo) {
+        List<InspecUserRecUploadDto> inspecUserRecUploadDtos = IaisCommonUtils.genNewArrayList();
         AppPremPreInspectionNcDto appPremPreInspectionNcDto = applicationClient.getAppPremPreInsNcDtoByAppCorrId(appPremCorrId).getEntity();
         String oldNcId = appPremPreInspectionNcDto.getId();
         List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = inspectionFeClient.getNcItemDtoListByAppPremNcId(oldNcId).getEntity();
@@ -169,49 +171,100 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
             appPremPreInspectionNcDto.setVersion(version + "");
             appPremPreInspectionNcDto.setAuditTrailDto(auditTrailDto);
             appPremPreInspectionNcDto = applicationClient.saveAppPremPreNc(appPremPreInspectionNcDto).getEntity();
-            inspecUserRecUploadDto.setAppPremPreInspectionNcDto(appPremPreInspectionNcDto);
 
             //create new AppPremisesPreInspectionNcItemDto
+            List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = IaisCommonUtils.genNewArrayList();
             if(!IaisCommonUtils.isEmpty(appPremisesPreInspectionNcItemDtos)){
-                List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = IaisCommonUtils.genNewArrayList();
                 for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtos){
                     appPremisesPreInspectionNcItemDto.setPreNcId(appPremPreInspectionNcDto.getId());
                     appPremisesPreInspectionNcItemDto.setId(null);
                     appPremisesPreInspectionNcItemDto.setFeRectifiedFlag(0);
                     appPremisesPreInspectionNcItemDto.setAuditTrailDto(auditTrailDto);
                     appPremisesPreInspectionNcItemDto = applicationClient.createAppNcItemDto(appPremisesPreInspectionNcItemDto).getEntity();
-                    if(appPremisesPreInspectionNcItemDto.getItemId().equals(inspecUserRecUploadDto.getItemId())){
-                        inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
-                    }
                     appPremisesPreInspectionNcItemDtoList.add(appPremisesPreInspectionNcItemDto);
                 }
-                inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDtos(appPremisesPreInspectionNcItemDtoList);
             }
 
-            //get fileReport
-            AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = inspecUserRecUploadDto.getAppPremisesPreInspectionNcItemDto();
-            List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos =
-                    applicationClient.getNcDocListByItemId(appPremisesPreInspectionNcItemDto.getId()).getEntity();
-            if(!IaisCommonUtils.isEmpty(appPremPreInspectionNcDocDtos)){
-                List<String> fileReportIds = IaisCommonUtils.genNewArrayList();
-                for(AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto : appPremPreInspectionNcDocDtos){
-                    appPremPreInspectionNcDocDto.setId(null);
-                    fileReportIds.add(appPremPreInspectionNcDocDto.getFileRepoId());
+            // set all item data
+            if(!IaisCommonUtils.isEmpty(appPremisesPreInspectionNcItemDtoList)){
+                for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtoList){
+                    //Filter for NC(s) that have been rectified
+                    int rec = appPremisesPreInspectionNcItemDto.getIsRecitfied();
+                    if (0 == rec) {
+                        InspecUserRecUploadDto inspecUserRecUploadDto = new InspecUserRecUploadDto();
+                        inspecUserRecUploadDto.setId(appPremisesPreInspectionNcItemDto.getId());
+                        inspecUserRecUploadDto.setItemId(appPremisesPreInspectionNcItemDto.getItemId());
+                        int feRec = appPremisesPreInspectionNcItemDto.getFeRectifiedFlag();
+                        if (1 == feRec) {
+                            inspecUserRecUploadDto.setButtonFlag(AppConsts.SUCCESS);
+                        } else if (0 == feRec) {
+                            inspecUserRecUploadDto.setButtonFlag(AppConsts.FAIL);
+                        }
+                        //set item Clause and Question
+                        inspecUserRecUploadDto = setItemClauseQues(checklistItemDtos, inspecUserRecUploadDto, appNo);
+
+                        inspecUserRecUploadDto.setAppPremPreInspectionNcDto(appPremPreInspectionNcDto);
+                        inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDtos(appPremisesPreInspectionNcItemDtoList);
+                        inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
+                        //get fileReport
+                        List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos =
+                                applicationClient.getNcDocListByItemId(appPremisesPreInspectionNcItemDto.getId()).getEntity();
+                        if(!IaisCommonUtils.isEmpty(appPremPreInspectionNcDocDtos)){
+                            List<String> fileReportIds = IaisCommonUtils.genNewArrayList();
+                            for(AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto : appPremPreInspectionNcDocDtos){
+                                appPremPreInspectionNcDocDto.setId(null);
+                                fileReportIds.add(appPremPreInspectionNcDocDto.getFileRepoId());
+                            }
+                            List<FileRepoDto> fileRepoDtos = fileRepoClient.getFilesByIds(fileReportIds).getEntity();
+                            inspecUserRecUploadDto.setFileRepoDtos(fileRepoDtos);
+                            inspecUserRecUploadDto.setAppPremPreInspectionNcDocDtos(appPremPreInspectionNcDocDtos);
+                        }
+                        inspecUserRecUploadDtos.add(inspecUserRecUploadDto);
+                    }
                 }
-                List<FileRepoDto> fileRepoDtos = fileRepoClient.getFilesByIds(fileReportIds).getEntity();
-                inspecUserRecUploadDto.setFileRepoDtos(fileRepoDtos);
-                inspecUserRecUploadDto.setAppPremPreInspectionNcDocDtos(appPremPreInspectionNcDocDtos);
             }
-
-            //first rectification
         } else {
-            inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDtos(appPremisesPreInspectionNcItemDtos);
-            for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtos){
-                if(appPremisesPreInspectionNcItemDto.getItemId().equals(inspecUserRecUploadDto.getItemId())){
-                    inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
+            //first rectification
+            if(!IaisCommonUtils.isEmpty(appPremisesPreInspectionNcItemDtos)) {
+                for (AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtos) {
+                    //Filter for NC(s) that have been rectified
+                    int rec = appPremisesPreInspectionNcItemDto.getIsRecitfied();
+                    if (0 == rec) {
+                        InspecUserRecUploadDto inspecUserRecUploadDto = new InspecUserRecUploadDto();
+                        inspecUserRecUploadDto.setId(appPremisesPreInspectionNcItemDto.getId());
+                        inspecUserRecUploadDto.setItemId(appPremisesPreInspectionNcItemDto.getItemId());
+                        int feRec = appPremisesPreInspectionNcItemDto.getFeRectifiedFlag();
+                        if (1 == feRec) {
+                            inspecUserRecUploadDto.setButtonFlag(AppConsts.SUCCESS);
+                        } else if (0 == feRec) {
+                            inspecUserRecUploadDto.setButtonFlag(AppConsts.FAIL);
+                        }
+                        //set item Clause and Question
+                        inspecUserRecUploadDto = setItemClauseQues(checklistItemDtos, inspecUserRecUploadDto, appNo);
+
+                        inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDtos(appPremisesPreInspectionNcItemDtos);
+                        inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
+                        inspecUserRecUploadDto.setAppPremPreInspectionNcDto(appPremPreInspectionNcDto);
+                        inspecUserRecUploadDtos.add(inspecUserRecUploadDto);
+                    }
                 }
             }
-            inspecUserRecUploadDto.setAppPremPreInspectionNcDto(appPremPreInspectionNcDto);
+        }
+        return inspecUserRecUploadDtos;
+    }
+
+    private InspecUserRecUploadDto setItemClauseQues(List<ChecklistItemDto> checklistItemDtos, InspecUserRecUploadDto inspecUserRecUploadDto, String appNo) {
+        int index = -1;
+        if(!IaisCommonUtils.isEmpty(checklistItemDtos)) {
+            for (ChecklistItemDto cDto : checklistItemDtos) {
+                if(inspecUserRecUploadDto.getItemId().equals(cDto.getItemId())) {
+                    inspecUserRecUploadDto.setCheckClause(cDto.getRegulationClause());
+                    inspecUserRecUploadDto.setCheckQuestion(cDto.getChecklistItem());
+                    inspecUserRecUploadDto.setIndex(index++);
+                    inspecUserRecUploadDto.setAppNo(appNo);
+                    return inspecUserRecUploadDto;
+                }
+            }
         }
         return inspecUserRecUploadDto;
     }

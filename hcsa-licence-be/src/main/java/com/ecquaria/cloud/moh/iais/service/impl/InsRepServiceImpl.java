@@ -27,7 +27,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
@@ -134,13 +133,16 @@ public class InsRepServiceImpl implements InsRepService {
         String taskId = taskDto.getId();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appId = applicationDto.getId();
-        String applicationNo = applicationDto.getApplicationNo();
         String appGrpId = applicationDto.getAppGrpId();
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         String status = applicationDto.getStatus();
         String appTypeCode = insRepClient.getAppType(appId).getEntity();
         ApplicationGroupDto applicationGroupDto = insRepClient.getApplicationGroupDto(appGrpId).getEntity();
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(appInsRepDto.getLicenseeId()).getEntity();
+        String licenceId = appInsRepDto.getLicenceId();
+        if(StringUtil.isEmpty(licenceId)){
+            inspectionReportDto.setLicenceNo("-");
+        }
         if(licenseeDto!=null){
             String name = licenseeDto.getName();
             inspectionReportDto.setLicenseeName(name);
@@ -160,6 +162,10 @@ public class InsRepServiceImpl implements InsRepService {
             String otherOffices = otherOfficesDto.getRemarks();
             nameList.add(otherOffices);
             inspectionReportDto.setInspectOffices(nameList);
+        }else {
+            String s = "-";
+            nameList.add(s);
+            inspectionReportDto.setInspectOffices(nameList);
         }
 
         //get application type (pre/post)
@@ -175,10 +181,10 @@ public class InsRepServiceImpl implements InsRepService {
         //serviceId transform serviceCode
         List<String> list = IaisCommonUtils.genNewArrayList();
         String serviceId = appInsRepDto.getServiceId();
-        list.add(serviceId);
+        list.add(serviceId) ;
         List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
-        String svcName = "";
-        String svcCode = "";
+        String svcName = "" ;
+        String svcCode = "" ;
         if (listHcsaServices != null && !listHcsaServices.isEmpty()) {
             for (HcsaServiceDto hcsaServiceDto : listHcsaServices) {
                 svcName = hcsaServiceDto.getSvcName();
@@ -192,6 +198,8 @@ public class InsRepServiceImpl implements InsRepService {
             for(HcsaSvcSubtypeOrSubsumedDto subsumedDto :subsumedDtos){
                 subsumedServices.add(subsumedDto.getName());
             }
+        }else {
+            subsumedServices.add("-");
         }
         inspectionReportDto.setSubsumedServices(subsumedServices);
         //Nc
@@ -200,7 +208,6 @@ public class InsRepServiceImpl implements InsRepService {
         List<ReportNcRectifiedDto> listReportNcRectifiedDto = IaisCommonUtils.genNewArrayList();
         //add ReportNcRegulationDto and add ncItemId
         if (listChecklistQuestionDtos != null && !listChecklistQuestionDtos.isEmpty()) {
-            String configId = listChecklistQuestionDtos.get(0).getConfigId();
             List<NcAnswerDto> ncAnswerDtoList = insepctionNcCheckListService.getNcAnswerDtoList(appPremisesCorrelationId);
             if (ncAnswerDtoList != null && !ncAnswerDtoList.isEmpty()) {
                 for (NcAnswerDto ncAnswerDto : ncAnswerDtoList) {
@@ -209,10 +216,9 @@ public class InsRepServiceImpl implements InsRepService {
                     reportNcRegulationDto.setRegulation(ncAnswerDto.getClause());
                     listReportNcRegulationDto.add(reportNcRegulationDto);
                 }
-                inspectionReportDto.setStatus("Partial Compliance");
-                inspectionReportDto.setNcRegulation(listReportNcRegulationDto);
-
             }
+            inspectionReportDto.setStatus("Partial Compliance");
+            inspectionReportDto.setNcRegulation(listReportNcRegulationDto);
         }else {
             inspectionReportDto.setStatus("Full Compliance");
             inspectionReportDto.setNcRegulation(null);
@@ -236,12 +242,23 @@ public class InsRepServiceImpl implements InsRepService {
             inspectionReportDto.setNcRectification(null);
         }
         AppPremisesRecommendationDto NcRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_TCU).getEntity();
+        //best practice remarks
+        String bestPractice = "-";
+        String remarks = "-";
         if(NcRecommendationDto==null){
             inspectionReportDto.setMarkedForAudit("No");
-        }else if(NcRecommendationDto!=null) {
+        }else if(NcRecommendationDto!=null&&NcRecommendationDto.getRecomInDate()!=null) {
             inspectionReportDto.setMarkedForAudit("Yes");
             Date recomInDate = NcRecommendationDto.getRecomInDate();
             inspectionReportDto.setTcuDate(recomInDate);
+        }
+        String ncBestPractice = NcRecommendationDto.getBestPractice();
+        String ncRemarks = NcRecommendationDto.getRemarks();
+        if(!StringUtil.isEmpty(ncBestPractice)){
+            bestPractice = ncBestPractice ;
+        }
+        if(!StringUtil.isEmpty(ncRemarks)){
+            remarks = ncRemarks ;
         }
         //checkList
         List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
@@ -255,6 +272,7 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setCommonCheckList(commonDto);
         inspectionReportDto.setSubTypeCheckList(subType);
         inspectionReportDto.setRectifiedWithinKPI("Yes");
+        //Date time
         Date inspectionDate = null;
         String inspectionStartTime = null;
         String inspectionEndTime = null;
@@ -270,18 +288,12 @@ public class InsRepServiceImpl implements InsRepService {
         if(appPreRecommentdationDtoEnd!=null){
             inspectionEndTime = appPreRecommentdationDtoEnd.getRecomDecision();
         }
-        String bestPractice = null;
-        String remarks = null;
-        if (NcRecommendationDto != null) {
-            bestPractice = NcRecommendationDto.getBestPractice();
-            remarks = NcRecommendationDto.getRemarks();
-        }
-        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNo(applicationNo).getEntity();
-        AdCheckListShowDto adhocCheckListDto = insepctionNcCheckListService.getAdhocCheckListDto(appPremisesCorrelationId);
-        if(adhocCheckListDto!=null){
-            inspectionReportDto.setOtherCheckList(adhocCheckListDto);
-        }
 
+//        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNo(applicationNo).getEntity();
+//        AdCheckListShowDto adhocCheckListDto = insepctionNcCheckListService.getAdhocCheckListDto(appPremisesCorrelationId);
+//        if(adhocCheckListDto!=null){
+//            inspectionReportDto.setOtherCheckList(adhocCheckListDto);
+//        }
 
         inspectionReportDto.setServiceName(svcName);
         inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
@@ -559,6 +571,7 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public InspectionReportDto getInspectorUser(TaskDto taskDto,LoginContext loginContext) {
         InspectionReportDto reportDtoForInspector = new InspectionReportDto();
+        //get reported By
         List<String> listUserId = IaisCommonUtils.genNewArrayList();
         String userId = loginContext.getUserId();
         String wkGrpId = taskDto.getWkGrpId();
@@ -732,6 +745,7 @@ public class InsRepServiceImpl implements InsRepService {
         Set<String> inspectiors = taskService.getInspectiors(refNo, TaskConsts.TASK_STATUS_COMPLETED, RoleConsts.USER_ROLE_AO1);
         if(!inspectiors.isEmpty()){
             userId = inspectiors.iterator().next();
+            taskDto.setUserId(userId);
         }
 
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
@@ -744,9 +758,7 @@ public class InsRepServiceImpl implements InsRepService {
             TaskDto taskDto1 = taskService.getUserIdForWorkGroup(groupId);
             taskDto.setUserId(taskDto1.getUserId());
         }
-
         taskDto.setId(null);
-        taskDto.setUserId(userId);
         taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
         taskDto.setWkGrpId(groupId);
         taskDto.setDateAssigned(new Date());
@@ -793,7 +805,7 @@ public class InsRepServiceImpl implements InsRepService {
         return list;
     }
 
-    private List<TaskDto> prepareBackTaskList(TaskDto taskDto,String userId) {
+        private List<TaskDto> prepareBackTaskList(TaskDto taskDto,String userId) {
         List<TaskDto> list = IaisCommonUtils.genNewArrayList();
         taskDto.setId(null);
         taskDto.setUserId(userId);

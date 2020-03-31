@@ -32,24 +32,28 @@ public class BroadcastMainServiceImpl implements BroadcastMainService {
     private EventBusHelper eventBusHelper;
     @Autowired
     private SystemParamConfig systemParamConfig;
-
+    
     @Override
-    public BroadcastOrganizationDto svaeBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto,Process process,boolean wait) {
-        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(broadcastOrganizationDto, generateIdClient.getSeqId().getEntity(),
+    public BroadcastOrganizationDto svaeBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto,Process process,String submissionId) {
+        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(broadcastOrganizationDto, submissionId,
                 EventBusConsts.SERVICE_NAME_ROUNTINGTASK,
                 EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
                 broadcastOrganizationDto.getEventRefNo(), process);
-        //
+
         return broadcastOrganizationDto;
     }
 
     @Override
-    public BroadcastApplicationDto svaeBroadcastApplicationDto(BroadcastApplicationDto broadcastApplicationDto,Process process,boolean wait) {
-        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(broadcastApplicationDto, generateIdClient.getSeqId().getEntity(),
+    public BroadcastApplicationDto svaeBroadcastApplicationDto(BroadcastApplicationDto broadcastApplicationDto,Process process,String submissionId) {
+        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(broadcastApplicationDto, submissionId,
                 EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
                 broadcastApplicationDto.getEventRefNo(), process);
-        //
+
         return broadcastApplicationDto;
+    }
+    @Override
+    public BroadcastOrganizationDto getBroadcastOrganizationDto(String groupName, String groupDomain) {
+        return organizationClient.getBroadcastOrganizationDto(groupName,groupDomain).getEntity();
     }
 }

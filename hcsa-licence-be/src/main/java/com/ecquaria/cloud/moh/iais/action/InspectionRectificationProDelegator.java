@@ -359,6 +359,8 @@ public class InspectionRectificationProDelegator {
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         InspectionReportDto inspectionReportDto = insRepService.getInsRepDto(taskDto, applicationViewDto, loginContext);
         List<String> inspectorLeads = inspectionRectificationProService.getInspectorLeadsByWorkGroupId(taskDto.getWkGrpId());
+        InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
+        inspectionReportDto.setInspectors(inspectorUser.getInspectors());
         inspectionReportDto.setInspectorLeads(inspectorLeads);
         int ncCount = inspectionRectificationProService.getHowMuchNcByAppPremCorrId(taskDto.getRefNo());
         inspectionReportDto.setNcCount(ncCount);
@@ -401,13 +403,13 @@ public class InspectionRectificationProDelegator {
         ParamUtil.setSessionAttr(bpc.request,"maxComChkDto", maxComChkDto);
         //draft end
         InspectionFillCheckListDto commonDto = null;
-        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"service");
-        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"common");
+        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
+        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
         if(commonList != null && !commonList.isEmpty()){
             commonDto = commonList.get(0);
         }
         InspectionFDtosDto serListDto =  fillupChklistService.getInspectionFDtosDto(appPremCorrId,taskDto,cDtoList);
-        AdCheckListShowDto adchklDto = fillupChklistService.getAdhocDraftByappCorrId(appPremCorrId);
+        AdCheckListShowDto adchklDto = insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
         if(adchklDto == null){
             adchklDto = fillupChklistService.getAdhoc(appPremCorrId);
         }
@@ -436,6 +438,8 @@ public class InspectionRectificationProDelegator {
                 }
             }
         }
+        //set num
+        fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
         ParamUtil.setSessionAttr(bpc.request,SERLISTDTO,serListDto);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
     }

@@ -13,19 +13,27 @@
         <div class="ax_default text_area">
             <span  style="font-size: 18px"><strong>Inspection Start Time (HH MM)</strong></span>
         </div>
-        <div style="float: left"><input type="number" oninput="if(value.length>2)value=value.slice(0,2)" maxlength="2" name="startHour" value="<c:out value="${serListDto.startHour}"/>"></div><div style="float: left;padding-left: 10px;"><input type="number" oninput="if(value.length>2)value=value.slice(0,2)" maxlength="2" name="startHourMin" value="<c:out value="${serListDto.startMin}"/>"></div>
-        <span class="error-msg" id="error_sTime" name="iaisErrorMsg"></span>
+        <div style="float: left" class="col-md-6">
+            <iais:select name="startHour" options="hhSelections" value="${serListDto.startHour}" firstOption="NA"></iais:select>
+            </div>
+        <div style="float: left;padding-left: 10px;" class="col-md-6">
+            <iais:select name="startHourMin" options="ddSelections" value="${serListDto.startMin}" firstOption="NA"></iais:select>
+            </div>
     </div>
-
+    <div class="input-group">  <span class="error-msg" id="error_sTime" name="iaisErrorMsg"></span></div>
     <div class="input-group">
         <div class="ax_default text_area">
-            <span  style="font-size: 18px"><strong>Inspection End Time(HH MM)</strong></span>
+            <span  style="font-size: 18px"><strong>Inspection End Time (HH MM)&nbsp;&nbsp;</strong></span>
         </div>
-        <div style="float: left"><input type="number" oninput="if(value.length>2)value=value.slice(0,2)" maxlength="2" name="endHour" value="<c:out value="${serListDto.endHour}"/>"></div><div style="float: left;padding-left: 10px;"><input type="number" oninput="if(value.length>2)value=value.slice(0,2)" maxlength="2" name="endHourMin" value="<c:out value="${serListDto.endMin}"/>"></div>
-        <span class="error-msg" id="error_eTime" name="iaisErrorMsg"></span>
-        <span class="error-msg" id="error_timevad" name="iaisErrorMsg"></span>
+        <div style="float: left" class="col-md-6">
+           <iais:select name="endHour" options="hhSelections" value="${serListDto.endHour}" firstOption="NA" ></iais:select>
+           </div>
+        <div style="float: left;padding-left: 10px;" class="col-md-6">
+               <iais:select name="endHourMin" options="ddSelections" value="${serListDto.endMin}" firstOption="NA"></iais:select>
+        </div>
     </div>
-
+    <div class="input-group"> <span class="error-msg" id="error_eTime" name="iaisErrorMsg"></span>
+        <span class="error-msg" id="error_timevad" name="iaisErrorMsg"></span></div>
     <div class="input-group">
         <div class="ax_default text_area">
             <span style="font-size: 18px"><strong>Inspector Lead</strong></span> <c:out value="${serListDto.inspectionLeader}"/>
@@ -71,9 +79,15 @@
     <div class="input-group">
         <div class="ax_default text_area">
             <h4><strong>Letter Written to Licensee</strong></h4>
-            <span id="licFileName"></span>
             <div class="file-upload-gp">
-                <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                <span id="licFileName"> &nbsp; &nbsp; &nbsp; &nbsp;${serListDto.appPremisesSpecialDocDto.docName}</span>
+                <span id="licFileNameDe" <c:if test="${empty serListDto.appPremisesSpecialDocDto}">hidden</c:if> >
+                                &nbsp;&nbsp;<button type="button" onclick="javascript:doDeleteFile()">Delete</button>
+                </span>
+                <input id="litterFile" name="litterFile" type="hidden" value="<c:out value="${serListDto.appPremisesSpecialDocDto.docName}"></c:out>" />
+                <input id="litterFileId" name="litterFileId" type="hidden" value="<c:out value="${serListDto.appPremisesSpecialDocDto.id}"></c:out>"/>
+                <span class="error-msg" id="error_litterFile" name="iaisErrorMsg"></span>
             </div>
         </div>
     </div>
@@ -98,8 +112,9 @@
             $("#tcuLabel").show()
         }else{
             $("#tcuLabel").hide();
+            $("#tuc").val("");
         }
-        if(${serListDto.tuc!= null}){
+        if(${serListDto.tuc!= null && serListDto.tuc != ""}){
             $("#tcuType").attr('checked',true)
             $("#tcuLabel").show();
         }
@@ -109,6 +124,31 @@
             $("#tcuLabel").show()
         }else{
             $("#tcuLabel").hide();
+            $("#tuc").val("");
         }
+    }
+
+    function getFileName(o) {
+        var pos = o.lastIndexOf("\\");
+        return o.substring(pos + 1);
+    }
+
+    $('#selectedFile').change(function () {
+        var file = $(this).val();
+        var  fileName = getFileName(file);
+        if( fileName != null && fileName.trim() != ""){
+            $("#licFileNameDe").attr("hidden",false);
+            $("#licFileName").html( fileName);
+            $('#litterFile').val(fileName);
+            $('#litterFileId').val("");
+        }
+    });
+
+    function doDeleteFile() {
+        $("#licFileNameDe").attr("hidden",true);
+        $("#licFileName").html("");
+        $('#litterFile').val("");
+        $('#litterFileId').val("");
+        $("#error_litterFile").html("");
     }
 </script>

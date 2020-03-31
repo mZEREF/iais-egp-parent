@@ -92,6 +92,16 @@ public class InterInboxDelegator {
         AuditTrailHelper.auditFunction("main-web", "main web");
     }
 
+    public void initToPage(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("Step ---> initToPage"));
+        HttpServletRequest request = bpc.request;
+        String initpage = ParamUtil.getRequestString(request,"initPage");
+        if (!StringUtil.isEmpty(initpage)){
+            ParamUtil.setRequestAttr(request,"init_to_page",initpage);
+        }else {
+            ParamUtil.setRequestAttr(request, "init_to_page", "");
+        }
+    }
     /**
      *
      * @param bpc

@@ -89,16 +89,19 @@ public interface ApplicationClient  {
     @GetMapping(path = "/iais-application/application-premises-by-app-id/{applicationId}")
     FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesDtoByAppGroId(@PathVariable("applicationId") String applicationId);
 
-    @PostMapping(path = "/iais-application/self-decl", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/iais-self-declaration/self-decl", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> saveAllSelfDecl(@RequestBody  List<SelfDeclaration> selfDeclList);
 
-    @GetMapping(path = "/iais-application/group/correlation/has-self-decl/{groupId}/record")
+    @GetMapping(path = "/iais-self-declaration/group/correlation/has-self-decl/{groupId}/record")
     FeignResponseEntity<Boolean> hasSelfDeclRecord(@PathVariable(value = "groupId") String groupId);
 
-    @GetMapping(path = "/iais-self-decl-rfi/rfi-data/{groupId}")
-    FeignResponseEntity<List<SelfDeclaration>> getSelfDeclRfiData(@PathVariable(value = "groupId") String groupId);
+    @GetMapping(path = "/iais-self-declaration/correlation/self-decl/{correlationId}")
+    FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> getAppPremisesSelfDeclByCorrelationId(@PathVariable(value = "correlationId") String correlationId);
 
-    @GetMapping(path = "/iais-application/self-decl/{id}")
+    @PutMapping(path = "/iais-self-declaration/correlation/self-decl/inactive", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> inActiveLastVersionByGroupId(@RequestBody  List<String> lastVersionId);
+
+    @GetMapping(path = "/iais-self-declaration/self-decl/{id}")
     FeignResponseEntity<String> getPremisesSelfDeclChklJson(String selfDeclId);
 
     @GetMapping(path = "/iais-application/application/correlations/{appid}")
@@ -129,6 +132,8 @@ public interface ApplicationClient  {
     @PostMapping(value = "/iais-inspection-fe/appncdocs", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremPreInspectionNcDocDto>> saveAppNcDoc(@RequestBody List<AppPremPreInspectionNcDocDto> dtoList);
+
+
 
     @PutMapping(value = "/iais-inspection-fe/appncdoc", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)

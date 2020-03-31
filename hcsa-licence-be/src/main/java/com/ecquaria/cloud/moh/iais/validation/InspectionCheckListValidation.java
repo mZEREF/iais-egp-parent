@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class InspectionCheckListValidation implements CustomizeValidator {
     private static final String ERR0010 = "ERR0010";
+    private static final String UC_CHKLMD001_ERR007 = "UC_CHKLMD001_ERR007";
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
@@ -36,6 +37,12 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         //ahocVad(request,errMap);
         fillUpVad(request,errMap);
         otherinfoVad(serListDto,errMap);
+        // validate file
+        if(serListDto.getAppPremisesSpecialDocDto() != null){
+            if(9999 < serListDto.getAppPremisesSpecialDocDto().getDocSize())
+                errMap.put("litterFile",UC_CHKLMD001_ERR007);
+
+        }
         return errMap;
     }
 

@@ -15,7 +15,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Slf4j
 @Delegator("rfiFileRepoDownloadDelegator")
 public class RfiFileRepoDownloadDelegator {
-    private LicPremisesReqForInfoDto licPremisesReqForInfoDto=new LicPremisesReqForInfoDto();
 
     @Autowired
     private RequestForInformationService requestForInformationService;

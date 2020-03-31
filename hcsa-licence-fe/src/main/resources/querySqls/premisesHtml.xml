@@ -147,9 +147,14 @@
               Operating Hours (Start) <span class="mandatory">*</span>
             </label>
             <div class="col-xs-9 col-sm-5 col-md-6">
-              <input type="text" value="" maxlength="2" name="onSiteStartHH" style="width: 60px;margin-right: 2%">(HH)
-              :
-              <input type="text" value="" maxlength="2" name="onSiteStartMM" style="width: 60px;margin-right: 2%;margin-left: 2%">(MM)
+                <div class="col-md-2" style="padding-left: unset">
+                    (ONSITESTARHH)
+                </div>
+                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                <div class="col-md-2" style="padding-left: unset">
+                    (ONSITESTARMM)
+                </div>
+                <div class="col-md-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
             </div>
           </div>
           <div class="form-group">
@@ -157,9 +162,14 @@
               Operating Hours (End) <span class="mandatory">*</span>
             </label>
             <div class="col-xs-9 col-sm-5 col-md-6">
-              <input type="text" value="" maxlength="2" name="onSiteEndHH" style="width: 60px;margin-right: 2%">(HH)
-              :
-              <input type="text" value="" maxlength="2" name="onSiteEndMM" style="width: 60px;margin-right: 2%;margin-left: 2%">(MM)
+            <div class="col-md-2" style="padding-left: unset">
+                    (ONSITEENDHH)
+                </div>
+                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                <div class="col-md-2" style="padding-left: unset">
+                    (ONSITEENDMM)
+                </div>
+                <div class="col-md-2" style="padding-left: unset;padding-top: 3%">(MM)</div>
             </div>
           </div>
           <div class="phFormMarkPoint">

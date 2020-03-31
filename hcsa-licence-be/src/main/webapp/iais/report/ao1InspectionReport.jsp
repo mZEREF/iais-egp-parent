@@ -232,7 +232,7 @@
                                                 <iais:row>
                                                     <iais:field value="Current Status"/>
                                                     <iais:value width="6">
-                                                        <p><iais:code code="${insRepDto.currentStatus}"/></p>
+                                                        <p><strong><iais:code code="${insRepDto.currentStatus}"/></strong></p>
                                                     </iais:value>
                                                 </iais:row>
 

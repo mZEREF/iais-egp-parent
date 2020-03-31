@@ -7,6 +7,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
@@ -32,18 +34,17 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.esotericsoftware.minlog.Log;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @Author: jiahao
@@ -71,6 +72,9 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     @Autowired
     private AppInspectionStatusClient appInspectionStatusClient;
+    @Autowired
+    FileRepoClient fileRepoClient;
+
     @Override
     public InspectionFillCheckListDto getNcCheckList(InspectionFillCheckListDto infillDto, AppPremisesPreInspectChklDto appPremDto, List<AppPremisesPreInspectionNcItemDto> itemDtoList, AppPremisesRecommendationDto appPremisesRecommendationDto) {
         List<InspectionCheckQuestionDto> fillCheckList = infillDto.getCheckList();
@@ -214,6 +218,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         saveEndTime(serListDto,appPremId);
         saveOtherInspection(serListDto,appPremId);
         saveRecommend(serListDto,appPremId);
+        saveLitterFile(serListDto,appPremId);
         List<InspectionFillCheckListDto> fillcheckDtoList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
             for(InspectionFillCheckListDto temp:serListDto.getFdtoList()){
@@ -228,6 +233,38 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
     }
 
+    public void saveLitterFile(InspectionFDtosDto serListDto,String appPremId){
+        if(serListDto.getAppPremisesSpecialDocDto() != null ){
+            MultipartFile multipartFile = serListDto.getFile();
+            AppPremisesSpecialDocDto appPremisesSpecialDocDto = serListDto.getAppPremisesSpecialDocDto();
+            if(multipartFile != null &&StringUtil.isEmpty(appPremisesSpecialDocDto.getId())){
+                FileRepoDto fileRepoDto = new FileRepoDto();
+                fileRepoDto.setFileName(multipartFile.getOriginalFilename());
+                fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                fileRepoDto.setRelativePath(AppConsts.FALSE);
+                fillUpCheckListGetAppClient.deleteAppPremisesSpecialDocByPremId(appPremId);
+                String oldFileGuid = serListDto.getOldFileGuid();
+                if(!StringUtil.isEmpty(oldFileGuid)){
+                    fileRepoClient.removeFileById(oldFileGuid);
+                    serListDto.setOldFileGuid(null);
+                }
+                String guid = fileRepoClient.saveFiles(multipartFile,JsonUtil.parseToJson(fileRepoDto)).getEntity();
+                serListDto.getAppPremisesSpecialDocDto().setFileRepoId(guid);
+                serListDto.setOldFileGuid(guid);
+                appPremisesSpecialDocDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                appPremisesSpecialDocDto.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+                appPremisesSpecialDocDto.setSubmitDt(new Date());
+                appPremisesSpecialDocDto.setId(fillUpCheckListGetAppClient.saveAppPremisesSpecialDoc(serListDto.getAppPremisesSpecialDocDto()).getEntity());
+            }
+        }else {
+            String oldFileGuid = serListDto.getOldFileGuid();
+            if(!StringUtil.isEmpty(oldFileGuid)){
+                fileRepoClient.removeFileById(oldFileGuid);
+                serListDto.setOldFileGuid(null);
+            }
+            fillUpCheckListGetAppClient.deleteAppPremisesSpecialDocByPremId(appPremId);
+        }
+    }
     public void saveInspectionDate(InspectionFDtosDto serListDto, String appPremId) {
         String inspectionDate = null;
         if(serListDto!=null){
@@ -637,7 +674,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             for(AdhocNcCheckItemDto temp:adItemList){
                 if("No".equals(temp.getAdAnswer())){
                     ncDto = new NcAnswerDto();
-                    ncDto.setClause(temp.getQuestion());
+                    ncDto.setItemQuestion(temp.getQuestion());
                     ncDto.setRemark(temp.getRemark());
                     ncAnswerDtoList.add(ncDto);
                 }

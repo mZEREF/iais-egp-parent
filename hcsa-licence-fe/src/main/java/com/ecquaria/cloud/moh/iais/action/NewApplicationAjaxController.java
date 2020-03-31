@@ -81,6 +81,15 @@ public class NewApplicationAjaxController {
      */
     @RequestMapping(value = "/premises-html", method = RequestMethod.GET)
     public @ResponseBody String addPremisesHtml(HttpServletRequest request) {
+        List<SelectOption> timeHourList = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i< 24;i++){
+            timeHourList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
+        }
+        List<SelectOption> timeMinList = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i< 60;i++){
+            timeMinList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
+        }
+
         log.debug(StringUtil.changeForLog("the add premises html start ...."));
         String currentLength = ParamUtil.getRequestString(request, "currentLength");
         log.debug(StringUtil.changeForLog("currentLength : "+currentLength));
@@ -98,7 +107,6 @@ public class NewApplicationAjaxController {
                 className = "conveyance";
                 width = "col-md-4";
             }
-
             premTypeBuffer.append("<div class=\"col-xs-5 "+width+"\">")
                     .append("<div class=\"form-check\">")
                     .append("<input class=\"form-check-input premTypeRadio "+className+"\"  type=\"radio\" name=\"premType"+currentLength+"\" value = "+type+" aria-invalid=\"false\">");
@@ -148,12 +156,46 @@ public class NewApplicationAjaxController {
         conAddrTypesAttr.put("style", "display: none;");
         String conAddrTypeSelectStr = NewApplicationHelper.generateDropDownHtml(conAddrTypesAttr, addrTypes, NewApplicationDelegator.FIRESTOPTION);
 
+
+        //Address Type on-site
+        Map<String,String> premiseHour = IaisCommonUtils.genNewHashMap();
+        premiseHour.put("class", "onSiteStartHH");
+        premiseHour.put("id", "onSiteStartHH");
+        premiseHour.put("name", "onSiteStartHH");
+        premiseHour.put("style", "display: none;");
+        String onsitestarHH = NewApplicationHelper.generateDropDownHtml(premiseHour, timeHourList,null);
+
+        Map<String,String> premiseMinute = IaisCommonUtils.genNewHashMap();
+        premiseMinute.put("class", "onSiteStartMM");
+        premiseMinute.put("id", "onSiteStartMM");
+        premiseMinute.put("name", "onSiteStartMM");
+        premiseMinute.put("style", "display: none;");
+        String onsitestarMM = NewApplicationHelper.generateDropDownHtml(premiseMinute, timeMinList,null);
+
+        Map<String,String> siteEndHH = IaisCommonUtils.genNewHashMap();
+        siteEndHH.put("class", "onSiteEndHH");
+        siteEndHH.put("id", "onSiteEndHH");
+        siteEndHH.put("name", "onSiteEndHH");
+        siteEndHH.put("style", "display: none;");
+        String onsiteEndHH = NewApplicationHelper.generateDropDownHtml(siteEndHH, timeHourList,null);
+
+        Map<String,String> siteEndMM = IaisCommonUtils.genNewHashMap();
+        siteEndMM.put("class", "onSiteEndMM");
+        siteEndMM.put("id", "onSiteEndMM");
+        siteEndMM.put("name", "onSiteEndMM");
+        siteEndMM.put("style", "display: none;");
+        String onsiteEndMM = NewApplicationHelper.generateDropDownHtml(siteEndMM, timeHourList,null);
+
         sql = sql.replace("(0)", currentLength);
         sql = sql.replace("(1)", premTypeBuffer.toString());
         sql = sql.replace("(2)", premOnSiteSelectStr);
         sql = sql.replace("(3)", premConvSelectStr);
         sql = sql.replace("(4)", addrTypeSelectStr);
         sql = sql.replace("(5)", conAddrTypeSelectStr);
+        sql = sql.replace("(ONSITESTARHH)", onsitestarHH);
+        sql = sql.replace("(ONSITESTARMM)", onsitestarMM);
+        sql = sql.replace("(ONSITEENDHH)", onsiteEndHH);
+        sql = sql.replace("(ONSITEENDMM)", onsiteEndMM);
         //premises header val
         Integer premHeaderVal = Integer.parseInt(currentLength)+1;
         sql = sql.replace("(6)",String.valueOf(premHeaderVal));
@@ -217,8 +259,8 @@ public class NewApplicationAjaxController {
         log.debug(StringUtil.changeForLog("gen governance officer html start ...."));
         Map<String,String> resp = IaisCommonUtils.genNewHashMap();
         int canAddNumber = ParamUtil.getInt(request,"AddNumber");
-        String HasNumber = ParamUtil.getRequestString(request,"HasNumber");
-        String errMsg = "Only <"+HasNumber+" of CGO> is allowed to be added";
+        String hasNumber = ParamUtil.getRequestString(request,"HasNumber");
+        String errMsg = "You are allowed to add up till only "+hasNumber+". of CGO";
         if(canAddNumber>0){
             String sql = SqlMap.INSTANCE.getSql("governanceOfficer", "generateGovernanceOfficerHtml").getSqlStr();
             //assign cgo select
@@ -317,29 +359,51 @@ public class NewApplicationAjaxController {
         return  appSvcCgoDto;
     }
 
-    @RequestMapping(value = "/nuclear-medicine-imaging-html", method = RequestMethod.GET)
-    public @ResponseBody String addNuclearMedicineImagingHtml(HttpServletRequest request) {
+    @PostMapping(value = "/nuclear-medicine-imaging-html")
+    public @ResponseBody Map<String,String> addNuclearMedicineImagingHtml(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the add NuclearMedicineImaging html start ...."));
-        String sql = SqlMap.INSTANCE.getSql("servicePersonnel", "NuclearMedicineImaging").getSqlStr();
-        String currentSvcCod = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
-        List<SelectOption> personnel = ClinicalLaboratoryDelegator.genPersonnelTypeSel(currentSvcCod);
-        Map<String,String> personnelAttr = IaisCommonUtils.genNewHashMap();
-        personnelAttr.put("name", "personnelSel");
-        personnelAttr.put("class", "personnelSel");
-        personnelAttr.put("style", "display: none;");
-        String personnelSelectStr = NewApplicationHelper.generateDropDownHtml(personnelAttr, personnel, NewApplicationDelegator.FIRESTOPTION);
+        int spMaxNumber = 0;
+        Map<String,String> resp = IaisCommonUtils.genNewHashMap();
+        int hasNumber = ParamUtil.getInt(request,"HasNumber");
+        String errMsg = "You are allowed to add up till only "+hasNumber+". of SP";
+        Map<String,List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(request,SERVICEALLPSNCONFIGMAP);
+        for (Map.Entry<String, List<HcsaSvcPersonnelDto>> stringListEntry : svcConfigInfo.entrySet()){
+            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = stringListEntry.getValue();
+            for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto:hcsaSvcPersonnelDtoList
+                    ) {
+                if ("SVCPSN".equalsIgnoreCase(hcsaSvcPersonnelDto.getPsnType())){
+                    spMaxNumber = hcsaSvcPersonnelDto.getMaximumCount();
+                    break;
+                }
+            }
+            break;
+        }
+        if (spMaxNumber - hasNumber > 0){
+            String sql = SqlMap.INSTANCE.getSql("servicePersonnel", "NuclearMedicineImaging").getSqlStr();
+            String currentSvcCod = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
+            List<SelectOption> personnel = ClinicalLaboratoryDelegator.genPersonnelTypeSel(currentSvcCod);
+            Map<String,String> personnelAttr = IaisCommonUtils.genNewHashMap();
+            personnelAttr.put("name", "personnelSel");
+            personnelAttr.put("class", "personnelSel");
+            personnelAttr.put("style", "display: none;");
+            String personnelSelectStr = NewApplicationHelper.generateDropDownHtml(personnelAttr, personnel, NewApplicationDelegator.FIRESTOPTION);
 
-        List<SelectOption> designation = (List) ParamUtil.getSessionAttr(request, "NuclearMedicineImagingDesignation");
-        Map<String,String> designationAttr = IaisCommonUtils.genNewHashMap();
-        designationAttr.put("name", "designation");
-        designationAttr.put("style", "display: none;");
-        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designation, NewApplicationDelegator.FIRESTOPTION);
+            List<SelectOption> designation = (List) ParamUtil.getSessionAttr(request, "NuclearMedicineImagingDesignation");
+            Map<String,String> designationAttr = IaisCommonUtils.genNewHashMap();
+            designationAttr.put("name", "designation");
+            designationAttr.put("style", "display: none;");
+            String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designation, NewApplicationDelegator.FIRESTOPTION);
 
-        sql = sql.replace("(1)", personnelSelectStr);
-        sql = sql.replace("(2)", designationSelectStr);
+            sql = sql.replace("(1)", personnelSelectStr);
+            sql = sql.replace("(2)", designationSelectStr);
 
-        log.debug(StringUtil.changeForLog("the add NuclearMedicineImaging html end ...."));
-        return sql;
+            log.debug(StringUtil.changeForLog("the add NuclearMedicineImaging html end ...."));
+            resp.put("sucInfo",sql);
+            resp.put("res","success");
+        }else{
+            resp.put("errInfo",errMsg);
+        }
+        return resp;
     }
 
 
@@ -364,7 +428,7 @@ public class NewApplicationAjaxController {
             }
             break;
         }
-        String errMsg = "Only <"+poMmaximumCount+" of PO> is allowed to be added";
+        String errMsg = "You are allowed to add up till only "+hasNumber+". of PO";
         if (poMmaximumCount - hasNumber > 0){
             //assign select
             List<SelectOption> assignPrincipalOfficerSel = ClinicalLaboratoryDelegator.getAssignPrincipalOfficerSel(svcId, false);
@@ -431,7 +495,7 @@ public class NewApplicationAjaxController {
             }
             break;
         }
-        String errMsg = "Only <"+dpoMmaximumCount+" of DPO> is allowed to be added";
+        String errMsg = "You are allowed to add up till only "+hasNumber+". of DPO";
         if (dpoMmaximumCount - hasNumber > 0){
             String svcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
             //assign select
@@ -529,6 +593,4 @@ public class NewApplicationAjaxController {
         }
         return  null;
     }
-
-
 }

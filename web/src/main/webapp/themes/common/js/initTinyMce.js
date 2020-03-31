@@ -1,8 +1,10 @@
 $(window).on("load", function(){
-    intiTinymce();
+    $("#htmlEditroArea").hide();
+    setTimeout("intiTinymce()", 1000);
 });
 
 function intiTinymce() {
+    $("#htmlEditroArea").show();
     tinymce.init({
         selector: "#htmlEditroArea",  // change this value according to your HTML
         menubar: 'file edit view insert format tools',

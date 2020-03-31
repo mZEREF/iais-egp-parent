@@ -4,6 +4,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocDraftDto;
@@ -12,11 +14,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -137,4 +135,18 @@ public interface FillUpCheckListGetAppClient {
 
     @GetMapping(value = "/iais-apppreinschkl-be/premises/pre-inspect/{configId}/count", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Integer> countByChkLstConfId(@PathVariable("configId")String configId);
+
+    @GetMapping(value = "/iais-appintranetdoc/get-appintranetdoc-by-premid-status", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppIntranetDocDto> getAppIntranetDocByPremIdAndStatus(@RequestParam(name = "premId") String premId,@RequestParam(name = "docStatus") String status );
+    @GetMapping(value = "/iais-appintranetdoc/delete-appintranetdoc-by-premid", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> deleteAppIntranetDocsByPremId(@RequestParam(name = "premId") String premId);
+    @PostMapping(value = "/iais-appintranetdoc/save-appintranetdoc",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> saveAppIntranetDocByAppIntranetDoc(@RequestBody AppIntranetDocDto  appIntranetDocDto);
+
+    @GetMapping(value = "/iais-appPremisesdoc/get-appPremisesSpecialDoc-by-premid", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremisesSpecialDocDto> getAppPremisesSpecialDocByPremId(@RequestParam(name = "premId") String premId);
+    @GetMapping(value = "/iais-appPremisesdoc/delete-appPremisesSpecialDoc-by-premid", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> deleteAppPremisesSpecialDocByPremId(@RequestParam(name = "premId") String premId);
+    @PostMapping(value = "/iais-appPremisesdoc/save-appPremisesSpecialDoc",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> saveAppPremisesSpecialDoc(@RequestBody AppPremisesSpecialDocDto appIntranetDocDto);
 }

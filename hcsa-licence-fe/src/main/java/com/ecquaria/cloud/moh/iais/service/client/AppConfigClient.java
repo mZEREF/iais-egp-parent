@@ -95,6 +95,9 @@ public interface AppConfigClient {
     @RequestMapping(path = "/iais-hcsa-fee/calculate-fee",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FeeDto> newFee(@RequestBody @Required List<LicenceFeeDto> dto);
 
+    @GetMapping(path = "/iais-hcsa-checklist/config/{id}")
+    FeignResponseEntity<ChecklistConfigDto> getChecklistConfigById(@PathVariable(value = "id") String configId);
+
     @RequestMapping(path = "/iais-hcsa-service/subtype-subsumed/{svcId}",method = RequestMethod.GET)
     FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubCorrelation(@PathVariable(name = "svcId")String serviceId);
 

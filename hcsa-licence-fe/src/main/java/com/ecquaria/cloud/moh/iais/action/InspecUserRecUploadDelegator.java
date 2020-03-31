@@ -4,7 +4,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
@@ -88,32 +87,7 @@ public class InspecUserRecUploadDelegator {
             }
             List<ChecklistItemDto> checklistItemDtos = inspecUserRecUploadService.getQuesAndClause(appPremCorrId);
             ApplicationDto applicationDto = inspecUserRecUploadService.getApplicationByCorrId(appPremCorrId);
-            inspecUserRecUploadDtos = IaisCommonUtils.genNewArrayList();
-            int index = -1;
-            if(checklistItemDtos != null && !(checklistItemDtos.isEmpty())) {
-                for (ChecklistItemDto cDto : checklistItemDtos) {
-                    InspecUserRecUploadDto iDto = new InspecUserRecUploadDto();
-                    iDto.setCheckClause(cDto.getRegulationClause());
-                    iDto.setCheckQuestion(cDto.getChecklistItem());
-                    iDto.setIndex(index++);
-                    iDto.setAppNo(applicationDto.getApplicationNo());
-                    iDto.setItemId(cDto.getItemId());
-                    iDto = inspecUserRecUploadService.getNcItemData(iDto, version, appPremCorrId);
-                    AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = iDto.getAppPremisesPreInspectionNcItemDto();
-                    if(appPremisesPreInspectionNcItemDto != null) {
-                        int feRec = appPremisesPreInspectionNcItemDto.getFeRectifiedFlag();
-                        if (1 == feRec) {
-                            iDto.setButtonFlag(AppConsts.SUCCESS);
-                        } else if (0 == feRec) {
-                            iDto.setButtonFlag(AppConsts.FAIL);
-                        }
-                        int rec = iDto.getAppPremisesPreInspectionNcItemDto().getIsRecitfied();
-                        if (0 == rec) {
-                            inspecUserRecUploadDtos.add(iDto);
-                        }
-                    }
-                }
-            }
+            inspecUserRecUploadDtos = inspecUserRecUploadService.getNcItemData(version, appPremCorrId, checklistItemDtos, applicationDto.getApplicationNo());
         }
 
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
@@ -218,13 +192,13 @@ public class InspecUserRecUploadDelegator {
     public void inspecUserRectifiUploadConfirm(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadConfirm start ...."));
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
-        String itemId = ParamUtil.getMaskedString(bpc.request, "itemId");
-        log.info(StringUtil.changeForLog("The item id is ===>" + itemId));
-        if(!StringUtil.isEmpty(itemId)) {
+        String ncItemId = ParamUtil.getMaskedString(bpc.request, "ncItemId");
+        log.info(StringUtil.changeForLog("The item id is ===>" + ncItemId));
+        if(!StringUtil.isEmpty(ncItemId)) {
             InspecUserRecUploadDto inspecUserRecUploadDto = null;
             for (InspecUserRecUploadDto iuruDto : inspecUserRecUploadDtos) {
-                if (!StringUtil.isEmpty(itemId)) {
-                    if (itemId.equals(iuruDto.getItemId())) {
+                if (!StringUtil.isEmpty(ncItemId)) {
+                    if (ncItemId.equals(iuruDto.getId())) {
                         inspecUserRecUploadDto = iuruDto;
                     }
                 }
@@ -296,7 +270,7 @@ public class InspecUserRecUploadDelegator {
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         inspecUserRecUploadService.submitRecByUser(loginContext, inspecUserRecUploadDto);
         for(InspecUserRecUploadDto iDto : inspecUserRecUploadDtos){
-            if(iDto.getItemId().equals(inspecUserRecUploadDto.getItemId())){
+            if(iDto.getId().equals(inspecUserRecUploadDto.getId())){
                 iDto.setButtonFlag(AppConsts.SUCCESS);
             }
         }
