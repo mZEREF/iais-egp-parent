@@ -419,7 +419,7 @@ public class RequestForChangeDelegator {
                     ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
                     StringBuffer url = new StringBuffer();
                     url.append("https://").append(bpc.request.getServerName())
-                            .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication/PreparePayment");
+                            .append(RfcConst.PAYMENTPROCESS);
                     String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
                     bpc.response.sendRedirect(tokenUrl);
                 }
