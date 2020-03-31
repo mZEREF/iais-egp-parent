@@ -56,7 +56,7 @@
                           <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments"
                                                        role="tab" data-toggle="tab">Documents</a></div>
 
-                          <div class="swiper-slide"><a id="inspRectification" href="#tabInspection" aria-controls="tabInspection"
+                          <div class="swiper-slide"><a id="recInspTabInspectionClick" href="#tabInspection" aria-controls="tabInspection"
                                                        role="tab" data-toggle="tab">Rectification</a></div>
                           <div class="swiper-slide"><a id="recInspTabProcessingClick" href="#tabProcessing" aria-controls="tabProcessing"
                                                        role="tab" data-toggle="tab">Processing</a></div>
@@ -237,53 +237,65 @@
                               </strong>
                             </div>
                             <iais:section title="" id = "retificationView">
-                            <iais:row>
-                              <iais:field value="Rectifications submitted by Applicant"/>
-                            </iais:row>
-                            <div class="table-gp">
-                              <table class="table">
-                                <thead>
-                                <tr align="center">
-                                  <th>NC Clause</th>
-                                  <th>Checklist Question</th>
-                                  <th>Remarks</th>
-                                  <th>Documents</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <c:choose>
-                                  <c:when test="${empty inspectionPreTaskDto.inspecUserRecUploadDtos}">
-                                    <tr>
-                                      <td colspan="7">
-                                        <iais:message key="ACK018" escape="true"></iais:message>
-                                      </td>
-                                    </tr>
-                                  </c:when>
-                                  <c:otherwise>
-                                    <c:forEach var="proRec" items="${inspectionPreTaskDto.inspecUserRecUploadDtos}">
+                              <iais:row>
+                                <iais:field value="Rectifications submitted by Applicant"/>
+                              </iais:row>
+                              <div class="table-gp">
+                                <table class="table">
+                                  <thead>
+                                  <tr align="center">
+                                    <th><input type="checkbox" name="allNcItemCheck" id="allNcItemCheck" <c:if test="${'check' eq allNcItemCheck}">checked</c:if>
+                                               onchange="javascript:doInspectorProRecCheckAll()" value="<c:out value="${allNcItemCheck}"/>"/></th>
+                                    <th>NC Clause</th>
+                                    <th>Checklist Question</th>
+                                    <th>Remarks</th>
+                                    <th>Documents</th>
+                                  </tr>
+                                  </thead>
+                                  <tbody>
+                                  <c:choose>
+                                    <c:when test="${empty inspectionPreTaskDto.inspecUserRecUploadDtos}">
                                       <tr>
-                                        <td><c:out value="${proRec.checkClause}"/></td>
-                                        <td><iais:code code="${proRec.checkQuestion}"/></td>
-                                        <td><c:out value="${proRec.uploadRemarks}"/></td>
-                                        <td>
-                                          <c:if test="${proRec.fileRepoDtos != null}">
-                                            <c:forEach var="file" items="${proRec.fileRepoDtos}" varStatus="status">
-                                              <div class="fileList ">
+                                        <td colspan="7">
+                                          <iais:message key="ACK018" escape="true"></iais:message>
+                                        </td>
+                                      </tr>
+                                    </c:when>
+                                    <c:otherwise>
+                                      <c:forEach var="proRec" items="${inspectionPreTaskDto.inspecUserRecUploadDtos}" varStatus="status">
+                                        <tr>
+                                          <td>
+                                            <input type="checkbox" name="ncItemCheck" id="ncItemCheck${status.index}"
+                                                    <c:if test="${!empty inspectionPreTaskDto.checkRecRfiNcItems}">
+                                                      <c:forEach items="${inspectionPreTaskDto.checkRecRfiNcItems}" var="checkNcItemId">
+                                                        <c:if test="${proRec.appPremisesPreInspectionNcItemDto.id eq checkNcItemId}">checked="checked"</c:if>
+                                                      </c:forEach>
+                                                    </c:if>
+                                                   onchange="javascript:doInspectorProRecCheck()" value="<c:out value="${proRec.appPremisesPreInspectionNcItemDto.id}"/>"/>
+                                          </td>
+                                          <td><c:out value="${proRec.checkClause}"/></td>
+                                          <td><iais:code code="${proRec.checkQuestion}"/></td>
+                                          <td><c:out value="${proRec.uploadRemarks}"/></td>
+                                          <td>
+                                            <c:if test="${proRec.fileRepoDtos != null}">
+                                              <c:forEach var="file" items="${proRec.fileRepoDtos}" varStatus="status">
+                                                <div class="fileList ">
                                                   <span class="filename server-site" id="130">
                                                     <a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${file.id}"/>&fileRepoName=${file.fileName}" title="Download" class="downloadFile">${file.fileName}</a>
                                                   </span>
-                                              </div>
-                                            </c:forEach>
-                                          </c:if>
-                                        </td>
-                                      </tr>
-                                    </c:forEach>
-                                  </c:otherwise>
-                                </c:choose>
-                                </tbody>
-                              </table>
-                            </div>
-                          </iais:section>
+                                                </div>
+                                              </c:forEach>
+                                            </c:if>
+                                          </td>
+                                        </tr>
+                                      </c:forEach>
+                                    </c:otherwise>
+                                  </c:choose>
+                                  </tbody>
+                                  <span class="error-msg" name="iaisErrorMsg" id="error_checkRecRfiNcItems"></span>
+                                </table>
+                              </div>
+                            </iais:section>
                           </div>
                         </div>
 
@@ -399,19 +411,52 @@
         }
         var validateShowPage = $("#validateShowPage").val();
         if(validateShowPage == "ack"){
-            inspectorProRecJump();
+            inspectorProRecJump(validateShowPage);
+        } else if (validateShowPage == "request") {
+            inspectorProRecJump(validateShowPage);
         }
+        doInspectorProRecCheck();
     })
 
-    function inspectorProRecJump(){
-        $("#recInspTabProcessingClick").click();
+    function inspectorProRecJump(ackValue){
         $("#recInspTabInfo").removeClass('active');
         $("#recInspTabDocuments").removeClass('active');
         $("#recInspTabInspection").removeClass('active');
         $("#recInspTabProcessing").removeClass('active');
-        $("#recInspTabProcessing").addClass('active');
-
+        if(ackValue == "ack") {
+            $("#recInspTabProcessingClick").click();
+            $("#recInspTabProcessing").addClass('active');
+        } else if(ackValue == "request") {
+            $("#recInspTabInspectionClick").click();
+            $("#recInspTabInspection").addClass('active');
+        }
     }
+
+    function doInspectorProRecCheckAll(){
+        if ($('#allNcItemCheck').is(':checked')) {
+            $("input[name = 'ncItemCheck']").attr("checked","true");
+        } else {
+            $("input[name = 'ncItemCheck']").removeAttr("checked");
+        }
+    }
+
+    function doInspectorProRecCheck(){
+        var flag = true;
+        var allNcItemCheck = document.getElementById("allNcItemCheck");
+        var ncItemCheckList = document.getElementsByName("ncItemCheck");
+        for (var x = 0; x < ncItemCheckList.length; x++) {
+            if(ncItemCheckList[x].checked==false){
+                flag = false;
+                break;
+            }
+        }
+        if(flag){
+            allNcItemCheck.checked = true;
+        }else{
+            allNcItemCheck.checked = false;
+        }
+    }
+
     function inspectorProRecSubmit(action){
         $("[name='InspectorProRectificationType']").val(action);
         var mainPoolForm = document.getElementById('mainReviewForm');
