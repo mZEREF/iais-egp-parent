@@ -175,12 +175,12 @@
                                         </span>
                                       <p>
                                         <p><strong>AuthoriseD Person 1</strong></p>
-                                        <p  style="display: inline">Name:</p><p >  Mo Delan</p>
-                                        <p style="display: inline">ID:</p>
+                                        <p  style="display: inline">Name:</p><p style="display: inline">  Mo Delan</p>
+                                        <p >ID:</p>
                                         <br>
                                         <p><strong>AuthoriseD Person 2</strong></p>
-                                        <p style="display: inline">Name:</p><p > Linda Tan MedAlert</p>
-                                        <p style="display: inline">ID:</p>
+                                        <p style="display: inline">Name:</p><p style="display: inline"> Linda Tan MedAlert</p>
+                                        <p >ID:</p>
                                         <br>
                                         <p style="display: inline"><strong>MedAlert Contact Person:</strong></p><p style="display: inline"> Shun Qiu</p>
                                       </div>
