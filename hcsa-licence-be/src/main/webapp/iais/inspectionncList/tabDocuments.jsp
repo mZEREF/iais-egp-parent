@@ -70,17 +70,54 @@
                         <th>Action</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td colspan="6">
-                            <iais:message key="ACK018"
-                                          escape="true"/>
-                        </td>
-                    </tr>
+                    <tbody id="tbodyFileListId">
+                    <c:choose>
+                        <c:when test="${empty applicationViewDto.appIntranetDocDtoList}">
+                            <tr>
+                                <td colspan="6">
+                                    <iais:message key="ACK018"
+                                                  escape="true"/>
+                                </td>
+                            </tr>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
+                                <tr>
+                                    <td>
+                                        <p><c:out value="${interalFile.docName}"></c:out></p>
+                                    </td>
+                                    <td>
+                                        <p><a href="#"><c:out
+                                                value="${interalFile.docName}.${interalFile.docType}"></c:out></a></p>
+                                    </td>
+                                    <td>
+                                        <p><c:out value="${interalFile.docSize}KB"></c:out></p>
+                                    </td>
+                                    <td>
+                                        <p><c:out value="${interalFile.submitBy}"></c:out></p>
+                                    </td>
+                                    <td>
+                                        <p><fmt:formatDate value='${interalFile.submitDt}' pattern='dd/MM/yyyy HH:mm:ss'/></p>
+                                    </td>
+                                    <td>
+                                        <a onclick="javascript:deleteFile(this,'${interalFile.id}');"><label style="color: #D22727; font-size: 2rem; cursor:pointer;">X</label></a>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
+
                     </tbody>
                 </table>
+                <%--upload file--%>
+                <div align="right">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadDoc">
+                        Upload Document
+                    </button>
+                </div>
             </div>
         </div>
     </div>
+
 
 

@@ -14,10 +14,10 @@
             <span  style="font-size: 18px"><strong>Inspection Start Time (HH MM)</strong></span>
         </div>
         <div style="float: left" class="col-md-6">
-            <iais:select name="startHour" options="hhSelections" value="${serListDto.startHour}" firstOption="NA"></iais:select>
+            <iais:select name="startHour" options="hhSelections" value="${serListDto.startHour}" firstOption="--"></iais:select>
             </div>
         <div style="float: left;padding-left: 10px;" class="col-md-6">
-            <iais:select name="startHourMin" options="ddSelections" value="${serListDto.startMin}" firstOption="NA"></iais:select>
+            <iais:select name="startHourMin" options="ddSelections" value="${serListDto.startMin}" firstOption="--"></iais:select>
             </div>
     </div>
     <div class="input-group">  <span class="error-msg" id="error_sTime" name="iaisErrorMsg"></span></div>
@@ -26,10 +26,10 @@
             <span  style="font-size: 18px"><strong>Inspection End Time (HH MM)&nbsp;&nbsp;</strong></span>
         </div>
         <div style="float: left" class="col-md-6">
-           <iais:select name="endHour" options="hhSelections" value="${serListDto.endHour}" firstOption="NA" ></iais:select>
+           <iais:select name="endHour" options="hhSelections" value="${serListDto.endHour}" firstOption="--" ></iais:select>
            </div>
         <div style="float: left;padding-left: 10px;" class="col-md-6">
-               <iais:select name="endHourMin" options="ddSelections" value="${serListDto.endMin}" firstOption="NA"></iais:select>
+               <iais:select name="endHourMin" options="ddSelections" value="${serListDto.endMin}" firstOption="--"></iais:select>
         </div>
     </div>
     <div class="input-group"> <span class="error-msg" id="error_eTime" name="iaisErrorMsg"></span>
