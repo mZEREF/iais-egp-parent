@@ -511,6 +511,7 @@
                       $('.po-content:last').after(data.sucInfo);
                       poSelect();
                       retrieveData();
+                      removePo();
                     }else{
                         $('.poErrorMsg').html(data.errInfo);
                     }
@@ -541,6 +542,7 @@
                         $('.dpo-content:last').after(data.sucInfo);
                         $('.deputyPoSelect').unbind();
                         dpoSelect();
+                      removeDpo();
                     }else{
                         $('.dpoErrorMsg').html(data.errInfo);
                     }
@@ -617,5 +619,20 @@
         var designationVal = $poContentEle.find('option[value="' + data.designation + '"]').html();
         $poContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
     }
+    var removePo = function () {
+      $('.removePoBtn').click(function () {
+        var $premContentEle= $(this).closest('div.po-content');
+        $premContentEle.remove();
 
+      });
+
+    }
+    var removeDpo = function () {
+      $('.removeDpoBtn').click(function () {
+        var $premContentEle= $(this).closest('div.dpo-content');
+        $premContentEle.remove();
+
+      });
+
+    }
 </script>

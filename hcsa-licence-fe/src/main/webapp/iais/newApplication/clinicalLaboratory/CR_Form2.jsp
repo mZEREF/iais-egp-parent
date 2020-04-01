@@ -432,7 +432,6 @@
             success:function (data) {
                 console.log(data.res);
                 if ('success' == data.res) {
-                    data.sucInfo = "<hr/>" + data.sucInfo;
                     $('.assignContent:last').after(data.sucInfo);
                     showSpecialty();
 
@@ -446,7 +445,8 @@
                             $parentEle.find('> .new-officer-form').addClass('hidden');
                         }
                     });
-                    //init font-size
+                  removeCgo();
+                  //init font-size
                     $('.cgo-header').css('font-size',"18px");
                     <!--change psn item -->
                     changePsnItem();
@@ -479,5 +479,12 @@
         });
 
     }
+    var removeCgo = function () {
+      $('.removeBtn').click(function () {
+        var $premContentEle= $(this).closest('table.assignContent');
+        $premContentEle.remove();
 
+      });
+
+    }
 </script>

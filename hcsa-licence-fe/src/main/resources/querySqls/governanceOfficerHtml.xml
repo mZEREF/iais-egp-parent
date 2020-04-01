@@ -21,6 +21,9 @@
                       <span class="error-msg" name="iaisErrorMsg" id="error_assignSelect1"></span>
                     </div>
                   </div>
+                  <div class="form-check">
+                    <strong class="removeBtn">X</strong>
+                  </div>
                 </div>
               </div>
               <div class="profile-info-gp hidden">
