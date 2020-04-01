@@ -18,6 +18,7 @@
             <input type="hidden" name="crud_action_additional" id="crud_action_additional"/>
             <input type="hidden" name="interalFileId" id="interalFileId"/>
             <input type="hidden" name="dateTimeShow" value="${recomInDateOnlyShow}"/>
+            <input type="hidden" name="recommendationShow" value="${recommendationOnlyShow}"/>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">

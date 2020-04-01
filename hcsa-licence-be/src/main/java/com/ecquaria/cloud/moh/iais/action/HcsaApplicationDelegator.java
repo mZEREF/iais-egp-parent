@@ -187,7 +187,7 @@ public class HcsaApplicationDelegator {
             }else{
                 //if  this is the last stage
                 routingStage.put(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
-                        MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL));
+                        "Approval");
             }
         }
 
@@ -310,7 +310,7 @@ public class HcsaApplicationDelegator {
             nextStageList.add(new SelectOption("ROLLBACK", "Internal Route Back"));
         }
         //62761
-        if(!(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()))){
+        if(!(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()))){
             nextStageList.add(new SelectOption("PROCRFI", "Request For Information"));
         }
         ParamUtil.setSessionAttr(bpc.request, "nextStages", (Serializable)nextStageList);
@@ -366,6 +366,10 @@ public class HcsaApplicationDelegator {
             String appPremCorreId=taskDto.getRefNo();
             //save recommendation
             String recommendationStr = ParamUtil.getString(bpc.request,"recommendation");
+            if(StringUtil.isEmpty(recommendationStr)){
+                //recommendationShow
+                recommendationStr = ParamUtil.getString(bpc.request,"recommendationShow");
+            }
             String dateStr = ParamUtil.getDate(bpc.request, "tuc");
             String dateTimeShow = ParamUtil.getString(bpc.request,"dateTimeShow");
             if(StringUtil.isEmpty(recommendationStr)){
