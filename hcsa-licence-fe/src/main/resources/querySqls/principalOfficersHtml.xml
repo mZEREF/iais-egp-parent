@@ -16,12 +16,12 @@
                           (1)
                         </div>
                       </div>
-                      <div class="form-check">
-                        <strong class="removePoBtn" style="color:#ff0000;">X</strong>
-                      </div>
                     </div>
                   </div>
                 </div>
+              </div>
+              <div class="form-check">
+                <strong class="removePoBtn" style="color:#ff0000;">X</strong>
               </div>
               <div class="principalOfficers hidden">
                 <div class="row">
@@ -138,11 +138,11 @@
                       (4)
                     </div>
                   </div>
-                  <div class="form-check">
-                    <strong class="removeDpoBtn" style="color:#ff0000;">X</strong>
-                  </div>
                 </div>
               </div>
+            </div>
+            <div class="form-check">
+              <strong class="removeDpoBtn" style="color:#ff0000;">X</strong>
             </div>
             <div class="deputyPrincipalOfficers hidden">
                 <div class="row">
