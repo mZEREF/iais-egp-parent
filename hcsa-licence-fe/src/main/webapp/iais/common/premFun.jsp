@@ -376,10 +376,22 @@
             $premSelect.find('input[name="'+premisesType+'FireSafetyCertIssuedDate"]').val(data.certIssuedDtStr);
             $premSelect.find('input[name="'+premisesType+'OffTelNo"]').val(data.offTelNo);
             $premSelect.find('input[name="'+premisesType+'IsOtherLic"]').val(data.locateWithOthers);
-            $premSelect.find('input[name="'+premisesType+'StartHH"]').val(data.onsiteStartHH);
-            $premSelect.find('input[name="'+premisesType+'StartMM"]').val(data.onsiteStartMM);
-            $premSelect.find('input[name="'+premisesType+'EndHH"]').val(data.onsiteEndHH);
-            $premSelect.find('input[name="'+premisesType+'EndMM"]').val(data.onsiteEndMM);
+
+            $premSelect.find('select[name="'+premisesType+'StartHH"]').val(data.onsiteStartHH);
+            var startHH = $premSelect.find('option[value="' + data.onsiteStartHH + '"]').html();
+            $premSelect.find('select[name="'+premisesType+'StartHH"]').next().find('.current').html(startHH);
+
+            $premSelect.find('select[name="'+premisesType+'StartMM"]').val(data.onsiteStartMM);
+            var startMM = $premSelect.find('option[value="' + data.onsiteStartMM + '"]').html();
+            $premSelect.find('select[name="'+premisesType+'StartMM"]').next().find('.current').html(startMM);
+
+            $premSelect.find('select[name="'+premisesType+'EndHH"]').val(data.onsiteEndHH);
+            var endHH = $premSelect.find('option[value="' + data.onsiteEndHH + '"]').html();
+            $premSelect.find('select[name="'+premisesType+'EndHH"]').next().find('.current').html(endHH);
+
+            $premSelect.find('select[name="'+premisesType+'EndMM"]').val(data.onsiteEndMM);
+            var endMM = $premSelect.find('option[value="' + data.onsiteEndMM + '"]').html();
+            $premSelect.find('select[name="'+premisesType+'EndMM"]').next().find('.current').html(endMM);
         }else if('conveyance' == premisesType){
             $premSelect.find('input[name="'+premisesType+'VehicleNo"]').val(data.conveyanceVehicleNo);
             $premSelect.find('input[name="'+premisesType+'BlockNo"]').val(data.conveyanceBlockNo);
@@ -388,10 +400,19 @@
             $premSelect.find('input[name="'+premisesType+'UnitNo"]').val(data.conveyanceUnitNo);
             $premSelect.find('input[name="'+premisesType+'BuildingName"]').val(data.conveyanceBuildingName);
             $premSelect.find('input[name="'+premisesType+'StreetName"]').val(data.conveyanceStreetName);
-            $premSelect.find('input[name="'+premisesType+'StartHH"]').val(data.conStartHH);
-            $premSelect.find('input[name="'+premisesType+'StartMM"]').val(data.conStartMM);
-            $premSelect.find('input[name="'+premisesType+'EndHH"]').val(data.conEndHH);
-            $premSelect.find('input[name="'+premisesType+'EndMM"]').val(data.conEndMM);
+
+            $premSelect.find('select[name="'+premisesType+'StartHH"]').val(data.conStartHH);
+            var startHH = $premSelect.find('option[value="' + data.conStartHH + '"]').html();
+            $premSelect.find('select[name="'+premisesType+'StartHH"]').next().find('.current').html(startHH);
+            $premSelect.find('select[name="'+premisesType+'StartMM"]').val(data.conStartMM);
+            var startMM = $premSelect.find('option[value="' + data.conStartMM + '"]').html();
+            $premSelect.find('select[name="'+premisesType+'StartMM"]').next().find('.current').html(startMM);
+            $premSelect.find('select[name="'+premisesType+'EndHH"]').val(data.conEndHH);
+            var endHH = $premSelect.find('option[value="' + data.conEndHH + '"]').html();
+            $premSelect.find('select[name="'+premisesType+'EndHH"]').next().find('.current').html(endHH);
+            $premSelect.find('select[name="'+premisesType+'EndMM"]').val(data.conEndMM);
+            var endMM = $premSelect.find('option[value="' + data.conEndMM + '"]').html();
+            $premSelect.find('select[name="'+premisesType+'EndMM"]').next().find('.current').html(endMM);
         }
     }
 
@@ -407,22 +428,46 @@
                 }else if(premisesType == 'conveyanceSel'){
                     $contentDivEle = $Ele.find('div.new-premise-form-conv');
                 }
-                genPubHolDayFun($Ele,$contentDivEle,'N','N');
+                //genPubHolDayFun($Ele,$contentDivEle,'N','N');
             }
-            $Ele.find('div.pubHolidayContent').eq(k).find('input[name="'+currentPremVal+"PubHoliday"+k+'"]').val(v.phDateStr);
+            $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PubHoliday'+k+'"]').val(v.phDateStr);
+            var publicHoliday = $Ele.find('div.pubHolidayContent').eq(k).find('option[value="' +v.phDateStr+ '"]').html();
+            $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PubHoliday'+k+'"]').next().find('.current').html(publicHoliday);
+
             if(premisesType == 'onSite'){
-                $Ele.find('div.pubHolidayContent').eq(k).find('input[name="'+currentPremVal+"PbHolDayStartHH"+k+'"]').val(v.onsiteStartFromHH);
-                $Ele.find('div.pubHolidayContent').eq(k).find('input[name="'+currentPremVal+"PbHolDayStartMM"+k+'"]').val(v.onsiteStartFromMM);
-                $Ele.find('div.pubHolidayContent').eq(k).find('input[name="'+currentPremVal+"PbHolDayEndHH"+k+'"]').val(v.onsiteEndToHH);
-                $Ele.find('div.pubHolidayContent').eq(k).find('input[name="'+currentPremVal+"PbHolDayEndMM"+k+'"]').val(v.onsiteEndToMM);
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayStartHH'+k+'"]').val(v.onsiteStartFromHH);
+                var StartFromHH = $Ele.find('div.pubHolidayContent').eq(k).find('option[value="' +v.onsiteStartFromHH+ '"]').html();
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayStartHH'+k+'"]').next().find('.current').html(StartFromHH);
+
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayStartMM'+k+'"]').val(v.onsiteStartFromMM);
+                var StartFromMM = $Ele.find('div.pubHolidayContent').eq(k).find('option[value="' +v.onsiteStartFromMM+ '"]').html();
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayStartMM'+k+'"]').next().find('.current').html(StartFromMM);
+
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayEndHH'+k+'"]').val(v.onsiteEndToHH);
+                var EndToHH = $Ele.find('div.pubHolidayContent').eq(k).find('option[value="' +v.onsiteEndToHH+ '"]').html();
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayEndHH'+k+'"]').next().find('.current').html(EndToHH);
+
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayEndMM'+k+'"]').val(v.onsiteEndToMM);
+                var EndToMM = $Ele.find('div.pubHolidayContent').eq(k).find('option[value="' +v.onsiteEndToMM+ '"]').html();
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayEndMM'+k+'"]').next().find('.current').html(EndToMM);
+
             }else if(premisesType == 'conveyance'){
-                $Ele.find('div.pubHolidayContent').eq(k).find('input[name="'+currentPremVal+"PbHolDayStartHH"+k+'"]').val(v.convStartFromHH);
-                $Ele.find('div.pubHolidayContent').eq(k).find('input[name="'+currentPremVal+"PbHolDayStartMM"+k+'"]').val(v.convStartFromMM);
-                $Ele.find('div.pubHolidayContent').eq(k).find('input[name="'+currentPremVal+"PbHolDayEndHH"+k+'"]').val(v.convEndToHH);
-                $Ele.find('div.pubHolidayContent').eq(k).find('input[name="'+currentPremVal+"PbHolDayEndMM"+k+'"]').val(v.convEndToMM);
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayStartHH'+k+'"]').val(v.convStartFromHH);
+                var StartFromHH = $Ele.find('div.pubHolidayContent').eq(k).find('option[value="' +v.convStartFromHH+ '"]').html();
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayStartHH'+k+'"]').next().find('.current').html(StartFromHH);
+
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayStartMM'+k+'"]').val(v.convStartFromMM);
+                var StartFromMM = $Ele.find('div.pubHolidayContent').eq(k).find('option[value="' +v.convStartFromMM+ '"]').html();
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayStartMM'+k+'"]').next().find('.current').html(StartFromMM);
+
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayEndHH'+k+'"]').val(v.convEndToHH);
+                var EndToHH = $Ele.find('div.pubHolidayContent').eq(k).find('option[value="' +v.convEndToHH+ '"]').html();
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayEndHH'+k+'"]').next().find('.current').html(EndToHH);
+
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayEndMM'+k+'"]').val(v.convEndToMM);
+                var EndToMM = $Ele.find('div.pubHolidayContent').eq(k).find('option[value="' +v.convEndToMM+ '"]').html();
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayEndMM'+k+'"]').next().find('.current').html(EndToMM);
             }
-
-
         });
     }
 

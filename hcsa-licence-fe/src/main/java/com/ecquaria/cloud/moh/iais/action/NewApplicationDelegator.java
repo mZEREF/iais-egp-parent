@@ -3139,8 +3139,9 @@ public class NewApplicationDelegator {
         }
 
         List<SelectOption> publicHolidayList = IaisCommonUtils.genNewArrayList();
-        publicHolidayList.add(new SelectOption("2020-04-10 00:00:00","Good Friday"));
-        publicHolidayList.add(new SelectOption("2020-05-01 00:00:00","Labour Day"));
+        publicHolidayList.add(new SelectOption("10/04/2020","Good Friday"));
+        publicHolidayList.add(new SelectOption("01/05/2020","Labour Day"));
+//        publicHolidayList.add(new SelectOption("03/02/2020","ZiXian Day"));
 
         ParamUtil.setRequestAttr(request, "premiseHours", timeHourList);
         ParamUtil.setRequestAttr(request, "premiseMinute", timeMinList);
