@@ -85,6 +85,7 @@ public class InspecAssignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "commPools", null);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "sub_date2", null);
     }
 
     /**
