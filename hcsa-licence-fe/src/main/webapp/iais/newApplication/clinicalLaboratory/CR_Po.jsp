@@ -510,6 +510,7 @@
                       console.log(data.res);
                       $('.po-content:last').after(data.sucInfo);
                       poSelect();
+                      removePo();
                       retrieveData();
                     }else{
                         $('.poErrorMsg').html(data.errInfo);
@@ -540,6 +541,7 @@
                         console.log("suc");
                         $('.dpo-content:last').after(data.sucInfo);
                         dpoSelect();
+                        removeDpo();
                     }else{
                         $('.dpoErrorMsg').html(data.errInfo);
                     }
@@ -616,5 +618,20 @@
         var designationVal = $poContentEle.find('option[value="' + data.designation + '"]').html();
         $poContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
     }
+    var removePo = function () {
+      $('.removePoBtn').click(function () {
+        var $premContentEle= $(this).closest('div.po-content');
+        $premContentEle.remove();
 
+      });
+
+    }
+    var removeDpo = function () {
+      $('.removeDpoBtn').click(function () {
+        var $premContentEle= $(this).closest('div.dpo-content');
+        $premContentEle.remove();
+
+      });
+
+    }
 </script>
