@@ -539,6 +539,7 @@
                     if ('success' == data.res) {
                         console.log("suc");
                         $('.dpo-content:last').after(data.sucInfo);
+                        $('.deputyPoSelect').unbind();
                         dpoSelect();
                     }else{
                         $('.dpoErrorMsg').html(data.errInfo);
