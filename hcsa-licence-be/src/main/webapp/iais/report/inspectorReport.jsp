@@ -198,8 +198,8 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
-                <div class="text ">
-                    <p><span>Part I: Inspection Checklist</span></p>
+                <div class="text">
+                    <p><h4><strong><span>Part I: Inspection Checklist</span></strong></h4></p>
                 </div>
                 <table class="table">
                     <tr>
@@ -212,8 +212,8 @@
                         <td class="col-xs-4"></td>
                     </tr>
                 </table>
-                <div class="text ">
-                    <p><span>Part II: Findings</span></p>
+                <div class="text">
+                    <p><h4><strong><span>Part II: Findings</span></strong></h4></p>
                 </div>
                 <div class="table-gp">
                     <table class="table" >
@@ -231,7 +231,7 @@
                                 <p>Marked for Audit</p>
                             </td>
                             <td class="col-xs-4">
-                                <p><c:out value="${insRepDto.markedForAudit}"/> <fmt:formatDate value="${insRepDto.tcuDate}" pattern="dd/MM/yyyy"/></p>
+                                <p><c:out value="${insRepDto.markedForAudit}"/>&nbsp;&nbsp;<fmt:formatDate value="${insRepDto.tcuDate}" pattern="dd/MM/yyyy"/></p>
                             </td>
                             <td class="col-xs-4"/>
                         </tr>

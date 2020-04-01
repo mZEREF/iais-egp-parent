@@ -125,7 +125,7 @@
                                 </td>
                                 <td>
                                   <c:choose>
-                                    <c:when test="${levelTwoList.id=='27D8EB5B-1123-EA11-BE78-000C29D29DB0'}"><input type="text" name="pleaseIndicate"   value="${pleaseIndicate}"></c:when>
+                                    <c:when test="${levelTwoList.id=='27D8EB5B-1123-EA11-BE78-000C29D29DB0'}"><input type="text" name="pleaseIndicate"  value="${pleaseIndicate}"></c:when>
                                   </c:choose>
                                 </td>
                               </tr>
@@ -172,23 +172,23 @@
   <br/>
 </c:forEach>
 <script>
-    $(document).ready(function () {
+  $(document).ready(function () {
 
-        $('input[type="checkbox"]:checked').each(function () {
-            var parentID = $(this).closest('.parent-form-check').attr('data-parent');
-            $('.sub-form-check[data-child="'+parentID+'"]').removeClass('disabled');
-        });
-
-        doEdit();
+    $('input[type="checkbox"]:checked').each(function () {
+      var parentID = $(this).closest('.parent-form-check').attr('data-parent');
+      $('.sub-form-check[data-child="'+parentID+'"]').removeClass('disabled');
     });
 
+    doEdit();
+  });
 
-    var doEdit = function () {
-        $('#edit').click(function () {
-            $('#edit-content').addClass('hidden');
-            $('#fieldset-content').prop('disabled',false);
-            $('#isEditHiddenVal').val('1');
-        });
-    }
+
+  var doEdit = function () {
+    $('#edit').click(function () {
+      $('#edit-content').addClass('hidden');
+      $('#fieldset-content').prop('disabled',false);
+      $('#isEditHiddenVal').val('1');
+    });
+  }
 
 </script>

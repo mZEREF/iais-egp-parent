@@ -2,14 +2,14 @@
 <Application defaultStart="/Steps/StartStep/start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInternetInbox" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
  <WebServices/>
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="start" x="-100" y="100">
+  <StartStep defClass="" executor="" icon="" name="start" x="-90" y="-80">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="prepareDate" x="60" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="prepareDate" x="180" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -243,11 +243,11 @@
     <JavaCode defClass="" executor="" methodName="msgViewStep_OnStepProcess_0" name="msgViewStep_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doArchive" x="790" y="0">
+  <AutomaticStep defClass="" executor="" icon="" name="initToPage" x="-100" y="70">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doArchive_OnStepProcess_0" name="doArchive_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="initToPage_OnStepProcess_0" name="initToPage_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -290,7 +290,6 @@
    <SwitchCase component="/Steps/AutomaticStep/toAppPage" value="&quot;msgToApp&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/msgToViewStep" value="&quot;msgToView&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/msgToArchive" value="&quot;msgToArchive&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doArchive" value="&quot;msgDoArchive&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/appDoSort" executor="" icon="" leftOperand="app_action_type" name="Switch2" x="140" y="550">
    <Description/>
@@ -327,11 +326,18 @@
    <SwitchCase component="/Steps/AutomaticStep/toLicencePage" value="&quot;toLic&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareDate" value="&quot;toMsg&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/toAppPage" value="&quot;toApp&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/msgToViewStep" value="&quot;doArchive&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/prepareDate" executor="" icon="" leftOperand="msg_page_action" name="Switch5" x="680" y="-70">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/msgToArchive" value="&quot;archive_view&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareDate" value="\u201cmsg_view\u201d"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/prepareDate" executor="" icon="" leftOperand="init_to_page" name="Switch6" x="70" y="70">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/prepareDate" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/toLicencePage" value="&quot;initLic&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/toAppPage" value="&quot;initApp&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
@@ -350,11 +356,11 @@
  <StageIndicator/>
  <AuthenticationRequire agent="false" authentication="true" citizen="true" counterStaff="false" workingGroup=""/>
  <Links>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Direct" name="" sourceName="/Steps/StartStep/start" style="oblique">
-   <position>{(-80,120)(80,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/initToPage" linkstyle="Direct" name="" sourceName="/Steps/StartStep/start" style="oblique">
+   <position>{(-70,-60)(-80,90)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/msgPageView" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareDate" style="oblique">
-   <position>{(80,120)(420,120)}</position>
+   <position>{(200,120)(420,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareSwitch" linkstyle="Direct" name="" sourceName="/Pages/WebPage/msgPageView" style="oblique">
    <position>{(420,120)(570,120)}</position>
@@ -381,7 +387,7 @@
    <position>{(720,500)(720,620)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
-   <position>{(970,540)(1180,539)(1179,-70)(96,-73)(80,120)}</position>
+   <position>{(970,540)(1180,539)(1179,-70)(216,-69)(200,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/appDoSort" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(160,570)(100,720)}</position>
@@ -408,7 +414,7 @@
    <position>{(160,570)(-60,820)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/toMsgPage" style="rectanular">
-   <position>{(-60,820)(80,120)}</position>
+   <position>{(-60,820)(200,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/toMsgPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
    <position>{(720,620)(500,1073)(-53,1068)(-60,820)}</position>
@@ -564,7 +570,7 @@
    <position>{(1100,450)(700,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
-   <position>{(1100,450)(80,120)}</position>
+   <position>{(1100,450)(200,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/toAppPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
    <position>{(1100,450)(160,260)}</position>
@@ -582,13 +588,22 @@
    <position>{(700,-50)(700,40)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
-   <position>{(700,-50)(80,120)}</position>
+   <position>{(700,-50)(200,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch5" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doArchive" style="oblique">
-   <position>{(810,20)(700,-50)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/msgToViewStep" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
+   <position>{(1100,450)(1163,443)(1162,112)(1080,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doArchive" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(810,20)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch6" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/initToPage" style="rectanular">
+   <position>{(-80,90)(90,90)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch6" style="oblique">
+   <position>{(90,90)(200,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/toLicencePage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch6" style="oblique">
+   <position>{(90,90)(700,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/toAppPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch6" style="oblique">
+   <position>{(90,90)(160,260)}</position>
   </SynchronousLink>
  </Links>
  <RestServices/>

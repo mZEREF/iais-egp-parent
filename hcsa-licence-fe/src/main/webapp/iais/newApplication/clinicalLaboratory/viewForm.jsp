@@ -28,14 +28,9 @@
       <%@include file="../../common/previewSvcDocument.jsp"%>
     </c:if><%--STEP_DOCUMENTS--%>
     <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST006'}">
-    <%@include file="../../common/previewSvcPerson.jsp"%>
+      <%@include file="../../common/previewSvcPerson.jsp"%>
     </c:if><%--STEP_SERVICE_PERSONNEL--%>
   </c:forEach>
-
-
-
-
-
 
 </div>
 

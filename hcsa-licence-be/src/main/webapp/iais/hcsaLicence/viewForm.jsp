@@ -20,7 +20,7 @@
 <div class="panel-main-content">
 
   <div class="amended-service-info-gp">
-    <h2>RADIOLOGICAL MODALITIES</h2>
+    <h2>LABORATORY DISCIPLINES</h2>
     <c:forEach var="appSvcLaboratoryDisciplinesDto" items="${currentPreviewSvcInfo.appSvcLaboratoryDisciplinesDtoList}" varStatus="status">
         <div class="amend-preview-info">
           <p><span class="preview-title col-xs-6 col-md-4">Premises ${status.index+1}: ${appGrpPremisesDtoList[status.index].address} </span><%--${appSvcLaboratoryDisciplinesDto.premiseGetAddress}--%>
@@ -160,9 +160,14 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Type:</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-4">${cgo.professionType  }</span>
-                        <span  class="col-xs-6 col-md-4">
-
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                        <span class="col-xs-6 col-md-4">
+                            <c:choose>
+                              <c:when test="${cgo.professionType=='PROF001'  }">Dentist</c:when>
+                              <c:when test="${cgo.professionType=='PROF002'  }">Doctor</c:when>
+                              <c:when test="${cgo.professionType=='PROF003'  }">Nurse</c:when>
+                            </c:choose>
+                        </span>
                         <wrms:value width="7">
                           <span class="newVal compareTdStyle" attr="${cgo.professionType  }" style="display: none"><label><c:out value="${cgo.professionType  }"/></label></span>
                           <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].professionType}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].professionType}"/></label></span>
@@ -293,7 +298,7 @@
                       <tr>
                         <c:if test="${stat.first}">
                           <td style="text-align: center" rowspan="${reloadDisciplineAllocationMap[reloadMapValue].size()}">
-                            <p class="visible-xs visible-sm table-row-title">${appGrpPrem.address} </p>
+                              ${appGrpPrem.address}
                               <wrms:value width="7">
                                 <span class="newVal " attr="${appGrpPrem.address} "  style="display: none"><label><c:out value=""/></label></span>
                                 <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/></label></span>
@@ -311,7 +316,7 @@
 
                         </td>
                         <td style="text-align: center">
-                          <p>${disciplineAllocation.cgoSelName}   </p>
+                            ${disciplineAllocation.chkLstName}
 
                             <wrms:value width="7">
                               <span class="newVal " attr="${disciplineAllocation.cgoSelName}"  style="display: none"><label><c:out value="${disciplineAllocation.cgoSelName}"/></label></span>
@@ -524,7 +529,7 @@
               <c:forEach var="svcDoc" items="${currentPreviewSvcInfo.appSvcDocDtoLit}" varStatus="status">
                 <tr>
                   <td>
-                  <div class="field col-sm-4 control-label formtext"><label>Docment1 for Premise1:</label></div>
+                  <div class="field col-sm-6 control-label formtext"><label>${svcDoc.upFileName}:</label></div>
                   </td>
                 </tr>
                 <tr>

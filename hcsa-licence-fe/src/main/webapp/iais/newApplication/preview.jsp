@@ -145,8 +145,6 @@
         })
     });
 
-
-
     $('.svc-pannel-collapse').click(function () {
         $svcContenEle = $(this).closest('div.svc-content');
         $svcContenEle.find('.svc-iframe').css('height','400px');

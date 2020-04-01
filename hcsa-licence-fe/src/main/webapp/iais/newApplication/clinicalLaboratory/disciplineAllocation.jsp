@@ -109,6 +109,7 @@
                                           </div>
                                         </td>
                                       </c:if>
+                                      </td>
                                     </tr>
                                   </c:forEach>
                                   </tbody>

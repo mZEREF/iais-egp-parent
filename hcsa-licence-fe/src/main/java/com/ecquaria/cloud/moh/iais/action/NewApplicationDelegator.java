@@ -239,6 +239,7 @@ public class NewApplicationDelegator {
      */
     public void preparePremises(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do preparePremises start ...."));
+        getTimeList(bpc.request);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         //get svcCode to get svcId
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
@@ -679,7 +680,6 @@ public class NewApplicationDelegator {
                     }
                 }
             }
-
         }
 
 
@@ -820,20 +820,12 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doSaveDraft start ...."));
 
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        HashMap<String,String> coMap=(HashMap<String, String>)bpc.getSession().getAttribute("coMap");
-        List<String> strList=new ArrayList<>(4);
-        coMap.forEach((k,v)->{
-            if(!StringUtil.isEmpty(v)){
-                strList.add(v);
-            }
-        });
-
         if(StringUtil.isEmpty(appSubmissionDto.getDraftNo())){
             String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
             log.info(StringUtil.changeForLog("the draftNo -->:") + draftNo);
             appSubmissionDto.setDraftNo(draftNo);
         }
-        appSubmissionDto.setStepColor(strList);
+//        appSubmissionDto.setStepColor(strList);
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         log.info(StringUtil.changeForLog("the do doSaveDraft end ...."));
@@ -1802,7 +1794,7 @@ public class NewApplicationDelegator {
 
     //todo
 
-    public static Map<String,String> doCheckBox( BaseProcessClass bpc,StringBuilder sB,  Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig){
+    public static Map<String,String> doCheckBox( BaseProcessClass bpc,StringBuilder sB,Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig){
 
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         Map<String,String> errorMap=IaisCommonUtils.genNewHashMap();
@@ -1861,7 +1853,7 @@ public class NewApplicationDelegator {
 
     }
 
-    private static void  dolabory(Map<String,String> map ,List<AppSvcLaboratoryDisciplinesDto> list,String serviceId, StringBuilder sB){
+    private static void dolabory(Map<String,String> map ,List<AppSvcLaboratoryDisciplinesDto> list,String serviceId, StringBuilder sB){
         if(list!=null&&list.isEmpty()){
 
         }
@@ -2394,6 +2386,7 @@ public class NewApplicationDelegator {
         List<String> names = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         if(appSubmissionDto != null ){
+            log.info(StringUtil.changeForLog("appSubmissionDto is not null"));
             // from draft,rfi
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
@@ -2407,6 +2400,8 @@ public class NewApplicationDelegator {
                     }
 
                 }
+            }else{
+                log.info(StringUtil.changeForLog("appSvcRelatedInfoDtoList is empty"));
             }
         }else {
             List<String> baseServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseService");
@@ -2680,14 +2675,11 @@ public class NewApplicationDelegator {
                                 MasterCodeDto masterCode=(MasterCodeDto)masterCodeDto;
                                 String codeValue = masterCode.getCodeValue();
                                 String[] s = codeValue.split(" ");
-
                                 for(int index=0;index<s.length;index++){
                                     if(hciName.toUpperCase().contains(s[index].toUpperCase())){
                                         errorMap.put("hciName"+i,"CHKLMD001_ERR002");
                                     }
-
                                 }
-
                             }
                         }
                         String offTelNo = appGrpPremisesDtoList.get(i).getOffTelNo();
@@ -3152,6 +3144,20 @@ public class NewApplicationDelegator {
         return svcAllPsnConfig;
     }
 
+
+
+    private void getTimeList(HttpServletRequest request){
+        List<SelectOption> timeHourList = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i< 24;i++){
+            timeHourList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
+        }
+        List<SelectOption> timeMinList = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i< 60;i++){
+            timeMinList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
+        }
+        ParamUtil.setRequestAttr(request, "premiseHours", timeHourList);
+        ParamUtil.setRequestAttr(request, "premiseMinute", timeMinList);
+    }
 
 }
 

@@ -138,8 +138,16 @@ public interface FillUpCheckListGetAppClient {
 
     @GetMapping(value = "/iais-appintranetdoc/get-appintranetdoc-by-premid-status", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppIntranetDocDto> getAppIntranetDocByPremIdAndStatus(@RequestParam(name = "premId") String premId,@RequestParam(name = "docStatus") String status );
+
+    @GetMapping(value = "/iais-appintranetdoc/get-appintranetdocList-by-premid-status", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppIntranetDocDto>> getAppIntranetDocListByPremIdAndStatus(@RequestParam(name = "premId") String premId,@RequestParam(name = "docStatus") String status );
+
     @GetMapping(value = "/iais-appintranetdoc/delete-appintranetdoc-by-premid", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> deleteAppIntranetDocsByPremId(@RequestParam(name = "premId") String premId);
+
+    @GetMapping(value = "/iais-appintranetdoc/delete-appintranetdoc-by-id", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> deleteAppIntranetDocsById(@RequestParam(name = "id") String id);
+
     @PostMapping(value = "/iais-appintranetdoc/save-appintranetdoc",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> saveAppIntranetDocByAppIntranetDoc(@RequestBody AppIntranetDocDto  appIntranetDocDto);
 

@@ -15,7 +15,7 @@ import java.util.List;
  * @author Wenkang
  * @date 2019/12/4 15:13
  */
-public class OrganizationMainClientFallback {
+public class OrganizationMainClientFallback implements OrganizationMainClient{
     public FeignResponseEntity<List<OrgUserDto>> retrieveOrgUserAccount(List<String> ids) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -78,6 +78,14 @@ public class OrganizationMainClientFallback {
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<List<TaskDto>> getTasksByUserIdAndRole(String userId, String roleId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
     public FeignResponseEntity<OrgUserDto> retrieveOneOrgUserAccount(String userId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -99,6 +107,14 @@ public class OrganizationMainClientFallback {
     }
 
     public FeignResponseEntity<List<TaskDto>> getOtherKpiTask(TaskDto taskDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<WorkingGroupDto> getWrkGrpById(String workGroupId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

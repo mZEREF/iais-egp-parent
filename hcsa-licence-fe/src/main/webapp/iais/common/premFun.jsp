@@ -44,7 +44,7 @@
             }else if ("conveyanceSel" == thisId) {
                 premDivName = 'new-premise-form-on-site';
             }
-            initPhForm(premDivName,$premContent);
+            // initPhForm(premDivName,$premContent);
 
             if("newPremise" == premSelectVal){
                 $premContent.find('.new-premise-form-on-site').removeClass('hidden');
@@ -319,6 +319,7 @@
             + "</div>"
             + "</div>"
             + "</div>";
+
 
         if("Y" ==canEdit){
 

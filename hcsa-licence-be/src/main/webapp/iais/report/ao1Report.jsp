@@ -196,7 +196,7 @@
             <div class="col-xs-12">
                 <div class="table-gp">
                     <div class="text">
-                        <p><span>Part I: Inspection Checklist</span></p>
+                        <p><h4><strong><span>Part I: Inspection Checklist</span></strong></h4></p>
                     </div>
                     <table class="table">
                         <tr>
@@ -209,7 +209,7 @@
                         </tr>
                     </table>
                     <div class="text">
-                        <p><span>Part II: Findings</span></p>
+                        <p><h4><strong><span>Part II: Findings</span></strong></h4></p>
                     </div>
                     <table class="table">
                         <tr>

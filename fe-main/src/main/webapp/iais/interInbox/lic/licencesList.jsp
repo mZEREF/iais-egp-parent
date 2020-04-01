@@ -86,8 +86,8 @@
             <div class="col-md-12">
                 <div class="licence-btns col-md-6" style="width: 49%">
                     <a class="btn btn-primary disabled" href="javascript:;" id="lic-renew">Renew</a>
-                    <a class="btn btn-secondary disabled" href="javascript:;" id="lic-cease">Cease</a>
-                    <a class="btn btn-secondary disabled" href="javascript:;" id="lic-amend">Amend</a>
+                    <a class="btn btn-primary disabled" href="javascript:;" id="lic-cease">Cease</a>
+                    <a class="btn btn-primary disabled" href="javascript:;" id="lic-amend">Amend</a>
                 </div>
                 <div class="col-md-6 text-right" style="width: 49%">
                     <button type="button" class="btn btn-primary" onclick="doPrint()">Print</button>

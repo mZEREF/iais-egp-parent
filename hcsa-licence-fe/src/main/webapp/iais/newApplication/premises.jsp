@@ -110,7 +110,7 @@
                                 <div class="col-xs-12 col-sm-6 ">
                                   <c:choose>
                                     <c:when test="${DraftConfig != null}">
-                                      <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
+                                      <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em class="fa fa-angle-left"></em> Back</a>
                                     </c:when>
                                     <c:otherwise>
                                       <a class="back" id="Back" href="#"><em class="fa fa-angle-left"></em> Back</a>

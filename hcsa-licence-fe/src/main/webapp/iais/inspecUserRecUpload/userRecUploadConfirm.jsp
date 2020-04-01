@@ -137,7 +137,7 @@
     }
 
     function doUserRecUploadConfirmUpload() {
-      $("#recFileUpload").trigger('click');
+        $("#recFileUpload").trigger('click');
     }
 
     function doUserRecUploadConfirmFile(value) {

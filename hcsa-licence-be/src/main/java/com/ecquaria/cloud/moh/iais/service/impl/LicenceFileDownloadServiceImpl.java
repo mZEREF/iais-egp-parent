@@ -479,7 +479,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         fileRepoDto.setAuditTrailDto(intranet);
                         fileRepoDto.setFileName(f.getName());
                         fileRepoDto.setRelativePath(AppServicesConsts.COMPRESS+File.separator+fileNames+
-                                File.separator+groupPath+File.separator+"folder"+File.separator+"files");
+                                File.separator+groupPath+File.separator+"folder"+File.separator+groupPath+File.separator+"files");
                         fileRepoDtos.add(fileRepoDto);
                         FileRepoEventDto eventDto = new FileRepoEventDto();
                         eventDto.setFileRepoList(fileRepoDtos);

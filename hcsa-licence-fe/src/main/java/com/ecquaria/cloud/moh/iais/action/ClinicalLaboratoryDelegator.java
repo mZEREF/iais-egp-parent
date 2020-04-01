@@ -43,6 +43,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -487,10 +488,12 @@ public class ClinicalLaboratoryDelegator {
                         if("27D8EB5B-1123-EA11-BE78-000C29D29DB0".equals(checkInfo.getId())){
                             String subName = ParamUtil.getString(bpc.request, "pleaseIndicate");
                             ParamUtil.setSessionAttr(bpc.request,"pleaseIndicate",subName);
-                            appSvcChckListDto.setOtherScopeName(subName);
+                            appSvcChckListDto.setChkName(subName);
+                        }
+                        else {
+                            appSvcChckListDto.setChkName(checkInfo.getName());
                         }
                         appSvcChckListDto.setChkLstType(checkInfo.getType());
-                        appSvcChckListDto.setChkName(checkInfo.getName());
                         appSvcChckListDto.setParentName(checkInfo.getParentId());
                         appSvcChckListDto.setChildrenName(checkInfo.getChildrenId());
                         appSvcChckListDtoList.add(appSvcChckListDto);
@@ -570,6 +573,7 @@ public class ClinicalLaboratoryDelegator {
         }
         return  map;
     }
+
     /**
      * StartStep: doGovernanceOfficers
      *
@@ -621,7 +625,6 @@ public class ClinicalLaboratoryDelegator {
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
 
                 HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
-
                 Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
                 if(errList.isEmpty()&&allChecked.isEmpty()){
                     coMap.put("information","information");
@@ -723,7 +726,7 @@ public class ClinicalLaboratoryDelegator {
 
                 HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                 Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
-                if(errorMap.isEmpty()&allChecked.isEmpty()){
+                if(errorMap.isEmpty()&&allChecked.isEmpty()){
                     coMap.put("information","information");
                 }else {
                     coMap.put("information","");
@@ -949,7 +952,6 @@ public class ClinicalLaboratoryDelegator {
             }else {
                 coMap.put("information","");
             }
-            bpc.request.getSession().setAttribute("coMap",coMap);
             if(!errorMap.isEmpty()){
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"serviceForms");
                 String crud_action_type_form_page = mulReq.getParameter( "crud_action_type_form_page");
@@ -1132,6 +1134,69 @@ public class ClinicalLaboratoryDelegator {
     }
 
 
+    /**
+     * StartStep: prePareMedAlertPerson
+     *
+     * @param bpc
+     * @throws
+     */
+    public void prePareMedAlertPerson (BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do prePareMedAlertPerson start ...."));
+        Map<String,List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.SERVICEALLPSNCONFIGMAP);
+        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request,currentSvcId);
+        List<AppSvcPrincipalOfficersDto> medAlertPsnDtos = IaisCommonUtils.genNewArrayList();
+        List<AppSvcPrincipalOfficersDto> psnDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+        if(!IaisCommonUtils.isEmpty(psnDtos)){
+           for(AppSvcPrincipalOfficersDto item:psnDtos){
+               if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(item.getPsnType())){
+                   medAlertPsnDtos.add(item);
+               }
+           }
+        }
+        int mandatoryCount = 0;
+        for (Map.Entry<String, List<HcsaSvcPersonnelDto>> stringListEntry : svcConfigInfo.entrySet()){
+            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = stringListEntry.getValue();
+            for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto:hcsaSvcPersonnelDtoList) {
+                if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equalsIgnoreCase(hcsaSvcPersonnelDto.getPsnType())){
+                    mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
+                    break;
+                }
+            }
+            break;
+        }
+        ParamUtil.setRequestAttr(bpc.request,"mandatoryCount",mandatoryCount);
+        List<SelectOption> idTypeSelectList = NewApplicationHelper.getIdTypeSelOp();
+        ParamUtil.setRequestAttr(bpc.request, DROPWOWN_IDTYPESELECT, idTypeSelectList);
+        List<SelectOption> assignSelectList = getAssignMedAlertSel(true);
+        ParamUtil.setRequestAttr(bpc.request,"MedAlertAssignSelect",assignSelectList);
+        ParamUtil.setRequestAttr(bpc.request,"AppSvcMedAlertPsn",medAlertPsnDtos);
+        log.debug(StringUtil.changeForLog("the do prePareMedAlertPerson end ...."));
+    }
+
+    /**
+     * StartStep: doMedAlertPerson
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doMedAlertPerson (BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do doMedAlertPerson start ...."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request,currentSvcId);
+        List<AppSvcPrincipalOfficersDto> psnDtos = currentSvcRelatedDto.getAppSvcPrincipalOfficersDtoList();
+        if(IaisCommonUtils.isEmpty(psnDtos)){
+            psnDtos = IaisCommonUtils.genNewArrayList();
+        }
+        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = genAppSvcMedAlertPerson(bpc.request);
+        psnDtos.addAll(appSvcMedAlertPersonList);
+        currentSvcRelatedDto.setAppSvcPrincipalOfficersDtoList(psnDtos);
+        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
+
+        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
+        log.debug(StringUtil.changeForLog("the do doMedAlertPerson end ...."));
+    }
 
     //=============================================================================
     //private method
@@ -1404,7 +1469,7 @@ public class ClinicalLaboratoryDelegator {
 
         //depo
         if("1".equals(deputySelect) && isGetDataFromPageDpo){
-            String [] assignSelect = ParamUtil.getStrings(request, "deputyAssignSelect");
+            String [] assignSelect = ParamUtil.getStrings(request, "deputyPoSelect");
             String [] deputySalutation = ParamUtil.getStrings(request, "deputySalutation");
             String [] deputyDesignation = ParamUtil.getStrings(request, "deputyDesignation");
             String [] deputyName = ParamUtil.getStrings(request, "deputyName");
@@ -1434,13 +1499,6 @@ public class ClinicalLaboratoryDelegator {
         return  appSvcPrincipalOfficersDtos;
     }
 
-    private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(HttpServletRequest request){
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = (AppSvcRelatedInfoDto) ParamUtil.getSessionAttr(request, APPSVCRELATEDINFODTO);
-        if(appSvcRelatedInfoDto == null){
-            appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
-        }
-        return appSvcRelatedInfoDto;
-    }
 
     public static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request){
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
@@ -1723,6 +1781,16 @@ public class ClinicalLaboratoryDelegator {
         return  assignSelectList;
     }
 
+    public static List<SelectOption> getAssignMedAlertSel(boolean needFirstOpt){
+        List<SelectOption> assignSelectList = IaisCommonUtils.genNewArrayList();
+        if(needFirstOpt){
+            SelectOption assignOp1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
+            assignSelectList.add(assignOp1);
+        }
+        SelectOption assignOp2 = new SelectOption("newOfficer", "I'd like to add a new personnel");
+        assignSelectList.add(assignOp2);
+        return assignSelectList;
+    }
 
     public static List<SelectOption> getMedAlertSelectList(boolean needFirstOp){
         List<SelectOption> MedAlertSelectList = IaisCommonUtils.genNewArrayList();
@@ -1763,4 +1831,32 @@ public class ClinicalLaboratoryDelegator {
         appSubmissionDto.setClickEditPage(clickEditPages);
         return appSubmissionDto;
     }
+
+    private List<AppSvcPrincipalOfficersDto> genAppSvcMedAlertPerson(HttpServletRequest request){
+        String [] assignSelect = ParamUtil.getStrings(request, "assignSel");
+        String [] salutation = ParamUtil.getStrings(request, "salutation");
+        String [] name = ParamUtil.getStrings(request, "name");
+        String [] idType = ParamUtil.getStrings(request, "idType");
+        String [] idNo = ParamUtil.getStrings(request, "idNo");
+        String [] mobileNo = ParamUtil.getStrings(request, "mobileNo");
+        String [] emailAddress = ParamUtil.getStrings(request, "emailAddress");
+        String [] preferredMode = ParamUtil.getStrings(request,"preferredModeVal");
+        int length = assignSelect.length;
+        List<AppSvcPrincipalOfficersDto> medAlertPersons = IaisCommonUtils.genNewArrayList();
+        for(int i=0; i<length; i++){
+            AppSvcPrincipalOfficersDto medAlertPerson = new AppSvcPrincipalOfficersDto();
+            medAlertPerson.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
+            medAlertPerson.setAssignSelect(assignSelect[i]);
+            medAlertPerson.setSalutation(salutation[i]);
+            medAlertPerson.setName(name[i]);
+            medAlertPerson.setIdType(idType[i]);
+            medAlertPerson.setIdNo(idNo[i]);
+            medAlertPerson.setMobileNo(mobileNo[i]);
+            medAlertPerson.setEmailAddr(emailAddress[i]);
+            medAlertPerson.setPreferredMode(preferredMode[i]);
+            medAlertPersons.add(medAlertPerson);
+        }
+        return medAlertPersons;
+    }
+
 }
