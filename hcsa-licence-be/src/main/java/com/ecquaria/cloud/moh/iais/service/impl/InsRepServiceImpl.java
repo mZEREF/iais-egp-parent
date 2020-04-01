@@ -260,16 +260,16 @@ public class InsRepServiceImpl implements InsRepService {
             }
         }
         //checkList
-        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
-        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
-        InspectionFillCheckListDto commonDto = null;
-        if(commonList!=null && !commonList.isEmpty()){
-            commonDto = commonList.get(0);
-        }
-        InspectionFDtosDto subType = new InspectionFDtosDto();
-        subType.setFdtoList(cDtoList);
-        inspectionReportDto.setCommonCheckList(commonDto);
-        inspectionReportDto.setSubTypeCheckList(subType);
+//        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
+//        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
+//        InspectionFillCheckListDto commonDto = null;
+//        if(commonList!=null && !commonList.isEmpty()){
+//            commonDto = commonList.get(0);
+//        }
+//        InspectionFDtosDto subType = new InspectionFDtosDto();
+//        subType.setFdtoList(cDtoList);
+//        inspectionReportDto.setCommonCheckList(commonDto);
+//        inspectionReportDto.setSubTypeCheckList(subType);
         inspectionReportDto.setRectifiedWithinKPI("Yes");
         //Date time
         Date inspectionDate = null;
