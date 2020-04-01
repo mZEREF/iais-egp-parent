@@ -181,7 +181,7 @@ public class SystemParameterDelegator {
             parameterService.saveSystemParameter(editDto);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
 
-            ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage(MessageCodeKey.ACKSPM001));
+            ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage(MessageCodeKey.ACKSPM001, "yyyy-MM-dd"));
             ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO, editDto);
 
         }
