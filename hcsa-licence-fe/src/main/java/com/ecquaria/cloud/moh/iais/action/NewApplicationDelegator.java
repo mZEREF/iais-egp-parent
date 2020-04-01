@@ -82,7 +82,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * egator
@@ -603,14 +602,14 @@ public class NewApplicationDelegator {
                 }
             }
             for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesList){
-                for(HcsaSvcDocConfigDto prem:premHcsaSvcDocConfigList){
+                for(HcsaSvcDocConfigDto prem : premHcsaSvcDocConfigList){
 
-                    String premisesIndexNo = "";
-                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+                    String premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+                   /* if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
                         premisesIndexNo = appGrpPremisesDto.getHciName();
                     }else  if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
                         premisesIndexNo = appGrpPremisesDto.getConveyanceVehicleNo();
-                    }
+                    }*/
                     String name = "prem"+prem.getId()+premisesIndexNo;
                     file = (CommonsMultipartFile) mulReq.getFile(name);
                     String delFlag = name+"flag";
@@ -1585,13 +1584,27 @@ public class NewApplicationDelegator {
                 if(!StringUtil.isEmpty(premisesSel) && !premisesSel.equals("-1") && !premisesSel.equals(ApplicationConsts.NEW_PREMISES)){
                     if(appGrpPremisesDto != null){
                         appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premisesSel);
+
+                        //get value for jsp page
+                        if(StringUtil.isEmpty(premisesIndexNo[i])){
+                            appGrpPremisesDto.setPremisesIndexNo(UUID.randomUUID().toString());
+                        }else{
+                            appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo[i]);
+                        }
+
                         appGrpPremisesDtoList.add(appGrpPremisesDto);
                     }
                     continue;
                 }
             }
 
-            appGrpPremisesDto.setPremisesIndexNo(UUID.randomUUID().toString());
+            //get value for session , this is the subtype's checkbox
+            if(StringUtil.isEmpty(premisesIndexNo[i])){
+                appGrpPremisesDto.setPremisesIndexNo(UUID.randomUUID().toString());
+            }else {
+                appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo[i]);
+            }
+
             appGrpPremisesDto.setPremisesType(premisesType[i]);
 
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = IaisCommonUtils.genNewArrayList();

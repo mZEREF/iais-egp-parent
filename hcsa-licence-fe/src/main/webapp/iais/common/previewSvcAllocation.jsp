@@ -15,13 +15,7 @@
                         </tr>
                         </thead>
                         <c:forEach var="appGrpPrem" items="${appGrpPremisesDtoList}" varStatus="status">
-
-                            <c:if test="${appGrpPrem.hciName != '' && appGrpPrem.hciName!= null}">
-                                <c:set var="reloadMapValue" value="${appGrpPrem.hciName}"/>
-                            </c:if>
-                            <c:if test="${appGrpPrem.conveyanceVehicleNo != '' && appGrpPrem.conveyanceVehicleNo!= null}">
-                                <c:set var="reloadMapValue" value="${appGrpPrem.conveyanceVehicleNo}"/>
-                            </c:if>
+                                <c:set var="reloadMapValue" value="${appGrpPrem.premisesIndexNo}"/>
                             <tbody>
                             <c:forEach var="disciplineAllocation" items="${reloadDisciplineAllocationMap[reloadMapValue]}" varStatus="stat">
                                 <tr>

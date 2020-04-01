@@ -563,26 +563,27 @@ public class NewApplicationHelper {
         }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = IaisCommonUtils.genNewHashMap();
-        for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
+        for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
             List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocation = IaisCommonUtils.genNewArrayList();
-            String hciName = "";
-            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+
+            String premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+            /*if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
                 hciName = appGrpPremisesDto.getHciName();
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
                 hciName = appGrpPremisesDto.getConveyanceVehicleNo();
-            }
+            }*/
 
-            if(!StringUtil.isEmpty(hciName) && allocationDto !=null && allocationDto.size()>0 ){
+            if(!StringUtil.isEmpty(premisesIndexNo) && allocationDto !=null && allocationDto.size()>0 ){
                 for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto:allocationDto){
                     List<AppSvcChckListDto> appSvcChckListDtoList = null;
-                    if(hciName.equals(appSvcDisciplineAllocationDto.getPremiseVal())){
+                    if(premisesIndexNo.equals(appSvcDisciplineAllocationDto.getPremiseVal())){
                         String chkLstId = appSvcDisciplineAllocationDto.getChkLstConfId();
                         String idNo = appSvcDisciplineAllocationDto.getIdNo();
                         //set chkLstName
                         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList =appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
                         if(appSvcLaboratoryDisciplinesDtoList != null && appSvcLaboratoryDisciplinesDtoList.size()>0){
                             for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtoList){
-                                if(hciName.equals(appSvcLaboratoryDisciplinesDto.getPremiseVal())){
+                                if(premisesIndexNo.equals(appSvcLaboratoryDisciplinesDto.getPremiseVal())){
                                     appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
                                 }
                             }
@@ -610,7 +611,7 @@ public class NewApplicationHelper {
                     }
                 }
             }
-            reloadDisciplineAllocationMap.put(hciName, reloadDisciplineAllocation);
+            reloadDisciplineAllocationMap.put(premisesIndexNo, reloadDisciplineAllocation);
         }
 
         return reloadDisciplineAllocationMap;
