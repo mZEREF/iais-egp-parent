@@ -37,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComplianceHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
@@ -190,6 +191,27 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             complianceHistoryDto.setAppPremCorrId(appPremisesCorrelationDto.getId());
             complianceHistoryDto.setComplianceTag("Full");
             try{
+                List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = insepctionNcCheckListService.getNcItemDtoByAppCorrId(appPremisesCorrelationDto.getId());
+                if(appPremisesPreInspectionNcItemDtos.size()!=0){
+                    for (AppPremisesPreInspectionNcItemDto nc:appPremisesPreInspectionNcItemDtos
+                    ) {
+                        if(nc.getIsRecitfied()==0){
+                            complianceHistoryDto.setComplianceTag("Partial");
+                        }
+                    }
+                }
+                AdCheckListShowDto adCheckListShowDto = fillupChklistService.getAdhoc(appPremisesCorrelationDto.getId());
+                if(adCheckListShowDto!=null){
+                    List<AdhocNcCheckItemDto> adItemList = adCheckListShowDto.getAdItemList();
+                    if(adItemList!=null && !adItemList.isEmpty()){
+                        for(AdhocNcCheckItemDto temp:adItemList){
+                            if(!temp.getRectified()){
+                                complianceHistoryDto.setComplianceTag("Partial");
+                            }
+                        }
+                    }
+                }
+
                 List<AdhocChecklistItemDto> adhocChecklistItemDtos=applicationClient.getAdhocByAppPremCorrId(appPremisesCorrelationDto.getId()).getEntity();
                 complianceHistoryDto.setRiskTag(adhocChecklistItemDtos.get(0).getRiskLvl());
             }catch (Exception e){

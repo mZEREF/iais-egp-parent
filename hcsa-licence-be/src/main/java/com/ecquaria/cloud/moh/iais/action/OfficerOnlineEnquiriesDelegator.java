@@ -11,6 +11,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspecti
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
@@ -26,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
@@ -82,7 +85,8 @@ public class OfficerOnlineEnquiriesDelegator {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     CessationClient cessationClient;
-
+    @Autowired
+    FillupChklistService fillupChklistService;
 
     private static final String SEARCH_NO="searchNo";
     private static final String RFI_QUERY="ReqForInfoQuery";
@@ -742,6 +746,17 @@ public class OfficerOnlineEnquiriesDelegator {
             ) {
                 if(nc.getIsRecitfied()==0){
                     reqForInfoSearchListDto.setLastComplianceHistory("Partial");
+                }
+            }
+            AdCheckListShowDto adCheckListShowDto = fillupChklistService.getAdhoc(rfiApplicationQueryDto.getAppCorrId());
+            if(adCheckListShowDto!=null){
+                List<AdhocNcCheckItemDto> adItemList = adCheckListShowDto.getAdItemList();
+                if(adItemList!=null && !adItemList.isEmpty()){
+                    for(AdhocNcCheckItemDto temp:adItemList){
+                        if(!temp.getRectified()){
+                            reqForInfoSearchListDto.setLastComplianceHistory("Partial");
+                        }
+                    }
                 }
             }
         }catch (Exception e){
