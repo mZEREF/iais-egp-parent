@@ -56,18 +56,20 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Shicheng
@@ -162,7 +164,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
             List<String> serviceIds = IaisCommonUtils.genNewArrayList();
             for (Map.Entry<String, String> map : corrIdServiceIdMap.entrySet()) {
-                serviceIds.add(map.getValue());
+                if(!StringUtil.isEmpty(map.getValue())){
+                    serviceIds.add(map.getValue());
+                }
             }
             //get Start date and End date when group no date
             if (appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null) {
@@ -173,7 +177,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             List<AppointmentUserDto> appointmentUserDtos = IaisCommonUtils.genNewArrayList();
             for (TaskDto tDto : taskDtoList) {
                 AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
-                appointmentUserDto.setLoginUserId(tDto.getUserId());
+                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(tDto.getUserId()).getEntity();
+                appointmentUserDto.setLoginUserId(orgUserDto.getDisplayName());
                 appointmentUserDto.setWorkGrpName(tDto.getWkGrpId());
                 //get service id by task refno
                 String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
@@ -183,8 +188,12 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                 appointmentUserDtos.add(appointmentUserDto);
             }
             appointmentDto.setUsers(appointmentUserDtos);
-            Map<String, List<ApptUserCalendarDto>> inspectionDateMap = appointmentClient.getUserCalendarByUserId(appointmentDto).getEntity();
-            apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
+            Map<String, Collection<String>> headers = appointmentClient.getUserCalendarByUserId(appointmentDto).getHeaders();
+            //Has it been blown up
+            if(headers == null) {
+                Map<String, List<ApptUserCalendarDto>> inspectionDateMap = appointmentClient.getUserCalendarByUserId(appointmentDto).getEntity();
+                apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
+            }
         }
         apptInspectionDateDto.setTaskDto(taskDto);
         apptInspectionDateDto.setTaskDtos(taskDtoList);
@@ -195,14 +204,16 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     @Override
     public Map<ApplicationDto, List<String>> getApplicationInfoToShow(List<String> premCorrIds, List<TaskDto> taskDtoList) {
         Map<ApplicationDto, List<String>> applicationInfoMap = IaisCommonUtils.genNewHashMap();
-        List<String> workerName = IaisCommonUtils.genNewArrayList();
-        List<String> ids = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(premCorrIds)) {
             for (String appPremCorrId : premCorrIds) {
+                List<String> workerName = IaisCommonUtils.genNewArrayList();
+                List<String> ids = IaisCommonUtils.genNewArrayList();
                 ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
                 if(!IaisCommonUtils.isEmpty(taskDtoList)){
                     for(TaskDto taskDto : taskDtoList){
-                        ids.add(taskDto.getUserId());
+                        if(taskDto.getRefNo().equals(appPremCorrId)) {
+                            ids.add(taskDto.getUserId());
+                        }
                     }
                 }
                 Set<String> idSet = new HashSet<>(ids);
@@ -276,15 +287,31 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(premCorrIds)){
             for(String appPremCorrId : premCorrIds){
-                List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremCorrId).getEntity();
-                if(!IaisCommonUtils.isEmpty(taskDtos)){
-                    for(TaskDto taskDto : taskDtos){
-                        taskDtoList.add(taskDto);
+                boolean containIdFlag = listIsContainId(appPremCorrId, taskDtoList);
+                if(!containIdFlag) {
+                    List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremCorrId).getEntity();
+                    if (!IaisCommonUtils.isEmpty(taskDtos)) {
+                        for (TaskDto taskDto : taskDtos) {
+                            taskDtoList.add(taskDto);
+                        }
                     }
                 }
             }
         }
         return taskDtoList;
+    }
+
+    private boolean listIsContainId(String appPremCorrId, List<TaskDto> taskDtoList) {
+        if(!IaisCommonUtils.isEmpty(taskDtoList) && !StringUtil.isEmpty(appPremCorrId)){
+            for(TaskDto taskDto : taskDtoList){
+                if(appPremCorrId.equals(taskDto.getRefNo())){
+                    return true;
+                }
+            }
+        } else {
+            return false;
+        }
+        return false;
     }
 
     private List<String> getCorrIdsByCorrIdFromPremises(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos) {
