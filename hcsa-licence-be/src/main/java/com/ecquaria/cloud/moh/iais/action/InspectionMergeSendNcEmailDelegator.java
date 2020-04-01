@@ -308,10 +308,12 @@ public class InspectionMergeSendNcEmailDelegator {
                 boolean isNoNc=true;
                 try{
                     List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = insepctionNcCheckListService.getNcItemDtoByAppCorrId(appPremCorrId);
-                    for (AppPremisesPreInspectionNcItemDto nc:appPremisesPreInspectionNcItemDtos
-                    ) {
-                        if(nc.getIsRecitfied()==0){
-                            isNoNc=false;
+                    if(appPremisesPreInspectionNcItemDtos.size()!=0){
+                        for (AppPremisesPreInspectionNcItemDto nc:appPremisesPreInspectionNcItemDtos
+                        ) {
+                            if(nc.getIsRecitfied()==0){
+                                isNoNc=false;
+                            }
                         }
                     }
                     AdCheckListShowDto adCheckListShowDto = fillupChklistService.getAdhoc(appPremCorrId);
