@@ -2991,8 +2991,11 @@ public class NewApplicationDelegator {
                     }
                 } else {
                     //premiseSelect = organization hci code
-                    String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
-                    validateVehicleNo(errorMap, distinctVehicleNo, i, conveyanceVehicleNo);
+
+                    if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)){
+                        String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
+                        validateVehicleNo(errorMap, distinctVehicleNo, i, conveyanceVehicleNo);
+                    }
 
                 }
             }
