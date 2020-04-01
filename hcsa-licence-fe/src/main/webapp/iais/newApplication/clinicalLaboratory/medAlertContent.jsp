@@ -36,7 +36,7 @@
                     <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                             <div class="col-sm-6 control-label formtext col-md-5">
-                                <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a Principal Officer</label>
+                                <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a MedAlert Person</label>
                             </div>
                             <div class="col-sm-5 col-md-7" id="assignSelect">
                                 <div class="">
