@@ -43,7 +43,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -678,13 +677,9 @@ public class ClinicalLaboratoryDelegator {
                     String premisesType = "";
                     String premisesValue = "";
                     for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                        if (appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getConveyanceVehicleNo())) {
+                        if (appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getPremisesIndexNo())) {
                             premisesType = appGrpPremisesDto.getPremisesType();
-                            premisesValue = appGrpPremisesDto.getConveyanceVehicleNo();
-                            break;
-                        } else if (appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getHciName())) {
-                            premisesType = appGrpPremisesDto.getPremisesType();
-                            premisesValue = appGrpPremisesDto.getHciName();
+                            premisesValue = appGrpPremisesDto.getPremisesIndexNo();
                             break;
                         }
                     }
