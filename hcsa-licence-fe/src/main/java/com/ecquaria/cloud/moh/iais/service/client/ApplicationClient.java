@@ -240,5 +240,6 @@ public interface ApplicationClient  {
     FeignResponseEntity<Boolean> isUseReason(@RequestParam("id") String id,@RequestParam("reason") String reason);
     @GetMapping(value = "/")
     FeignResponseEntity<String> getRequestForInfo(@RequestParam(value = "applicationId") String applicationId);
-
+    @PostMapping(value = "/iais-submission/darft-service-codes",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> selectDarft(@RequestBody List<String> serviceCodes);
 }

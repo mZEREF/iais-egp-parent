@@ -564,10 +564,22 @@ public class ClinicalLaboratoryDelegator {
             List<HcsaServiceStepSchemeDto>  svcStepConfigs = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcIds);
             svcAllPsnConfig = serviceConfigService.getAllSvcAllPsnConfig(svcStepConfigs, svcIds);
         }
-        Map<String, String> map = NewApplicationDelegator.doCheckBox(bpc, sB, svcAllPsnConfig);
+
+        List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        Map<String, String> map=new HashMap<>();
+        for(int i=0;i< dto.size();i++ ){
+            String serviceId = dto.get(i).getServiceId();
+            List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
+            ServiceStepDto serviceStepDto = new ServiceStepDto();
+            serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
+            List<HcsaSvcPersonnelDto>  currentSvcAllPsnConfig= serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
+           map = NewApplicationDelegator.doCheckBox(bpc, sB, svcAllPsnConfig,currentSvcAllPsnConfig, dto.get(i));
+        }
+
         if(!StringUtil.isEmpty(sB.toString())){
             map.put("error","error");
         }
+        bpc.request.getSession().setAttribute("serviceConfig",sB.toString());
         return  map;
     }
 

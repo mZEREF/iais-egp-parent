@@ -1,6 +1,6 @@
 
 <div class="application-tab-footer">
-
+  <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
 <c:choose>
   <c:when test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
     <div class="row">
@@ -16,7 +16,7 @@
             </c:otherwise>
           </c:choose>
           <c:if test="${requestInformationConfig==null}">
-            <a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a>
+            <a class="btn btn-secondary" id = "SaveDraft" data-toggle="modal" data-target= "#saveDraft" >Save as Draft</a>
           </c:if>
           <a id="RfcUndo" class="" href="#" >Undo All Changes</a>
         <input name="nextStep" value="" type="hidden">
@@ -29,7 +29,7 @@
       <div class="col-xs-12 col-sm-6">
         <div class="button-group">
           <c:if test="${requestInformationConfig==null}">
-            <a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a>
+            <a class="btn btn-secondary" id = "SaveDraft" data-toggle="modal" data-target= "#saveDraft" >Save as Draft</a>
           </c:if>
           <c:choose>
             <c:when test="${serviceStepDto.isStepEnd() && serviceStepDto.isServiceEnd()}">
@@ -45,7 +45,9 @@
   </c:otherwise>
 </c:choose>
 </div>
-
+      <c:if test="${ not empty selectDraftNo }">
+        <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="saveDraft()" popupOrder="saveDraft" cancelBtnDesc="Resume from draft" yesBtnDesc="Continue current application" cancelFunc="cancelSaveDraft()"></iais:confirm>
+      </c:if>
 <script type="text/javascript">
     $(document).ready(function() {
         var controlFormLi = $('#controlFormLi').val();
@@ -69,7 +71,9 @@
             }
         });
         $('#SaveDraft').click(function(){
-            submitForms('${serviceStepDto.currentStep.stepCode}','saveDraft',null,controlFormLi);
+            if($('#selectDraftNo').val()==''||$('#selectDraftNo').val()==null){
+                submitForms('${serviceStepDto.currentStep.stepCode}','saveDraft',null,controlFormLi);
+            }
         });
         $('#Next').click(function(){
             $("[name='nextStep']").val('next');
@@ -99,5 +103,10 @@
             submitForms('${serviceStepDto.nextStep.stepCode}',null,null,controlFormLi);
         }
     }
-
+    function saveDraft() {
+        submit('premises','saveDraft',$('#selectDraftNo').val());
+    }
+    function cancelSaveDraft() {
+        submit('premises','saveDraft','cancelSaveDraft');
+    }
 </script>

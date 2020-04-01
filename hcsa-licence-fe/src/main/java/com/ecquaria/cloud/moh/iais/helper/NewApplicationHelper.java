@@ -310,7 +310,6 @@ public class NewApplicationHelper {
                                 oneErrorMap.put("poNRICFIN"+poIndex,"CHKLMD001_ERR005");
                             }else {
                                 stringBuilder.append(idType).append(idNo);
-
                             }
                         }
                     }else {

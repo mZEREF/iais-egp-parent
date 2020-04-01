@@ -36,7 +36,7 @@
                                                 <c:forEach var="hcsaServiceDto" items="${hcsaServiceDtoList}" varStatus="status" >
                                                     <div class="panel panel-default svc-content">
 
-                                                        <div class="panel-heading  <c:if test="${fn:contains(Msg.serviceId,hcsaServiceDto.id)}">incompleted</c:if> <c:if test="${fn:contains(Msg.serviceId,hcsaServiceDto.id)==false}">completed</c:if>  "  id="headingServiceInfo" role="tab">
+                                                        <div class="panel-heading  <c:if test="${fn:contains(serviceConfig,hcsaServiceDto.id)}">incompleted</c:if> <c:if test="${fn:contains(serviceConfig,hcsaServiceDto.id)==false}">completed</c:if>  "  id="headingServiceInfo" role="tab">
                                                             <h4 class="panel-title"><a  class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information - ${hcsaServiceDto.svcName}</a></h4>
                                                         </div>
 
@@ -77,7 +77,8 @@
                                         <div class="col-xs-12 col-sm-6">
                                             <div class="button-group hidden">
                                                 <c:if test="${requestInformationConfig==null}">
-                                                <a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a>
+                                                    <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
+                                                <a class="btn btn-secondary" id = "SaveDraft" data-toggle="modal" data-target= "#saveDraft" >Save as Draft</a>
                                                 </c:if>
                                                 <a class="next btn btn-primary" id = "Next">SUBMIT & PAY </a></div>
                                         </div>
@@ -91,6 +92,9 @@
         </div>
     </div>
 </form>
+<c:if test="${ not empty selectDraftNo}">
+    <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="saveDraft()" popupOrder="saveDraft" cancelBtnDesc="Resume from draft" yesBtnDesc="Continue current application" cancelFunc="cancelSaveDraft()"></iais:confirm>
+</c:if>
 <script type="text/javascript">
 
     $(document).ready(function() {
@@ -105,7 +109,9 @@
             submit('serviceForms',null,null);
         });
         $('#SaveDraft').click(function(){
-            submit('preview','saveDraft',null);
+            if($('#selectDraftNo').val()==''||$('#selectDraftNo').val()==null){
+                submit('preview','saveDraft',null);
+            }
         });
         $('#Next').click(function(){
             submit('payment','doSubmit',null);
@@ -156,5 +162,11 @@
         window.print();
     };
 
+    function saveDraft() {
+        submit('premises','saveDraft',$('#selectDraftNo').val());
+    }
+    function cancelSaveDraft() {
+        submit('premises','saveDraft','cancelSaveDraft');
+    }
 
 </script>

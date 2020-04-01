@@ -154,8 +154,9 @@
                     <c:otherwise>
                       <div class="row">
                         <div class="col-xs-12 col-sm-6"><a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a></div>
+                        <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
                         <div class="col-xs-12 col-sm-6">
-                          <div class="button-group"><a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a><a class="btn btn-primary next" id="Next">Next</a></div>
+                          <div class="button-group"><a class="btn btn-secondary" id = "SaveDraft" data-toggle="modal" data-target= "#saveDraft">Save as Draft</a><a class="btn btn-primary next" id="Next">Next</a></div>
                         </div>
                       </div>
                     </c:otherwise>
@@ -168,6 +169,9 @@
         </div>
       </div>
     </div>
+  <c:if test="${ not empty selectDraftNo }">
+    <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="saveDraft()" popupOrder="saveDraft" cancelBtnDesc="Resume from draft" yesBtnDesc="Continue current application" cancelFunc="cancelSaveDraft()"></iais:confirm>
+  </c:if>
   <%@ include file="/include/validation.jsp" %>
     <input type="hidden" name="pageCon" value="valPremiseList" >
 </form>
@@ -184,7 +188,9 @@
             submit('premises',null,null);
         });
         $('#SaveDraft').click(function(){
-            submit('documents','saveDraft',null);
+            if($('#selectDraftNo').val()==''||$('#selectDraftNo').val()==null){
+                submit('documents','saveDraft',$('#selectDraftNo').val());
+            }
         });
         $('#Next').click(function(){
             submit('serviceForms',"next",null);
@@ -224,6 +230,12 @@
         });
     }
 
+    function saveDraft() {
+        submit('premises','saveDraft',$('#selectDraftNo').val());
+    }
 
+    function cancelSaveDraft() {
+        submit('premises','saveDraft','cancelSaveDraft');
+    }
 
 </script>

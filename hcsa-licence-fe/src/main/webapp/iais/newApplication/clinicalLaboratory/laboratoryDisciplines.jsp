@@ -57,7 +57,9 @@
     <%@ include file="/include/validation.jsp" %>
     <input type="hidden" name="pageCon" value="checkBox">
 </form>
-
+<c:if test="${ not empty selectDraftNo }">
+    <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="saveDraft()" popupOrder="saveDraft" cancelBtnDesc="Resume from draft" yesBtnDesc="Continue current application" cancelFunc="cancelSaveDraft()"></iais:confirm>
+</c:if>
 <script type="text/javascript">
     $(document).ready(function() {
         //Binding method
@@ -65,7 +67,9 @@
             submit('documents',null,null);
         });
         $('#laboratoryDisciplinesSaveDraft').click(function(){
-            submitForms('laboratoryDisciplines','saveDraft',null,'clinical');
+            if($('#selectDraftNo').val()==''||$('#selectDraftNo').val()==null){
+                submitForms('laboratoryDisciplines','saveDraft',null,'clinical');
+            }
         });
         $('#laboratoryDisciplinesNext').click(function(){
           /*  var controlFormLi = $('#controlFormLi').val();

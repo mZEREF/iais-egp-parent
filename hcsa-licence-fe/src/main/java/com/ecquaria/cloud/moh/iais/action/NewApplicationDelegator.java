@@ -47,6 +47,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
+import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -57,6 +58,7 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -71,6 +73,7 @@ import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Time;
@@ -124,7 +127,7 @@ public class NewApplicationDelegator {
     public static final String APPLICATION_SVC_PAGE_NAME_DEPUTY_PRINCIPAL_OFFICERS  = "APPSPN05";
     public static final String APPLICATION_SVC_PAGE_NAME_DOCUMENT                   = "APPSPN06";
     public static final String APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL          = "APPSPN07";
-
+    public static final String SELECT_DRAFT_NO                                      ="selectDraftNo";
     //isClickEdit
     public static final String IS_EDIT = "isEdit";
 
@@ -142,7 +145,6 @@ public class NewApplicationDelegator {
 
     @Autowired
     private SystemAdminClient systemAdminClient;
-
     /**
      * StartStep: Start
      *
@@ -167,33 +169,6 @@ public class NewApplicationDelegator {
         coMap.put("information","");
         coMap.put("previewli","");
         bpc.request.getSession().setAttribute("coMap",coMap);
-        List<SelectOption> hhList=new ArrayList<>(25);
-        List<SelectOption> mmList=new ArrayList<>(61);
-        SelectOption selectOption1 = new SelectOption("","NA");
-        hhList.add(selectOption1);
-        mmList.add(selectOption1);
-        for(int i=0;i<24;i++){
-            if(i<10){
-                SelectOption selectOption = new SelectOption(i+"","0"+i);
-                hhList.add(selectOption);
-            }else {
-                SelectOption selectOption = new SelectOption(i+"",""+i);
-                hhList.add(selectOption);
-            }
-        }
-        for(int i=0;i<60;i++){
-            if(i<10){
-                SelectOption selectOption = new SelectOption(i+"","0"+i);
-                mmList.add(selectOption);
-
-            }else {
-                SelectOption selectOption = new SelectOption(i+"",""+i);
-                mmList.add(selectOption);
-            }
-        }
-
-        bpc.request.getSession().setAttribute("hhList",hhList);
-        bpc.request.getSession().setAttribute("mmList",mmList);
         //request For Information Loading
         ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,null);
         requestForChangeOrRenewLoading(bpc);
@@ -485,16 +460,32 @@ public class NewApplicationDelegator {
             if(!"saveDraft".equals(crud_action_value)){
                 MasterCodeDto masterCodeDto = systemAdminClient.getMasterCodeById("B5E4744C-F96F-EA11-BE79-000C298A32C2").getEntity();
                 bpc.request.setAttribute("masterCodeDto",masterCodeDto);
+
+                Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
+                List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+                StringBuilder sB =new StringBuilder();
+
+                for(int i=0;i< dto.size();i++ ){
+                    String serviceId = dto.get(i).getServiceId();
+                    List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
+                    ServiceStepDto serviceStepDto = new ServiceStepDto();
+                    serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
+                    List<HcsaSvcPersonnelDto>  currentSvcAllPsnConfig= serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
+                    doCheckBox(bpc,sB,allSvcAllPsnConfig,currentSvcAllPsnConfig, dto.get(i));
+                }
+                bpc.request.getSession().setAttribute("serviceConfig",sB.toString());
                 Map<String, String> errorMap= doValidatePremiss(bpc);
                 if(errorMap.size()>0){
                     ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
                     HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                     coMap.put("premises","");
+                    coMap.put("serviceConfig",sB.toString());
                     bpc.request.getSession().setAttribute("coMap",coMap);
                 }else {
                     HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                     coMap.put("premises","premises");
+                    coMap.put("serviceConfig",sB.toString());
                     bpc.request.getSession().setAttribute("coMap",coMap);
                 }
             }
@@ -810,19 +801,51 @@ public class NewApplicationDelegator {
      */
     public void doSaveDraft(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do doSaveDraft start ...."));
-
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String crud_action_additional;
+        if(mulReq!=null){
+             crud_action_additional = mulReq.getParameter("crud_action_additional");
+        }else {
+            crud_action_additional = bpc.request.getParameter("crud_action_additional");
+        }
+        HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+        List<String> strList=new ArrayList<>(5);
+        coMap.forEach((k,v)->{
+            if(!StringUtil.isEmpty(v)){
+                strList.add(v);
+            }
+        });
+        String serviceConfig = (String)bpc.request.getSession().getAttribute("serviceConfig");
+        strList.add(serviceConfig);
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         if(StringUtil.isEmpty(appSubmissionDto.getDraftNo())){
             String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
             log.info(StringUtil.changeForLog("the draftNo -->:") + draftNo);
             appSubmissionDto.setDraftNo(draftNo);
         }
-//        appSubmissionDto.setStepColor(strList);
+        if(!StringUtil.isEmpty(crud_action_additional)){
+            if("cancelSaveDraft".equals(crud_action_additional)){
+                jumpYeMian(bpc.request,bpc.response);
+                bpc.request.getSession().removeAttribute(SELECT_DRAFT_NO);
+                return;
+            }else {
+                appSubmissionDto.setDraftNo(crud_action_additional);
+                bpc.request.getSession().removeAttribute(SELECT_DRAFT_NO);
+            }
+
+        }
+        appSubmissionDto.setStepColor(strList);
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         log.info(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }
 
+    public void jumpYeMian(HttpServletRequest request , HttpServletResponse response) throws IOException {
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(request.getServerName()).append("/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu");
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), request);
+       response.sendRedirect(tokenUrl);
+    }
     /**
      * StartStep: doReDquestInformationSubmit
      *
@@ -1725,12 +1748,25 @@ public class NewApplicationDelegator {
         }
         //
         Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
-        Map<String, String> map = doCheckBox(bpc,sB,allSvcAllPsnConfig);
-        if(!map.isEmpty()){
-            previewAndSubmitMap.putAll(map);
-            String mapStr = JsonUtil.parseToJson(map);
-            log.info("map json str:"+mapStr);
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+
+
+        for(int i=0;i< dto.size();i++ ){
+            String serviceId = dto.get(i).getServiceId();
+            List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
+            ServiceStepDto serviceStepDto = new ServiceStepDto();
+            serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
+            List<HcsaSvcPersonnelDto>  currentSvcAllPsnConfig= serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
+            Map<String, String> map = doCheckBox(bpc,sB,allSvcAllPsnConfig,currentSvcAllPsnConfig, dto.get(i));
+            if(!map.isEmpty()){
+                previewAndSubmitMap.putAll(map);
+                String mapStr = JsonUtil.parseToJson(map);
+                log.info("map json str:"+mapStr);
+            }
         }
+
+
 
         Map<String,String> documentMap=IaisCommonUtils.genNewHashMap();
         documentValid(bpc.request,documentMap);
@@ -1787,34 +1823,62 @@ public class NewApplicationDelegator {
 
     //todo
 
-    public static Map<String,String> doCheckBox( BaseProcessClass bpc,StringBuilder sB,Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig){
-
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        Map<String,String> errorMap=IaisCommonUtils.genNewHashMap();
-        List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-
-        for(int i=0;i< dto.size();i++ ){
-            String serviceId = dto.get(i).getServiceId();
-            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.get(i).getAppSvcLaboratoryDisciplinesDtoList();
+    public static Map<String,String> doCheckBox( BaseProcessClass bpc,StringBuilder sB,Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig, List<HcsaSvcPersonnelDto>  currentSvcAllPsnConfig, AppSvcRelatedInfoDto dto){
+            String serviceId = dto.getServiceId();
+            Map<String,String> errorMap=IaisCommonUtils.genNewHashMap();
+            for(HcsaSvcPersonnelDto hcsaSvcPersonnelDto :currentSvcAllPsnConfig){
+                String psnType = hcsaSvcPersonnelDto.getPsnType();
+                int mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
+                if("PO".equals(psnType)){
+                    List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
+                    if(appSvcPrincipalOfficersDtoList==null&&mandatoryCount>0||appSvcPrincipalOfficersDtoList.size()<mandatoryCount){
+                        errorMap.put("error","error");
+                        sB.append(serviceId);
+                    }
+                }else if("SVCPSN".equals(psnType)){
+                    List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
+                    if(appSvcPersonnelDtoList==null&&mandatoryCount>0||appSvcPersonnelDtoList.size()<mandatoryCount){
+                        errorMap.put("error","error");
+                        sB.append(serviceId);
+                    }
+                }else if("CGO".equals(psnType)){
+                    List<AppSvcCgoDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
+                    if(appSvcCgoDtoList==null&&mandatoryCount>0||appSvcCgoDtoList.size()<mandatoryCount){
+                        errorMap.put("error","error");
+                        sB.append(serviceId);
+                    }
+                }else if("MAP".equals(psnType)){
+                    List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
+                    if(appSvcMedAlertPersonList==null&&mandatoryCount>0||appSvcMedAlertPersonList.size()<mandatoryCount){
+                        errorMap.put("error","error");
+                        sB.append(serviceId);
+                    }
+                }
+            }
+            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
+            Map<String, String> map = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList);
+            if(!map.isEmpty()){
+                sB.append(serviceId);
+            }
+            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.getAppSvcLaboratoryDisciplinesDtoList();
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = allSvcAllPsnConfig.get(serviceId);
             dolabory(errorMap,appSvcLaboratoryDisciplinesDtoList,serviceId,sB);
-            List<AppSvcCgoDto> appSvcCgoDtoList = dto.get(i).getAppSvcCgoDtoList();
+            List<AppSvcCgoDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
             doAppSvcCgoDto(hcsaSvcPersonnelDtos,errorMap,appSvcCgoDtoList,serviceId,sB);
-            List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.get(i).getAppSvcDisciplineAllocationDtoList();
+            List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
             doSvcDis(errorMap,appSvcDisciplineAllocationDtoList,serviceId,sB);
-            List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.get(i).getAppSvcPrincipalOfficersDtoList();
-            Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(dto.get(i).getAppSvcCgoDtoList());
+            List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
+            Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(dto.getAppSvcCgoDtoList());
             if(!govenMap.isEmpty()){
                 sB.append(serviceId);
             }
             doPO(hcsaSvcPersonnelDtos,errorMap,appSvcPrincipalOfficersDtoList,serviceId,sB);
 
-
-            List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.get(i).getAppSvcPersonnelDtoList();
+            List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
             doAppSvcPersonnelDtoList(hcsaSvcPersonnelDtos,errorMap,appSvcPersonnelDtoList,serviceId,sB);
-            List<AppSvcDocDto> appSvcDocDtoLit = dto.get(i).getAppSvcDocDtoLit();
+            List<AppSvcDocDto> appSvcDocDtoLit = dto.getAppSvcDocDtoLit();
             doSvcDocument(errorMap,appSvcDocDtoLit,serviceId,sB);
-        }
+
 
 
         return  errorMap;
@@ -2224,7 +2288,7 @@ public class NewApplicationDelegator {
         if(appSubmissionDto!=null){
             List<String> stepColor = appSubmissionDto.getStepColor();
             if(stepColor!=null){
-                HashMap<String,String> coMap=new HashMap<>(4);
+                HashMap<String,String> coMap=new HashMap<>(5);
                 coMap.put("premises","");
                 coMap.put("document","");
                 coMap.put("information","");
@@ -2239,6 +2303,8 @@ public class NewApplicationDelegator {
                             coMap.put("information",str);
                         }else if("previewli".equals(str)){
                             coMap.put("previewli",str);
+                        }else if("".equals(str)){
+                            coMap.put("serviceConfig",str);
                         }
 
                     }
@@ -2277,6 +2343,8 @@ public class NewApplicationDelegator {
                                 coMap.put("information",str);
                             }else if("previewli".equals(str)){
                                 coMap.put("previewli",str);
+                            }else {
+                                bpc.request.getSession().setAttribute("serviceConfig",str);
                             }
 
                         }
