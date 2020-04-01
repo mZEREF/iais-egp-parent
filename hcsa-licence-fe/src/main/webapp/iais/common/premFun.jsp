@@ -265,7 +265,7 @@
             }
             var currentLength = $contentDivEle.find('div.pubHolidayContent').length;
             var jsonData={
-                'premVal': premVal,
+                'premVal': name,
                 'phLength': currentLength
             };
             $.ajax({

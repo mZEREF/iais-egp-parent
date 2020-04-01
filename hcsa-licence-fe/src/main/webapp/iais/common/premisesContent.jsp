@@ -216,11 +216,11 @@
 
                         <div class="col-xs-9 col-sm-5 col-md-6">
                             <div class="col-md-3" style="padding-left: unset">
-                                <iais:select name="onSiteStartHH" options="premiseHours" value="${appGrpPremisesDto.onsiteStartHH}"></iais:select>
+                                <iais:select name="onSiteStartHH" options="premiseHours" value="${appGrpPremisesDto.onsiteStartHH}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
                             <div class="col-md-3" style="padding-left: unset">
-                                <iais:select name="onSiteStartMM" options="premiseMinute" value="${appGrpPremisesDto.onsiteStartMM}"></iais:select>
+                                <iais:select name="onSiteStartMM" options="premiseMinute" value="${appGrpPremisesDto.onsiteStartMM}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
                         </div>
@@ -237,11 +237,11 @@
 
                         <div class="col-xs-9 col-sm-5 col-md-6">
                             <div class="col-md-3" style="padding-left: unset">
-                                <iais:select name="onSiteEndHH" options="premiseHours" value="${appGrpPremisesDto.onsiteEndHH}"></iais:select>
+                                <iais:select name="onSiteEndHH" options="premiseHours" value="${appGrpPremisesDto.onsiteEndHH}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
                             <div class="col-md-3" style="padding-left: unset">
-                                <iais:select name="onSiteEndMM" options="premiseMinute" value="${appGrpPremisesDto.onsiteEndMM}"></iais:select>
+                                <iais:select name="onSiteEndMM" options="premiseMinute" value="${appGrpPremisesDto.onsiteEndMM}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
                         </div>
@@ -259,7 +259,7 @@
                                     <iais:row>
                                         <iais:field value="Select Public Holiday" width="12"/>
                                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
-                                            <iais:select name="${premValue}onSitePubHoliday${phStat.index}" options="publicHolidaySelect" value="${ph.phDateStr}" ></iais:select>
+                                            <iais:select name="${premValue}onSitePubHoliday${phStat.index}" options="publicHolidaySelect" value="${ph.phDateStr}" firstOption="Please Select"></iais:select>
                                         </iais:value>
                                         <c:if test="${!phStat.first}">
                                             <div class=" col-xs-7 col-sm-4 col-md-3">
@@ -275,11 +275,11 @@
                                         </label>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
                                             <div class="col-md-3" style="padding-left: unset">
-                                                <iais:select name="${premValue}onSitePbHolDayStartHH${phStat.index}" options="premiseHours" value="${ph.onsiteStartFromHH}"></iais:select>
+                                                <iais:select name="${premValue}onSitePbHolDayStartHH${phStat.index}" options="premiseHours" value="${ph.onsiteStartFromHH}" firstOption="--"></iais:select>
                                             </div>
                                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
                                             <div class="col-md-3" style="padding-left: unset">
-                                                <iais:select name="${premValue}onSitePbHolDayStartMM${phStat.index}" options="premiseMinute" value="${ph.onsiteStartFromMM}"></iais:select>
+                                                <iais:select name="${premValue}onSitePbHolDayStartMM${phStat.index}" options="premiseMinute" value="${ph.onsiteStartFromMM}" firstOption="--"></iais:select>
                                             </div>
                                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                         </div>
@@ -293,11 +293,11 @@
                                         </label>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
                                         <div class="col-md-3" style="padding-left: unset">
-                                            <iais:select name="${premValue}onSitePbHolDayEndHH${phStat.index}" options="premiseHours" value="${ph.onsiteEndToHH}"></iais:select>
+                                            <iais:select name="${premValue}onSitePbHolDayEndHH${phStat.index}" options="premiseHours" value="${ph.onsiteEndToHH}" firstOption="--"></iais:select>
                                         </div>
                                         <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
                                         <div class="col-md-3" style="padding-left: unset">
-                                            <iais:select name="${premValue}onSitePbHolDayEndMM${phStat.index}" options="premiseMinute" value="${ph.onsiteEndToMM}"></iais:select>
+                                            <iais:select name="${premValue}onSitePbHolDayEndMM${phStat.index}" options="premiseMinute" value="${ph.onsiteEndToMM}" firstOption="--"></iais:select>
                                         </div>
                                         <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                         </div>
@@ -322,11 +322,11 @@
                                     </label>
                                     <div class="col-xs-9 col-sm-5 col-md-6">
                                         <div class="col-md-3" style="padding-left: unset">
-                                            <iais:select name="${premValue}onSitePbHolDayStartHH0" options="premiseHours" value=""></iais:select>
+                                            <iais:select name="${premValue}onSitePbHolDayStartHH0" options="premiseHours" value="" firstOption="--"></iais:select>
                                         </div>
                                         <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
                                         <div class="col-md-3" style="padding-left: unset">
-                                            <iais:select name="${premValue}onSitePbHolDayStartMM0" options="premiseMinute" value=""></iais:select>
+                                            <iais:select name="${premValue}onSitePbHolDayStartMM0" options="premiseMinute" value="" firstOption="--"></iais:select>
                                         </div>
                                         <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                         <span  class="error-msg"  name="iaisErrorMsg" id="error_"></span>
@@ -338,11 +338,11 @@
                                     </label>
                                     <div class="col-xs-9 col-sm-5 col-md-6">
                                         <div class="col-md-3" style="padding-left: unset">
-                                            <iais:select name="${premValue}onSitePbHolDayEndHH0" options="premiseHours" value=""></iais:select>
+                                            <iais:select name="${premValue}onSitePbHolDayEndHH0" options="premiseHours" value="" firstOption="--"></iais:select>
                                         </div>
                                         <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
                                         <div class="col-md-3" style="padding-left: unset">
-                                            <iais:select name="${premValue}onSitePbHolDayEndMM0" options="premiseMinute" value=""></iais:select>
+                                            <iais:select name="${premValue}onSitePbHolDayEndMM0" options="premiseMinute" value="" firstOption="--"></iais:select>
                                         </div>
                                         <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                     </div>
@@ -437,11 +437,11 @@
                         </label>
                         <div class="col-xs-9 col-sm-5 col-md-6">
                                 <div class="col-md-3" style="padding-left: unset">
-                                    <iais:select name="conveyanceStartHH" options="premiseHours" value="${appGrpPremisesDto.conStartHH}"></iais:select>
+                                    <iais:select name="conveyanceStartHH" options="premiseHours" value="${appGrpPremisesDto.conStartHH}" firstOption="--"></iais:select>
                                 </div>
                                 <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
                                 <div class="col-md-3" style="padding-left: unset">
-                                    <iais:select name="conveyanceStartMM" options="premiseMinute" value="${appGrpPremisesDto.conStartMM}"></iais:select>
+                                    <iais:select name="conveyanceStartMM" options="premiseMinute" value="${appGrpPremisesDto.conStartMM}" firstOption="--"></iais:select>
                                 </div>
                                 <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
                         </div>
@@ -456,11 +456,11 @@
                         </label>
                         <div class="col-xs-9 col-sm-5 col-md-6">
                             <div class="col-md-3" style="padding-left: unset">
-                                <iais:select name="conveyanceEndHH" options="premiseHours" value="${appGrpPremisesDto.conEndHH}"></iais:select>
+                                <iais:select name="conveyanceEndHH" options="premiseHours" value="${appGrpPremisesDto.conEndHH}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
                             <div class="col-md-3" style="padding-left: unset">
-                                <iais:select name="conveyanceEndMM" options="premiseMinute" value="${appGrpPremisesDto.conEndMM}"></iais:select>
+                                <iais:select name="conveyanceEndMM" options="premiseMinute" value="${appGrpPremisesDto.conEndMM}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
 
@@ -479,7 +479,7 @@
                                     <iais:row>
                                         <iais:field value="Select Public Holiday" width="12"/>
                                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
-                                            <iais:select name="${premValue}conveyancePubHoliday${phStat.index}" options="publicHolidaySelect" value="${ph.phDateStr}" cssClass="form_datetime public-holiday"></iais:select>
+                                            <iais:select name="${premValue}conveyancePubHoliday${phStat.index}" options="publicHolidaySelect" value="${ph.phDateStr}" cssClass="form_datetime public-holiday" firstOption="Please Select"></iais:select>
                                         </iais:value>
                                         <c:if test="${!phStat.first}">
                                             <div class=" col-xs-7 col-sm-4 col-md-3">
@@ -495,11 +495,11 @@
                                         </label>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
                                             <div class="col-md-3" style="padding-left: unset">
-                                                <iais:select name="${premValue}conveyancePbHolDayStartHH${phStat.index}" options="premiseHours" value="${ph.convStartFromHH}"></iais:select>
+                                                <iais:select name="${premValue}conveyancePbHolDayStartHH${phStat.index}" options="premiseHours" value="${ph.convStartFromHH}" firstOption="--"></iais:select>
                                             </div>
                                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
                                             <div class="col-md-3" style="padding-left: unset">
-                                                <iais:select name="${premValue}conveyancePbHolDayStartMM${phStat.index}" options="premiseMinute" value="${ph.convStartFromMM}"></iais:select>
+                                                <iais:select name="${premValue}conveyancePbHolDayStartMM${phStat.index}" options="premiseMinute" value="${ph.convStartFromMM}" firstOption="--"></iais:select>
                                             </div>
                                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                         </div>
@@ -514,11 +514,11 @@
                                         </label>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
                                             <div class="col-md-3" style="padding-left: unset">
-                                                <iais:select name="${premValue}conveyancePbHolDayEndHH${phStat.index}" options="premiseHours" value="${ph.convEndToHH}"></iais:select>
+                                                <iais:select name="${premValue}conveyancePbHolDayEndHH${phStat.index}" options="premiseHours" value="${ph.convEndToHH}" firstOption="--"></iais:select>
                                             </div>
                                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
                                             <div class="col-md-3" style="padding-left: unset">
-                                                <iais:select name="${premValue}conveyancePbHolDayEndMM${phStat.index}" options="premiseMinute" value="${ph.convEndToMM}"></iais:select>
+                                                <iais:select name="${premValue}conveyancePbHolDayEndMM${phStat.index}" options="premiseMinute" value="${ph.convEndToMM}" firstOption="--"></iais:select>
                                             </div>
                                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                         </div>
@@ -535,7 +535,7 @@
                                 <iais:row>
                                     <iais:field value="Select Public Holiday" width="12"/>
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
-                                        <iais:select name="${premValue}conveyancePubHoliday0" options="publicHolidaySelect" value="${ph.phDateStr}"></iais:select>
+                                        <iais:select name="${premValue}conveyancePubHoliday0" options="publicHolidaySelect" value="${ph.phDateStr}" firstOption="Please Select"></iais:select>
                                     </iais:value>
                                 </iais:row>
                                 <div class="form-group">
@@ -544,11 +544,11 @@
                                     </label>
                                     <div class="col-xs-9 col-sm-5 col-md-6">
                                         <div class="col-md-3" style="padding-left: unset">
-                                            <iais:select name="${premValue}conveyancePbHolDayStartHH0" options="premiseHours" value=""></iais:select>
+                                            <iais:select name="${premValue}conveyancePbHolDayStartHH0" options="premiseHours" value="" firstOption="--"></iais:select>
                                         </div>
                                         <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
                                         <div class="col-md-3" style="padding-left: unset">
-                                            <iais:select name="${premValue}conveyancePbHolDayStartMM0" options="premiseMinute" value=""></iais:select>
+                                            <iais:select name="${premValue}conveyancePbHolDayStartMM0" options="premiseMinute" value="" firstOption="--"></iais:select>
                                         </div>
                                         <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                     </div>
@@ -559,11 +559,11 @@
                                     </label>
                                     <div class="col-xs-9 col-sm-5 col-md-6">
                                         <div class="col-md-3" style="padding-left: unset">
-                                            <iais:select name="${premValue}conveyancePbHolDayEndHH0" options="premiseHours" value=""></iais:select>
+                                            <iais:select name="${premValue}conveyancePbHolDayEndHH0" options="premiseHours" value="" firstOption="--"></iais:select>
                                         </div>
                                         <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
                                         <div class="col-md-3" style="padding-left: unset">
-                                            <iais:select name="${premValue}conveyancePbHolDayEndMM0" options="premiseMinute" value=""></iais:select>
+                                            <iais:select name="${premValue}conveyancePbHolDayEndMM0" options="premiseMinute" value="" firstOption="--"></iais:select>
                                         </div>
                                         <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                     </div>
