@@ -1143,15 +1143,7 @@ public class ClinicalLaboratoryDelegator {
         Map<String,List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.SERVICEALLPSNCONFIGMAP);
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request,currentSvcId);
-        List<AppSvcPrincipalOfficersDto> medAlertPsnDtos = IaisCommonUtils.genNewArrayList();
-        List<AppSvcPrincipalOfficersDto> psnDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-        if(!IaisCommonUtils.isEmpty(psnDtos)){
-           for(AppSvcPrincipalOfficersDto item:psnDtos){
-               if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(item.getPsnType())){
-                   medAlertPsnDtos.add(item);
-               }
-           }
-        }
+        List<AppSvcPrincipalOfficersDto> medAlertPsnDtos = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
         int mandatoryCount = 0;
         for (Map.Entry<String, List<HcsaSvcPersonnelDto>> stringListEntry : svcConfigInfo.entrySet()){
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = stringListEntry.getValue();
@@ -1183,16 +1175,20 @@ public class ClinicalLaboratoryDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request,currentSvcId);
-        List<AppSvcPrincipalOfficersDto> psnDtos = currentSvcRelatedDto.getAppSvcPrincipalOfficersDtoList();
-        if(IaisCommonUtils.isEmpty(psnDtos)){
-            psnDtos = IaisCommonUtils.genNewArrayList();
-        }
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = genAppSvcMedAlertPerson(bpc.request);
-        psnDtos.addAll(appSvcMedAlertPersonList);
-        currentSvcRelatedDto.setAppSvcPrincipalOfficersDtoList(psnDtos);
+        currentSvcRelatedDto.setAppSvcMedAlertPersonList(appSvcMedAlertPersonList);
         setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
-
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
+        String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
+        if("next".equals(nextStep)){
+            Map<String,String> errorMap = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList);
+
+            if(!errorMap.isEmpty()){
+                ParamUtil.setRequestAttr(bpc.request,"errorMsg",WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.MEDALERT_PERSON);
+                return;
+            }
+        }
         log.debug(StringUtil.changeForLog("the do doMedAlertPerson end ...."));
     }
 
