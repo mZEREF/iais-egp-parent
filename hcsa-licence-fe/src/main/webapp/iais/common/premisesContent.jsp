@@ -301,6 +301,7 @@
                                         </div>
                                         <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                         </div>
+                                        <div class="col-xs-12 col-md-4 "></div>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
                                             <span class="error-msg" name="iaisErrorMsg" id="error_onsiteEndToMM${phStat.index}"></span>
                                         </div>
@@ -329,7 +330,7 @@
                                             <iais:select name="${premValue}onSitePbHolDayStartMM0" options="premiseMinute" value="" firstOption="--"></iais:select>
                                         </div>
                                         <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
-                                        <span  class="error-msg"  name="iaisErrorMsg" id="error_"></span>
+                                        <span  class="error-msg"  name="iaisErrorMsg" id="error_onsiteStartToMM${phStat.index}"></span>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -345,6 +346,10 @@
                                             <iais:select name="${premValue}onSitePbHolDayEndMM0" options="premiseMinute" value="" firstOption="--"></iais:select>
                                         </div>
                                         <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-4 "></div>
+                                    <div class="col-xs-9 col-sm-5 col-md-6">
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_onsiteEndToMM${phStat.index}"></span>
                                     </div>
                                 </div>
                             </div>
@@ -566,6 +571,10 @@
                                             <iais:select name="${premValue}conveyancePbHolDayEndMM0" options="premiseMinute" value="" firstOption="--"></iais:select>
                                         </div>
                                         <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                    </div>
+                                    <div  class="col-xs-12 col-md-4 "></div>
+                                    <div class="col-xs-9 col-sm-5 col-md-6">
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_convEndToHH${phStat.index}"></span>
                                     </div>
                                 </div>
                             </div>
