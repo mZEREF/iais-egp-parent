@@ -37,13 +37,11 @@
                         <div class=" form-group form-horizontal formgap">
                             <div class="col-sm-6 control-label formtext col-md-5">
                                 <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a Principal Officer</label>
-                                <span class="upload_controls"></span>
                             </div>
-                            <div class="col-sm-5 col-md-7" id="assignSelect${suffix}">
+                            <div class="col-sm-5 col-md-7" id="assignSelect">
                                 <div class="">
                                     <iais:select cssClass="assignSel"  name="assignSel" options="MedAlertAssignSelect"  value="${medAlertPsn.assignSelect}" ></iais:select>
-                                    <div id="control--runtime--2--errorMsg_right" style="display: none;" class="error_placements"></div>
-                                    <span id="error_assignSelect${suffix}" name="iaisErrorMsg" class="error-msg"></span>
+                                    <span id="error_assignSelect${status.index}" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </div>
                         </div>
@@ -58,12 +56,14 @@
                                 <label  class="control-label control-set-font control-font-label">Name</label>
                                 <span class="mandatory">*</span>
                             </div>
-                            <div class="col-sm-3" id="salutation${suffix}">
+                            <div class="col-sm-3">
                                 <iais:select cssClass="salutation"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${medAlertPsn.salutation}" firstOption="Please Select"></iais:select>
+                                <span class="error-msg" id="error_salutation${status.index}" name="iaisErrorMsg"></span>
                             </div>
 
                             <div class="col-sm-4">
                                 <iais:input maxLength="66" type="text" name="name" value="${medAlertPsn.name}"></iais:input>
+                                <span class="error-msg" id="error_name${status.index}" name="iaisErrorMsg"></span>
                             </div>
                         </div>
                     </div>
@@ -77,13 +77,14 @@
                                 </label>
                             </div>
                             <div class="col-sm-3">
-                                <div class="" id="idType${suffix}">
+                                <div class="">
                                     <iais:select cssClass="idType"  name="idType"  value="${medAlertPsn.idType}" options="IdTypeSelect"></iais:select>
+                                    <span class="error-msg" id="error_idTyp${status.index}" name="iaisErrorMsg"></span>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <iais:input maxLength="9" type="text" name="idNo" value="${medAlertPsn.idNo}"></iais:input>
-                                <span class="error-msg" id="error_poNRICFIN${status.index}" name="iaisErrorMsg"></span>
+                                <span class="error-msg" id="error_idNo${status.index}" name="iaisErrorMsg"></span>
                             </div>
                         </div>
                     </div>
@@ -97,6 +98,7 @@
                             </div>
                             <div class="col-sm-4 col-md-7">
                                 <iais:input maxLength="8" type="text" name="mobileNo" value="${medAlertPsn.mobileNo}"></iais:input>
+                                <span class="error-msg" id="error_mobileNo${status.index}" name="iaisErrorMsg"></span>
                             </div>
                         </div>
                     </div>
@@ -110,6 +112,7 @@
                             </div>
                             <div class="col-sm-4 col-md-7">
                                 <iais:input maxLength="66" type="text" name="emailAddress" value="${medAlertPsn.emailAddr}"></iais:input>
+                                <span class="error-msg" id="error_emailAddr${status.index}" name="iaisErrorMsg"></span>
                             </div>
                         </div>
                     </div>
@@ -121,24 +124,27 @@
                                 <label  class="control-label control-set-font control-font-label">Preferred Mode of Receiving MedAlert</label>
                                 <span class="mandatory">*</span>
                             </div>
-                            <div class="preferredModeDiv">
-                                <input class="preferredModeVal" type="hidden" value="${medAlertPsn.preferredMode}" name="preferredModeVal"/>
-                                <div class="col-md-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input preferredMode" type="radio" name="preferredMode${status.index}" value = "Email" aria-invalid="false" <c:if test="${'Email'==medAlertPsn.preferredMode}">checked="checked"</c:if>>
-                                        <label class="form-check-label"><span class="check-circle"></span>
-                                            Email
-                                        </label>
+                            <div class="col-sm-3 control-label formtext col-md-7 preferredModeDiv">
+                                <div class="row">
+                                    <input class="preferredModeVal" type="hidden" value="${medAlertPsn.preferredMode}" name="preferredModeVal"/>
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input preferredMode" type="radio" name="preferredMode${status.index}" value = "Email" aria-invalid="false" <c:if test="${'Email'==medAlertPsn.preferredMode}">checked="checked"</c:if>>
+                                            <label class="form-check-label"><span class="check-circle"></span>
+                                                Email
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input preferredMode" type="radio" name="preferredMode${status.index}" value = "SMS" aria-invalid="false" <c:if test="${'SMS'==medAlertPsn.preferredMode}">checked="checked"</c:if>>
+                                            <label class="form-check-label"><span class="check-circle"></span>
+                                                SMS
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input preferredMode" type="radio" name="preferredMode${status.index}" value = "SMS" aria-invalid="false" <c:if test="${'SMS'==medAlertPsn.preferredMode}">checked="checked"</c:if>>
-                                        <label class="form-check-label"><span class="check-circle"></span>
-                                            SMS
-                                        </label>
-                                    </div>
-                                </div>
+                                <span class="error-msg" id="error_preferredModeVal${status.index}" name="iaisErrorMsg"></span>
                             </div>
                         </div>
                     </div>
@@ -174,7 +180,7 @@
 
         mapDel();
 
-        $('.assignSel').trigger('change');
+        $('select.assignSel').trigger('change');
 
     })
 

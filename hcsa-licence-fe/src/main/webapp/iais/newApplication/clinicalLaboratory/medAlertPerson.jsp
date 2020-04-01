@@ -45,6 +45,7 @@
             </div>
         </div>
     </div>
+    <%@ include file="/include/validation.jsp" %>
 </form>
 
 <script type="text/javascript">
