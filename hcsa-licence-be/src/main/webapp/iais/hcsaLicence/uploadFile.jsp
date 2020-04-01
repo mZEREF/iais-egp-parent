@@ -76,6 +76,7 @@
         if(validateUploadInternal()) {
             $('#uploadFile').val('Y');
             // callAjaxUploadFile();
+            $('#uploadFileButton').attr("disabled", "disabled");
             $('#fileUploadForm').submit();
         }
     }
