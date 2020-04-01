@@ -17,6 +17,7 @@
             <input type="hidden" name="iaisErrorFlag" id="iaisErrorFlag"/>
             <input type="hidden" name="crud_action_additional" id="crud_action_additional"/>
             <input type="hidden" name="interalFileId" id="interalFileId"/>
+            <input type="hidden" name="dateTimeShow" value="${recomInDateOnlyShow}"/>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
