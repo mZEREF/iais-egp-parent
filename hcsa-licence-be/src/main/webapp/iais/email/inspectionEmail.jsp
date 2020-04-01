@@ -1,6 +1,6 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -68,7 +68,6 @@
                                                 <%@ include file="email.jsp" %>
                                             </div>
                                             <div class="tab-pane " id="tabProcessing" role="tabpanel">
-                                                <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
                                                 <%@ page
                                                         import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
                                                 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/tinymce/tinymce.min.js"></script>

@@ -1,6 +1,3 @@
-<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 
     <div class="alert alert-info" role="alert"><strong>
         <h4>Supporting Document</h4>
