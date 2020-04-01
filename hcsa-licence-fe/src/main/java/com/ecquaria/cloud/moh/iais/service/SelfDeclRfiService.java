@@ -1,8 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclaration;
-
-import java.util.List;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclSubmitDto;
 
 /**
  * @author: yichen
@@ -11,5 +9,5 @@ import java.util.List;
  **/
 
 public interface SelfDeclRfiService {
-    List<SelfDeclaration> getSelfDeclRfiData(String groupId);
+    SelfDeclSubmitDto getSelfDeclRfiData(String groupId);
 }

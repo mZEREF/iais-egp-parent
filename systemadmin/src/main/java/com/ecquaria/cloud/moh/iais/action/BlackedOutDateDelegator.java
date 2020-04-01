@@ -103,7 +103,7 @@ public class BlackedOutDateDelegator {
         List<WorkingGroupQueryDto> workingGroupQueryList = searchResult.getRows();
         String defualtId = workingGroupQueryList.stream().findFirst().orElse(new WorkingGroupQueryDto()).getId();
         List<SelectOption> wrlGrpNameOpt = IaisCommonUtils.genNewArrayList();
-        workingGroupQueryList.stream().forEach(wkr -> {
+        workingGroupQueryList.forEach(wkr -> {
             String groupId = wkr.getId();
             String groupName = wkr.getGroupName();
             wrlGrpNameOpt.add(new SelectOption(groupId, groupName));

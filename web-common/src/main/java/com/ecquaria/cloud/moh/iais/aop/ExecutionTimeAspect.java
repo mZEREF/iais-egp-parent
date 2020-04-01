@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Slf4j
-public class ApiExecutionTimeAspect {
+public class ExecutionTimeAspect {
 
     @Pointcut("@annotation(com.ecquaria.cloud.moh.iais.annotation.TimerTrack)")
     public static void executionTimeAspect(){
@@ -34,7 +34,7 @@ public class ApiExecutionTimeAspect {
         Object result = joinPoint.proceed();
 
         long time = System.currentTimeMillis() - start;
-        log.info("feign call execution timer end [ " + time + "]");
+        log.info("feign call execution timer end [ " + time + "]" + "ms");
 
         return result;
     }

@@ -5,7 +5,7 @@
   Time: 9:37 AM
   To change this template use File | Settings | File Templates.
 --%>
-<c:forEach var="selfDesc" items="${selfDeclQueryAttr}" varStatus="status">
+<c:forEach var="selfDesc" items="${selfDeclQueryAttr.selfDeclarationList}" varStatus="status">
     <c:if test="${tabIndex == null && selfDesc.common == true}">
       <c:forEach var="answerMap" items="${selfDesc.eachPremQuestion}">
         <c:forEach items="${answerMap.value}" var="list" varStatus="status">

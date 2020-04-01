@@ -47,7 +47,7 @@ public final class SystemParamCacheHelper {
 		}
 
 		RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
-		list.stream().forEach(i -> redisCacheHelper.set(CACHE_NAME_SYSTEM_PARAM, i.getId(),
+		list.forEach(i -> redisCacheHelper.set(CACHE_NAME_SYSTEM_PARAM, i.getId(),
 				i, RedisCacheHelper.NOT_EXPIRE));
 	}
 

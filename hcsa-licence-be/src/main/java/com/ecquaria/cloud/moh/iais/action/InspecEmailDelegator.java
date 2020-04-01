@@ -123,21 +123,20 @@ public class InspecEmailDelegator {
         String appNo=applicationViewDto.getApplicationDto().getApplicationNo();
         String licenseeId=applicationViewDto.getApplicationGroupDto().getLicenseeId();
         String licenseeName=inspEmailService.getLicenseeDtoById(licenseeId).getName();
-        String appPremCorrId=correlationId;
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
-        inspectionEmailTemplateDto.setAppPremCorrId(appPremCorrId);
+        inspectionEmailTemplateDto.setAppPremCorrId(correlationId);
         inspectionEmailTemplateDto.setApplicantName(licenseeName);
         inspectionEmailTemplateDto.setApplicationNumber(appNo);
         inspectionEmailTemplateDto.setHciCode(applicationViewDto.getHciCode());
         inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciAddress());
         HcsaServiceDto hcsaServiceDto=inspectionService.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId());
         inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
-        AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,InspectionConstants.RECOM_TYPE_TCU);
+        AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(correlationId,InspectionConstants.RECOM_TYPE_TCU);
         if(appPreRecommentdationDto!=null){
             inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
         }
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-        List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(appPremCorrId);
+        List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(correlationId);
         if(ncAnswerDtos.size()!=0){
             StringBuilder stringBuilder=new StringBuilder();
             int i=0;
@@ -183,7 +182,7 @@ public class InspecEmailDelegator {
         }
         inspectionEmailTemplateDto.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getStatus()}).get(0).getText());
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
-        ParamUtil.setSessionAttr(request,"appPremCorrId",appPremCorrId);
+        ParamUtil.setSessionAttr(request,"appPremCorrId", correlationId);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setSessionAttr(request,MSG_CON, mesContext);
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,applicationViewDto);

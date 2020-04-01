@@ -57,4 +57,6 @@ public class RfcConst {
     public static final String PERSONNEL_PARAM = "personnelParam";
     public static final String PERSONNEL_RESULT = "personnelResult";
 
+    public static final String PAYMENTPROCESS = "/hcsa-licence-web/eservice/INTERNET/MohNewApplication/PreparePayment";
+
 }

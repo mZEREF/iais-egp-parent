@@ -22,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
-import sop.commons.util.CommonFieldsUtil;
 import sop.util.CopyUtil;
 
 import javax.servlet.http.HttpServletRequest;

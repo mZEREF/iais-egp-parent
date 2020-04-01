@@ -6,16 +6,14 @@ package com.ecquaria.cloud.moh.iais.service;
  *description:
  */
 
-import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclaration;
-
-import java.util.List;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclSubmitDto;
 
 
 public interface AppPremSelfDeclService {
 
-    List<SelfDeclaration> getSelfDeclByGroupId(String groupId);
+    SelfDeclSubmitDto getSelfDeclByGroupId(String groupId);
 
-    void saveSelfDecl(List<SelfDeclaration> selfDeclList);
+    void saveSelfDecl(SelfDeclSubmitDto selfDeclSubmitDto);
 
     Boolean hasSelfDeclRecord(String groupId);
 }

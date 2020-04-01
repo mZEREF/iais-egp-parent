@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.QuestionAnswer;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclaration;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
@@ -44,10 +45,11 @@ public class SelfDeclRfiServiceImpl implements SelfDeclRfiService {
     private ApplicationClient applicationClient;
 
     @Override
-    public List<SelfDeclaration> getSelfDeclRfiData(String groupId) {
+    public SelfDeclSubmitDto getSelfDeclRfiData(String groupId) {
+        SelfDeclSubmitDto selfDeclSubmitDto = new SelfDeclSubmitDto();
         List<SelfDeclaration> selfDeclarationList = IaisCommonUtils.genNewArrayList();
-        boolean addedCommon = false;
 
+        boolean addedCommon = false;
         List<String> lastVersionIds = IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> applicationList = applicationClient.listApplicationByGroupId(groupId).getEntity();
         for (ApplicationDto app : applicationList){
@@ -80,16 +82,14 @@ public class SelfDeclRfiServiceImpl implements SelfDeclRfiService {
                 serviceSelfDecl.setSvcCode(svcCode);
                 serviceSelfDecl.setSvcName(svcName);
 
-
-                //There's no place to put it. It's only here
-                serviceSelfDecl.setLastVersionIds(lastVersionIds);
-
                 selfDeclarationList.add(serviceSelfDecl);
             }
 
         }
 
-        return selfDeclarationList;
+        selfDeclSubmitDto.setLastVersionIds(lastVersionIds);
+        selfDeclSubmitDto.setSelfDeclarationList(selfDeclarationList);
+        return selfDeclSubmitDto;
     }
 
     private SelfDeclaration getServiceSelfDecl(List<AppPremisesSelfDeclChklDto> selfDeclChklList){

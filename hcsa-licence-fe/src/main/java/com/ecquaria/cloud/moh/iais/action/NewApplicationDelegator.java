@@ -76,12 +76,13 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * egator
@@ -740,8 +741,6 @@ public class NewApplicationDelegator {
         StringBuffer requestURL = bpc.request.getRequestURL();
         String queryString = bpc.request.getQueryString();
         String reUrl=requestURL.append("?").append(queryString).toString();
-
-
 
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
     }
@@ -1577,7 +1576,7 @@ public class NewApplicationDelegator {
         String [] premValue = ParamUtil.getStrings(request, "premValue");
 
         Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request, LICAPPGRPPREMISESDTOMAP);
-        for(int i =0 ; i<count;i++){
+        for(int i = 0 ; i < count; i++){
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
             String premisesSel = premisesSelect[i];
             String appType = appSubmissionDto.getAppType();
@@ -1591,10 +1590,10 @@ public class NewApplicationDelegator {
                     continue;
                 }
             }
-            if(StringUtil.isEmpty(premisesIndexNo[i])){
-                appGrpPremisesDto.setPremisesIndexNo(String.valueOf(System.currentTimeMillis()));
-            }
+
+            appGrpPremisesDto.setPremisesIndexNo(UUID.randomUUID().toString());
             appGrpPremisesDto.setPremisesType(premisesType[i]);
+
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = IaisCommonUtils.genNewArrayList();
             int length = 0;
             try {
@@ -1701,7 +1700,7 @@ public class NewApplicationDelegator {
             appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriods);
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
-        return  appGrpPremisesDtoList;
+          return  appGrpPremisesDtoList;
     }
 
 
@@ -1817,13 +1816,11 @@ public class NewApplicationDelegator {
             }
             doPO(hcsaSvcPersonnelDtos,errorMap,appSvcPrincipalOfficersDtoList,serviceId,sB);
 
-
             List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.get(i).getAppSvcPersonnelDtoList();
             doAppSvcPersonnelDtoList(hcsaSvcPersonnelDtos,errorMap,appSvcPersonnelDtoList,serviceId,sB);
             List<AppSvcDocDto> appSvcDocDtoLit = dto.get(i).getAppSvcDocDtoLit();
             doSvcDocument(errorMap,appSvcDocDtoLit,serviceId,sB);
         }
-
 
         return  errorMap;
     }
@@ -1846,7 +1843,7 @@ public class NewApplicationDelegator {
                 }
 
                 if(!flag){
-                    /*   sB.append(serviceId);*/
+                    sB.append(serviceId);
                 }
             }
 
@@ -2503,6 +2500,9 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,APPSUBMISSIONDTO);
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+
+
+        Set<String> distinctVehicleNo = IaisCommonUtils.genNewHashSet();
         for(int i=0;i<appGrpPremisesDtoList.size();i++){
             String premiseType = appGrpPremisesDtoList.get(i).getPremisesType();
             if (StringUtil.isEmpty(premiseType)) {
@@ -2558,7 +2558,6 @@ public class NewApplicationDelegator {
                         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
                         if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
                             for(int j=0;j<appPremPhOpenPeriodList.size();j++){
-
                                 String convStartFromHH = appPremPhOpenPeriodList.get(j).getOnsiteStartFromHH();
                                 String convStartFromMM = appPremPhOpenPeriodList.get(j).getOnsiteStartFromMM();
                                 String onsiteEndToHH = appPremPhOpenPeriodList.get(j).getOnsiteEndToHH();
@@ -2891,6 +2890,13 @@ public class NewApplicationDelegator {
                             boolean b = VehNoValidator.validateNumber(conveyanceVehicleNo);
                             if(!b){
                                 errorMap.put("conveyanceVehicleNo"+i,"CHKLMD001_ERR008");
+                            }
+
+                            //Vehicle No. should be the unique key.
+                            if (distinctVehicleNo.contains(conveyanceVehicleNo)){
+                                errorMap.put("conveyanceVehicleNo"+i, "CHKLMD001_ERR009");
+                            }else {
+                                distinctVehicleNo.add(conveyanceVehicleNo);
                             }
                         }
 

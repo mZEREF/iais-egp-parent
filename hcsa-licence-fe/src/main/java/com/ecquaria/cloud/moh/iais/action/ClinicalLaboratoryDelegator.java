@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -255,9 +256,7 @@ public class ClinicalLaboratoryDelegator {
         for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtoList){
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
-                if(appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getConveyanceVehicleNo())){
-                    appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(appGrpPremisesDto.getAddress());
-                }else if (appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getHciName())){
+                if(appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getPremisesIndexNo())){
                     appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(appGrpPremisesDto.getAddress());
                 }
             }
@@ -426,7 +425,6 @@ public class ClinicalLaboratoryDelegator {
         appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
         ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO);
-
         Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap= NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto,svcId);
         ParamUtil.setSessionAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
 
@@ -470,13 +468,13 @@ public class ClinicalLaboratoryDelegator {
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = IaisCommonUtils.genNewArrayList();
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                String premiseName = "";
-                if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+                String premiseName = appGrpPremisesDto.getPremisesIndexNo();
+               /* if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
                     premiseName = appGrpPremisesDto.getHciName();
                 } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
                     premiseName = appGrpPremisesDto.getConveyanceVehicleNo();
-                }
-                String name = premiseName + "control--runtime--1";
+                }*/
+                String name = appGrpPremisesDto.getPremisesIndexNo()+ "control--runtime--1";
                 String[] checkList = ParamUtil.getStrings(bpc.request, name);
                 List<AppSvcChckListDto> appSvcChckListDtoList = IaisCommonUtils.genNewArrayList();
                 AppSvcChckListDto appSvcChckListDto = new AppSvcChckListDto();
@@ -501,15 +499,15 @@ public class ClinicalLaboratoryDelegator {
                         appSvcChckListDtoList.add(appSvcChckListDto);
 
                         //PremisesIndexNo()+checkCode()+checkParentId()
-                        reloadChkLstMap.put(currentSvcId + appGrpPremisesDto.getHciName() + checkInfo.getId(), "checked");
+                        reloadChkLstMap.put(currentSvcId + appGrpPremisesDto.getPremisesIndexNo() + checkInfo.getId(), "checked");
                     }
                     String premisesType = appGrpPremisesDto.getPremisesType();
-                    String premisesValue = "";
-                    if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)) {
+                    String premisesValue = appGrpPremisesDto.getPremisesIndexNo();
+                    /*if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)) {
                         premisesValue = appGrpPremisesDto.getHciName();
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)) {
                         premisesValue = appGrpPremisesDto.getConveyanceVehicleNo();
-                    }
+                    }*/
                     //else his .....
                     appSvcLaboratoryDisciplinesDto = new AppSvcLaboratoryDisciplinesDto();
                     appSvcLaboratoryDisciplinesDto.setPremiseType(premisesType);
@@ -1089,6 +1087,8 @@ public class ClinicalLaboratoryDelegator {
             }
 
             appSvcPersonnelDtos = genAppSvcPersonnelDtoList(bpc.request, personnelTypeList,currentSvcCod);
+
+
             appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(appSvcPersonnelDtos);
 
        /* if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)){
@@ -1113,6 +1113,15 @@ public class ClinicalLaboratoryDelegator {
                 }
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
             }
+            HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+
+            Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
+            if(errorMap.isEmpty()&&allChecked.isEmpty()){
+                coMap.put("information","information");
+            }else {
+                coMap.put("information","");
+            }
+            bpc.request.getSession().setAttribute("coMap",coMap);
             if(!errorMap.isEmpty()){
                 ParamUtil.setRequestAttr(bpc.request,"errorMsg",WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.NUCLEARMEDICINEIMAGING);
@@ -1304,9 +1313,12 @@ public class ClinicalLaboratoryDelegator {
 
     }
     private static void doValidatetionServicePerson(Map <String,String> errorMap,List<AppSvcPersonnelDto> appSvcPersonnelDtos){
-
         for(int i=0;i<appSvcPersonnelDtos.size();i++){
             String personnelSel = appSvcPersonnelDtos.get(i).getPersonnelType();
+            if (StringUtils.isEmpty(personnelSel)){
+                errorMap.put("personnelSelErrorMsg" + i,"UC_CHKLMD001_ERR001");
+            }
+
             if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)){
                 String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
                 String name = appSvcPersonnelDtos.get(i).getName();

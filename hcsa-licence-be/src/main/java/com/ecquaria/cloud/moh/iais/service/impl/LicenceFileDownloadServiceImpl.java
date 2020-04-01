@@ -459,6 +459,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         if(!file.exists()){
             file.mkdirs();
         }
+        log.info(file.getPath()+"file path*************");
         List<FileRepoDto> fileRepoDtos = IaisCommonUtils.genNewArrayList();
         if(file.isDirectory()){
             File[] files = file.listFiles();
@@ -483,6 +484,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         FileRepoEventDto eventDto = new FileRepoEventDto();
                         eventDto.setFileRepoList(fileRepoDtos);
                         eventDto.setEventRefNo(groupPath);
+                        log.info(f.getPath()+"file path");
                         eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
                                 EventBusConsts.OPERATION_BE_REC_DATA_COPY, groupPath, null);
 

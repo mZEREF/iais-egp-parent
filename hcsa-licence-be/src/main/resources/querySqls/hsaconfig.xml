@@ -22,6 +22,18 @@
                 <#if riskLevel??> and item.risk_level = :riskLevel</#if>
                 <#if status??> and item.status = :status</#if>
                 <#if adhocItemId??> and ${adhocItemId} </#if>
+                <#if selectedItemIdToConfig??> and ${selectedItemIdToConfig} </#if>
+        ]]>
+
+    </sql>
+
+    <sql key="regulationQuery"  remarks="query regulation">
+        <![CDATA[
+                SELECT ID, CLAUSE_NO, CLAUSE, STATUS, CREATED_DT, CREATED_BY, UPDATED_DT, UPDATED_BY
+                FROM chkl_config_hcsa_svc_regulation
+                <#if id??> and id = :id</#if>
+                <#if clauseNo??> and id = :clauseNo</#if>
+                <#if clause??> and id = :clause</#if>
         ]]>
 
     </sql>

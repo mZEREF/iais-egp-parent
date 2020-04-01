@@ -35,14 +35,15 @@
 
 <c:set value="${reloadLaboratoryDisciplines}" var="reloadData"/>
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
-  <c:choose>
-    <c:when test="${appGrpPremisesDto.hciName != null && appGrpPremisesDto.hciName != ''}">
-      <c:set value="${appGrpPremisesDto.hciName}" var="premIndexNo"/>
-    </c:when>
-    <c:when test="${appGrpPremisesDto.conveyanceVehicleNo != null && appGrpPremisesDto.conveyanceVehicleNo != ''}">
-      <c:set value="${appGrpPremisesDto.conveyanceVehicleNo}" var="premIndexNo"/>
-    </c:when>
-  </c:choose>
+
+
+  <%--  id="<c:out value="control--${levelOne.index}--${levelOne.index}" />"
+    name="<c:out value="${premIndexNo}control--runtime--1" />" class="control-input"
+    value="<c:out value="${checkIndexNo1}" />">
+
+    Generate unique key  --%>
+  <c:set value="${appGrpPremisesDto.premisesIndexNo}" var="premIndexNo"/>
+
   <fieldset id="fieldset-content" <c:if test="${AppSubmissionDto.needEditController && !isClickEdit}">disabled</c:if> >
     <p><strong class="cgo-header">Premises ${status.index+1}</strong></p>
     <p>

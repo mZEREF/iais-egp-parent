@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.RegulationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -109,4 +110,8 @@ public interface HcsaChklClient {
 
     @PostMapping(value = "/iais-hcsa-checklist/regulation/", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<IaisApiResult<List<ErrorMsgContent>>> submitHcsaChklSvcRegulation(@RequestBody List<HcsaChklSvcRegulationDto> regulationList);
+
+    @PostMapping(value = "/iais-regulation/results",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<SearchResult<RegulationQueryDto>> searchRegulation(@RequestBody SearchParam searchParam);
+
 }

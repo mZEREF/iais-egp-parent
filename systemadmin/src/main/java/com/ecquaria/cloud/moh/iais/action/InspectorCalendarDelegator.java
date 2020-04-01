@@ -146,7 +146,7 @@ public class InspectorCalendarDelegator {
 		String isNew = (String) ParamUtil.getSessionAttr(request, AppointmentConstants.IS_NEW_VIEW_DATA);
 
 		List<SelectOption> wrlGrpNameOpt = IaisCommonUtils.genNewArrayList();
-		workingGroupQueryList.stream().forEach(wkr -> {
+		workingGroupQueryList.forEach(wkr -> {
 			String groupId = wkr.getId();
 			String groupName = wkr.getGroupName();
 			wrlGrpNameOpt.add(new SelectOption(groupId, groupName));
