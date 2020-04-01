@@ -154,16 +154,10 @@
         <div style="margin-left: 1%;margin-right: 1%"><input type="checkbox" onclick="return false" checked name="sure" id="confirmInfo">
             <label style="font-weight: normal" for="confirmInfo">I have read the information</label>
         </div>
-
-
-        <div align="right">
-            <button id="backButton" type="button" class="btn btn-primary" onclick="confirmBack('back')">
-                Back
-            </button>
-            <button id="submitButton" type="button" class="btn btn-primary" onclick="confirmSubmit('submit')">
-                Next
-            </button>
-        </div>
+        <iais:action>
+            <a onclick="confirmBack('back')"><em class="fa fa-angle-left" style="padding-left: 2%"></em> Back</a>
+            <a style="margin-left: 90%" class="btn btn-primary" onclick="confirmSubmit('submit')">SUBMIT</a>
+        </iais:action>
     </div>
 </form>
 

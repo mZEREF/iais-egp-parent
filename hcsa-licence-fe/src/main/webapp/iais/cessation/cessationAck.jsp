@@ -48,8 +48,9 @@
                         </table>
                     </c:forEach>
                 </div>
-                <div align="right">
-                    <button id="ackBack" type="button" class="btn btn-primary" onclick="back('back')">Back</button>
+
+                <div style="padding-left: 1%">
+                    <a href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left" style="padding-left: 2%"></em> Back</a>
                 </div>
             </div>
         </div>
