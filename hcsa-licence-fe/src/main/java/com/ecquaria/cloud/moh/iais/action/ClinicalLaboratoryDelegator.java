@@ -674,11 +674,9 @@ public class ClinicalLaboratoryDelegator {
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = currentSvcRelatedDto.getAppSvcLaboratoryDisciplinesDtoList();
             if (appSvcLaboratoryDisciplinesDtoList != null) {
                 for (AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList) {
-                    String premisesType = "";
                     String premisesValue = "";
                     for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
                         if (appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getPremisesIndexNo())) {
-                            premisesType = appGrpPremisesDto.getPremisesType();
                             premisesValue = appGrpPremisesDto.getPremisesIndexNo();
                             break;
                         }
@@ -692,7 +690,7 @@ public class ClinicalLaboratoryDelegator {
                         String[] chkAndCgoValue = ParamUtil.getStrings(bpc.request, chkAndCgoName.toString());
                         if (chkAndCgoValue != null && chkAndCgoValue.length > 0) {
                             appSvcDisciplineAllocationDto = new AppSvcDisciplineAllocationDto();
-                            appSvcDisciplineAllocationDto.setPremiseType(premisesType);
+                            //appSvcDisciplineAllocationDto.setPremiseType(premisesType);
                             appSvcDisciplineAllocationDto.setPremiseVal(premisesValue);
                             appSvcDisciplineAllocationDto.setChkLstConfId(chkAndCgoValue[0]);
                             appSvcDisciplineAllocationDto.setIdNo(chkAndCgoValue[1]);
