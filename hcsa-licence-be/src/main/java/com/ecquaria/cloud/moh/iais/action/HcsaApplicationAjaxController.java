@@ -1,13 +1,17 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationUploadFileValidate;
@@ -25,9 +29,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * @author zhilin
@@ -35,7 +38,7 @@ import java.util.UUID;
  */
 @Controller
 @Slf4j
-public class HcsaApplicationAjaxController {
+public class HcsaApplicationAjaxController{
 
     @Autowired
     private FillUpCheckListGetAppClient uploadFileClient;
@@ -45,19 +48,17 @@ public class HcsaApplicationAjaxController {
 
     //upload file
     @RequestMapping(value = "/uploadInternalFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, method = RequestMethod.POST)
-    public @ResponseBody
-    String uploadInternalFile(HttpServletRequest request,@RequestParam("selectedFile") MultipartFile selectedFile){
+    @ResponseBody
+    public String uploadInternalFile(HttpServletRequest request,@RequestParam("selectedFile") MultipartFile selectedFile){
         String data = "";
         request.setAttribute("selectedFile",selectedFile);
         HcsaApplicationUploadFileValidate uploadFileValidate = new HcsaApplicationUploadFileValidate();
-        Map<String, String> errorMap = uploadFileValidate.validate(request);
+        Map<String, String> errorMap = new HashMap<>();
         if(!errorMap.isEmpty()){
-            //String jsonStr = WebValidationHelper.generateJsonStr(errorMap);
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, errorMap);
-            //data = jsonStr;
+            AppIntranetDocDto appIntranetDocDto = new AppIntranetDocDto();
+            appIntranetDocDto.setFileSn(-1);
+            return  JsonUtil.parseToJson(appIntranetDocDto);
         }else{
-//            MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-//            CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("internalFile");
             AppIntranetDocDto appIntranetDocDto = new AppIntranetDocDto();
             //size
             long size = selectedFile.getSize();
@@ -80,6 +81,7 @@ public class HcsaApplicationAjaxController {
             appIntranetDocDto.setSubmitDt(new Date());
             appIntranetDocDto.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
 
+
             FileRepoDto fileRepoDto = new FileRepoDto();
             fileRepoDto.setFileName(fileName);
             fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -91,7 +93,22 @@ public class HcsaApplicationAjaxController {
 //            appIntranetDocDto.set
             String id = uploadFileClient.saveAppIntranetDocByAppIntranetDoc(appIntranetDocDto).getEntity();
             appIntranetDocDto.setId(id);
-
+             // set appIntranetDocDto to seesion
+            ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
+            List<AppIntranetDocDto> appIntranetDocDtos;
+            if(applicationViewDto != null && applicationViewDto.getAppIntranetDocDtoList() != null){
+                appIntranetDocDtos = applicationViewDto.getAppIntranetDocDtoList();
+            }else {
+                appIntranetDocDtos = new ArrayList<>(5);
+            }
+            int fileSizes = appIntranetDocDtos.size();
+           /* if(fileSizes == 0){
+                appIntranetDocDto.setNoFilesMessage( MessageUtil.getMessageDesc("ACK018"));
+            }*/
+            appIntranetDocDto.setFileSn(fileSizes);
+            appIntranetDocDtos.add( appIntranetDocDto);
+            applicationViewDto.setAppIntranetDocDtoList(appIntranetDocDtos);
+            ParamUtil.setSessionAttr(request,"applicationViewDto",(Serializable) applicationViewDto);
             //call back upload file succeeded
             String appIntranetDocDtoJsonStr = JsonUtil.parseToJson(appIntranetDocDto);
             data = appIntranetDocDtoJsonStr;
@@ -100,4 +117,32 @@ public class HcsaApplicationAjaxController {
         }
         return data;
     }
+
+    @RequestMapping(value = "/deleteInternalFile", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> deleteInternalFile(HttpServletRequest request){
+        String guid = MaskUtil.unMaskValue("appDocId", request.getParameter("appDocId"));
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
+        if(applicationViewDto != null && applicationViewDto.getAppIntranetDocDtoList() != null){
+            List<AppIntranetDocDto> appIntranetDocDtos = applicationViewDto.getAppIntranetDocDtoList();
+            AppIntranetDocDto appIntranetDocDe  = null;
+            for(AppIntranetDocDto appIntranetDocDto : appIntranetDocDtos){
+                if(appIntranetDocDto.getId().equalsIgnoreCase(guid)){
+                    uploadFileClient.deleteAppIntranetDocsById( appIntranetDocDto.getId());
+                    fileRepoClient.removeFileById(appIntranetDocDto.getFileRepoId());
+                    appIntranetDocDe = appIntranetDocDto;
+                }
+            }
+            if(appIntranetDocDe!= null)
+            appIntranetDocDtos.remove( appIntranetDocDe);
+            ParamUtil.setSessionAttr(request,"applicationViewDto",(Serializable) applicationViewDto);
+            map.put("fileSn",appIntranetDocDtos.size());
+            if(appIntranetDocDtos.size() == 0){
+                map.put("noFilesMessage", MessageUtil.getMessageDesc("ACK018"));
+            }
+        }
+        return map;
+    }
+
 }
