@@ -2870,20 +2870,8 @@ public class NewApplicationDelegator {
                             }
                         }
                         String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
-                        if(StringUtil.isEmpty(conveyanceVehicleNo)){
-                            errorMap.put("conveyanceVehicleNo"+i,"UC_CHKLMD001_ERR001");
-                        }else {
-                            boolean b = VehNoValidator.validateNumber(conveyanceVehicleNo);
-                            if(!b){
-                                errorMap.put("conveyanceVehicleNo"+i,"CHKLMD001_ERR008");
-                            }
+                        validateVehicleNo(errorMap, distinctVehicleNo, i, conveyanceVehicleNo);
 
-                            if (distinctVehicleNo.contains(conveyanceVehicleNo)){
-                                errorMap.put("conveyanceVehicleNo"+i, "CHKLMD001_ERR009");
-                            }else {
-                                distinctVehicleNo.add(conveyanceVehicleNo);
-                            }
-                        }
                         String cStreetName = appGrpPremisesDtoList.get(i).getConveyanceStreetName();
                         if(StringUtil.isEmpty(cStreetName)){
                             errorMap.put("conveyanceStreetName"+i,"UC_CHKLMD001_ERR001");
@@ -2935,6 +2923,9 @@ public class NewApplicationDelegator {
                     }
                 } else {
                     //premiseSelect = organization hci code
+                    String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
+                    validateVehicleNo(errorMap, distinctVehicleNo, i, conveyanceVehicleNo);
+
                 }
             }
         }
@@ -2942,6 +2933,24 @@ public class NewApplicationDelegator {
 
         return errorMap;
     }
+
+    private static void validateVehicleNo(Map<String, String> errorMap, Set<String> distinctVehicleNo, int numberCount, String conveyanceVehicleNo){
+        if(StringUtil.isEmpty(conveyanceVehicleNo)){
+            errorMap.put("conveyanceVehicleNo"+numberCount,"UC_CHKLMD001_ERR001");
+        }else {
+            boolean b = VehNoValidator.validateNumber(conveyanceVehicleNo);
+            if(!b){
+                errorMap.put("conveyanceVehicleNo"+numberCount,"CHKLMD001_ERR008");
+            }
+
+            if (distinctVehicleNo.contains(conveyanceVehicleNo)){
+                errorMap.put("conveyanceVehicleNo"+numberCount, "CHKLMD001_ERR009");
+            }else {
+                distinctVehicleNo.add(conveyanceVehicleNo);
+            }
+        }
+    }
+
 
     private Map<String,String> doValidatePremissCgo(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
