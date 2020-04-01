@@ -76,13 +76,12 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * egator
@@ -137,9 +136,9 @@ public class NewApplicationDelegator {
     @Autowired
     private RequestForChangeService requestForChangeService;
 
-
     @Autowired
     private WithOutRenewalService withOutRenewalService;
+
     @Autowired
     private SystemAdminClient systemAdminClient;
 
@@ -210,7 +209,6 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do Start end ...."));
     }
 
-
     /**
      * StartStep: Prepare
      *
@@ -231,6 +229,7 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, action);
         log.info(StringUtil.changeForLog("the do prepare end ...."));
     }
+
     /**
      * StartStep: PreparePremises
      *
@@ -331,9 +330,6 @@ public class NewApplicationDelegator {
                 }
             }
         }
-
-
-
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.info(StringUtil.changeForLog("the do preparePremises end ...."));
     }
@@ -378,8 +374,6 @@ public class NewApplicationDelegator {
 
         log.info(StringUtil.changeForLog("the do prepareDocuments end ...."));
     }
-
-
 
     /**
      * StartStep: PrepareForms
@@ -505,12 +499,8 @@ public class NewApplicationDelegator {
             }
 
         }
-
-
         log.info(StringUtil.changeForLog("the do doPremises end ...."));
     }
-
-
 
     /**
      * StartStep: DoDocument
@@ -717,7 +707,6 @@ public class NewApplicationDelegator {
 
     }
 
-
     /**
      * StartStep: doForms
      *
@@ -741,6 +730,8 @@ public class NewApplicationDelegator {
         StringBuffer requestURL = bpc.request.getRequestURL();
         String queryString = bpc.request.getQueryString();
         String reUrl=requestURL.append("?").append(queryString).toString();
+
+
 
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
     }
@@ -871,7 +862,6 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doRequestInformationSubmit end ...."));
     }
 
-
     public void doRenewSubmit(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do doRenewSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
@@ -931,9 +921,6 @@ public class NewApplicationDelegator {
 
         log.info(StringUtil.changeForLog("the do doRenewSubmit end ...."));
     }
-
-
-
 
     /**
      * StartStep: doRequestForChangeSubmit
@@ -1027,8 +1014,6 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
 
-
-
     /**
      * StartStep: doSubmit
      *
@@ -1093,9 +1078,6 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doSubmit end ...."));
     }
 
-
-
-
     /**
      * StartStep: ControlSwitch
      *
@@ -1130,6 +1112,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do controlSwitch end ...."));
 
     }
+
     /**
      * StartStep: ControlSwitch
      *
@@ -1189,8 +1172,6 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doErrorAck end ...."));
     }
 
-
-
     /**
      * StartStep: PrepareAckPage
      *
@@ -1202,7 +1183,6 @@ public class NewApplicationDelegator {
 
         log.info(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
-
 
     /**
      * StartStep: prepareJump
@@ -1234,8 +1214,6 @@ public class NewApplicationDelegator {
 
         log.info(StringUtil.changeForLog("the do prepareJump end ...."));
     }
-
-
 
     //=============================================================================
     //private method
@@ -1299,6 +1277,7 @@ public class NewApplicationDelegator {
         }
         return result;
     }
+
     private boolean compareAndSendEmail(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto){
         boolean isAuto = true;
 
@@ -1499,6 +1478,7 @@ public class NewApplicationDelegator {
 
         return dto;
     }
+
     private void chose(HttpServletRequest request,String type){
         if("valPremiseList".equals(type)){
             List<AppGrpPremisesDto> list = genAppGrpPremisesDtoList(request);
@@ -1576,7 +1556,7 @@ public class NewApplicationDelegator {
         String [] premValue = ParamUtil.getStrings(request, "premValue");
 
         Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request, LICAPPGRPPREMISESDTOMAP);
-        for(int i = 0 ; i < count; i++){
+        for(int i =0 ; i<count;i++){
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
             String premisesSel = premisesSelect[i];
             String appType = appSubmissionDto.getAppType();
@@ -1590,10 +1570,10 @@ public class NewApplicationDelegator {
                     continue;
                 }
             }
-
-            appGrpPremisesDto.setPremisesIndexNo(UUID.randomUUID().toString());
+            if(StringUtil.isEmpty(premisesIndexNo[i])){
+                appGrpPremisesDto.setPremisesIndexNo(String.valueOf(System.currentTimeMillis()));
+            }
             appGrpPremisesDto.setPremisesType(premisesType[i]);
-
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = IaisCommonUtils.genNewArrayList();
             int length = 0;
             try {
@@ -1700,9 +1680,8 @@ public class NewApplicationDelegator {
             appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriods);
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
-          return  appGrpPremisesDtoList;
+        return  appGrpPremisesDtoList;
     }
-
 
     private Map<String,String> doPreviewAndSumbit( BaseProcessClass bpc){
         StringBuilder sB=new StringBuilder();
@@ -1816,11 +1795,13 @@ public class NewApplicationDelegator {
             }
             doPO(hcsaSvcPersonnelDtos,errorMap,appSvcPrincipalOfficersDtoList,serviceId,sB);
 
+
             List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.get(i).getAppSvcPersonnelDtoList();
             doAppSvcPersonnelDtoList(hcsaSvcPersonnelDtos,errorMap,appSvcPersonnelDtoList,serviceId,sB);
             List<AppSvcDocDto> appSvcDocDtoLit = dto.get(i).getAppSvcDocDtoLit();
             doSvcDocument(errorMap,appSvcDocDtoLit,serviceId,sB);
         }
+
 
         return  errorMap;
     }
@@ -1843,7 +1824,7 @@ public class NewApplicationDelegator {
                 }
 
                 if(!flag){
-                    sB.append(serviceId);
+                    /*   sB.append(serviceId);*/
                 }
             }
 
@@ -1858,7 +1839,6 @@ public class NewApplicationDelegator {
 
         }
     }
-
 
     private static void doAppSvcPersonnelDtoList(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos ,Map map,List<AppSvcPersonnelDto> appSvcPersonnelDtos,String serviceId, StringBuilder sB){
         if(appSvcPersonnelDtos==null){
@@ -1956,6 +1936,7 @@ public class NewApplicationDelegator {
         }
 
     }
+
     private static void doAppSvcCgoDto(  List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map map ,List<AppSvcCgoDto> list,String serviceId,StringBuilder sB){
         if(list==null){
             if(hcsaSvcPersonnelDtos!=null){
@@ -2011,7 +1992,6 @@ public class NewApplicationDelegator {
 
         }
     }
-
 
     private static void doSvcDis( Map map ,List<AppSvcDisciplineAllocationDto> list,String serviceId,StringBuilder sB){
         if(list==null){
@@ -2225,6 +2205,7 @@ public class NewApplicationDelegator {
         }
 
     }
+
     private void loadingCoMap( AppSubmissionDto appSubmissionDto,HttpServletRequest request){
         if(appSubmissionDto!=null){
             List<String> stepColor = appSubmissionDto.getStepColor();
@@ -2304,6 +2285,7 @@ public class NewApplicationDelegator {
         }
         log.info(StringUtil.changeForLog("the do loadingDraft end ...."));
     }
+
     private void requestForChangeOrRenewLoading(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do requestForChangeLoading start ...."));
         String appType = (String) ParamUtil.getRequestAttr(bpc.request,"appType");
@@ -2328,6 +2310,7 @@ public class NewApplicationDelegator {
         }
         log.info(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
     }
+
     private void renewLicence(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do renewLicence start ...."));
         String licenceId = ParamUtil.getString(bpc.request, "licenceId");
@@ -2386,7 +2369,6 @@ public class NewApplicationDelegator {
         List<String> names = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         if(appSubmissionDto != null ){
-            log.info(StringUtil.changeForLog("appSubmissionDto is not null"));
             // from draft,rfi
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
@@ -2400,8 +2382,6 @@ public class NewApplicationDelegator {
                     }
 
                 }
-            }else{
-                log.info(StringUtil.changeForLog("appSvcRelatedInfoDtoList is empty"));
             }
         }else {
             List<String> baseServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseService");
@@ -2500,9 +2480,6 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,APPSUBMISSIONDTO);
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-
-
-        Set<String> distinctVehicleNo = IaisCommonUtils.genNewHashSet();
         for(int i=0;i<appGrpPremisesDtoList.size();i++){
             String premiseType = appGrpPremisesDtoList.get(i).getPremisesType();
             if (StringUtil.isEmpty(premiseType)) {
@@ -2558,6 +2535,7 @@ public class NewApplicationDelegator {
                         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
                         if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
                             for(int j=0;j<appPremPhOpenPeriodList.size();j++){
+
                                 String convStartFromHH = appPremPhOpenPeriodList.get(j).getOnsiteStartFromHH();
                                 String convStartFromMM = appPremPhOpenPeriodList.get(j).getOnsiteStartFromMM();
                                 String onsiteEndToHH = appPremPhOpenPeriodList.get(j).getOnsiteEndToHH();
@@ -2608,7 +2586,6 @@ public class NewApplicationDelegator {
                                             errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR008");
                                         }
                                     }catch (Exception e){
-
                                     }
 
                                 }else {
@@ -2645,10 +2622,7 @@ public class NewApplicationDelegator {
                                         }
 
                                     }
-
-
                                 }
-
                             }
                             //set ph time
                             String errorOnsiteEndToMM = errorMap.get("onsiteEndToMM"+i);
@@ -2857,12 +2831,8 @@ public class NewApplicationDelegator {
                                             errorMap.put("convEndToHH"+j,"CHKLMD001_ERR003");
 
                                         }
-
                                     }
-
-
                                 }
-
                             }
 
                             //set ph time
@@ -2891,17 +2861,8 @@ public class NewApplicationDelegator {
                             if(!b){
                                 errorMap.put("conveyanceVehicleNo"+i,"CHKLMD001_ERR008");
                             }
-
-                            //Vehicle No. should be the unique key.
-                            if (distinctVehicleNo.contains(conveyanceVehicleNo)){
-                                errorMap.put("conveyanceVehicleNo"+i, "CHKLMD001_ERR009");
-                            }else {
-                                distinctVehicleNo.add(conveyanceVehicleNo);
-                            }
                         }
-
                         String cStreetName = appGrpPremisesDtoList.get(i).getConveyanceStreetName();
-
                         if(StringUtil.isEmpty(cStreetName)){
                             errorMap.put("conveyanceStreetName"+i,"UC_CHKLMD001_ERR001");
                         }
@@ -2929,7 +2890,6 @@ public class NewApplicationDelegator {
                                 stringBuilder.append(appGrpPremisesDtoList.get(i).getConveyanceFloorNo())
                                         .append(appGrpPremisesDtoList.get(i).getConveyanceBlockNo())
                                         .append(appGrpPremisesDtoList.get(i).getConveyanceUnitNo());
-
                             }
                         }
                         String conveyancePostalCode = appGrpPremisesDtoList.get(i).getConveyancePostalCode();
@@ -2945,25 +2905,22 @@ public class NewApplicationDelegator {
 
                             }
                         }
-
                         if(list.contains(stringBuilder.toString())){
                             errorMap.put("conveyancePostalCode"+i,"There is a duplicated entry for this premises address.");
                         }else {
                             list.add(stringBuilder.toString());
                         }
-
                     }
                 } else {
                     //premiseSelect = organization hci code
-
                 }
             }
-
         }
         log.info(StringUtil.changeForLog("the do doValidatePremiss end ...."));
 
         return errorMap;
     }
+
     private Map<String,String> doValidatePremissCgo(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         //do validate premiss
@@ -3053,10 +3010,6 @@ public class NewApplicationDelegator {
                 }
             }
 
-
-
-
-
             //set oldAppSubmission when rfi,rfc,renew
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
                     ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
@@ -3144,8 +3097,6 @@ public class NewApplicationDelegator {
         return svcAllPsnConfig;
     }
 
-
-
     private void getTimeList(HttpServletRequest request){
         List<SelectOption> timeHourList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i< 24;i++){
@@ -3155,8 +3106,14 @@ public class NewApplicationDelegator {
         for (int i = 0; i< 60;i++){
             timeMinList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
         }
+
+        List<SelectOption> publicHolidayList = IaisCommonUtils.genNewArrayList();
+        publicHolidayList.add(new SelectOption("2020-04-10 00:00:00","Good Friday"));
+        publicHolidayList.add(new SelectOption("2020-05-01 00:00:00","Labour Day"));
+
         ParamUtil.setRequestAttr(request, "premiseHours", timeHourList);
         ParamUtil.setRequestAttr(request, "premiseMinute", timeMinList);
+        ParamUtil.setRequestAttr(request, "publicHolidaySelect", publicHolidayList);
     }
 
 }

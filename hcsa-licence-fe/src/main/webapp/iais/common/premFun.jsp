@@ -116,13 +116,9 @@
                         }
                     },
                     'error':function () {
-
                     }
                 });
-
             }
-
-
         });
     }
 
@@ -168,18 +164,12 @@
                         $premContent.find('.siteStreetName').val(data.streetName);
                         $premContent.find('.siteBuildingName').val(data.buildingName);
                         if(null == data.addressType || ''== data.addressType){
-
-
                         }else{
-
-
                         }
-
                         $premContent.find('.siteBlockNo').prop('readonly',true);
                         $premContent.find('.siteStreetName').prop('readonly',true);
                         $premContent.find('.siteBuildingName').prop('readonly',true);
                     }
-
                 },
                 'error':function () {
                     $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
@@ -189,15 +179,11 @@
         });
     }
 
-
-
-
-
     //add premises testing.......
     $('#addPremBtn').click(function () {
         //console.log($('.premContent').html());
         var data = {
-            'currentLength':$('.premContent').length
+            'currentLength':$('.premContent').length,
         };
         $.ajax({
             'url':'${pageContext.request.contextPath}/premises-html',
@@ -207,25 +193,17 @@
             'success':function (data) {
                 $('div.premContent:last').after(data);
                 premType();
-
                 premSelect();
-
                 $('.removeBtn').unbind('click');
                 removePremises();
-
                 retrieveAddr();
-
                 $('.addPubHolDay').unbind('click');
                 addPubHolDay();
-
                 removePH();
-
                 otherLic();
-
                 $('.date_picker').datepicker({
                     format:"dd/mm/yyyy"
                 });
-
                 <!--set Scrollbar -->
                 $("div.premSelect->ul").mCustomScrollbar({
                         advanced:{
@@ -233,11 +211,8 @@
                         }
                     }
                 );
-
-
             },
             'error':function (data) {
-
             }
         });
     });
@@ -252,7 +227,6 @@
                 $(this).find('input[name="premValue"]').val(k);
                 $(this).find('strong.premHeader').html('Premises '+(k+1));
             });
-
         });
 
     }
@@ -274,86 +248,60 @@
 
     }
 
-    <!--$contentDivEle:cuurent nearest new-premise-form-on-site/ new-premise-form-on-site->form-horizontal -->
-    var genPubHolDayFun = function ($premContentEle,$contentDivEle,canDel,canEdit) {
-        var name = $premContentEle.find('.premTypeValue').val();
-        var premVal = $premContentEle.find('input[name="premValue"]').val();
-        if('ONSITE' == name){
-            name = premVal+'onSite';
-        }else if('CONVEYANCE' == name){
-            name = premVal+"conveyance";
-        }
-        var currentLength = $contentDivEle.find('div.pubHolidayContent').length;
-
-        //onsite conv
-        var pubHolDayHtml = "<div class=\"pubHolidayContent\">"
-            + " <div class=\"form-group\">"
-            + "<label class=\"col-xs-12 col-md-4 control-label\">Select Public Holiday</label>"
-            + "<div class=\" col-xs-7 col-sm-4 col-md-5\">"
-            + "<input type=\"text\" autocomplete=\"off\" class=\"date_picker form-control form_datetime public-holiday \"  name=\""+name+"PubHoliday"+currentLength+"\" data-date-start-date=\"01/01/1900\" placeholder=\"dd/mm/yyyy\" maxlength=\"10\"><span id=\"error_onsitePubHoliday\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>"
-            + "</div>"
-            + "<div class=\" col-xs-7 col-sm-4 col-md-3\">"
-            + "<div class=\"form-check\">";
-        if('Y'==canDel){
-            pubHolDayHtml = pubHolDayHtml+ "<strong class=\"removePhBtn\">X</strong>";
-        }
-        pubHolDayHtml = pubHolDayHtml + "</div>"
-            + "</div>"
-            + "<div class=\"clear\"></div></div>"
-            + "<div class=\"form-group\">"
-            + "<label class=\"col-xs-12 col-md-4 control-label\">"
-            + " Public Holidays Operating Hours (Start)"
-            + "</label>"
-            + "<div class=\"col-xs-9 col-sm-5 col-md-6\">"
-            + "<input type=\"text\" class=\"PbHolDayStartHH\"  name=\""+name+"PbHolDayStartHH"+currentLength+"\" value=\"\" maxlength=\"2\" style=\"width: 60px;;margin-right: 2%\">(HH) :"
-            + "<input type=\"text\" class=\"PbHolDayStartMM\"  name=\""+name+"PbHolDayStartMM"+currentLength+"\" value=\"\" maxlength=\"2\" style=\"width: 60px;margin-right: 2%;margin-left: 2%\">(MM)"
-            + " </div>"
-            + "</div>"
-            + "<div class=\"form-group\">"
-            + "<label class=\"col-xs-12 col-md-4 control-label\">"
-            + "Public Holidays Operating Hours (End)"
-            + "</label>"
-            + "<div class=\"col-xs-9 col-sm-5 col-md-6\">"
-            + "<input type=\"text\" class=\"PbHolDayEndHH\"  name=\""+name+"PbHolDayEndHH"+currentLength+"\" value=\"\" maxlength=\"2\" style=\"width: 60px;margin-right: 2%\">(HH) :"
-            + "<input type=\"text\" class=\"PbHolDayEndMM\"  name=\""+name+"PbHolDayEndMM"+currentLength+"\" value=\"\" maxlength=\"2\" style=\"width: 60px;margin-right: 2%;margin-left: 2%\">(MM)"
-            + "</div>"
-            + "</div>"
-            + "</div>";
-
-
-        if("Y" ==canEdit){
-
-        }
-
-        <!--use ph mark point -->
-        $contentDivEle.find('div.phFormMarkPoint').addClass('pubHolidayContent');
-        <!--add html -->
-        $contentDivEle.find('div.pubHolidayContent:last').after(pubHolDayHtml);
-        <!--init ph mark point -->
-        $contentDivEle.find('div.phFormMarkPoint').removeClass('pubHolidayContent');
-
-        $('.date_picker').datepicker({
-            format:"dd/mm/yyyy"
-        });
-
-        <!--change hidden length value -->
-        var length = $contentDivEle.find('div.pubHolidayContent').length;
-        $premContentEle.find('.phLength').val(length);
-
-        //Prevent duplicate binding
-        $('.removePhBtn').unbind('click');
-        removePH();
-
-    }
-
     var addPubHolDay = function () {
         $('.addPubHolDay').click(function () {
+
             var $premContentEle = $(this).closest('div.premContent');
             var $contentDivEle = $(this).closest('div.form-horizontal');
-            genPubHolDayFun($premContentEle,$contentDivEle,'Y');
+            // genPubHolDayFun($premContentEle,$contentDivEle,'Y');
+            var name = $premContentEle.find('.premTypeValue').val();
+            var premVal = $premContentEle.find('input[name="premValue"]').val();
+            console.log("Name"+name);
+            console.log("premVal"+premVal);
+            if('ONSITE' == name){
+                name = premVal+'onSite';
+            }else if('CONVEYANCE' == name){
+                name = premVal+"conveyance";
+            }
+            var currentLength = $contentDivEle.find('div.pubHolidayContent').length;
+            var jsonData={
+                'premVal': premVal,
+                'phLength': currentLength
+            };
+            $.ajax({
+                'url':'${pageContext.request.contextPath}/public-holiday-html',
+                'dataType':'text',
+                'data':jsonData,
+                'type':'GET',
+                'success':function (data) {
+                    if(data == null){
+                        return;
+                    }
+                    <!--use ph mark point -->
+                    $contentDivEle.find('div.phFormMarkPoint').addClass('pubHolidayContent');
+                    <!--add html -->
+                    $contentDivEle.find('div.pubHolidayContent:last').after(data);
+                    <!--init ph mark point -->
+                    $contentDivEle.find('div.phFormMarkPoint').removeClass('pubHolidayContent');
+                    <!--change hidden length value -->
+                    var length = $contentDivEle.find('div.pubHolidayContent').length;
+                    $premContentEle.find('.phLength').val(length);
+                    //Prevent duplicate binding
+                    $('.removePhBtn').unbind('click');
+                    removePH();
+
+                    $("div.premSelect->ul").mCustomScrollbar({
+                            advanced:{
+                                updateOnContentResize: true
+                            }
+                        }
+                    );
+                },
+                'error':function () {
+                }
+            });
         });
     }
-
 
     var removePH = function () {
         $('.removePhBtn').click(function () {
