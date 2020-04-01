@@ -135,49 +135,16 @@
                                             <c:otherwise>
                                                 <c:forEach var="pool" items="${supTaskSearchResult.rows}"
                                                            varStatus="status">
-                                                    <tr style="display: table-row;"
-                                                        id="advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}">
-                                                        <td>
-                                                            <p class="visible-xs visible-sm table-row-title">S/N</p>
-                                                            <p><c:out
-                                                                    value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></p>
-                                                        </td>
-                                                        <td>
-                                                            <p class="visible-xs visible-sm table-row-title">Application
-                                                                No</p>
-                                                            <p>
-                                                                    <c:out value="${pool.applicationGroupNo}"/>
-                                                                <a class="accordion-toggle  collapsed"
+                                                    <tr style="display: table-row;" id="advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}">
+                                                        <td><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
+                                                        <td><p><c:out value="${pool.applicationGroupNo}"/><a class="accordion-toggle  collapsed"
                                                                    data-toggle="collapse" aria-expanded="false"
                                                                    data-target="#advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"
-                                                                   onclick="getAppByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}')">
-                                                                </a>
-                                                        </td>
-                                                        <td>
-                                                            <p class="visible-xs visible-sm table-row-title">Application
-                                                                Type</p>
-                                                            <p><c:out value="${pool.applicationType}"/></p>
-                                                        </td>
-                                                        <td>
-                                                            <p class="visible-xs visible-sm table-row-title">Submission
-                                                                Type</p>
-                                                            <c:if test="${pool.count > 1}">
-                                                                <p><c:out value="Multiple"/></p>
-                                                            </c:if>
-                                                            <c:if test="${pool.count == 1}">
-                                                                <p><c:out value="Single"/></p>
-                                                            </c:if>
-                                                        </td>
-                                                        <td>
-                                                            <p class="visible-xs visible-sm table-row-title">Application
-                                                                Date</p>
-                                                            <p><c:out value="${pool.submitDate}"/></p>
-                                                        </td>
-                                                        <td>
-                                                            <p class="visible-xs visible-sm table-row-title">Payment
-                                                                Status</p>
-                                                            <p><c:out value="${pool.paymentstatus}"/></p>
-                                                        </td>
+                                                                   onclick="getAppByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}')"></a></p></td>
+                                                        <td><c:out value="${pool.applicationType}"/></td>
+                                                        <td><c:if test="${pool.count > 1}"><c:out value="Multiple"/></c:if><c:if test="${pool.count == 1}"><c:out value="Single"/></c:if></td>
+                                                        <td><c:out value="${pool.submitDate}"/></td>
+                                                        <td><c:out value="${pool.paymentstatus}"/></td>
                                                     </tr>
                                                 </c:forEach>
                                             </c:otherwise>
