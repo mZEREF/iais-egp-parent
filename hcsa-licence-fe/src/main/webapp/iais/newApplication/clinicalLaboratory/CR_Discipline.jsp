@@ -109,7 +109,7 @@
                               <tr>
                                 <td>
                                   <div class="control-item-container sub-form-check parent-form-check disabled" data-parent="<c:out value="${premIndexNo}${levelTwoList.type}${levelTwoList.name}"/>" data-child="<c:out value="${premIndexNo}${levelOneList.type}${levelOneList.name}"/>" >
-                                    <input type="checkbox"
+                                    <input type="checkbox" onclick="doChangeText('${levelTwoList.id}')"
                                     <c:if test="${reloadData[reloadIndexNo2] != null && reloadData[reloadIndexNo2] != ''}">
                                            checked="checked"
                                     </c:if>
@@ -123,9 +123,9 @@
                                     <input class="checkValue" type="hidden" name="<c:out value="${checkIndexNo2}"/>" value="<iais:mask name="${checkIndexNo2}" value="${levelTwoList.id}"/>"/>
                                   </div>
                                 </td>
-                                <td>
+                                <td >
                                   <c:choose>
-                                    <c:when test="${levelTwoList.id=='27D8EB5B-1123-EA11-BE78-000C29D29DB0'}"><input type="text" name="pleaseIndicate" maxlength="200" value="${pleaseIndicate}"></c:when>
+                                    <c:when test="${levelTwoList.id=='27D8EB5B-1123-EA11-BE78-000C29D29DB0'}"><input type="text" name="pleaseIndicate" maxlength="200" value="${pleaseIndicate}" disabled></c:when>
                                   </c:choose>
                                 </td>
                               </tr>
@@ -180,6 +180,7 @@
     });
 
     doEdit();
+    doChangeText();
   });
 
 
@@ -189,6 +190,12 @@
       $('#fieldset-content').prop('disabled',false);
       $('#isEditHiddenVal').val('1');
     });
-  }
+  };
+
+  var doChangeText = function (levelTwoListId) {
+    if(levelTwoListId==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
+      $('input[name="pleaseIndicate"]').prop('disabled',false);
+    }
+  };
 
 </script>
