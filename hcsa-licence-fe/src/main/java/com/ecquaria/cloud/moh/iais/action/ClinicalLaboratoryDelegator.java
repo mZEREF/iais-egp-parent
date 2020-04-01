@@ -43,7 +43,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -488,12 +487,10 @@ public class ClinicalLaboratoryDelegator {
                         if("27D8EB5B-1123-EA11-BE78-000C29D29DB0".equals(checkInfo.getId())){
                             String subName = ParamUtil.getString(bpc.request, "pleaseIndicate");
                             ParamUtil.setSessionAttr(bpc.request,"pleaseIndicate",subName);
-                            appSvcChckListDto.setChkName(subName);
-                        }
-                        else {
-                            appSvcChckListDto.setChkName(checkInfo.getName());
+                            appSvcChckListDto.setOtherScopeName(subName);
                         }
                         appSvcChckListDto.setChkLstType(checkInfo.getType());
+                        appSvcChckListDto.setChkName(checkInfo.getName());
                         appSvcChckListDto.setParentName(checkInfo.getParentId());
                         appSvcChckListDto.setChildrenName(checkInfo.getChildrenId());
                         appSvcChckListDtoList.add(appSvcChckListDto);
