@@ -366,10 +366,10 @@ public class HcsaApplicationDelegator {
             String appPremCorreId=taskDto.getRefNo();
             //save recommendation
             String recommendationStr = ParamUtil.getString(bpc.request,"recommendation");
-            if(StringUtil.isEmpty(recommendationStr)){
-                //recommendationShow
-                recommendationStr = ParamUtil.getString(bpc.request,"recommendationShow");
-            }
+//            if(StringUtil.isEmpty(recommendationStr)){
+//                //recommendationShow
+//                recommendationStr = ParamUtil.getString(bpc.request,"recommendationShow");
+//            }
             String dateStr = ParamUtil.getDate(bpc.request, "tuc");
             String dateTimeShow = ParamUtil.getString(bpc.request,"dateTimeShow");
             if(StringUtil.isEmpty(recommendationStr)){
