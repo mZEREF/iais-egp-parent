@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingS
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -180,6 +181,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
             intranetDocDto.setDocSize(intranetDocDto.getDocSize()+"KB");
             OrgUserDto user = applicationViewService.getUserById(intranetDocDto.getSubmitBy());
             intranetDocDto.setSubmitByName(user.getDisplayName());
+            intranetDocDto.setSubmitDtString(Formatter.formatDateTime(intranetDocDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss"));
         }
         applicationViewDto.setAppIntranetDocDtoList(intranetDocDtos);
         return applicationViewDto;

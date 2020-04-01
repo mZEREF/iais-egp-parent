@@ -12,7 +12,6 @@
                   action="" method="post">
                     <iais:field value="Upload your files" required="true"/>
                     <input type="hidden" id="uploadFile" name="uploadFile" value="">
-                    <input type="hidden" name="taskId" value="${taskId}">
                     <input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file"/>
                     <br /> <small class="error" style="margin: 0 0 0 140px;"></small>
                     <span id="error_fileUploadForm" name="iaisErrorMsg" class="error-msg"></span>
@@ -86,8 +85,8 @@
                     if(data.fileSn == 0){
                         removeNoData();
                     }
-                    var tr = "<tr>"+"<td><p>" +data.docName+"</p></td>" +"<td><p>" +data.docName+"."+data.docType+"</p></td>"+
-                        "<td><p>" +data.docSize+"</p></td>"+ "<td><p>" +data.submitByName+"</p></td>"+ "<td><p>" +data.submitDt+"</p></td>"
+                    var tr = "<tr>"+"<td><p>" +data.docName+"</p></td>" +"<td><p>"+  data.url +data.docName+"."+data.docType+"</p></td>"+
+                        "<td><p>" +data.docSize+"KB"+"</p></td>"+ "<td><p>" +data.submitByName+"</p></td>"+ "<td><p>" +data.submitDtString+"</p></td>"
                         + "<td>" +  " <a  onclick =\"javascript:deleteFile(this,'"+data.id+"');\""+"><label style=\"color: #D22727; font-size: 2rem; cursor:pointer;\">X</label></a>"+"</td>"+"</tr>";
                     doAddTr(tr);
                 }

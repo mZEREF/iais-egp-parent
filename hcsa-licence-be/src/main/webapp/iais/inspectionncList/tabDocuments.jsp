@@ -87,17 +87,17 @@
                                     <p><c:out value="${interalFile.docName}"></c:out></p>
                                 </td>
                                 <td>
-                                    <p><a href="#"><c:out
+                                    <p><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${interalFile.fileRepoId}"/>&fileRepoName=${interalFile.docName}" title="Download" class="downloadFile"><c:out
                                             value="${interalFile.docName}.${interalFile.docType}"></c:out></a></p>
                                 </td>
                                 <td>
-                                    <p><c:out value="${interalFile.docSize}KB"></c:out></p>
+                                    <p><c:out value="${interalFile.docSize}"></c:out></p>
                                 </td>
                                 <td>
-                                    <p><c:out value="${interalFile.submitBy}"></c:out></p>
+                                    <p><c:out value="${interalFile.submitByName}"></c:out></p>
                                 </td>
                                 <td>
-                                    <p><fmt:formatDate value='${interalFile.submitDt}' pattern='dd/MM/yyyy HH:mm:ss'/></p>
+                                    <p>${interalFile.submitDtString}</p>
                                 </td>
                                 <td>
                                     <a onclick="javascript:deleteFile(this,'${interalFile.id}');"><label style="color: #D22727; font-size: 2rem; cursor:pointer;">X</label></a>
