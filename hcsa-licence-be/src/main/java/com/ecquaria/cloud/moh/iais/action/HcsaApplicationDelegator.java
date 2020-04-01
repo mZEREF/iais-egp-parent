@@ -173,8 +173,8 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         //set internal files
-        List<AppIntranetDocDto> intranetDocDtos = uploadFileClient.getAppIntranetDocListByPremIdAndStatus(correlationId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-        applicationViewDto.setAppIntranetDocDtoList(intranetDocDtos);
+//        List<AppIntranetDocDto> intranetDocDtos = uploadFileClient.getAppIntranetDocListByPremIdAndStatus(correlationId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+//        applicationViewDto.setAppIntranetDocDtoList(intranetDocDtos);
 //        get routing stage dropdown send to page.
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
 

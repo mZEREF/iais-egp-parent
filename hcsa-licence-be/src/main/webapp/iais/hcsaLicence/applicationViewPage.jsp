@@ -159,15 +159,17 @@
                                                 </thead>
 
                                                 <tbody>
-                                                <c:forEach items="${applicationViewDto.appSupDocDtoList}"
-                                                           var="appSupDocDto">
+                                                <c:forEach items="${applicationViewDto.appSupDocDtoList}" var="appSupDocDto" varStatus="status">
                                                     <tr>
                                                         <td>
                                                             <p><c:out value="${appSupDocDto.file}"></c:out></p>
                                                         </td>
                                                         <td>
-                                                            <p><a href="#"><c:out
-                                                                    value="${appSupDocDto.document}"></c:out></a></p>
+                                                            <p>
+                                                                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${appSupDocDto.fileRepoId}"/>&fileRepoName=${appSupDocDto.document}" title="Download" class="downloadFile">
+                                                                <c:out value="${appSupDocDto.document}"></c:out>
+                                                                </a>
+                                                            </p>
                                                         </td>
                                                         <td>
                                                             <p><c:out value="${appSupDocDto.size}"></c:out></p>
@@ -218,7 +220,7 @@
                                                     <c:choose>
                                                         <c:when test="${empty applicationViewDto.appIntranetDocDtoList}">
                                                             <tr>
-                                                                <td colspan="7"  align="center">
+                                                                <td colspan="6"  align="center">
                                                                     <iais:message key="ACK018" escape="true"></iais:message>
                                                                 </td>
                                                             </tr>
@@ -230,14 +232,17 @@
                                                                         <p><c:out value="${interalFile.docName}"></c:out></p>
                                                                     </td>
                                                                     <td>
-                                                                        <p><a href="#"><c:out
-                                                                                value="${interalFile.docName}.${interalFile.docType}"></c:out></a></p>
+<%--                                                                        <p><a href="#"><c:out--%>
+<%--                                                                                value="${interalFile.docName}.${interalFile.docType}"></c:out></a></p>--%>
+                                                                        <p><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${interalFile.fileRepoId}"/>&fileRepoName=${interalFile.docName}" title="Download" class="downloadFile">
+                                                                            <c:out value="${interalFile.docName}.${interalFile.docType}"></c:out>
+                                                                        </a></p>
                                                                     </td>
                                                                     <td>
-                                                                        <p><c:out value="${interalFile.docSize}KB"></c:out></p>
+                                                                        <p><c:out value="${interalFile.docSize}"></c:out></p>
                                                                     </td>
                                                                     <td>
-                                                                        <p><c:out value="${interalFile.submitBy}"></c:out></p>
+                                                                        <p><c:out value="${interalFile.submitByName}"></c:out></p>
                                                                     </td>
                                                                     <td>
                                                                         <p><fmt:formatDate value='${interalFile.submitDt}' pattern='dd/MM/yyyy HH:mm:ss'/></p>
