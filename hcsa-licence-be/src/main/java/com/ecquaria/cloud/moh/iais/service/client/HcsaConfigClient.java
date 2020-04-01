@@ -86,7 +86,7 @@ public interface HcsaConfigClient {
     @GetMapping(value = "/hcsa-routing/stagelist")
     FeignResponseEntity<List<HcsaSvcRoutingStageDto>> stagelist();
 
-    @GetMapping(value = "/manHour/{serviceId}/{stageId}")
+    @GetMapping(value = "/hcsa-routing/manHour/{serviceId}/{stageId}")
     FeignResponseEntity<Integer> getManHour(@PathVariable("serviceId")String serviceId,@PathVariable("stageId")String stageId);
 
     @PostMapping(value = "/hcsa-routing/list-workload",produces = MediaType.APPLICATION_JSON_VALUE)
