@@ -150,12 +150,7 @@
                     <div class="col-xs-12 col-md-11">
                         <div class="text-right">
                             <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
-
-                            <c:if test="${!empty professionalInfoResult.rows}">
-                                <a class="btn btn-secondary" onclick="Utils.doExport('${pageContext.request.contextPath}/professional-information-file')" href="#">Export</a>
-                            </c:if>
-
-
+                            <a class="btn btn-secondary" onclick="$(this).attr('class', 'btn btn-secondary disabled')" href="${pageContext.request.contextPath}/professional-information-file">Export</a>
                             <a class="btn btn-primary" id="crud_search_button" value="doSearch" href="#">Search</a>
                         </div>
                     </div>

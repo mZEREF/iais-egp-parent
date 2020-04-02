@@ -25,13 +25,6 @@
             $(".current").text("Please Select");
             $(".form-horizontal option").val("");
         },
-
-        doExport: function(url){
-            showWaiting();
-            window.open(url, "Iais Export", "location=no,status=no,scrollvars=no");
-           // window.location.href = url;
-            dismissWaiting();
-        }
     }
 
     $("#crud_search_button").click(function () {

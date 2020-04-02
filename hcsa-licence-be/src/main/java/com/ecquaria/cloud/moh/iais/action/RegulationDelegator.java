@@ -1,17 +1,21 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaRegulationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.RegulationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.RegulationService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: yichen
@@ -55,6 +60,41 @@ public class RegulationDelegator {
         AuditTrailHelper.auditFunction("Checklist Regulation", "Regulation");
         HttpServletRequest request = bpc.request;
     }
+
+
+    /**
+     * @AutoStep: doQuery
+     * @param:
+     * @return:
+     * @author: yichen
+     */
+    public void doQuery(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+
+        RegulationQueryDto regulation = new RegulationQueryDto();
+
+        String clause = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE);
+        String desc = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_DESC);
+
+
+        regulation.setClauseNo(clause);
+        regulation.setClause(desc);
+
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE, clause);
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_REGULATION_DESC, desc);
+
+        ValidationResult validationResult = WebValidationHelper.validateProperty(regulation, "search");
+        if(validationResult != null && validationResult.isHasErrors()){
+            Map<String,String> errorMap = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            return;
+        }
+
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
+    }
+
 
     /**
      * @AutoStep: preLoad

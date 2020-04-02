@@ -26,10 +26,12 @@
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="currentValidateId" value="">
+    <input type="hidden" id="currentMaskId" name="currentMaskId" value="">
      <div class="bg-title"><h2>Checklist Item Management</h2></div>
 
     <span id="error_deleteItemMsg" name="iaisErrorMsg" class="error-msg"></span>
     <span id="error_cloneItemMsg" name="iaisErrorMsg" class="error-msg"></span>
+    <span id="error_configItemMsg" name="iaisErrorMsg" class="error-msg"></span>
 
     <br><br>
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
@@ -135,7 +137,8 @@
                               <td>
                                 <c:if test="${item.status == 'CMSTAT001'}">
                                 <button type="button" class="btn btn-default btn-sm"
-                                        onclick="javascript:prepareEditItem('${item.itemId}');">Edit
+
+                                        onclick="javascript:prepareEditItem('<iais:mask name="currentMaskId" value="${item.itemId}"/>');">Edit
                                 </button>
                                   <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" data-target="#DeleteTemplateModal" >Delete</button>
 
@@ -153,7 +156,7 @@
                                         </div>
                                         <div class="modal-footer">
                                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                          <button type="button" class="btn btn-primary" onclick="javascript:disable('${item.itemId}');" >Confirm</button>
+                                          <button type="button" class="btn btn-primary" onclick="javascript:disable('<iais:mask name="currentMaskId" value="${item.itemId}"/>');" >Confirm</button>
                                         </div>
                                       </div>
                                     </div>
@@ -162,7 +165,7 @@
                                 </c:if>
                                 <c:if test="${item.status == 'CMSTAT003'}">
                                   <button type="button" class="btn btn-default btn-sm"
-                                          onclick="javascript:prepareEditItem('${item.itemId}');">Edit
+                                          onclick="javascript:prepareEditItem('<iais:mask name="currentMaskId" value="${item.itemId}"/>');">Edit
                                   </button>
                                 </c:if>
                               </td>
@@ -238,6 +241,7 @@
     }
 
     function disable(itemId) {
+      $('#currentMaskId').val(itemId)
         SOP.Crud.cfxSubmit("mainForm", "deleteChecklistItem", itemId);
     }
 
@@ -258,6 +262,7 @@
     }
 
     function prepareEditItem(id) {
+      $('#currentMaskId').val(id)
         SOP.Crud.cfxSubmit("mainForm", "prepareEditItem", id);
     }
 

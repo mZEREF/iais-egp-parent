@@ -90,8 +90,10 @@
                                         <td align="left">${msgQuery.message}</td>
                                         <td><iais:code code="${msgQuery.status}"></iais:code></td>
                                         <td>
-                                            <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${msgQuery.id}');"/>
-                                            <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${msgQuery.id}');"/>
+                                            <button type="button"   onclick="disable('<iais:mask name="msgQueryId" value="${msgQuery.id}"/>')"  class="btn btn-default btn-sm" >Delete</button>
+                                            <button type="button"   onclick="prepareEdit('<iais:mask name="msgQueryId" value="${msgQuery.id}"/>')"  class="btn btn-default btn-sm" >Edit</button>
+                                            <%--<iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${msgQuery.id}');"/>
+                                            <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${msgQuery.id}');"/>--%>
                                         </td>
                                     </tr>
                                 </c:forEach>

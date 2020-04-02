@@ -23,6 +23,7 @@
                 <#if status??> and item.status = :status</#if>
                 <#if adhocItemId??> and ${adhocItemId} </#if>
                 <#if selectedItemIdToConfig??> and ${selectedItemIdToConfig} </#if>
+                <#if itemStatus??> and item.status = :itemStatus </#if>
         ]]>
 
     </sql>

@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -457,12 +456,9 @@ public class HcsaChklItemDelegator {
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
 
-        //When configuring config, the same checklist item is not allowed
-        List<String> selectedItemIdToConfig = (List<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG);
+        //when configuring config, the same checklist item is not allowed
         if ("routeToItemProcess".equals(currentAction)){
-            if (!IaisCommonUtils.isEmpty(selectedItemIdToConfig)){
-                SqlHelper.builderNotInSql(searchParam, "item.id", HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, selectedItemIdToConfig);
-            }
+            filterItemInConfig(request, searchParam);
         }
 
         QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
@@ -489,9 +485,9 @@ public class HcsaChklItemDelegator {
             return;
         }
 
-        List<ChecklistSectionDto> sectionDtos = currentConfig.getSectionDtos();
+        /*List<ChecklistSectionDto> sectionDtos = currentConfig.getSectionDtos();
         String currentValidateId = (String) ParamUtil.getSessionAttr(request, "currentValidateId");
-        for (ChecklistSectionDto currentSection : sectionDtos){
+        *//*for (ChecklistSectionDto currentSection : sectionDtos){
             if (currentValidateId.equals(currentSection.getId())){
                 List<ChecklistItemDto> checklistItemDtos = currentSection.getChecklistItemDtos();
                 if (checklistItemDtos == null){
@@ -502,20 +498,20 @@ public class HcsaChklItemDelegator {
                     for (String s : checkBoxItemId){
                         if (chkl.getItemId().equals(s)){
                             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-                            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("configCustomValidation", "CHKL_ERR007"));
+                            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("configItemMsg", "CHKL_ERR007"));
                             return;
                         }
                     }
                 }
 
             }
-        }
+        }*/
 
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
     }
 
     private void loadSingleItemData(HttpServletRequest request){
-        String itemId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        String itemId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.CURRENT_MASK_ID);
         if(!StringUtil.isEmpty(itemId)){
             ChecklistItemDto itemDto = hcsaChklService.getChklItemById(itemId);
             if (itemDto.getStatus().equals(AppConsts.COMMON_STATUS_IACTIVE)){
@@ -626,7 +622,7 @@ public class HcsaChklItemDelegator {
      */
     public void deleteChecklistItem(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String itemId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        String itemId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.CURRENT_MASK_ID);
         if(!StringUtil.isEmpty(itemId)){
             boolean canInactive = hcsaChklService.inActiveItem(itemId);
             if (!canInactive){
@@ -681,6 +677,8 @@ public class HcsaChklItemDelegator {
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 
+        filterItemInConfig(request, searchParam);
+
         if(!StringUtil.isEmpty(clause)){
             searchParam.addFilter(HcsaChecklistConstants.PARAM_REGULATION_CLAUSE, clause, true);
         }
@@ -705,6 +703,22 @@ public class HcsaChklItemDelegator {
             searchParam.addFilter(HcsaChecklistConstants.PARAM_STATUS, status, true);
         }
 
+    }
+
+    /**
+     * @Author yichen
+     * @Description: when create config and update config , the need filter selected item
+     * @Date: 17:28 2020/4/2
+     * @Param: []
+     * @return:
+     **/
+    private void filterItemInConfig(HttpServletRequest request, SearchParam searchParam){
+        String sectionIdFromConfig = (String) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.PARAM_PAGE_INDEX);
+        List<String> selectedItemIdToConfig = (List<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG);
+        if (!StringUtils.isEmpty(sectionIdFromConfig) && !IaisCommonUtils.isEmpty(selectedItemIdToConfig)){
+            SqlHelper.builderNotInSql(searchParam, "item.id", HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, selectedItemIdToConfig);
+        }
+        searchParam.addFilter("itemStatus", "CMSTAT001", true);
     }
 
     
