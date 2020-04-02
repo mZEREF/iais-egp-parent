@@ -95,7 +95,18 @@
                   <iais:row>
                     <iais:field value="Letter written to Licensee"/>
                     <iais:value width="7">
-                      <p><label><c:out value="${inspectionReportDto.serviceName}"/></label></p>
+                      <p>
+                      <c:if test="${fileRepoDto != null}">
+                        <div class="fileList ">
+                            <span class="filename server-site" id="140">
+                              <a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${fileRepoDto.id}"/>&fileRepoName=${fileRepoDto.fileName}" title="Download" class="downloadFile">${fileRepoDto.fileName}</a>
+                            </span>
+                        </div>
+                      </c:if>
+                      <c:if test="${fileRepoDto == null}">
+                        <label>-</label>
+                      </c:if>
+                      </p>
                     </iais:value>
                   </iais:row>
                   <iais:row>

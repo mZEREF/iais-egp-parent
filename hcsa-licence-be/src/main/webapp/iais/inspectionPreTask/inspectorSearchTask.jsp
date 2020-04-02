@@ -88,7 +88,7 @@
                       <iais:sortableHeader needSort="false" field = "" value="S/N"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field = "GROUP_NO" value="Application No."></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field = "APP_TYPE" value="Application Type"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field = "" value="Inspection Lead"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false" field = "" value="${groupRoleFieldDto.groupLeadName}"></iais:sortableHeader>
                     </tr>
                     </thead>
                     <tbody>

@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
@@ -34,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +63,9 @@ public class InspectionRectificationProDelegator {
 
     @Autowired
     private InspectionRectificationProService inspectionRectificationProService;
+
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
     @Autowired
     private TaskService taskService;
@@ -122,6 +127,7 @@ public class InspectionRectificationProDelegator {
         ParamUtil.setSessionAttr(bpc.request,APPLICATIONVIEWDTO,null);
         ParamUtil.setSessionAttr(bpc.request,CHECKLISTFILEDTO,null);
         ParamUtil.setSessionAttr(bpc.request, "inspectionReportDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "fileRepoDto", null);
     }
 
     /**
@@ -374,15 +380,25 @@ public class InspectionRectificationProDelegator {
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         InspectionReportDto inspectionReportDto = insRepService.getInsRepDto(taskDto, applicationViewDto, loginContext);
+        //get fileReportId
+        AppPremisesSpecialDocDto appPremisesSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(taskDto.getRefNo()).getEntity();
+        //get file report
+        FileRepoDto fileRepoDto = inspectionRectificationProService.getFileReportById(appPremisesSpecialDocDto.getFileRepoId());
+        //get inspector lead
         List<String> inspectorLeads = inspectionRectificationProService.getInspectorLeadsByWorkGroupId(taskDto.getWkGrpId());
+        //get inspectors
         InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
+        //get nc count
+        int ncCount = inspectionRectificationProService.getHowMuchNcByAppPremCorrId(taskDto.getRefNo());
+
         inspectionReportDto.setInspectors(inspectorUser.getInspectors());
         inspectionReportDto.setInspectorLeads(inspectorLeads);
-        int ncCount = inspectionRectificationProService.getHowMuchNcByAppPremCorrId(taskDto.getRefNo());
+        inspectionReportDto.setPracticesFileId(appPremisesSpecialDocDto.getFileRepoId());
         inspectionReportDto.setNcCount(ncCount);
         ParamUtil.setSessionAttr(bpc.request, "inspectionReportDto", inspectionReportDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
+        ParamUtil.setSessionAttr(bpc.request, "fileRepoDto", fileRepoDto);
     }
 
     /**

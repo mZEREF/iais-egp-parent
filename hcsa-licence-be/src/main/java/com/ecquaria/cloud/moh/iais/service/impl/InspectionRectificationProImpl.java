@@ -378,6 +378,20 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
         return ncCount;
     }
 
+    @Override
+    public FileRepoDto getFileReportById(String fileRepoId) {
+        if(!StringUtil.isEmpty(fileRepoId)){
+            List<String> fileIds = IaisCommonUtils.genNewArrayList();
+            fileIds.add(fileRepoId);
+            List<FileRepoDto> fileRepoDtos = fileRepoClient.getFilesByIds(fileIds).getEntity();
+            if(!IaisCommonUtils.isEmpty(fileRepoDtos)) {
+                FileRepoDto fileRepoDto = fileRepoDtos.get(0);
+                return fileRepoDto;
+            }
+        }
+        return null;
+    }
+
     private List<ChecklistItemDto> getcheckDtosByItemIds(List<String> itemIds) {
         List<ChecklistItemDto> checklistItemDtos = IaisCommonUtils.genNewArrayList();
         if(itemIds != null && !(itemIds.isEmpty())) {

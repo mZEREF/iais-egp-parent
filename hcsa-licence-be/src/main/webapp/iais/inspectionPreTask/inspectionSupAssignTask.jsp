@@ -85,7 +85,7 @@
                     </iais:value>
                   </iais:row>
                   <iais:row>
-                    <iais:field value="Inspector" required="true"/>
+                    <iais:field value="${groupRoleFieldDto.groupMemBerName}" required="true"/>
                     <iais:value width="10">
                       <c:if test="${'true' == inspectionTaskPoolListDto.inspectorFlag}">
                         <c:if test="${inspectionTaskPoolListDto.inspectorCheck == null}">
