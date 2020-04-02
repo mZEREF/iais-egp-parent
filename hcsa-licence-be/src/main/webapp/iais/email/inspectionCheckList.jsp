@@ -52,6 +52,7 @@
         </div>
     </div>
 </form>
+<%@include file="/iais/inspectionncList/uploadFile.jsp" %>
 <%@ include file="/include/validation.jsp" %>
 <%@include file="/iais/inspectionncList/uploadFile.jsp" %>
 
