@@ -78,16 +78,13 @@ public class SendMassEmailBatchjob {
         FileItem item = factory.createItem(fieldName, "text/plain", true, file.getName());
         int bytesRead = 0;
         byte[] buffer = new byte[8192];
-        try {
-            FileInputStream fis = new FileInputStream(file);
-            OutputStream os = item.getOutputStream();
+        try (FileInputStream fis = new FileInputStream(file);
+             OutputStream os = item.getOutputStream()) {
             while ((bytesRead = fis.read(buffer, 0, 8192)) != -1) {
                 os.write(buffer, 0, bytesRead);
             }
-            os.close();
-            fis.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return item;
     }

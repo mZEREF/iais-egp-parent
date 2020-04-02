@@ -140,7 +140,7 @@
   <%@include file="../common/premFun.jsp"%>
   <input type="hidden" name="pageCon" value="valPremiseList" >
   <c:if test="${ not empty selectDraftNo }">
-    <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="saveDraft()" popupOrder="saveDraft" cancelBtnDesc="Resume from draft" yesBtnDesc="Continue current application" cancelFunc="cancelSaveDraft()"></iais:confirm>
+    <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="saveDraft()" popupOrder="saveDraft"  yesBtnDesc="Continue" cancelBtnDesc="Resume from draft" cancelFunc="cancelSaveDraft()"></iais:confirm>
   </c:if>
 
 </form>

@@ -261,7 +261,7 @@
                                             </table>
                                             <%--upload file--%>
                                             <div align="right">
-                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadDoc">
+                                                <button type="button" id="uploadButton" class="btn btn-primary" data-toggle="modal" data-target="#uploadDoc">
                                                     Upload Document
                                                 </button>
                                             </div>
@@ -903,6 +903,10 @@
             $('#info').removeClass("active");
             $('#document').addClass("active");
             $('#doDocument').click();
+        }
+
+        if("Y"=='${uploadFileValidate}'){
+            $('#uploadButton').click();
         }
     }
 

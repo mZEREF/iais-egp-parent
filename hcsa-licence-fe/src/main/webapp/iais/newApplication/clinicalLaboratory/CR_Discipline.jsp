@@ -125,7 +125,10 @@
                                 </td>
                                 <td >
                                   <c:choose>
-                                    <c:when test="${levelTwoList.id=='27D8EB5B-1123-EA11-BE78-000C29D29DB0'}"><input type="text" name="pleaseIndicate" maxlength="200" value="${pleaseIndicate}" disabled></c:when>
+                                    <c:when test="${levelTwoList.id=='27D8EB5B-1123-EA11-BE78-000C29D29DB0'}">
+                                      <textarea name="pleaseIndicate" maxlength="200"  disabled>${pleaseIndicate}</textarea>
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_pleaseIndicateError"></span>
+                                    </c:when>
                                   </c:choose>
                                 </td>
                               </tr>
@@ -192,10 +195,19 @@
     });
   };
 
+  var num=0;
   var doChangeText = function (levelTwoListId) {
-    if(levelTwoListId==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
-      $('input[name="pleaseIndicate"]').prop('disabled',false);
+    if(num%2===1){
+      if(levelTwoListId==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
+        $('input[name="pleaseIndicate"]').prop('disabled',false);
+      }
     }
+    else {
+      if(levelTwoListId==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
+        $('input[name="pleaseIndicate"]').prop('disabled',true);
+      }
+    }
+    num=num+1;
   };
 
 </script>

@@ -50,7 +50,7 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
-import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationUploadFileValidate;
+import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationProcessUploadFileValidate;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -187,7 +187,7 @@ public class HcsaApplicationDelegator {
             }else{
                 //if  this is the last stage
                 routingStage.put(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
-                        "Approval");
+                        "Approve");
             }
         }
 
@@ -928,10 +928,11 @@ public class HcsaApplicationDelegator {
         }
 
         if("Y".equals(doDocument)){
-            HcsaApplicationUploadFileValidate uploadFileValidate = new HcsaApplicationUploadFileValidate();
+            HcsaApplicationProcessUploadFileValidate uploadFileValidate = new HcsaApplicationProcessUploadFileValidate();
             Map<String, String> errorMap = uploadFileValidate.validate(bpc.request);
             if(!errorMap.isEmpty()){
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request,"uploadFileValidate","Y");
             }else{
                 MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
                 CommonsMultipartFile selectedFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");

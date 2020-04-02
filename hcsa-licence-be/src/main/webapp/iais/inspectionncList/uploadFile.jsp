@@ -18,7 +18,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" id="cancelDoc" onclick="closeUploadDoc()">cancel</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelDoc" onclick="closeUploadDoc()">cancel</button>
                 <button type="button" id="uploadFileButton" class="btn btn-primary" onclick="uploadInternalDoc()">upload</button>
             </div>
         </div>
@@ -45,13 +45,17 @@
     function uploadInternalDoc(){
         $('#uploadDoc small.error').html('').hide();
         var selectedFile = $('#uploadDoc').find('[name="selectedFile"]').val();
+        showWaiting();
         if(selectedFile != null && selectedFile != "" )
              callAjaxUploadFile();
+        dismissWaiting();
     }
 
     function deleteFile(row,repoId) {
+        showWaiting();
         $(row).parent('td').parent('tr').remove();
          callAjaxDeleteFile(repoId);
+        dismissWaiting();
     }
     function callAjaxDeleteFile(repoId){
         var data = {"appDocId":repoId};
