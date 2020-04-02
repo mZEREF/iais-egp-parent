@@ -430,7 +430,8 @@ public class HcsaApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", nextStage);
 
             ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
-            if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())){
+            if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())
+                  || ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())  ){
                 String[] fastTracking =  ParamUtil.getStrings(bpc.request,"fastTracking");
                 if(fastTracking!=null){
                     applicationViewDto.getApplicationDto().setFastTracking(true);

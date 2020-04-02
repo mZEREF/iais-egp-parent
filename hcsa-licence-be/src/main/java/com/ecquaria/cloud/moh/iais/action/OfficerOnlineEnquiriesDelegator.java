@@ -761,17 +761,6 @@ public class OfficerOnlineEnquiriesDelegator {
                     }
                 }
             }
-            AdCheckListShowDto adCheckListShowDto = fillupChklistService.getAdhoc(rfiApplicationQueryDto.getAppCorrId());
-            if(adCheckListShowDto!=null){
-                List<AdhocNcCheckItemDto> adItemList = adCheckListShowDto.getAdItemList();
-                if(adItemList!=null && !adItemList.isEmpty()){
-                    for(AdhocNcCheckItemDto temp:adItemList){
-                        if(!temp.getRectified()){
-                            reqForInfoSearchListDto.setLastComplianceHistory("Partial");
-                        }
-                    }
-                }
-            }
         }catch (Exception e){
             reqForInfoSearchListDto.setPastComplianceHistory("-");
         }

@@ -655,18 +655,20 @@
                                                                 <p>
                                                                 <c:choose>
                                                                     <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012'}">
-                                                                        <input class="form-check-input" id="fastTracking" type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
+                                                                        <input class="form-check-input" id="fastTracking"
+                                                                        <c:if test="${applicationViewDto.applicationDto.fastTracking}">
+                                                                               checked disabled
+                                                                        </c:if>
+                                                                               type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
                                                                         <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <c:choose>
-                                                                            <c:when test="${applicationViewDto.applicationDto.fastTracking}">
-                                                                                <p>Yes</p>
-                                                                            </c:when>
-                                                                            <c:otherwise>
-                                                                                <p>No</p>
-                                                                            </c:otherwise>
-                                                                        </c:choose>
+                                                                        <input class="form-check-input" disabled
+                                                                        <c:if test="${applicationViewDto.applicationDto.fastTracking}">
+                                                                            checked
+                                                                        </c:if>
+                                                                               id="fastTracking" type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
+                                                                        <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
                                                                     </c:otherwise>
                                                                 </c:choose>
                                                                 </p>
