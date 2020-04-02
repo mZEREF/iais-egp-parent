@@ -18,7 +18,7 @@
                            value="<%=process.rtStatus.getTabRef()%>">
                     <input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file"/>
                     <br /> <small class="error" style="margin: 0 0 0 140px;"></small>
-                    <span id="error_fileUploadForm" name="iaisErrorMsg" class="error-msg"></span>
+                    <span id="error_selectedFile" name="iaisErrorMsg" class="error-msg"></span>
                 </form>
             </div>
             <div class="modal-footer">
@@ -42,6 +42,7 @@
 
     function closeUploadDoc(){
         $('#uploadDoc small.error').html('').hide();
+        $('#error_selectedFile').html('').hide();
         $('#uploadDoc').dialog('close');
     };
 

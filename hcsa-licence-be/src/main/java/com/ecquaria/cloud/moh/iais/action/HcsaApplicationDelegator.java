@@ -930,7 +930,8 @@ public class HcsaApplicationDelegator {
             HcsaApplicationProcessUploadFileValidate uploadFileValidate = new HcsaApplicationProcessUploadFileValidate();
             Map<String, String> errorMap = uploadFileValidate.validate(bpc.request);
             if(!errorMap.isEmpty()){
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request,"uploadFileValidate","Y");
             }else{
                 MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
                 CommonsMultipartFile selectedFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
