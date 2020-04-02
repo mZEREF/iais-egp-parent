@@ -287,7 +287,6 @@ public class CessationApplicationDelegator {
                     }
                 }
             }
-
         }
         return appCessationDtos;
     }

@@ -176,6 +176,7 @@ public class CessationServiceImpl implements CessationService {
             List<ApplicationDto> applicationDtos = getApplicationDtos(grpNo, serviceId, licId,effectiveDate);
             appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
             appCessMiscDto.setApplicationDto(applicationDtos);
+            appCessMiscDto.setLicId(licId);
             setMiscData(appCessationDto, appCessMiscDto);
             appCessMiscDtos.add(appCessMiscDto);
         }

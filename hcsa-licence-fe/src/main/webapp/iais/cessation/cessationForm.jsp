@@ -275,8 +275,6 @@
                 </tbody>
             </table>
         </div>
-
-
         <div style="width: 70%;margin-left: 1%;margin-right: 1%"><c:out value="${text1}"/></div>
         <br/>
         <div style="width: 70%;margin-left: 1%;margin-right: 1%"><c:out value="${text2}"/></div>
@@ -285,14 +283,10 @@
                                                              <c:if test="${readInfo != null}">checked</c:if>>
             <label style="font-weight: normal" for="confirmInfo">I have read the information</label>
         </div>
-        <div align="right">
-            <button id="backButton" type="button" class="btn btn-primary" onclick="back('back')">
-                Back
-            </button>
-            <button id="submitButton" type="button" class="btn btn-primary" onclick="submitSure('submit')">
-                Next
-            </button>
-        </div>
+        <iais:action>
+            <a href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left" style="padding-left: 2%"></em> Back</a>
+            <a style="margin-left: 90%" class="btn btn-primary" onclick="submitSure('submit')">SUBMIT</a>
+        </iais:action>
     </div>
     <%@include file="/include/validation.jsp" %>
 </form>

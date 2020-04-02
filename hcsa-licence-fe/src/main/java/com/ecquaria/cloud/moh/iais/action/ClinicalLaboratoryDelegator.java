@@ -564,10 +564,22 @@ public class ClinicalLaboratoryDelegator {
             List<HcsaServiceStepSchemeDto>  svcStepConfigs = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcIds);
             svcAllPsnConfig = serviceConfigService.getAllSvcAllPsnConfig(svcStepConfigs, svcIds);
         }
-        Map<String, String> map = NewApplicationDelegator.doCheckBox(bpc, sB, svcAllPsnConfig);
+
+        List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        Map<String, String> map=new HashMap<>();
+        for(int i=0;i< dto.size();i++ ){
+            String serviceId = dto.get(i).getServiceId();
+            List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
+            ServiceStepDto serviceStepDto = new ServiceStepDto();
+            serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
+            List<HcsaSvcPersonnelDto>  currentSvcAllPsnConfig= serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
+           map = NewApplicationDelegator.doCheckBox(bpc, sB, svcAllPsnConfig,currentSvcAllPsnConfig, dto.get(i));
+        }
+
         if(!StringUtil.isEmpty(sB.toString())){
             map.put("error","error");
         }
+        bpc.request.getSession().setAttribute("serviceConfig",sB.toString());
         return  map;
     }
 
@@ -674,11 +686,9 @@ public class ClinicalLaboratoryDelegator {
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = currentSvcRelatedDto.getAppSvcLaboratoryDisciplinesDtoList();
             if (appSvcLaboratoryDisciplinesDtoList != null) {
                 for (AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList) {
-                    String premisesType = "";
                     String premisesValue = "";
                     for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
                         if (appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getPremisesIndexNo())) {
-                            premisesType = appGrpPremisesDto.getPremisesType();
                             premisesValue = appGrpPremisesDto.getPremisesIndexNo();
                             break;
                         }
@@ -692,7 +702,7 @@ public class ClinicalLaboratoryDelegator {
                         String[] chkAndCgoValue = ParamUtil.getStrings(bpc.request, chkAndCgoName.toString());
                         if (chkAndCgoValue != null && chkAndCgoValue.length > 0) {
                             appSvcDisciplineAllocationDto = new AppSvcDisciplineAllocationDto();
-                            appSvcDisciplineAllocationDto.setPremiseType(premisesType);
+                            //appSvcDisciplineAllocationDto.setPremiseType(premisesType);
                             appSvcDisciplineAllocationDto.setPremiseVal(premisesValue);
                             appSvcDisciplineAllocationDto.setChkLstConfId(chkAndCgoValue[0]);
                             appSvcDisciplineAllocationDto.setIdNo(chkAndCgoValue[1]);
@@ -1138,15 +1148,7 @@ public class ClinicalLaboratoryDelegator {
         Map<String,List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.SERVICEALLPSNCONFIGMAP);
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request,currentSvcId);
-        List<AppSvcPrincipalOfficersDto> medAlertPsnDtos = IaisCommonUtils.genNewArrayList();
-        List<AppSvcPrincipalOfficersDto> psnDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-        if(!IaisCommonUtils.isEmpty(psnDtos)){
-           for(AppSvcPrincipalOfficersDto item:psnDtos){
-               if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(item.getPsnType())){
-                   medAlertPsnDtos.add(item);
-               }
-           }
-        }
+        List<AppSvcPrincipalOfficersDto> medAlertPsnDtos = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
         int mandatoryCount = 0;
         for (Map.Entry<String, List<HcsaSvcPersonnelDto>> stringListEntry : svcConfigInfo.entrySet()){
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = stringListEntry.getValue();
@@ -1178,16 +1180,20 @@ public class ClinicalLaboratoryDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request,currentSvcId);
-        List<AppSvcPrincipalOfficersDto> psnDtos = currentSvcRelatedDto.getAppSvcPrincipalOfficersDtoList();
-        if(IaisCommonUtils.isEmpty(psnDtos)){
-            psnDtos = IaisCommonUtils.genNewArrayList();
-        }
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = genAppSvcMedAlertPerson(bpc.request);
-        psnDtos.addAll(appSvcMedAlertPersonList);
-        currentSvcRelatedDto.setAppSvcPrincipalOfficersDtoList(psnDtos);
+        currentSvcRelatedDto.setAppSvcMedAlertPersonList(appSvcMedAlertPersonList);
         setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
-
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
+        String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
+        if("next".equals(nextStep)){
+            Map<String,String> errorMap = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList);
+
+            if(!errorMap.isEmpty()){
+                ParamUtil.setRequestAttr(bpc.request,"errorMsg",WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.MEDALERT_PERSON);
+                return;
+            }
+        }
         log.debug(StringUtil.changeForLog("the do doMedAlertPerson end ...."));
     }
 

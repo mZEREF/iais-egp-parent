@@ -47,6 +47,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
+import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -57,6 +58,7 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -71,11 +73,13 @@ import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -123,7 +127,7 @@ public class NewApplicationDelegator {
     public static final String APPLICATION_SVC_PAGE_NAME_DEPUTY_PRINCIPAL_OFFICERS  = "APPSPN05";
     public static final String APPLICATION_SVC_PAGE_NAME_DOCUMENT                   = "APPSPN06";
     public static final String APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL          = "APPSPN07";
-
+    public static final String SELECT_DRAFT_NO                                      ="selectDraftNo";
     //isClickEdit
     public static final String IS_EDIT = "isEdit";
 
@@ -136,12 +140,11 @@ public class NewApplicationDelegator {
     @Autowired
     private RequestForChangeService requestForChangeService;
 
-
     @Autowired
     private WithOutRenewalService withOutRenewalService;
+
     @Autowired
     private SystemAdminClient systemAdminClient;
-
     /**
      * StartStep: Start
      *
@@ -166,33 +169,6 @@ public class NewApplicationDelegator {
         coMap.put("information","");
         coMap.put("previewli","");
         bpc.request.getSession().setAttribute("coMap",coMap);
-        List<SelectOption> hhList=new ArrayList<>(25);
-        List<SelectOption> mmList=new ArrayList<>(61);
-        SelectOption selectOption1 = new SelectOption("","NA");
-        hhList.add(selectOption1);
-        mmList.add(selectOption1);
-        for(int i=0;i<24;i++){
-            if(i<10){
-                SelectOption selectOption = new SelectOption(i+"","0"+i);
-                hhList.add(selectOption);
-            }else {
-                SelectOption selectOption = new SelectOption(i+"",""+i);
-                hhList.add(selectOption);
-            }
-        }
-        for(int i=0;i<60;i++){
-            if(i<10){
-                SelectOption selectOption = new SelectOption(i+"","0"+i);
-                mmList.add(selectOption);
-
-            }else {
-                SelectOption selectOption = new SelectOption(i+"",""+i);
-                mmList.add(selectOption);
-            }
-        }
-
-        bpc.request.getSession().setAttribute("hhList",hhList);
-        bpc.request.getSession().setAttribute("mmList",mmList);
         //request For Information Loading
         ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,null);
         requestForChangeOrRenewLoading(bpc);
@@ -208,7 +184,6 @@ public class NewApplicationDelegator {
         }
         log.info(StringUtil.changeForLog("the do Start end ...."));
     }
-
 
     /**
      * StartStep: Prepare
@@ -230,6 +205,7 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, action);
         log.info(StringUtil.changeForLog("the do prepare end ...."));
     }
+
     /**
      * StartStep: PreparePremises
      *
@@ -330,9 +306,6 @@ public class NewApplicationDelegator {
                 }
             }
         }
-
-
-
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.info(StringUtil.changeForLog("the do preparePremises end ...."));
     }
@@ -377,8 +350,6 @@ public class NewApplicationDelegator {
 
         log.info(StringUtil.changeForLog("the do prepareDocuments end ...."));
     }
-
-
 
     /**
      * StartStep: PrepareForms
@@ -489,27 +460,39 @@ public class NewApplicationDelegator {
             if(!"saveDraft".equals(crud_action_value)){
                 MasterCodeDto masterCodeDto = systemAdminClient.getMasterCodeById("B5E4744C-F96F-EA11-BE79-000C298A32C2").getEntity();
                 bpc.request.setAttribute("masterCodeDto",masterCodeDto);
+
+                Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
+                List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+                StringBuilder sB =new StringBuilder();
+
+                for(int i=0;i< dto.size();i++ ){
+                    String serviceId = dto.get(i).getServiceId();
+                    List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
+                    ServiceStepDto serviceStepDto = new ServiceStepDto();
+                    serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
+                    List<HcsaSvcPersonnelDto>  currentSvcAllPsnConfig= serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
+                    doCheckBox(bpc,sB,allSvcAllPsnConfig,currentSvcAllPsnConfig, dto.get(i));
+                }
+                bpc.request.getSession().setAttribute("serviceConfig",sB.toString());
                 Map<String, String> errorMap= doValidatePremiss(bpc);
                 if(errorMap.size()>0){
                     ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
                     HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                     coMap.put("premises","");
+                    coMap.put("serviceConfig",sB.toString());
                     bpc.request.getSession().setAttribute("coMap",coMap);
                 }else {
                     HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                     coMap.put("premises","premises");
+                    coMap.put("serviceConfig",sB.toString());
                     bpc.request.getSession().setAttribute("coMap",coMap);
                 }
             }
 
         }
-
-
         log.info(StringUtil.changeForLog("the do doPremises end ...."));
     }
-
-
 
     /**
      * StartStep: DoDocument
@@ -602,9 +585,9 @@ public class NewApplicationDelegator {
                 }
             }
             for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesList){
-                for(HcsaSvcDocConfigDto prem : premHcsaSvcDocConfigList){
+                    for(HcsaSvcDocConfigDto prem : premHcsaSvcDocConfigList){
 
-                    String premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+                        String premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
                    /* if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
                         premisesIndexNo = appGrpPremisesDto.getHciName();
                     }else  if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
@@ -716,7 +699,6 @@ public class NewApplicationDelegator {
 
     }
 
-
     /**
      * StartStep: doForms
      *
@@ -740,6 +722,8 @@ public class NewApplicationDelegator {
         StringBuffer requestURL = bpc.request.getRequestURL();
         String queryString = bpc.request.getQueryString();
         String reUrl=requestURL.append("?").append(queryString).toString();
+
+
 
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
     }
@@ -817,19 +801,51 @@ public class NewApplicationDelegator {
      */
     public void doSaveDraft(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do doSaveDraft start ...."));
-
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String crud_action_additional;
+        if(mulReq!=null){
+             crud_action_additional = mulReq.getParameter("crud_action_additional");
+        }else {
+            crud_action_additional = bpc.request.getParameter("crud_action_additional");
+        }
+        HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+        List<String> strList=new ArrayList<>(5);
+        coMap.forEach((k,v)->{
+            if(!StringUtil.isEmpty(v)){
+                strList.add(v);
+            }
+        });
+        String serviceConfig = (String)bpc.request.getSession().getAttribute("serviceConfig");
+        strList.add(serviceConfig);
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         if(StringUtil.isEmpty(appSubmissionDto.getDraftNo())){
             String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
             log.info(StringUtil.changeForLog("the draftNo -->:") + draftNo);
             appSubmissionDto.setDraftNo(draftNo);
         }
-//        appSubmissionDto.setStepColor(strList);
+        if(!StringUtil.isEmpty(crud_action_additional)){
+            if("cancelSaveDraft".equals(crud_action_additional)){
+                jumpYeMian(bpc.request,bpc.response);
+                bpc.request.getSession().removeAttribute(SELECT_DRAFT_NO);
+                return;
+            }else {
+                appSubmissionDto.setDraftNo(crud_action_additional);
+                bpc.request.getSession().removeAttribute(SELECT_DRAFT_NO);
+            }
+
+        }
+        appSubmissionDto.setStepColor(strList);
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         log.info(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }
 
+    public void jumpYeMian(HttpServletRequest request , HttpServletResponse response) throws IOException {
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(request.getServerName()).append("/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu");
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), request);
+       response.sendRedirect(tokenUrl);
+    }
     /**
      * StartStep: doReDquestInformationSubmit
      *
@@ -869,7 +885,6 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request,ACKMESSAGE,"The request for information save success");
         log.info(StringUtil.changeForLog("the do doRequestInformationSubmit end ...."));
     }
-
 
     public void doRenewSubmit(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do doRenewSubmit start ...."));
@@ -930,9 +945,6 @@ public class NewApplicationDelegator {
 
         log.info(StringUtil.changeForLog("the do doRenewSubmit end ...."));
     }
-
-
-
 
     /**
      * StartStep: doRequestForChangeSubmit
@@ -1026,8 +1038,6 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
 
-
-
     /**
      * StartStep: doSubmit
      *
@@ -1092,9 +1102,6 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doSubmit end ...."));
     }
 
-
-
-
     /**
      * StartStep: ControlSwitch
      *
@@ -1129,6 +1136,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do controlSwitch end ...."));
 
     }
+
     /**
      * StartStep: ControlSwitch
      *
@@ -1188,8 +1196,6 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doErrorAck end ...."));
     }
 
-
-
     /**
      * StartStep: PrepareAckPage
      *
@@ -1201,7 +1207,6 @@ public class NewApplicationDelegator {
 
         log.info(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
-
 
     /**
      * StartStep: prepareJump
@@ -1233,8 +1238,6 @@ public class NewApplicationDelegator {
 
         log.info(StringUtil.changeForLog("the do prepareJump end ...."));
     }
-
-
 
     //=============================================================================
     //private method
@@ -1298,6 +1301,7 @@ public class NewApplicationDelegator {
         }
         return result;
     }
+
     private boolean compareAndSendEmail(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto){
         boolean isAuto = true;
 
@@ -1498,6 +1502,7 @@ public class NewApplicationDelegator {
 
         return dto;
     }
+
     private void chose(HttpServletRequest request,String type){
         if("valPremiseList".equals(type)){
             List<AppGrpPremisesDto> list = genAppGrpPremisesDtoList(request);
@@ -1575,7 +1580,7 @@ public class NewApplicationDelegator {
         String [] premValue = ParamUtil.getStrings(request, "premValue");
 
         Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request, LICAPPGRPPREMISESDTOMAP);
-        for(int i = 0 ; i < count; i++){
+        for(int i =0 ; i<count;i++){
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
             String premisesSel = premisesSelect[i];
             String appType = appSubmissionDto.getAppType();
@@ -1606,7 +1611,6 @@ public class NewApplicationDelegator {
             }
 
             appGrpPremisesDto.setPremisesType(premisesType[i]);
-
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = IaisCommonUtils.genNewArrayList();
             int length = 0;
             try {
@@ -1713,9 +1717,8 @@ public class NewApplicationDelegator {
             appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriods);
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
-          return  appGrpPremisesDtoList;
+        return  appGrpPremisesDtoList;
     }
-
 
     private Map<String,String> doPreviewAndSumbit( BaseProcessClass bpc){
         StringBuilder sB=new StringBuilder();
@@ -1745,12 +1748,25 @@ public class NewApplicationDelegator {
         }
         //
         Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
-        Map<String, String> map = doCheckBox(bpc,sB,allSvcAllPsnConfig);
-        if(!map.isEmpty()){
-            previewAndSubmitMap.putAll(map);
-            String mapStr = JsonUtil.parseToJson(map);
-            log.info("map json str:"+mapStr);
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+
+
+        for(int i=0;i< dto.size();i++ ){
+            String serviceId = dto.get(i).getServiceId();
+            List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
+            ServiceStepDto serviceStepDto = new ServiceStepDto();
+            serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
+            List<HcsaSvcPersonnelDto>  currentSvcAllPsnConfig= serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
+            Map<String, String> map = doCheckBox(bpc,sB,allSvcAllPsnConfig,currentSvcAllPsnConfig, dto.get(i));
+            if(!map.isEmpty()){
+                previewAndSubmitMap.putAll(map);
+                String mapStr = JsonUtil.parseToJson(map);
+                log.info("map json str:"+mapStr);
+            }
         }
+
+
 
         Map<String,String> documentMap=IaisCommonUtils.genNewHashMap();
         documentValid(bpc.request,documentMap);
@@ -1807,33 +1823,63 @@ public class NewApplicationDelegator {
 
     //todo
 
-    public static Map<String,String> doCheckBox( BaseProcessClass bpc,StringBuilder sB,Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig){
-
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        Map<String,String> errorMap=IaisCommonUtils.genNewHashMap();
-        List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-
-        for(int i=0;i< dto.size();i++ ){
-            String serviceId = dto.get(i).getServiceId();
-            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.get(i).getAppSvcLaboratoryDisciplinesDtoList();
+    public static Map<String,String> doCheckBox( BaseProcessClass bpc,StringBuilder sB,Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig, List<HcsaSvcPersonnelDto>  currentSvcAllPsnConfig, AppSvcRelatedInfoDto dto){
+            String serviceId = dto.getServiceId();
+            Map<String,String> errorMap=IaisCommonUtils.genNewHashMap();
+            for(HcsaSvcPersonnelDto hcsaSvcPersonnelDto :currentSvcAllPsnConfig){
+                String psnType = hcsaSvcPersonnelDto.getPsnType();
+                int mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
+                if("PO".equals(psnType)){
+                    List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
+                    if(appSvcPrincipalOfficersDtoList==null&&mandatoryCount>0||appSvcPrincipalOfficersDtoList.size()<mandatoryCount){
+                        errorMap.put("error","error");
+                        sB.append(serviceId);
+                    }
+                }else if("SVCPSN".equals(psnType)){
+                    List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
+                    if(appSvcPersonnelDtoList==null&&mandatoryCount>0||appSvcPersonnelDtoList.size()<mandatoryCount){
+                        errorMap.put("error","error");
+                        sB.append(serviceId);
+                    }
+                }else if("CGO".equals(psnType)){
+                    List<AppSvcCgoDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
+                    if(appSvcCgoDtoList==null&&mandatoryCount>0||appSvcCgoDtoList.size()<mandatoryCount){
+                        errorMap.put("error","error");
+                        sB.append(serviceId);
+                    }
+                }else if("MAP".equals(psnType)){
+                    List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
+                    if(appSvcMedAlertPersonList==null&&mandatoryCount>0||appSvcMedAlertPersonList.size()<mandatoryCount){
+                        errorMap.put("error","error");
+                        sB.append(serviceId);
+                    }
+                }
+            }
+            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
+            Map<String, String> map = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList);
+            if(!map.isEmpty()){
+                sB.append(serviceId);
+            }
+            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.getAppSvcLaboratoryDisciplinesDtoList();
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = allSvcAllPsnConfig.get(serviceId);
             dolabory(errorMap,appSvcLaboratoryDisciplinesDtoList,serviceId,sB);
-            List<AppSvcCgoDto> appSvcCgoDtoList = dto.get(i).getAppSvcCgoDtoList();
+            List<AppSvcCgoDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
             doAppSvcCgoDto(hcsaSvcPersonnelDtos,errorMap,appSvcCgoDtoList,serviceId,sB);
-            List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.get(i).getAppSvcDisciplineAllocationDtoList();
+            List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
             doSvcDis(errorMap,appSvcDisciplineAllocationDtoList,serviceId,sB);
-            List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.get(i).getAppSvcPrincipalOfficersDtoList();
-            Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(dto.get(i).getAppSvcCgoDtoList());
+            List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
+            Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(dto.getAppSvcCgoDtoList());
             if(!govenMap.isEmpty()){
                 sB.append(serviceId);
             }
             doPO(hcsaSvcPersonnelDtos,errorMap,appSvcPrincipalOfficersDtoList,serviceId,sB);
 
-            List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.get(i).getAppSvcPersonnelDtoList();
+            List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
             doAppSvcPersonnelDtoList(hcsaSvcPersonnelDtos,errorMap,appSvcPersonnelDtoList,serviceId,sB);
-            List<AppSvcDocDto> appSvcDocDtoLit = dto.get(i).getAppSvcDocDtoLit();
+            List<AppSvcDocDto> appSvcDocDtoLit = dto.getAppSvcDocDtoLit();
             doSvcDocument(errorMap,appSvcDocDtoLit,serviceId,sB);
-        }
+
+
 
         return  errorMap;
     }
@@ -1856,7 +1902,7 @@ public class NewApplicationDelegator {
                 }
 
                 if(!flag){
-                    sB.append(serviceId);
+                    /*   sB.append(serviceId);*/
                 }
             }
 
@@ -1871,7 +1917,6 @@ public class NewApplicationDelegator {
 
         }
     }
-
 
     private static void doAppSvcPersonnelDtoList(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos ,Map map,List<AppSvcPersonnelDto> appSvcPersonnelDtos,String serviceId, StringBuilder sB){
         if(appSvcPersonnelDtos==null){
@@ -1969,6 +2014,7 @@ public class NewApplicationDelegator {
         }
 
     }
+
     private static void doAppSvcCgoDto(  List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map map ,List<AppSvcCgoDto> list,String serviceId,StringBuilder sB){
         if(list==null){
             if(hcsaSvcPersonnelDtos!=null){
@@ -2024,7 +2070,6 @@ public class NewApplicationDelegator {
 
         }
     }
-
 
     private static void doSvcDis( Map map ,List<AppSvcDisciplineAllocationDto> list,String serviceId,StringBuilder sB){
         if(list==null){
@@ -2238,11 +2283,12 @@ public class NewApplicationDelegator {
         }
 
     }
+
     private void loadingCoMap( AppSubmissionDto appSubmissionDto,HttpServletRequest request){
         if(appSubmissionDto!=null){
             List<String> stepColor = appSubmissionDto.getStepColor();
             if(stepColor!=null){
-                HashMap<String,String> coMap=new HashMap<>(4);
+                HashMap<String,String> coMap=new HashMap<>(5);
                 coMap.put("premises","");
                 coMap.put("document","");
                 coMap.put("information","");
@@ -2257,6 +2303,8 @@ public class NewApplicationDelegator {
                             coMap.put("information",str);
                         }else if("previewli".equals(str)){
                             coMap.put("previewli",str);
+                        }else if("".equals(str)){
+                            coMap.put("serviceConfig",str);
                         }
 
                     }
@@ -2295,6 +2343,8 @@ public class NewApplicationDelegator {
                                 coMap.put("information",str);
                             }else if("previewli".equals(str)){
                                 coMap.put("previewli",str);
+                            }else {
+                                bpc.request.getSession().setAttribute("serviceConfig",str);
                             }
 
                         }
@@ -2317,6 +2367,7 @@ public class NewApplicationDelegator {
         }
         log.info(StringUtil.changeForLog("the do loadingDraft end ...."));
     }
+
     private void requestForChangeOrRenewLoading(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do requestForChangeLoading start ...."));
         String appType = (String) ParamUtil.getRequestAttr(bpc.request,"appType");
@@ -2341,6 +2392,7 @@ public class NewApplicationDelegator {
         }
         log.info(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
     }
+
     private void renewLicence(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do renewLicence start ...."));
         String licenceId = ParamUtil.getString(bpc.request, "licenceId");
@@ -2399,7 +2451,6 @@ public class NewApplicationDelegator {
         List<String> names = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         if(appSubmissionDto != null ){
-            log.info(StringUtil.changeForLog("appSubmissionDto is not null"));
             // from draft,rfi
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
@@ -2413,8 +2464,6 @@ public class NewApplicationDelegator {
                     }
 
                 }
-            }else{
-                log.info(StringUtil.changeForLog("appSvcRelatedInfoDtoList is empty"));
             }
         }else {
             List<String> baseServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseService");
@@ -2514,7 +2563,6 @@ public class NewApplicationDelegator {
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
 
-
         Set<String> distinctVehicleNo = IaisCommonUtils.genNewHashSet();
         for(int i=0;i<appGrpPremisesDtoList.size();i++){
             String premiseType = appGrpPremisesDtoList.get(i).getPremisesType();
@@ -2571,6 +2619,7 @@ public class NewApplicationDelegator {
                         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
                         if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
                             for(int j=0;j<appPremPhOpenPeriodList.size();j++){
+
                                 String convStartFromHH = appPremPhOpenPeriodList.get(j).getOnsiteStartFromHH();
                                 String convStartFromMM = appPremPhOpenPeriodList.get(j).getOnsiteStartFromMM();
                                 String onsiteEndToHH = appPremPhOpenPeriodList.get(j).getOnsiteEndToHH();
@@ -2621,7 +2670,6 @@ public class NewApplicationDelegator {
                                             errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR008");
                                         }
                                     }catch (Exception e){
-
                                     }
 
                                 }else {
@@ -2658,10 +2706,7 @@ public class NewApplicationDelegator {
                                         }
 
                                     }
-
-
                                 }
-
                             }
                             //set ph time
                             String errorOnsiteEndToMM = errorMap.get("onsiteEndToMM"+i);
@@ -2870,12 +2915,8 @@ public class NewApplicationDelegator {
                                             errorMap.put("convEndToHH"+j,"CHKLMD001_ERR003");
 
                                         }
-
                                     }
-
-
                                 }
-
                             }
 
                             //set ph time
@@ -2897,12 +2938,9 @@ public class NewApplicationDelegator {
                             }
                         }
                         String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
-
-                        //Vehicle No. should be the unique key.
                         validateVehicleNo(errorMap, distinctVehicleNo, i, conveyanceVehicleNo);
 
                         String cStreetName = appGrpPremisesDtoList.get(i).getConveyanceStreetName();
-
                         if(StringUtil.isEmpty(cStreetName)){
                             errorMap.put("conveyanceStreetName"+i,"UC_CHKLMD001_ERR001");
                         }
@@ -2930,7 +2968,6 @@ public class NewApplicationDelegator {
                                 stringBuilder.append(appGrpPremisesDtoList.get(i).getConveyanceFloorNo())
                                         .append(appGrpPremisesDtoList.get(i).getConveyanceBlockNo())
                                         .append(appGrpPremisesDtoList.get(i).getConveyanceUnitNo());
-
                             }
                         }
                         String conveyancePostalCode = appGrpPremisesDtoList.get(i).getConveyancePostalCode();
@@ -2946,21 +2983,22 @@ public class NewApplicationDelegator {
 
                             }
                         }
-
                         if(list.contains(stringBuilder.toString())){
                             errorMap.put("conveyancePostalCode"+i,"There is a duplicated entry for this premises address.");
                         }else {
                             list.add(stringBuilder.toString());
                         }
-
                     }
                 } else {
                     //premiseSelect = organization hci code
-                    String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
-                    validateVehicleNo(errorMap, distinctVehicleNo, i, conveyanceVehicleNo);
+
+                    if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)){
+                        String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
+                        validateVehicleNo(errorMap, distinctVehicleNo, i, conveyanceVehicleNo);
+                    }
+
                 }
             }
-
         }
         log.info(StringUtil.changeForLog("the do doValidatePremiss end ...."));
 
@@ -2983,6 +3021,7 @@ public class NewApplicationDelegator {
             }
         }
     }
+
 
     private Map<String,String> doValidatePremissCgo(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
@@ -3073,10 +3112,6 @@ public class NewApplicationDelegator {
                 }
             }
 
-
-
-
-
             //set oldAppSubmission when rfi,rfc,renew
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
                     ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
@@ -3164,8 +3199,6 @@ public class NewApplicationDelegator {
         return svcAllPsnConfig;
     }
 
-
-
     private void getTimeList(HttpServletRequest request){
         List<SelectOption> timeHourList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i< 24;i++){
@@ -3175,8 +3208,15 @@ public class NewApplicationDelegator {
         for (int i = 0; i< 60;i++){
             timeMinList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
         }
+
+        List<SelectOption> publicHolidayList = IaisCommonUtils.genNewArrayList();
+        publicHolidayList.add(new SelectOption("10/04/2020","Good Friday"));
+        publicHolidayList.add(new SelectOption("01/05/2020","Labour Day"));
+//        publicHolidayList.add(new SelectOption("03/02/2020","ZiXian Day"));
+
         ParamUtil.setRequestAttr(request, "premiseHours", timeHourList);
         ParamUtil.setRequestAttr(request, "premiseMinute", timeMinList);
+        ParamUtil.setRequestAttr(request, "publicHolidaySelect", publicHolidayList);
     }
 
 }

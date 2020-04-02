@@ -196,12 +196,14 @@ public class LicenceViewServiceDelegator {
         for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
             Time wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
             Time wrkTimeTo = appGrpPremisesDto.getWrkTimeTo();
-            String s = wrkTimeFrom.toString();
-            String s1 = wrkTimeTo.toString();
-            appGrpPremisesDto.setOnsiteEndMM(s1.split(":")[1]);
-            appGrpPremisesDto.setOnsiteStartMM(s.split(":")[1]);
-            appGrpPremisesDto.setOnsiteStartHH(s.split(":")[0]);
-            appGrpPremisesDto.setOnsiteEndHH(s1.split(":")[0]);
+            if(wrkTimeFrom!=null&&wrkTimeTo!=null){
+                String s = wrkTimeFrom.toString();
+                String s1 = wrkTimeTo.toString();
+                appGrpPremisesDto.setOnsiteEndMM(s1.split(":")[1]);
+                appGrpPremisesDto.setOnsiteStartMM(s.split(":")[1]);
+                appGrpPremisesDto.setOnsiteStartHH(s.split(":")[0]);
+                appGrpPremisesDto.setOnsiteEndHH(s1.split(":")[0]);
+            }
         }
         AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
         if(oldAppSubmissionDto!=null){

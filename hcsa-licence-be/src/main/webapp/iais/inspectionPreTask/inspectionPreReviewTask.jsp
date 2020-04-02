@@ -37,16 +37,16 @@
                     <div class="tab-gp dashboard-tab">
                       <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                         <li id="preInspTabInfo" class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
-                                                                  data-toggle="tab">Info</a></li>
+                                                                                      data-toggle="tab">Info</a></li>
                         <li id="preInspTabDocuments" class="complete" role="presentation"><a href="#tabDocuments"
-                                                                    aria-controls="tabDocuments" role="tab"
-                                                                    data-toggle="tab">Documents</a></li>
+                                                                                             aria-controls="tabDocuments" role="tab"
+                                                                                             data-toggle="tab">Documents</a></li>
                         <li id="preInspTabInspection" class="complete" role="presentation" style="display: block"><a href="#tabInspection"
-                                                                                                                          aria-controls="tabInspection" role="tab"
-                                                                                                                          data-toggle="tab">Checklist</a></li>
+                                                                                                                     aria-controls="tabInspection" role="tab"
+                                                                                                                     data-toggle="tab">Checklist</a></li>
                         <li id="preInspTabProcessing" class="incomplete" role="presentation"><a href="#tabProcessing"
-                                                                      aria-controls="tabProcessing" role="tab"
-                                                                      data-toggle="tab">Processing</a></li>
+                                                                                                aria-controls="tabProcessing" role="tab"
+                                                                                                data-toggle="tab">Processing</a></li>
                       </ul>
                       <div class="tab-nav-mobile visible-xs visible-sm">
                         <div class="swiper-wrapper" role="tablist">
@@ -62,7 +62,7 @@
                         </div>
                         <div class="swiper-button-prev"></div>
                         <div class="swiper-button-next"></div>
-                        </div>
+                      </div>
                       <div class="tab-content">
                         <div class="tab-pane active" id="tabInfo" role="tabpanel">
                           <div class="panel panel-default">
@@ -163,13 +163,13 @@
                               <div class="table-gp">
                                 <table class="table">
                                   <thead>
-                                    <tr>
-                                      <th>Document</th>
-                                      <th>File</th>
-                                      <th>Size</th>
-                                      <th>Submitted By</th>
-                                      <th>Date Submitted</th>
-                                    </tr>
+                                  <tr>
+                                    <th>Document</th>
+                                    <th>File</th>
+                                    <th>Size</th>
+                                    <th>Submitted By</th>
+                                    <th>Date Submitted</th>
+                                  </tr>
                                   </thead>
                                   <tbody>
                                   <c:forEach items="${applicationViewDto.appSupDocDtoList}"
@@ -356,7 +356,7 @@
                             </iais:row>
                             <iais:action style="text-align:center;">
                               <%--<c:if test="${!empty commonDto.sectionDtoList && !empty serListDto}">--%>
-                                <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionPreTaskSubmit()">Submit</button>
+                              <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionPreTaskSubmit()">Submit</button>
                               <%--</c:if>--%>
                               <%--<c:if test="${empty commonDto.sectionDtoList && empty serListDto}">
                                 <button class="btn btn-primary disabled" style="float:right" type="button" disabled>Submit</button>

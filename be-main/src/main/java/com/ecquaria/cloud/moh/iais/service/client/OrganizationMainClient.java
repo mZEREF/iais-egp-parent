@@ -26,11 +26,15 @@ import java.util.List;
 @FeignClient(name = "iais-organization", configuration = FeignConfiguration.class,
         fallback = OrganizationMainClientFallback.class)
 public interface OrganizationMainClient {
-    @RequestMapping(value = "/iais-orguser/users-by-ids",method = RequestMethod.POST,produces = { MediaType.APPLICATION_JSON_VALUE },
+    @RequestMapping(value = "/iais-orguser-be/users-by-ids",method = RequestMethod.POST,produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<OrgUserDto>> retrieveOrgUserAccount(@RequestBody List<String> ids);
 
-    @RequestMapping(value = "/iais-orguser/users-by-loginId/{user_id}",method = RequestMethod.POST,produces = { MediaType.APPLICATION_JSON_VALUE },
+    @RequestMapping(value = "/iais-orguser-be/users-account/{id}",method = RequestMethod.GET,produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<OrgUserDto> retrieveOrgUserAccountById(@PathVariable(value = "id") String id);
+
+    @RequestMapping(value = "/iais-orgUserRole/users-by-loginId/{user_id}",method = RequestMethod.GET,produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<OrgUserDto> retrieveOneOrgUserAccount(@PathVariable(value = "user_id") String user_id);
 
@@ -46,13 +50,11 @@ public interface OrganizationMainClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<TaskDto>> getTasksByUserIdAndRole(@PathVariable(value = "userId") String userId,@PathVariable(value = "roleId") String roleId);
 
-
-    @RequestMapping(path = "/iais-workgroup/orguseraccount/{workGroupId}/{status}",method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE },
-            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path = "/iais-workgroup/orguseraccount/{workGroupId}/{status}", produces = { MediaType.APPLICATION_JSON_VALUE })
     FeignResponseEntity<List<OrgUserDto>> getUsersByWorkGroupName(@PathVariable(value = "workGroupId") String workGroupId, @PathVariable(name = "status") String status);
 
     @GetMapping(path = "/iais-task/{taskId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<TaskDto> getTaskById(@PathVariable(name = "taskId") String taskId);
+    FeignResponseEntity<TaskDto> getTaskById(@PathVariable(name="taskId") String taskId);
 
     @RequestMapping(path = "/iais-workgroup",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<WorkingGroupDto> createWorkGroup(@RequestBody WorkingGroupDto workingGroupDto);
@@ -76,4 +78,5 @@ public interface OrganizationMainClient {
 
     @GetMapping(value = "/iais-workgroup/workGrop/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<WorkingGroupDto> getWrkGrpById(@PathVariable(name = "id") String workGroupId);
+
 }

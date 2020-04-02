@@ -173,8 +173,8 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         //set internal files
-        List<AppIntranetDocDto> intranetDocDtos = uploadFileClient.getAppIntranetDocListByPremIdAndStatus(correlationId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-        applicationViewDto.setAppIntranetDocDtoList(intranetDocDtos);
+//        List<AppIntranetDocDto> intranetDocDtos = uploadFileClient.getAppIntranetDocListByPremIdAndStatus(correlationId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+//        applicationViewDto.setAppIntranetDocDtoList(intranetDocDtos);
 //        get routing stage dropdown send to page.
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
 
@@ -187,7 +187,7 @@ public class HcsaApplicationDelegator {
             }else{
                 //if  this is the last stage
                 routingStage.put(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
-                        MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL));
+                        "Approval");
             }
         }
 
@@ -309,7 +309,10 @@ public class HcsaApplicationDelegator {
         }else{
             nextStageList.add(new SelectOption("ROLLBACK", "Internal Route Back"));
         }
-        nextStageList.add(new SelectOption("PROCRFI", "Request For Information"));
+        //62761
+        if(!(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()))){
+            nextStageList.add(new SelectOption("PROCRFI", "Request For Information"));
+        }
         ParamUtil.setSessionAttr(bpc.request, "nextStages", (Serializable)nextStageList);
 
         List<SelectOption> nextStageReplyList = IaisCommonUtils.genNewArrayList();
@@ -363,6 +366,12 @@ public class HcsaApplicationDelegator {
             String appPremCorreId=taskDto.getRefNo();
             //save recommendation
             String recommendationStr = ParamUtil.getString(bpc.request,"recommendation");
+//            if(StringUtil.isEmpty(recommendationStr)){
+//                //recommendationShow
+//                recommendationStr = ParamUtil.getString(bpc.request,"recommendationShow");
+//            }
+            String dateStr = ParamUtil.getDate(bpc.request, "tuc");
+            String dateTimeShow = ParamUtil.getString(bpc.request,"dateTimeShow");
             if(StringUtil.isEmpty(recommendationStr)){
 
             }else if(("reject").equals(recommendationStr)){
@@ -377,9 +386,12 @@ public class HcsaApplicationDelegator {
                 appPremisesRecommendationDto.setRecomInNumber(0);
                 appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
                 appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                String dateStr = ParamUtil.getDate(bpc.request, "tuc");
+                //save date
                 if(!StringUtil.isEmpty(dateStr)){
                     Date date = Formatter.parseDate(dateStr);
+                    appPremisesRecommendationDto.setRecomInDate(date);
+                }else if(!StringUtil.isEmpty(dateTimeShow)){
+                    Date date = Formatter.parseDate(dateTimeShow);
                     appPremisesRecommendationDto.setRecomInDate(date);
                 }
                 insRepService.updateRecommendation(appPremisesRecommendationDto);
@@ -390,9 +402,12 @@ public class HcsaApplicationDelegator {
                 appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
                 appPremisesRecommendationDto.setRecomInNumber( Integer.valueOf(strs[0]));
                 appPremisesRecommendationDto.setChronoUnit(strs[1]);
-                String dateStr = ParamUtil.getDate(bpc.request, "tuc");
+                //save date
                 if(!StringUtil.isEmpty(dateStr)){
                     Date date = Formatter.parseDate(dateStr);
+                    appPremisesRecommendationDto.setRecomInDate(date);
+                }else if(!StringUtil.isEmpty(dateTimeShow)){
+                    Date date = Formatter.parseDate(dateTimeShow);
                     appPremisesRecommendationDto.setRecomInDate(date);
                 }
                 insRepService.updateRecommendation(appPremisesRecommendationDto);

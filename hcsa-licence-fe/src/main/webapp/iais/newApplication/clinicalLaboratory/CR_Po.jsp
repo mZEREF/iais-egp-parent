@@ -420,8 +420,8 @@
     $(document).ready(function () {
         <!-- init start-->
         init = 0;
-
         poSelect();
+
         dpoSelect();
 
         retrieveData();
@@ -434,9 +434,10 @@
 
         doEditDpo();
 
-        $('.poSelect').trigger('change');
-        $('.deputySelect').trigger('change');
-        $('.deputyPoSelect').trigger('change');
+        $('select.poSelect').trigger('change');
+        $('select.deputySelect').trigger('change');
+        $('select.deputyPoSelect').trigger('change');
+
         //disabled
         if(${AppSubmissionDto.needEditController && (AppSubmissionDto.appEditSelectDto.serviceEdit || AppSubmissionDto.appEditSelectDto.poEdit) && !isClickEdit}){
             $('.po-content input[type="text"]').prop('disabled',true);
@@ -512,6 +513,7 @@
                       poSelect();
                       removePo();
                       retrieveData();
+                      removePo();
                     }else{
                         $('.poErrorMsg').html(data.errInfo);
                     }
@@ -540,8 +542,9 @@
                     if ('success' == data.res) {
                         console.log("suc");
                         $('.dpo-content:last').after(data.sucInfo);
+                        $('.deputyPoSelect').unbind();
                         dpoSelect();
-                        removeDpo();
+                      removeDpo();
                     }else{
                         $('.dpoErrorMsg').html(data.errInfo);
                     }

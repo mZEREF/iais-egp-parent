@@ -156,4 +156,13 @@ public interface FeEicGatewayClient {
                                                                            @RequestHeader("authorization") String authorization,
                                                                            @RequestHeader("date-Secondary") String dateSec,
                                                                            @RequestHeader("authorization-Secondary") String authorizationSec);
+
+
+    @PostMapping(value = "/iais/inter-out-dev/api/v1/appt-public-holiday", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> getpublicHoliday(@RequestBody EmailDto email,
+                                            @RequestHeader("date") String date,
+                                            @RequestHeader("authorization") String authorization,
+                                            @RequestHeader("date-Secondary") String dateSec,
+                                            @RequestHeader("authorization-Secondary") String authorizationSec);
 }

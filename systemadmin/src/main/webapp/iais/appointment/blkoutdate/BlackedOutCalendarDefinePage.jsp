@@ -46,7 +46,7 @@
       <c:if test="${switchPageAction == 'create'}">
         <div class="form-group">
           <div class="col-md-12">
-            <iais:field value="Blacked Out Date: From" required="true"></iais:field>
+            <iais:field value="Working Group" required="true"></iais:field>
             <div class="col-md-5">
               <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt" options="wrlGrpNameOpt"
                            firstOption="Please Select" value="${shortName}"></iais:select>

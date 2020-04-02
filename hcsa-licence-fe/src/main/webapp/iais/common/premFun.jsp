@@ -116,13 +116,9 @@
                         }
                     },
                     'error':function () {
-
                     }
                 });
-
             }
-
-
         });
     }
 
@@ -168,18 +164,12 @@
                         $premContent.find('.siteStreetName').val(data.streetName);
                         $premContent.find('.siteBuildingName').val(data.buildingName);
                         if(null == data.addressType || ''== data.addressType){
-
-
                         }else{
-
-
                         }
-
                         $premContent.find('.siteBlockNo').prop('readonly',true);
                         $premContent.find('.siteStreetName').prop('readonly',true);
                         $premContent.find('.siteBuildingName').prop('readonly',true);
                     }
-
                 },
                 'error':function () {
                     $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
@@ -189,15 +179,11 @@
         });
     }
 
-
-
-
-
     //add premises testing.......
     $('#addPremBtn').click(function () {
         //console.log($('.premContent').html());
         var data = {
-            'currentLength':$('.premContent').length
+            'currentLength':$('.premContent').length,
         };
         $.ajax({
             'url':'${pageContext.request.contextPath}/premises-html',
@@ -207,25 +193,17 @@
             'success':function (data) {
                 $('div.premContent:last').after(data);
                 premType();
-
                 premSelect();
-
                 $('.removeBtn').unbind('click');
                 removePremises();
-
                 retrieveAddr();
-
                 $('.addPubHolDay').unbind('click');
                 addPubHolDay();
-
                 removePH();
-
                 otherLic();
-
                 $('.date_picker').datepicker({
                     format:"dd/mm/yyyy"
                 });
-
                 <!--set Scrollbar -->
                 $("div.premSelect->ul").mCustomScrollbar({
                         advanced:{
@@ -233,11 +211,8 @@
                         }
                     }
                 );
-
-
             },
             'error':function (data) {
-
             }
         });
     });
@@ -252,7 +227,6 @@
                 $(this).find('input[name="premValue"]').val(k);
                 $(this).find('strong.premHeader').html('Premises '+(k+1));
             });
-
         });
 
     }
@@ -274,86 +248,60 @@
 
     }
 
-    <!--$contentDivEle:cuurent nearest new-premise-form-on-site/ new-premise-form-on-site->form-horizontal -->
-    var genPubHolDayFun = function ($premContentEle,$contentDivEle,canDel,canEdit) {
-        var name = $premContentEle.find('.premTypeValue').val();
-        var premVal = $premContentEle.find('input[name="premValue"]').val();
-        if('ONSITE' == name){
-            name = premVal+'onSite';
-        }else if('CONVEYANCE' == name){
-            name = premVal+"conveyance";
-        }
-        var currentLength = $contentDivEle.find('div.pubHolidayContent').length;
-
-        //onsite conv
-        var pubHolDayHtml = "<div class=\"pubHolidayContent\">"
-            + " <div class=\"form-group\">"
-            + "<label class=\"col-xs-12 col-md-4 control-label\">Select Public Holiday</label>"
-            + "<div class=\" col-xs-7 col-sm-4 col-md-5\">"
-            + "<input type=\"text\" autocomplete=\"off\" class=\"date_picker form-control form_datetime public-holiday \"  name=\""+name+"PubHoliday"+currentLength+"\" data-date-start-date=\"01/01/1900\" placeholder=\"dd/mm/yyyy\" maxlength=\"10\"><span id=\"error_onsitePubHoliday\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>"
-            + "</div>"
-            + "<div class=\" col-xs-7 col-sm-4 col-md-3\">"
-            + "<div class=\"form-check\">";
-        if('Y'==canDel){
-            pubHolDayHtml = pubHolDayHtml+ "<strong class=\"removePhBtn\">X</strong>";
-        }
-        pubHolDayHtml = pubHolDayHtml + "</div>"
-            + "</div>"
-            + "<div class=\"clear\"></div></div>"
-            + "<div class=\"form-group\">"
-            + "<label class=\"col-xs-12 col-md-4 control-label\">"
-            + " Public Holidays Operating Hours (Start)"
-            + "</label>"
-            + "<div class=\"col-xs-9 col-sm-5 col-md-6\">"
-            + "<input type=\"text\" class=\"PbHolDayStartHH\"  name=\""+name+"PbHolDayStartHH"+currentLength+"\" value=\"\" maxlength=\"2\" style=\"width: 60px;;margin-right: 2%\">(HH) :"
-            + "<input type=\"text\" class=\"PbHolDayStartMM\"  name=\""+name+"PbHolDayStartMM"+currentLength+"\" value=\"\" maxlength=\"2\" style=\"width: 60px;margin-right: 2%;margin-left: 2%\">(MM)"
-            + " </div>"
-            + "</div>"
-            + "<div class=\"form-group\">"
-            + "<label class=\"col-xs-12 col-md-4 control-label\">"
-            + "Public Holidays Operating Hours (End)"
-            + "</label>"
-            + "<div class=\"col-xs-9 col-sm-5 col-md-6\">"
-            + "<input type=\"text\" class=\"PbHolDayEndHH\"  name=\""+name+"PbHolDayEndHH"+currentLength+"\" value=\"\" maxlength=\"2\" style=\"width: 60px;margin-right: 2%\">(HH) :"
-            + "<input type=\"text\" class=\"PbHolDayEndMM\"  name=\""+name+"PbHolDayEndMM"+currentLength+"\" value=\"\" maxlength=\"2\" style=\"width: 60px;margin-right: 2%;margin-left: 2%\">(MM)"
-            + "</div>"
-            + "</div>"
-            + "</div>";
-
-
-        if("Y" ==canEdit){
-
-        }
-
-        <!--use ph mark point -->
-        $contentDivEle.find('div.phFormMarkPoint').addClass('pubHolidayContent');
-        <!--add html -->
-        $contentDivEle.find('div.pubHolidayContent:last').after(pubHolDayHtml);
-        <!--init ph mark point -->
-        $contentDivEle.find('div.phFormMarkPoint').removeClass('pubHolidayContent');
-
-        $('.date_picker').datepicker({
-            format:"dd/mm/yyyy"
-        });
-
-        <!--change hidden length value -->
-        var length = $contentDivEle.find('div.pubHolidayContent').length;
-        $premContentEle.find('.phLength').val(length);
-
-        //Prevent duplicate binding
-        $('.removePhBtn').unbind('click');
-        removePH();
-
-    }
-
     var addPubHolDay = function () {
         $('.addPubHolDay').click(function () {
+
             var $premContentEle = $(this).closest('div.premContent');
             var $contentDivEle = $(this).closest('div.form-horizontal');
-            genPubHolDayFun($premContentEle,$contentDivEle,'Y');
+            // genPubHolDayFun($premContentEle,$contentDivEle,'Y');
+            var name = $premContentEle.find('.premTypeValue').val();
+            var premVal = $premContentEle.find('input[name="premValue"]').val();
+            console.log("Name"+name);
+            console.log("premVal"+premVal);
+            if('ONSITE' == name){
+                name = premVal+'onSite';
+            }else if('CONVEYANCE' == name){
+                name = premVal+"conveyance";
+            }
+            var currentLength = $contentDivEle.find('div.pubHolidayContent').length;
+            var jsonData={
+                'premVal': name,
+                'phLength': currentLength
+            };
+            $.ajax({
+                'url':'${pageContext.request.contextPath}/public-holiday-html',
+                'dataType':'text',
+                'data':jsonData,
+                'type':'GET',
+                'success':function (data) {
+                    if(data == null){
+                        return;
+                    }
+                    <!--use ph mark point -->
+                    $contentDivEle.find('div.phFormMarkPoint').addClass('pubHolidayContent');
+                    <!--add html -->
+                    $contentDivEle.find('div.pubHolidayContent:last').after(data);
+                    <!--init ph mark point -->
+                    $contentDivEle.find('div.phFormMarkPoint').removeClass('pubHolidayContent');
+                    <!--change hidden length value -->
+                    var length = $contentDivEle.find('div.pubHolidayContent').length;
+                    $premContentEle.find('.phLength').val(length);
+                    //Prevent duplicate binding
+                    $('.removePhBtn').unbind('click');
+                    removePH();
+
+                    $("div.premSelect->ul").mCustomScrollbar({
+                            advanced:{
+                                updateOnContentResize: true
+                            }
+                        }
+                    );
+                },
+                'error':function () {
+                }
+            });
         });
     }
-
 
     var removePH = function () {
         $('.removePhBtn').click(function () {
@@ -428,10 +376,22 @@
             $premSelect.find('input[name="'+premisesType+'FireSafetyCertIssuedDate"]').val(data.certIssuedDtStr);
             $premSelect.find('input[name="'+premisesType+'OffTelNo"]').val(data.offTelNo);
             $premSelect.find('input[name="'+premisesType+'IsOtherLic"]').val(data.locateWithOthers);
-            $premSelect.find('input[name="'+premisesType+'StartHH"]').val(data.onsiteStartHH);
-            $premSelect.find('input[name="'+premisesType+'StartMM"]').val(data.onsiteStartMM);
-            $premSelect.find('input[name="'+premisesType+'EndHH"]').val(data.onsiteEndHH);
-            $premSelect.find('input[name="'+premisesType+'EndMM"]').val(data.onsiteEndMM);
+
+            $premSelect.find('select[name="'+premisesType+'StartHH"]').val(data.onsiteStartHH);
+            var startHH = $premSelect.find('option[value="' + data.onsiteStartHH + '"]').html();
+            $premSelect.find('select[name="'+premisesType+'StartHH"]').next().find('.current').html(startHH);
+
+            $premSelect.find('select[name="'+premisesType+'StartMM"]').val(data.onsiteStartMM);
+            var startMM = $premSelect.find('option[value="' + data.onsiteStartMM + '"]').html();
+            $premSelect.find('select[name="'+premisesType+'StartMM"]').next().find('.current').html(startMM);
+
+            $premSelect.find('select[name="'+premisesType+'EndHH"]').val(data.onsiteEndHH);
+            var endHH = $premSelect.find('option[value="' + data.onsiteEndHH + '"]').html();
+            $premSelect.find('select[name="'+premisesType+'EndHH"]').next().find('.current').html(endHH);
+
+            $premSelect.find('select[name="'+premisesType+'EndMM"]').val(data.onsiteEndMM);
+            var endMM = $premSelect.find('option[value="' + data.onsiteEndMM + '"]').html();
+            $premSelect.find('select[name="'+premisesType+'EndMM"]').next().find('.current').html(endMM);
         }else if('conveyance' == premisesType){
             $premSelect.find('input[name="'+premisesType+'VehicleNo"]').val(data.conveyanceVehicleNo);
             $premSelect.find('input[name="'+premisesType+'BlockNo"]').val(data.conveyanceBlockNo);
@@ -440,10 +400,19 @@
             $premSelect.find('input[name="'+premisesType+'UnitNo"]').val(data.conveyanceUnitNo);
             $premSelect.find('input[name="'+premisesType+'BuildingName"]').val(data.conveyanceBuildingName);
             $premSelect.find('input[name="'+premisesType+'StreetName"]').val(data.conveyanceStreetName);
-            $premSelect.find('input[name="'+premisesType+'StartHH"]').val(data.conStartHH);
-            $premSelect.find('input[name="'+premisesType+'StartMM"]').val(data.conStartMM);
-            $premSelect.find('input[name="'+premisesType+'EndHH"]').val(data.conEndHH);
-            $premSelect.find('input[name="'+premisesType+'EndMM"]').val(data.conEndMM);
+
+            $premSelect.find('select[name="'+premisesType+'StartHH"]').val(data.conStartHH);
+            var startHH = $premSelect.find('option[value="' + data.conStartHH + '"]').html();
+            $premSelect.find('select[name="'+premisesType+'StartHH"]').next().find('.current').html(startHH);
+            $premSelect.find('select[name="'+premisesType+'StartMM"]').val(data.conStartMM);
+            var startMM = $premSelect.find('option[value="' + data.conStartMM + '"]').html();
+            $premSelect.find('select[name="'+premisesType+'StartMM"]').next().find('.current').html(startMM);
+            $premSelect.find('select[name="'+premisesType+'EndHH"]').val(data.conEndHH);
+            var endHH = $premSelect.find('option[value="' + data.conEndHH + '"]').html();
+            $premSelect.find('select[name="'+premisesType+'EndHH"]').next().find('.current').html(endHH);
+            $premSelect.find('select[name="'+premisesType+'EndMM"]').val(data.conEndMM);
+            var endMM = $premSelect.find('option[value="' + data.conEndMM + '"]').html();
+            $premSelect.find('select[name="'+premisesType+'EndMM"]').next().find('.current').html(endMM);
         }
     }
 
@@ -459,22 +428,46 @@
                 }else if(premisesType == 'conveyanceSel'){
                     $contentDivEle = $Ele.find('div.new-premise-form-conv');
                 }
-                genPubHolDayFun($Ele,$contentDivEle,'N','N');
+                //genPubHolDayFun($Ele,$contentDivEle,'N','N');
             }
-            $Ele.find('div.pubHolidayContent').eq(k).find('input[name="'+currentPremVal+"PubHoliday"+k+'"]').val(v.phDateStr);
+            $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PubHoliday'+k+'"]').val(v.phDateStr);
+            var publicHoliday = $Ele.find('div.pubHolidayContent').eq(k).find('option[value="' +v.phDateStr+ '"]').html();
+            $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PubHoliday'+k+'"]').next().find('.current').html(publicHoliday);
+
             if(premisesType == 'onSite'){
-                $Ele.find('div.pubHolidayContent').eq(k).find('input[name="'+currentPremVal+"PbHolDayStartHH"+k+'"]').val(v.onsiteStartFromHH);
-                $Ele.find('div.pubHolidayContent').eq(k).find('input[name="'+currentPremVal+"PbHolDayStartMM"+k+'"]').val(v.onsiteStartFromMM);
-                $Ele.find('div.pubHolidayContent').eq(k).find('input[name="'+currentPremVal+"PbHolDayEndHH"+k+'"]').val(v.onsiteEndToHH);
-                $Ele.find('div.pubHolidayContent').eq(k).find('input[name="'+currentPremVal+"PbHolDayEndMM"+k+'"]').val(v.onsiteEndToMM);
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayStartHH'+k+'"]').val(v.onsiteStartFromHH);
+                var StartFromHH = $Ele.find('div.pubHolidayContent').eq(k).find('option[value="' +v.onsiteStartFromHH+ '"]').html();
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayStartHH'+k+'"]').next().find('.current').html(StartFromHH);
+
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayStartMM'+k+'"]').val(v.onsiteStartFromMM);
+                var StartFromMM = $Ele.find('div.pubHolidayContent').eq(k).find('option[value="' +v.onsiteStartFromMM+ '"]').html();
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayStartMM'+k+'"]').next().find('.current').html(StartFromMM);
+
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayEndHH'+k+'"]').val(v.onsiteEndToHH);
+                var EndToHH = $Ele.find('div.pubHolidayContent').eq(k).find('option[value="' +v.onsiteEndToHH+ '"]').html();
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayEndHH'+k+'"]').next().find('.current').html(EndToHH);
+
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayEndMM'+k+'"]').val(v.onsiteEndToMM);
+                var EndToMM = $Ele.find('div.pubHolidayContent').eq(k).find('option[value="' +v.onsiteEndToMM+ '"]').html();
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayEndMM'+k+'"]').next().find('.current').html(EndToMM);
+
             }else if(premisesType == 'conveyance'){
-                $Ele.find('div.pubHolidayContent').eq(k).find('input[name="'+currentPremVal+"PbHolDayStartHH"+k+'"]').val(v.convStartFromHH);
-                $Ele.find('div.pubHolidayContent').eq(k).find('input[name="'+currentPremVal+"PbHolDayStartMM"+k+'"]').val(v.convStartFromMM);
-                $Ele.find('div.pubHolidayContent').eq(k).find('input[name="'+currentPremVal+"PbHolDayEndHH"+k+'"]').val(v.convEndToHH);
-                $Ele.find('div.pubHolidayContent').eq(k).find('input[name="'+currentPremVal+"PbHolDayEndMM"+k+'"]').val(v.convEndToMM);
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayStartHH'+k+'"]').val(v.convStartFromHH);
+                var StartFromHH = $Ele.find('div.pubHolidayContent').eq(k).find('option[value="' +v.convStartFromHH+ '"]').html();
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayStartHH'+k+'"]').next().find('.current').html(StartFromHH);
+
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayStartMM'+k+'"]').val(v.convStartFromMM);
+                var StartFromMM = $Ele.find('div.pubHolidayContent').eq(k).find('option[value="' +v.convStartFromMM+ '"]').html();
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayStartMM'+k+'"]').next().find('.current').html(StartFromMM);
+
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayEndHH'+k+'"]').val(v.convEndToHH);
+                var EndToHH = $Ele.find('div.pubHolidayContent').eq(k).find('option[value="' +v.convEndToHH+ '"]').html();
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayEndHH'+k+'"]').next().find('.current').html(EndToHH);
+
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayEndMM'+k+'"]').val(v.convEndToMM);
+                var EndToMM = $Ele.find('div.pubHolidayContent').eq(k).find('option[value="' +v.convEndToMM+ '"]').html();
+                $Ele.find('div.pubHolidayContent').eq(k).find('select[name="'+currentPremVal+'PbHolDayEndMM'+k+'"]').next().find('.current').html(EndToMM);
             }
-
-
         });
     }
 

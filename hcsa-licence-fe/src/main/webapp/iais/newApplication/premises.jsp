@@ -27,7 +27,6 @@
         <div class="col-xs-12">
           <div class="tab-gp steps-tab">
             <%@ include file="./navTabs.jsp" %>
-
             <div class="tab-content  ">
               <div class="tab-pane active" id="premisesTab" role="tabpanel">
                 <c:if test="${AppSubmissionDto.needEditController}">
@@ -94,7 +93,7 @@
                   <%@include file="../common/premisesContent.jsp"%>
                 </div>
                 <div class="row">
-                  <div class="col-xs-12">
+                  <div class="col-xs-12" id="addPremBody">
                     <c:if test="${requestInformationConfig==null && 'APTY005' !=AppSubmissionDto.appType && !multiBase && 'APTY004' !=AppSubmissionDto.appType}">
                       <button id="addPremBtn" class="btn btn-primary" type="button">Add Premises</button>
                     </c:if>
@@ -120,7 +119,8 @@
                                 <div class="col-xs-12 col-sm-6">
                                     <div class="button-group">
                                         <c:if test="${requestInformationConfig==null}">
-                                            <a class="btn btn-secondary premiseSaveDraft" id="SaveDraft" >Save as Draft</a>
+                                          <input type="text" style="display: none; " id="selectDraftNo" value="${selectDraftNo}">
+                                            <a class="btn btn-secondary premiseSaveDraft" id="SaveDraft"  data-toggle="modal" data-target= "#saveDraft" >Save as Draft</a>
                                         </c:if>
                                         <a class="btn btn-primary next premiseId" id="Next" >Next</a></div>
                                 </div>
@@ -139,6 +139,10 @@
   <%@ include file="/include/validation.jsp" %>
   <%@include file="../common/premFun.jsp"%>
   <input type="hidden" name="pageCon" value="valPremiseList" >
+  <c:if test="${ not empty selectDraftNo }">
+    <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="saveDraft()" popupOrder="saveDraft" cancelBtnDesc="Resume from draft" yesBtnDesc="Continue current application" cancelFunc="cancelSaveDraft()"></iais:confirm>
+  </c:if>
+
 </form>
 <script type="text/javascript">
     var init;
@@ -220,11 +224,11 @@
             submit('documents',null,null);
         });
         $('#SaveDraft').click(function(){
-            $('input[type="radio"]').prop('disabled',false);
-            submit('premises','saveDraft',null);
+            if($('#selectDraftNo').val()==''||$('#selectDraftNo').val()==null){
+                $('input[type="radio"]').prop('disabled',false);
+                submit('premises','saveDraft',$('#selectDraftNo').val());
+            }
         });
-
-
 
         <c:if test="${AppSubmissionDto.appEditSelectDto!=null && !AppSubmissionDto.appEditSelectDto.premisesEdit}">
         disabledPage();
@@ -238,10 +242,23 @@
         init = 1;
     });
 
+    $("#onSiteSel").change(function(){
+        $("#addPremBody").removeAttr("hidden");
+    })
+
+    $("#conveyanceSel").change(function(){
+        $("#addPremBody").removeAttr("hidden");
+    })
 
 
+    function saveDraft() {
+        $('input[type="radio"]').prop('disabled',false);
+        submit('premises','saveDraft',$('#selectDraftNo').val());
+    }
 
-
+  function cancelSaveDraft() {
+      submit('premises','saveDraft','cancelSaveDraft');
+  }
 
 </script>
 

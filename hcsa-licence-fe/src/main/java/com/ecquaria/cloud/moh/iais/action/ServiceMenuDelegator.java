@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -9,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -47,6 +49,8 @@ public class ServiceMenuDelegator {
     List<HcsaServiceDto> specifiedService;
     @Autowired
     private ServiceConfigService serviceConfigService;
+    @Autowired
+    private ApplicationClient applicationClient;
     public void doStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the  doStart start 1...."));
         AccessUtil.initLoginUserInfo(bpc.request);
@@ -58,7 +62,13 @@ public class ServiceMenuDelegator {
 
     public void beforeJump(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the  before jump start 1...."));
-
+        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
+        List<String> serviceCodeList=new ArrayList<>(hcsaServiceDtoList.size());
+        for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList){
+            serviceCodeList.add(hcsaServiceDto.getSvcCode());
+        }
+        String entity = applicationClient.selectDarft(serviceCodeList).getEntity();
+        bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO,entity);
     }
 
     public void serviceMenuSelection(BaseProcessClass bpc){
@@ -83,7 +93,6 @@ public class ServiceMenuDelegator {
         ParamUtil.setRequestAttr(bpc.request, SPECIFIED_SERVICE_ATTR, specifiedService);
         ParamUtil.setRequestAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, baseServiceChecked);
         ParamUtil.setRequestAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED, specifiedServiceChecked);
-
 
     }
 

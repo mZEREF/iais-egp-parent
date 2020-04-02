@@ -310,7 +310,6 @@ public class NewApplicationHelper {
                                 oneErrorMap.put("poNRICFIN"+poIndex,"CHKLMD001_ERR005");
                             }else {
                                 stringBuilder.append(idType).append(idNo);
-
                             }
                         }
                     }else {
@@ -627,21 +626,21 @@ public class NewApplicationHelper {
         if(!StringUtil.isEmpty(wrkTimeFrom)){
             LocalTime localTimeFrom = wrkTimeFrom.toLocalTime();
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                appGrpPremisesDto.setOnsiteStartHH(formatToStr(localTimeFrom.getHour()));
-                appGrpPremisesDto.setOnsiteStartMM(formatToStr(localTimeFrom.getMinute()));
+                appGrpPremisesDto.setOnsiteStartHH(String.valueOf(localTimeFrom.getHour()));
+                appGrpPremisesDto.setOnsiteStartMM(String.valueOf(localTimeFrom.getMinute()));
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                appGrpPremisesDto.setConStartHH(formatToStr(localTimeFrom.getHour()));
-                appGrpPremisesDto.setConStartMM(formatToStr(localTimeFrom.getHour()));
+                appGrpPremisesDto.setConStartHH(String.valueOf(localTimeFrom.getHour()));
+                appGrpPremisesDto.setConStartMM(String.valueOf(localTimeFrom.getHour()));
             }
         }
         if(!StringUtil.isEmpty(wrkTimeTo)){
             LocalTime localTimeTo = wrkTimeTo.toLocalTime();
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                appGrpPremisesDto.setOnsiteEndHH(formatToStr(localTimeTo.getHour()));
-                appGrpPremisesDto.setOnsiteEndMM(formatToStr(localTimeTo.getMinute()));
+                appGrpPremisesDto.setOnsiteEndHH(String.valueOf(localTimeTo.getHour()));
+                appGrpPremisesDto.setOnsiteEndMM(String.valueOf(localTimeTo.getMinute()));
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                appGrpPremisesDto.setConEndHH(formatToStr(localTimeTo.getHour()));
-                appGrpPremisesDto.setConEndMM(formatToStr(localTimeTo.getMinute()));
+                appGrpPremisesDto.setConEndHH(String.valueOf(localTimeTo.getHour()));
+                appGrpPremisesDto.setConEndMM(String.valueOf(localTimeTo.getMinute()));
             }
 
         }
@@ -657,21 +656,21 @@ public class NewApplicationHelper {
                 if(!StringUtil.isEmpty(start)){
                     LocalTime localTimeStart = start.toLocalTime();
                     if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                        appPremPhOpenPeriod.setOnsiteStartFromHH(formatToStr(localTimeStart.getHour()));
-                        appPremPhOpenPeriod.setOnsiteStartFromMM(formatToStr(localTimeStart.getMinute()));
+                        appPremPhOpenPeriod.setOnsiteStartFromHH(String.valueOf(localTimeStart.getHour()));
+                        appPremPhOpenPeriod.setOnsiteStartFromMM(String.valueOf(localTimeStart.getMinute()));
                     }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                        appPremPhOpenPeriod.setConvStartFromHH(formatToStr(localTimeStart.getHour()));
-                        appPremPhOpenPeriod.setConvStartFromMM(formatToStr(localTimeStart.getMinute()));
+                        appPremPhOpenPeriod.setConvStartFromHH(String.valueOf(localTimeStart.getHour()));
+                        appPremPhOpenPeriod.setConvStartFromMM(String.valueOf(localTimeStart.getMinute()));
                     }
                 }
                 if(!StringUtil.isEmpty(end)){
                     LocalTime localTimeEnd = end.toLocalTime();
                     if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                        appPremPhOpenPeriod.setOnsiteEndToHH(formatToStr(localTimeEnd.getHour()));
-                        appPremPhOpenPeriod.setOnsiteEndToMM(formatToStr(localTimeEnd.getMinute()));
+                        appPremPhOpenPeriod.setOnsiteEndToHH(String.valueOf(localTimeEnd.getHour()));
+                        appPremPhOpenPeriod.setOnsiteEndToMM(String.valueOf(localTimeEnd.getMinute()));
                     }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                        appPremPhOpenPeriod.setConvEndToHH(formatToStr(localTimeEnd.getHour()));
-                        appPremPhOpenPeriod.setConvEndToMM(formatToStr(localTimeEnd.getMinute()));
+                        appPremPhOpenPeriod.setConvEndToHH(String.valueOf(localTimeEnd.getHour()));
+                        appPremPhOpenPeriod.setConvEndToMM(String.valueOf(localTimeEnd.getMinute()));
                     }
                 }
             }
@@ -715,11 +714,11 @@ public class NewApplicationHelper {
     /**
      *
      * @param appSubmissionDto
-     * @Descriptio just get cgo psn
+     * @Descriptio  cgo,po,dpo,map,
      * @return
      */
-    public static Map<String,AppSvcCgoDto> getPsnMapFromSubDto(AppSubmissionDto appSubmissionDto){
-        Map<String,AppSvcCgoDto> psnMap = IaisCommonUtils.genNewHashMap();
+    public static Map<String,AppSvcPrincipalOfficersDto> getPsnMapFromSubDto(AppSubmissionDto appSubmissionDto){
+        Map<String,AppSvcPrincipalOfficersDto> psnMap = IaisCommonUtils.genNewHashMap();
         if(appSubmissionDto == null){
             return psnMap;
         }
@@ -727,9 +726,31 @@ public class NewApplicationHelper {
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-                if(appSvcCgoDtos != null){
+                if(!IaisCommonUtils.isEmpty(appSvcCgoDtos)){
                     for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtos){
-                        psnMap.put(appSvcCgoDto.getIdNo(),appSvcCgoDto);
+                        AppSvcPrincipalOfficersDto psnDto = new AppSvcPrincipalOfficersDto();
+                        psnDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
+                        psnDto.setDesignation(appSvcCgoDto.getDesignation());
+                        psnDto.setName(appSvcCgoDto.getName());
+                        psnDto.setIdType(appSvcCgoDto.getIdType());
+                        psnDto.setIdNo(appSvcCgoDto.getIdNo());
+                        psnDto.setOfficeTelNo(appSvcCgoDto.getOfficeTelNo());
+                        psnDto.setMobileNo(appSvcCgoDto.getMobileNo());
+                        psnDto.setOfficeTelNo(appSvcCgoDto.getOfficeTelNo());
+                        psnDto.setEmailAddr(appSvcCgoDto.getEmailAddr());
+                        psnDto.setPreferredMode(appSvcCgoDto.getPreferredMode());
+                        psnDto.setProfessionType(appSvcCgoDto.getProfessionType());
+                        psnDto.setProfessionRegoNo(appSvcCgoDto.getProfessionRegoNo());
+                        psnDto.setSpeciality(appSvcCgoDto.getSpeciality());
+                        psnDto.setSpecialityOther(appSvcCgoDto.getSpecialityOther());
+                        psnDto.setQualification(appSvcCgoDto.getQualification());
+                        psnMap.put(appSvcCgoDto.getIdNo(),psnDto);
+                    }
+                }
+                List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+                if(!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)){
+                    for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto:appSvcPrincipalOfficersDtos){
+                        //psnMap.put(appSvcPrincipalOfficersDto.getIdNo(),appSvcPrincipalOfficersDto);
                     }
                 }
             }
@@ -754,8 +775,101 @@ public class NewApplicationHelper {
                 }
             }
         }
+
         return null;
     }
+
+
+    public static Map<String,String> doValidateMedAlertPsn(List<AppSvcPrincipalOfficersDto> medAlertPsnDtos){
+        Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
+        if(IaisCommonUtils.isEmpty(medAlertPsnDtos)){
+            return errMap;
+        }
+        List<String> stringList=IaisCommonUtils.genNewArrayList();
+        for(int i=0;i<medAlertPsnDtos.size();i++ ){
+            String assignSelect = medAlertPsnDtos.get(i).getAssignSelect();
+            if("-1".equals(assignSelect)){
+                errMap.put("assignSelect"+i, "UC_CHKLMD001_ERR001");
+            }else {
+                StringBuilder stringBuilder1=new StringBuilder();
+                String idTyp = medAlertPsnDtos.get(i).getIdType();
+                if("-1".equals(idTyp)){
+                    errMap.put("idTyp"+i, "UC_CHKLMD001_ERR001");
+                }
+                String salutation = medAlertPsnDtos.get(i).getSalutation();
+                if(StringUtil.isEmpty(salutation)){
+                    errMap.put("salutation"+i,"UC_CHKLMD001_ERR001");
+                }
+                String idNo = medAlertPsnDtos.get(i).getIdNo();
+                //to do
+                if(StringUtil.isEmpty(idNo)){
+                    errMap.put("idNo"+i,"UC_CHKLMD001_ERR001");
+                }else {
+                    if("FIN".equals(idTyp)){
+                        boolean b = SgNoValidator.validateFin(idNo);
+                        if(!b){
+                            errMap.put("idNo"+i,"CHKLMD001_ERR005");
+                        }
+                        stringBuilder1.append(idTyp).append(idNo);
+                    }
+                    if("NRIC".equals(idTyp)){
+                        boolean b1 = SgNoValidator.validateNric(idNo);
+                        if(!b1){
+                            errMap.put("idNo"+i,"CHKLMD001_ERR005");
+                        }
+                        stringBuilder1.append(idTyp).append(idNo);
+                    }
+                }
+
+                String name = medAlertPsnDtos.get(i).getName();
+                if(StringUtil.isEmpty(name)){
+                    errMap.put("name"+i,"UC_CHKLMD001_ERR001");
+                }else {
+                    if(name.length()>66){
+
+                    }
+                }
+
+                String mobileNo = medAlertPsnDtos.get(i).getMobileNo();
+                if(StringUtil.isEmpty(mobileNo)){
+                    errMap.put("mobileNo"+i, "UC_CHKLMD001_ERR001");
+                }else if (!StringUtil.isEmpty(mobileNo)) {
+                    if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
+                        errMap.put("mobileNo"+i, "CHKLMD001_ERR004");
+                    }
+                }
+                String emailAddr = medAlertPsnDtos.get(i).getEmailAddr();
+
+                if(StringUtil.isEmpty(emailAddr)){
+                    errMap.put("emailAddr"+i, "UC_CHKLMD001_ERR001");
+                }else if (!StringUtil.isEmpty(emailAddr)) {
+                    if (! ValidationUtils.isEmail(emailAddr)) {
+                        errMap.put("emailAddr"+i, "CHKLMD001_ERR006");
+                    }else if(emailAddr.length()>66) {
+
+                    }
+                }
+
+                if(!StringUtil.isEmpty(stringBuilder1.toString())){
+                    if(stringList.contains(stringBuilder1.toString())){
+                        errMap.put("idNo","UC_CHKLMD001_ERR002");
+                    }else {
+                        stringList.add( stringBuilder1.toString());
+                    }
+                }
+
+                String preferredMode = medAlertPsnDtos.get(i).getPreferredMode();
+                if(StringUtil.isEmpty(preferredMode)){
+                    errMap.put("preferredModeVal"+i,"UC_CHKLMD001_ERR001");
+                }
+
+            }
+
+        }
+
+        return errMap;
+    }
+
 
     //=============================================================================
     //private method
@@ -810,15 +924,5 @@ public class NewApplicationHelper {
                 }
             }
         }
-    }
-
-    private static String formatToStr(int i){
-        String result = "";
-        if (i <= 9) {
-            result = result + "0" + i;
-        } else {
-            result = result + i;
-        }
-        return result;
     }
 }

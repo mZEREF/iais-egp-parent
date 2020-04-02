@@ -68,7 +68,7 @@ public class MessageUtil {
     }
 
     public static String dateIntoMessage(String codeKey){
-        return dateIntoMessage(codeKey, "yyyy-MM-dd");
+        return dateIntoMessage(codeKey, "dd/MM/yyyy");
     }
 
     public static String dateIntoMessage(String codeKey, String pattern){

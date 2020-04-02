@@ -15,24 +15,23 @@
                         </tr>
                         </thead>
                         <c:forEach var="appGrpPrem" items="${appGrpPremisesDtoList}" varStatus="status">
-                                <c:set var="reloadMapValue" value="${appGrpPrem.premisesIndexNo}"/>
-                            <tbody>
+                            <c:set var="reloadMapValue" value="${appGrpPrem.premisesIndexNo}"/>
+                        <tbody>
                             <c:forEach var="disciplineAllocation" items="${reloadDisciplineAllocationMap[reloadMapValue]}" varStatus="stat">
-                                <tr>
-                                    <c:if test="${stat.first}">
-                                        <td rowspan="${reloadDisciplineAllocationMap[reloadMapValue].size()}">
-                                            <p class="">${appGrpPrem.address}</p>
-                                        </td>
-                                    </c:if>
-                                    <td>
-                                        <p>${disciplineAllocation.chkLstName}</p>
+                            <tr>
+                                <c:if test="${stat.first}">
+                                    <td rowspan="${reloadDisciplineAllocationMap[reloadMapValue].size()}">
+                                        <p class="">${appGrpPrem.address}</p>
                                     </td>
-                                    <td>
-                                        <p>${disciplineAllocation.cgoSelName}</p>
-                                    </td>
-                                </tr>
+                                </c:if>
+                                <td>
+                                    <p>${disciplineAllocation.chkLstName}</p>
+                                </td>
+                                <td>
+                                    <p>${disciplineAllocation.cgoSelName}</p>
+                                </td>
+                            </tr>
                             </c:forEach>
-                            </tbody>
                         </c:forEach>
                     </table>
                 </div>

@@ -1,7 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -11,11 +13,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingS
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import java.util.List;
@@ -33,6 +37,8 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
     ApplicationViewService applicationViewService;
+    @Autowired
+    private FillUpCheckListGetAppClient uploadFileClient;
     @Override
     public ApplicationViewDto searchByCorrelationIdo(String correlationId) {
         //return applicationClient.getAppViewByNo(appNo).getEntity();
@@ -167,6 +173,17 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
             }
         }
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
+
+        //set internal files
+        List<AppIntranetDocDto> intranetDocDtos = uploadFileClient.getAppIntranetDocListByPremIdAndStatus(appCorId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+        //applicationViewService
+        for(AppIntranetDocDto intranetDocDto : intranetDocDtos){
+            intranetDocDto.setDocSize(intranetDocDto.getDocSize()+"KB");
+            OrgUserDto user = applicationViewService.getUserById(intranetDocDto.getSubmitBy());
+            intranetDocDto.setSubmitByName(user.getDisplayName());
+            intranetDocDto.setSubmitDtString(Formatter.formatDateTime(intranetDocDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss"));
+        }
+        applicationViewDto.setAppIntranetDocDtoList(intranetDocDtos);
         return applicationViewDto;
     }
 

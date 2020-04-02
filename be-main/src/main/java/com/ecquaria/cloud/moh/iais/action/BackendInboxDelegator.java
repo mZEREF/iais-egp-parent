@@ -507,8 +507,8 @@ public class BackendInboxDelegator {
             }
 
             if(!StringUtil.isEmpty(application_no)){
-                searchParamGroup.addFilter("application_no", application_no,true);
-                searchParamAjax.addFilter("application_no", application_no,true);
+                searchParamGroup.addFilter("application_no","%" +application_no +"%" ,true);
+                searchParamAjax.addFilter("application_no", "%" +application_no +"%",true);
             }else{
                 searchParamGroup.removeFilter("application_no");
                 searchParamAjax.removeFilter("application_no");

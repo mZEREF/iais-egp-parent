@@ -22,8 +22,11 @@ public class ConfirmDialogTag extends TagSupport {
     private String callBack;
     private String popupOrder;
     private String title;
+    private String yesBtnDesc;
     private boolean needCancel;
     private boolean needFungDuoJi;
+    private String cancelBtnDesc;
+    private String cancelFunc;
 
     public ConfirmDialogTag() {
         super();
@@ -36,6 +39,9 @@ public class ConfirmDialogTag extends TagSupport {
         callBack = "";
         popupOrder = "";
         title = "";
+        cancelFunc = "";
+        yesBtnDesc = "";
+        cancelBtnDesc = "";
         needCancel = true;
         needFungDuoJi = true;
     }
@@ -60,7 +66,10 @@ public class ConfirmDialogTag extends TagSupport {
         html.append("<div class=\"modal-header\">");
         html.append("<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span");
         html.append(" aria-hidden=\"true\">&times;</span></button>");
-        html.append(" <h5 class=\"modal-title\" id=\"gridSystemModalLabel\">Confirmation Box</h5></div>");
+        if (StringUtil.isEmpty(title)) {
+            title = "Confirmation Box";
+        }
+        html.append(" <h5 class=\"modal-title\" id=\"gridSystemModalLabel\">").append(title).append("</h5></div>");
         html.append("<div class=\"modal-body\"><div class=\"row\">");
         if (needFungDuoJi) {
             html.append("<input type=\"hidden\" name=\"fangDuoJi").append(divId).append("\" id=\"fangDuoJi").append(divId).append("\"/>");
@@ -70,9 +79,19 @@ public class ConfirmDialogTag extends TagSupport {
         html.append("</span></div></div></div>");
         html.append("<div class=\"modal-footer\">");
         html.append("<button type=\"button\" class=\"btn btn-primary\" onclick=\"javascript:");
-        html.append("tagConfirmCallback").append(popupOrder).append("();\">OK</button>");
+        if (StringUtil.isEmpty(yesBtnDesc)) {
+            yesBtnDesc = "OK";
+        }
+        html.append("tagConfirmCallback").append(popupOrder).append("();\">").append(yesBtnDesc).append("</button>");
         if (needCancel) {
-            html.append("<button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Cancel</button>");
+            if (StringUtil.isEmpty(cancelBtnDesc)) {
+                cancelBtnDesc = "Cancel";
+            }
+            html.append("<button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\"");
+            if (!StringUtil.isEmpty(cancelFunc)) {
+                html.append(" onclick=\"javascript:").append(cancelFunc).append(";\"");
+            }
+            html.append(">").append(cancelBtnDesc).append("</button>");
         }
         html.append("</div></div></div></div>");
         //javascript
@@ -129,5 +148,17 @@ public class ConfirmDialogTag extends TagSupport {
 
     public void setNeedFungDuoJi(boolean needFungDuoJi) {
         this.needFungDuoJi = needFungDuoJi;
+    }
+
+    public void setCancelFunc(String cancelFunc) {
+        this.cancelFunc = cancelFunc;
+    }
+
+    public void setYesBtnDesc(String yesBtnDesc) {
+        this.yesBtnDesc = yesBtnDesc;
+    }
+
+    public void setCancelBtnDesc(String cancelBtnDesc) {
+        this.cancelBtnDesc = cancelBtnDesc;
     }
 }

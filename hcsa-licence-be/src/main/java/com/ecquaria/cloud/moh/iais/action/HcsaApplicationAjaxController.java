@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
@@ -9,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
@@ -24,9 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.servlet.webflow.HttpHandler;
+
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -52,6 +50,7 @@ public class HcsaApplicationAjaxController{
     public String uploadInternalFile(HttpServletRequest request,@RequestParam("selectedFile") MultipartFile selectedFile){
         String data = "";
         request.setAttribute("selectedFile",selectedFile);
+        String CSRF = ParamUtil.getString(request,"OWASP_CSRFTOKEN");
         HcsaApplicationUploadFileValidate uploadFileValidate = new HcsaApplicationUploadFileValidate();
         Map<String, String> errorMap = new HashMap<>();
         if(!errorMap.isEmpty()){
@@ -80,8 +79,8 @@ public class HcsaApplicationAjaxController{
             appIntranetDocDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             appIntranetDocDto.setSubmitDt(new Date());
             appIntranetDocDto.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
-
-
+            appIntranetDocDto.setSubmitDtString(Formatter.formatDateTime(appIntranetDocDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss"));
+            appIntranetDocDto.setSubmitByName(appIntranetDocDto.getAuditTrailDto().getMohUserId());
             FileRepoDto fileRepoDto = new FileRepoDto();
             fileRepoDto.setFileName(fileName);
             fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -101,10 +100,19 @@ public class HcsaApplicationAjaxController{
             }else {
                 appIntranetDocDtos = new ArrayList<>(5);
             }
+            Integer index = (Integer) ParamUtil.getSessionAttr(request,"AppIntranetDocDtoIndex");
             int fileSizes = appIntranetDocDtos.size();
-           /* if(fileSizes == 0){
-                appIntranetDocDto.setNoFilesMessage( MessageUtil.getMessageDesc("ACK018"));
-            }*/
+            if(index == null){
+                index = fileSizes;
+            }else {
+                index++;
+            }
+            ParamUtil.setSessionAttr(request,"AppIntranetDocDtoIndex",index);
+           String  mask =MaskUtil.maskValue("fileRo"+index, appIntranetDocDto.getFileRepoId());
+           String url ="<a href=\"pageContext.request.contextPath/file-repo?filerepo=fileRostatus.index&fileRostatus.index=maskDec&fileRepoName=interalFile.docName&OWASP_CSRFTOKEN=csrf\" title=\"Download\" class=\"downloadFile\">";
+            url= url.replaceAll("pageContext.request.contextPath","/hcsa-licence-web").replaceAll("status.index",String.valueOf(index)).
+                   replaceAll("interalFile.docName",appIntranetDocDto.getDocName()).replaceAll("maskDec",mask).replaceAll("csrf",CSRF);
+            appIntranetDocDto.setUrl(url);
             appIntranetDocDto.setFileSn(fileSizes);
             appIntranetDocDtos.add( appIntranetDocDto);
             applicationViewDto.setAppIntranetDocDtoList(appIntranetDocDtos);
