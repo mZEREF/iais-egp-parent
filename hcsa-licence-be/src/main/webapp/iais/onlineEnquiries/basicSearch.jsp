@@ -181,7 +181,7 @@
                                                 </label>
                                             </td>
                                             <td class="row_no">
-                                                <c:out value="${status.index + 1}"/>
+                                                <c:out value="${status.index + 1+ (SearchParam.pageNo - 1) * SearchParam.pageSize}"/>
                                             </td>
                                             <td>
                                                 <c:if test="${pool.appCorrId==null}">${pool.applicationNo}</c:if>
