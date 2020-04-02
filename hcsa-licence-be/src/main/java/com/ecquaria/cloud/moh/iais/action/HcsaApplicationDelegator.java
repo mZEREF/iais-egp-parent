@@ -187,7 +187,7 @@ public class HcsaApplicationDelegator {
             }else{
                 //if  this is the last stage
                 routingStage.put(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
-                        "Approval");
+                        "Approve");
             }
         }
 
