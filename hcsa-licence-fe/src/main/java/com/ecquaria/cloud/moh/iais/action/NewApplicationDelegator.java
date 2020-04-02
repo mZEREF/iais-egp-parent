@@ -1582,7 +1582,12 @@ public class NewApplicationDelegator {
         Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request, LICAPPGRPPREMISESDTOMAP);
         for(int i =0 ; i<count;i++){
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-            String premisesSel = premisesSelect[i];
+            String premisesSel = "";
+            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])){
+                premisesSel = premisesSelect[i];
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType[i])){
+                premisesSel = conPremisesSelect[i];
+            }
             String appType = appSubmissionDto.getAppType();
             if(!ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
                     && !ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
