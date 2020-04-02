@@ -2339,6 +2339,9 @@ public class NewApplicationDelegator {
             log.info(StringUtil.changeForLog("draftNo is not empty"));
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
             if(appSubmissionDto!=null){
+                if(IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
+                   log.info(StringUtil.changeForLog("appSvcRelatedInfoDtoList is empty"));
+                }
                 List<String> stepColor = appSubmissionDto.getStepColor();
                 if(stepColor!=null){
                     HashMap<String,String> coMap=new HashMap<>(4);
