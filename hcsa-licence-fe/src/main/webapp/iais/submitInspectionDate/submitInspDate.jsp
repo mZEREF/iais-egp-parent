@@ -39,7 +39,7 @@
                         <iais:section title="">
 
                         <iais:row>
-                            <iais:field value="Inspection Start Date:"/>
+                            <iais:field value="Preferred date for inspection (Start)"  required="true"/>
                             <iais:value width="18">
                                 <iais:datePicker id = "inspStartDate" name = "inspStartDate"  dateVal="${inspStartDate}"></iais:datePicker>
                                 <span id="error_inspStartDate" name="iaisErrorMsg" class="error-msg"></span>
@@ -47,7 +47,7 @@
                         </iais:row>
 
                         <iais:row>
-                            <iais:field value="Inspection End Date:"/>
+                            <iais:field value="Preferred date for inspection (End)" required="true"/>
                             <iais:value width="18">
                                 <iais:datePicker id = "inspEndDate" name = "inspEndDate"  dateVal="${inspEndDate}"></iais:datePicker>
                                 <span id="error_inspEndDate" name="iaisErrorMsg" class="error-msg"></span>
