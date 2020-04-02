@@ -158,13 +158,6 @@ public class NewApplicationDelegator {
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
         //clear Session
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
-        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
-        List<String> serviceCodeList=new ArrayList<>(hcsaServiceDtoList.size());
-        for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList){
-            serviceCodeList.add(hcsaServiceDto.getSvcCode());
-        }
-        String entity = applicationClient.selectDarft(serviceCodeList).getEntity();
-        bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO,entity);
         //Primary Documents
         ParamUtil.setSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO, null);
         ParamUtil.setSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO, null);
@@ -190,6 +183,13 @@ public class NewApplicationDelegator {
         if(flag){
             initSession(bpc);
         }
+        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
+        List<String> serviceCodeList=new ArrayList<>(hcsaServiceDtoList.size());
+        for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList){
+            serviceCodeList.add(hcsaServiceDto.getSvcCode());
+        }
+        String entity = applicationClient.selectDarft(serviceCodeList).getEntity();
+        bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO,entity);
         log.info(StringUtil.changeForLog("the do Start end ...."));
     }
 
