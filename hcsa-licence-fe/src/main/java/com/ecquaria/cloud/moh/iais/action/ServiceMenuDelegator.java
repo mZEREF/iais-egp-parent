@@ -62,13 +62,13 @@ public class ServiceMenuDelegator {
 
     public void beforeJump(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the  before jump start 1...."));
-        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
+       /* List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         List<String> serviceCodeList=new ArrayList<>(hcsaServiceDtoList.size());
         for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList){
             serviceCodeList.add(hcsaServiceDto.getSvcCode());
         }
         String entity = applicationClient.selectDarft(serviceCodeList).getEntity();
-        bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO,entity);
+        bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO,entity);*/
     }
 
     public void serviceMenuSelection(BaseProcessClass bpc){

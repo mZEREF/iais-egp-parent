@@ -145,6 +145,8 @@ public class NewApplicationDelegator {
 
     @Autowired
     private SystemAdminClient systemAdminClient;
+    @Autowired
+    private ApplicationClient applicationClient;
     /**
      * StartStep: Start
      *
@@ -156,7 +158,13 @@ public class NewApplicationDelegator {
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
         //clear Session
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
-
+        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
+        List<String> serviceCodeList=new ArrayList<>(hcsaServiceDtoList.size());
+        for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList){
+            serviceCodeList.add(hcsaServiceDto.getSvcCode());
+        }
+        String entity = applicationClient.selectDarft(serviceCodeList).getEntity();
+        bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO,entity);
         //Primary Documents
         ParamUtil.setSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO, null);
         ParamUtil.setSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO, null);
@@ -1582,7 +1590,12 @@ public class NewApplicationDelegator {
         Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request, LICAPPGRPPREMISESDTOMAP);
         for(int i =0 ; i<count;i++){
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-            String premisesSel = premisesSelect[i];
+            String premisesSel = "";
+            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])){
+                premisesSel = premisesSelect[i];
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType[i])){
+                premisesSel = conPremisesSelect[i];
+            }
             String appType = appSubmissionDto.getAppType();
             if(!ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
                     && !ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
