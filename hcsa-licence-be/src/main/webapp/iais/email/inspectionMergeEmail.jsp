@@ -30,19 +30,19 @@
                                             <li class="complete" role="presentation"><a href="#tabInfo"
                                                                                         aria-controls="tabInfo"
                                                                                         role="tab" data-toggle="tab"
-                                                                    onclick="javascript:updateHidenField();">Info</a>
+                                                                                        onclick="javascript:updateHidenField();">Info</a>
                                             </li>
                                             <li class="complete" role="presentation"><a href="#tabDocuments"
                                                                                         aria-controls="tabDocuments"
                                                                                         role="tab"
                                                                                         data-toggle="tab"
-                                                                    onclick="javascript:updateHidenField();">Documents</a>
+                                                                                        onclick="javascript:updateHidenField();">Documents</a>
                                             </li>
                                             <li class="active" role="presentation"><a href="#tabProcessing"
                                                                                       aria-controls="tabProcessing"
                                                                                       role="tab"
                                                                                       data-toggle="tab"
-                                                                    onclick="javascript:refreshTinyMce();">Processing</a>
+                                                                                      onclick="javascript:refreshTinyMce();">Processing</a>
                                             </li>
                                         </ul>
                                         <div class="tab-nav-mobile visible-xs visible-sm">

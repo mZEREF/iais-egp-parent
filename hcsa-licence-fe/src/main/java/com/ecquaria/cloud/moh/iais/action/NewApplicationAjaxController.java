@@ -2,21 +2,26 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +48,16 @@ public class NewApplicationAjaxController {
     @Autowired
     private ServiceConfigService serviceConfigService;
 
+    @Autowired
+    private FeEicGatewayClient feEicGatewayClient;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     //=============================================================================
     //ajax method
@@ -189,14 +204,20 @@ public class NewApplicationAjaxController {
         //ph
         String premName = currentLength;
 
-
-        /**
-         * TODO
-         */
-
         List<SelectOption> publicHolidayList = IaisCommonUtils.genNewArrayList();
-        publicHolidayList.add(new SelectOption("2020-04-10 00:00:00","Good Friday"));
-        publicHolidayList.add(new SelectOption("2020-05-01 00:00:00","Labour Day"));
+        List<PublicHolidayDto> publicHolidayDtoList = IaisCommonUtils.genNewArrayList();
+
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        try {
+            publicHolidayDtoList = feEicGatewayClient.getpublicHoliday(signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getEntity();
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+        publicHolidayDtoList.stream().forEach(pb -> {
+            publicHolidayList.add(new SelectOption(Formatter.formatDate(pb.getFromDate()),pb.getDescription()));
+        });
 
         Map<String,String> publicHoliday = IaisCommonUtils.genNewHashMap();
         publicHoliday.put("class", "onSitePubHoliday");
@@ -489,11 +510,20 @@ public class NewApplicationAjaxController {
 
         String sql = SqlMap.INSTANCE.getSql("premises", "premises-ph").getSqlStr();
 
-        //todo
         List<SelectOption> publicHolidayList = IaisCommonUtils.genNewArrayList();
-        publicHolidayList.add(new SelectOption("2020-04-10 00:00:00","Good Friday"));
-        publicHolidayList.add(new SelectOption("2020-05-01 00:00:00","Labour Day"));
-        List<SelectOption> phSelectList = IaisCommonUtils.genNewArrayList();
+        List<PublicHolidayDto> publicHolidayDtoList = IaisCommonUtils.genNewArrayList();
+
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        try {
+            publicHolidayDtoList = feEicGatewayClient.getpublicHoliday(signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getEntity();
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+        publicHolidayDtoList.stream().forEach(pb -> {
+            publicHolidayList.add(new SelectOption(Formatter.formatDate(pb.getFromDate()),pb.getDescription()));
+        });
 
         Map<String,String> phSelectAttr = IaisCommonUtils.genNewHashMap();
 

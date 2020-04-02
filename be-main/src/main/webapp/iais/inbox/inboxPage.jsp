@@ -221,6 +221,7 @@
         $('input[name="application_no"]').val("");
         $('input[name="hci_code"]').val("");
         $('input[name="hci_address"]').val("");
+        $('input[name="hci_name"]').val("");
         $("#application_type option:first").prop("selected", 'selected');
         $("#application_status option:first").prop("selected", 'selected');
         $("#inspector_name option:first").prop("selected", 'selected');

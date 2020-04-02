@@ -50,7 +50,7 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
-import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationUploadFileValidate;
+import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationProcessUploadFileValidate;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -187,7 +187,7 @@ public class HcsaApplicationDelegator {
             }else{
                 //if  this is the last stage
                 routingStage.put(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
-                        "Approval");
+                        "Approve");
             }
         }
 
@@ -343,16 +343,12 @@ public class HcsaApplicationDelegator {
         //do upload file
         String doDocument = ParamUtil.getString(bpc.request,"uploadFile");
         String interalFileId = ParamUtil.getString(bpc.request,"interalFileId");
-        if(!StringUtil.isEmpty(interalFileId)){
+        if(!StringUtil.isEmpty(interalFileId) || "Y".equals(doDocument)){
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "PREPARE");
             ParamUtil.setRequestAttr(bpc.request, "doDocument", "Y");
             return;
         }
-        if("Y".equals(doDocument)){
-            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "PREPARE");
-            ParamUtil.setRequestAttr(bpc.request, "doDocument", "Y");
-            return;
-        }
+
         //validate
         HcsaApplicationViewValidate hcsaApplicationViewValidate = new HcsaApplicationViewValidate();
         Map<String, String> errorMap = hcsaApplicationViewValidate.validate(bpc.request);
@@ -430,7 +426,8 @@ public class HcsaApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", nextStage);
 
             ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
-            if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())){
+            if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())
+                  || ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())  ){
                 String[] fastTracking =  ParamUtil.getStrings(bpc.request,"fastTracking");
                 if(fastTracking!=null){
                     applicationViewDto.getApplicationDto().setFastTracking(true);
@@ -927,10 +924,11 @@ public class HcsaApplicationDelegator {
         }
 
         if("Y".equals(doDocument)){
-            HcsaApplicationUploadFileValidate uploadFileValidate = new HcsaApplicationUploadFileValidate();
+            HcsaApplicationProcessUploadFileValidate uploadFileValidate = new HcsaApplicationProcessUploadFileValidate();
             Map<String, String> errorMap = uploadFileValidate.validate(bpc.request);
             if(!errorMap.isEmpty()){
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request,"uploadFileValidate","Y");
             }else{
                 MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
                 CommonsMultipartFile selectedFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
@@ -946,6 +944,13 @@ public class HcsaApplicationDelegator {
                 String fileName = fileSplit[0];
 //            String fileName = UUID.randomUUID().toString();
                 appIntranetDocDto.setDocName(fileName);
+
+                String fileRemark = ParamUtil.getString(bpc.request,"fileRemark");
+                if(StringUtil.isEmpty(fileRemark)){
+                    fileRemark = fileName;
+                }
+                //set document
+                appIntranetDocDto.setDocDesc(fileRemark);
                 //status
                 appIntranetDocDto.setDocStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 //APP_PREM_CORRE_ID

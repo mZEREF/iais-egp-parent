@@ -258,8 +258,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                 } else if(RoleConsts.USER_ROLE_INSPECTIOR.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(taskDto.getRoleId())) {
                     insp = insp + 1;
                 } else if(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) ||
-                          RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) ||
-                          RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId())) {
+                        RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) ||
+                        RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId())) {
                     ao = ao + 1;
                 }
 
@@ -267,10 +267,10 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             //task on ASO / PSO
             if(apSo > 0 && insp == 0 && ao == 0) {
                 return AppConsts.FAIL;
-            //task on inspector / Lead / AO
+                //task on inspector / Lead / AO
             } else if(apSo == 0 && (insp > 0 || ao > 0)) {
                 return AppConsts.SUCCESS;
-            //application RFI
+                //application RFI
             } else {
                 return AppConsts.FAIL;
             }

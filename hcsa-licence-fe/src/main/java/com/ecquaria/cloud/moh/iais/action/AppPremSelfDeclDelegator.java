@@ -68,22 +68,13 @@ public class AppPremSelfDeclDelegator {
         String groupId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
         String action = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION);
 
-        if (StringUtils.isEmpty(groupId) || StringUtils.isEmpty(action)){
+        if (StringUtils.isEmpty(groupId)){
             log.info("can not find group id");
             return;
         }
 
         /*String action = "rfi";
         String groupId = "C18DB488-C470-EA11-BE7A-000C29D29DB0";*/
-
-        if ("new".equals(action)){
-            boolean isSubmitted = appPremSelfDesc.hasSelfDeclRecord(groupId);
-            if (isSubmitted){
-                ParamUtil.setRequestAttr(request, "isSubmitted", "You have submitted self decl. Please do not submit again.");
-                ParamUtil.setRequestAttr(request, "selfDeclQueryAttr", null);
-                return;
-            }
-        }
 
         ParamUtil.setSessionAttr(request, "currentSelfDeclGroupId", groupId);
         SelfDeclSubmitDto selfDeclSubmitDto = (SelfDeclSubmitDto) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
@@ -92,6 +83,13 @@ public class AppPremSelfDeclDelegator {
             if ("rfi".equals(action)){
                 selfDeclSubmitDto  = selfDeclRfiService.getSelfDeclRfiData(groupId);
             }else{
+                boolean isSubmitted = appPremSelfDesc.hasSelfDeclRecord(groupId);
+                if (isSubmitted){
+                    ParamUtil.setRequestAttr(request, "isSubmitted", "You have submitted self decl. Please do not submit again.");
+                    ParamUtil.setRequestAttr(request, "selfDeclQueryAttr", null);
+                    return;
+                }
+
                 selfDeclSubmitDto = appPremSelfDesc.getSelfDeclByGroupId(groupId);
             }
             ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", selfDeclSubmitDto);

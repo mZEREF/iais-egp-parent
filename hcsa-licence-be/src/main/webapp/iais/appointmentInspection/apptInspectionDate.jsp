@@ -37,13 +37,13 @@
                     <div class="tab-gp dashboard-tab">
                       <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                         <li id="apptInspTabInfo" class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
-                                                                                      data-toggle="tab">Info</a></li>
+                                                                                       data-toggle="tab">Info</a></li>
                         <li id="apptInspTabDocuments" class="complete" role="presentation"><a href="#tabDocuments"
-                                                                                             aria-controls="tabDocuments" role="tab"
-                                                                                             data-toggle="tab">Documents</a></li>
+                                                                                              aria-controls="tabDocuments" role="tab"
+                                                                                              data-toggle="tab">Documents</a></li>
                         <li id="apptInspTabProcessing" class="incomplete" role="presentation"><a href="#tabProcessing"
-                                                                                                aria-controls="tabProcessing" role="tab"
-                                                                                                data-toggle="tab">Processing</a></li>
+                                                                                                 aria-controls="tabProcessing" role="tab"
+                                                                                                 data-toggle="tab">Processing</a></li>
                       </ul>
                       <div class="tab-nav-mobile visible-xs visible-sm">
                         <div class="swiper-wrapper" role="tablist">
@@ -198,9 +198,9 @@
                                 <iais:value width="7">
                                   <c:if test="${apptInspectionDateDto.inspectionDate != null}">
                                     <ul>
-                                    <c:forEach items="${apptInspectionDateDto.inspectionDate}" var="inspectionDate">
-                                      <li><label><c:out value="${inspectionDate}"/></label></li>
-                                    </c:forEach>
+                                      <c:forEach items="${apptInspectionDateDto.inspectionDate}" var="inspectionDate">
+                                        <li><label><c:out value="${inspectionDate}"/></label></li>
+                                      </c:forEach>
                                     </ul>
                                   </c:if>
                                 </iais:value>
@@ -298,23 +298,23 @@
         $("#apptInspTabProcessing").addClass('active');
     }
 
-  function apptInspectionDateSubmit(action){
-    $("[name='apptInspectionDateType']").val(action);
-    var mainPoolForm = document.getElementById('mainInspDateForm');
-    mainPoolForm.submit();
-  }
+    function apptInspectionDateSubmit(action){
+        $("[name='apptInspectionDateType']").val(action);
+        var mainPoolForm = document.getElementById('mainInspDateForm');
+        mainPoolForm.submit();
+    }
 
-  function apptInspectionDateConfirm() {
-      $("#actionValue").val('success');
-      $("#processDec").val('REDECI017');
-      apptInspectionDateSubmit("success");
-  }
+    function apptInspectionDateConfirm() {
+        $("#actionValue").val('success');
+        $("#processDec").val('REDECI017');
+        apptInspectionDateSubmit("success");
+    }
 
-  function apptInspectionDateSpecific() {
-      $("#actionValue").val('confirm');
-      $("#processDec").val('REDECI018');
-      apptInspectionDateSubmit("confirm");
-  }
+    function apptInspectionDateSpecific() {
+        $("#actionValue").val('confirm');
+        $("#processDec").val('REDECI018');
+        apptInspectionDateSubmit("confirm");
+    }
 </script>
 
 

@@ -95,6 +95,7 @@
     </div>
 </form>
 <%@include file="/iais/inspectionncList/uploadFile.jsp" %>
+
 <script type="text/javascript">
     function doReload() {
         var r = confirm("Are you sure you want to regenerate the Inspection NC/BP Outcome email?");
