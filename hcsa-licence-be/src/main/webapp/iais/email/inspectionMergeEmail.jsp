@@ -9,8 +9,10 @@
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
+           String webroot=IaisEGPConstant.BE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
+<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="crud_action_type" value="">
@@ -187,6 +189,7 @@
     </div>
     <div id="hiddenEmailContent" style="display: none">${insEmailDto.messageContent}</div>
 </form>
+</div>
 <%@include file="/iais/inspectionncList/uploadFile.jsp" %>
 
 

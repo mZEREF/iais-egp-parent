@@ -8,8 +8,10 @@
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
+       String webroot=IaisEGPConstant.BE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
+<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <div class="main-content">
         <div class="row">
@@ -209,6 +211,7 @@
         </div>
     </div>
 </form>
+</div>
 <%@include file="/iais/inspectionncList/uploadFile.jsp" %>
 
 <script type="text/javascript">
