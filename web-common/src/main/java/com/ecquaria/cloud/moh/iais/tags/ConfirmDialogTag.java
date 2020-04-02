@@ -23,9 +23,11 @@ public class ConfirmDialogTag extends TagSupport {
     private String popupOrder;
     private String title;
     private String yesBtnDesc;
+    private String yesBtnCls;
     private boolean needCancel;
     private boolean needFungDuoJi;
     private String cancelBtnDesc;
+    private String cancelBtnCls;
     private String cancelFunc;
 
     public ConfirmDialogTag() {
@@ -41,7 +43,9 @@ public class ConfirmDialogTag extends TagSupport {
         title = "";
         cancelFunc = "";
         yesBtnDesc = "";
+        yesBtnCls = "";
         cancelBtnDesc = "";
+        cancelBtnCls = "";
         needCancel = true;
         needFungDuoJi = true;
     }
@@ -78,7 +82,11 @@ public class ConfirmDialogTag extends TagSupport {
         html.append(MessageUtil.getMessageDesc(msg));
         html.append("</span></div></div></div>");
         html.append("<div class=\"modal-footer\">");
-        html.append("<button type=\"button\" class=\"btn btn-primary\" onclick=\"javascript:");
+        html.append("<button type=\"button\" class=\"");
+        if (StringUtil.isEmpty(yesBtnCls)) {
+            yesBtnCls = "btn btn-primary";
+        }
+        html.append(yesBtnCls).append("\" onclick=\"javascript:");
         if (StringUtil.isEmpty(yesBtnDesc)) {
             yesBtnDesc = "OK";
         }
@@ -87,7 +95,11 @@ public class ConfirmDialogTag extends TagSupport {
             if (StringUtil.isEmpty(cancelBtnDesc)) {
                 cancelBtnDesc = "Cancel";
             }
-            html.append("<button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\"");
+            html.append("<button type=\"button\" class=\"");
+            if (StringUtil.isEmpty(cancelBtnCls)) {
+                cancelBtnCls = "btn btn-secondary";
+            }
+            html.append(cancelBtnCls).append("\" data-dismiss=\"modal\"");
             if (!StringUtil.isEmpty(cancelFunc)) {
                 html.append(" onclick=\"javascript:").append(cancelFunc).append(";\"");
             }
@@ -160,5 +172,13 @@ public class ConfirmDialogTag extends TagSupport {
 
     public void setCancelBtnDesc(String cancelBtnDesc) {
         this.cancelBtnDesc = cancelBtnDesc;
+    }
+
+    public void setYesBtnCls(String yesBtnCls) {
+        this.yesBtnCls = yesBtnCls;
+    }
+
+    public void setCancelBtnCls(String cancelBtnCls) {
+        this.cancelBtnCls = cancelBtnCls;
     }
 }
