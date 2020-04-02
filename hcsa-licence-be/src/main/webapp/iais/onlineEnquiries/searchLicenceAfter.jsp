@@ -1,5 +1,4 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
+
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
@@ -413,7 +412,7 @@
                                                 </label>
                                             </td>
                                             <td class="row_no">
-                                                <c:out value="${status.index + 1}"/>
+                                                <c:out value="${status.index + 1+ (SearchParam.pageNo - 1) * SearchParam.pageSize}"/>
                                             </td>
                                             <td>
                                                 <c:if test="${pool.appCorrId==null}">${pool.applicationNo}</c:if>

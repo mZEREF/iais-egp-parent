@@ -44,7 +44,6 @@
                                             <iais:field value="Due Date :"/>
                                             <iais:value width="18" >
                                                 <span>${licPreReqForInfoDto.dueDateSubmission}</span>
-<%--                                                <iais:datePicker  name = "Due_date" dateVal="${licPreReqForInfoDto.dueDateSubmission}" ></iais:datePicker>--%>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -96,7 +95,7 @@
                                             </iais:row>
                                         </c:if>
                                         <iais:action style="text-align:center;">
-                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Back</button>
+                                            <a  onclick="javascript:doBack()" >< Back</a>
                                             <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit('${licPreReqForInfoDto.reqInfoId}')">Proceed to Submit</button>
                                         </iais:action>
                                     </iais:section>
