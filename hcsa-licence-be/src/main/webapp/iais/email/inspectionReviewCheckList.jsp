@@ -178,3 +178,4 @@
         </div>
     </div>
 </form>
+<%@include file="/iais/inspectionncList/uploadFile.jsp" %>

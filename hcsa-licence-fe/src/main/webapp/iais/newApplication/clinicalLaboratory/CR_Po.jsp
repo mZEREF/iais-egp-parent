@@ -83,6 +83,11 @@
                         </div>
                       </div>
                     </div>
+                    <c:if test="${!status.first}">
+                      <div class="form-check">
+                        <strong class="removePoBtn" style="color:#ff0000;">X</strong>
+                      </div>
+                    </c:if>
                     <div class="principalOfficers hidden">
                       <div class="row">
                         <div class="control control-caption-horizontal">
@@ -295,6 +300,11 @@
                         </div>
                       </div>
                     </div>
+                    <c:if test="${!status.first}">
+                      <div class="form-check">
+                        <strong class="removeDpoBtn" style="color:#ff0000;">X</strong>
+                      </div>
+                    </c:if>
                     <div class="deputyPrincipalOfficers hidden">
                       <div class="row">
                         <div class="control control-caption-horizontal">
@@ -429,6 +439,10 @@
         addPo();
 
         addDpo();
+
+        removePo();
+
+        removeDpo();
 
         doEdit();
 

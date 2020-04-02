@@ -110,7 +110,13 @@
                           </c:otherwise>
                         </c:choose>
                         <div class="profile-info-gp hidden"></div>
-
+                        <c:if test="${!status.first}">
+                          <div class="col-xs-5 col-md-1">
+                            <div class="form-check">
+                              <strong class="removeBtn">X</strong>
+                            </div>
+                          </div>
+                        </c:if>
                         <div id="newOfficer" class="new-officer-form ${cgoIndeNo}-new hidden">
                           <table class="control-grid" >
                             <tbody>
@@ -374,6 +380,7 @@
 
         showSpecialty();
 
+        removeCgo();
 
         if(${AppSubmissionDto.needEditController && !isClickEdit}){
             disabledAll();

@@ -53,6 +53,7 @@
     </div>
 </form>
 <%@ include file="/include/validation.jsp" %>
+<%@include file="/iais/inspectionncList/uploadFile.jsp" %>
 
 <script type="text/javascript">
     function doNext(){
