@@ -81,13 +81,15 @@
                             </div>
                           </div>
                         </div>
+                        <c:if test="${!status.first}">
+                          <div  class="row" style="float:right">
+                            <div class="form-check">
+                              <strong class="removePoBtn" style="color:#ff0000;">X</strong>
+                            </div>
+                          </div>
+                        </c:if>
                       </div>
                     </div>
-                    <c:if test="${!status.first}">
-                      <div class="form-check">
-                        <strong class="removePoBtn" style="color:#ff0000;">X</strong>
-                      </div>
-                    </c:if>
                     <div class="principalOfficers hidden">
                       <div class="row">
                         <div class="control control-caption-horizontal">
@@ -295,16 +297,19 @@
                             <span class="upload_controls"></span>
                           </div>
                           <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
-                              <iais:select cssClass="deputyPoSelect"  name="deputyPoSelect" options="DeputyPrincipalOfficersAssignSelect"  value="${deputy.assignSelect}" ></iais:select>
+                            <iais:select cssClass="deputyPoSelect"  name="deputyPoSelect" options="DeputyPrincipalOfficersAssignSelect"  value="${deputy.assignSelect}" ></iais:select>
                           </div>
                         </div>
+                        <c:if test="${!status.first}">
+                          <div  class="row" style="float:right">
+                            <div class="form-check">
+                              <strong class="removeDpoBtn" style="color:#ff0000;">X</strong>
+                            </div>
+                          </div>
+                        </c:if>
                       </div>
                     </div>
-                    <c:if test="${!status.first}">
-                      <div class="form-check">
-                        <strong class="removeDpoBtn" style="color:#ff0000;">X</strong>
-                      </div>
-                    </c:if>
+
                     <div class="deputyPrincipalOfficers hidden">
                       <div class="row">
                         <div class="control control-caption-horizontal">
@@ -426,229 +431,229 @@
 </div>
 
 <script>
-    var init;
-    $(document).ready(function () {
-        <!-- init start-->
-        init = 0;
-        poSelect();
+  var init;
+  $(document).ready(function () {
+    <!-- init start-->
+    init = 0;
+    poSelect();
 
-        dpoSelect();
+    dpoSelect();
 
-        retrieveData();
+    retrieveData();
 
-        addPo();
+    addPo();
 
-        addDpo();
+    addDpo();
 
-        removePo();
+    removePo();
 
-        removeDpo();
+    removeDpo();
 
-        doEdit();
+    doEdit();
 
-        doEditDpo();
+    doEditDpo();
 
-        $('select.poSelect').trigger('change');
-        $('select.deputySelect').trigger('change');
-        $('select.deputyPoSelect').trigger('change');
+    $('select.poSelect').trigger('change');
+    $('select.deputySelect').trigger('change');
+    $('select.deputyPoSelect').trigger('change');
 
-        //disabled
-        if(${AppSubmissionDto.needEditController && (AppSubmissionDto.appEditSelectDto.serviceEdit || AppSubmissionDto.appEditSelectDto.poEdit) && !isClickEdit}){
-            $('.po-content input[type="text"]').prop('disabled',true);
-            $('.po-content div.nice-select').addClass('disabled');
-            $('#addPoBtn').addClass('hidden');
-            $('#addPoBtn').unbind('click');
-        }
-        if(${AppSubmissionDto.needEditController && (AppSubmissionDto.appEditSelectDto.serviceEdit || AppSubmissionDto.appEditSelectDto.dpoEdit) && !isClickEditDpo}){
-            $('.deputySelect').addClass('disabled');
-            $('.deputy-content input[type="text"]').prop('disabled',true);
-            $('.deputy-content div.nice-select').addClass('disabled');
-            $('#addDpoBtn').unbind('click');
-        }
+    //disabled
+    if(${AppSubmissionDto.needEditController && (AppSubmissionDto.appEditSelectDto.serviceEdit || AppSubmissionDto.appEditSelectDto.poEdit) && !isClickEdit}){
+      $('.po-content input[type="text"]').prop('disabled',true);
+      $('.po-content div.nice-select').addClass('disabled');
+      $('#addPoBtn').addClass('hidden');
+      $('#addPoBtn').unbind('click');
+    }
+    if(${AppSubmissionDto.needEditController && (AppSubmissionDto.appEditSelectDto.serviceEdit || AppSubmissionDto.appEditSelectDto.dpoEdit) && !isClickEditDpo}){
+      $('.deputySelect').addClass('disabled');
+      $('.deputy-content input[type="text"]').prop('disabled',true);
+      $('.deputy-content div.nice-select').addClass('disabled');
+      $('#addDpoBtn').unbind('click');
+    }
 
-        <!-- init end-->
-        init = 1;
+    <!-- init end-->
+    init = 1;
+  });
+
+  var poSelect = function(){
+    $('.poSelect').change(function () {
+      var $poContentEle = $(this).closest('div.po-content');
+      var selectVal = $(this).val();
+      var data= {};
+      if("newOfficer" == selectVal){
+        $poContentEle.find('div.principalOfficers').removeClass('hidden');
+        //fillPoData($poContentEle,data);
+      }else if('-1' == selectVal){
+        $poContentEle.find('div.principalOfficers').addClass('hidden');
+        //fillPoData($poContentEle,data);
+      }
     });
+  };
 
-    var poSelect = function(){
-        $('.poSelect').change(function () {
-            var $poContentEle = $(this).closest('div.po-content');
-            var selectVal = $(this).val();
-            var data= {};
-            if("newOfficer" == selectVal){
-                $poContentEle.find('div.principalOfficers').removeClass('hidden');
-                //fillPoData($poContentEle,data);
-            }else if('-1' == selectVal){
-                $poContentEle.find('div.principalOfficers').addClass('hidden');
-                //fillPoData($poContentEle,data);
-            }
-        });
-    };
-
-    var dpoSelect = function(){
-        $('.deputyPoSelect').change(function () {
-            $poContentEle = $(this).closest('div.dpo-content');
-            var selectVal = $(this).val();
-            if("newOfficer" == selectVal){
-                $poContentEle.find('div.deputyPrincipalOfficers').removeClass('hidden');
-            }else if('-1' == selectVal){
-                $poContentEle.find('div.deputyPrincipalOfficers').addClass('hidden');
-            }
-        });
-    };
-
-
-    $('.deputySelect').change(function () {
-        var deputyFlag = $(this).val();
-        $poContentEle = $(this).closest('div.panel-group');
-        if("1" == deputyFlag){
-            $poContentEle.find('div.deputy-content ').removeClass('hidden');
-        }else{
-            $poContentEle.find('div.deputy-content ').addClass('hidden');
-        }
-
+  var dpoSelect = function(){
+    $('.deputyPoSelect').change(function () {
+      $poContentEle = $(this).closest('div.dpo-content');
+      var selectVal = $(this).val();
+      if("newOfficer" == selectVal){
+        $poContentEle.find('div.deputyPrincipalOfficers').removeClass('hidden');
+      }else if('-1' == selectVal){
+        $poContentEle.find('div.deputyPrincipalOfficers').addClass('hidden');
+      }
     });
+  };
 
-    var addPo = function(){
-        $('#addPoBtn').click(function () {
-            var hasNumber = $('div.po-content').size() - 1;
-            console.log("hasNumber" + hasNumber);
-            $.ajax({
-                url:'${pageContext.request.contextPath}/principal-officer-html',
-                dataType:'json',
-                type:'POST',
-                data:{
-                    'HasNumber':hasNumber
-                },
-                success:function (data) {
-                    if ('success' == data.res) {
-                      console.log(data.res);
-                      $('.po-content:last').after(data.sucInfo);
-                      poSelect();
-                      removePo();
-                      retrieveData();
-                      removePo();
-                    }else{
-                        $('.poErrorMsg').html(data.errInfo);
-                    }
-                },
-                error:function (data) {
-                    console.log("err");
-                }
-            });
 
-        });
+  $('.deputySelect').change(function () {
+    var deputyFlag = $(this).val();
+    $poContentEle = $(this).closest('div.panel-group');
+    if("1" == deputyFlag){
+      $poContentEle.find('div.deputy-content ').removeClass('hidden');
+    }else{
+      $poContentEle.find('div.deputy-content ').addClass('hidden');
     }
 
+  });
 
-    var addDpo = function(){
-        $('#addDpoBtn').click(function () {
-            var hasNumber = $('.dpo-content').size() - 1;
-            console.log("hasNumber" + hasNumber);
-            $.ajax({
-                url:'${pageContext.request.contextPath}/deputy-principal-officer-html',
-                dataType:'json',
-                type:'POST',
-                data:{
-                    'HasNumber':hasNumber
-                },
-                'success':function (data) {
-                    if ('success' == data.res) {
-                        console.log("suc");
-                        $('.dpo-content:last').after(data.sucInfo);
-                        $('.deputyPoSelect').unbind();
-                        dpoSelect();
-                      removeDpo();
-                    }else{
-                        $('.dpoErrorMsg').html(data.errInfo);
-                    }
-                },
-                error:function (data) {
-                    console.log("err");
-                }
-            });
-        });
-    }
-
-    var retrieveData = function () {
-        $('.idNoVal').blur(function () {
-            var $poContentEle = $(this).closest('div.po-content');
-            var data = {
-                'idNo':$(this).val()
-            };
-            $.ajax({
-                'url':'${pageContext.request.contextPath}/psn-info',
-                'dataType':'json',
-                'data':data,
-                'type':'GET',
-                'success':function (data) {
-                    console.log("suc");
-                    if(data != null) {
-                        fillPoData($poContentEle,data);
-                    }
-                },
-                'error':function (data) {
-                    console.log("err");
-                }
-            });
-        });
-    }
-
-    var doEdit = function () {
-        $('#edit').click(function () {
-            $('.po-content input[type="text"]').prop('disabled',false);
-            $('.po-content div.nice-select').removeClass('disabled');
-            $('#isEditHiddenVal').val('1');
-            $('#addPoBtn').removeClass('hidden');
-            addPo();
-            $('#edit').addClass('hidden');
-        });
-    }
-
-
-    var doEditDpo = function () {
-        $('#edit-dpo').click(function () {
-            $('.deputySelect').removeClass('disabled');
-            $('.deputy-content input[type="text"]').prop('disabled',false);
-            $('.deputy-content div.nice-select').removeClass('disabled');
-            $('#isEditDpoHiddenVal').val('1');
-            addDpo();
-            $('#edit-dpo').addClass('hidden');
-        });
-    }
-    var fillPoData = function ($poContentEle,data) {
-        $poContentEle.find('input[name="idNo"]').val(data.idNo);
-        $poContentEle.find('input[name="name"]').val(data.name);
-        $poContentEle.find('input[name="mobileNo"]').val(data.mobileNo);
-        //$poContentEle.find('input[name="officeTelNo"]').val(data.officeTelNo);
-        $poContentEle.find('input[name="emailAddress"]').val(data.emailAddr);
-        <!--salutation-->
-        $poContentEle.find('select[name="salutation"]').val(data.salutation);
-        var salutationVal = $poContentEle.find('option[value="' + data.salutation + '"]').html();
-        $poContentEle.find('select[name="salutation"]').next().find('.current').html(salutationVal);
-        <!-- idType-->
-        $poContentEle.find('select[name="idType"]').val(data.idType);
-        var idTypeVal = $poContentEle.find('option[value="' + data.idType + '"]').html();
-        $poContentEle.find('select[name="idType"]').next().find('.current').html(idTypeVal);
-        <!--Designation  -->
-        $poContentEle.find('select[name="designation"]').val(data.designation);
-        var designationVal = $poContentEle.find('option[value="' + data.designation + '"]').html();
-        $poContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
-    }
-    var removePo = function () {
-      $('.removePoBtn').click(function () {
-        var $premContentEle= $(this).closest('div.po-content');
-        $premContentEle.remove();
-
+  var addPo = function(){
+    $('#addPoBtn').click(function () {
+      var hasNumber = $('div.po-content').size() - 1;
+      console.log("hasNumber" + hasNumber);
+      $.ajax({
+        url:'${pageContext.request.contextPath}/principal-officer-html',
+        dataType:'json',
+        type:'POST',
+        data:{
+          'HasNumber':hasNumber
+        },
+        success:function (data) {
+          if ('success' == data.res) {
+            console.log(data.res);
+            $('.po-content:last').after(data.sucInfo);
+            poSelect();
+            removePo();
+            retrieveData();
+            removePo();
+          }else{
+            $('.poErrorMsg').html(data.errInfo);
+          }
+        },
+        error:function (data) {
+          console.log("err");
+        }
       });
 
-    }
-    var removeDpo = function () {
-      $('.removeDpoBtn').click(function () {
-        var $premContentEle= $(this).closest('div.dpo-content');
-        $premContentEle.remove();
+    });
+  }
 
+
+  var addDpo = function(){
+    $('#addDpoBtn').click(function () {
+      var hasNumber = $('.dpo-content').size() - 1;
+      console.log("hasNumber" + hasNumber);
+      $.ajax({
+        url:'${pageContext.request.contextPath}/deputy-principal-officer-html',
+        dataType:'json',
+        type:'POST',
+        data:{
+          'HasNumber':hasNumber
+        },
+        'success':function (data) {
+          if ('success' == data.res) {
+            console.log("suc");
+            $('.dpo-content:last').after(data.sucInfo);
+            $('.deputyPoSelect').unbind();
+            dpoSelect();
+            removeDpo();
+          }else{
+            $('.dpoErrorMsg').html(data.errInfo);
+          }
+        },
+        error:function (data) {
+          console.log("err");
+        }
       });
+    });
+  }
 
-    }
+  var retrieveData = function () {
+    $('.idNoVal').blur(function () {
+      var $poContentEle = $(this).closest('div.po-content');
+      var data = {
+        'idNo':$(this).val()
+      };
+      $.ajax({
+        'url':'${pageContext.request.contextPath}/psn-info',
+        'dataType':'json',
+        'data':data,
+        'type':'GET',
+        'success':function (data) {
+          console.log("suc");
+          if(data != null) {
+            fillPoData($poContentEle,data);
+          }
+        },
+        'error':function (data) {
+          console.log("err");
+        }
+      });
+    });
+  }
+
+  var doEdit = function () {
+    $('#edit').click(function () {
+      $('.po-content input[type="text"]').prop('disabled',false);
+      $('.po-content div.nice-select').removeClass('disabled');
+      $('#isEditHiddenVal').val('1');
+      $('#addPoBtn').removeClass('hidden');
+      addPo();
+      $('#edit').addClass('hidden');
+    });
+  }
+
+
+  var doEditDpo = function () {
+    $('#edit-dpo').click(function () {
+      $('.deputySelect').removeClass('disabled');
+      $('.deputy-content input[type="text"]').prop('disabled',false);
+      $('.deputy-content div.nice-select').removeClass('disabled');
+      $('#isEditDpoHiddenVal').val('1');
+      addDpo();
+      $('#edit-dpo').addClass('hidden');
+    });
+  }
+  var fillPoData = function ($poContentEle,data) {
+    $poContentEle.find('input[name="idNo"]').val(data.idNo);
+    $poContentEle.find('input[name="name"]').val(data.name);
+    $poContentEle.find('input[name="mobileNo"]').val(data.mobileNo);
+    //$poContentEle.find('input[name="officeTelNo"]').val(data.officeTelNo);
+    $poContentEle.find('input[name="emailAddress"]').val(data.emailAddr);
+    <!--salutation-->
+    $poContentEle.find('select[name="salutation"]').val(data.salutation);
+    var salutationVal = $poContentEle.find('option[value="' + data.salutation + '"]').html();
+    $poContentEle.find('select[name="salutation"]').next().find('.current').html(salutationVal);
+    <!-- idType-->
+    $poContentEle.find('select[name="idType"]').val(data.idType);
+    var idTypeVal = $poContentEle.find('option[value="' + data.idType + '"]').html();
+    $poContentEle.find('select[name="idType"]').next().find('.current').html(idTypeVal);
+    <!--Designation  -->
+    $poContentEle.find('select[name="designation"]').val(data.designation);
+    var designationVal = $poContentEle.find('option[value="' + data.designation + '"]').html();
+    $poContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
+  }
+  var removePo = function () {
+    $('.removePoBtn').click(function () {
+      var $premContentEle= $(this).closest('div.po-content');
+      $premContentEle.remove();
+
+    });
+
+  }
+  var removeDpo = function () {
+    $('.removeDpoBtn').click(function () {
+      var $premContentEle= $(this).closest('div.dpo-content');
+      $premContentEle.remove();
+
+    });
+
+  }
 </script>
