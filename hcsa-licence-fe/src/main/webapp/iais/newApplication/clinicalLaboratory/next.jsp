@@ -46,11 +46,13 @@
 </c:choose>
 </div>
       <c:if test="${ not empty selectDraftNo }">
-        <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="saveDraft()" popupOrder="saveDraft" cancelBtnDesc="Resume from draft" yesBtnDesc="Continue" cancelFunc="cancelSaveDraft()"></iais:confirm>
+        <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="saveDraft()" popupOrder="saveDraft" cancelBtnDesc="Resume from draft" yesBtnDesc="Continue"  cancelFunc="cancelSaveDraft()"></iais:confirm>
       </c:if>
 <script type="text/javascript">
+    var  v;
     $(document).ready(function() {
         var controlFormLi = $('#controlFormLi').val();
+        v=controlFormLi;
         //Binding method
         $('#Back').click(function(){
             if(${serviceStepDto.isStepFirst()}){
@@ -104,7 +106,7 @@
         }
     }
     function saveDraft() {
-        submit('premises','saveDraft',$('#selectDraftNo').val());
+        submitForms('${serviceStepDto.currentStep.stepCode}','saveDraft',$('#selectDraftNo').val(),controlFormLi);
     }
     function cancelSaveDraft() {
         submit('premises','saveDraft','cancelSaveDraft');

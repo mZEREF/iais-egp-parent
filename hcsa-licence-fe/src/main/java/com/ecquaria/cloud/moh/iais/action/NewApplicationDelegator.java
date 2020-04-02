@@ -839,6 +839,8 @@ public class NewApplicationDelegator {
             String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
             log.info(StringUtil.changeForLog("the draftNo -->:") + draftNo);
             appSubmissionDto.setDraftNo(draftNo);
+        }else {
+            appSubmissionDto.setOldDraftNo(null);
         }
         if(!StringUtil.isEmpty(crud_action_additional)){
             if("cancelSaveDraft".equals(crud_action_additional)){
@@ -846,7 +848,7 @@ public class NewApplicationDelegator {
                 bpc.request.getSession().removeAttribute(SELECT_DRAFT_NO);
                 return;
             }else {
-                appSubmissionDto.setDraftNo(crud_action_additional);
+                appSubmissionDto.setOldDraftNo(crud_action_additional);
                 bpc.request.getSession().removeAttribute(SELECT_DRAFT_NO);
             }
 
@@ -2651,10 +2653,14 @@ public class NewApplicationDelegator {
                                 String onsiteEndToMM = appPremPhOpenPeriodList.get(j).getOnsiteEndToMM();
                                 Date phDate = appPremPhOpenPeriodList.get(j).getPhDate();
                                 if(!StringUtil.isEmpty(phDate)){
-                                    if(StringUtil.isEmpty(convStartFromHH)||StringUtil.isEmpty(convStartFromMM)
-                                    ||StringUtil.isEmpty(onsiteEndToHH)||StringUtil.isEmpty(onsiteEndToMM)){
+                                    if(StringUtil.isEmpty(convStartFromHH)||StringUtil.isEmpty(convStartFromMM)){
+                                        errorMap.put("onsiteStartToMM"+j,"UC_CHKLMD001_ERR001");
+                                    }
+                                    if(StringUtil.isEmpty(onsiteEndToHH)||StringUtil.isEmpty(onsiteEndToMM)){
                                         errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR001");
                                     }
+                                }else if(StringUtil.isEmpty(phDate)){
+                                    errorMap.put("onsitephDate"+j,"UC_CHKLMD001_ERR001");
                                 }
                                 if(!StringUtil.isEmpty(convStartFromHH)&&!StringUtil.isEmpty(convStartFromMM)&&!StringUtil.isEmpty(onsiteEndToHH)
                                         &&!StringUtil.isEmpty(onsiteEndToMM)||StringUtil.isEmpty(convStartFromHH)&&StringUtil.isEmpty(convStartFromMM)
@@ -2674,31 +2680,32 @@ public class NewApplicationDelegator {
                                         }catch (Exception e){
                                             errorMap.put("onsiteStartToMM"+j,"CHKLMD001_ERR003");
                                         }
-                                    }
-                                    try {
-                                        int i3 = Integer.parseInt(onsiteEndToHH);
-                                        int i4 = Integer.parseInt(onsiteEndToMM);
-                                        if(i3>=24){
-                                            errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR009");
-                                        }else if(i4>=60){
-                                            errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR010");
+                                        try {
+                                            int i3 = Integer.parseInt(onsiteEndToHH);
+                                            int i4 = Integer.parseInt(onsiteEndToMM);
+                                            if(i3>=24){
+                                                errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i4>=60){
+                                                errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR010");
+                                            }
+                                        }catch (Exception e){
+                                            errorMap.put("onsiteEndToMM"+j,"CHKLMD001_ERR003");
                                         }
-                                    }catch (Exception e){
-                                        errorMap.put("onsiteEndToMM"+j,"CHKLMD001_ERR003");
-                                    }
-                                    try {
-                                        int i1 = Integer.parseInt(convStartFromHH);
-                                        int i2 = Integer.parseInt(convStartFromMM);
-                                        int i3 = Integer.parseInt(onsiteEndToHH);
-                                        int i4 = Integer.parseInt(onsiteEndToMM);
-                                        if((i1*60+i2)>(i3*60+i4)){
-                                            errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR008");
+                                        try {
+                                            int i1 = Integer.parseInt(convStartFromHH);
+                                            int i2 = Integer.parseInt(convStartFromMM);
+                                            int i3 = Integer.parseInt(onsiteEndToHH);
+                                            int i4 = Integer.parseInt(onsiteEndToMM);
+                                            if((i1*60+i2)>(i3*60+i4)){
+                                                errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR008");
+                                            }
+                                        }catch (Exception e){
                                         }
-                                    }catch (Exception e){
                                     }
 
+
                                 }else {
-                                    if(StringUtil.isEmpty(convStartFromHH)||StringUtil.isEmpty(convStartFromMM)){
+                                    if(StringUtil.isEmpty(convStartFromHH)&&StringUtil.isEmpty(convStartFromMM)||StringUtil.isEmpty(convStartFromMM)||StringUtil.isEmpty(convStartFromHH)){
                                         errorMap.put("onsiteStartToMM"+j,"UC_CHKLMD001_ERR001");
                                     }else {
                                         try {
@@ -2715,7 +2722,7 @@ public class NewApplicationDelegator {
                                             errorMap.put("onsiteStartToMM"+j,"CHKLMD001_ERR003");
                                         }
                                     }
-                                    if(StringUtil.isEmpty(onsiteEndToHH)||StringUtil.isEmpty(onsiteEndToMM)){
+                                    if(StringUtil.isEmpty(onsiteEndToHH)&&StringUtil.isEmpty(onsiteEndToMM)||StringUtil.isEmpty(onsiteEndToHH)||StringUtil.isEmpty(onsiteEndToMM)){
                                         errorMap.put("onsiteEndToMM"+j,"UC_CHKLMD001_ERR001");
                                     }else {
                                         try {
@@ -2866,6 +2873,18 @@ public class NewApplicationDelegator {
                                 String convEndToMM = appPremPhOpenPeriodList.get(j).getConvEndToMM();
                                 String convStartFromHH = appPremPhOpenPeriodList.get(j).getConvStartFromHH();
                                 String convStartFromMM = appPremPhOpenPeriodList.get(j).getConvStartFromMM();
+                                Date phDate = appPremPhOpenPeriodList.get(j).getPhDate();
+                                if(!StringUtil.isEmpty(phDate)){
+                                    if(StringUtil.isEmpty(convEndToHH)||StringUtil.isEmpty(convEndToMM)){
+                                        errorMap.put("convStartToHH"+j,"UC_CHKLMD001_ERR001");
+                                    }
+                                    if(StringUtil.isEmpty(convStartFromHH)||StringUtil.isEmpty(convStartFromMM)){
+                                        errorMap.put("convEndToHH"+j,"UC_CHKLMD001_ERR001");
+                                    }
+                                }else if(StringUtil.isEmpty(phDate)){
+                                    errorMap.put("convphDate"+j,"UC_CHKLMD001_ERR001");
+                                }
+
                                 if(StringUtil.isEmpty(convEndToHH)&&StringUtil.isEmpty(convEndToMM)&StringUtil.isEmpty(convStartFromHH)
                                         &StringUtil.isEmpty(convStartFromMM)||!StringUtil.isEmpty(convEndToHH)&&!StringUtil.isEmpty(convEndToMM)
                                         &&!StringUtil.isEmpty(convStartFromHH)&!StringUtil.isEmpty(convStartFromMM)){
@@ -2907,7 +2926,7 @@ public class NewApplicationDelegator {
                                         }
                                     }
                                 }else {
-                                    if(StringUtil.isEmpty(convStartFromHH)||StringUtil.isEmpty(convStartFromMM)){
+                                    if(StringUtil.isEmpty(convStartFromHH)||StringUtil.isEmpty(convStartFromMM)||StringUtil.isEmpty(convStartFromHH)&&StringUtil.isEmpty(convStartFromMM)){
                                         errorMap.put("convStartToHH"+j,"UC_CHKLMD001_ERR001");
                                     }else {
                                         try {
@@ -2923,7 +2942,7 @@ public class NewApplicationDelegator {
 
                                         }
                                     }
-                                    if(StringUtil.isEmpty(convEndToHH)||StringUtil.isEmpty(convEndToMM)){
+                                    if(StringUtil.isEmpty(convEndToHH)||StringUtil.isEmpty(convEndToMM)||StringUtil.isEmpty(convEndToHH)&&StringUtil.isEmpty(convEndToMM)){
                                         errorMap.put("convEndToHH"+j,"UC_CHKLMD001_ERR001");
                                     }else {
 

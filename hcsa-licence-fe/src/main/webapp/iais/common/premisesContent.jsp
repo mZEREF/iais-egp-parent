@@ -260,7 +260,9 @@
                                         <iais:field value="Select Public Holiday" width="12"/>
                                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
                                             <iais:select name="${premValue}onSitePubHoliday${phStat.index}" options="publicHolidaySelect" value="${ph.phDateStr}" firstOption="Please Select"></iais:select>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_onsitephDate${phStat.index}"></span>
                                         </iais:value>
+
                                         <c:if test="${!phStat.first}">
                                             <div class=" col-xs-7 col-sm-4 col-md-3">
                                                 <div class="form-check">
@@ -316,6 +318,7 @@
                                     <iais:field value="Select Public Holiday" width="12"/>
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
                                         <iais:select name="${premValue}onSitePubHoliday0" options="publicHolidaySelect" value="${ph.phDateStr}" cssClass="form_datetime public-holiday" firstOption="Please Select"></iais:select>
+                                        <span  class="error-msg"  name="iaisErrorMsg" id="error_onsitephDate${phStat.index}"></span>
                                     </iais:value>
                                 </iais:row>
                                 <div class="form-group">
@@ -487,6 +490,7 @@
                                         <iais:field value="Select Public Holiday" width="12"/>
                                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
                                             <iais:select name="${premValue}conveyancePubHoliday${phStat.index}" options="publicHolidaySelect" value="${ph.phDateStr}" cssClass="form_datetime public-holiday" firstOption="Please Select"></iais:select>
+                                            <span  class="error-msg"  name="iaisErrorMsg" id="error_convphDate${phStat.index}"></span>
                                         </iais:value>
                                         <c:if test="${!phStat.first}">
                                             <div class=" col-xs-7 col-sm-4 col-md-3">
@@ -543,6 +547,7 @@
                                     <iais:field value="Select Public Holiday" width="12"/>
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
                                         <iais:select name="${premValue}conveyancePubHoliday0" options="publicHolidaySelect" value="${ph.phDateStr}" firstOption="Please Select"></iais:select>
+                                        <span  class="error-msg"  name="iaisErrorMsg" id="error_convphDate${phStat.index}"></span>
                                     </iais:value>
                                 </iais:row>
                                 <div class="form-group">

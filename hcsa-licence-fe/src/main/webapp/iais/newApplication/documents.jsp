@@ -231,11 +231,11 @@
     }
 
     function saveDraft() {
-        submit('premises','saveDraft',$('#selectDraftNo').val());
+        submit('documents','saveDraft',$('#selectDraftNo').val());
     }
 
     function cancelSaveDraft() {
-        submit('premises','saveDraft','cancelSaveDraft');
+        submit('documents','saveDraft','cancelSaveDraft');
     }
 
 </script>

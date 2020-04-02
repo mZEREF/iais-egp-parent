@@ -1,5 +1,5 @@
 <div class="amended-service-info-gp">
-    <h2>PRINCIPAL OFFICERS</h2>
+    <label style="font-size: 2.2rem">PRINCIPAL OFFICERS</label>
     <div class="amend-preview-info">
         <p></p>
         <div class="form-check-gp">

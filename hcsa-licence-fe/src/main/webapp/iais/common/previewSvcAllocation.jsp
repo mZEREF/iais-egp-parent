@@ -1,13 +1,13 @@
 <c:set var="appGrpPremisesDtoList" value="${AppSubmissionDto.appGrpPremisesDtoList}"></c:set>
 <div class="amended-service-info-gp">
-    <h2>DISCIPLINE ALLOCATION</h2>
+    <label style="font-size: 2.2rem">DISCIPLINE ALLOCATION</label>
     <div class="amend-preview-info">
         <p></p>
         <div class="form-check-gp">
             <div class="row">
                 <div class="col-xs-12">
                     <table class="table discipline-table">
-                        <thead>
+                        <thead style="text-decoration: none">
                         <tr>
                             <th>Premises</th>
                             <th>Laboratory Disciplines</th>

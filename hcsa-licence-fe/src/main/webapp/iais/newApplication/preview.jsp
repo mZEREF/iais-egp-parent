@@ -163,10 +163,10 @@
     };
 
     function saveDraft() {
-        submit('premises','saveDraft',$('#selectDraftNo').val());
+        submit('preview','saveDraft',$('#selectDraftNo').val());
     }
     function cancelSaveDraft() {
-        submit('premises','saveDraft','cancelSaveDraft');
+        submit('preview','saveDraft','cancelSaveDraft');
     }
 
 </script>

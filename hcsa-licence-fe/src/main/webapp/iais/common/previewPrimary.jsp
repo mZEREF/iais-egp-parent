@@ -13,8 +13,8 @@
             <div class="elemClass-1561088919456">
                 <div id="control--runtime--34" class="page section control  container-s-1" style="margin: 10px 0px">
                     <div class="control-set-font control-font-header section-header">
-                        <h2 class="summary-header">Uploaded Documents
-                        </h2>
+                        <label style="font-size: 2.2rem">Uploaded Documents</label>
+
                     </div>
                     <div class="pop-up">
                         <div class="pop-up-body">
