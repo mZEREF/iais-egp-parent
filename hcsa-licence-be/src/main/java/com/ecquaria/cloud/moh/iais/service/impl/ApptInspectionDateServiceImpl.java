@@ -365,8 +365,13 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     @Override
     public List<SelectOption> getInspectionDateHours() {
         List<SelectOption> hourOption = IaisCommonUtils.genNewArrayList();
-        for(int i = 1; i < 13; i++){
-            SelectOption so = new SelectOption(i + "", i + "");
+        for(int i = 0; i < 12; i++){
+            SelectOption so;
+            if(10 > i){
+                so = new SelectOption(i + "", "0" + i + "");
+            } else {
+                so = new SelectOption(i + "", i + "");
+            }
             hourOption.add(so);
         }
         return hourOption;
@@ -403,8 +408,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         createFeAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
         String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
                 MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE + urlId;
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
-        inspectionDateSendEmail(submitDt, url, licenseeId);
+        inspectionDateSendEmail(submitDt, loginUrl, licenseeId);
         createMessage(url, serviceId, submitDt);
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_SPECIFIC_INSP_DATE, InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE);
     }
@@ -432,9 +438,10 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
         String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
                 MessageConstants.MESSAGE_INBOX_URL_APPT_SYS_INSP_DATE + urlId;
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName();
         Date submitDt = apptInspectionDateDto.getAppointmentDto().getSubmitDt();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
-        inspectionDateSendEmail(submitDt, url, licenseeId);
+        inspectionDateSendEmail(submitDt, loginUrl, licenseeId);
         createMessage(url, serviceId, submitDt);
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_INSPECTION_DATE, InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE);
     }
@@ -684,7 +691,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     }
 
     private void inspectionDateSendEmail(Date submitDt, String url, String licenseeId) {
-        InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION);
+        InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST);
         if(inspectionEmailTemplateDto != null) {
             String strSubmitDt = Formatter.formatDateTime(submitDt, "dd MMM yyyy");
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
@@ -703,12 +710,12 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
             emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
             emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-            //String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
+            emailClient.sendNotification(emailDto);
         }
     }
 
     private void createMessage(String url, String serviceId, Date submitDt) {
-        MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION).getEntity();
+        MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST).getEntity();
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         String strSubmitDt = Formatter.formatDateTime(submitDt, "dd MMM yyyy");
         map.put("submitDt", StringUtil.viewHtml(strSubmitDt));

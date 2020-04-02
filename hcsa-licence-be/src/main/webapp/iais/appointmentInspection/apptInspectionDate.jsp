@@ -25,6 +25,7 @@
     <input type="hidden" name="apptInspectionDateType" value="">
     <input type="hidden" id="actionValue" name="actionValue" value="">
     <input type="hidden" id="processDec" name="processDec" value="">
+    <input type="hidden" id="apptBackShow" name="apptBackShow" value="${apptBackShow}">
     <div class="main-content">
       <div class="row">
         <div class="col-lg-12 col-xs-12">
@@ -35,12 +36,12 @@
                   <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
                       <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                        <li id="ApptInspTabInfo" class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
+                        <li id="apptInspTabInfo" class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
                                                                                       data-toggle="tab">Info</a></li>
-                        <li id="ApptInspTabDocuments" class="complete" role="presentation"><a href="#tabDocuments"
+                        <li id="apptInspTabDocuments" class="complete" role="presentation"><a href="#tabDocuments"
                                                                                              aria-controls="tabDocuments" role="tab"
                                                                                              data-toggle="tab">Documents</a></li>
-                        <li id="ApptInspTabProcessing" class="incomplete" role="presentation"><a href="#tabProcessing"
+                        <li id="apptInspTabProcessing" class="incomplete" role="presentation"><a href="#tabProcessing"
                                                                                                 aria-controls="tabProcessing" role="tab"
                                                                                                 data-toggle="tab">Processing</a></li>
                       </ul>
@@ -142,80 +143,7 @@
                         </div>
 
                         <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                          <div class="alert alert-info" role="alert"><strong>
-                            <h4>Supporting Document</h4>
-                          </strong></div>
-                          <div id="u8522_text" class="text ">
-                            <p><span>These are documents uploaded by the applicant or an officer on behalf of the applicant. Listed
-                                  documents are those defined for this digital service only.</span></p>
-                          </div>
-                          <div class="row">
-                            <div class="col-xs-12">
-                              <div class="table-gp">
-                                <table class="table">
-                                  <thead>
-                                  <tr>
-                                    <th>Document</th>
-                                    <th>File</th>
-                                    <th>Size</th>
-                                    <th>Submitted By</th>
-                                    <th>Date Submitted</th>
-                                  </tr>
-                                  </thead>
-                                  <tbody>
-                                  <c:forEach items="${applicationViewDto.appSupDocDtoList}"
-                                             var="appSupDocDto">
-                                    <tr>
-                                      <td>
-                                        <p><c:out value="${appSupDocDto.file}"></c:out></p>
-                                      </td>
-                                      <td>
-                                        <p><a href="#"><c:out value="${appSupDocDto.document}"></c:out></a></p>
-                                      </td>
-                                      <td>
-                                        <p><c:out value="${appSupDocDto.size}"></c:out></p>
-                                      </td>
-                                      <td>
-                                        <p><c:out value="${appSupDocDto.submittedBy}"></c:out></p>
-                                      </td>
-                                      <td>
-                                        <p><c:out value="${appSupDocDto.dateSubmitted}"></c:out></p>
-                                      </td>
-                                    </tr>
-                                  </c:forEach>
-                                  </tbody>
-                                </table>
-                                <div class="alert alert-info" role="alert">
-                                  <strong>
-                                    <h4>Internal Document</h4>
-                                  </strong>
-                                </div>
-                                <div class="text ">
-                                  <p><span>These are documents uploaded by an agency officer to support back office processing.</span>
-                                  </p>
-                                </div>
-                                <table class="table">
-                                  <thead>
-                                  <tr>
-                                    <th>Document</th>
-                                    <th>File</th>
-                                    <th>Size</th>
-                                    <th>Submitted By</th>
-                                    <th>Date Submitted</th>
-                                    <th>Action</th>
-                                  </tr>
-                                  </thead>
-                                  <tbody>
-                                  <tr>
-                                    <td colspan="5" align="center">
-                                      <p>No record found.</p>
-                                    </td>
-                                  </tr>
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                          </div>
+                          <%@ include file="../inspectionncList/tabDocuments.jsp" %>
                         </div>
 
                         <div class="tab-pane" id="tabProcessing" role="tabpanel">
@@ -353,7 +281,23 @@
     </div>
   </form>
 </div>
+<%@ include file="../inspectionncList/uploadFile.jsp" %>
 <script type="text/javascript">
+    $(document).ready(function() {
+        var apptBackShow = $("#apptBackShow").val();
+        if('back' == apptBackShow){
+            apptInspectionDateJump();
+        }
+    })
+
+    function apptInspectionDateJump(){
+        $("#apptInspTabInfo").removeClass('active');
+        $("#apptInspTabDocuments").removeClass('active');
+        $("#apptInspTabProcessing").removeClass('active');
+        $("#apptInspectionDate").click();
+        $("#apptInspTabProcessing").addClass('active');
+    }
+
   function apptInspectionDateSubmit(action){
     $("[name='apptInspectionDateType']").val(action);
     var mainPoolForm = document.getElementById('mainInspDateForm');

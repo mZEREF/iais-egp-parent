@@ -41,15 +41,21 @@
                   <iais:row>
                     <iais:field value="Date"/>
                     <iais:value width="7">
-                      <iais:datePicker id = "specificDate" name = "specificDate" value="${apptInspectionDateDto.specificDate}"></iais:datePicker>
-                      <iais:select name="hoursOption" options="hoursOption" firstOption="Please select" value="${apptInspectionDateDto.hours}" onchange="javascript:apptInspectionDateHours(this.value)"></iais:select>
-                      <iais:select name="amPmOption" options="amPmOption" firstOption="Please select" value="${apptInspectionDateDto.amPm}" onchange="javascript:apptInspectionDateAmPm(this.value)"></iais:select>
+                      <div class="col-xs-12 col-md-4">
+                        <iais:datePicker id = "specificDate" name = "specificDate" value="${apptInspectionDateDto.specificDate}"></iais:datePicker>
+                      </div><br>
+                      <div class="col-xs-12 col-md-3">
+                        <iais:select name="hoursOption" options="hoursOption" firstOption="Please select" value="${apptInspectionDateDto.hours}" onchange="javascript:apptInspectionDateHours(this.value)"></iais:select>
+                      </div>
+                      <div class="col-xs-12 col-md-3">
+                        <iais:select name="amPmOption" options="amPmOption" firstOption="Please select" value="${apptInspectionDateDto.amPm}" onchange="javascript:apptInspectionDateAmPm(this.value)"></iais:select>
+                      </div>
                       <br><span class="error-msg" name="iaisErrorMsg" id="error_specificDate"></span>
                       <br><span class="error-msg" name="iaisErrorMsg" id="error_hours"></span>
                       <br><span class="error-msg" name="iaisErrorMsg" id="error_amPm"></span>
                     </iais:value>
                   </iais:row>
-                  <iais:action >
+                  <iais:action>
                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionSpecDateConfirm()">Confirm</button>
                     <a class="back" id="Back" onclick="javascript:apptInspectionSpecDateBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                   </iais:action>
