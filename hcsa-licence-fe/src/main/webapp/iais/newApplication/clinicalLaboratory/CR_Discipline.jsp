@@ -199,12 +199,12 @@
   var doChangeText = function (levelTwoListId) {
     if(num%2===1){
       if(levelTwoListId==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
-        $('input[name="pleaseIndicate"]').prop('disabled',false);
+        $('textarea[name="pleaseIndicate"]').prop('disabled',false);
       }
     }
     else {
       if(levelTwoListId==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
-        $('input[name="pleaseIndicate"]').prop('disabled',true);
+        $('textarea[name="pleaseIndicate"]').prop('disabled',true);
       }
     }
     num=num+1;
