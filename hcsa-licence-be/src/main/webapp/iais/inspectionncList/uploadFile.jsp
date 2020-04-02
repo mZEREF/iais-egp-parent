@@ -45,13 +45,17 @@
     function uploadInternalDoc(){
         $('#uploadDoc small.error').html('').hide();
         var selectedFile = $('#uploadDoc').find('[name="selectedFile"]').val();
+        showWaiting();
         if(selectedFile != null && selectedFile != "" )
              callAjaxUploadFile();
+        dismissWaiting();
     }
 
     function deleteFile(row,repoId) {
+        showWaiting();
         $(row).parent('td').parent('tr').remove();
          callAjaxDeleteFile(repoId);
+        dismissWaiting();
     }
     function callAjaxDeleteFile(repoId){
         var data = {"appDocId":repoId};
