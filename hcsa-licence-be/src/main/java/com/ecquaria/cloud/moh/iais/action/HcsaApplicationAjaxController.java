@@ -52,7 +52,7 @@ public class HcsaApplicationAjaxController{
         request.setAttribute("selectedFile",selectedFile);
         String CSRF = ParamUtil.getString(request,"OWASP_CSRFTOKEN");
         HcsaApplicationUploadFileValidate uploadFileValidate = new HcsaApplicationUploadFileValidate();
-        Map<String, String> errorMap = new HashMap<>();
+        Map<String, String> errorMap = uploadFileValidate.validate(request);
         if(!errorMap.isEmpty()){
             AppIntranetDocDto appIntranetDocDto = new AppIntranetDocDto();
             appIntranetDocDto.setFileSn(-1);
