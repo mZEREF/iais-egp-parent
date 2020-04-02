@@ -71,8 +71,8 @@ public class ApptInspectionDateDelegator {
     public void apptInspectionDateInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptInspectionDateInit start ...."));
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", null);
-        ParamUtil.setSessionAttr(bpc.request, "hours", null);
-        ParamUtil.setSessionAttr(bpc.request, "amPm", null);
+        ParamUtil.setSessionAttr(bpc.request, "hoursOption", null);
+        ParamUtil.setSessionAttr(bpc.request, "amPmOption", null);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
     }
 
@@ -124,8 +124,8 @@ public class ApptInspectionDateDelegator {
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
         List<SelectOption> hours = apptInspectionDateService.getInspectionDateHours();
         List<SelectOption> amPm = apptInspectionDateService.getAmPmOption();
-        ParamUtil.setSessionAttr(bpc.request, "hours", (Serializable) hours);
-        ParamUtil.setSessionAttr(bpc.request, "amPm", (Serializable) amPm);
+        ParamUtil.setSessionAttr(bpc.request, "hoursOption", (Serializable) hours);
+        ParamUtil.setSessionAttr(bpc.request, "amPmOption", (Serializable) amPm);
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
     }
 
@@ -139,10 +139,11 @@ public class ApptInspectionDateDelegator {
         log.debug(StringUtil.changeForLog("the apptInspectionDateVali start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
         String processDec = ParamUtil.getRequestString(bpc.request, "processDec");
+        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         apptInspectionDateDto.setProcessDec(processDec);
         apptInspectionDateDto = getValidateValue(apptInspectionDateDto, bpc);
         ValidationResult validationResult;
-        if(processDec.equals(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE)) {
+        if(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE.equals(processDec)) {
             validationResult = WebValidationHelper.validateProperty(apptInspectionDateDto,"specific");
         } else {
             validationResult = WebValidationHelper.validateProperty(apptInspectionDateDto,"lead");
@@ -155,6 +156,9 @@ public class ApptInspectionDateDelegator {
         } else {
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
         }
+        if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue)) {
+            ParamUtil.setRequestAttr(bpc.request, "apptBackShow", InspectionConstants.SWITCH_ACTION_BACK);
+        }
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
     }
 
@@ -162,8 +166,8 @@ public class ApptInspectionDateDelegator {
         String specificDate1 = ParamUtil.getDate(bpc.request, "specificDate");
         String strHours = ParamUtil.getRequestString(bpc.request, "hours");
         String amPm = ParamUtil.getRequestString(bpc.request, "amPm");
-        List<SelectOption> hoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "hours");
-        List<SelectOption> amPmOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "amPm");
+        List<SelectOption> hoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "hoursOption");
+        List<SelectOption> amPmOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "amPmOption");
         boolean flagContain = containValueInList(amPm, amPmOption);
         if(flagContain){
             apptInspectionDateDto.setAmPm(amPm);
@@ -197,24 +201,27 @@ public class ApptInspectionDateDelegator {
     }
 
     private Date getSpecificDate(String specificDate1, ApptInspectionDateDto apptInspectionDateDto) {
-        Date specificDate = null;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        Date sub_date1 = null;
-        try {
-            sub_date1 = sdf.parse(specificDate1);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if(specificDate1 != null) {
+            Date specificDate = null;
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            Date sub_date1 = null;
+            try {
+                sub_date1 = sdf.parse(specificDate1);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String sub_date = sdf2.format(sub_date1);
+            sub_date = sub_date + " " + apptInspectionDateDto.getHours() + ":00:00";
+            try {
+                specificDate = sdf3.parse(sub_date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return specificDate;
         }
-        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String sub_date = sdf2.format(sub_date1);
-        sub_date = sub_date + " " + apptInspectionDateDto.getHours() + ":00:00";
-        try {
-            specificDate = sdf3.parse(sub_date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return specificDate;
+        return null;
     }
 
     private boolean containValueInList(String str, List<SelectOption> optionList) {
@@ -238,11 +245,11 @@ public class ApptInspectionDateDelegator {
         log.debug(StringUtil.changeForLog("the apptInspectionDateSuccess start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
-        if(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE.equals(apptInspectionDateDto.getProcessDec())){
+        /*if(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE.equals(apptInspectionDateDto.getProcessDec())){
             apptInspectionDateService.saveLeadSpecificDate(apptInspectionDateDto, applicationViewDto);
         } else if(InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE.equals(apptInspectionDateDto.getProcessDec())) {
             apptInspectionDateService.saveSystemInspectionDate(apptInspectionDateDto, applicationViewDto);
-        }
+        }*/
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
     }
