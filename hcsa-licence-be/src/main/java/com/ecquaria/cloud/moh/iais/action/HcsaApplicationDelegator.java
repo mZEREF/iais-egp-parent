@@ -815,9 +815,9 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void reject(BaseProcessClass bpc) {
+    public void reject(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do reject start ...."));
-        //TODO:reject
+        routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_REJECTED,null);
         log.debug(StringUtil.changeForLog("the do reject end ...."));
     }
 
@@ -995,17 +995,11 @@ public class HcsaApplicationDelegator {
         log.info(StringUtil.changeForLog("The processDecision is -- >:"+processDecision));
         //judge the final status is Approve or Reject.
         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
-            if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())){
-              if(!ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL.equals(processDecision)){
-                  appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
-              }
-            }else{
-                AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
-                if(appPremisesRecommendationDto!=null){
-                    Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
-                    if(null != recomInNumber && recomInNumber == 0){
-                        appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
-                    }
+            AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
+            if(appPremisesRecommendationDto!=null){
+                Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
+                if(null != recomInNumber && recomInNumber == 0){
+                    appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
                 }
             }
         }
