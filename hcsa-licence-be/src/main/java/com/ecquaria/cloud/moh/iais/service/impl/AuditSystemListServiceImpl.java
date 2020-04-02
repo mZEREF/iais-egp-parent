@@ -141,7 +141,12 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         createTaskDtoList.add(taskDto);
       //  taskService.createTasks(createTaskDtoList);
     }
-
+    public void updateLicPremisesAuditDto(AuditTaskDataFillterDto temp,String status){
+        LicPremisesAuditDto licPremisesAuditDto = hcsaLicenceClient.getLicPremAuditByGuid(temp.getAuditId()).getEntity();
+        licPremisesAuditDto.setStatus(status);
+        licPremisesAuditDto.setRemarks( temp.getCancelReason());
+        hcsaLicenceClient.createLicPremAudit(licPremisesAuditDto);
+    }
     private void createAudit(AuditTaskDataFillterDto temp) {
         LicPremisesAuditDto licPremisesAuditDto = new LicPremisesAuditDto();
         LicPremisesAuditInspectorDto licPremisesAuditInspectorDto = new LicPremisesAuditInspectorDto();
@@ -217,27 +222,9 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         taskDto.setPriority(0);
         List<TaskDto> createTaskDtoList = IaisCommonUtils.genNewArrayList();
         createTaskDtoList.add(taskDto);
-        taskService.createTasks(createTaskDtoList);
-        //createauditTypedata
-        createAudit(temp);
-
-        //
-        //create
-        String preInspecRemarks = null;//todo
-        HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(temp.getSvcName()).getEntity();
-        String svcId = svcDto.getId();
-        String stgId = HcsaConsts.ROUTING_STAGE_INS;
-        HcsaSvcStageWorkingGroupDto dto = new HcsaSvcStageWorkingGroupDto();
-        dto.setType("APTY002");//todo
-        dto.setStageId(stgId);
-        dto.setServiceId(svcId);
-        dto.setOrder(2);
-        dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(dto).getEntity();
-        String workGrp = dto.getGroupId();
-        String subStage = HcsaConsts.ROUTING_STAGE_PRE;
-        String status = "status";//todo
-        //create grop info
-        //createInspectionGroupInfo(temp);
+       // taskService.createTasks(createTaskDtoList);
+        //update audit status
+        updateLicPremisesAuditDto(temp,AppConsts.AUDIT_TASK_CANCEL_PENDING_STATUS);
     }
 
     @Override
@@ -261,7 +248,6 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }
         return activeHCISelections;
     }
-
 
     @Override
     public List<SelectOption> getActiveHCICode() {

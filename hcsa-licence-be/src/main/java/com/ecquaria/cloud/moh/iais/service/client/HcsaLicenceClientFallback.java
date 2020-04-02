@@ -33,6 +33,13 @@ import java.util.Map;
  */
 public class HcsaLicenceClientFallback implements HcsaLicenceClient {
 
+    @Override
+    public FeignResponseEntity<LicPremisesAuditDto> getLicPremAuditByGuid(String guid) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 
     @Override
     public FeignResponseEntity<Integer> licenceNumber(String hciCode) {
