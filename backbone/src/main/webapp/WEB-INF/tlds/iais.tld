@@ -995,7 +995,17 @@
       <rtexprvalue>false</rtexprvalue>
     </attribute>
     <attribute>
+      <name>yesBtnCls</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
       <name>cancelBtnDesc</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>cancelBtnCls</name>
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
     </attribute>
