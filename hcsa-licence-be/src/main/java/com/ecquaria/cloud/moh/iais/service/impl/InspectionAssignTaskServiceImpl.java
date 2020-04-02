@@ -423,13 +423,17 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             }
             if(!StringUtil.isEmpty(appGrpPremisesDto.getFloorNo())){
                 String floorNo = appGrpPremisesDto.getFloorNo();
-                Pattern pattern = compile("[0-9]*");
-                boolean noFlag =  pattern.matcher(floorNo).matches();
-                if (noFlag) {
-                    int floorNum  = Integer.valueOf(floorNo);
-                    if(10 > floorNum){
-                        floorNo = AppConsts.NO + floorNo;
-                        result = result + " # " + floorNo;
+                if(floorNo.length() < 3){
+                    Pattern pattern = compile("[0-9]*");
+                    boolean noFlag =  pattern.matcher(floorNo).matches();
+                    if (noFlag) {
+                        int floorNum = Integer.valueOf(floorNo);
+                        if (10 > floorNum) {
+                            floorNo = AppConsts.NO + floorNum;
+                            result = result + " # " + floorNo;
+                        } else {
+                            result = result + " # " + floorNo;
+                        }
                     } else {
                         result = result + " # " + floorNo;
                     }
@@ -498,13 +502,17 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         }
         if(!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceFloorNo())){
             String floorNo = appGrpPremisesDto.getConveyanceFloorNo();
-            Pattern pattern = compile("[0-9]*");
-            boolean noFlag =  pattern.matcher(floorNo).matches();
-            if (noFlag) {
-                int floorNum  = Integer.valueOf(floorNo);
-                if(10 > floorNum){
-                    floorNo = AppConsts.NO + floorNo;
-                    result = result + " # " + floorNo;
+            if(floorNo.length() < 3){
+                Pattern pattern = compile("[0-9]*");
+                boolean noFlag =  pattern.matcher(floorNo).matches();
+                if (noFlag) {
+                    int floorNum = Integer.valueOf(floorNo);
+                    if (10 > floorNum) {
+                        floorNo = AppConsts.NO + floorNum;
+                        result = result + " # " + floorNo;
+                    } else {
+                        result = result + " # " + floorNo;
+                    }
                 } else {
                     result = result + " # " + floorNo;
                 }
