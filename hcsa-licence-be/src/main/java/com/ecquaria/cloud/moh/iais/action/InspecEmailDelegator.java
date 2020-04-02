@@ -206,7 +206,7 @@ public class InspecEmailDelegator {
         InspectionEmailTemplateDto inspectionEmailTemplateDto = (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(bpc.request,INS_EMAIL_DTO);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
         String crudAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        log.debug("*******************crudAction-->:" + crudAction);
+        log.info("*******************crudAction-->:{}" , crudAction);
     }
 
     public void previewEmail(BaseProcessClass bpc){
@@ -347,7 +347,7 @@ public class InspecEmailDelegator {
     private int remainDays(TaskDto taskDto) {
         int result = 0;
         String resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(), taskDto.getSlaDateCompleted().getTime(), "d");
-        log.debug(StringUtil.changeForLog("The resultStr is -->:") + resultStr);
+        log.info(StringUtil.changeForLog("The resultStr is -->:") , resultStr);
         return result;
     }
 

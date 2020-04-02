@@ -86,6 +86,7 @@ public class AppointmentClientFallback implements AppointmentClient{
     public FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> getUserCalendarByUserId(AppointmentDto appointmentDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
+        headers.set("fusing", "fusing");
         entity.setHeaders(headers);
         return entity;
     }

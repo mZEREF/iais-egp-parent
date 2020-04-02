@@ -87,9 +87,9 @@ public class ApptInspectionDateDelegator {
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
         if(apptInspectionDateDto == null){
             String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
-            ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskId);
             apptInspectionDateDto = new ApptInspectionDateDto();
             apptInspectionDateDto  = apptInspectionDateService.getInspectionDate(taskId, apptInspectionDateDto);
+            ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(apptInspectionDateDto.getTaskDto().getRefNo());
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         } else {
             Map<ApplicationDto, List<String>> applicationInfoMap = apptInspectionDateService.getApplicationInfoToShow(apptInspectionDateDto.getRefNo(), apptInspectionDateDto.getTaskDtos());
