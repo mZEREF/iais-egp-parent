@@ -429,7 +429,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     if (noFlag) {
                         int floorNum = Integer.valueOf(floorNo);
                         if (10 > floorNum) {
-                            floorNo = AppConsts.NO + floorNum;
+                            floorNo = "0" + floorNum;
                             result = result + " # " + floorNo;
                         } else {
                             result = result + " # " + floorNo;
@@ -508,7 +508,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 if (noFlag) {
                     int floorNum = Integer.valueOf(floorNo);
                     if (10 > floorNum) {
-                        floorNo = AppConsts.NO + floorNum;
+                        floorNo = "0" + floorNum;
                         result = result + " # " + floorNo;
                     } else {
                         result = result + " # " + floorNo;
