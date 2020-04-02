@@ -25,21 +25,25 @@
                                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                                             <li class="complete" role="presentation"><a href="#tabInfo"
                                                                                         aria-controls="tabInfo"
-                                                                                        role="tab" data-toggle="tab">Info</a>
+                                                                                        role="tab" data-toggle="tab"
+                                                                                        onclick="javascript:updateHidenField();">Info</a>
                                             </li>
                                             <li class="complete" role="presentation"><a href="#tabDocuments"
                                                                                         aria-controls="tabDocuments"
                                                                                         role="tab"
-                                                                                        data-toggle="tab">Documents</a>
+                                                                                        data-toggle="tab"
+                                                                                        onclick="javascript:updateHidenField();">Documents</a>
                                             </li>
                                             <li class="active" role="presentation"><a href="#tabLetter"
                                                                                       aria-controls="tabLetter"
                                                                                       role="tab"
-                                                                                      data-toggle="tab">Email</a></li>
+                                                                                      data-toggle="tab"
+                                                                                      onclick="javascript:refreshTinyMce();">Email</a></li>
                                             <li class="complete" role="presentation"><a href="#tabProcessing"
                                                                                         aria-controls="tabProcessing"
                                                                                         role="tab"
-                                                                                        data-toggle="tab">Processing</a>
+                                                                                        data-toggle="tab"
+                                                                                        onclick="javascript:updateHidenField();">Processing</a>
                                             </li>
                                         </ul>
                                         <div class="tab-nav-mobile visible-xs visible-sm">
@@ -201,6 +205,7 @@
             </div>
         </div>
     </div>
+    <div id="hiddenEmailContent" style="display: none">${insEmailDto.messageContent}</div>
 </form>
 <%@include file="/iais/inspectionncList/uploadFile.jsp" %>
 
@@ -221,6 +226,13 @@
         }
     }
 
+    function refreshTinyMce() {
+        tinymce.activeEditor.setContent($("#hiddenEmailContent").html());
+    }
+
+    function updateHidenField() {
+        $("#hiddenEmailContent").html(tinymce.activeEditor.getContent());
+    }
 
 </script>
 
