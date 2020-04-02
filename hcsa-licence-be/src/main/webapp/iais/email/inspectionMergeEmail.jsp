@@ -183,7 +183,7 @@
         </div>
     </div>
 </form>
-
+<%@include file="/iais/inspectionncList/uploadFile.jsp" %>
 
 <script type="text/javascript">
     function doPreview() {
