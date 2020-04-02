@@ -40,7 +40,7 @@ import java.util.Map;
  * @Create: 2020-01-08 10:49
  **/
 @Slf4j
-@Delegator("String.valueOf")
+@Delegator("interInboxDelegator")
 public class InterInboxDelegator {
 
     @Autowired
@@ -419,7 +419,7 @@ public class InterInboxDelegator {
         SearchResult appResult = inboxService.appDoQuery(appParam);
         List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
         for (InboxAppQueryDto appDto:inboxAppQueryDtoList) {
-            String serviceName = "N.A.";
+            String serviceName = "N/A";
             if (appDto.getServiceId() != null){
                 serviceName = inboxService.getServiceNameById(appDto.getServiceId());
             }
