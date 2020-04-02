@@ -742,10 +742,23 @@ public class OfficerOnlineEnquiriesDelegator {
         try{
             reqForInfoSearchListDto.setLastComplianceHistory("Full");
             List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = insepctionNcCheckListService.getNcItemDtoByAppCorrId(rfiApplicationQueryDto.getAppCorrId());
-            for (AppPremisesPreInspectionNcItemDto nc:appPremisesPreInspectionNcItemDtos
-            ) {
-                if(nc.getIsRecitfied()==0){
-                    reqForInfoSearchListDto.setLastComplianceHistory("Partial");
+            if(appPremisesPreInspectionNcItemDtos.size()!=0){
+                for (AppPremisesPreInspectionNcItemDto nc:appPremisesPreInspectionNcItemDtos
+                ) {
+                    if(nc.getIsRecitfied()==0){
+                        reqForInfoSearchListDto.setLastComplianceHistory("Partial");
+                    }
+                }
+            }
+            AdCheckListShowDto adCheckListShowDto = fillupChklistService.getAdhoc(rfiApplicationQueryDto.getAppCorrId());
+            if(adCheckListShowDto!=null){
+                List<AdhocNcCheckItemDto> adItemList = adCheckListShowDto.getAdItemList();
+                if(adItemList!=null && !adItemList.isEmpty()){
+                    for(AdhocNcCheckItemDto temp:adItemList){
+                        if(!temp.getRectified()){
+                            reqForInfoSearchListDto.setLastComplianceHistory("Partial");
+                        }
+                    }
                 }
             }
             AdCheckListShowDto adCheckListShowDto = fillupChklistService.getAdhoc(rfiApplicationQueryDto.getAppCorrId());

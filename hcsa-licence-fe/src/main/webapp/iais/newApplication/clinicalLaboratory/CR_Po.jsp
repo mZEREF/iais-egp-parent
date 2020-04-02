@@ -511,6 +511,7 @@
                       console.log(data.res);
                       $('.po-content:last').after(data.sucInfo);
                       poSelect();
+                      removePo();
                       retrieveData();
                       removePo();
                     }else{
