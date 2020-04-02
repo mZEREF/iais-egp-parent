@@ -240,7 +240,50 @@
                               <iais:row>
                                 <iais:field value="Rectifications submitted by Applicant"/>
                               </iais:row>
-                              <div class="table-gp">
+                              <div class="table-gp" id = "processRec">
+                                <table class="table">
+                                  <thead>
+                                  <tr align="center">
+                                    <th>NC Clause</th>
+                                    <th>Checklist Question</th>
+                                    <th>Remarks</th>
+                                    <th>Documents</th>
+                                  </tr>
+                                  </thead>
+                                  <tbody>
+                                  <c:choose>
+                                    <c:when test="${empty inspectionPreTaskDto.inspecUserRecUploadDtos}">
+                                      <tr>
+                                        <td colspan="7">
+                                          <iais:message key="ACK018" escape="true"></iais:message>
+                                        </td>
+                                      </tr>
+                                    </c:when>
+                                    <c:otherwise>
+                                      <c:forEach var="proRec" items="${inspectionPreTaskDto.inspecUserRecUploadDtos}" varStatus="status">
+                                        <tr>
+                                          <td><c:out value="${proRec.checkClause}"/></td>
+                                          <td><iais:code code="${proRec.checkQuestion}"/></td>
+                                          <td><c:out value="${proRec.uploadRemarks}"/></td>
+                                          <td>
+                                            <c:if test="${proRec.fileRepoDtos != null}">
+                                              <c:forEach var="file" items="${proRec.fileRepoDtos}" varStatus="status">
+                                                <div class="fileList ">
+                                                  <span class="filename server-site" id="140">
+                                                    <a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${file.id}"/>&fileRepoName=${file.fileName}" title="Download" class="downloadFile">${file.fileName}</a>
+                                                  </span>
+                                                </div>
+                                              </c:forEach>
+                                            </c:if>
+                                          </td>
+                                        </tr>
+                                      </c:forEach>
+                                    </c:otherwise>
+                                  </c:choose>
+                                  </tbody>
+                                </table>
+                              </div>
+                              <div class="table-gp" id = "processRecRfi">
                                 <table class="table">
                                   <thead>
                                   <tr align="center">
@@ -329,7 +372,7 @@
                             <iais:row>
                               <iais:field value="Processing Decision"/>
                               <iais:value width="7">
-                                <iais:select name="selectValue" options="processDecOption" firstOption="Please select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectorProRecChange(this.value)"></iais:select>
+                                <iais:select name="selectValue" options="processDecOption" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectorProRecChange(this.value)"></iais:select>
                               </iais:value>
                             </iais:row>
                             <iais:action style="text-align:center;">
@@ -403,6 +446,19 @@
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
     $(document).ready(function() {
+        var value = $("#processDec").val();
+        if("REDECI007" == value){
+            $("#indicateCondRemarks").show();
+        } else if ("REDECI007" != value){
+            $("#indicateCondRemarks").hide();
+        }
+        if ("REDECI001" == value){
+            $("#processRec").hide();
+            $("#processRecRfi").show();
+        } else {
+            $("#processRec").show();
+            $("#processRecRfi").hide();
+        }
         var selectValue = $("#selectValue").val();
         if(selectValue != "REDECI007") {
             $("#indicateCondRemarks").hide();
@@ -482,12 +538,18 @@
         if("REDECI006" == processDec){
             $("#actionValue").val('accept');
             inspectorProRecSubmit("accept");
+            $("#processRec").show();
+            $("#processRecRfi").hide();
         } else if ("REDECI001" == processDec){
             $("#actionValue").val('request');
             inspectorProRecSubmit("request");
+            $("#processRec").hide();
+            $("#processRecRfi").show();
         } else if("REDECI007" == processDec) {
             $("#actionValue").val('acccond');
             inspectorProRecSubmit("acccond");
+            $("#processRec").show();
+            $("#processRecRfi").hide();
         } else {
             var errMsg = 'The field is mandatory.';
             $("#error_selectValue").text(errMsg);

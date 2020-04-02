@@ -120,4 +120,13 @@ public interface InspectionRectificationProService {
      * @Descripation: get How Much Nc By AppPremCorrId
      */
     int getHowMuchNcByAppPremCorrId(String refNo);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/4/2
+      * @Param: fileRepoId
+      * @return: FileRepoDto
+      * @Descripation: getFileReportById
+      */
+    FileRepoDto getFileReportById(String fileRepoId);
 }
