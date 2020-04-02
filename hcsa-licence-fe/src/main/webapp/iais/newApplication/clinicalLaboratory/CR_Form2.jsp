@@ -95,6 +95,13 @@
                                 <div class="control-label formtext assign-header cgo-header">
                                   Clinical Governance Officer <label class="assign-psn-item">${status.index+1}</label>
                                 </div><br/>
+                                <c:if test="${!status.first}">
+                                  <div class="row" style="float:right">
+                                    <div class="form-check">
+                                      <strong class="removeBtn">X</strong>
+                                    </div>
+                                  </div>
+                                </c:if>
                                 <div class="col-sm-5 control-label formtext ">
                                   <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Add/Assign a Clinical Governance Officer</label>
                                   <span class="upload_controls"></span>
@@ -110,13 +117,6 @@
                           </c:otherwise>
                         </c:choose>
                         <div class="profile-info-gp hidden"></div>
-                        <c:if test="${!status.first}">
-                          <div class="col-xs-5 col-md-1">
-                            <div class="form-check">
-                              <strong class="removeBtn">X</strong>
-                            </div>
-                          </div>
-                        </c:if>
                         <div id="newOfficer" class="new-officer-form ${cgoIndeNo}-new hidden">
                           <table class="control-grid" >
                             <tbody>

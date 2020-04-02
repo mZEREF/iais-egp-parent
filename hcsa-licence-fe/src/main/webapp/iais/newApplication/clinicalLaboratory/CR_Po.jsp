@@ -81,13 +81,15 @@
                             </div>
                           </div>
                         </div>
+                        <c:if test="${!status.first}">
+                          <div  class="row" style="float:right">
+                            <div class="form-check">
+                              <strong class="removePoBtn" style="color:#ff0000;">X</strong>
+                            </div>
+                          </div>
+                        </c:if>
                       </div>
                     </div>
-                    <c:if test="${!status.first}">
-                      <div class="form-check">
-                        <strong class="removePoBtn" style="color:#ff0000;">X</strong>
-                      </div>
-                    </c:if>
                     <div class="principalOfficers hidden">
                       <div class="row">
                         <div class="control control-caption-horizontal">
@@ -298,13 +300,16 @@
                               <iais:select cssClass="deputyPoSelect"  name="deputyPoSelect" options="DeputyPrincipalOfficersAssignSelect"  value="${deputy.assignSelect}" ></iais:select>
                           </div>
                         </div>
+                        <c:if test="${!status.first}">
+                          <div  class="row" style="float:right">
+                            <div class="form-check">
+                              <strong class="removeDpoBtn" style="color:#ff0000;">X</strong>
+                            </div>
+                          </div>
+                        </c:if>
                       </div>
                     </div>
-                    <c:if test="${!status.first}">
-                      <div class="form-check">
-                        <strong class="removeDpoBtn" style="color:#ff0000;">X</strong>
-                      </div>
-                    </c:if>
+
                     <div class="deputyPrincipalOfficers hidden">
                       <div class="row">
                         <div class="control control-caption-horizontal">
