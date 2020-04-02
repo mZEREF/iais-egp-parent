@@ -79,7 +79,7 @@ public class ServiceMenuDelegator {
         for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtosById){
             serviceCodeList.add(hcsaServiceDto.getSvcCode());
         }
-        serviceCodeList.sort((h1, h2) -> h1.compareTo(h2));
+        serviceCodeList.sort(String::compareTo);
         String entity = applicationClient.selectDarft(serviceCodeList).getEntity();
         bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO,entity);
     }
