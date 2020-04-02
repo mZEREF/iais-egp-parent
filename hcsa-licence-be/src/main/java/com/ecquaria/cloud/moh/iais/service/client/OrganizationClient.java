@@ -140,6 +140,6 @@ public interface OrganizationClient {
     @PostMapping(value = "/iais-task/super-second/results", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<SuperPoolTaskQueryDto>> supervisorSecondSearch(@RequestBody SearchParam searchParam);
 
-    @GetMapping(value = "/stage-task-status",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-task/stage-task-status",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getTaskByRefNoStatus(@RequestParam("refNo") String refNo, @RequestParam("taskStatus") String taskStatus, @RequestParam("processUrl") String processUrl);
 }
