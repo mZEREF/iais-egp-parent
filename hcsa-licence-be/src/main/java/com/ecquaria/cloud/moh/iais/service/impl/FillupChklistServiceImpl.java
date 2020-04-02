@@ -1298,7 +1298,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     public List<AdCheckListShowDto> getOtherAdhocList(String appPremCorrId) {
         return applicationClient.getAllVersionAdhocList(appPremCorrId).getEntity();
     }
-
+    @Override
     public  InspectionFDtosDto  getInspectionFDtosDto(String appPremCorrId,TaskDto taskDto,List<InspectionFillCheckListDto> cDtoList){
         InspectionFDtosDto serListDto = new InspectionFDtosDto();
         String inspectionDate = getInspectionDate(appPremCorrId);
