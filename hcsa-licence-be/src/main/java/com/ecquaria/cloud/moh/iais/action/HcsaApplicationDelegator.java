@@ -343,16 +343,12 @@ public class HcsaApplicationDelegator {
         //do upload file
         String doDocument = ParamUtil.getString(bpc.request,"uploadFile");
         String interalFileId = ParamUtil.getString(bpc.request,"interalFileId");
-        if(!StringUtil.isEmpty(interalFileId)){
+        if(!StringUtil.isEmpty(interalFileId) || "Y".equals(doDocument)){
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "PREPARE");
             ParamUtil.setRequestAttr(bpc.request, "doDocument", "Y");
             return;
         }
-        if("Y".equals(doDocument)){
-            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "PREPARE");
-            ParamUtil.setRequestAttr(bpc.request, "doDocument", "Y");
-            return;
-        }
+
         //validate
         HcsaApplicationViewValidate hcsaApplicationViewValidate = new HcsaApplicationViewValidate();
         Map<String, String> errorMap = hcsaApplicationViewValidate.validate(bpc.request);
@@ -948,6 +944,13 @@ public class HcsaApplicationDelegator {
                 String fileName = fileSplit[0];
 //            String fileName = UUID.randomUUID().toString();
                 appIntranetDocDto.setDocName(fileName);
+
+                String fileRemark = ParamUtil.getString(bpc.request,"fileRemark");
+                if(StringUtil.isEmpty(fileRemark)){
+                    fileRemark = fileName;
+                }
+                //set document
+                appIntranetDocDto.setDocDesc(fileRemark);
                 //status
                 appIntranetDocDto.setDocStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 //APP_PREM_CORRE_ID

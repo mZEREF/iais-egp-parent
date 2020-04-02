@@ -10,15 +10,30 @@
             <div class="modal-body">
                 <form id="fileUploadForm" name="fileUploadForm" enctype="multipart/form-data"
                       action="<%=process.runtime.continueURL()%>" method="post">
-<%--                    action="" method="post">--%>
-                    <iais:field value="Upload your files" required="true"/>
                     <input type="hidden" id="uploadFile" name="uploadFile" value="">
                     <input type="hidden" name="taskId" value="${taskId}">
                     <input type="hidden" name="sopEngineTabRef"
                            value="<%=process.rtStatus.getTabRef()%>">
-                    <input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file"/>
-                    <br /> <small class="error" style="margin: 0 0 0 140px;"></small>
-                    <span id="error_selectedFile" name="iaisErrorMsg" class="error-msg"></span>
+<%--                    action="" method="post">--%>
+                      <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label">Document</label>
+                            <div class="col-xs-8 col-sm-8 col-md-8">
+                                <p><input type="text" maxlength="50" id="fileRemark" name="fileRemark" value="${fileRemarkString}"></p>
+                                <br /> <small class="error"></small>
+                                <span id="error_fileRemark" name="iaisErrorMsg" class="error-msg"></span>
+                            </div>
+                        </div>
+                          <div class="form-group">
+                              <label class="col-xs-12 col-md-4 control-label">Upload your files <span style="color: red"> *</span></label>
+                              <div class="col-xs-8 col-sm-8 col-md-8">
+                                  <p><input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file"/></p>
+                                  <br /> <small class="error"></small>
+                                  <span id="error_selectedFile" name="iaisErrorMsg" class="error-msg"></span>
+                              </div>
+                          </div>
+
+                      </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -50,14 +65,21 @@
         var flag = true;
         $('#uploadDoc small.error').html('').hide();
 
+        var fileRemarkMaxLength = 50;
+        var fileRemarkLength = $('#fileRemark').val().length;
+        if(fileRemarkLength > fileRemarkMaxLength){
+            $('[name="fileRemark"]').parent().nextAll('.error').html('<span style="color: #D22727; font-size: 1.6rem">Exceeding the maximum length by ' + fileRemarkMaxLength + '.</span>');
+            flag = flag && false;
+        }
+
         var file = $('#selectedFile').get(0).files[0];
         var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
         var selectedFile = $('#uploadDoc').find('[name="selectedFile"]').val();
         if(selectedFile==""){
-            $('[name="selectedFile"]').nextAll('small.error').html('<span style="color: #D22727; font-size: 1.6rem">The file cannot be empty.</span>');
+            $('[name="selectedFile"]').parent().nextAll('.error').html('<span style="color: #D22727; font-size: 1.6rem">The file cannot be empty.</span>');
             flag = flag && false;
         }else if(fileSize> 4){
-            $('[name="selectedFile"]').nextAll('small.error').html('<span style="color: #D22727; font-size: 1.6rem">The file size must less than 4M.</span>');
+            $('[name="selectedFile"]').parent().nextAll('.error').html('<span style="color: #D22727; font-size: 1.6rem">The file size must less than 4M.</span>');
             flag = flag && false;
         }
 
@@ -65,7 +87,6 @@
             $('#uploadDoc small.error').each(function(){
                 var html = $(this).html();
                 if(html){
-                    // $(this).css("color","#D22727;");
                     $(this).show();
                 }
             });

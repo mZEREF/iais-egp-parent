@@ -229,7 +229,7 @@
                                                             <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
                                                                 <tr>
                                                                     <td>
-                                                                        <p><c:out value="${interalFile.docName}"></c:out></p>
+                                                                        <p><c:out value="${interalFile.docDesc}"></c:out></p>
                                                                     </td>
                                                                     <td>
 <%--                                                                        <p><a href="#"><c:out--%>
