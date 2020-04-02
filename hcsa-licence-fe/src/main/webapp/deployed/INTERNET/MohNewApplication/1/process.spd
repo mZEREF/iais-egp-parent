@@ -371,6 +371,9 @@
   <SynchronousLink destinationName="/Steps/InvokeStep/MohSubmitInspectionDate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
    <position>{(1340,70)(1320,220)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Rectangle" name="" sourceName="/Steps/InvokeStep/MohSubmitInspectionDate" style="rectanular">
+   <position>{(1320,220)(1570,270)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Merges/Merge/Merge1" componentIfTrue="/Steps/AutomaticStep/PrepareAckPage" defClass="" executor="" icon="" leftOperand="isrfiSuccess" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="1250" y="50">
