@@ -812,9 +812,9 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void reject(BaseProcessClass bpc) {
+    public void reject(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do reject start ...."));
-        //TODO:reject
+        routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_REJECTED,null);
         log.debug(StringUtil.changeForLog("the do reject end ...."));
     }
 
@@ -987,6 +987,7 @@ public class HcsaApplicationDelegator {
     //*************************************
 
     private void routingTask(BaseProcessClass bpc,String stageId,String appStatus,String roleId ) throws FeignException, CloneNotSupportedException {
+        log.info(StringUtil.changeForLog("The routingTask start ..."));
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -994,15 +995,17 @@ public class HcsaApplicationDelegator {
         String newCorrelationId = newAppPremisesCorrelationDto.getId();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
-
+        String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
+        String processDecision = ParamUtil.getString(bpc.request,"nextStage");
+        log.info(StringUtil.changeForLog("The processDecision is -- >:"+processDecision));
         //judge the final status is Approve or Reject.
         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
             AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
             if(appPremisesRecommendationDto!=null){
-               Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
-               if(null != recomInNumber && recomInNumber == 0){
-                   appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
-               }
+                Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
+                if(null != recomInNumber && recomInNumber == 0){
+                    appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
+                }
             }
         }
         //complated this task and create the history
@@ -1010,8 +1013,6 @@ public class HcsaApplicationDelegator {
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
         taskDto =  completedTask(taskDto);
         broadcastOrganizationDto.setComplateTask(taskDto);
-        String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
-        String processDecision = ParamUtil.getString(bpc.request,"nextStage");
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
                 applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),internalRemarks,processDecision,taskDto.getRoleId());
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
@@ -1112,6 +1113,7 @@ public class HcsaApplicationDelegator {
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+        log.info(StringUtil.changeForLog("The routingTask end ..."));
     }
     private List<ApplicationDto> removeFastTracking(List<ApplicationDto> applicationDtos){
         List<ApplicationDto> result = IaisCommonUtils.genNewArrayList();
