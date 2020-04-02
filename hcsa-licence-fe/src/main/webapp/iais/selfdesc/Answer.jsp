@@ -9,7 +9,7 @@
     <c:if test="${tabIndex == null && selfDesc.common == true}">
       <c:forEach var="answerMap" items="${selfDesc.eachPremQuestion}">
         <c:forEach items="${answerMap.value}" var="list" varStatus="status">
-          <td><input type="hidden" name="${list.answerKey}" value=""/></td>
+          <input type="hidden" name="${list.answerKey}" value=""/>
           <tr>
             <td>
               <p class="visible-xs visible-sm table-row-title"></p>
@@ -51,7 +51,7 @@
   <c:if test="${tabIndex != null && selfDesc.common == false && tabIndex eq selfDesc.svcId}">
     <c:forEach var="answerMap" items="${selfDesc.eachPremQuestion}">
       <c:forEach items="${answerMap.value}" var="list" varStatus="status">
-        <td><input type="hidden" name="${list.answerKey}" value=""/></td>
+        <input type="hidden" name="${list.answerKey}" value=""/>
         <tr>
           <td>
             <p class="visible-xs visible-sm table-row-title"></p>
