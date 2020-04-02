@@ -11,9 +11,6 @@
                   <div class="control-label formtext assign-header cgo-header">
                     Clinical Governance Officer <label class="assign-psn-item"></label>
                   </div>
-                  <div class="form-check">
-                    <strong class="removeBtn">X</strong>
-                  </div><br/>
                   <div class="col-sm-5 control-label formtext ">
                     <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Add/Assign a Clinical Governance Officer</label>
                     <span class="upload_controls"></span>
@@ -29,7 +26,9 @@
               <div class="profile-info-gp hidden">
 
               </div>
-
+              <div class="form-check">
+                <strong class="removeBtn">X</strong>
+              </div><br/>
               <div id="newOfficer" class="new-officer-form hidden">
                 <table class="control-grid">
                   <tbody>
