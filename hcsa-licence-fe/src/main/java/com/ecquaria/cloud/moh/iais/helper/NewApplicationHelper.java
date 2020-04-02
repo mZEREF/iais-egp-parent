@@ -301,7 +301,10 @@ public class NewApplicationHelper {
                                 oneErrorMap.put("poNRICFIN"+poIndex,"CHKLMD001_ERR005");
                             }else {
                                 stringBuilder.append(idType).append(idNo);
-
+                                String s = stringBuilder.toString();
+                                if(stringList.contains(s)){
+                                    oneErrorMap.put("poNRICFIN"+poIndex,"UC_CHKLMD001_ERR002");
+                                }
                             }
                         }
                         if("NRIC".equals(idType)){
@@ -310,6 +313,10 @@ public class NewApplicationHelper {
                                 oneErrorMap.put("poNRICFIN"+poIndex,"CHKLMD001_ERR005");
                             }else {
                                 stringBuilder.append(idType).append(idNo);
+                                String s = stringBuilder.toString();
+                                if(stringList.contains(s)){
+                                    oneErrorMap.put("poNRICFIN"+poIndex,"UC_CHKLMD001_ERR002");
+                                }
                             }
                         }
                     }else {
@@ -397,6 +404,10 @@ public class NewApplicationHelper {
                         oneErrorMap.put("deputyIdNo"+dpoIndex,"CHKLMD001_ERR005");
                     }else {
                         stringBuilder.append(idType).append(idNo);
+                        String s = stringBuilder.toString();
+                        if(stringList.contains(s)){
+                            oneErrorMap.put("deputyIdNo"+dpoIndex,"UC_CHKLMD001_ERR002");
+                        }
                     }
                 }
                 if("NRIC".equals(idType)){
@@ -405,6 +416,10 @@ public class NewApplicationHelper {
                         oneErrorMap.put("deputyIdNo"+dpoIndex,"CHKLMD001_ERR005");
                     }else {
                         stringBuilder.append(idType).append(idNo);
+                        String s = stringBuilder.toString();
+                        if(stringList.contains(s)){
+                            oneErrorMap.put("deputyIdNo"+dpoIndex,"UC_CHKLMD001_ERR002");
+                        }
                     }
                 }
 

@@ -17,6 +17,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -62,13 +63,25 @@ public class ServiceMenuDelegator {
 
     public void beforeJump(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the  before jump start 1...."));
-       /* List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
-        List<String> serviceCodeList=new ArrayList<>(hcsaServiceDtoList.size());
-        for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList){
+        List<String> baseServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseService");
+        List<String> specifiedServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "specifiedService");
+        List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(baseServiceIds)){
+            serviceConfigIds.addAll(baseServiceIds);
+        }
+        if(!IaisCommonUtils.isEmpty(specifiedServiceIds)){
+            serviceConfigIds.addAll(specifiedServiceIds);
+        }
+
+        List<HcsaServiceDto> hcsaServiceDtosById = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
+        List<String> serviceCodeList=new ArrayList<>(hcsaServiceDtosById.size());
+
+        for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtosById){
             serviceCodeList.add(hcsaServiceDto.getSvcCode());
         }
+        serviceCodeList.sort((h1, h2) -> h1.compareTo(h2));
         String entity = applicationClient.selectDarft(serviceCodeList).getEntity();
-        bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO,entity);*/
+        bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO,entity);
     }
 
     public void serviceMenuSelection(BaseProcessClass bpc){
