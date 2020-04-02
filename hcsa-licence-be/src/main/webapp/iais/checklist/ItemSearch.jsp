@@ -196,9 +196,9 @@
                               </c:when>
                               <c:otherwise>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
-                                   onclick="javascript: prepareAddItem();">Add ChecklistItem</a>
+                                   onclick="javascript: prepareAddItem();">Add Checklist Item</a>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
-                                   onclick="javascript: prepareClone();">Clone ChecklistItem</a>
+                                   onclick="javascript: prepareClone();">Clone Checklist Item</a>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: doUploadFile('checklistItem');">Upload Checklist Item</a>
 
