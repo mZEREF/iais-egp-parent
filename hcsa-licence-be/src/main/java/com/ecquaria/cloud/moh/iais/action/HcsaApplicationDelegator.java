@@ -50,7 +50,7 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
-import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationUploadFileValidate;
+import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationProcessUploadFileValidate;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -927,7 +927,7 @@ public class HcsaApplicationDelegator {
         }
 
         if("Y".equals(doDocument)){
-            HcsaApplicationUploadFileValidate uploadFileValidate = new HcsaApplicationUploadFileValidate();
+            HcsaApplicationProcessUploadFileValidate uploadFileValidate = new HcsaApplicationProcessUploadFileValidate();
             Map<String, String> errorMap = uploadFileValidate.validate(bpc.request);
             if(!errorMap.isEmpty()){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, errorMap);
