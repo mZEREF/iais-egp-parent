@@ -214,8 +214,8 @@ public class HcsaApplicationDelegator {
        log.info(StringUtil.changeForLog("The rfiCount is -->:"+rfiCount));
 
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast");
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Trigger to DMS");
+//            routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast");
+//            routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Trigger to DMS");
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_REPLY,"Broadcast Reply For Internal");
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())
@@ -300,7 +300,11 @@ public class HcsaApplicationDelegator {
         if(RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId)){
             nextStageList.add(new SelectOption("VERIFIED", "Support"));
         }else{
-            nextStageList.add(new SelectOption("VERIFIED", "Verified"));
+            //62875
+            //role is ao3 && status is 'Pending AO3 Approval'  have no verified
+            if(!(RoleConsts.USER_ROLE_AO3.equals(roleId) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus()))){
+                nextStageList.add(new SelectOption("VERIFIED", "Verified"));
+            }
         }
         if((ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(applicationViewDto.getApplicationDto().getStatus())
                 || ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus()))
@@ -313,6 +317,13 @@ public class HcsaApplicationDelegator {
         if(!(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()))){
             nextStageList.add(new SelectOption("PROCRFI", "Request For Information"));
         }
+        //62875
+        if(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast"));
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Trigger to DMS"));
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Approve"));
+        }
+
         ParamUtil.setSessionAttr(bpc.request, "nextStages", (Serializable)nextStageList);
 
         List<SelectOption> nextStageReplyList = IaisCommonUtils.genNewArrayList();
@@ -411,10 +422,21 @@ public class HcsaApplicationDelegator {
             String verified = ParamUtil.getString(bpc.request,"verified");
             String rollBack=ParamUtil.getString(bpc.request,"rollBack");
             String nextStage=null;
-            if(StringUtil.isEmpty(rollBack)){
-                nextStage=verified;
-            }else{
-                nextStage="PROCRB";
+
+            //62875
+            ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+            if(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) &&
+                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
+                String stage = ParamUtil.getString(bpc.request,"nextStage");
+                if(!StringUtil.isEmpty(stage)){
+                    nextStage = stage;
+                }
+            }
+
+            if(!StringUtil.isEmpty(rollBack)){
+                nextStage = "PROCRB";
+            }else if(!StringUtil.isEmpty(verified)){
+                nextStage = verified;
             }
 
             String reply=ParamUtil.getString(bpc.request,"nextStageReplys");
@@ -425,7 +447,6 @@ public class HcsaApplicationDelegator {
             log.debug(StringUtil.changeForLog("the nextStage is -->:"+nextStage));
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", nextStage);
 
-            ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
             if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())
                   || ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())  ){
                 String[] fastTracking =  ParamUtil.getStrings(bpc.request,"fastTracking");

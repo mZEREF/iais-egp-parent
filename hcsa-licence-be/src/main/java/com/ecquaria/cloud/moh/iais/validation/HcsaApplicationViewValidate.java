@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -11,7 +12,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 public class HcsaApplicationViewValidate implements CustomizeValidator {
-    private final String STATUS = "APST000";
     private final String VERIFIED = "VERIFIED";
     private final String ROLLBACK = "ROLLBACK";
     private final String DECISION_APPROVAL = "decisionApproval";
