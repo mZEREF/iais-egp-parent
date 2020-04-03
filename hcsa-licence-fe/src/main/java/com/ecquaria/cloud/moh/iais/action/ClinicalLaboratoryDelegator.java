@@ -87,7 +87,7 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST, null);
         ParamUtil.setSessionAttr(bpc.request, ERRORMAP_GOVERNANCEOFFICERS, null);
         ParamUtil.setSessionAttr(bpc.request, RELOADSVCDOC,  null);
-
+        ParamUtil.setSessionAttr(bpc.request, "pleaseIndicate",  null);
         //ParamUtil.setSessionAttr(bpc.request, SERVICEPERSONNELCONFIG, null);
 
         log.debug(StringUtil.changeForLog("the do doStart end ...."));

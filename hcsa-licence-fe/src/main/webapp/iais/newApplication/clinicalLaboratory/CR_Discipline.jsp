@@ -87,7 +87,7 @@
                           <tr>
                             <td>
                               <div class="control-item-container parent-form-check" data-parent="<c:out value="${premIndexNo}${levelOneList.type}${levelOneList.name}" />" >
-                                <input type="checkbox"
+                                <input type="checkbox" onclick="doChangeOthers('${levelOneList.id}')"
                                 <c:if test="${reloadData[reloadIndexNo1] != null && reloadData[reloadIndexNo1] != ''}">
                                        checked="checked"
                                 </c:if>
@@ -126,7 +126,7 @@
                                 <td >
                                   <c:choose>
                                     <c:when test="${levelTwoList.id=='27D8EB5B-1123-EA11-BE78-000C29D29DB0'}">
-                                      <textarea name="pleaseIndicate" maxlength="200"  disabled>${pleaseIndicate}</textarea>
+                                      <textarea name="pleaseIndicate" maxlength="200" cols="45"  disabled>${pleaseIndicate}</textarea>
                                       <span class="error-msg" name="iaisErrorMsg" id="error_pleaseIndicateError"></span>
                                     </c:when>
                                   </c:choose>
@@ -184,6 +184,7 @@
 
     doEdit();
     doChangeText();
+    doChangeOthers();
   });
 
 
@@ -208,6 +209,19 @@
       }
     }
     num=num+1;
+  };
+
+  var numOthers=0;
+  var doChangeOthers = function (levelOneListId) {
+    if(levelOneListId==='0B38F14D-1123-EA11-BE78-000C29D29DB0'){
+      if(numOthers%2===1){
+        if($('textarea[name="pleaseIndicate"]').disabled===false){
+          num=num+1;
+        }
+        $('textarea[name="pleaseIndicate"]').prop('disabled',true);
+      }
+      numOthers=numOthers+1;
+    }
   };
 
 </script>
