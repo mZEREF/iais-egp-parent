@@ -68,7 +68,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             }
         }
 
-        if(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(status) || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
+        if(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(status) || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)){
             String nextStageReplys = ParamUtil.getRequestString(request, "nextStageReplys");
             if(StringUtil.isEmpty(nextStageReplys)){
                 errMap.put("nextStageReplys","The field is mandatory.");
