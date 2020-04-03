@@ -84,7 +84,7 @@
                         <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
                             <tr>
                                 <td>
-                                    <p><c:out value="${interalFile.docName}"></c:out></p>
+                                    <p><c:out value="${interalFile.docDesc}"></c:out></p>
                                 </td>
                                 <td>
                                     <p><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${interalFile.fileRepoId}"/>&fileRepoName=${interalFile.docName}" title="Download" class="downloadFile"><c:out

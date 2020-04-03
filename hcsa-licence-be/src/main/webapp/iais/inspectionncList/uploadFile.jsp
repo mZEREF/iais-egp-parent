@@ -4,17 +4,26 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="closeUploadDoc()">&times;</button>
                 <h4 class="modal-title" id="myModalLabel">Upload Internal Document</h4>
             </div>
             <div class="modal-body">
                 <form id="fileUploadForm" name="fileUploadForm" enctype="multipart/form-data"
                   action="" method="post">
-                    <iais:field value="Upload your files" required="true"/>
-                    <input type="hidden" id="uploadFile" name="uploadFile" value="">
-                    <input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file"/>
-                    <br /> <small class="error" style="margin: 0 0 0 140px;"></small>
-                    <span id="error_fileUploadForm" name="iaisErrorMsg" class="error-msg"></span>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Document</label>
+                        <div class="col-xs-8 col-sm-8 col-md-8">
+                            <p><input type="text" maxlength="50" id="fileRemark" name="fileRemark" value="${fileRemarkString}"></p>
+                            <br /> <small class="error" ><span id ="fileRemarkShow" style="color: #D22727; font-size: 1.6rem"></span></small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Upload your files <span style="color: red"> *</span></label>
+                        <div class="col-xs-8 col-sm-8 col-md-8">
+                            <p><input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file"/></p>
+                            <br /> <small class="error"><span id="selectedFileShow" style="color: #D22727; font-size: 1.6rem"></span></small>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -37,16 +46,16 @@
     };
 
     function closeUploadDoc(){
-        $('#uploadDoc small.error').html('').hide();
+        $('#selectedFileShow').html('')
+        $('#fileRemarkShow').html('')
+        $('#fileRemark').val('');
         $('#uploadDoc').dialog('close');
         doDeleteShowFileName();
     };
 
     function uploadInternalDoc(){
-        $('#uploadDoc small.error').html('').hide();
-        var selectedFile = $('#uploadDoc').find('[name="selectedFile"]').val();
         showWaiting();
-        if(selectedFile != null && selectedFile != "" )
+        if(validateUploadInternal())
              callAjaxUploadFile();
         dismissWaiting();
     }
@@ -84,15 +93,18 @@
             contentType: false,
             dataType: "json",
             success: function (data) {
-               $("#cancelDoc").click();
+
                 if(data != null && data.fileSn != -1){
                     if(data.fileSn == 0){
                         removeNoData();
                     }
-                    var tr = "<tr>"+"<td><p>" +data.docName+"</p></td>" +"<td><p>"+  data.url +data.docName+"."+data.docType+"</p></td>"+
+                    var tr = "<tr>"+"<td><p>" +data.docDesc+"</p></td>" +"<td><p>"+  data.url +data.docName+"."+data.docType+"</p></td>"+
                         "<td><p>" +data.docSize+"KB"+"</p></td>"+ "<td><p>" +data.submitByName+"</p></td>"+ "<td><p>" +data.submitDtString+"</p></td>"
                         + "<td>" +  " <a  onclick =\"javascript:deleteFile(this,'"+data.id+"');\""+"><label style=\"color: #D22727; font-size: 2rem; cursor:pointer;\">X</label></a>"+"</td>"+"</tr>";
                     doAddTr(tr);
+                    $("#cancelDoc").click();
+                }else if(data != null && data.fileSn ==-1){
+                    $('#selectedFileShow').html(data.noFilesMessage);
                 }
             },
             error: function (msg) {
@@ -112,5 +124,23 @@
     }
     function removeNoData() {
         $("#tbodyFileListId").find("tr")[0].remove();
+    }
+
+    function validateUploadInternal(){
+        var flag = true;
+        $('#selectedFileShow').html('')
+        $('#fileRemarkShow').html('')
+        var selectedFile = $('#uploadDoc').find('[name="selectedFile"]').val();
+        if(selectedFile == null || selectedFile== ""){
+            $('#selectedFileShow').html('The file cannot be empty.');
+            return false;
+        }
+        var fileRemarkMaxLength = 50;
+        var fileRemarkLength = $('#fileRemark').val().length;
+        if(fileRemarkLength > fileRemarkMaxLength){
+            $('#fileRemarkShow').html('Exceeding the maximum length by ' + fileRemarkMaxLength );
+            flag = flag && false;
+        }
+        return flag;
     }
 </script>
