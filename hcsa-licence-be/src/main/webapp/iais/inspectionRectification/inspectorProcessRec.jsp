@@ -25,7 +25,7 @@
     <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="InspectorProRectificationType" value="">
     <input type="hidden" id="actionValue" name="actionValue" value="">
-    <input type="hidden" id="processDec" name="processDec" value="">
+    <input type="hidden" id="processDec" name="processDec" value="${inspectionPreTaskDto.selectValue}">
     <input type="hidden" id="validateShowPage" name="validateShowPage" value="${validateShowPage}">
     <div class="main-content">
       <div class="row">
@@ -521,10 +521,18 @@
 
     function doInspectorProRecChange(value) {
         $("#processDec").val(value);
-        if("REDECI007" == value){
-            $("#indicateCondRemarks").show();
-        } else if ("REDECI007" != value){
+        if("REDECI006" == value){
             $("#indicateCondRemarks").hide();
+            $("#processRec").show();
+            $("#processRecRfi").hide();
+        } else if ("REDECI001" == value){
+            $("#indicateCondRemarks").hide();
+            $("#processRec").hide();
+            $("#processRecRfi").show();
+        } else if("REDECI007" == value) {
+            $("#indicateCondRemarks").show();
+            $("#processRec").show();
+            $("#processRecRfi").hide();
         }
     }
 
@@ -538,18 +546,12 @@
         if("REDECI006" == processDec){
             $("#actionValue").val('accept');
             inspectorProRecSubmit("accept");
-            $("#processRec").show();
-            $("#processRecRfi").hide();
         } else if ("REDECI001" == processDec){
             $("#actionValue").val('request');
             inspectorProRecSubmit("request");
-            $("#processRec").hide();
-            $("#processRecRfi").show();
         } else if("REDECI007" == processDec) {
             $("#actionValue").val('acccond');
             inspectorProRecSubmit("acccond");
-            $("#processRec").show();
-            $("#processRecRfi").hide();
         } else {
             var errMsg = 'The field is mandatory.';
             $("#error_selectValue").text(errMsg);
