@@ -41,8 +41,8 @@ public class AppPremisesRoutingHistoryServiceImpl implements AppPremisesRoutingH
     }
 
     @Override
-    public AppPremisesRoutingHistoryDto getSecondRouteBackHistoryByAppNo(String appNo) {
-        return appPremisesRoutingHistoryClient.getSecondRouteBackHistoryByAppNo(appNo).getEntity();
+    public AppPremisesRoutingHistoryDto getSecondRouteBackHistoryByAppNo(String appNo,String status) {
+        return appPremisesRoutingHistoryClient.getSecondRouteBackHistoryByAppNo(appNo,status).getEntity();
     }
 
     @Override
