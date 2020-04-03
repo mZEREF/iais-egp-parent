@@ -156,7 +156,7 @@
         </div>
         <iais:action>
             <a onclick="confirmBack('back')"><em class="fa fa-angle-left" style="padding-left: 2%"></em> Back</a>
-            <a style="margin-left: 90%" class="btn btn-primary" onclick="confirmSubmit('submit')">SUBMIT</a>
+            <a style="margin-left: 90%" class="btn btn-primary" onclick="confirmSubmit('submit')">Next</a>
         </iais:action>
     </div>
 </form>

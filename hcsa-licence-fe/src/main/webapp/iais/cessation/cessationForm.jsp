@@ -285,7 +285,7 @@
         </div>
         <iais:action>
             <a href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left" style="padding-left: 2%"></em> Back</a>
-            <a style="margin-left: 90%" class="btn btn-primary" onclick="submitSure('submit')">SUBMIT</a>
+            <a style="margin-left: 90%" class="btn btn-primary" onclick="submitSure('submit')">Next</a>
         </iais:action>
     </div>
     <%@include file="/include/validation.jsp" %>
