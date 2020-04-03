@@ -17,7 +17,15 @@
         <c:set var="premValue" value="${status.index}"/>
         <div class="col-xs-12">
             <div class="form-horizontal">
-                <p><strong class="app-font-size-22 premHeader">Premises ${status.index+1}</strong></p>
+                <div><strong class="app-font-size-22 premHeader">Premises ${status.index+1}</strong>
+                    <c:if test="${!status.first && requestInformationConfig==null && 'APTY004' !=AppSubmissionDto.appType && 'APTY005' !=AppSubmissionDto.appType}">
+                        <div class="row" style="float:right">
+                            <div class="form-check removeBtn">
+                                <div class="fa fa-times-circle"></div>
+                            </div>
+                        </div>
+                    </c:if>
+                </div>
             </div>
             <div class="form-horizontal">
                 <div class="form-group premisesTypeDiv" id="premisesType" <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType}">hidden</c:if> >
@@ -57,13 +65,6 @@
                         </div>
                     </c:forEach>
 
-                    <c:if test="${!status.first && requestInformationConfig==null && 'APTY004' !=AppSubmissionDto.appType && 'APTY005' !=AppSubmissionDto.appType}">
-                        <div class="col-xs-5 col-md-1">
-                            <div class="form-check removeBtn">
-                                <div class="fa fa-times-circle"></div>
-                            </div>
-                        </div>
-                    </c:if>
                 </div>
                 <div class="row">
                     <div class="col-xs-12 col-md-4"></div>

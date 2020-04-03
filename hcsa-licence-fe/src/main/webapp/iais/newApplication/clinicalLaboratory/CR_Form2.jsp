@@ -94,14 +94,14 @@
                               <div class=" form-group form-horizontal formgap">
                                 <div class="control-label formtext assign-header cgo-header">
                                   Clinical Governance Officer <label class="assign-psn-item">${status.index+1}</label>
-                                </div><br/>
-                                <c:if test="${!status.first}">
-                                  <div class="row" style="float:right">
-                                    <div class="form-check removeBtn">
-                                      <div class="fa fa-times-circle"></div>
+                                  <c:if test="${!status.first}">
+                                    <div class="row" style="float:right">
+                                      <div class="form-check removeBtn">
+                                        <div class="fa fa-times-circle"></div>
+                                      </div>
                                     </div>
-                                  </div>
-                                </c:if>
+                                  </c:if>
+                                </div><br/>
                                 <div class="col-sm-5 control-label formtext ">
                                   <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Add/Assign a Clinical Governance Officer</label>
                                   <span class="upload_controls"></span>
