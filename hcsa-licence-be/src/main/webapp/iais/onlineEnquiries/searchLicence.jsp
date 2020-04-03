@@ -52,7 +52,7 @@
                                             <iais:field value="Application No."/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" maxlength="15" style="width:180%; font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
+                                                    <input type="text" maxlength="20" style="width:180%; font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
                                                 </label>
                                             </iais:value>
                                         </iais:row>
@@ -90,7 +90,7 @@
                                             <iais:field value="Licence No."/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" maxlength="15" style="width:180%; font-weight:normal;" name="licence_no" value="${SearchParam.filters['licence_no']}" />
+                                                    <input type="text" maxlength="20" style="width:180%; font-weight:normal;" name="licence_no" value="${SearchParam.filters['licence_no']}" />
                                                 </label>
                                             </iais:value>
                                         </iais:row>

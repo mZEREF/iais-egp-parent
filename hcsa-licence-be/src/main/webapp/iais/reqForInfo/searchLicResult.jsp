@@ -31,7 +31,7 @@
                                         <iais:field value="Search No"/>
                                         <iais:value width="18">
                                             <label>
-                                                <input type="text" name="search_no" value="${search_no}" style="width:180%; font-weight:normal;" />
+                                                <input type="text" name="search_no" maxlength="20" value="${search_no}" style="width:180%; font-weight:normal;" />
                                             </label>
                                         </iais:value>
                                     </iais:row>
