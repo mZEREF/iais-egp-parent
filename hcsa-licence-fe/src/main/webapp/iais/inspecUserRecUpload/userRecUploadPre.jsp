@@ -40,7 +40,7 @@
                           <th>NC Clause</th>
                           <th>Checklist Question</th>
                           <th>Actions</th>
-                          <th>Rectified?</th>
+                          <th>Rectification Uploaded?</th>
                         </tr>
                         </thead>
                         <tbody>
