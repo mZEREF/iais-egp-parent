@@ -60,7 +60,7 @@
                                     </iais:row>
                                     <iais:row >
                                         <p style="color:#ff0000; display: none" id="periodDateError">
-                                            Licence Period From cannot be later than Licence Period To.                                            </p>
+                                            Licence Period Date From cannot be later than Licence Period Date To.                                            </p>
                                     </iais:row>
                                     <iais:action style="text-align:left;">
                                         <a  onclick="javascript:doLicBack()">< Back</a>
