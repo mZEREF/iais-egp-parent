@@ -165,7 +165,7 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
         BigDecimal finInpBig = new BigDecimal(finInp.toString());
         BigDecimal leaInpBig = new BigDecimal(leaInp.toString());
         BigDecimal legInpBig = new BigDecimal(legInp.toString());
-        BigDecimal result = lastBig.add(seclastInpBig).add(finInpBig).add(leaInpBig).add(legInpBig).add(lastBig);
+        BigDecimal result = lastBig.add(seclastInpBig).add(finInpBig).add(leaInpBig).add(legInpBig);
         if(result.doubleValue()!=1.0D){
             errMap.put(temp.getServiceCode()+"totalw", "The total weight should be 1");
         }
