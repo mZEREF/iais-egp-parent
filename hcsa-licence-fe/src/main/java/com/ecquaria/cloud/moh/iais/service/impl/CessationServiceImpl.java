@@ -150,6 +150,7 @@ public class CessationServiceImpl implements CessationService {
         if (licenceDtos != null && !licenceDtos.isEmpty()) {
             for (LicenceDto licenceDto : licenceDtos) {
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
+                licenceClient.doUpdate(licenceDto);
             }
         }
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);

@@ -89,7 +89,7 @@
                   <thead>
                   <tr>
                     <th>No.</th>
-                    <th>Regulation Clause</th>
+                    <th>Regulation Clause Number</th>
                     <th>Item</th>
                     <th>Yes</th>
                     <th>No</th>

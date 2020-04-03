@@ -29,8 +29,6 @@
                     <div class="col-xs-12">
                         <br><br>
                         <div class="prelogin-title">
-                            <%--<h1>Integrated Application and <br class="hidden-xs"> Inspection System (IAIS)</h1>--%>
-                            <p class="component-desc">Please submit your inspection time in idle state.</p>
                         </div>
 
                         <br>

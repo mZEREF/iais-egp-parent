@@ -93,7 +93,7 @@
                   <%@include file="../common/premisesContent.jsp"%>
                 </div>
                 <div class="row">
-                  <div class="col-xs-12" id="addPremBody">
+                  <div class="col-xs-12" id="addPremBody" hidden>
                     <c:if test="${requestInformationConfig==null && 'APTY005' !=AppSubmissionDto.appType && !multiBase && 'APTY004' !=AppSubmissionDto.appType}">
                       <button id="addPremBtn" class="btn btn-primary" type="button">Add Premises</button>
                     </c:if>
@@ -242,10 +242,17 @@
         init = 1;
     });
 
+
     $("#onSiteSel").change(function(){
         $("#addPremBody").removeAttr("hidden");
     })
+    var oval = $("#onSiteSel").val();
+    var cval = $("#conveyanceSel").val();
+    console.log("oval"+cval);
 
+    if (oval != -1 || cval != -1) {
+        $("#addPremBody").removeAttr("hidden");
+    }
     $("#conveyanceSel").change(function(){
         $("#addPremBody").removeAttr("hidden");
     })

@@ -262,42 +262,57 @@ public class MohIntranetUserDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
                 return;
-            } else if (IntranetUserConstant.DEACTIVATE.equals(actionType)) {
-                orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
-                intranetUserService.updateOrgUser(orgUserDto);
-                clientUser.setAccountStatus(ClientUser.STATUS_INACTIVE);
-                intranetUserService.updateEgpUser(clientUser);
-                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                errorMap.put("userId", "This user is already in Deactivated status.");
-                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                return;
-            } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType)) {
-                orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
-                intranetUserService.updateOrgUser(orgUserDto);
-                clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
-                intranetUserService.updateEgpUser(clientUser);
-                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                errorMap.put("userId", "This user is already in Active status.");
-                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                return;
-            } else if (IntranetUserConstant.TERMINATE.equals(actionType)) {
-                orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_TERMINATED);
-                intranetUserService.updateOrgUser(orgUserDto);
-                clientUser.setAccountStatus(ClientUser.STATUS_TERMINATED);
-                intranetUserService.updateEgpUser(clientUser);
-                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                errorMap.put("userId", "This user is already in Terminated status.");
-                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                return;
-            } else if (IntranetUserConstant.UNLOCK.equals(actionType)) {
-                orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
-                intranetUserService.updateOrgUser(orgUserDto);
-                clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
-                intranetUserService.updateEgpUser(clientUser);
-                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                errorMap.put("userId", "This user is already in Active status.");
-                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                return;
+            }else{
+                String status = orgUserDto.getStatus();
+                if (IntranetUserConstant.DEACTIVATE.equals(actionType)&&IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status)) {
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+                    errorMap.put("userId", "This user is already in Deactivated status.");
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                    return;
+                }else if(IntranetUserConstant.DEACTIVATE.equals(actionType)&&!IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status)){
+                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
+                    intranetUserService.updateOrgUser(orgUserDto);
+                    clientUser.setAccountStatus(ClientUser.STATUS_INACTIVE);
+                    intranetUserService.updateEgpUser(clientUser);
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+                    return;
+                }else if (IntranetUserConstant.REDEACTIVATE.equals(actionType)&&IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+                    errorMap.put("userId", "This user is already in Active status.");
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                    return;
+                }else if (IntranetUserConstant.REDEACTIVATE.equals(actionType)&&!IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
+                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+                    intranetUserService.updateOrgUser(orgUserDto);
+                    clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+                    intranetUserService.updateEgpUser(clientUser);
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+                    return;
+                }else if (IntranetUserConstant.TERMINATE.equals(actionType)&&IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+                    errorMap.put("userId", "This user is already in Terminated status.");
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                    return;
+                }else if (IntranetUserConstant.TERMINATE.equals(actionType)&&!IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_TERMINATED);
+                    intranetUserService.updateOrgUser(orgUserDto);
+                    clientUser.setAccountStatus(ClientUser.STATUS_TERMINATED);
+                    intranetUserService.updateEgpUser(clientUser);
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+                    return;
+                }  else if (IntranetUserConstant.UNLOCK.equals(actionType)&&IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+                    errorMap.put("userId", "This user is already in Active status.");
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                    return;
+                }else if (IntranetUserConstant.UNLOCK.equals(actionType)&&!IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
+                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+                    intranetUserService.updateOrgUser(orgUserDto);
+                    clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+                    intranetUserService.updateEgpUser(clientUser);
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+                    return;
+                }
             }
         } else {
             errorMap.put("userId", "ERR0009");

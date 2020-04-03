@@ -738,7 +738,7 @@ public class NewApplicationAjaxController {
             }
             break;
         }
-        String errMsg = "You are allowed to add up till only "+hasNumber+" DPO";
+        String errMsg = "You are allowed to add up till only "+dpoMmaximumCount+" DPO";
         if (dpoMmaximumCount - hasNumber > 0){
             String svcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
             //assign select

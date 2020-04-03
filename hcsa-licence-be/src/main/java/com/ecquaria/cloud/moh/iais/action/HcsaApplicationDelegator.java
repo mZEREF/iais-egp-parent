@@ -206,24 +206,17 @@ public class HcsaApplicationDelegator {
         }
         applicationViewDto.setRollBack(rollBackMap);
 
-
-
-
-       Integer rfiCount =  applicationService.getAppBYGroupIdAndStatus(applicationViewDto.getApplicationDto().getAppGrpId(),
-               ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
-       log.info(StringUtil.changeForLog("The rfiCount is -->:"+rfiCount));
-
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
 //            routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast");
 //            routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Trigger to DMS");
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationViewDto.getApplicationDto().getStatus())){
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_REPLY,"Broadcast Reply For Internal");
+//            routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_REPLY,"Broadcast Reply For Internal");
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())
                 || ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())
                 || ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(applicationViewDto.getApplicationDto().getStatus())){
-            if(rfiCount==0){
+//            if(rfiCount==0){
 //                routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
-            }
+//            }
         }else if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_REPLY,"Broadcast Reply For Internal");
         }
@@ -314,8 +307,13 @@ public class HcsaApplicationDelegator {
             nextStageList.add(new SelectOption("ROLLBACK", "Internal Route Back"));
         }
         //62761
+        Integer rfiCount =  applicationService.getAppBYGroupIdAndStatus(applicationViewDto.getApplicationDto().getAppGrpId(),
+                ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
+        log.info(StringUtil.changeForLog("The rfiCount is -->:"+rfiCount));
         if(!(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()))){
-            nextStageList.add(new SelectOption("PROCRFI", "Request For Information"));
+            if(rfiCount==0){
+                nextStageList.add(new SelectOption("PROCRFI", "Request For Information"));
+            }
         }
         //62875
         if(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
