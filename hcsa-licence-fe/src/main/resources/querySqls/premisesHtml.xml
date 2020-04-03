@@ -185,6 +185,7 @@
                   </div>
                 <div class="clear"></div>
                 </div>
+                 <span class="error-msg" name="iaisErrorMsg" id="error_"></span>
                 <div class="form-group">
                   <label class="col-xs-12 col-md-4 control-label">
                     Public Holidays Operating Hours (Start)
@@ -198,6 +199,7 @@
                             (PBHOLDAYSTARTMM)
                       </div>
                       <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                       <span class="error-msg" name="iaisErrorMsg" id="error_"></span>
                       </div>
                 </div>
                 <div class="form-group">
@@ -321,6 +323,7 @@
                     (CONVPUBLICHOLIDAYDD)
                   </div>
                 <div class="clear"></div></div>
+                    <span class="error-msg" name="iaisErrorMsg" id="error_"></span>
                 <div class="form-group">
                   <label class="col-xs-12 col-md-4 control-label">
                     Public Holidays Operating Hours (Start)
@@ -334,6 +337,7 @@
                             (CONVEYANCEPBHOLDAYSTARTMM)
                       </div>
                         <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                         <span class="error-msg" name="iaisErrorMsg" id="error_"></span>
                   </div>
                 </div>
                 <div class="form-group">

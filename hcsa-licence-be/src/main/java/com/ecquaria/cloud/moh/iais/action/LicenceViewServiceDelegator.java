@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -32,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import java.io.Serializable;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +88,7 @@ public class LicenceViewServiceDelegator {
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData start ..."));
         String rfi = bpc.request.getParameter("rfi");
         if(!StringUtil.isEmpty(rfi)){
-            bpc.request.setAttribute("rfi","rfi");
+            bpc.request.getSession().setAttribute("rfi","rfi");
         }
         bpc.request.getSession().removeAttribute(NOT_VIEW);
         ApplicationViewDto applicationViewDto=(ApplicationViewDto) bpc.request.getSession().getAttribute("applicationViewDto");
@@ -219,6 +221,17 @@ public class LicenceViewServiceDelegator {
                 appGrpPremisesDto.setOnsiteEndHH(s1.split(":")[0]);
             }
         }
+
+        String serviceId = applicationViewDto.getApplicationDto().getServiceId();
+        List<String> list=IaisCommonUtils.genNewArrayList();
+        list.add(serviceId);
+        List<HcsaServiceStepSchemeDto> entity = hcsaConfigClient.getServiceStepsByServiceIds(list).getEntity();
+        List<String> stringList=IaisCommonUtils.genNewArrayList();
+        for(HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto : entity){
+            stringList.add(hcsaServiceStepSchemeDto.getStepCode());
+        }
+        bpc.request.getSession().setAttribute("hcsaServiceStepSchemeDtoList",stringList);
+
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData end ..."));
     }

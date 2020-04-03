@@ -922,6 +922,35 @@ public class ClinicalLaboratoryDelegator {
 
                 }
             }
+            String crud_action_values =mulReq.getParameter( "nextStep");
+
+            String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+            AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
+            appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoList);
+            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
+            log.debug(StringUtil.changeForLog("the do doDocuments end ...."));
+
+            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
+            if("next".equals(crud_action_values)){
+                doValidateSvcDocument(bpc.request,errorMap);
+            }
+            HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+            Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
+            if(errorMap.isEmpty()&&allChecked.isEmpty()){
+                coMap.put("information","information");
+            }else {
+                coMap.put("information","");
+            }
+            bpc.request.getSession().setAttribute("coMap",coMap);
+
+            if(!errorMap.isEmpty()){
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"serviceForms");
+                String crud_action_type_form_page = mulReq.getParameter( "crud_action_type_form_page");
+                ParamUtil.setRequestAttr(bpc.request,"crud_action_type_form_page",crud_action_type_form_page);
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.DOCUMENTS);
+                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                return;
+            }
 
             if( commonsMultipartFileMap!= null && commonsMultipartFileMap.size()>0){
                 for(AppSvcDocDto appSvcDocDto1:appSvcDocDtoList){
@@ -934,36 +963,6 @@ public class ClinicalLaboratoryDelegator {
                 }
             }
 
-        }
-        String crud_action_values =mulReq.getParameter( "nextStep");
-
-
-
-        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
-        appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoList);
-        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
-        log.debug(StringUtil.changeForLog("the do doDocuments end ...."));
-
-
-        if("next".equals(crud_action_values)){
-            doValidateSvcDocument(bpc.request,errorMap);
-            HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
-            Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
-            if(errorMap.isEmpty()&&allChecked.isEmpty()){
-                coMap.put("information","information");
-            }else {
-                coMap.put("information","");
-            }
-            if(!errorMap.isEmpty()){
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"serviceForms");
-                String crud_action_type_form_page = mulReq.getParameter( "crud_action_type_form_page");
-                ParamUtil.setRequestAttr(bpc.request,"crud_action_type_form_page",crud_action_type_form_page);
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.DOCUMENTS);
-                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                return;
-            }
-            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
         }
 
     }

@@ -11,7 +11,7 @@
                 <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT001'}">
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>PersonnelType :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel :</p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Radiology Professional</p>
@@ -53,10 +53,10 @@
                 <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT002'}">
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>PersonnelType :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel :</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Radiation Safety Officer</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Medical Physicist</p>
                     </td>
                   </tr>
                   <tr>
@@ -87,10 +87,10 @@
                 <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT003'}">
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>PersonnelType :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel :</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> Medical Physicist</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Radiation Safety Officer</p>
                     </td>
                   </tr>
                   <tr>
@@ -105,7 +105,7 @@
                 <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT004'}">
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>PersonnelType :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel :</p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Registered Nurse</p>

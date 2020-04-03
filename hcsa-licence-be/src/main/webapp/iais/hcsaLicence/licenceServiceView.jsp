@@ -115,7 +115,7 @@
                                       </div>
                                       <div class="row">
                                         <div class="col-md-6">
-                                          <label>Office Telephone No</label>
+                                          <label>Office Telephone No.</label>
                                         </div>
                                         <div class="col-md-6">
                                             ${appGrpPremDto.offTelNo}
@@ -169,7 +169,7 @@
 
                                     <div class="row">
                                       <div class="col-md-6">
-                                        <label>Block / House No</label>
+                                        <label>Block / House No.</label>
                                       </div>
                                       <div class="col-md-6">
                                           ${appGrpPremDto.blkNo}
@@ -186,7 +186,7 @@
 
                                     <div class="row">
                                       <div class="col-md-6">
-                                        <label>Unit No</label>
+                                        <label>Unit No.</label>
                                       </div>
                                       <div class="col-md-6">
                                           ${appGrpPremDto.unitNo}
@@ -204,7 +204,7 @@
 
                                     <div class="row">
                                       <div class="col-md-6">
-                                        <label>Floor No</label>
+                                        <label>Floor No.</label>
                                       </div>
                                       <div class="col-md-6">
                                         ${appGrpPremDto.floorNo}
@@ -299,7 +299,7 @@
                                     <div class="col-md-6">
                                         ${appPremPhOpenPeriod.startFrom}
                                           <wrms:value width="7">
-                                          <span class="newVal " attr="${appGrpPremDto.startFrom}" style="display: none"><label><c:out
+                                          <span class="newVal " attr="${appPremPhOpenPeriod.startFrom}" style="display: none"><label><c:out
                                                   value=""/></label></span>
                                             <span class="oldVal compareTdStyle"
                                                   attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index][statu.index].startFrom}"
@@ -423,11 +423,12 @@
                                aria-labelledby="headingServiceInfo0">
                             <div class="panel-body">
                               <p class="text-right">
-                                <c:if test="${rfi=='fri'}">
-                                  <c:if test="${appEdit.serviceEdit}">
+
+                                <c:if test="${appEdit.serviceEdit}">
+                                    <c:if test="${rfi=='fri'}">
                                     <input class="form-check-input" id="serviceCheckbox" type="checkbox"
                                            name="editCheckbox" aria-invalid="false" value="service">
-                                  </c:if>
+                                    </c:if>
                                 </c:if>
                               </p>
                               <iframe class="svc-iframe" title=""
