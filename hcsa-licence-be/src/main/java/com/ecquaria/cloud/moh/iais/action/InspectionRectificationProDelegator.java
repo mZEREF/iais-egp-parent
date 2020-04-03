@@ -383,7 +383,11 @@ public class InspectionRectificationProDelegator {
         //get fileReportId
         AppPremisesSpecialDocDto appPremisesSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(taskDto.getRefNo()).getEntity();
         //get file report
-        FileRepoDto fileRepoDto = inspectionRectificationProService.getFileReportById(appPremisesSpecialDocDto.getFileRepoId());
+        FileRepoDto fileRepoDto = null;
+        if(appPremisesSpecialDocDto != null && !StringUtil.isEmpty(appPremisesSpecialDocDto.getFileRepoId())) {
+            fileRepoDto = inspectionRectificationProService.getFileReportById(appPremisesSpecialDocDto.getFileRepoId());
+            inspectionReportDto.setPracticesFileId(appPremisesSpecialDocDto.getFileRepoId());
+        }
         //get inspector lead
         List<String> inspectorLeads = inspectionRectificationProService.getInspectorLeadsByWorkGroupId(taskDto.getWkGrpId());
         //get inspectors
@@ -393,7 +397,6 @@ public class InspectionRectificationProDelegator {
 
         inspectionReportDto.setInspectors(inspectorUser.getInspectors());
         inspectionReportDto.setInspectorLeads(inspectorLeads);
-        inspectionReportDto.setPracticesFileId(appPremisesSpecialDocDto.getFileRepoId());
         inspectionReportDto.setNcCount(ncCount);
         ParamUtil.setSessionAttr(bpc.request, "inspectionReportDto", inspectionReportDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
