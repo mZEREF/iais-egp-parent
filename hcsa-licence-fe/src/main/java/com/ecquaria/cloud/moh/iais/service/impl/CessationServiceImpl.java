@@ -232,7 +232,7 @@ public class CessationServiceImpl implements CessationService {
         applicationGroupDto.setAmount(0.0);
         applicationGroupDto.setIsPreInspection(1);
         applicationGroupDto.setIsInspectionNeeded(1);
-        applicationGroupDto.setLicenseeId("36F8537B-FE17-EA11-BE78-000C29D29DB0");
+        applicationGroupDto.setLicenseeId("9ED45E34-B4E9-E911-BE76-000C29C8FBE4");
         applicationGroupDto.setIsBundledFee(9966);
         applicationGroupDto.setIsCharitable(0);
         applicationGroupDto.setIsByGiro(0);

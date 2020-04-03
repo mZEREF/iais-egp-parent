@@ -475,29 +475,29 @@
 
     function changePeriod(obj) {
         if (obj == "Others") {
-            document.getElementById("selfPeriod").style.display = "";
             $("#selfPeriod").show();
         } else {
-            document.getElementById("selfPeriod").style.display = "none";
+            $("#selfPeriod").hide();
+            $("#period").hide();
         }
     }
 
     function changeRecommendation(obj) {
-        if (obj == "Approved") {
-            document.getElementById("period").style.display = "";
+        if (obj == "Approved" || obj == "ApprovedLTC") {
             $("#period").show();
         } else {
-            document.getElementById("period").style.display = "none";
+            $("#period").hide();
+            $("#selfPeriod").hide();
+            $("#period").hide();
         }
     }
 
 
     function changeEngage() {
         if ($('#enforcement').is(':checked')) {
-            document.getElementById("engageRemarks").style.display = "";
             $("#engageRemarks").show();
         } else {
-            document.getElementById("engageRemarks").style.display = "none";
+            $("#engageRemarks").hide();
         }
     }
 

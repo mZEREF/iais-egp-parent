@@ -40,7 +40,7 @@
                 <c:forEach items="${confirmDtos}" var="appCess" varStatus="num">
                     <c:set var="hciDtoNum" value="${fn:length(appCess.appCessHciDtos)}"/>
                     <%--                           <c:if test="${hciDtoNum > 1}">--%>
-                    <tr style="text-align:center;height: 13em">
+                    <tr style="text-align:center;height: 14em">
                         <td rowspan="${hciDtoNum}">
                             <p><c:out value="${num.count}"/></p>
                         </td>
@@ -55,35 +55,35 @@
                             <td><p><c:out value="${appCessHci.hciAddress}"></c:out></p></td>
                             <td style="padding: 1%"><fmt:formatDate value="${appCessHci.effectiveDate}" pattern="dd/MM/yyyy"/></td>
                             <td style="margin-right: 1%;padding: 1%"><iais:select disabled="true" id="${num.count}reasonId${uid.count}" name="${num.count}reason${uid.count}" options="reasonOption" value="${appCessHci.reason}"/>
-                                <div style="margin-top: 25%" id="${num.count}reason${uid.count}" hidden><textarea disabled="disabled" style="resize:none" type="text" name="${num.count}otherReason${uid.count}" rows="2" cols="30" maxlength="200" res><c:out value="${appCessHci.otherReason}"/></textarea></div>
+                                <div style="margin-top: 25%" id="${num.count}reason${uid.count}" hidden><iais:input needDisabled="true" type="text" name="${num.count}otherReason${uid.count}" value="${appCessHci.otherReason}"></iais:input></div>
                             </td>
                             <td style="padding-left: 4%;width: 30em; position: relative">
                                 <table>
                                     <tr>
                                         <td style="padding-left: 4%;width: 10%;position: absolute;top: 5%;left: 30% ;width: 20%">
-                                            <input type="radio" name="${num.count}patRadio${uid.count}" value="yes" id="${num.count}radioYes${uid.count}" <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if> onchange="javascirpt:changePatSelect(this.value);"> Yes</td>
+                                            <input onclick="return false" type="radio" name="${num.count}patRadio${uid.count}" value="yes" id="${num.count}radioYes${uid.count}" <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if> onchange="javascirpt:changePatSelect(this.value);"> Yes</td>
                                         <td style="padding-left: 2%;width: 10%;position: absolute;top: 5%;right: 30% ;width: 20%">
-                                            <input type="radio" name="${num.count}patRadio${uid.count}" value="no" id="${num.count}radioNo${uid.count}" <c:if test="${appCessHci.patNeedTrans == false}">checked</c:if> onchange="javascirpt:changePatSelect(this.value);"> No</td>
+                                            <input onclick="return false" type="radio" name="${num.count}patRadio${uid.count}" value="no" id="${num.count}radioNo${uid.count}" <c:if test="${appCessHci.patNeedTrans == false}">checked</c:if> onchange="javascirpt:changePatSelect(this.value);"> No</td>
                                     </tr>
                                     <tr id="${num.count}patYes${uid.count}" hidden>
                                         <td style="position: absolute;top: 25%;left: 3% ;width: 40%"><div>Who will take over your patients' case records?</div></td>
-                                        <td style="position: absolute;top: 25%;right: 5% ;width: 50%"><iais:select disabled="true" name="${num.count}patientSelect${uid.count}" options="patientsOption" firstOption="Please select" id="${num.count}patientSelectId${uid.count}" onchange="javascirpt:changePatient(this.value);" value="${appCessHci.patientSelect}"/></td>
+                                        <td style="position: absolute;top: 25%;right: 5% ;width: 50%"><iais:select disabled="true" name="${num.count}patientSelect${uid.count}" options="patientsOption" firstOption="Please Select" id="${num.count}patientSelectId${uid.count}" onchange="javascirpt:changePatient(this.value);" value="${appCessHci.patientSelect}"/></td>
                                     </tr>
-                                    <tr id="${num.count}patHciName${uid.count}" hidden><td style="position: absolute;top: 55%;left: 3% ;width: 30%">HCI Name</td><td style="position: absolute;top: 55%;right: 3% ;width: 55%"><textarea rows="2" cols="30" disabled ="disabled" style="resize:none" maxlength="100" name="${num.count}patHciName${uid.count}"><c:out value="${appCessHci.patHciName}"/></textarea></td><span style="position: absolute;top: 85%;left: 10% ;width: 80%" id="error_${num.count}patHciName${uid.count}" name="iaisErrorMsg" class="error-msg"></span>
+                                    <tr id="${num.count}patHciName${uid.count}" hidden>
+                                        <td style="position: absolute;top: 55%;left: 3% ;width: 30%">HCI Name</td>
+                                        <td style="position: absolute;top: 55%;right: 5% ;width: 50%"><iais:input type="text" needDisabled="true" value="${appCessHci.patHciName}" maxLength="100" name="${num.count}patHciName${uid.count}"></iais:input></td>
                                     </tr>
                                     <tr id="${num.count}patRegNo${uid.count}" hidden>
-                                        <td style="position: absolute;top: 55%;left: 3% ;width: 30%">Professional Registered No.</td>
-                                        <td style="position: absolute;top: 55%;right: 3% ;width: 55%"><textarea style="resize:none" disabled="disabled" maxlength="20" rows="2" cols="30" name="${num.count}patRegNo${uid.count}"><c:out value="${appCessHci.patRegNo}"/></textarea></td>
+                                        <td style="position: absolute;top: 55%;left: 3% ;width: 30%">Professional Regn No.</td>
+                                        <td style="position: absolute;top: 55%;right: 5% ;width: 50%"><iais:input needDisabled="true" cssClass="disabled" type="text" name="${num.count}patRegNo${uid.count}" value="${appCessHci.patRegNo}"></iais:input></td>
                                     </tr>
                                     <tr id="${num.count}patOthers${uid.count}" hidden>
                                         <td style="position: absolute;top: 55%;left: 3% ;width: 30%">Others</td>
-                                        <td style="position: absolute;top: 55%;right: 3% ;width: 55%"><textarea disabled="disabled" style="resize:none" maxlength="100" rows="2" cols="30" name="${num.count}patOthers${uid.count}"><c:out value="${appCessHci.patOthers}"/></textarea></td>
+                                        <td style="position: absolute;top: 55%;right: 5% ;width: 50%"><iais:input needDisabled="true" type="text" name="${num.count}patOthers${uid.count}" value="${appCessHci.patOthers}"></iais:input></td>
                                     </tr>
                                     <tr id="${num.count}patNo${uid.count}" hidden align="center">
                                         <td style="position: absolute;top: 30%;left: 3% ;width: 40%">Reason for no patients' records transfer</td>
-                                        <td style="position: absolute;top: 30%;right: 3% ;width: 55%"><textarea disabled="disabled" style="resize:none" name="${num.count}patNoRemarks${uid.count}" cols="30" rows="2" maxlength="200" title="content"><c:out
-                                                value="${appCessHci.patNoRemarks}"/></textarea>
-                                        </td>
+                                        <td style="position: absolute;top: 30%;right: 5% ;width: 50%"><iais:input needDisabled="true" type="text" name="${num.count}patNoRemarks${uid.count}" value="${appCessHci.patNoRemarks}"></iais:input></td>
                                     </tr>
                                 </table>
                             </td>
@@ -123,7 +123,7 @@
                                     <tr id="${num.count}patHciName${uid.count+1}" hidden><td style="position: absolute;top: 55%;left: 3% ;width: 30%">HCI Name</td><td style="position: absolute;top: 55%;right: 3% ;width: 55%"><textarea rows="2" cols="30" disabled ="disabled" style="resize:none" maxlength="100" name="${num.count}patHciName${uid.count+1}"><c:out value="${appCessHci.patHciName}"/></textarea></td><span style="position: absolute;top: 85%;left: 10% ;width: 80%" id="error_${num.count}patHciName${uid.count+1}" name="iaisErrorMsg" class="error-msg"></span>
                                     </tr>
                                     <tr id="${num.count}patRegNo${uid.count+1}" hidden>
-                                        <td style="position: absolute;top: 55%;left: 3% ;width: 30%">Professional Registered No.</td>
+                                        <td style="position: absolute;top: 55%;left: 3% ;width: 30%">Professional Regn No.</td>
                                         <td style="position: absolute;top: 55%;right: 3% ;width: 55%"><textarea style="resize:none" disabled="disabled" maxlength="20" rows="2" cols="30" name="${num.count}patRegNo${uid.count+1}"><c:out value="${appCessHci.patRegNo}"/></textarea></td>
                                     </tr>
                                     <tr id="${num.count}patOthers${uid.count+1}" hidden>
@@ -154,16 +154,10 @@
         <div style="margin-left: 1%;margin-right: 1%"><input type="checkbox" onclick="return false" checked name="sure" id="confirmInfo">
             <label style="font-weight: normal" for="confirmInfo">I have read the information</label>
         </div>
-
-
-        <div align="right">
-            <button id="backButton" type="button" class="btn btn-primary" onclick="confirmBack('back')">
-                Back
-            </button>
-            <button id="submitButton" type="button" class="btn btn-primary" onclick="confirmSubmit('submit')">
-                Next
-            </button>
-        </div>
+        <iais:action>
+            <a onclick="confirmBack('back')"><em class="fa fa-angle-left" style="margin-bottom: 1%;margin-left: 1%"></em> Back</a>
+            <a style="margin-bottom: 1%;margin-left: 89%" class="btn btn-primary" onclick="confirmSubmit('submit')">Next</a>
+        </iais:action>
     </div>
 </form>
 
@@ -189,7 +183,6 @@
                     $("#" + i + "reason" + j).hide();
                 }
             }
-
         }
     }
 
@@ -210,7 +203,6 @@
                     $("#" + i + "patOthers" + j).hide();
                 }
             }
-
         }
     }
 
@@ -228,7 +220,6 @@
                     $("#" + i + "patRegNo" + j).hide();
                 }
             }
-
         }
     }
 
@@ -265,8 +256,6 @@
                     $("#" + i + "patOthers" + j).hide();
                 }
             }
-
-
         }
     });
 
@@ -281,9 +270,6 @@
                     $("#" + i + "div" + j).hide();
                 }
             }
-
         }
-
     });
-
 </script>

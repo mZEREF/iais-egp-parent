@@ -462,51 +462,30 @@
 
     function changePeriod(obj) {
         if (obj == "Others") {
-            document.getElementById("selfPeriod").style.display = "";
             $("#selfPeriod").show();
         } else {
-            document.getElementById("selfPeriod").style.display = "none";
+            $("#selfPeriod").hide();
         }
     }
 
     function changeRecommendation(obj) {
         if (obj == "Others") {
-            document.getElementById("period").style.display = "";
             $("#period").show();
         } else {
-            document.getElementById("period").style.display = "none";
-        }
-    }
-
-    function changeTcu() {
-        if ($('#tcuNeeded').is(':checked')) {
-            document.getElementById("tcuDate").style.display = "";
-            $("#tcuDate").show();
-        } else {
-            document.getElementById("tcuDate").style.display = "none";
+            $("#period").hide();
         }
     }
 
     function changeEngage() {
         if ($('#enforcement').is(':checked')) {
-            document.getElementById("engageRemarks").style.display = "";
             $("#engageRemarks").show();
         } else {
-            document.getElementById("engageRemarks").style.display = "none";
+            $("#engageRemarks").hide();
         }
     }
 
 
     $(document).ready(function () {
-        if ($("#recommendation").val() == "Approval") {
-            changeRecommendation("Approval");
-        }
-        if ($("#periods").val() == "Others") {
-            changePeriod("Others");
-        }
-        if ($('#tcuNeeded').is(':checked')) {
-            $("#tcuDate").show();
-        }
         if ($('#enforcement').is(':checked')) {
             $("#engageRemarks").show();
         }

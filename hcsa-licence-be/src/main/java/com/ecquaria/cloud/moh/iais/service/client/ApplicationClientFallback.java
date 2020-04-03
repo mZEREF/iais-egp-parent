@@ -421,6 +421,14 @@ public class ApplicationClientFallback implements ApplicationClient{
     }
 
     @Override
+    public FeignResponseEntity<AppSubmissionDto> saveApps(AppSubmissionDto appSubmissionDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<Map<String, List<AppPremPreInspectionNcDocDto>>> zipIsReadyByApplicationId(List<ProcessFileTrackDto> processFileTrackDtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

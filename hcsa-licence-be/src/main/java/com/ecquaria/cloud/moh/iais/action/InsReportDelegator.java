@@ -322,7 +322,7 @@ public class InsReportDelegator {
     private List<SelectOption> getRecommendationOption() {
         List<SelectOption> recommendationResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("Approved", "Proceed with Licence Issuance");
-        SelectOption so2 = new SelectOption("Approved", "Proceed with Licence Issuance (with LTCs)");
+        SelectOption so2 = new SelectOption("ApprovedLTC", "Proceed with Licence Issuance (with LTCs)");
         SelectOption so3 = new SelectOption("Rejected", "Reject Licence");
         recommendationResult.add(so1);
         recommendationResult.add(so2);
