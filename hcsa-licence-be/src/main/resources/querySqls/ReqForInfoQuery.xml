@@ -27,7 +27,7 @@
             <#if hciCode??> AND  charindex(:hciCode, T3.HCI_CODE )>0</#if>
             <#if hciName??> AND charindex(:hciName, T3.HCI_NAME )>0</#if>
             <#if hciStreetName??> AND charindex(:hciStreetName, T3.STREET_NAME )>0</#if>
-            <#if hciPostalCode??> AND charindex(:hciPostalCode, T3.POSTAL_NAME )>0</#if>
+            <#if hciPostalCode??> AND charindex(:hciPostalCode, T3.POSTAL_CODE )>0</#if>
             <#if personnelName??> AND  charindex(:personnelName, appGrpPer.NAME )>0</#if>
             <#if personnelId??> AND charindex(:personnelId, appGrpPer.ID_NO )>0</#if>
             <#if personnelRegnNo??> AND charindex( :personnelRegnNo, appGrpPerExt.PROF_REG_NO )>0</#if>
@@ -81,7 +81,7 @@
             <#if hciCode??> AND charindex(:hciCode, Prem.HCI_CODE )>0</#if>
             <#if hciName??> AND charindex(:hciName, Prem.HCI_NAME )>0</#if>
             <#if hciStreetName??> AND charindex(:hciStreetName, Prem.STREET_NAME )>0</#if>
-            <#if hciPostalCode??> AND charindex(:hciPostalCode, Prem.POSTAL_NAME )>0</#if>
+            <#if hciPostalCode??> AND charindex(:hciPostalCode, Prem.POSTAL_CODE )>0</#if>
             <#if svc_names??> AND lic.SVC_NAME in( :svc_names)</#if>
             <#if licenseeIds??> AND lic.LICENSEE_ID in( :licenseeIds)</#if>
 
