@@ -97,8 +97,8 @@
                                 </div><br/>
                                 <c:if test="${!status.first}">
                                   <div class="row" style="float:right">
-                                    <div class="form-check">
-                                      <strong class="removeBtn">X</strong>
+                                    <div class="form-check removeBtn">
+                                      <div class="fa fa-times-circle"></div>
                                     </div>
                                   </div>
                                 </c:if>

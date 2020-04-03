@@ -83,8 +83,8 @@
                         </div>
                         <c:if test="${!status.first}">
                           <div  class="row" style="float:right">
-                            <div class="form-check">
-                              <strong class="removePoBtn" style="color:#ff0000;">X</strong>
+                            <div class="form-check removePoBtn">
+                              <div class="fa fa-times-circle" style="color:#ff0000;"></div>
                             </div>
                           </div>
                         </c:if>
@@ -302,8 +302,8 @@
                         </div>
                         <c:if test="${!status.first}">
                           <div  class="row" style="float:right">
-                            <div class="form-check">
-                              <strong class="removeDpoBtn" style="color:#ff0000;">X</strong>
+                            <div class="form-check removeDpoBtn">
+                              <div class="fa fa-times-circle" style="color:#ff0000;"></div>
                             </div>
                           </div>
                         </c:if>
