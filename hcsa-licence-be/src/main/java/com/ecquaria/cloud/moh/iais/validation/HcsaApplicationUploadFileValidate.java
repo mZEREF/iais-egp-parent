@@ -12,7 +12,7 @@ import java.util.Map;
  * @date 3/30/2020
  */
 public class HcsaApplicationUploadFileValidate implements CustomizeValidator {
-    private final Integer FileMaxLength = 10;
+    private final Integer FileMaxLength = 4;
     @Override
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
@@ -21,7 +21,7 @@ public class HcsaApplicationUploadFileValidate implements CustomizeValidator {
             errMap.put("selectedFile","The file cannot be empty.");
         }else{
             if(commonsMultipartFile.getSize() > FileMaxLength * 1024 * 1024){
-                errMap.put("selectedFile","The file size must less than 10M.");
+                errMap.put("selectedFile","The file size must less than 4M.");
             }
         }
         return errMap;

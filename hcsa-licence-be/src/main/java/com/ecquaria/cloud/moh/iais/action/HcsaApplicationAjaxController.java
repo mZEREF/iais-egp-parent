@@ -1,15 +1,12 @@
 package com.ecquaria.cloud.moh.iais.action;
 
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
@@ -47,7 +44,7 @@ public class HcsaApplicationAjaxController{
     //upload file
     @RequestMapping(value = "/uploadInternalFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, method = RequestMethod.POST)
     @ResponseBody
-    public String uploadInternalFile(HttpServletRequest request,@RequestParam("selectedFile") MultipartFile selectedFile){
+    public String uploadInternalFile(HttpServletRequest request,@RequestParam("selectedFile") MultipartFile selectedFile,@RequestParam("fileRemark")String remark){
         String data = "";
         request.setAttribute("selectedFile",selectedFile);
         String CSRF = ParamUtil.getString(request,"OWASP_CSRFTOKEN");
@@ -56,6 +53,7 @@ public class HcsaApplicationAjaxController{
         if(!errorMap.isEmpty()){
             AppIntranetDocDto appIntranetDocDto = new AppIntranetDocDto();
             appIntranetDocDto.setFileSn(-1);
+            appIntranetDocDto.setNoFilesMessage(errorMap.get("selectedFile"));
             return  JsonUtil.parseToJson(appIntranetDocDto);
         }else{
             AppIntranetDocDto appIntranetDocDto = new AppIntranetDocDto();
@@ -81,6 +79,11 @@ public class HcsaApplicationAjaxController{
             appIntranetDocDto.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
             appIntranetDocDto.setSubmitDtString(Formatter.formatDateTime(appIntranetDocDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss"));
             appIntranetDocDto.setSubmitByName(appIntranetDocDto.getAuditTrailDto().getMohUserId());
+            if(StringUtil.isEmpty(remark)){
+                appIntranetDocDto.setDocDesc(fileName);
+            }else {
+                appIntranetDocDto.setDocDesc(remark);
+            }
             FileRepoDto fileRepoDto = new FileRepoDto();
             fileRepoDto.setFileName(fileName);
             fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
