@@ -105,10 +105,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
             ApplicationConsts.APPLICATION_TYPE_APPEAL,
             ApplicationConsts.APPLICATION_TYPE_CESSATION,
-            ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL,
-            ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT,
-            ApplicationConsts.APPLICATION_TYPE_SUSPENSION,
-            ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION
+            ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL
     };
     private final String[] appStatus=new String[]{
             ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,
