@@ -242,10 +242,17 @@
         init = 1;
     });
 
+
     $("#onSiteSel").change(function(){
         $("#addPremBody").removeAttr("hidden");
     })
+    var oval = $("#onSiteSel").val();
+    var cval = $("#conveyanceSel").val();
+    console.log("oval"+cval);
 
+    if (oval != -1 || cval != -1) {
+        $("#addPremBody").removeAttr("hidden");
+    }
     $("#conveyanceSel").change(function(){
         $("#addPremBody").removeAttr("hidden");
     })
