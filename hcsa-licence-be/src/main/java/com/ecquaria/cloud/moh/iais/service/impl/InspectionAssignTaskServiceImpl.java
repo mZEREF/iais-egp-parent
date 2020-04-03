@@ -259,9 +259,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     inspecTaskCreAndAssDto.setTaskDtos(commPools);
                     inspecTaskCreAndAssDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
                     organizationClient.assignCommonPool(inspecTaskCreAndAssDto);
-                    AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(td.getRefNo(), td.getTaskKey()).getEntity();
-                    createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), internalRemarks,
-                            InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
                     if(inspectorCheckList != null && inspectorCheckList.size() > 0){
                         for(int i = 0; i < inspectorCheckList.size(); i++){
                             if(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())){
@@ -269,9 +266,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                                 ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
                                 applicationService.updateFEApplicaiton(applicationDto1);
                                 inspecTaskCreAndAssDto.setApplicationStatus(applicationDto1.getStatus());
-                                createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), null, td.getWkGrpId());
-                            } else {
-                                createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
                             }
                         }
                     }
