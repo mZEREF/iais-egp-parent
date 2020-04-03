@@ -37,7 +37,6 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.esotericsoftware.minlog.Log;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -63,9 +62,6 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
-
-    @Autowired
-    private AppPremisesCorrClient appPremisesCorrClient;
 
     @Autowired
     private HcsaChklClient hcsaChklClient;
@@ -235,21 +231,15 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     public void saveLitterFile(InspectionFDtosDto serListDto,String appPremId){
         if(serListDto.getAppPremisesSpecialDocDto() != null ){
-            MultipartFile multipartFile = serListDto.getFile();
             AppPremisesSpecialDocDto appPremisesSpecialDocDto = serListDto.getAppPremisesSpecialDocDto();
-            if(multipartFile != null &&StringUtil.isEmpty(appPremisesSpecialDocDto.getId())){
-                FileRepoDto fileRepoDto = new FileRepoDto();
-                fileRepoDto.setFileName(multipartFile.getOriginalFilename());
-                fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                fileRepoDto.setRelativePath(AppConsts.FALSE);
+            if(StringUtil.isEmpty(appPremisesSpecialDocDto.getId())){
                 fillUpCheckListGetAppClient.deleteAppPremisesSpecialDocByPremId(appPremId);
                 String oldFileGuid = serListDto.getOldFileGuid();
                 if(!StringUtil.isEmpty(oldFileGuid)){
                     fileRepoClient.removeFileById(oldFileGuid);
                     serListDto.setOldFileGuid(null);
                 }
-                String guid = fileRepoClient.saveFiles(multipartFile,JsonUtil.parseToJson(fileRepoDto)).getEntity();
-                serListDto.getAppPremisesSpecialDocDto().setFileRepoId(guid);
+                String guid = serListDto.getAppPremisesSpecialDocDto().getFileRepoId();
                 serListDto.setOldFileGuid(guid);
                 appPremisesSpecialDocDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 appPremisesSpecialDocDto.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
@@ -263,6 +253,29 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 serListDto.setOldFileGuid(null);
             }
             fillUpCheckListGetAppClient.deleteAppPremisesSpecialDocByPremId(appPremId);
+        }
+    }
+
+    @Override
+    public  String saveFiles( MultipartFile multipartFile){
+        FileRepoDto fileRepoDto = new FileRepoDto();
+        fileRepoDto.setFileName(multipartFile.getOriginalFilename());
+        fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        fileRepoDto.setRelativePath(AppConsts.FALSE);
+        return fileRepoClient.saveFiles(multipartFile,JsonUtil.parseToJson(fileRepoDto)).getEntity();
+    }
+
+    @Override
+    public void removeFiles(String id){
+        fileRepoClient.removeFileById(id);
+    }
+
+    @Override
+    public  void deleteInvalidFile( InspectionFDtosDto serListDto){
+        AppPremisesSpecialDocDto appIntranetDocDto = serListDto.getAppPremisesSpecialDocDto();
+        if(appIntranetDocDto != null && !StringUtil.isEmpty(appIntranetDocDto.getFileRepoId())
+                && !appIntranetDocDto.getFileRepoId().equalsIgnoreCase(serListDto.getOldFileGuid())){
+                 removeFiles(appIntranetDocDto.getFileRepoId());
         }
     }
     public void saveInspectionDate(InspectionFDtosDto serListDto, String appPremId) {
