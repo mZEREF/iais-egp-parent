@@ -65,6 +65,13 @@
     <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadDel_OnStepProcess_0" name="inspecUserRectifiUploadDel_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspecUserRectifiUploadSubmit" x="1280" y="-20">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadSubmit_OnStepProcess_0" name="inspecUserRectifiUploadSubmit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspecUserRectifiUploadReviewPage" stageIndicator="" x="650" y="100">
@@ -74,6 +81,12 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspecUserRectifiUploadConfPage" stageIndicator="" x="1280" y="230">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspecUserRectifiUploadAckPage" stageIndicator="" x="1490" y="-20">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -139,6 +152,12 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadPre" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadSuccess" style="oblique">
    <position>{(1080,250)(500,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadSubmit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(1150,120)(1300,0)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspecUserRectifiUploadAckPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadSubmit" style="rectanular">
+   <position>{(1300,0)(1510,0)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/InspecUserRectifiUploadConfirm" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="flag" name="InspecUserRectifiUploadCond1" operator="=" rightOperand="&quot;true&quot;" x="1300" y="520">
@@ -153,6 +172,7 @@
    <SwitchCase component="/Steps/AutomaticStep/InspecUserRectifiUploadPre" value="&quot;review&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspecUserRectifiUploadAdd" value="&quot;add&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspecUserRectifiUploadDel" value="&quot;delete&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspecUserRectifiUploadSubmit" value="&quot;submit&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
