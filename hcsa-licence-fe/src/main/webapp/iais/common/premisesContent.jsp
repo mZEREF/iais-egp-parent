@@ -59,8 +59,8 @@
 
                     <c:if test="${!status.first && requestInformationConfig==null && 'APTY004' !=AppSubmissionDto.appType && 'APTY005' !=AppSubmissionDto.appType}">
                         <div class="col-xs-5 col-md-1">
-                            <div class="form-check">
-                                <strong class="removeBtn">X</strong>
+                            <div class="form-check removeBtn">
+                                <div class="fa fa-times-circle"></div>
                             </div>
                         </div>
                     </c:if>
@@ -265,8 +265,8 @@
 
                                         <c:if test="${!phStat.first}">
                                             <div class=" col-xs-7 col-sm-4 col-md-3">
-                                                <div class="form-check">
-                                                    <strong class="removePhBtn">X</strong>
+                                                <div class="form-check removePhBtn">
+                                                    <div class="fa fa-times-circle"></div>
                                                 </div>
                                             </div>
                                         </c:if>
@@ -295,14 +295,14 @@
                                             Public Holidays Operating Hours (End)
                                         </label>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
-                                        <div class="col-md-3" style="padding-left: unset">
-                                            <iais:select name="${premValue}onSitePbHolDayEndHH${phStat.index}" options="premiseHours" value="${ph.onsiteEndToHH}" firstOption="--"></iais:select>
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                                        <div class="col-md-3" style="padding-left: unset">
-                                            <iais:select name="${premValue}onSitePbHolDayEndMM${phStat.index}" options="premiseMinute" value="${ph.onsiteEndToMM}" firstOption="--"></iais:select>
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                            <div class="col-md-3" style="padding-left: unset">
+                                                <iais:select name="${premValue}onSitePbHolDayEndHH${phStat.index}" options="premiseHours" value="${ph.onsiteEndToHH}" firstOption="--"></iais:select>
+                                            </div>
+                                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                            <div class="col-md-3" style="padding-left: unset">
+                                                <iais:select name="${premValue}onSitePbHolDayEndMM${phStat.index}" options="premiseMinute" value="${ph.onsiteEndToMM}" firstOption="--"></iais:select>
+                                            </div>
+                                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                         </div>
                                         <div class="col-xs-12 col-md-4 "></div>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
@@ -446,14 +446,14 @@
                             Operating Hours (Start) <span class="mandatory">*</span>
                         </label>
                         <div class="col-xs-9 col-sm-5 col-md-6">
-                                <div class="col-md-3" style="padding-left: unset">
-                                    <iais:select name="conveyanceStartHH" options="premiseHours" value="${appGrpPremisesDto.conStartHH}" firstOption="--"></iais:select>
-                                </div>
-                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
-                                <div class="col-md-3" style="padding-left: unset">
-                                    <iais:select name="conveyanceStartMM" options="premiseMinute" value="${appGrpPremisesDto.conStartMM}" firstOption="--"></iais:select>
-                                </div>
-                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                            <div class="col-md-3" style="padding-left: unset">
+                                <iais:select name="conveyanceStartHH" options="premiseHours" value="${appGrpPremisesDto.conStartHH}" firstOption="--"></iais:select>
+                            </div>
+                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                            <div class="col-md-3" style="padding-left: unset">
+                                <iais:select name="conveyanceStartMM" options="premiseMinute" value="${appGrpPremisesDto.conStartMM}" firstOption="--"></iais:select>
+                            </div>
+                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
                         </div>
                         <div  class="col-xs-12 col-md-4 "></div>
                         <div class="col-xs-9 col-sm-5 col-md-6">
@@ -494,8 +494,8 @@
                                         </iais:value>
                                         <c:if test="${!phStat.first}">
                                             <div class=" col-xs-7 col-sm-4 col-md-3">
-                                                <div class="form-check">
-                                                    <strong class="removePhBtn">X</strong>
+                                                <div class="form-check removePhBtn">
+                                                    <div class="fa fa-times-circle"></div>
                                                 </div>
                                             </div>
                                         </c:if>
