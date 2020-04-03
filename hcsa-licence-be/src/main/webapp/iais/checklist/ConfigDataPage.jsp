@@ -33,9 +33,7 @@
 </style>
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
   <%@ include file="/include/formHidden.jsp" %>
-  <input type="hidden" name="crud_action_type" value="">
-  <input type="hidden" name="crud_action_value" value="">
-  <input type="hidden" name="crud_action_additional" value="">
+  <input type="hidden" id="currentMaskId" name="currentMaskId" value="">
   <div class="main-content">
     <div class="">
       <div class="form-horizontal">
@@ -153,7 +151,7 @@
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="javascript:deleteRecord('${config.id}')" >Confirm</button>
+                            <button type="button" class="btn btn-primary" onclick="javascript:deleteRecord('<iais:mask name="currentMaskId" value="${config.id}"/>')" >Confirm</button>
                           </div>
                         </div>
                       </div>
@@ -161,9 +159,10 @@
 
 
                     <td>
-                      <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="javascript:loadEditData('${config.id}')" >Edit</button>
-                      <button type="button" onclick="javascript:cloneConfig('${config.id}')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >Clone</button>
-                      <button type="button" onclick="javascript:doView('${config.id}')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >View</button>
+
+                      <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="javascript:loadEditData('<iais:mask name="currentMaskId" value="${config.id}"/>')" >Edit</button>
+                      <button type="button" onclick="javascript:cloneConfig('<iais:mask name="currentMaskId" value="${config.id}"/>')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >Clone</button>
+                      <button type="button" onclick="javascript:doView('<iais:mask name="currentMaskId" value="${config.id}"/>')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >View</button>
                       <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" data-target="#DeleteTemplateModal" >Delete</button>
                     </td>
                   </tr>
@@ -205,21 +204,22 @@
   }
 
   function deleteRecord(id){
-      console.log("=========id==>>>>>>>", id);
+    $('#currentMaskId').val(id);
     SOP.Crud.cfxSubmit("mainForm", "deleteRecord", id);
   }
 
   function doView(id){
+    $('#currentMaskId').val(id);
     SOP.Crud.cfxSubmit("mainForm", "doView", id);
   }
 
   function loadEditData(id){
-      console.log("=========prepareEditConfig==>>>>>>>", id);
+    $('#currentMaskId').val(id);
     SOP.Crud.cfxSubmit("mainForm", "loadEditData", id);
   }
 
   function cloneConfig(id){
-      console.log("=========prepareEditConfig==>>>>>>>", id);
+    $('#currentMaskId').val(id);
     SOP.Crud.cfxSubmit("mainForm", "cloneConfig", id);
   }
 

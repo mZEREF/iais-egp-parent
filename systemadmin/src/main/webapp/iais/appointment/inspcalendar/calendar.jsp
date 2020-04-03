@@ -147,8 +147,8 @@
                             <td>${calendar.description}</td>
                             <td>
                               <input type="hidden" id="nonAvailId" name="nonAvailId" value="">
-                                <button type="button"   onclick="doDelete('<iais:mask name="nonAvailId" value="${calendar.id}"/>')"  class="btn btn-default btn-sm" >Delete</button>
-                                <button type="button"  onclick="doEdit('<iais:mask name="nonAvailId" value="${calendar.id}"/>')" class="btn btn-default btn-sm" >Update</button>
+                                <button type="button"   onclick="doDelete('<iais:mask name="calendarId" value="${calendar.id}"/>')"  class="btn btn-default btn-sm" >Delete</button>
+                                <button type="button"  onclick="doEdit('<iais:mask name="calendarId" value="${calendar.id}"/>')" class="btn btn-default btn-sm" >Update</button>
                             </td>
                           </tr>
                         </c:forEach>

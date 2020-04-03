@@ -133,7 +133,7 @@
                t6.ID as lic_prem_insp_grp_correlation_id,t6.INS_GRP_ID,t6.STATUS as lic_prem_insp_grp_correlation_status,
                t7.PREFER_END_DATE ,t7.PREFER_START_DATE,t7.STATUS as lic_inspection_group_status
                FROM lic_premises t3
-               LEFT JOIN (Select * FROM lic_premises_audit  WHERE STATUS = 'CMSTAT001') t1
+               LEFT JOIN (Select * FROM lic_premises_audit  WHERE STATUS = 'CMSTAT001' or STATUS = 'AUTACPS001') t1
                on t1.LIC_PREM_ID = t3.ID
                left join lic_premises_audit_inspector t2
                on t1.ID  = t2.AUDIT_ID
@@ -147,7 +147,7 @@
                t1.LIC_PREM_ID = t6.LIC_PREM_ID
                left join  lic_inspection_group t7
                on  t6.INS_GRP_ID = t7.ID
-               WHERE   t4.STATUS = 'LICEST001'
+               WHERE   t4.STATUS = 'LICEST001' AND (t1.STATUS is NULL OR t1.STATUS != 'AUTACPS001')
             <#if serviceNameList??> and t4.SVC_NAME IN ${serviceNameList} </#if>
             <#if postalCode??> and charindex(:postalCode,t5.POSTAL_CODE)!=0 </#if>
             <#if hclCode??> and charindex(:hclCode,t5.HCI_CODE)!=0 </#if>

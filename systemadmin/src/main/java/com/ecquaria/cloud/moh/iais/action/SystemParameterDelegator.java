@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -169,7 +170,11 @@ public class SystemParameterDelegator {
         String description = ParamUtil.getString(request, SystemParameterConstants.PARAM_DESCRIPTION);
         /*String status = ParamUtil.getString(request, SystemParameterConstants.PARAM_STATUS);*/
 
+
+
         SystemParameterDto editDto = (SystemParameterDto) ParamUtil.getSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO);
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+        editDto.setAuditTrailDto(auditTrailDto);
         editDto.setValue(value);
         editDto.setDescription(description);
         ValidationResult validationResult = WebValidationHelper.validateProperty(editDto, "edit");

@@ -49,7 +49,7 @@
             <div class="text-right">
                 <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
                 <a class="btn btn-secondary"  id="exportButtonId" href="${pageContext.request.contextPath}/regulation-result-file?action=regulation" onclick="$('#exportButtonId').attr('class', 'btn btn-secondary disabled') ">Export Regulation</a>
-                <a class="btn btn-primary next" id="crud_search_button" value="doSearch" href="#">Search</a>
+                <a class="btn btn-primary next" id="crud_search_button" value="doQuery" href="#">Search</a>
             </div>
         </div>
 

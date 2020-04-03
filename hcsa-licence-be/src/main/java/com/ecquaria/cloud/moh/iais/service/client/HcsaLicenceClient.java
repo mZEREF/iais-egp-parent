@@ -144,6 +144,8 @@ public interface HcsaLicenceClient {
     @PostMapping(path = "/hcsa-licence/icpremaudit-result", consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<LicPremisesAuditDto> createLicPremAudit(@RequestBody LicPremisesAuditDto licPremisesAuditDto);
 
+    @GetMapping(path = "/hcsa-licence/icpremaudit-getresult", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<LicPremisesAuditDto> getLicPremAuditByGuid(@RequestParam("guid") String guid);
     @PutMapping(path = "/hcsa-licence/icpremaudit-resultup", consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<LicPremisesAuditDto> updateLicPremAudit(@RequestBody LicPremisesAuditDto licPremisesAuditDto);
 

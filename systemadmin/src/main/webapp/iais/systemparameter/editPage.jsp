@@ -139,7 +139,7 @@
             </div>
             <div class="col-xs-3 col-sm-3 col-md-offset-3">
                 <div class="button-group">
-                    <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doEdit', '${parameterRequestDto.id}')">Edit</a></div>
+                    <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doEdit', '${parameterRequestDto.id}')">Update</a></div>
             </div>
         </div>
     </form>

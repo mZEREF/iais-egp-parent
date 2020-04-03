@@ -20,12 +20,13 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.MessageService;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 /*
  *File Name: MessageDelegator
@@ -179,7 +180,7 @@ public class MessageDelegator {
      */
     public void disableStatus(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String msgId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        String msgId = ParamUtil.getMaskedString(request, "msgQueryId");
         if(!StringUtil.isEmpty(msgId)) {
             MessageDto messageDto = messageService.getMessageById(msgId);
             messageDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
@@ -255,7 +256,7 @@ public class MessageDelegator {
      */
     public void prepareEdit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String msgId = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        String msgId = ParamUtil.getMaskedString(request, "msgQueryId");
         preSelectOption(request);
         if(!StringUtil.isEmpty(msgId)){
             MessageDto messageDto = messageService.getMessageById(msgId);

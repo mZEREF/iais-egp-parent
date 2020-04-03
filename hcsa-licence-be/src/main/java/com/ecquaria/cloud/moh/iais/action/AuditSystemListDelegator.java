@@ -250,7 +250,7 @@ public class AuditSystemListDelegator {
             ParamUtil.setRequestAttr(request,MAIN_URL,"MohAduitSystemList");
             AuditTrailHelper.auditFunction("MohAduitSystemList", "cancel tasks");
             // save cancel task
-            //auditSystemListService.doCancel(auditTaskDataDtos);
+            auditSystemListService.doCancel(auditTaskDataDtos);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         }
     }

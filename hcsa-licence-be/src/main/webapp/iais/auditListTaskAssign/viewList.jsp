@@ -73,16 +73,24 @@
                                             </c:if>
                                                 <c:if test="${item.audited}">
                                                     <iais:code code= "${item.auditType}"/>
+                                                    <input name="${id}auditType" id="${id}auditType" type="hidden" value="${item.auditType}">
                                                 </c:if>
                                             </td>
                                             <c:if test="${ISTUC}">
                                                 <td><fmt:formatDate value="${item.tcuDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                             </c:if>
                                             <td>
-                                                <iais:select  name="${id}insOp" options="inspectors${item.workGroupId}" value="${item.inspectorId}"   firstOption="Please Select"></iais:select>
-                                                <c:set value="error_${id}insp" var="errboth"/>
-                                                <span class="error-msg" id="<c:out value="${errboth}"/>"
-                                                      name="iaisErrorMsg"></span>
+                                                <c:if test="${!item.audited}">
+                                                    <iais:select  name="${id}insOp" options="inspectors${item.workGroupId}" value="${item.inspectorId}"   firstOption="Please Select"></iais:select>
+                                                    <c:set value="error_${id}insp" var="errboth"/>
+                                                    <span class="error-msg" id="<c:out value="${errboth}"/>"
+                                                          name="iaisErrorMsg"></span>
+                                                </c:if>
+                                                <c:if test="${item.audited}">
+                                                    <label>${item.inspector}</label>
+                                                    <input name="${id}insOp" id="${id}insOp" type="hidden" value="${item.inspectorId}">
+                                                </c:if>
+
                                             </td>
                                             <td>
                                                 <input name="<c:out value="${id}"/>selectForAd"

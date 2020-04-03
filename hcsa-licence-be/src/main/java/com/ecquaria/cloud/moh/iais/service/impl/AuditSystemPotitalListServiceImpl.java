@@ -17,12 +17,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditSystemPotentialDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemPotitalListService;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskSupportBeService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
@@ -53,7 +55,8 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     HcsaRiskSupportBeServiceImpl hcsaRiskSupportBeServiceImpl;
-
+    @Autowired
+    ApplicationViewService applicationViewService;
     @Override
     public List<AuditTaskDataFillterDto> getSystemPotentailAdultList() {
         AuditSystemPotentialDto dto = new AuditSystemPotentialDto();
@@ -64,11 +67,35 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             List<AuditTaskDataDto> auditTaskDataDtos = searchResult.getRows();
             List<AuditTaskDataFillterDto> auditTaskDataFillterDtos = new ArrayList<>(auditTaskDataDtos.size());
             for(AuditTaskDataDto auditTaskDataDto : auditTaskDataDtos){
-                auditTaskDataFillterDtos.add(MiscUtil.transferEntityDto(auditTaskDataDto,AuditTaskDataFillterDto.class));
+                auditTaskDataFillterDtos.add(getAuditTaskDataFillterDto(auditTaskDataDto));
             }
             return auditTaskDataFillterDtos;
         }
         return  null;
+    }
+
+    public  AuditTaskDataFillterDto getAuditTaskDataFillterDto(AuditTaskDataDto auditTaskDataDto){
+        AuditTaskDataFillterDto auditTaskDataFillterDto = MiscUtil.transferEntityDto(auditTaskDataDto,AuditTaskDataFillterDto.class);
+        auditTaskDataFillterDto.setIsTcuNeeded(1);
+        auditTaskDataFillterDto.setAuditType(auditTaskDataDto.getAuditType());
+        auditTaskDataFillterDto.setInspectorId(auditTaskDataDto.getInspectorId());
+        auditTaskDataFillterDto.setAddress(auditTaskDataDto.getAddress());
+        auditTaskDataFillterDto.setTcuDate(auditTaskDataDto.getTcuDate());
+        auditTaskDataFillterDto.setId(auditTaskDataDto.getId());
+        auditTaskDataFillterDto.setHclCode(auditTaskDataDto.getHclCode());
+        auditTaskDataFillterDto.setHclName(auditTaskDataDto.getHclName());
+        auditTaskDataFillterDto.setPostalCode(auditTaskDataDto.getPostalCode());
+        auditTaskDataFillterDto.setSvcName(auditTaskDataDto.getSvcName());
+        auditTaskDataFillterDto.setPremisesType(auditTaskDataDto.getPremisesType());
+        auditTaskDataFillterDto.setAuditId(auditTaskDataDto.getAuditId());
+        auditTaskDataFillterDto.setLicId(auditTaskDataDto.getLicId());
+        auditTaskDataFillterDto.setAuditRiskType(auditTaskDataDto.getAuditRiskType());
+        if( !StringUtil.isEmpty(auditTaskDataFillterDto.getInspectorId()) && !StringUtil.isEmpty(auditTaskDataFillterDto.getAuditId())){
+            OrgUserDto user = applicationViewService.getUserById(auditTaskDataFillterDto.getInspectorId());
+            auditTaskDataFillterDto.setInspector(user.getDisplayName());
+            auditTaskDataFillterDto.setAudited(true);
+        }
+        return auditTaskDataFillterDto;
     }
 
     @Override

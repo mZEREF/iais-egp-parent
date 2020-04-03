@@ -23,18 +23,19 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author: yichen
@@ -131,10 +132,10 @@ public class ProfessionalInformationDelegator {
 
 		SearchResult<ProfessionalInformationQueryDto> results = onlineEnquiriesService.searchProfessionalInformation(searchParam);
 
-		if (!Objects.isNull(results) && results.getRows() != null){
+		if (!Objects.isNull(results)){
 			List<ProfessionalInformationQueryDto> queryList = results.getRows();
 			queryList.forEach(i -> i.setDesignation(MasterCodeUtil.getCodeDesc(i.getDesignation())));
-			file = ExcelWriter.exportExcel(queryList, ProfessionalInformationQueryDto.class, "Professional Information_Search_Template");
+				file = ExcelWriter.exportExcel(queryList, ProfessionalInformationQueryDto.class, "Professional Information_Search_Template");
 		}
 
 		try {
