@@ -1,5 +1,5 @@
 <div class="amended-service-info-gp">
-    <h2>SERVICE SPECIFIC DOCUMENTS</h2>
+    <label style="font-size: 2.2rem">SERVICE SPECIFIC DOCUMENTS</label>
     <div class="amend-preview-info">
         <p></p>
         <div class="form-check-gp">

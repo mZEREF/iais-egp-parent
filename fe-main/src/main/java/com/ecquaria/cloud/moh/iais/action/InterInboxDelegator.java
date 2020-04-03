@@ -419,7 +419,7 @@ public class InterInboxDelegator {
         SearchResult appResult = inboxService.appDoQuery(appParam);
         List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
         for (InboxAppQueryDto appDto:inboxAppQueryDtoList) {
-            String serviceName = "N.A.";
+            String serviceName = "N/A";
             if (appDto.getServiceId() != null){
                 serviceName = inboxService.getServiceNameById(appDto.getServiceId());
             }
@@ -627,7 +627,7 @@ public class InterInboxDelegator {
         List<SelectOption> applicationStatusSelectList = IaisCommonUtils.genNewArrayList();
         applicationStatusSelectList.add(new SelectOption("All", "All"));
         applicationStatusSelectList.add(new SelectOption("APST008", "Draft"));
-        applicationStatusSelectList.add(new SelectOption("APST000", "Rollback"));
+        applicationStatusSelectList.add(new SelectOption("APST057", "Rollback"));
         applicationStatusSelectList.add(new SelectOption("APST005", "Approved"));
         applicationStatusSelectList.add(new SelectOption("APST007", "Pending"));
         ParamUtil.setRequestAttr(request, "appStatusSelect", applicationStatusSelectList);

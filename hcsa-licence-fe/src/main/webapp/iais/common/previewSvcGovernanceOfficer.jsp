@@ -1,5 +1,5 @@
 <div class="amended-service-info-gp">
-    <h2>CLINICAL GOVERNANCE OFFICER</h2>
+    <label style="font-size: 2.2rem">CLINICAL GOVERNANCE OFFICER</label>
     <div class="amend-preview-info">
         <c:forEach var="cgo" items="${currentPreviewSvcInfo.appSvcCgoDtoList}" varStatus="status">
         <p>Clinical Governance Officer ${status.index+1}:</p>
@@ -24,6 +24,14 @@
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.name }</p>
                             </td>
                         </tr>
+                        <tr>
+                            <td class="col-xs-8">
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No. :</p>
+                            </td>
+                            <td>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${cgo.idNo }</p>
+                            </td>
+                        </tr>
 
                         <tr>
                             <td class="col-xs-8">
@@ -31,15 +39,6 @@
                             </td>
                             <td>
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.idType }</p>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="col-xs-8">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No :</p>
-                            </td>
-                            <td>
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${cgo.idNo }</p>
                             </td>
                         </tr>
 
@@ -70,7 +69,7 @@
 
                         <tr>
                             <td class="col-xs-8">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional No :</p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn No. :</p>
                             </td>
                             <td>
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.professionRegoNo }</p>
@@ -106,7 +105,7 @@
 
                         <tr>
                             <td class="col-xs-8">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No :</p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No. :</p>
                             </td>
                             <td>
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.mobileNo}</p>

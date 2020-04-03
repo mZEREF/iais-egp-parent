@@ -1,5 +1,6 @@
 <div class="amended-service-info-gp">
-    <h2>LABORATORY DISCIPLINES</h2>
+    <label style="font-size: 2.2rem">LABORATORY DISCIPLINES</label>
+
     <c:forEach var="appSvcLaboratoryDisciplinesDto" items="${currentPreviewSvcInfo.appSvcLaboratoryDisciplinesDtoList}" varStatus="status">
         <div class="amend-preview-info">
             <p><span class="preview-title">Premises ${status.index+1}</span>: ${appSvcLaboratoryDisciplinesDto.premiseGetAddress}</p>

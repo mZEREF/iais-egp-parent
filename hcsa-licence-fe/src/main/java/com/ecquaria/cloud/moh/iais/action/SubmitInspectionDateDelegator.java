@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodDto;
@@ -54,7 +55,13 @@ public class SubmitInspectionDateDelegator {
     public void preLoad(BaseProcessClass bpc){
         HttpServletRequest servletRequest = bpc.request;
 
-        String groupId = (String) ParamUtil.getSessionAttr(servletRequest, "appGroupId");
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "AppSubmissionDto");
+        if(appSubmissionDto == null){
+            return;
+        }
+
+        String groupId = appSubmissionDto.getAppGrpId();
+
         if(StringUtils.isEmpty(groupId)){
             log.info("submit inspection date can not find app group id" + groupId);
             return;
@@ -98,6 +105,8 @@ public class SubmitInspectionDateDelegator {
         String startDate = ParamUtil.getString(bpc.request, "inspStartDate");
         String endDate = ParamUtil.getString(bpc.request, "inspEndDate");
 
+
+
         if (StringUtil.isEmpty(startDate) || StringUtil.isEmpty(endDate)){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("dateError", "Please input inspection start date and end date."));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
@@ -106,6 +115,8 @@ public class SubmitInspectionDateDelegator {
 
         Date sDate = IaisEGPHelper.parseToDate(startDate, "dd/MM/yyyy");
         Date eDate = IaisEGPHelper.parseToDate(endDate, "dd/MM/yyyy");
+        ParamUtil.setRequestAttr(bpc.request, "inspStartDate", sDate);
+        ParamUtil.setRequestAttr(bpc.request, "inspEndDate", eDate);
 
         // applicant submit start date and end date that it need in a period
         if (afterApp != null){
@@ -126,6 +137,15 @@ public class SubmitInspectionDateDelegator {
             }
         }
 
+        if (sDate != null && eDate != null){
+            boolean isAfterDate = IaisEGPHelper.isAfterDate(sDate, eDate);
+            if (!isAfterDate){
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("inspEndDate", "ACK019"));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                return;
+            }
+        }
+
         ParamUtil.setRequestAttr(bpc.request, "inspStartDate", sDate);
         ParamUtil.setRequestAttr(bpc.request, "inspEndDate", eDate);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
@@ -139,8 +159,8 @@ public class SubmitInspectionDateDelegator {
      * @author: yichen
      */
     public void submit(BaseProcessClass bpc){
-        // String groupId = (String) ParamUtil.getSessionAttr(servletRequest, "appGroupId");
-        String groupId = "8FA5F758-801C-EA11-BE78-000C29D29DB0";
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "AppSubmissionDto");
+        String groupId = appSubmissionDto.getAppGrpId();
 
         Date sDate = (Date) ParamUtil.getRequestAttr(bpc.request, "inspStartDate");
         Date eDate =  (Date)  ParamUtil.getRequestAttr(bpc.request,"inspEndDate");

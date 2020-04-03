@@ -280,7 +280,7 @@ public class BackendInboxDelegator {
                 ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
                 applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
                 if(("trigger").equals(action)){
-                    routeToDMS(bpc,applicationViewDto);
+                    routeToDMS(bpc,applicationViewDto,taskDto);
                 }else if(RoleConsts.USER_ROLE_AO1.equals(loginContext.getCurRoleId())){
                     log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 start ...."));
                     routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO2, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02, RoleConsts.USER_ROLE_AO2,applicationViewDto,taskDto);
@@ -649,7 +649,7 @@ public class BackendInboxDelegator {
      * @param bpc
      * @throws
      */
-    private void routeToDMS(BaseProcessClass bpc,ApplicationViewDto applicationViewDto) throws FeignException, CloneNotSupportedException {
+    private void routeToDMS(BaseProcessClass bpc,ApplicationViewDto applicationViewDto,TaskDto taskDto) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do routeToDMS start ...."));
         ApplicationDto application = applicationViewDto.getApplicationDto();
         if(application != null){
@@ -662,7 +662,7 @@ public class BackendInboxDelegator {
                         getAppPremisesRoutingHistoryForCurrentStage(appNo,HcsaConsts.ROUTING_STAGE_ASO);
             }
             if(appPremisesRoutingHistoryDto != null){
-                rollBack(bpc,appPremisesRoutingHistoryDto.getStageId(),ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
+                rollBack(taskDto,applicationViewDto, bpc,appPremisesRoutingHistoryDto.getStageId(),ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
                         appPremisesRoutingHistoryDto.getRoleId(),appPremisesRoutingHistoryDto.getWrkGrpId(),appPremisesRoutingHistoryDto.getActionby());
             }else{
                 log.error(StringUtil.changeForLog("can not get the appPremisesRoutingHistoryDto ..."));
@@ -673,22 +673,18 @@ public class BackendInboxDelegator {
         log.debug(StringUtil.changeForLog("the do routeToDMS end ...."));
     }
 
-    private void rollBack(BaseProcessClass bpc,String stageId,String appStatus,String roleId ,String wrkGpId,String userId) throws FeignException, CloneNotSupportedException {
+    private void rollBack(TaskDto taskDto,ApplicationViewDto applicationViewDto,BaseProcessClass bpc,String stageId,String appStatus,String roleId ,String wrkGpId,String userId) throws FeignException, CloneNotSupportedException {
         //get the user for this applicationNo
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
 
         //complated this task and create the history
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
         taskDto =  completedTask(taskDto);
         broadcastOrganizationDto.setComplateTask(taskDto);
-        String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
-        String processDecision = ParamUtil.getString(bpc.request,"nextStage");
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
-                applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),internalRemarks,processDecision,taskDto.getRoleId());
+                applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),null,null,taskDto.getRoleId());
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
         //update application status
         broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));

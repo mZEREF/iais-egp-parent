@@ -122,11 +122,11 @@ public interface InspectionRectificationProService {
     int getHowMuchNcByAppPremCorrId(String refNo);
 
     /**
-      * @author: shicheng
-      * @Date 2020/4/2
-      * @Param: fileRepoId
-      * @return: FileRepoDto
-      * @Descripation: getFileReportById
-      */
+     * @author: shicheng
+     * @Date 2020/4/2
+     * @Param: fileRepoId
+     * @return: FileRepoDto
+     * @Descripation: getFileReportById
+     */
     FileRepoDto getFileReportById(String fileRepoId);
 }

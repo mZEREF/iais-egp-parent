@@ -93,7 +93,7 @@
     </div>
 </form>
 <c:if test="${ not empty selectDraftNo}">
-    <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="saveDraft()" popupOrder="saveDraft" cancelBtnDesc="Resume from draft" yesBtnDesc="Continue current application" cancelFunc="cancelSaveDraft()"></iais:confirm>
+    <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
 </c:if>
 <script type="text/javascript">
 
@@ -163,10 +163,10 @@
     };
 
     function saveDraft() {
-        submit('premises','saveDraft',$('#selectDraftNo').val());
+        submit('preview','saveDraft',$('#selectDraftNo').val());
     }
     function cancelSaveDraft() {
-        submit('premises','saveDraft','cancelSaveDraft');
+        submit('preview','saveDraft','cancelSaveDraft');
     }
 
 </script>

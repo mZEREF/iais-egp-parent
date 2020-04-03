@@ -349,148 +349,148 @@
 </div>
 
 <script>
-    $(document).ready(function () {
-        $('.hideen-div').addClass('hidden');
-        //coverage  cpl_custom_form_script init css
-        /* $('.new-officer-form > table> tbody> tr:first-child > td >div.control > div.form-group > div:nth-child(2)').removeClass('col-sm-2');
-         $('.new-officer-form > table> tbody> tr:first-child > td >div.control > div.form-group > div:nth-child(2)').addClass('col-sm-3');
+  $(document).ready(function () {
+    $('.hideen-div').addClass('hidden');
+    //coverage  cpl_custom_form_script init css
+    /* $('.new-officer-form > table> tbody> tr:first-child > td >div.control > div.form-group > div:nth-child(2)').removeClass('col-sm-2');
+     $('.new-officer-form > table> tbody> tr:first-child > td >div.control > div.form-group > div:nth-child(2)').addClass('col-sm-3');
 
-         $('.new-officer-form > table> tbody> tr:nth-child(3) > td >div.control > div.form-group > div:nth-child(2)').removeClass('col-sm-2');
-         $('.new-officer-form > table> tbody> tr:nth-child(3) > td >div.control > div.form-group > div:nth-child(2)').addClass('col-sm-3');
+     $('.new-officer-form > table> tbody> tr:nth-child(3) > td >div.control > div.form-group > div:nth-child(2)').removeClass('col-sm-2');
+     $('.new-officer-form > table> tbody> tr:nth-child(3) > td >div.control > div.form-group > div:nth-child(2)').addClass('col-sm-3');
 
-         $('.new-officer-form > table> tbody> tr:nth-child(5) > td >div.control > div.form-group > div:nth-child(2)').removeClass('col-sm-3');
-         $('.new-officer-form > table> tbody> tr:nth-child(5) > td >div.control > div.form-group > div:nth-child(2)').addClass('col-sm-4');*/
-        //get from cpl_custom_form_script
+     $('.new-officer-form > table> tbody> tr:nth-child(5) > td >div.control > div.form-group > div:nth-child(2)').removeClass('col-sm-3');
+     $('.new-officer-form > table> tbody> tr:nth-child(5) > td >div.control > div.form-group > div:nth-child(2)').addClass('col-sm-4');*/
+    //get from cpl_custom_form_script
 
-        //init font-size
-        $('.cgo-header').css('font-size',"18px");
+    //init font-size
+    $('.cgo-header').css('font-size',"18px");
 
-        $('select.assignSel').change(function () {
+    $('select.assignSel').change(function () {
+      $parentEle = $(this).closest('td.first');
+      if ($(this).val() == "newOfficer") {
+        $parentEle.find('> .new-officer-form').removeClass('hidden');
+        $parentEle.find('> .profile-info-gp').addClass('hidden');
+      } else {
+        $parentEle.find('> .profile-info-gp').removeClass('hidden');
+        $parentEle.find('> .new-officer-form').addClass('hidden');
+      }
+    });
+
+    reLoadChange();
+
+    showSpecialty();
+
+    removeCgo();
+
+    if(${AppSubmissionDto.needEditController && !isClickEdit}){
+      disabledAll();
+      //nice-select
+      $('div.nice-select').addClass('disabled');
+    }
+
+    doEdit();
+  });
+
+  var disabledAll = function () {
+    $('input[type="text"]').prop('disabled',true);
+  }
+
+  var showSpecialty = function () {
+    $('.specialty').change(function () {
+      $specialtyEle = $(this).closest('.specialtyContent');
+      var val = $(this).val();
+
+      if('other' == val){
+        $specialtyEle.find('input[name="specialtyOther"]').removeClass('hidden');
+      }else{
+        $specialtyEle.find('input[name="specialtyOther"]').addClass('hidden');
+      }
+    });
+  }
+
+  var reLoadChange = function () {
+    var i=0;
+    $('select.assignSel').each(function (k,v) {
+      if("newOfficer" ==$(this).val()){
+        var removeClass = '.cgo-'+i+'--new';
+        console.log("removeClass"+removeClass);
+        $(removeClass).removeClass('hidden');
+        i++;
+      }
+    });
+  }
+
+  $('.addListBtn').click(function () {
+    /*var assignContent = $('.assignContent:last').html();
+    var appendHtml = '<hr/> <table class="testTable">'+ assignContent+'</table>';
+    $('.assignContent:last').after(appendHtml);*/
+    $('.hideen-div').addClass('hidden');
+    var number = $('.assign-psn-item').size();
+    var addNumber = ${HcsaSvcPersonnel.maximumCount} - number;
+    $.ajax({
+      url:'${pageContext.request.contextPath}/governance-officer-html',
+      dataType:'json',
+      data:{
+        "HasNumber":number,
+        "AddNumber":addNumber
+      },
+      type:'POST',
+      success:function (data) {
+        console.log(data.res);
+        if ('success' == data.res) {
+          $('.assignContent:last').after(data.sucInfo);
+          showSpecialty();
+
+          $('select.assignSel').change(function () {
             $parentEle = $(this).closest('td.first');
             if ($(this).val() == "newOfficer") {
-                $parentEle.find('> .new-officer-form').removeClass('hidden');
-                $parentEle.find('> .profile-info-gp').addClass('hidden');
+              $parentEle.find('> .new-officer-form').removeClass('hidden');
+              $parentEle.find('> .profile-info-gp').addClass('hidden');
             } else {
-                $parentEle.find('> .profile-info-gp').removeClass('hidden');
-                $parentEle.find('> .new-officer-form').addClass('hidden');
+              $parentEle.find('> .profile-info-gp').removeClass('hidden');
+              $parentEle.find('> .new-officer-form').addClass('hidden');
             }
-        });
-
-        reLoadChange();
-
-        showSpecialty();
-
-        removeCgo();
-
-        if(${AppSubmissionDto.needEditController && !isClickEdit}){
-            disabledAll();
-            //nice-select
-            $('div.nice-select').addClass('disabled');
+          });
+          removeCgo();
+          //init font-size
+          $('.cgo-header').css('font-size',"18px");
+          <!--change psn item -->
+          changePsnItem();
+        }else{
+          $('.errorMsg').html(data.errInfo);
         }
 
-        doEdit();
+      },
+      error:function (data) {
+        console.log("err");
+      }
+    });
+  });
+
+  var doEdit = function () {
+    $('#edit').click(function () {
+      /*$assignContentEle = $(this).closest('div.assignContent');
+      $assignContentEle.find('input[type="text"]').prop('disabled',false);
+      $assignContentEle.find('div.nice-select').removeClass('disabled');*/
+      $('input[type="text"]').prop('disabled',false);
+      $('div.nice-select').removeClass('disabled');
+      $('#isEditHiddenVal').val('1');
+      $('#edit-content').addClass('hidden');
+    });
+  }
+
+  var changePsnItem = function () {
+    $('.assign-psn-item').each(function (k,v) {
+      $(this).html(k+1);
     });
 
-    var disabledAll = function () {
-        $('input[type="text"]').prop('disabled',true);
-    }
+  }
+  var removeCgo = function () {
+    $('.removeBtn').click(function () {
+      var $premContentEle= $(this).closest('table.assignContent');
+      $premContentEle.remove();
 
-    var showSpecialty = function () {
-        $('.specialty').change(function () {
-            $specialtyEle = $(this).closest('.specialtyContent');
-            var val = $(this).val();
-
-            if('other' == val){
-                $specialtyEle.find('input[name="specialtyOther"]').removeClass('hidden');
-            }else{
-                $specialtyEle.find('input[name="specialtyOther"]').addClass('hidden');
-            }
-        });
-    }
-
-    var reLoadChange = function () {
-        var i=0;
-        $('select.assignSel').each(function (k,v) {
-            if("newOfficer" ==$(this).val()){
-                var removeClass = '.cgo-'+i+'--new';
-                console.log("removeClass"+removeClass);
-                $(removeClass).removeClass('hidden');
-                i++;
-            }
-        });
-    }
-
-    $('.addListBtn').click(function () {
-        /*var assignContent = $('.assignContent:last').html();
-        var appendHtml = '<hr/> <table class="testTable">'+ assignContent+'</table>';
-        $('.assignContent:last').after(appendHtml);*/
-        $('.hideen-div').addClass('hidden');
-        var number = $('.assign-psn-item').size();
-        var addNumber = ${HcsaSvcPersonnel.maximumCount} - number;
-        $.ajax({
-            url:'${pageContext.request.contextPath}/governance-officer-html',
-            dataType:'json',
-            data:{
-                "HasNumber":number,
-                "AddNumber":addNumber
-            },
-            type:'POST',
-            success:function (data) {
-                console.log(data.res);
-                if ('success' == data.res) {
-                    $('.assignContent:last').after(data.sucInfo);
-                    showSpecialty();
-
-                    $('select.assignSel').change(function () {
-                        $parentEle = $(this).closest('td.first');
-                        if ($(this).val() == "newOfficer") {
-                            $parentEle.find('> .new-officer-form').removeClass('hidden');
-                            $parentEle.find('> .profile-info-gp').addClass('hidden');
-                        } else {
-                            $parentEle.find('> .profile-info-gp').removeClass('hidden');
-                            $parentEle.find('> .new-officer-form').addClass('hidden');
-                        }
-                    });
-                  removeCgo();
-                  //init font-size
-                    $('.cgo-header').css('font-size',"18px");
-                    <!--change psn item -->
-                    changePsnItem();
-                }else{
-                    $('.errorMsg').html(data.errInfo);
-                }
-
-            },
-            error:function (data) {
-                console.log("err");
-            }
-        });
     });
 
-    var doEdit = function () {
-        $('#edit').click(function () {
-            /*$assignContentEle = $(this).closest('div.assignContent');
-            $assignContentEle.find('input[type="text"]').prop('disabled',false);
-            $assignContentEle.find('div.nice-select').removeClass('disabled');*/
-            $('input[type="text"]').prop('disabled',false);
-            $('div.nice-select').removeClass('disabled');
-            $('#isEditHiddenVal').val('1');
-            $('#edit-content').addClass('hidden');
-        });
-    }
-
-    var changePsnItem = function () {
-        $('.assign-psn-item').each(function (k,v) {
-            $(this).html(k+1);
-        });
-
-    }
-    var removeCgo = function () {
-      $('.removeBtn').click(function () {
-        var $premContentEle= $(this).closest('table.assignContent');
-        $premContentEle.remove();
-
-      });
-
-    }
+  }
 </script>

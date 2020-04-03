@@ -110,8 +110,11 @@
     };
 
     function deleteItem(id) {
-        $("#holidayId").val(id);
-        SOP.Crud.cfxSubmit("mainForm", "delete");
+        if(confirm('Are you sure you want to delete this item?')){
+            $("#holidayId").val(id);
+            SOP.Crud.cfxSubmit("mainForm", "delete");
+        }
+
     }
 
     $('#search').click(function () {

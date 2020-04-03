@@ -170,7 +170,7 @@
       </div>
     </div>
   <c:if test="${ not empty selectDraftNo }">
-    <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="saveDraft()" popupOrder="saveDraft" cancelBtnDesc="Resume from draft" yesBtnDesc="Continue" cancelFunc="cancelSaveDraft()"></iais:confirm>
+    <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
   </c:if>
   <%@ include file="/include/validation.jsp" %>
     <input type="hidden" name="pageCon" value="valPremiseList" >
@@ -231,11 +231,11 @@
     }
 
     function saveDraft() {
-        submit('premises','saveDraft',$('#selectDraftNo').val());
+        submit('documents','saveDraft',$('#selectDraftNo').val());
     }
 
     function cancelSaveDraft() {
-        submit('premises','saveDraft','cancelSaveDraft');
+        submit('documents','saveDraft','cancelSaveDraft');
     }
 
 </script>

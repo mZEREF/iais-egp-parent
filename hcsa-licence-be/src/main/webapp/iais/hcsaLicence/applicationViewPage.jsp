@@ -546,7 +546,7 @@
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
-                                                    <c:if test="${applicationViewDto.applicationDto.status == 'APST000' || applicationViewDto.applicationDto.status == 'APST014'}">
+                                                    <c:if test="${applicationViewDto.applicationDto.status == 'APST057' || applicationViewDto.applicationDto.status == 'APST014'}">
                                                         <div id="replytr" class="hidden">
                                                             <iais:row>
                                                                 <iais:field value="Processing Decision" required="true"/>
@@ -769,7 +769,7 @@
             $('#ApplicationViewInspection').css('display', 'none');
             // $('#recommendationDropdown').removeClass('hidden');
         }
-        if ('${applicationViewDto.applicationDto.status}' == 'APST000' || '${applicationViewDto.applicationDto.status}' == 'APST014' || '${applicationViewDto.applicationDto.status}' == 'APST013') {
+        if ('${applicationViewDto.applicationDto.status}' == 'APST057' || '${applicationViewDto.applicationDto.status}' == 'APST014' || '${applicationViewDto.applicationDto.status}' == 'APST013') {
             $('#processingDecision').addClass('hidden');
             // $('#recommendationDropdown').addClass('hidden');
             $('#replytr').removeClass('hidden');
