@@ -67,12 +67,15 @@
                         </div>
                         <div class="row">
                             <div class="center-content">
-                                <div class="col-md-7">
+                                <div class="col-md-3">
                                     <div class="file-upload-gp">
                                         <input id="withdrawFile" type="file" name="selectedFile" style="display: none;"><a
                                             class="btn btn-file-upload btn-secondary">Upload</a>
                                         <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
+                                </div>
+                                <div class="col-md-9" style="margin-top: 13px;color: #1F92FF ">
+                                    <b id="fileName"></b>
                                 </div>
                             </div>
                         </div>
@@ -80,7 +83,7 @@
                             <div class="center-content">
                                 <div class="col-md-2 col-md-offset-8">
                                     <div class="components">
-                                        <a class="btn btn-secondary" href="/main-web/eservice/INTERNET/MohInternetInbox">Cancel</a>
+                                        <a class="btn btn-secondary" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp">Cancel</a>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -110,6 +113,12 @@
         $("[name='app_action_type']").val(action);
         $("#mainForm").submit();
     }
+
+    $("#withdrawFile").change(function () {
+        var fileName = $("#withdrawFile").val();
+        var pos = fileName.lastIndexOf("\\");
+        $("#fileName").html(fileName.substring(pos + 1));
+    })
 
     function doSubmit() {
         showWaiting();

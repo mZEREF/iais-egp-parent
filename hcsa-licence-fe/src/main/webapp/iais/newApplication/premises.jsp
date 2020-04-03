@@ -93,7 +93,7 @@
                   <%@include file="../common/premisesContent.jsp"%>
                 </div>
                 <div class="row">
-                  <div class="col-xs-12" id="addPremBody">
+                  <div class="col-xs-12" id="addPremBody" hidden>
                     <c:if test="${requestInformationConfig==null && 'APTY005' !=AppSubmissionDto.appType && !multiBase && 'APTY004' !=AppSubmissionDto.appType}">
                       <button id="addPremBtn" class="btn btn-primary" type="button">Add Premises</button>
                     </c:if>
